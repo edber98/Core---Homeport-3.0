@@ -1,1 +1,79 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+        background-color: #EEF0F4;
+}
+
+/* styles.scss */
+@font-face {
+  font-family: 'Sarine';
+  src: url('../public/fronts/sarine-medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;       // évite le texte invisible en attendant le chargement
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.border-bottom-primary {
+    border-bottom: 1px solid #E2E1E4;
+}
+
+.margin-11 {
+    margin: 11px;
+}
+
+.margin-13 {
+    margin: 13px;
+}
+
+.margin-left-right-11 {
+       margin-left: 11px;
+        margin-right: 11px;
+
+}
+
+.flex {
+        display: flex;
+}
+
+.flex-center-vertical {
+ 
+    align-items: center;
+}
+
+.flex-center-horizontal {
+        display: flex;
+    align-content: center;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.background-color {
+    background-color: #EEF0F4;
+}
+
+.padding-13 {
+    padding: 13px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+/* Exemple : appliquer la police à tout le corps du site */
+:root {
+  font-family: 'Sarine', system-ui, sans-serif;
+}
