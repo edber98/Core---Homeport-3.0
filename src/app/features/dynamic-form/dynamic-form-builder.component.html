@@ -1,171 +1,394 @@
-<div class="builder">
-  <div class="controls">
-    <button nz-button nzType="default" (click)="addStep()">Add Step</button>
-    <button nz-button nzType="default" (click)="addSection()">Add Section</button>
-    <button nz-button nzType="default" (click)="addField()">Add Field</button>
-    <button nz-button nzType="default" (click)="select(schema)">Settings</button>
-  </div>
-  <div class="canvas">
-    <div class="steps" *ngIf="schema.steps" cdkDropList [cdkDropListData]="schema.steps" (cdkDropListDropped)="dropStep($event)">
-      <div class="step" *ngFor="let step of schema.steps; let si = index" cdkDrag (click)="select(step)">
-        <div class="step-header">
-          {{ step.title || 'Step ' + (si + 1) }}
-          <div class="actions">
-            <button nz-button nzSize="small" (click)="addSection(step); $event.stopPropagation()">+ Section</button>
-            <button nz-button nzSize="small" nzDanger (click)="removeStep(step); $event.stopPropagation()">Delete</button>
-          </div>
+<div class="builder-grid">
+  <!-- PALETTE / CONTEXTE -->
+  <div class="left">
+    <nz-card nzTitle="Palette & Contexte" nzSize="small" class="card sticky">
+      <div class="toolbar">
+        <button nz-button nzSize="small" (click)="addStep()">+ Step</button>
+        <button nz-button nzSize="small" (click)="addSection()">+ Section</button>
+        <button nz-button nzSize="small" (click)="addField()">+ Field (racine)</button>
+      </div>
+
+      <nz-divider nzText="Contexte Step/Section"></nz-divider>
+      <div class="context">
+        <nz-select
+          nzSize="small"
+          style="width:100%;"
+          [ngModelOptions]="{standalone:true}"
+          [(ngModel)]="ctxStepIndex"
+          nzPlaceHolder="Choisir un step"
+          *ngIf="schema.steps?.length">
+          <nz-option *ngFor="let s of schema.steps; index as i"
+                     [nzValue]="i"
+                     [nzLabel]="s.title || ('Step ' + (i+1))"></nz-option>
+        </nz-select>
+
+        <nz-select
+          nzSize="small"
+          style="width:100%; margin-top:6px;"
+          [ngModelOptions]="{standalone:true}"
+          [(ngModel)]="ctxSectionIndex"
+          nzPlaceHolder="Choisir une section"
+          *ngIf="ctxStepIndex!=null">
+          <nz-option *ngFor="let sec of schema.steps![ctxStepIndex].sections; index as j"
+                     [nzValue]="j"
+                     [nzLabel]="sec.title || ('Section ' + (j+1))"></nz-option>
+        </nz-select>
+
+        <div class="context-actions">
+          <button nz-button nzSize="small" (click)="addSectionToCtx()" [disabled]="ctxStepIndex==null">+ Section au step</button>
+          <button nz-button nzSize="small" (click)="addFieldToCtx()" [disabled]="ctxStepIndex==null">+ Field à la section</button>
         </div>
-        <div class="sections" cdkDropList [cdkDropListData]="step.sections" (cdkDropListDropped)="dropSection($event, step)">
-          <div class="section" *ngFor="let section of step.sections" cdkDrag (click)="select(section)">
-            <div class="section-header">
-              {{ section.title || 'Section' }}
-              <div class="actions">
-                <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
-                <button nz-button nzSize="small" nzDanger (click)="removeSection(section, step); $event.stopPropagation()">Delete</button>
+      </div>
+
+      <nz-divider nzText="Champs rapides"></nz-divider>
+      <div class="palette">
+        <button nz-button nzSize="small" (click)="quickAdd('text')">Text</button>
+        <button nz-button nzSize="small" (click)="quickAdd('textarea')">Textarea</button>
+        <button nz-button nzSize="small" (click)="quickAdd('number')">Number</button>
+        <button nz-button nzSize="small" (click)="quickAdd('date')">Date</button>
+        <button nz-button nzSize="small" (click)="quickAdd('select')">Select</button>
+        <button nz-button nzSize="small" (click)="quickAdd('radio')">Radio</button>
+        <button nz-button nzSize="small" (click)="quickAdd('checkbox')">Checkbox</button>
+        <button nz-button nzSize="small" (click)="quickAdd('textblock')">TextBlock</button>
+      </div>
+
+      <nz-divider nzText="Import / Export"></nz-divider>
+      <div class="io">
+        <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}" placeholder="Colle ton JSON ici"></textarea>
+        <div class="io-actions">
+          <button nz-button nzSize="small" (click)="import()">Import</button>
+          <button nz-button nzSize="small" (click)="export()">Export</button>
+        </div>
+      </div>
+    </nz-card>
+
+    <nz-card nzTitle="Prévisualisation responsive" nzSize="small" class="card sticky mt">
+      <div class="bp">
+        <button nz-button nzSize="small" (click)="setPreviewWidth()">Auto</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(360)">XS</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(576)">SM</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(768)">MD</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(992)">LG</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(1200)">XL</button>
+        <button nz-button nzSize="small" (click)="setPreviewWidth(1600)">XXL</button>
+      </div>
+    </nz-card>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="center">
+    <nz-card nzTitle="Canvas" class="card fill">
+      <!-- STEPPER -->
+      <div class="steps"
+           *ngIf="schema.steps"
+           cdkDropList
+           [cdkDropListData]="schema.steps"
+           (cdkDropListDropped)="dropStep($event)">
+
+        <div class="step"
+             *ngFor="let step of schema.steps; let si=index"
+             cdkDrag
+             [class.selected]="isSelected(step)"
+             (click)="select(step)">
+
+          <div class="step-header" cdkDragHandle>
+            <strong>{{ step.title || ('Step ' + (si+1)) }}</strong>
+            <div class="actions">
+              <button nz-button nzSize="small" (click)="addSection(step); $event.stopPropagation()">+ Section</button>
+              <button nz-button nzSize="small" nzDanger (click)="removeStep(step); $event.stopPropagation()">Delete</button>
+            </div>
+          </div>
+
+          <div class="sections"
+               cdkDropList
+               [cdkDropListData]="step.sections"
+               (cdkDropListDropped)="dropSection($event, step)">
+            <div class="section"
+                 *ngFor="let section of step.sections; let si2=index"
+                 cdkDrag
+                 [class.selected]="isSelected(section)"
+                 (click)="select(section)">
+
+              <div class="section-header" cdkDragHandle>
+                <div>
+                  <div class="t">{{ section.title || 'Section' }}</div>
+                  <div class="d" *ngIf="section.description">{{ section.description }}</div>
+                </div>
+                <div class="actions">
+                  <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+                  <button nz-button nzSize="small" nzDanger (click)="removeSection(section, step); $event.stopPropagation()">Delete</button>
+                </div>
+              </div>
+
+              <div class="fields"
+                   cdkDropList
+                   [cdkDropListData]="section.fields || []"
+                   (cdkDropListDropped)="dropField($event, section)">
+                <div class="field"
+                     *ngFor="let field of (section.fields || [])"
+                     cdkDrag
+                     [class.selected]="isSelected(field)"
+                     (click)="select(field)">
+                  <span class="f-label">{{ field.label || field.type }}</span>
+                  <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
+                </div>
               </div>
             </div>
-            <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
-              <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
-                <span>{{ field.label || field.type }}</span>
-                <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
-              </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTIONS DIRECTES -->
+      <div class="sections"
+           *ngIf="schema.sections && !schema.steps"
+           cdkDropList
+           [cdkDropListData]="schema.sections"
+           (cdkDropListDropped)="dropSection($event)">
+        <div class="section"
+             *ngFor="let section of schema.sections"
+             cdkDrag
+             [class.selected]="isSelected(section)"
+             (click)="select(section)">
+          <div class="section-header" cdkDragHandle>
+            <div>
+              <div class="t">{{ section.title || 'Section' }}</div>
+              <div class="d" *ngIf="section.description">{{ section.description }}</div>
+            </div>
+            <div class="actions">
+              <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+              <button nz-button nzSize="small" nzDanger (click)="removeSection(section); $event.stopPropagation()">Delete</button>
+            </div>
+          </div>
+
+          <div class="fields"
+               cdkDropList
+               [cdkDropListData]="section.fields || []"
+               (cdkDropListDropped)="dropField($event, section)">
+            <div class="field"
+                 *ngFor="let field of (section.fields || [])"
+                 cdkDrag
+                 [class.selected]="isSelected(field)"
+                 (click)="select(field)">
+              <span class="f-label">{{ field.label || field.type }}</span>
+              <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="sections" *ngIf="schema.sections" cdkDropList [cdkDropListData]="schema.sections" (cdkDropListDropped)="dropSection($event)">
-      <div class="section" *ngFor="let section of schema.sections" cdkDrag (click)="select(section)">
-        <div class="section-header">
-          {{ section.title || 'Section' }}
-          <div class="actions">
-            <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
-            <button nz-button nzSize="small" nzDanger (click)="removeSection(section); $event.stopPropagation()">Delete</button>
-          </div>
-        </div>
-        <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
-          <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
-            <span>{{ field.label || field.type }}</span>
-            <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
-          </div>
+
+      <!-- FLAT -->
+      <div class="fields"
+           *ngIf="schema.fields && !schema.steps && !schema.sections"
+           cdkDropList
+           [cdkDropListData]="schema.fields"
+           (cdkDropListDropped)="dropField($event)">
+        <div class="field"
+             *ngFor="let field of schema.fields"
+             cdkDrag
+             [class.selected]="isSelected(field)"
+             (click)="select(field)">
+          <span class="f-label">{{ field.label || field.type }}</span>
+          <button nz-button nzSize="small" nzDanger (click)="removeField(field); $event.stopPropagation()">Delete</button>
         </div>
       </div>
-    </div>
-    <div class="fields" *ngIf="schema.fields" cdkDropList [cdkDropListData]="schema.fields" (cdkDropListDropped)="dropField($event)">
-      <div class="field" *ngFor="let field of schema.fields" cdkDrag (click)="select(field)">
-        <span>{{ field.label || field.type }}</span>
-        <button nz-button nzSize="small" nzDanger (click)="removeField(field); $event.stopPropagation()">Delete</button>
+    </nz-card>
+  </div>
+
+  <!-- INSPECTOR -->
+  <div class="right">
+    <nz-card nzTitle="Inspector" class="card sticky" *ngIf="selected">
+      <nz-tabs nzSize="small">
+        <!-- PROPS OBJET -->
+        <nz-tab nzTitle="Propriétés" *ngIf="selected !== schema">
+          <form nz-form [formGroup]="inspector" class="inspector-form">
+            <!-- STEP -->
+            <ng-container *ngIf="isStep(selected)">
+              <nz-form-item>
+                <nz-form-label>Titre</nz-form-label>
+                <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>visibleIf (JSON)</nz-form-label>
+                <nz-form-control><textarea nz-input rows="3" formControlName="visibleIf"></textarea></nz-form-control>
+              </nz-form-item>
+            </ng-container>
+
+            <!-- SECTION -->
+            <ng-container *ngIf="isSection(selected)">
+              <nz-form-item>
+                <nz-form-label>Titre</nz-form-label>
+                <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>Description</nz-form-label>
+                <nz-form-control><textarea nz-input rows="3" formControlName="description"></textarea></nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>Grid gutter</nz-form-label>
+                <nz-form-control><nz-input-number formControlName="gridGutter" [nzMin]="0"></nz-input-number></nz-form-control>
+              </nz-form-item>
+            </ng-container>
+
+            <!-- FIELD -->
+            <ng-container *ngIf="isField(selected)">
+              <nz-form-item>
+                <nz-form-label>Type</nz-form-label>
+                <nz-form-control>
+                  <nz-select formControlName="type">
+                    <nz-option nzValue="text" nzLabel="text"></nz-option>
+                    <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
+                    <nz-option nzValue="number" nzLabel="number"></nz-option>
+                    <nz-option nzValue="date" nzLabel="date"></nz-option>
+                    <nz-option nzValue="select" nzLabel="select"></nz-option>
+                    <nz-option nzValue="radio" nzLabel="radio"></nz-option>
+                    <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
+                    <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+
+              <ng-container *ngIf="inspector.get('type')?.value !== 'textblock'">
+                <nz-form-item>
+                  <nz-form-label>Key</nz-form-label>
+                  <nz-form-control><input nz-input formControlName="key"/></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Label</nz-form-label>
+                  <nz-form-control><input nz-input formControlName="label"/></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Placeholder</nz-form-label>
+                  <nz-form-control><input nz-input formControlName="placeholder"/></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Description</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="description"></textarea></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>Default</nz-form-label>
+                  <nz-form-control><input nz-input formControlName="default"/></nz-form-control>
+                </nz-form-item>
+                <nz-form-item *ngIf="inspector.get('type')?.value==='select' || inspector.get('type')?.value==='radio'">
+                  <nz-form-label>Options (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="3" formControlName="options" placeholder='[{"label":"A","value":"a"}]'></textarea></nz-form-control>
+                </nz-form-item>
+
+                <nz-divider nzText="Conditions"></nz-divider>
+                <nz-form-item>
+                  <nz-form-label>visibleIf (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="visibleIf"></textarea></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>requiredIf (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="requiredIf"></textarea></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>disabledIf (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="disabledIf"></textarea></nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-label>validators (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="3" formControlName="validators" placeholder='[{"type":"required"},{"type":"min","value":0}]'></textarea></nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                  <nz-form-label>col (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="col" placeholder='{"xs":24,"md":12}'></textarea></nz-form-control>
+                </nz-form-item>
+              </ng-container>
+
+              <ng-container *ngIf="inspector.get('type')?.value==='textblock'">
+                <nz-form-item>
+                  <nz-form-label>HTML</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="6" formControlName="textHtml"></textarea></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label>col (JSON)</nz-form-label>
+                  <nz-form-control><textarea nz-input rows="2" formControlName="col" placeholder='{"xs":24}'></textarea></nz-form-control>
+                </nz-form-item>
+              </ng-container>
+            </ng-container>
+          </form>
+        </nz-tab>
+
+        <!-- FORM SETTINGS (UI + SUMMARY) -->
+        <nz-tab nzTitle="Form Settings" *ngIf="selected === schema">
+          <form nz-form [formGroup]="inspector" class="inspector-form">
+            <nz-form-item>
+              <nz-form-label>Form Title</nz-form-label>
+              <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
+            </nz-form-item>
+
+            <nz-divider nzText="UI"></nz-divider>
+            <nz-form-item>
+              <nz-form-label>layout</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="ui_layout">
+                  <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
+                  <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
+                  <nz-option nzValue="inline" nzLabel="inline"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>labelAlign</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="ui_labelAlign">
+                  <nz-option nzValue="left" nzLabel="left"></nz-option>
+                  <nz-option nzValue="right" nzLabel="right"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>labelCol.span / controlCol.span</nz-form-label>
+              <nz-form-control class="inline-2">
+                <nz-input-number formControlName="ui_labelColSpan" [nzMin]="0" [nzMax]="24" nzPlaceHolder="labelCol"></nz-input-number>
+                <nz-input-number formControlName="ui_controlColSpan" [nzMin]="0" [nzMax]="24" nzPlaceHolder="controlCol"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>widthPx</nz-form-label>
+              <nz-form-control><nz-input-number formControlName="ui_widthPx" [nzMin]="0"></nz-input-number></nz-form-control>
+            </nz-form-item>
+
+            <nz-divider nzText="Résumé"></nz-divider>
+            <nz-form-item>
+              <nz-form-label>enabled</nz-form-label>
+              <nz-form-control><label nz-switch formControlName="summary_enabled"></label></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>title</nz-form-label>
+              <nz-form-control><input nz-input formControlName="summary_title"/></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>includeHidden</nz-form-label>
+              <nz-form-control><label nz-switch formControlName="summary_includeHidden"></label></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>dateFormat</nz-form-label>
+              <nz-form-control><input nz-input formControlName="summary_dateFormat" placeholder="dd/MM/yyyy"/></nz-form-control>
+            </nz-form-item>
+          </form>
+        </nz-tab>
+
+        <!-- APERCU JSON -->
+        <nz-tab nzTitle="JSON">
+          <pre class="json">{{ schema | json }}</pre>
+        </nz-tab>
+      </nz-tabs>
+    </nz-card>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="bottom">
+    <nz-card class="card fill">
+      <div class="preview-frame" [style.width.px]="previewWidth || null">
+        <app-dynamic-form [schema]="schema"></app-dynamic-form>
       </div>
-    </div>
-  </div>
-  <div class="inspector" *ngIf="selected">
-    <form nz-form [formGroup]="inspector">
-      <nz-form-item>
-        <nz-form-label>Title</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="title" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Key</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="key" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Label</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="label" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Placeholder</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="placeholder" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Type</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="type" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Options</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="options"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>visibleIf</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="visibleIf"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>requiredIf</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="requiredIf"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>disabledIf</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="disabledIf"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item *ngIf="isSection(selected)">
-        <nz-form-label>Grid Gutter</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="gridGutter" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item *ngIf="isField(selected)">
-        <nz-form-label>Col</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="col"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-      <ng-container *ngIf="selected === schema">
-        <nz-form-item>
-          <nz-form-label>Layout</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="layout" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Label Align</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="labelAlign" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Label Col</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="labelColSpan" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Control Col</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="controlColSpan" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>WidthPx</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="widthPx" />
-          </nz-form-control>
-        </nz-form-item>
-      </ng-container>
-    </form>
-  </div>
-  <div class="preview">
-    <app-dynamic-form [schema]="schema"></app-dynamic-form>
-  </div>
-  <div class="io">
-    <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}"></textarea>
-    <button nz-button nzType="default" (click)="import()">Import</button>
-    <button nz-button nzType="default" (click)="export()">Export</button>
+    </nz-card>
   </div>
 </div>
