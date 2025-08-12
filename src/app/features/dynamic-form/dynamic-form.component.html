@@ -1,0 +1,117 @@
+<form nz-form *ngIf="form" [formGroup]="form" [nzLayout]="schema?.ui?.layout ?? 'horizontal'" [nzLabelAlign]="schema?.ui?.labelAlign ?? 'left'" [style.width.px]="schema?.ui?.widthPx">
+  <nz-steps *ngIf="schema?.steps" [nzCurrent]="currentStep">
+    <nz-step *ngFor="let step of schema!.steps" [nzTitle]="step.title"></nz-step>
+    <nz-step *ngIf="schema?.summary?.enabled" [nzTitle]="schema?.summary?.title || 'Summary'"></nz-step>
+  </nz-steps>
+
+  <ng-container *ngIf="schema?.steps; else nonStepper">
+    <ng-container *ngFor="let step of schema!.steps; let si = index">
+      <div *ngIf="currentStep === si">
+        <ng-container *ngFor="let section of step.sections">
+          <div *ngIf="isVisible(section.visibleIf)" nz-row [nzGutter]="section.grid?.gutter ?? 0">
+            <ng-container *ngFor="let field of visibleFields(section)">
+              <div nz-col *ngIf="field.type !== 'textblock'; else textBlock">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="schema?.ui?.labelCol?.span ?? null" [nzOffset]="schema?.ui?.labelCol?.offset ?? null" [nzRequired]="field.validators?.includes(Validators.required)">{{ field.label }}</nz-form-label>
+                  <nz-form-control [nzSpan]="schema?.ui?.controlCol?.span ?? null" [nzOffset]="schema?.ui?.controlCol?.offset ?? null">
+                    <ng-container [ngSwitch]="field.type">
+                      <input *ngSwitchCase="'text'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                      <textarea *ngSwitchCase="'textarea'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder"></textarea>
+                      <input *ngSwitchCase="'number'" nz-input type="number" [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                      <nz-date-picker *ngSwitchCase="'date'" [formControlName]="field.key!" />
+                      <nz-select *ngSwitchCase="'select'" [formControlName]="field.key!">
+                        <nz-option *ngFor="let o of field.options" [nzLabel]="o.label" [nzValue]="o.value"></nz-option>
+                      </nz-select>
+                      <nz-radio-group *ngSwitchCase="'radio'" [formControlName]="field.key!">
+                        <label nz-radio *ngFor="let o of field.options" [nzValue]="o.value">{{ o.label }}</label>
+                      </nz-radio-group>
+                      <label *ngSwitchCase="'checkbox'" nz-checkbox [formControlName]="field.key!">{{ field.label }}</label>
+                    </ng-container>
+                    <div class="desc" *ngIf="field.description">{{ field.description }}</div>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <ng-template #textBlock><div class="text-block" [innerHTML]="field.textHtml"></div></ng-template>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <div *ngIf="schema?.summary?.enabled && currentStep === stepFieldKeys.length - 1">
+      <h3>{{ schema?.summary?.title || 'Summary' }}</h3>
+      <div *ngFor="let field of allFields()">
+        <div *ngIf="schema?.summary?.includeHidden || isVisible(field.visibleIf)">
+          <strong>{{ field.label }}:</strong> {{ form?.get(field.key!)?.value }}
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #nonStepper>
+    <ng-container *ngIf="schema?.sections; else flat">
+      <ng-container *ngFor="let section of schema!.sections!">
+        <div *ngIf="isVisible(section.visibleIf)" nz-row [nzGutter]="section.grid?.gutter ?? 0">
+          <ng-container *ngFor="let field of visibleFields(section)">
+            <div nz-col *ngIf="field.type !== 'textblock'; else textBlock2">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="schema?.ui?.labelCol?.span ?? null" [nzOffset]="schema?.ui?.labelCol?.offset ?? null" [nzRequired]="field.validators?.includes(Validators.required)">{{ field.label }}</nz-form-label>
+                <nz-form-control [nzSpan]="schema?.ui?.controlCol?.span ?? null" [nzOffset]="schema?.ui?.controlCol?.offset ?? null">
+                  <ng-container [ngSwitch]="field.type">
+                    <input *ngSwitchCase="'text'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                    <textarea *ngSwitchCase="'textarea'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder"></textarea>
+                    <input *ngSwitchCase="'number'" nz-input type="number" [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                    <nz-date-picker *ngSwitchCase="'date'" [formControlName]="field.key!" />
+                    <nz-select *ngSwitchCase="'select'" [formControlName]="field.key!">
+                      <nz-option *ngFor="let o of field.options" [nzLabel]="o.label" [nzValue]="o.value"></nz-option>
+                    </nz-select>
+                    <nz-radio-group *ngSwitchCase="'radio'" [formControlName]="field.key!">
+                      <label nz-radio *ngFor="let o of field.options" [nzValue]="o.value">{{ o.label }}</label>
+                    </nz-radio-group>
+                    <label *ngSwitchCase="'checkbox'" nz-checkbox [formControlName]="field.key!">{{ field.label }}</label>
+                  </ng-container>
+                  <div class="desc" *ngIf="field.description">{{ field.description }}</div>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <ng-template #textBlock2><div class="text-block" [innerHTML]="field.textHtml"></div></ng-template>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #flat>
+      <ng-container *ngFor="let field of schema?.fields">
+        <div nz-col *ngIf="field.type !== 'textblock'; else textBlock3">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="schema?.ui?.labelCol?.span ?? null" [nzOffset]="schema?.ui?.labelCol?.offset ?? null" [nzRequired]="field.validators?.includes(Validators.required)">{{ field.label }}</nz-form-label>
+            <nz-form-control [nzSpan]="schema?.ui?.controlCol?.span ?? null" [nzOffset]="schema?.ui?.controlCol?.offset ?? null">
+              <ng-container [ngSwitch]="field.type">
+                <input *ngSwitchCase="'text'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                <textarea *ngSwitchCase="'textarea'" nz-input [formControlName]="field.key!" [placeholder]="field.placeholder"></textarea>
+                <input *ngSwitchCase="'number'" nz-input type="number" [formControlName]="field.key!" [placeholder]="field.placeholder" />
+                <nz-date-picker *ngSwitchCase="'date'" [formControlName]="field.key!" />
+                <nz-select *ngSwitchCase="'select'" [formControlName]="field.key!">
+                  <nz-option *ngFor="let o of field.options" [nzLabel]="o.label" [nzValue]="o.value"></nz-option>
+                </nz-select>
+                <nz-radio-group *ngSwitchCase="'radio'" [formControlName]="field.key!">
+                  <label nz-radio *ngFor="let o of field.options" [nzValue]="o.value">{{ o.label }}</label>
+                </nz-radio-group>
+                <label *ngSwitchCase="'checkbox'" nz-checkbox [formControlName]="field.key!">{{ field.label }}</label>
+              </ng-container>
+              <div class="desc" *ngIf="field.description">{{ field.description }}</div>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <ng-template #textBlock3><div class="text-block" [innerHTML]="field.textHtml"></div></ng-template>
+      </ng-container>
+    </ng-template>
+  </ng-template>
+
+  <div class="buttons" *ngIf="schema?.steps">
+    <button nz-button nzType="default" (click)="prev()" [disabled]="currentStep === 0">Previous</button>
+    <button nz-button nzType="default" (click)="next()" *ngIf="currentStep < stepFieldKeys.length - 1" [disabled]="!isStepValid(currentStep)">Next</button>
+    <button nz-button nzType="primary" (click)="submit()" *ngIf="currentStep === stepFieldKeys.length - 1" [disabled]="!form?.valid">Submit</button>
+  </div>
+  <div class="buttons" *ngIf="!schema?.steps">
+    <button nz-button nzType="primary" (click)="submit()" [disabled]="!form?.valid">Submit</button>
+  </div>
+</form>

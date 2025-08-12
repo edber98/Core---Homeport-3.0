@@ -1,0 +1,38 @@
+.builder {
+  display: flex;
+  gap: 16px;
+}
+.canvas {
+  flex: 1;
+  border: 1px dashed #ccc;
+  padding: 8px;
+}
+.inspector {
+  width: 300px;
+}
+.preview {
+  flex: 1;
+  border: 1px solid #eee;
+  padding: 8px;
+}
+.io {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+textarea {
+  width: 100%;
+  min-height: 100px;
+}
+.step, .section, .field {
+  border: 1px solid #ddd;
+  padding: 4px;
+  margin-bottom: 4px;
+  background: #fafafa;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
