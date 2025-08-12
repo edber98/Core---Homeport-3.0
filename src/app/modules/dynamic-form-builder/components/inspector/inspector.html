@@ -1,0 +1,126 @@
+<!-- modules/dynamic-form-builder/components/inspector/inspector.html -->
+<ng-container [ngSwitch]="state.selection().kind">
+
+  <!-- ===== FORM ===== -->
+  <form *ngSwitchCase="'form'" nz-form (ngSubmit)="$event.preventDefault()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Titre</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="state.schema().title || ''" (ngModelChange)="updateFormTitle($event)"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Stepper ?</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <label nz-switch [ngModelOptions]="{standalone: true}" [ngModel]="state.hasStepper()" (ngModelChange)="toggleStepper($event)"></label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Layout</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <nz-select [ngModelOptions]="{standalone: true}" [ngModel]="state.schema().ui?.layout || 'horizontal'" (ngModelChange)="setLayout($event)">
+          <nz-option nzLabel="Horizontal" nzValue="horizontal"></nz-option>
+          <nz-option nzLabel="Vertical" nzValue="vertical"></nz-option>
+          <nz-option nzLabel="Inline" nzValue="inline"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Labels au-dessus</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <label nz-switch [ngModelOptions]="{standalone: true}" [ngModel]="state.schema().ui?.labelsOnTop || false" (ngModelChange)="setLabelsOnTop($event)"></label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Résumé</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <label nz-switch [ngModelOptions]="{standalone: true}" [ngModel]="!!state.schema().summary?.enabled" (ngModelChange)="toggleSummary($event)"></label>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <!-- ===== STEP ===== -->
+  <form *ngSwitchCase="'step'" nz-form (ngSubmit)="$event.preventDefault()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Titre</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="stepTitle()" (ngModelChange)="updateStepTitle($event)" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <!-- ===== SECTION ===== -->
+  <form *ngSwitchCase="'section'" nz-form (ngSubmit)="$event.preventDefault()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Titre</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="sectionTitle()" (ngModelChange)="updateSectionTitle($event)" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <div class="mt">
+      <button nz-button type="button" (click)="addField('text')">+ Text</button>
+      <button nz-button type="button" (click)="addField('number')">+ Number</button>
+      <button nz-button type="button" (click)="addField('date')">+ Date</button>
+      <button nz-button type="button" (click)="addField('select')">+ Select</button>
+      <button nz-button type="button" (click)="addField('radio')">+ Radio</button>
+      <button nz-button type="button" (click)="addField('checkbox')">+ Checkbox</button>
+      <button nz-button type="button" (click)="addField('textblock')">+ TextBlock</button>
+    </div>
+  </form>
+
+  <!-- ===== FIELD ===== -->
+  <form *ngSwitchCase="'field'" nz-form (ngSubmit)="$event.preventDefault()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="8">Type</nz-form-label>
+      <nz-form-control [nzSpan]="16">
+        <input nz-input [readonly]="true" [ngModelOptions]="{standalone: true}" [ngModel]="fieldType()" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <ng-container *ngIf="!selectedFieldIsTextblock(); else textblockProps">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Key</nz-form-label>
+        <nz-form-control [nzSpan]="16">
+          <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="fieldKey()" (ngModelChange)="updateFieldKey($event)" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Label</nz-form-label>
+        <nz-form-control [nzSpan]="16">
+          <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="fieldLabel()" (ngModelChange)="updateFieldLabel($event)" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Placeholder</nz-form-label>
+        <nz-form-control [nzSpan]="16">
+          <input nz-input [ngModelOptions]="{standalone: true}" [ngModel]="fieldPlaceholder()" (ngModelChange)="updateFieldPlaceholder($event)" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="fieldType()==='select' || fieldType()==='radio'">
+        <nz-form-label [nzSpan]="8">Options</nz-form-label>
+        <nz-form-control [nzSpan]="16">
+          <button nz-button type="button" size="small" (click)="setOptions('countries')">+ Countries</button>
+          <button nz-button type="button" size="small" (click)="setOptions('yesno')">+ Oui/Non</button>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+
+    <ng-template #textblockProps>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">HTML</nz-form-label>
+        <nz-form-control [nzSpan]="16">
+          <textarea nz-input rows="6" [ngModelOptions]="{standalone: true}" [ngModel]="textHtml()" (ngModelChange)="updateTextHtml($event)"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-template>
+  </form>
+
+</ng-container>

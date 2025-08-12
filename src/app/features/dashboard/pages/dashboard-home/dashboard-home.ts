@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DynamicForm } from '../../../../modules/dynamic-form/dynamic-form';
+import { DynamicFormBuilder } from '../../../../modules/dynamic-form-builder/dynamic-form-builder';
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule, DynamicForm],
+  imports: [CommonModule, DynamicForm, DynamicFormBuilder],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss'
 })
@@ -75,7 +76,7 @@ schema: any = {
 
   accounts :any = {
   "title": "Ouverture de compte",
-  "ui": { "layout": "horizontal",  "labelCol": { "span": 8 }, "controlCol": { "span": 16 }, "widthPx": 960 },
+  "ui": { "layout": "horizontal", labelsOnTop: false, "labelCol": { "span": 8 }, "controlCol": { "span": 16 }, "widthPx": 960 },
   "summary": {
     "enabled": true,
     "title": "Vérification finale",
@@ -122,7 +123,7 @@ schema: any = {
     // --- Exemple 2 : SECTIONS directes + texte
   schemaSections: any = {
     title: 'Contact rapide',
-    ui: { layout: 'vertical', widthPx: 700 },
+    ui: { layout: 'vertical', widthPx: 700, labelsOnTop: false  },
     sections: [
       {
         title: 'Informations',

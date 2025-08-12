@@ -1,0 +1,7 @@
+<!-- components/preview/preview.html -->
+<textarea nz-input rows="16" [(ngModel)]="code" style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace;"></textarea>
+<div style="margin-top:8px; display:flex; gap:8px;">
+  <button nz-button nzType="default" (click)="refresh()">Actualiser</button>
+  <button nz-button nzType="primary" (click)="copy(code)">Copier</button>
+  <button nz-button nzDanger (click)="import()">Importer</button>
+</div>

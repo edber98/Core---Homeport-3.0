@@ -1,0 +1,53 @@
+
+<!-- components/canvas/canvas.html -->
+<!-- STEPPER -->
+<div *ngIf="state.hasStepper(); else noStepper">
+  <h4>Étapes</h4>
+  <div cdkDropList (cdkDropListDropped)="dropStep($event)">
+    <div class="step" *ngFor="let st of state.schema().steps; let si = index" cdkDrag>
+      <div class="step-head" (click)="state.selectStep(si)">
+        <b>{{ st.title || 'Étape '+(si+1) }}</b>
+        <button nz-button size="small" (click)="$event.stopPropagation(); state.addSection(si)">+ Section</button>
+      </div>
+
+      <div class="sections" cdkDropList (cdkDropListDropped)="dropSectionIn(si, $event)">
+        <div class="section" *ngFor="let sec of st.sections; let secIdx = index" cdkDrag (click)="state.selectSection(secIdx, si)">
+          <div class="section-head">
+            <span>{{ sec.title || 'Section '+(secIdx+1) }}</span>
+            <button nz-button size="small" (click)="$event.stopPropagation(); state.addField('text', si, secIdx)">+ Champ</button>
+          </div>
+
+          <div class="fields" cdkDropList (cdkDropListDropped)="dropField(si, secIdx, $event)">
+            <div class="field" *ngFor="let f of sec.fields; let fi = index" cdkDrag (click)="state.selectField(fi, secIdx, si)">
+              <code>{{ f.type }}</code> <span *ngIf="f.type!=='textblock'">• {{ f.key }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SANS STEPPER -->
+<ng-template #noStepper>
+  <h4>Sections (racine)</h4>
+  <div class="sections" cdkDropList (cdkDropListDropped)="dropSectionRoot($event)">
+    <div class="section" *ngFor="let sec of state.rootSections(); let secIdx = index" cdkDrag (click)="state.selectSection(secIdx)">
+      <div class="section-head">
+        <span>{{ sec.title || 'Section '+(secIdx+1) }}</span>
+        <button nz-button size="small" (click)="$event.stopPropagation(); state.addField('text', undefined, secIdx)">+ Champ</button>
+      </div>
+
+      <div class="fields" cdkDropList (cdkDropListDropped)="dropField(undefined, secIdx, $event)">
+        <div class="field" *ngFor="let f of sec.fields; let fi = index" cdkDrag (click)="state.selectField(fi, secIdx)">
+          <code>{{ f.type }}</code> <span *ngIf="f.type!=='textblock'">{{ f.key }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt">
+    <button nz-button (click)="state.addSection()">+ Section</button>
+  </div>
+</ng-template>

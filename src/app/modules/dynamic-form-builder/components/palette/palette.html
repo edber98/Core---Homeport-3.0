@@ -1,0 +1,21 @@
+<!-- components/palette/palette.html -->
+<div class="group">
+  <div class="title">Structure</div>
+  <button nz-button nzType="default" (click)="state.addStep()">+ Étape</button>
+  <button nz-button nzType="default" (click)="state.addSection()">+ Section (racine)</button>
+</div>
+
+<div class="group">
+  <div class="title">Champs</div>
+  <div cdkDropListDisabled="true">
+    <button nz-button cdkDrag>Text</button>
+    <button nz-button cdkDrag>Textarea</button>
+    <button nz-button cdkDrag>Number</button>
+    <button nz-button cdkDrag>Date</button>
+    <button nz-button cdkDrag>Select</button>
+    <button nz-button cdkDrag>Radio</button>
+    <button nz-button cdkDrag>Checkbox</button>
+    <button nz-button cdkDrag>TextBlock</button>
+  </div>
+  <small>Astuce: tu peux aussi ajouter depuis l’inspecteur.</small>
+</div>

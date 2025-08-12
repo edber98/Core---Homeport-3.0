@@ -59,7 +59,7 @@ export interface StepConfig {
 export interface FormUI {
     layout?: 'horizontal' | 'vertical' | 'inline';
     labelAlign?: 'left' | 'right';
-    labelsOnTop: boolean;
+    labelsOnTop?: boolean;
     labelCol?: { span?: number; offset?: number };
     controlCol?: { span?: number; offset?: number };
     widthPx?: number;
