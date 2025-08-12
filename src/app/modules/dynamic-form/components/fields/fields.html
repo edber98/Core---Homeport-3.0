@@ -17,7 +17,7 @@
 
       <!-- inputs -->
       <ng-container *ngSwitchDefault>
-        <nz-form-label
+        <nz-form-label *ngIf="field.type!=='checkbox'"
           [nzFor]="fieldKey"
           [nzRequired]="requiredFlag"
           [nzSpan]="labelSpan"
@@ -25,6 +25,7 @@
           [nzLabelAlign]="ui?.labelAlign ?? 'left'">
           {{ field.label || '' }}
         </nz-form-label>
+        <nz-form-label *ngIf="field.type==='checkbox'" [nzSpan]="labelSpan" [nzOffset]="labelOffset"></nz-form-label>
 
         <nz-form-control
           [nzSpan]="controlSpan"
@@ -32,6 +33,7 @@
           [nzErrorTip]="(field.label || 'Champ') + ' invalide'">
 
           <ng-container *ngIf="fieldKey as key">
+            <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
             <input *ngIf="field.type==='text'"
                    nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
@@ -55,9 +57,9 @@
               </label>
             </nz-radio-group>
 
-            <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">
+          <!--   <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">
               {{ field.label || '' }}
-            </label>
+            </label> -->
           </ng-container>
         </nz-form-control>
       </ng-container>

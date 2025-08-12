@@ -323,13 +323,13 @@ export class DynamicFormBuilderComponent {
 
   isSelected(obj: any): boolean { return this.selected === obj; }
   isStep(obj: any): obj is StepConfig {
-    return !!obj && obj !== this.schema && !('type' in obj) && ('sections' in obj);
+    return !!obj && obj !== this.schema && !('type' in obj) && (('fields' in obj) || ('sections' in obj)) && !('steps' in obj);
   }
   isSection(obj: any): obj is SectionConfig {
-    return !!obj && !('type' in obj) && ('fields' in obj) && !('sections' in obj) && !('steps' in obj);
+    return !!obj && ('type' in obj) && (obj as any).type === 'section';
   }
   isField(obj: any): obj is FieldConfig {
-    return !!obj && 'type' in obj && !('fields' in obj) && !('steps' in obj) && !('sections' in obj);
+    return !!obj && 'type' in obj && (obj as any).type !== 'section';
   }
 
   // ---------- Ajouts rapides (basés sur la sélection) ----------
@@ -344,10 +344,6 @@ export class DynamicFormBuilderComponent {
       const step = this.schema.steps[this.schema.steps.length - 1];
       (step as any).fields = (step as any).fields || [];
       (step as any).fields.push(this.newField(type));
-    } else if (this.schema.sections && !this.schema.steps) {
-      if (!this.schema.sections.length) this.addSection();
-      this.schema.sections[0].fields = this.schema.sections[0].fields || [];
-      this.schema.sections[0].fields!.push(this.newField(type));
     } else {
       this.ensureFlatMode();
       this.schema.fields!.push(this.newField(type));
@@ -358,7 +354,7 @@ export class DynamicFormBuilderComponent {
   // ---------- Canvas actions ----------
   addStep(): void {
     this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', sections: [], fields: [], style: 'stack' } as any;
+    const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
     this.refresh();
   }
@@ -381,8 +377,8 @@ export class DynamicFormBuilderComponent {
 
   // Toolbar disabled states
   get isStepsMode() { return !!this.schema.steps?.length; }
-  get isSectionsMode() { return !!this.schema.sections?.length && !this.schema.steps; }
-  get isFlatMode() { return !!this.schema.fields?.length && !this.schema.steps && !this.schema.sections; }
+  get isSectionsMode() { return false; }
+  get isFlatMode() { return !!this.schema.fields?.length && !this.schema.steps; }
 
   canAddStep(): boolean { return true; }
   canAddSectionBtn(): boolean {
@@ -396,13 +392,14 @@ export class DynamicFormBuilderComponent {
   }
 
   addSection(step?: StepConfig): void {
-    const section: SectionConfig = { title: 'Section', fields: [] };
+    const section: SectionConfig = { type: 'section', title: 'Section', fields: [] } as any;
     if (step) {
-      step.sections = step.sections || [];
-      step.sections.push(section);
+      step.fields = step.fields || [];
+      step.fields.push(section as any);
     } else {
-      this.ensureSectionsMode();
-      this.schema.sections!.push(section);
+      this.ensureFlatMode();
+      this.schema.fields = this.schema.fields || [];
+      this.schema.fields.push(section as any);
     }
     this.refresh();
   }
@@ -412,10 +409,6 @@ export class DynamicFormBuilderComponent {
     if (section) {
       section.fields = section.fields || [];
       section.fields.push(f);
-    } else if (this.schema.sections && !this.schema.steps) {
-      if (!this.schema.sections.length) this.addSection();
-      this.schema.sections[0].fields = this.schema.sections[0].fields || [];
-      this.schema.sections[0].fields!.push(f);
     } else {
       this.ensureFlatMode();
       this.schema.fields!.push(f);
@@ -439,10 +432,13 @@ export class DynamicFormBuilderComponent {
   }
 
   removeSection(section: SectionConfig, step?: StepConfig): void {
-    const arr = step ? step.sections : this.schema.sections;
-    if (!arr) return;
-    const i = arr.indexOf(section);
-    if (i > -1) arr.splice(i, 1);
+    if (step) {
+      const idx = (step.fields || []).indexOf(section as any);
+      if (idx > -1) step.fields!.splice(idx, 1);
+    } else {
+      const idx = (this.schema.fields || []).indexOf(section as any);
+      if (idx > -1) this.schema.fields!.splice(idx, 1);
+    }
     if (this.selected === section) this.select(this.schema);
     this.refresh();
   }
@@ -463,9 +459,13 @@ export class DynamicFormBuilderComponent {
   }
 
   dropSection(event: CdkDragDrop<SectionConfig[]>, step?: StepConfig): void {
-    const arr = step ? step.sections : this.schema.sections;
-    if (!arr) return;
-    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    if (step) {
+      const list = (step.fields || []).filter(f => (f as any).type === 'section') as any[];
+      moveItemInArray(list, event.previousIndex, event.currentIndex);
+    } else {
+      const list = (this.schema.fields || []).filter(f => (f as any).type === 'section') as any[];
+      moveItemInArray(list, event.previousIndex, event.currentIndex);
+    }
     this.refresh();
   }
 
@@ -482,6 +482,18 @@ export class DynamicFormBuilderComponent {
   }
 
   // ---------- Edition via DynamicForm (overlay) ----------
+  onEditMoveItem(e: { path: 'step'|'root'; stepIndex?: number; index: number; dir: 'up'|'down' }) {
+    const move = (arr: any[] | undefined) => {
+      if (!arr) return;
+      const from = e.index;
+      const to = e.dir === 'up' ? e.index - 1 : e.index + 1;
+      if (to < 0 || to >= arr.length) return;
+      moveItemInArray(arr, from, to);
+    };
+    if (e.path === 'root') move(this.schema.fields);
+    if (e.path === 'step') move(this.schema.steps?.[e.stepIndex!].fields);
+    this.refresh();
+  }
   onEditMoveField(e: { path: 'flat'|'section'|'stepRoot'; stepIndex?: number; sectionIndex?: number; index: number; dir: 'up'|'down' }) {
     const move = <T>(arr: T[] | undefined) => {
       if (!arr) return;
@@ -492,8 +504,15 @@ export class DynamicFormBuilderComponent {
     };
     if (e.path === 'flat') move(this.schema.fields);
     if (e.path === 'section') {
-      if (e.stepIndex != null) move(this.schema.steps?.[e.stepIndex].sections?.[e.sectionIndex!].fields);
-      else move(this.schema.sections?.[e.sectionIndex!].fields);
+      if (e.stepIndex != null) {
+        const f = this.schema.steps?.[e.stepIndex].fields?.[e.sectionIndex!];
+        const sec = f && (f as any).type === 'section' ? (f as any) : null;
+        move(sec?.fields);
+      } else {
+        const f = this.schema.fields?.[e.sectionIndex!];
+        const sec = f && (f as any).type === 'section' ? (f as any) : null;
+        move(sec?.fields);
+      }
     }
     if (e.path === 'stepRoot') move(this.schema.steps?.[e.stepIndex!].fields);
     this.refresh();
@@ -505,25 +524,21 @@ export class DynamicFormBuilderComponent {
     };
     if (e.path === 'flat') del(this.schema.fields);
     if (e.path === 'section') {
-      if (e.stepIndex != null) del(this.schema.steps?.[e.stepIndex].sections?.[e.sectionIndex!].fields);
-      else del(this.schema.sections?.[e.sectionIndex!].fields);
+      if (e.stepIndex != null) {
+        const f = this.schema.steps?.[e.stepIndex].fields?.[e.sectionIndex!];
+        const sec = f && (f as any).type === 'section' ? (f as any) : null;
+        del(sec?.fields);
+      } else {
+        const f = this.schema.fields?.[e.sectionIndex!];
+        const sec = f && (f as any).type === 'section' ? (f as any) : null;
+        del(sec?.fields);
+      }
     }
     if (e.path === 'stepRoot') del(this.schema.steps?.[e.stepIndex!].fields);
     if (this.selectedField && e.path) this.selectedField = null;
     this.refresh();
   }
-  onEditMoveSection(e: { path: 'sectionRoot'|'stepSections'; stepIndex?: number; sectionIndex: number; dir: 'up'|'down' }) {
-    const moveSec = (arr: SectionConfig[] | undefined) => {
-      if (!arr) return;
-      const from = e.sectionIndex;
-      const to = e.dir === 'up' ? e.sectionIndex - 1 : e.sectionIndex + 1;
-      if (to < 0 || to >= arr.length) return;
-      moveItemInArray(arr, from, to);
-    };
-    if (e.path === 'sectionRoot') moveSec(this.schema.sections);
-    if (e.path === 'stepSections') moveSec(this.schema.steps?.[e.stepIndex!].sections);
-    this.refresh();
-  }
+  // removed legacy onEditMoveSection; use onEditMoveItem instead
   onEditAddFieldTyped(e: { path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string }) {
     const make = (t: any) => this.newField(t as any);
     if (e.path === 'root') {
@@ -538,7 +553,14 @@ export class DynamicFormBuilderComponent {
       const f = make(e.type); st.fields.push(f);
       this.select(f);
     } else if (e.path === 'section') {
-      const sec = e.stepIndex != null ? this.schema.steps?.[e.stepIndex!].sections?.[e.sectionIndex!] : this.schema.sections?.[e.sectionIndex!];
+      let sec: any = null;
+      if (e.stepIndex != null) {
+        const f = this.schema.steps?.[e.stepIndex!].fields?.[e.sectionIndex!];
+        if (f && (f as any).type === 'section') sec = f as any;
+      } else {
+        const f = this.schema.fields?.[e.sectionIndex!];
+        if (f && (f as any).type === 'section') sec = f as any;
+      }
       if (!sec) return; sec.fields = sec.fields || [];
       const f = make(e.type); sec.fields.push(f);
       this.select(f);
@@ -571,15 +593,15 @@ export class DynamicFormBuilderComponent {
   // Ajouts depuis l'aperçu
   onEditAddStep() {
     this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', sections: [], fields: [], style: 'stack' } as any;
+    const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
     this.refresh();
   }
   onEditAddSection(e: { stepIndex: number }) {
     if (!this.schema.steps) this.ensureStepperMode();
     const step = this.schema.steps![e.stepIndex];
-    step.sections = step.sections || [];
-    step.sections.push({ title: 'Section', fields: [] });
+    step.fields = step.fields || [];
+    (step.fields as any).push({ type: 'section', title: 'Section', fields: [] } as any);
     this.refresh();
   }
   onEditAddFieldStepRoot(e: { stepIndex: number }) {
@@ -591,10 +613,12 @@ export class DynamicFormBuilderComponent {
   }
   onEditAddFieldInSection(e: { stepIndex?: number; sectionIndex: number }) {
     if (e.stepIndex != null && this.schema.steps) {
-      const sec = this.schema.steps[e.stepIndex].sections?.[e.sectionIndex];
+      const f = this.schema.steps[e.stepIndex].fields?.[e.sectionIndex];
+      const sec = f && (f as any).type === 'section' ? (f as any) : null;
       if (!sec) return; sec.fields = sec.fields || []; sec.fields.push(this.newField('text'));
-    } else if (this.schema.sections) {
-      const sec = this.schema.sections[e.sectionIndex];
+    } else if (this.schema.fields) {
+      const f = this.schema.fields[e.sectionIndex];
+      const sec = f && (f as any).type === 'section' ? (f as any) : null;
       if (!sec) return; sec.fields = sec.fields || []; sec.fields.push(this.newField('text'));
     }
     this.refresh();
@@ -609,10 +633,11 @@ export class DynamicFormBuilderComponent {
   }
   onEditDeleteSection(e: { stepIndex?: number; sectionIndex: number }) {
     if (e.stepIndex != null && this.schema.steps) {
-      const sections = this.schema.steps[e.stepIndex].sections || [];
-      sections.splice(e.sectionIndex, 1);
-    } else if (this.schema.sections) {
-      this.schema.sections.splice(e.sectionIndex, 1);
+      const arr = this.schema.steps[e.stepIndex].fields || [];
+      arr.splice(e.sectionIndex, 1);
+      this.schema.steps[e.stepIndex].fields = arr;
+    } else if (this.schema.fields) {
+      this.schema.fields.splice(e.sectionIndex, 1);
     }
     this.selectedField = null;
     this.select(this.schema);
@@ -645,16 +670,8 @@ export class DynamicFormBuilderComponent {
   private ensureStepperMode(): void {
     if (!this.schema.steps) {
       this.schema.steps = [];
-      delete this.schema.sections;
       delete this.schema.fields;
     }
-  }
-
-  private ensureSectionsMode(): void {
-    if (!this.schema.sections) {
-      this.schema.sections = [];
-    }
-    delete this.schema.steps;
   }
 
   private ensureFlatMode(): void {
@@ -703,50 +720,30 @@ export class DynamicFormBuilderComponent {
   private rebuildTree() {
     const nodes: any[] = [];
     const isExp = (key: string, def = false) => this.treeExpanded.has(key) || def;
+    const pushFieldNodes = (acc: any[], baseKey: string, fields?: FieldConfig[]) => {
+      (fields || []).forEach((f: any, i: number) => {
+        const key = `${baseKey}:field:${i}`;
+        if (f.type === 'section') {
+          const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExp(key, false), children: [] };
+          pushFieldNodes(secNode.children, key, f.fields || []);
+          acc.push(secNode);
+        } else {
+          acc.push({ title: f.label || f.key || f.type, key, isLeaf: true });
+        }
+      });
+    };
     if (this.schema.steps?.length) {
       const children: any[] = [];
       this.schema.steps.forEach((st, si) => {
-        const stepNode: any = {
-          title: st.title || `Step ${si + 1}`,
-          key: `step:${si}`,
-          isLeaf: false,
-          expanded: isExp(`step:${si}`, false),
-          children: [] as any[]
-        };
-        // champs racine du step
-        (st.fields || []).forEach((f, fi) => {
-          stepNode.children.push({
-            title: f.label || (f as any).key || f.type,
-            key: `step:${si}:field:${fi}`,
-            isLeaf: true
-          });
-        });
-        // sections
-        (st.sections || []).forEach((sec, sj) => {
-          const secKey = `step:${si}:section:${sj}`;
-          const secNode: any = { title: sec.title || `Section ${sj + 1}`, key: secKey, isLeaf: false, expanded: isExp(secKey, false), children: [] };
-          (sec.fields || []).forEach((f, fi) => {
-            secNode.children.push({ title: f.label || (f as any).key || f.type, key: `step:${si}:section:${sj}:field:${fi}`, isLeaf: true });
-          });
-          stepNode.children.push(secNode);
-        });
+        const stepKey = `step:${si}`;
+        const stepNode: any = { title: st.title || `Step ${si + 1}`, key: stepKey, isLeaf: false, expanded: isExp(stepKey, false), children: [] };
+        pushFieldNodes(stepNode.children, stepKey, st.fields || []);
         children.push(stepNode);
-      });
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
-    } else if (this.schema.sections?.length) {
-      const children: any[] = [];
-      this.schema.sections.forEach((sec, si) => {
-        const secKey = `section:${si}`;
-        const secNode: any = { title: sec.title || `Section ${si + 1}`, key: secKey, isLeaf: false, expanded: isExp(secKey, false), children: [] };
-        (sec.fields || []).forEach((f, fi) => {
-          secNode.children.push({ title: f.label || (f as any).key || f.type, key: `section:${si}:field:${fi}`, isLeaf: true });
-        });
-        children.push(secNode);
       });
       nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
     } else if (this.schema.fields?.length) {
       const children: any[] = [];
-      this.schema.fields.forEach((f, i) => children.push({ title: f.label || (f as any).key || f.type, key: `field:${i}`, isLeaf: true }));
+      pushFieldNodes(children, 'field', this.schema.fields);
       nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
     } else {
       nodes.push({ title: 'Formulaire', key: 'root', isLeaf: true });
@@ -759,44 +756,38 @@ export class DynamicFormBuilderComponent {
     const key = keys[0];
     if (!key) return;
     const parts = key.split(':');
-    const type = parts[0];
-    const idx = (s: string) => Number(s);
-    if (type === 'step') {
-      const si = idx(parts[1]);
-      if (parts[2] === 'field') {
-        const fi = idx(parts[3]);
-        const f = this.schema.steps?.[si].fields?.[fi];
-        if (f) this.toggleSelect(f);
-      } else if (parts[2] === 'section') {
-        const sj = idx(parts[3]);
-        if (parts[4] === 'field') {
-          const fi = idx(parts[5]);
-          const f = this.schema.steps?.[si].sections?.[sj].fields?.[fi];
-          if (f) this.toggleSelect(f);
-        } else {
-          const sec = this.schema.steps?.[si].sections?.[sj];
-          if (sec) this.toggleSelect(sec);
-        }
-      } else {
-        const st = this.schema.steps?.[si];
-        if (st) this.toggleSelect(st);
+    const n = (s: string) => Number(s);
+    if (parts[0] === 'root') { this.select(this.schema); return; }
+    if (parts[0] === 'step') {
+      const si = n(parts[1]);
+      if (!this.schema.steps || !this.schema.steps[si]) return;
+      if (parts.length === 2) { this.toggleSelect(this.schema.steps[si]); return; }
+      // traverse fields chain
+      let cur: any[] | undefined = this.schema.steps[si].fields;
+      let obj: any = null;
+      for (let i = 2; i < parts.length; i += 2) {
+        if (parts[i] !== 'field') break;
+        const fi = n(parts[i + 1]);
+        obj = cur?.[fi];
+        if (!obj) break;
+        cur = (obj as any).fields; // if section, next cur is its fields
       }
-    } else if (type === 'section') {
-      const si = idx(parts[1]);
-      if (parts[2] === 'field') {
-        const fi = idx(parts[3]);
-        const f = this.schema.sections?.[si].fields?.[fi];
-        if (f) this.toggleSelect(f);
-      } else {
-        const sec = this.schema.sections?.[si];
-        if (sec) this.toggleSelect(sec);
+      if (obj) this.toggleSelect(obj);
+      return;
+    }
+    if (parts[0] === 'field') {
+      // root fields chain
+      let cur: any[] | undefined = this.schema.fields;
+      let obj: any = null;
+      for (let i = 1; i < parts.length; i += 2) {
+        if (parts[i - 1] !== 'field') break;
+        const fi = n(parts[i]);
+        obj = cur?.[fi];
+        if (!obj) break;
+        cur = (obj as any).fields;
       }
-    } else if (type === 'field') {
-      const fi = idx(parts[1]);
-      const f = this.schema.fields?.[fi];
-      if (f) this.toggleSelect(f);
-    } else if (type === 'root') {
-      this.select(this.schema);
+      if (obj) this.toggleSelect(obj);
+      return;
     }
   }
 
@@ -824,35 +815,28 @@ export class DynamicFormBuilderComponent {
 
   private keyForObject(obj: any): string | null {
     if (obj === this.schema) return 'root';
-    // steps
+    const searchFields = (base: string, fields?: any[]): string | null => {
+      for (let i = 0; i < (fields || []).length; i++) {
+        const f = fields![i];
+        const key = `${base}:field:${i}`;
+        if (f === obj) return key;
+        if (f && f.type === 'section') {
+          const sub = searchFields(key, f.fields || []);
+          if (sub) return sub;
+        }
+      }
+      return null;
+    };
     if (this.schema.steps) {
       for (let si = 0; si < this.schema.steps.length; si++) {
         const st = this.schema.steps[si];
         if (obj === st) return `step:${si}`;
-        if (st.fields) {
-          for (let fi = 0; fi < st.fields.length; fi++) if (obj === st.fields[fi]) return `step:${si}:field:${fi}`;
-        }
-        if (st.sections) {
-          for (let sj = 0; sj < st.sections.length; sj++) {
-            const sec = st.sections[sj];
-            if (obj === sec) return `step:${si}:section:${sj}`;
-            for (let fi = 0; fi < (sec.fields || []).length; fi++) if (obj === sec.fields[fi]) return `step:${si}:section:${sj}:field:${fi}`;
-          }
-        }
+        const sub = searchFields(`step:${si}`, st.fields || []);
+        if (sub) return sub;
       }
     }
-    // sections root
-    if (this.schema.sections) {
-      for (let si = 0; si < this.schema.sections.length; si++) {
-        const sec = this.schema.sections[si];
-        if (obj === sec) return `section:${si}`;
-        for (let fi = 0; fi < (sec.fields || []).length; fi++) if (obj === sec.fields[fi]) return `section:${si}:field:${fi}`;
-      }
-    }
-    // flat fields
-    if (this.schema.fields) {
-      for (let fi = 0; fi < this.schema.fields.length; fi++) if (obj === this.schema.fields[fi]) return `field:${fi}`;
-    }
+    const subRoot = searchFields('field', this.schema.fields || []);
+    if (subRoot) return subRoot;
     return null;
   }
 
@@ -872,20 +856,17 @@ export class DynamicFormBuilderComponent {
     const n = (s: string) => Number(s);
     if (parts[0] === 'step') {
       const si = n(parts[1]);
-      if (parts[2] === 'section') {
-        const sj = n(parts[3]);
-        if (parts[4] === 'field') return { key, type: 'field', stepIndex: si, sectionIndex: sj, fieldIndex: n(parts[5]) };
-        return { key, type: 'section', stepIndex: si, sectionIndex: sj };
-      }
-      if (parts[2] === 'field') return { key, type: 'field', stepIndex: si, fieldIndex: n(parts[3]) };
-      return { key, type: 'step', stepIndex: si };
+      if (parts.length === 2) return { key, type: 'step', stepIndex: si };
+      const idxs: number[] = [];
+      for (let i = 2; i < parts.length; i += 2) { if (parts[i] !== 'field') break; idxs.push(n(parts[i+1])); }
+      return { key, type: 'fieldPath', stepIndex: si, path: idxs };
     }
-    if (parts[0] === 'section') {
-      const sj = n(parts[1]);
-      if (parts[2] === 'field') return { key, type: 'field', sectionIndex: sj, fieldIndex: n(parts[3]) };
-      return { key, type: 'section', sectionIndex: sj };
+    if (parts[0] === 'field') {
+      const idxs: number[] = [];
+      for (let i = 1; i < parts.length; i += 2) { if (parts[i-1] !== 'field') break; idxs.push(n(parts[i])); }
+      return { key, type: 'rootFieldPath', path: idxs };
     }
-    if (parts[0] === 'field') return { key, type: 'field', fieldIndex: n(parts[1]) };
+    if (parts[0] === 'root') return { key, type: 'root' };
     return null;
   }
 
@@ -903,13 +884,13 @@ export class DynamicFormBuilderComponent {
   }
   ctxAddSection() {
     const ctx = this.currentCtxFromDropdown();
-    if (ctx?.type !== 'step') return;
+    if (!ctx || ctx.type !== 'step') return;
     const step = this.schema.steps?.[ctx.stepIndex!];
     if (!step) return;
-    step.sections = step.sections || [];
-    const sec: SectionConfig = { title: 'Section', fields: [] };
-    step.sections.push(sec);
-    this.select(sec);
+    step.fields = step.fields || [];
+    const sec: SectionConfig = { type: 'section', title: 'Section', fields: [] } as any;
+    step.fields.push(sec as any);
+    this.select(sec as any);
     this.refresh();
   }
   ctxAddFieldToStep() {
@@ -925,19 +906,35 @@ export class DynamicFormBuilderComponent {
   }
   ctxAddFieldToSection() {
     const ctx = this.currentCtxFromDropdown();
-    if (ctx?.type !== 'section') return;
-    const sec = this.schema.steps?.[ctx.stepIndex!].sections?.[ctx.sectionIndex!];
-    if (!sec) return;
-    sec.fields = sec.fields || [];
-    const f = this.newField('text');
-    sec.fields.push(f);
+    if (!ctx) return;
+    let sec: any = null;
+    if (ctx.type === 'fieldPath' && ctx.path?.length) {
+      let cur: any = this.schema.steps?.[ctx.stepIndex!].fields;
+      for (const i of ctx.path) cur = cur?.[i];
+      if (cur && cur.type === 'section') sec = cur;
+    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
+      let cur: any = this.schema.fields;
+      for (const i of ctx.path) cur = cur?.[i];
+      if (cur && cur.type === 'section') sec = cur;
+    }
+    if (!sec) return; sec.fields = sec.fields || [];
+    const f = this.newField('text'); sec.fields.push(f);
     this.select(f);
     this.refresh();
   }
   ctxAddFieldToSectionTyped(t: string) {
     const ctx = this.currentCtxFromDropdown();
-    if (!ctx || ctx.type !== 'section') return;
-    const sec = ctx.stepIndex != null ? this.schema.steps?.[ctx.stepIndex!].sections?.[ctx.sectionIndex!] : this.schema.sections?.[ctx.sectionIndex!];
+    if (!ctx) return;
+    let sec: any = null;
+    if (ctx.type === 'fieldPath' && ctx.path?.length) {
+      let cur: any = this.schema.steps?.[ctx.stepIndex!].fields;
+      for (const i of ctx.path) cur = cur?.[i];
+      if (cur && cur.type === 'section') sec = cur;
+    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
+      let cur: any = this.schema.fields;
+      for (const i of ctx.path) cur = cur?.[i];
+      if (cur && cur.type === 'section') sec = cur;
+    }
     if (!sec) return; sec.fields = sec.fields || [];
     const f = this.newField(t as any); sec.fields.push(f);
     this.select(f); this.refresh();
@@ -951,11 +948,12 @@ export class DynamicFormBuilderComponent {
   }
   ctxAddSectionRoot() {
     // Only when no steps (root-level sections)
-    this.ensureSectionsMode();
-    const sec: SectionConfig = { title: 'Section', fields: [] };
-    this.schema.sections = this.schema.sections || [];
-    this.schema.sections.push(sec);
-    this.select(sec);
+    if (this.schema.steps?.length) return;
+    this.ensureFlatMode();
+    const sec: SectionConfig = { type: 'section', title: 'Section', fields: [] } as any;
+    this.schema.fields = this.schema.fields || [];
+    this.schema.fields.push(sec as any);
+    this.select(sec as any);
     this.refresh();
   }
   ctxAddFieldRoot() {
@@ -978,29 +976,42 @@ export class DynamicFormBuilderComponent {
   }
   ctxDeleteSection() {
     const ctx = this.currentCtxFromDropdown();
-    if (!ctx || ctx.type !== 'section') return;
-    const sections = this.schema.steps?.[ctx.stepIndex!].sections;
-    if (!sections) return;
-    sections.splice(ctx.sectionIndex!, 1);
-    if (this.selected && this.isSection(this.selected)) this.select(this.schema);
+    if (!ctx) return;
+    if (ctx.type === 'fieldPath' && ctx.path?.length) {
+      const step = this.schema.steps?.[ctx.stepIndex!];
+      if (!step) return;
+      let parent: any[] | undefined = step.fields;
+      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
+      const idx = ctx.path[ctx.path.length - 1];
+      parent?.splice(idx, 1);
+      if (this.selected && this.isSection(this.selected)) this.select(step);
+    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
+      let parent: any[] | undefined = this.schema.fields;
+      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
+      const idx = ctx.path[ctx.path.length - 1];
+      parent?.splice(idx, 1);
+      if (this.selected && this.isSection(this.selected)) this.select(this.schema);
+    }
     this.refresh();
   }
   ctxDeleteField() {
     const ctx = this.currentCtxFromDropdown();
-    if (!ctx || ctx.type !== 'field') return;
-    const fi = ctx.fieldIndex as number;
-    let removed = false;
-    if (ctx.stepIndex != null && ctx.sectionIndex != null) {
-      const arr = this.schema.steps?.[ctx.stepIndex].sections?.[ctx.sectionIndex].fields;
-      if (arr) { arr.splice(fi, 1); removed = true; }
-    } else if (ctx.stepIndex != null) {
-      const arr = this.schema.steps?.[ctx.stepIndex].fields; if (arr) { arr.splice(fi, 1); removed = true; }
-    } else if (ctx.sectionIndex != null) {
-      const arr = this.schema.sections?.[ctx.sectionIndex].fields; if (arr) { arr.splice(fi, 1); removed = true; }
-    } else {
-      const arr = this.schema.fields; if (arr) { arr.splice(fi, 1); removed = true; }
+    if (!ctx) return;
+    if (ctx.type === 'fieldPath' && ctx.path?.length) {
+      const step = this.schema.steps?.[ctx.stepIndex!];
+      if (!step) return;
+      let parent: any[] | undefined = step.fields;
+      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
+      const idx = ctx.path[ctx.path.length - 1];
+      parent?.splice(idx, 1);
+      if (this.selected && this.isField(this.selected)) this.select(step);
+    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
+      let parent: any[] | undefined = this.schema.fields;
+      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
+      const idx = ctx.path[ctx.path.length - 1];
+      parent?.splice(idx, 1);
+      if (this.selected && this.isField(this.selected)) this.select(this.schema);
     }
-    if (removed && this.selected && this.isField(this.selected)) this.select(this.schema);
     this.refresh();
   }
 

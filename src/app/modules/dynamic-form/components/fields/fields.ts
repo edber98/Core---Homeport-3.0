@@ -73,5 +73,3 @@ export class Fields {
     return merged;
   }
 }
-
-

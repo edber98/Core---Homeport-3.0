@@ -7,6 +7,7 @@ import { Fields } from '../fields/fields';
 
 @Component({
   selector: 'df-section',
+  standalone: true,
   imports: [CommonModule, NzGridModule, Fields],
   templateUrl: './sections.html',
   styleUrl: './sections.scss'

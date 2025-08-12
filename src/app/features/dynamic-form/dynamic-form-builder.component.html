@@ -19,12 +19,12 @@
                   class="tree-node-label">{{ node.title }}</span>
             <ng-template #notRoot>
             <!-- Step -->
-            <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
+            <span *ngIf="node.key.startsWith('step:') && node.key.indexOf(':field:') === -1 && !node.isLeaf; else notStep"
                   (contextmenu)="openTreeMenu($event, menuStep, node.key)"
                   class="tree-node-label">{{ node.title }}</span>
             <ng-template #notStep>
               <!-- Section -->
-              <span *ngIf="node.key.indexOf(':section:')> -1 && !node.isLeaf; else leafField"
+              <span *ngIf="node.key.indexOf(':field:')> -1 && !node.isLeaf; else leafField"
                     (contextmenu)="openTreeMenu($event, menuSection, node.key)"
                     class="tree-node-label">{{ node.title }}</span>
             </ng-template>
@@ -145,7 +145,6 @@
         [selectedSection]="selectedSectionForPreview"
         [selectedStep]="selectedStepForPreview"
         (editMoveField)="onEditMoveField($event)"
-        (editMoveSection)="onEditMoveSection($event)"
         (editDeleteField)="onEditDeleteField($event)"
         (editSelectField)="onEditSelectField($event)"
         (editSelectSection)="onEditSelectSection($event)"
@@ -202,99 +201,15 @@
             </div>
           </div>
 
-          <div class="sections"
-               cdkDropList
-               [cdkDropListData]="step.sections || []"
-               (cdkDropListDropped)="dropSection($event, step)">
-            <div class="section"
-                 *ngFor="let section of step.sections; let si2=index"
-                 cdkDrag
-                 [class.selected]="isSelected(section)"
-                 (click)="select(section)">
-
-              <div class="section-header" cdkDragHandle>
-                <div>
-                  <div class="t">{{ section.title || 'Section' }}</div>
-                  <div class="d" *ngIf="section.description">{{ section.description }}</div>
-                </div>
-                <div class="actions">
-                  <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
-                  <button nz-button nzSize="small" nzDanger (click)="removeSection(section, step); $event.stopPropagation()">Delete</button>
-                </div>
-              </div>
-
-              <div class="fields grid" [class.show-grid]="showGrid"
-                   cdkDropList
-                   [cdkDropListData]="section.fields || []"
-                   (cdkDropListDropped)="dropField($event, section)">
-                <div class="field"
-                     *ngFor="let field of (section.fields || [])"
-                     cdkDrag
-                     [class.selected]="isSelected(field)"
-                     (click)="select(field)">
-                  <span class="drag-handle" cdkDragHandle title="Déplacer">⋮⋮</span>
-                  <span class="f-label">{{ field.label || field.type }}</span>
-                  <span class="span-ctrls">
-                    <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
-                    <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
-                    <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
-                  </span>
-                  <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
-                  <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Sections-in-fields are handled by the live preview; old step.sections block removed -->
         </div>
       </div>
 
-      <!-- SECTIONS DIRECTES -->
-      <div class="sections"
-           *ngIf="schema.sections && !schema.steps"
-           cdkDropList
-           [cdkDropListData]="schema.sections || []"
-           (cdkDropListDropped)="dropSection($event)">
-        <div class="section"
-             *ngFor="let section of schema.sections"
-             cdkDrag
-             [class.selected]="isSelected(section)"
-             (click)="select(section)">
-          <div class="section-header" cdkDragHandle>
-            <div>
-              <div class="t">{{ section.title || 'Section' }}</div>
-              <div class="d" *ngIf="section.description">{{ section.description }}</div>
-            </div>
-            <div class="actions">
-              <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
-              <button nz-button nzSize="small" nzDanger (click)="removeSection(section); $event.stopPropagation()">Delete</button>
-            </div>
-          </div>
-
-          <div class="fields grid" [class.show-grid]="showGrid"
-               cdkDropList
-               [cdkDropListData]="section.fields || []"
-               (cdkDropListDropped)="dropField($event, section)">
-            <div class="field"
-                 *ngFor="let field of (section.fields || [])"
-                 cdkDrag
-                 [class.selected]="isSelected(field)"
-                 (click)="select(field)">
-              <span class="f-label">{{ field.label || field.type }}</span>
-              <span class="span-ctrls">
-                <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
-                <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
-                <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
-              </span>
-              <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
-              <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Root sections mode removed (use fields with type 'section') -->
 
       <!-- FLAT -->
       <div class="fields grid" [class.show-grid]="showGrid"
-           *ngIf="schema.fields && !schema.steps && !schema.sections"
+           *ngIf="schema.fields && !schema.steps"
            cdkDropList
            [cdkDropListData]="schema.fields || []"
            (cdkDropListDropped)="dropField($event)">

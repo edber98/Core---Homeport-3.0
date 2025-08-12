@@ -15,7 +15,14 @@
             >
               <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
                    (click)="onClickField(i, $event)">
-                <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+                <ng-container [ngSwitch]="f.type">
+                  <ng-container *ngSwitchCase="'section'">
+                    <df-section [section]="$any(f)" [form]="form" [ui]="ui" [editMode]="false"></df-section>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+                  </ng-container>
+                </ng-container>
                 <div class="df-edit-actions" *ngIf="editMode">
                   <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'up'}); $event.stopPropagation()">▲</button>
                   <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'down'}); $event.stopPropagation()">▼</button>

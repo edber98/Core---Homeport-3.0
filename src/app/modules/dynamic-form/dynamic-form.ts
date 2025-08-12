@@ -32,6 +32,7 @@ import { Sections } from './components/sections/sections';
 
 @Component({
   selector: 'app-dynamic-form',
+  standalone: true,
   imports: [CommonModule,
     ReactiveFormsModule,
     NzFormModule,
@@ -70,13 +71,16 @@ export class DynamicForm implements OnInit, OnChanges {
   @Output() editAddSection = new EventEmitter<{ stepIndex: number }>();
   @Output() editAddFieldStepRoot = new EventEmitter<{ stepIndex: number }>();
   @Output() editAddFieldInSection = new EventEmitter<{ stepIndex?: number; sectionIndex: number }>();
+  // Items mixtes: déplacer un item (field ou section) au niveau step ou root (order arrays)
+  @Output() editMoveItem = new EventEmitter<{ path: 'step'|'root'; stepIndex?: number; index: number; dir: 'up'|'down' }>();
   @Output() editDeleteStep = new EventEmitter<{ stepIndex: number }>();
   @Output() editDeleteSection = new EventEmitter<{ stepIndex?: number; sectionIndex: number }>();
-  @Output() editMoveSection = new EventEmitter<{ path: 'sectionRoot'|'stepSections'; stepIndex?: number; sectionIndex: number; dir: 'up'|'down' }>();
+  // removed legacy section move event (sections moved via editMoveItem)
   @Output() editAddFieldTyped = new EventEmitter<{ path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string }>();
 
   form!: FormGroup;
   current = signal(0);
+  private oneFieldSectionCache = new WeakMap<FieldConfig, SectionConfig>();
 
   constructor(public dfs: DynamicFormService, private dropdown: NzContextMenuService) {}
   // context for floating dropdowns
@@ -176,19 +180,47 @@ export class DynamicForm implements OnInit, OnChanges {
   get maxWidth() { return this.schema.ui?.widthPx ?? 1040; }
   get ui() { return this.schema.ui; }
 
+  // Wrap a single field into a stable SectionConfig (cached) for rendering layout
+  singleFieldSection(f: FieldConfig): SectionConfig {
+    let s = this.oneFieldSectionCache.get(f);
+    if (!s) {
+      s = { type: 'section', fields: [f] } as any;
+      this.oneFieldSectionCache.set(f, s as SectionConfig);
+    }
+    return s as SectionConfig;
+  }
+
+  // ===== Helpers ordre: parcourt fields uniquement =====
+  stepItems(step: StepConfig) {
+    const items = (step.fields || []).map((f, i) => ({ t: (f.type === 'section' ? 'section' : 'field') as 'section'|'field', i }));
+    return items.map((ent, k) => ({ ent, k }));
+  }
+  
+  rootItems() {
+    const items = (this.schema.fields || []).map((f, i) => ({ t: (f.type === 'section' ? 'section' : 'field') as 'section'|'field', i }));
+    return items.map((ent, k) => ({ ent, k }));
+  }
+
+  sectionAt(step: StepConfig, ent: { i: number }): SectionConfig | null {
+    const f = (step.fields || [])[ent.i] as any;
+    return f && f.type === 'section' ? (f as SectionConfig) : null;
+  }
+
   // ===== Visibilités calculées (getters, pas de signals pour dépendre de schema dynamique)
   get visibleSteps(): StepConfig[] {
     return (this.schema.steps || []).filter(s => this.dfs.isStepVisible(s, this.form));
   }
   get visibleSections(): SectionConfig[] {
-    return (this.schema.sections || []).filter(s => this.dfs.isSectionVisible(s, this.form));
+    return ((this.schema.fields || []).filter((f: any) => f.type === 'section') as SectionConfig[])
+      .filter(s => this.dfs.isSectionVisible(s, this.form));
   }
   get visibleFieldsFlat(): FieldConfig[] {
-    return (this.schema.fields || []).filter(f => this.dfs.isFieldVisible(f, this.form));
+    // root-level non-section visible fields
+    return (this.schema.fields || []).filter(f => f.type !== 'section').filter(f => this.dfs.isFieldVisible(f, this.form));
   }
 
   get currentStep(): StepConfig | null { return this.visibleSteps[this.current()] ?? null; }
-  get flatSection(): SectionConfig { return { fields: this.visibleFieldsFlat as FieldConfig[] }; }
+  get flatSection(): SectionConfig { return { type: 'section', fields: this.visibleFieldsFlat as FieldConfig[] } as any; }
 
   // ===== Résumé (getters)
   get summaryEnabled(): boolean { return !!this.schema.summary?.enabled; }
@@ -206,16 +238,17 @@ export class DynamicForm implements OnInit, OnChanges {
   // ===== Navigation protégée (désactive suivant/valider si invalide)
   private visibleInputFieldsOfStep(step: StepConfig): InputFieldConfig[] {
     const out: InputFieldConfig[] = [];
-    // champs racine de l'étape
-    (step.fields || []).forEach(f => {
-      if (isInputField(f) && this.dfs.isFieldVisible(f, this.form)) out.push(f);
-    });
-    // champs des sections
-    step.sections?.forEach(sec => {
-      (sec.fields || []).forEach(f => {
-        if (isInputField(f) && this.dfs.isFieldVisible(f, this.form)) out.push(f);
-      });
-    });
+    const visitFields = (fields?: FieldConfig[]) => {
+      for (const f of fields || []) {
+        if (f.type === 'section') {
+          const sec = f as any as SectionConfig;
+          if (this.dfs.isSectionVisible(sec, this.form)) visitFields(sec.fields);
+        } else if (isInputField(f) && this.dfs.isFieldVisible(f, this.form)) {
+          out.push(f);
+        }
+      }
+    };
+    visitFields(step.fields);
     return out;
   }
 
@@ -299,8 +332,7 @@ export class DynamicForm implements OnInit, OnChanges {
   stepValid(i: number): boolean {
     const step = this.visibleSteps[i];
     if (!step) return true;
-    const fields: InputFieldConfig[] = [];
-    for (const sec of step.sections) for (const f of sec.fields) if (isInputField(f)) fields.push(f);
+    const fields = this.visibleInputFieldsOfStep(step);
     return fields.every(f => {
       const ctrl = this.form.get(f.key);
       const visible = this.dfs.isFieldVisible(f, this.form);

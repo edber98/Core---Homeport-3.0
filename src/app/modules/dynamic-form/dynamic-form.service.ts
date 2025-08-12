@@ -11,7 +11,7 @@ export interface FieldValidator {
 }
 
 export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date';
-export type FieldType = FieldTypeInput | 'textblock';
+export type FieldType = FieldTypeInput | 'textblock' | 'section';
 
 export interface FieldConfigCommon {
     type: FieldType;
@@ -38,9 +38,8 @@ export interface TextBlockFieldConfig extends FieldConfigCommon {
     key?: undefined;
 }
 
-export type FieldConfig = InputFieldConfig | TextBlockFieldConfig;
-
-export interface SectionConfig {
+export interface SectionFieldConfig extends FieldConfigCommon {
+    type: 'section';
     key?: string;
     title?: string;
     description?: string;
@@ -49,22 +48,16 @@ export interface SectionConfig {
     fields: FieldConfig[];
 }
 
+export type FieldConfig = InputFieldConfig | TextBlockFieldConfig | SectionFieldConfig;
+
+// Back-compat alias
+export type SectionConfig = SectionFieldConfig;
+
 export interface StepConfig {
     key?: string;
     title: string;
     visibleIf?: JSONVal;
-    /**
-     * Sections de l'étape. Si `style === 'tabs'`, ces sections sont rendues en onglets.
-     */
-    sections: SectionConfig[];
-    /**
-     * Champs à la racine de l'étape (optionnels), sans devoir créer une section.
-     */
     fields?: FieldConfig[];
-    /**
-     * Rendu des sections: 'stack' (défaut) ou 'tabs'.
-     */
-    style?: 'stack' | 'tabs';
 }
 
 export interface FormUI {
@@ -87,12 +80,11 @@ export interface FormSchema {
     title?: string;
     ui?: FormUI;
     steps?: StepConfig[];
-    sections?: SectionConfig[];
     fields?: FieldConfig[];
-    summary?: SummaryConfig;      // <— AJOUT
+    summary?: SummaryConfig;
 }
 
-export const isInputField = (f: FieldConfig): f is InputFieldConfig => f.type !== 'textblock';
+export const isInputField = (f: FieldConfig): f is InputFieldConfig => (f.type !== 'textblock' && f.type !== 'section');
 
 @Injectable({ providedIn: 'root' })
 export class DynamicFormService {
@@ -118,18 +110,19 @@ export class DynamicFormService {
 
     collectFields(schema: FormSchema): FieldConfig[] {
         const out: FieldConfig[] = [];
+        const visit = (fields?: FieldConfig[]) => {
+            for (const f of fields || []) {
+                if (f.type === 'section') {
+                    visit((f as any).fields);
+                } else {
+                    out.push(f);
+                }
+            }
+        };
         if (schema.steps?.length) {
-            for (const st of schema.steps) {
-                for (const f of (st.fields || [])) out.push(f);
-                for (const sec of st.sections || []) for (const f of sec.fields || []) out.push(f);
-            }
-        } else {
-            if (schema.sections?.length) {
-                for (const sec of schema.sections) for (const f of sec.fields || []) out.push(f);
-            }
-            if (schema.fields?.length) {
-                for (const f of schema.fields) out.push(f);
-            }
+            for (const st of schema.steps) visit(st.fields);
+        } else if (schema.fields?.length) {
+            visit(schema.fields);
         }
         return out;
     }
@@ -212,15 +205,15 @@ export class DynamicFormService {
 
     /** Aplatis tous les champs "input" (steps/sections/flat), sans filtrer la visibilité */
     flattenAllInputFields(schema: FormSchema): FieldConfig[] {
-        const push = (acc: FieldConfig[], fs?: FieldConfig[]) => {
-            if (!fs) return acc;
-            fs.forEach(f => { if (f.type !== 'textblock') acc.push(f); });
-            return acc;
+        const out: FieldConfig[] = [];
+        const visit = (fs?: FieldConfig[]) => {
+            for (const f of fs || []) {
+                if (f.type === 'section') visit((f as any).fields);
+                else if (f.type !== 'textblock') out.push(f);
+            }
         };
-        let out: FieldConfig[] = [];
-        if (schema.fields) out = push(out, schema.fields);
-        if (schema.sections) schema.sections.forEach(s => push(out, s.fields));
-        if (schema.steps) schema.steps.forEach(st => st.sections?.forEach(s => push(out, s.fields)));
+        if (schema.steps) schema.steps.forEach(st => { visit(st.fields); });
+        if (schema.fields) visit(schema.fields);
         return out;
     }
 
@@ -274,58 +267,52 @@ export class DynamicFormService {
             }>;
         }> = [];
 
-        const considerField = (f: FieldConfig) =>
-            includeHidden || this.isVisible(f, value);
+        const considerField = (f: FieldConfig) => includeHidden || this.isVisible(f, value);
+
+        const sectionsFrom = (fields?: FieldConfig[], parentTitle?: string) => {
+            const blocks: Array<{ title?: string; rows: Array<{ key: string; label: string; value: string }> }> = [];
+            const rootRows: Array<{ key: string; label: string; value: string }> = [];
+            for (const f of fields || []) {
+                if (f.type === 'section') {
+                    const sec: any = f;
+                    if (!includeHidden && !this.isSectionVisible(sec, form)) {
+                        // skip entire section and its subtree
+                        continue;
+                    }
+                    // direct rows in this section
+                    const directRows = (sec.fields || [])
+                        .filter((ff: FieldConfig) => ff.type !== 'textblock' && ff.type !== 'section')
+                        .filter(considerField)
+                        .map((ff: any) => ({
+                            key: ff.key,
+                            label: ff.label || ff.key || '',
+                            value: this.displayValue(ff, value[ff.key], schema)
+                        }));
+                    if (directRows.length) blocks.push({ title: sec.title, rows: directRows });
+                    // nested sections
+                    blocks.push(...sectionsFrom(sec.fields, sec.title || parentTitle));
+                } else if (f.type !== 'textblock') {
+                    if (considerField(f)) rootRows.push({
+                        key: (f as any).key,
+                        label: f.label || (f as any).key || '',
+                        value: this.displayValue(f, value[(f as any).key], schema)
+                    });
+                }
+            }
+            if (rootRows.length) blocks.unshift({ title: parentTitle, rows: rootRows });
+            return blocks;
+        };
 
         if (schema.steps?.length) {
             schema.steps.forEach((step, si) => {
                 if (!includeHidden && step.visibleIf && !this.evalRule(step.visibleIf, value)) return;
                 const stepBlock = { title: step.title || `Étape ${si + 1}`, sections: [] as any[] };
-                // champs racine de l'étape
-                const rootRows = (step.fields || [])
-                    .filter(f => f.type !== 'textblock')
-                    .filter(considerField)
-                    .map(f => ({
-                        key: (f as any).key,
-                        label: f.label || (f as any).key || '',
-                        value: this.displayValue(f, value[(f as any).key], schema)
-                    }));
-                if (rootRows.length) stepBlock.sections.push({ title: undefined, rows: rootRows });
-                step.sections?.forEach(sec => {
-                    const rows = (sec.fields || [])
-                        .filter(f => f.type !== 'textblock')
-                        .filter(considerField)
-                        .map(f => ({
-                            key: (f as any).key,
-                            label: f.label || (f as any).key || '',
-                            value: this.displayValue(f, value[(f as any).key], schema)
-                        }));
-                    if (rows.length) stepBlock.sections.push({ title: sec.title, rows });
-                });
+                stepBlock.sections.push(...sectionsFrom(step.fields));
                 if (stepBlock.sections.length) byStep.push(stepBlock);
             });
-        } else {
+        } else if (schema.fields?.length) {
             const stepBlock = { title: schema.title || 'Résumé', sections: [] as any[] };
-            (schema.sections || []).forEach(sec => {
-                const rows = (sec.fields || [])
-                    .filter(f => f.type !== 'textblock')
-                    .filter(considerField)
-                    .map(f => ({
-                        key: (f as any).key,
-                        label: f.label || (f as any).key || '',
-                        value: this.displayValue(f, value[(f as any).key], schema)
-                    }));
-                if (rows.length) stepBlock.sections.push({ title: sec.title, rows });
-            });
-            const flatRows = (schema.fields || [])
-                .filter(f => f.type !== 'textblock')
-                .filter(considerField)
-                .map(f => ({
-                    key: (f as any).key,
-                    label: f.label || (f as any).key || '',
-                    value: this.displayValue(f, value[(f as any).key], schema)
-                }));
-            if (flatRows.length) stepBlock.sections.push({ rows: flatRows } as any);
+            stepBlock.sections.push(...sectionsFrom(schema.fields));
             if (stepBlock.sections.length) byStep.push(stepBlock);
         }
 

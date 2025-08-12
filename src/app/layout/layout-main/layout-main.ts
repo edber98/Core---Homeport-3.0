@@ -7,6 +7,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 @Component({
   selector: 'app-layout-main',
+  standalone: true,
   imports: [
     RouterOutlet,
     NzFlexModule,
