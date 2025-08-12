@@ -7,15 +7,15 @@
 
 <div class="group">
   <div class="title">Champs</div>
-  <div cdkDropListDisabled="true">
-    <button nz-button cdkDrag>Text</button>
-    <button nz-button cdkDrag>Textarea</button>
-    <button nz-button cdkDrag>Number</button>
-    <button nz-button cdkDrag>Date</button>
-    <button nz-button cdkDrag>Select</button>
-    <button nz-button cdkDrag>Radio</button>
-    <button nz-button cdkDrag>Checkbox</button>
-    <button nz-button cdkDrag>TextBlock</button>
+  <div cdkDropList id="palette" cdkDropListDisabled="true">
+    <button nz-button cdkDrag [cdkDragData]="'text'">Text</button>
+    <button nz-button cdkDrag [cdkDragData]="'textarea'">Textarea</button>
+    <button nz-button cdkDrag [cdkDragData]="'number'">Number</button>
+    <button nz-button cdkDrag [cdkDragData]="'date'">Date</button>
+    <button nz-button cdkDrag [cdkDragData]="'select'">Select</button>
+    <button nz-button cdkDrag [cdkDragData]="'radio'">Radio</button>
+    <button nz-button cdkDrag [cdkDragData]="'checkbox'">Checkbox</button>
+    <button nz-button cdkDrag [cdkDragData]="'textblock'">TextBlock</button>
   </div>
   <small>Astuce: tu peux aussi ajouter depuis l’inspecteur.</small>
 </div>

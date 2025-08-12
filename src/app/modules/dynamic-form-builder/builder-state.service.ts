@@ -47,7 +47,7 @@ export class BuilderState {
     this.schema.set(s); this.persist();
   }
 
-  addField(kind: FieldConfig['type'], stepIndex?: number, sectionIndex?: number) {
+  addField(kind: FieldConfig['type'], stepIndex?: number, sectionIndex?: number, index?: number) {
     const s = structuredClone(this.schema());
     const f: FieldConfig =
       kind === 'textblock'
@@ -58,7 +58,9 @@ export class BuilderState {
       ? s.steps![stepIndex].sections![sectionIndex!]
       : s.sections![sectionIndex!];
 
-    (targetSection.fields ??= []).push(f);
+    (targetSection.fields ??= []);
+    const at = index ?? targetSection.fields.length;
+    targetSection.fields.splice(at, 0, f);
     this.schema.set(s); this.persist();
   }
 
