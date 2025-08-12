@@ -1,23 +1,46 @@
 <div class="builder">
   <div class="controls">
     <button nz-button nzType="default" (click)="addStep()">Add Step</button>
+    <button nz-button nzType="default" (click)="addSection()">Add Section</button>
+    <button nz-button nzType="default" (click)="addField()">Add Field</button>
+    <button nz-button nzType="default" (click)="select(schema)">Settings</button>
   </div>
-  <div class="canvas" cdkDropList [cdkDropListData]="schema.steps || []" (cdkDropListDropped)="dropStep($event)">
-    <div class="step" *ngFor="let step of schema.steps; let si = index" cdkDrag (click)="select(step)">
-      <div class="step-header">{{ step.title || 'Step ' + (si + 1) }}</div>
-      <div class="sections" cdkDropList [cdkDropListData]="step.sections" (cdkDropListDropped)="dropSection($event, step)">
-        <div class="section" *ngFor="let section of step.sections" cdkDrag (click)="select(section)">
-          <div class="section-header">
-            {{ section.title || 'Section' }}
-            <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
-          </div>
-          <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
-            <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
-              {{ field.label || field.type }}
+  <div class="canvas">
+    <div class="steps" *ngIf="schema.steps" cdkDropList [cdkDropListData]="schema.steps" (cdkDropListDropped)="dropStep($event)">
+      <div class="step" *ngFor="let step of schema.steps; let si = index" cdkDrag (click)="select(step)">
+        <div class="step-header">{{ step.title || 'Step ' + (si + 1) }}</div>
+        <div class="sections" cdkDropList [cdkDropListData]="step.sections" (cdkDropListDropped)="dropSection($event, step)">
+          <div class="section" *ngFor="let section of step.sections" cdkDrag (click)="select(section)">
+            <div class="section-header">
+              {{ section.title || 'Section' }}
+              <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+            </div>
+            <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
+              <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
+                {{ field.label || field.type }}
+              </div>
             </div>
           </div>
+          <button nz-button nzSize="small" (click)="addSection(step)">+ Section</button>
         </div>
-        <button nz-button nzSize="small" (click)="addSection(step)">+ Section</button>
+      </div>
+    </div>
+    <div class="sections" *ngIf="schema.sections" cdkDropList [cdkDropListData]="schema.sections" (cdkDropListDropped)="dropSection($event)">
+      <div class="section" *ngFor="let section of schema.sections" cdkDrag (click)="select(section)">
+        <div class="section-header">
+          {{ section.title || 'Section' }}
+          <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+        </div>
+        <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
+          <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
+            {{ field.label || field.type }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fields" *ngIf="schema.fields" cdkDropList [cdkDropListData]="schema.fields" (cdkDropListDropped)="dropField($event)">
+      <div class="field" *ngFor="let field of schema.fields" cdkDrag (click)="select(field)">
+        {{ field.label || field.type }}
       </div>
     </div>
   </div>
@@ -48,6 +71,12 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
+        <nz-form-label>Type</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="type" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
         <nz-form-label>Options</nz-form-label>
         <nz-form-control>
           <textarea nz-input formControlName="options"></textarea>
@@ -71,6 +100,38 @@
           <textarea nz-input formControlName="disabledIf"></textarea>
         </nz-form-control>
       </nz-form-item>
+      <ng-container *ngIf="selected === schema">
+        <nz-form-item>
+          <nz-form-label>Layout</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="layout" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Label Align</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="labelAlign" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Label Col</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="labelColSpan" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Control Col</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="controlColSpan" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>WidthPx</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="widthPx" />
+          </nz-form-control>
+        </nz-form-item>
+      </ng-container>
     </form>
   </div>
   <div class="preview">

@@ -59,7 +59,9 @@ export class DynamicFormComponent implements OnChanges {
           this.stepFieldKeys.push([]);
         }
       } else {
-        this.stepFieldKeys = [this.collectFieldKeys({ sections: this.schema.sections ?? [], visibleIf: undefined } as StepConfig)];
+        this.stepFieldKeys = [
+          this.collectFieldKeys({ sections: this.schema.sections ?? [], visibleIf: undefined } as StepConfig, this.schema.fields ?? [])
+        ];
         if (this.schema.summary?.enabled) {
           this.stepFieldKeys.push([]);
         }
@@ -67,9 +69,10 @@ export class DynamicFormComponent implements OnChanges {
     }
   }
 
-  collectFieldKeys(step: StepConfig): string[] {
+  collectFieldKeys(step: StepConfig, fields: FieldConfig[] = []): string[] {
     const keys: string[] = [];
     step.sections.forEach(sec => sec.fields?.forEach(f => f.key && keys.push(f.key)));
+    fields.forEach(f => f.key && keys.push(f.key));
     return keys;
   }
 

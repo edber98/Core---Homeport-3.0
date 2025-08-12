@@ -29,8 +29,8 @@ import { FieldConfig, FormSchema, SectionConfig, StepConfig } from './dynamic-fo
   styleUrl: './dynamic-form-builder.component.scss',
 })
 export class DynamicFormBuilderComponent {
-  schema: FormSchema = { steps: [] };
-  selected: StepConfig | SectionConfig | FieldConfig | null = null;
+  schema: FormSchema = {};
+  selected: StepConfig | SectionConfig | FieldConfig | FormSchema | null = null;
   inspector!: FormGroup;
   json = '';
 
@@ -44,24 +44,44 @@ export class DynamicFormBuilderComponent {
       key: [''],
       label: [''],
       placeholder: [''],
+      type: ['text'],
       options: [''],
       visibleIf: [''],
       requiredIf: [''],
       disabledIf: [''],
+      layout: [''],
+      labelAlign: [''],
+      labelColSpan: [''],
+      controlColSpan: [''],
+      widthPx: [''],
     });
     this.inspector.valueChanges.subscribe(v => {
-      if (this.selected) {
+      if (!this.selected) {
+        return;
+      }
+      if (this.selected === this.schema) {
+        this.schema.title = v.title || undefined;
+        this.schema.ui = {
+          layout: v.layout || undefined,
+          labelAlign: v.labelAlign || undefined,
+          labelCol: v.labelColSpan ? { span: Number(v.labelColSpan) } : undefined,
+          controlCol: v.controlColSpan ? { span: Number(v.controlColSpan) } : undefined,
+          widthPx: v.widthPx ? Number(v.widthPx) : undefined,
+        };
+      } else {
         Object.assign(this.selected, {
           title: v.title || undefined,
           key: v.key || undefined,
           label: v.label || undefined,
           placeholder: v.placeholder || undefined,
+          type: v.type || 'text',
           options: v.options ? JSON.parse(v.options) : undefined,
           visibleIf: v.visibleIf ? JSON.parse(v.visibleIf) : undefined,
           requiredIf: v.requiredIf ? JSON.parse(v.requiredIf) : undefined,
           disabledIf: v.disabledIf ? JSON.parse(v.disabledIf) : undefined,
         });
       }
+      this.refresh();
     });
   }
 
@@ -72,39 +92,71 @@ export class DynamicFormBuilderComponent {
       key: obj.key ?? '',
       label: obj.label ?? '',
       placeholder: obj.placeholder ?? '',
+      type: obj.type ?? 'text',
       options: obj.options ? JSON.stringify(obj.options) : '',
       visibleIf: obj.visibleIf ? JSON.stringify(obj.visibleIf) : '',
       requiredIf: obj.requiredIf ? JSON.stringify(obj.requiredIf) : '',
       disabledIf: obj.disabledIf ? JSON.stringify(obj.disabledIf) : '',
+      layout: this.schema.ui?.layout ?? '',
+      labelAlign: this.schema.ui?.labelAlign ?? '',
+      labelColSpan: this.schema.ui?.labelCol?.span ?? '',
+      controlColSpan: this.schema.ui?.controlCol?.span ?? '',
+      widthPx: this.schema.ui?.widthPx ?? '',
     });
+  }
+
+  private refresh(): void {
+    this.schema = { ...this.schema };
   }
 
   addStep(): void {
     const step: StepConfig = { title: 'Step', sections: [] };
     this.schema.steps = this.schema.steps ?? [];
     this.schema.steps.push(step);
+    this.refresh();
   }
 
-  addSection(step: StepConfig): void {
-    step.sections.push({ title: 'Section', fields: [] });
+  addSection(step?: StepConfig): void {
+    const section: SectionConfig = { title: 'Section', fields: [] };
+    if (step) {
+      step.sections.push(section);
+    } else {
+      this.schema.sections = this.schema.sections ?? [];
+      this.schema.sections.push(section);
+    }
+    this.refresh();
   }
 
-  addField(section: SectionConfig): void {
-    section.fields = section.fields ?? [];
-    section.fields.push({ type: 'text', key: 'field', label: 'Field' });
+  addField(section?: SectionConfig): void {
+    const field: FieldConfig = { type: 'text', key: 'field', label: 'Field' };
+    if (section) {
+      section.fields = section.fields ?? [];
+      section.fields.push(field);
+    } else {
+      this.schema.fields = this.schema.fields ?? [];
+      this.schema.fields.push(field);
+    }
+    this.refresh();
   }
 
   dropStep(event: CdkDragDrop<StepConfig[]>): void {
-    moveItemInArray(this.schema.steps!, event.previousIndex, event.currentIndex);
+    if (!this.schema.steps) return;
+    moveItemInArray(this.schema.steps, event.previousIndex, event.currentIndex);
+    this.refresh();
   }
 
-  dropSection(event: CdkDragDrop<SectionConfig[]>, step: StepConfig): void {
-    moveItemInArray(step.sections, event.previousIndex, event.currentIndex);
+  dropSection(event: CdkDragDrop<SectionConfig[]>, step?: StepConfig): void {
+    const arr = step ? step.sections : this.schema.sections;
+    if (!arr) return;
+    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    this.refresh();
   }
 
-  dropField(event: CdkDragDrop<FieldConfig[]>, section: SectionConfig): void {
-    if (!section.fields) return;
-    moveItemInArray(section.fields, event.previousIndex, event.currentIndex);
+  dropField(event: CdkDragDrop<FieldConfig[]>, section?: SectionConfig): void {
+    const arr = section ? section.fields : this.schema.fields;
+    if (!arr) return;
+    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    this.refresh();
   }
 
   export(): void {
