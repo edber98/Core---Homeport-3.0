@@ -1,9 +1,41 @@
 import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Graphviz } from './pages/graphviz/graphviz';
+import { Flow } from './pages/flow/flow';
+import { LayoutMain } from './layout/layout-main/layout-main';
+import { LayoutBuilder } from './layout/layout-builder/layout-builder';
 
 export const routes: Routes = [
-    { path: '', component: Home },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dashboard'  // ou 'builder' si tu veux rediriger ailleurs
+  },
+
+    {
+        path: '',
+        component: LayoutMain,
+        children: [
+            {
+                path: 'dashboard',
+                loadChildren: () =>
+                    import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
+            }
+        ]
+    },
+        {
+        path: '',
+        component: LayoutBuilder,
+        children: [
+            {
+                path: 'builder',
+                loadChildren: () =>
+                    import('./features/builder/builder-module').then(m => m.BuilderModule)
+            }
+        ]
+    },
+    { path: 'home', component: Home },
     { path: 'viz', component: Graphviz },
+    { path: 'flow', component: Flow },
     { path: '**', redirectTo: '' } // redirection pour les chemins inconnus
 ];

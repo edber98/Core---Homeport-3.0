@@ -1,0 +1,459 @@
+<div style="height:100%; overflow: hidden;" cdkDropList #targetList="cdkDropList"
+  (cdkDropListEntered)="onDragEnter($event)"
+  (cdkDropListExited)="onDragLeave($event)"
+  (dragover)="onDragOver($event)"
+(cdkDropListDropped)="onExternalDrop($event)">
+
+    <vflow view="auto" background="#EEF0F4"[entitiesSelectable]="true"  (selected)="selectItem($event)" [nodes]="nodes" #flow [edges]="edges"
+        [connection]="connectionSettings" (onConnect)="createEdge($event)">
+        <ng-template let-ctx nodeHtml>
+
+
+
+            @if (ctx.node.data.type === 'start') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+                <div class="data-block padding-10">
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="control" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Start workflow</p>
+                            <p class="no-margin text-description">Trigger</p>
+                        </div>
+                    </div>
+
+                    <handle position="bottom" type="source" [id]="ctx.node.data.connector"
+                        [template]="squareHandleTemplate" />
+                    <!--         <handle position="left" type="source" [id]="ctx.node.data.output1" [template]="squareHandleTemplate" />
+ -->
+                </div>
+
+            </div>
+            }
+
+
+
+
+
+            @if (ctx.node.data.type === 'condition') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+
+
+                <div class="data-block padding-10">
+
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="build" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Condition</p>
+                            <p class="no-margin text-description">Logique</p>
+                        </div>
+                    </div>
+
+                    <handle position="top" type="target" [id]="ctx.node.data.input" [template]="squareHandleTemplate" />
+                    <!--   <handle position="bottom" type="source" [id]="ctx.node.data.input1" [template]="squareHandleTemplate" />
+ -->
+                </div>
+                <div class="flex border-top-primary">
+                    <div style="width: 50%; " class="border-right-primary">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">Si vrai</p>
+
+                        <handle position="bottom" type="source" [id]="ctx.node.data.output_1"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                    <div style="width: 50%;">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">Si faux</p>
+                        <handle position="bottom" type="source" [id]="ctx.node.data.output_2"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                </div>
+            </div>
+            }
+
+
+
+            @if (ctx.node.data.type === 'loop') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+
+
+                <div class="data-block padding-10">
+
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="interaction" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Loop</p>
+                            <p class="no-margin text-description">Logique</p>
+                        </div>
+                    </div>
+
+                    <handle position="top" type="target" [id]="ctx.node.data.input" [template]="squareHandleTemplate" />
+                    <!--   <handle position="bottom" type="source" [id]="ctx.node.data.input1" [template]="squareHandleTemplate" />
+ -->
+                </div>
+                <div class="flex border-top-primary">
+                    <div style="width: 50%; " class="border-right-primary">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">Start loop</p>
+
+                        <handle position="bottom" type="source" [id]="ctx.node.data.start_loop_output"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                    <div style="width: 50%;" class="border-right-primary">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">End loop</p>
+                        <handle position="bottom" type="target" [id]="ctx.node.data.end_loop_output"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                    <div style="width: 50%;">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">End</p>
+                        <handle position="bottom" type="source" [id]="ctx.node.data.output"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if (ctx.node.data.type === 'action') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+
+
+                <div class="data-block padding-10">
+
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="build" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Chercher un element</p>
+                            <p class="no-margin text-description">Action</p>
+                        </div>
+                    </div>
+                    <handle position="top" type="target" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+                    <handle position="bottom" type="source" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+
+                </div>
+            </div>
+            }
+
+            @if (ctx.node.data.type === 'mail') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+
+
+                <div class="data-block padding-10">
+
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="mail" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Envoyer un mail</p>
+                            <p class="no-margin text-description">Communication</p>
+                        </div>
+                    </div>
+                    <handle position="top" type="target" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+                    <handle position="bottom" type="source" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+
+                </div>
+            </div>
+            }
+
+
+            @if (ctx.node.data.type === 'pdf') {
+            <div class="custom-node" [ngClass]="{'select-node': selection_item && selection_item.id == ctx.node.id}"
+                (click)="selectItem(ctx.node)">
+
+
+                <div class="data-block padding-10">
+
+                    <div class="  full-width full-height flex flex-center-vertical ">
+
+                        <div class="flex flex-center-vertical flex-center-horizontal"
+                            style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                            <span nz-icon style="font-size: 25px;" nzType="file-pdf" nzTheme="twotone"></span>
+                        </div>
+
+                        <div class="margin-left-11">
+                            <p class="no-margin">Remplir un PDF</p>
+                            <p class="no-margin text-description">Document</p>
+                        </div>
+                    </div>
+                    <handle position="top" type="target" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+                    <handle position="bottom" type="source" [id]="ctx.node.data.input1"
+                        [template]="squareHandleTemplate" />
+
+                </div>
+            </div>
+            }
+
+
+        </ng-template>
+        <!--  <mini-map [scaleOnHover]="true" />
+ -->
+    </vflow>
+
+</div>
+
+<ng-template #handleTemplate let-ctx>
+    <!--   <svg:circle stroke-width="1" stroke="black" r="6" fill="#1b262c" [attr.cx]="ctx.point().x"
+    [attr.cy]="ctx.point().y" /> -->
+    <svg:rect width="10" height="10" stroke-width="1" stroke="black" rx="1" ry="1" [attr.x]="ctx.point().x - 5"
+        [attr.y]="ctx.point().y - 5" />
+</ng-template>
+
+<ng-template #squareHandleTemplate let-ctx>
+    <!-- cercle principal -->
+
+    <svg:g>
+        <svg:circle [attr.cx]="ctx.point().x" [attr.cy]="ctx.point().y" [attr.r]="ctx.state() === 'valid' ? 6 : 4"
+            [attr.fill]="ctx.state() === 'idle' ? '#ffffff' : 'red'" stroke="black" stroke-width="1"></svg:circle>
+
+
+    </svg:g>
+</ng-template>
+
+
+<div
+    style="position: absolute; top: 93px;left: 13px; width: 300px; height: calc(100% - 108px); background-color: white; border-radius: 13px;">
+
+
+    <div class="border-bottom-primary">
+        <h3 class="margin-11 text-center">Noeud</h3>
+    </div>
+
+    <div cdkDropList #sourceList="cdkDropList" [cdkDropListConnectedTo]="[targetList]" style="padding: 13px">
+
+        <div cdkDrag [cdkDragData]="{type: 'start', label: 'Nouveau nœud'}" class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="control" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Start workflow</p>
+                        <p class="no-margin text-description">Trigger</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 13px; padding-top: 0px;">
+
+        <div class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="api" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Condition</p>
+                        <p class="no-margin text-description">Logique</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 13px; padding-top: 0px;">
+
+        <div class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="build" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Chercher un element</p>
+                        <p class="no-margin text-description">Action</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 13px; padding-top: 0px;">
+
+        <div class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="mail" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Ecrire un mail</p>
+                        <p class="no-margin text-description">Communication</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 13px; padding-top: 0px;">
+
+        <div class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="interaction" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Loop</p>
+                        <p class="no-margin text-description">Logique</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="padding: 13px; padding-top: 0px;">
+
+        <div class="custom-node-bar">
+
+            <div class="data-block padding-10">
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                    <div class="flex flex-center-vertical flex-center-horizontal"
+                        style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                        <span nz-icon style="font-size: 25px;" nzType="file-pdf" nzTheme="twotone"></span>
+                    </div>
+
+                    <div class="margin-left-11">
+                        <p class="no-margin">Remplir un PDF</p>
+                        <p class="no-margin text-description">Document</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<div *ngIf="selection_item"
+    style="position: absolute; top: 93px;right: 13px; width: 430px; height: calc(100% - 108px); background-color: white; border-radius: 13px;">
+
+
+
+    <div style="padding: 13px" class="border-bottom-primary">
+
+        <div class="  full-width full-height flex flex-center-vertical ">
+
+            <div class="flex flex-center-vertical flex-center-horizontal"
+                style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                <span nz-icon style="font-size: 25px;" nzType="control" nzTheme="twotone"></span>
+            </div>
+
+            <div class="margin-left-11">
+                <p class="no-margin">Start workflow</p>
+                <p class="no-margin text-description">Trigger</p>
+            </div>
+
+
+
+        </div>
+
+
+
+
+        <!--            <nz-select ngModel="lucy">
+      <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+      <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+      <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+    </nz-select>
+
+        <button nz-button nz-popover nzType="primary" nzPopoverTitle="Title" nzPopoverContent="Content">Hover me</button>
+ -->
+
+    </div>
+
+
+<div style="height: calc(100% - 85px); overflow: auto;">
+
+    <div  class="info-row">
+    <div class="info-label">Playload</div>
+    <div class="info-value">Edouard</div>
+</div>
+
+    <div  class="info-row">
+    <div class="info-label">Schema input</div>
+    <div class="info-value"><pre>{{nodes | json}}</pre></div>
+</div>
+
+</div>
+
+
+
+</div>

@@ -1,0 +1,139 @@
+/* .wrapper {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.source-list, .drop-zone {
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px dashed #ccc;
+  width: 200px;
+  min-height: 150px;
+}
+
+.item {
+  background-color: #1976d2;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  cursor: move;
+}
+
+.drop-zone {
+  background-color: #f5f5f5;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ */
+
+ .custom-node {
+  /*   width: 150px;
+  height: 100px; */
+  //width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #E2E1E4;
+  border-radius: 15px;
+  align-items: center;
+  /*   padding-left: 7px;
+  padding-right: 7px; */
+}
+/* Animate items as they're being sorted. */
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.select-node {
+  border: 1px solid #6d23ff;
+
+  //margin: 12px;
+}
+
+.custom-node-bar {
+  /*   width: 150px;
+  height: 100px; */
+  //  width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #E2E1E4;
+  border-radius: 15px;
+  align-items: center;
+  /*   padding-left: 7px;
+  padding-right: 7px; */
+}
+
+.data-block {
+  // background-color: #ffffff;
+  color: #1b262c;
+  // height: 45px;
+  // padding: auto;
+  //margin-top: 15px;
+  // border-radius: 5px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.handle {
+  &_idle {
+    fill: #fff;
+  }
+
+  &_valid {
+    fill: green;
+  }
+
+  &_invalid {
+    fill: red;
+  }
+}
+
+
+.info-row {
+  padding: 13px;
+  // padding-top: 7px;
+  padding-bottom: 0px;
+}
+
+.info-label {
+  font-size: 13px;
+  color: #969696;
+  // text-align: right;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.info-value {
+  font-size: 13px;
+  font-weight: 500;
+  // text-align: right;
+  color: #333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Cible les scrollbars WebKit */
+::-webkit-scrollbar {
+  width: 6px;               /* largeur verticale */
+  height: 6px;              /* hauteur horizontale */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;  /* fond transparent ou clair */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;   /* gris clair */
+  border-radius: 3px;       /* bords arrondis */
+}

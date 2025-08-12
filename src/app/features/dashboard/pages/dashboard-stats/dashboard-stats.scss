@@ -1,0 +1,48 @@
+.card-header {
+    background-color: #f6f6fe;
+    padding: 11px;
+    border-radius: 13px;
+}
+
+.select-node {
+  border: 1px solid #6d23ff !important;
+
+  //margin: 12px;
+}
+
+.custom-node {
+    /*   width: 150px;
+  height: 100px; */
+    width: 250px;
+    background-color: #ffffff;
+    border: 1px solid #E2E1E4;
+    border-radius: 5px;
+    align-items: center;
+    /*   padding-left: 7px;
+  padding-right: 7px; */
+}
+
+.data-block {
+    // background-color: #ffffff;
+    color: #1b262c;
+    height: 45px;
+    //margin-top: 15px;
+    // border-radius: 5px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.handle {
+    &_idle {
+        fill: #fff;
+    }
+
+    &_valid {
+        fill: green;
+    }
+
+    &_invalid {
+        fill: red;
+    }
+}

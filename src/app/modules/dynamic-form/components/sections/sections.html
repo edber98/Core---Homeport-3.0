@@ -1,0 +1,22 @@
+ <ng-container *ngIf="visible">
+    <h3 *ngIf="section.title" style="margin:16px 0 6px">{{ section.title }}</h3>
+    <p *ngIf="section.description" style="margin:0 0 12px; color:#6b7280">{{ section.description }}</p>
+
+    <div style="margin-bottom:16px">
+      <nz-row [nzGutter]="section.grid?.gutter || 16">
+        <ng-container *ngFor="let f of section.fields">
+          <ng-container *ngIf="dfs.isFieldVisible(f, form)">
+            <nz-col
+              [nzXs]="dfs.getFieldSpans(f).xs"
+              [nzSm]="dfs.getFieldSpans(f).sm"
+              [nzMd]="dfs.getFieldSpans(f).md"
+              [nzLg]="dfs.getFieldSpans(f).lg"
+              [nzXl]="dfs.getFieldSpans(f).xl"
+            >
+              <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+            </nz-col>
+          </ng-container>
+        </ng-container>
+      </nz-row>
+    </div>
+  </ng-container>

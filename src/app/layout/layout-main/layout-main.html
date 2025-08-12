@@ -1,0 +1,76 @@
+<!-- <div nz-flex [nzVertical]="false" class="full-height">
+
+      <div class="padding-13">
+
+            <div class="navbar">
+
+                  <div class="item-navbar"  routerLink="/dashboard"   [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active-link" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
+                        <nz-icon nzType="home" nzTheme="outline" />
+                  </div>
+
+                      <div class="item-navbar "  routerLink="/dashboard/stats"   [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active-link"  nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
+                        <nz-icon nzType="branches" nzTheme="outline" />
+                  </div>
+
+                  <div class="item-navbar" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
+                        <nz-icon nzType="api" nzTheme="outline" />
+                  </div>
+
+                  <div class="item-navbar" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
+                        <nz-icon nzType="appstore" nzTheme="outline" />
+                  </div>
+
+            </div>
+      </div>
+      <div class="full-width">
+
+            <router-outlet></router-outlet>
+      </div>
+</div> -->
+
+ <nz-layout class="full-height">
+      <nz-sider nzCollapsible [nzTheme]="'light'"  class="border-right-primary"  nzWidth="200px">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline">
+          <li nz-menu-item>
+            <nz-icon nzType="pie-chart" />
+            <span>Option 1</span>
+          </li>
+          <li nz-menu-item>
+            <nz-icon nzType="desktop" />
+            <span>Option 2</span>
+          </li>
+          <li nz-submenu nzTitle="User" nzIcon="user">
+            <ul>
+              <li nz-menu-item>Tom</li>
+              <li nz-menu-item>Bill</li>
+              <li nz-menu-item>Alex</li>
+            </ul>
+          </li>
+          <li nz-submenu nzTitle="Team" nzIcon="team">
+            <ul>
+              <li nz-menu-item>Team 1</li>
+              <li nz-menu-item>Team 2</li>
+            </ul>
+          </li>
+          <li nz-menu-item>
+            <nz-icon nzType="file" />
+            <span>File</span>
+          </li>
+        </ul>
+      </nz-sider>
+      <nz-layout>
+        <nz-header class="border-bottom-primary"></nz-header>
+        <nz-content>
+     <!--      <nz-breadcrumb>
+            <nz-breadcrumb-item>User</nz-breadcrumb-item>
+            <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+          </nz-breadcrumb> -->
+          <div class="inner-content">
+            
+             <router-outlet></router-outlet>
+          </div>
+        </nz-content>
+<!--         <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+ -->      </nz-layout>
+    </nz-layout>

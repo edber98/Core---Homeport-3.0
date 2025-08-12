@@ -1,52 +1,142 @@
 /* You can add global styles to this file, and also import other style files */
 body {
     margin: 0;
-        background-color: #EEF0F4;
+    //   background-color: #EEF0F4;
+    height: 100%;
+    overflow: hidden;
+}
+
+app-root {
+    transform: scale(0.7) !important;
+    /* au lieu de zoom:70% */
+    transform-origin: top left;
+    width: 142.857%;
+    /* 100% / 0.7 = 142.857% pour conserver la largeur initiale */
+    height: 142.857%;
+    /* optionnel si nécessaire */
 }
 
 /* styles.scss */
 @font-face {
-  font-family: 'Sarine';
-  src: url('../public/fronts/sarine-medium.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;       // évite le texte invisible en attendant le chargement
+    font-family: 'Sarine';
+    src: url('../public/fronts/sarine-medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; // évite le texte invisible en attendant le chargement
 }
 
 .no-margin {
     margin: 0;
 }
 
+.color-blue-light {
+    background-color: #f6f6fe !important;
+}
+
 .border-bottom-primary {
     border-bottom: 1px solid #E2E1E4;
+}
+
+.border-top-primary {
+    border-top: 1px solid #E2E1E4;
+}
+
+
+.border-right-primary {
+    border-right: 1px solid #E2E1E4;
+}
+
+.border-left-primary {
+    border-left: 1px solid #E2E1E4;
 }
 
 .margin-11 {
     margin: 11px;
 }
 
+.padding-5 {
+    padding: 5px;
+
+}
+
+.padding-7 {
+    padding: 7px;
+
+}
+
+.padding-right-0 {
+    padding-right: 0px;
+
+}
+
+
+.padding-left-0 {
+    padding-left: 0px;
+
+}
+
+.margin-right-0-force {
+    margin-right: 0px !important;
+
+}
+
+
+.margin-left-0 {
+    margin-left: 0px;
+
+}
+
+.padding-top-7 {
+    padding-top: 7px;
+
+}
+
 .margin-13 {
     margin: 13px;
 }
 
+.margin-right-11 {
+    margin-right: 11px;
+
+}
+
+
+.margin-left-11 {
+    margin-left: 11px;
+
+}
+
 .margin-left-right-11 {
-       margin-left: 11px;
-        margin-right: 11px;
+    margin-left: 11px;
+    margin-right: 11px;
 
 }
 
 .flex {
-        display: flex;
+    display: flex;
+}
+
+.text-description {
+    color: #00000073;
+  //  font-weight: lighter;
 }
 
 .flex-center-vertical {
- 
+
     align-items: center;
 }
 
+.gap-13 {
+    gap: 13px;
+}
+
 .flex-center-horizontal {
-        display: flex;
-    align-content: center;
+    display: flex;
+    justify-content: center;
+}
+
+.max-width-900 {
+    max-width: 1500px;
 }
 
 .full-height {
@@ -59,6 +149,38 @@ body {
 
 .padding-13 {
     padding: 13px;
+}
+
+.padding-10 {
+    padding: 10px;
+}
+
+.margin-top-13 {
+    margin-top: 13px;
+}
+
+.margin-bottom-13 {
+    margin-bottom: 13px;
+}
+
+.margin-top-bottom-6 {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.margin-top-bottom-13 {
+    margin-top: 6.5px;
+    margin-bottom: 9px;
+}
+
+
+.padding-top-0 {
+    padding-top: 0px;
+}
+
+
+.padding-bottom-0 {
+    padding-bottom: 0px;
 }
 
 .full-width {
@@ -74,6 +196,10 @@ body {
 }
 
 /* Exemple : appliquer la police à tout le corps du site */
-:root {
-  font-family: 'Sarine', system-ui, sans-serif;
+:root,
+body {
+    //  font-family: "Flow Circular", system-ui;
+  //font-weight: 400;
+  //font-style: normal;
+  //  font-family: 'Sarine', system-ui, sans-serif;
 }

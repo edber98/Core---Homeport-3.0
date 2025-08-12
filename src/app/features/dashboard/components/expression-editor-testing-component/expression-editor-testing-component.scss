@@ -1,0 +1,34 @@
+    .mb-2 { margin-bottom: .75rem; }
+    .editor-wrapper { position: relative; }
+    .editor, .highlights {
+      font: 14px/1.5 "SF Mono", monospace;
+      padding: 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      min-height: 130px;
+      width: 100%;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow: auto;
+    }
+    .editor {
+      position: relative;
+      background: transparent;
+      color: #000;
+      caret-color: #000;
+      resize: vertical;
+      z-index: 2;
+    }
+    .highlights {
+      position: absolute;
+      top: 0; left: 0;
+      color: transparent;     /* texte normal invisible */
+      pointer-events: none;
+      z-index: 1;
+    }
+    mark.nj-token {
+      background:#fff2e8;
+      color:#d92f2f;
+      border-radius:3px;
+      padding:0 2px;
+    }

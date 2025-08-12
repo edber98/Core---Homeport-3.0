@@ -1,0 +1,21 @@
+<p>expression-editor-testing-component works!</p>
+<nz-card nzTitle="Aperçu" class="mb-2">
+    <div [innerHTML]="preview "></div>
+</nz-card>
+
+<div class="editor-wrapper mb-2">
+    <div #hl class="highlights"></div>
+    <textarea #ta class="editor" (input)="onInput()" (click)="updateCaretPos()" (keyup)="updateCaretPos()"
+        [placeholder]="placeholder"></textarea>
+</div>
+
+<!-- Menu suggestions -->
+
+<button nz-dropdown [nzVisible]="vars.length && dropdownVisible" (nzVisibleChange)="dropdownVisible=$event"
+    [nzDropdownMenu]="menu"
+    [nzOverlayStyle]="{ position:'fixed', left: caret.left+'px', top: caret.bottom+'px' }"></button>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item *ngFor="let v of vars" (click)="insertVar(v)">{{ v }}</li>
+    </ul>
+</nz-dropdown-menu>

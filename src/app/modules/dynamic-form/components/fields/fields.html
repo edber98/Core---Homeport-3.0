@@ -1,0 +1,67 @@
+<div [formGroup]="form">
+  <nz-form-item
+    class="df-form-item"
+    [class.df-textblock]="field.type === 'textblock'"
+    [ngStyle]="itemStyle">
+
+    <ng-container [ngSwitch]="field.type">
+
+      <!-- textblock -->
+      <ng-container *ngSwitchCase="'textblock'">
+        <nz-form-control [nzSpan]="24">
+          <nz-typography>
+            <div [innerHTML]="field.textHtml || ''"></div>
+          </nz-typography>
+        </nz-form-control>
+      </ng-container>
+
+      <!-- inputs -->
+      <ng-container *ngSwitchDefault>
+        <nz-form-label
+          [nzFor]="fieldKey"
+          [nzRequired]="requiredFlag"
+          [nzSpan]="labelSpan"
+          [nzOffset]="labelOffset"
+          [nzLabelAlign]="ui?.labelAlign ?? 'left'">
+          {{ field.label || '' }}
+        </nz-form-label>
+
+        <nz-form-control
+          [nzSpan]="controlSpan"
+          [nzOffset]="controlOffset"
+          [nzErrorTip]="(field.label || 'Champ') + ' invalide'">
+
+          <ng-container *ngIf="fieldKey as key">
+            <input *ngIf="field.type==='text'"
+                   nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+
+            <textarea *ngIf="field.type==='textarea'"
+                      nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
+
+            <input *ngIf="field.type==='number'"
+                   nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+
+            <nz-date-picker *ngIf="field.type==='date'"
+                            style="width: 100%;" [formControlName]="key"></nz-date-picker>
+
+            <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
+              <nz-option *ngFor="let opt of (field.options || [])"
+                         [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
+            </nz-select>
+
+            <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
+              <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">
+                {{ opt.label || '' }}
+              </label>
+            </nz-radio-group>
+
+            <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">
+              {{ field.label || '' }}
+            </label>
+          </ng-container>
+        </nz-form-control>
+      </ng-container>
+
+    </ng-container>
+  </nz-form-item>
+</div>

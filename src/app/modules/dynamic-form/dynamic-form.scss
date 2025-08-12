@@ -1,0 +1,42 @@
+.df-container {
+  margin: 0 auto;
+}
+
+.df-steps {
+  margin-bottom: 16px;
+}
+
+.df-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.df-summary-title {
+  margin: 16px 0;
+}
+
+.df-summary-step {
+  margin: 12px 0 8px;
+}
+
+.df-summary-section {
+  font-weight: 600;
+  margin: 8px 0;
+}
+
+.df-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    border: 1px solid #f0f0f0;
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  .k {
+    width: 35%;
+    font-weight: 500;
+    background: #fafafa;
+  }
+}

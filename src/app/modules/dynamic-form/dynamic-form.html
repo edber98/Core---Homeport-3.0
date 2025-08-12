@@ -1,0 +1,153 @@
+<form
+  nz-form
+  [formGroup]="form"
+  [nzLayout]="layout"
+  [style.max-width.px]="maxWidth"
+  class="df-container">
+
+  <!-- ===== Mode STEPS ===== -->
+  <ng-container *ngIf="visibleSteps().length; else noStepper">
+    <nz-steps [nzCurrent]="current()" class="df-steps">
+      <nz-step *ngFor="let s of visibleSteps()" [nzTitle]="s.title || 'Étape'"></nz-step>
+      <nz-step *ngIf="summaryEnabled()" [nzTitle]="summaryTitle()"></nz-step>
+    </nz-steps>
+
+    <!-- Étapes visibles -->
+    <ng-container *ngFor="let s of visibleSteps(); let i = index">
+      <ng-container *ngIf="current() === i">
+        <!-- 🔁 Boucle sur les sections de l’étape -->
+        <ng-container *ngFor="let sec of s.sections">
+          <df-section [section]="sec" [form]="form" [ui]="ui"></df-section>
+        </ng-container>
+
+        <div class="df-actions">
+          <button nz-button (click)="prev()" *ngIf="i > 0">Précédent</button>
+
+          <button
+            nz-button
+            nzType="primary"
+            (click)="next()"
+            *ngIf="i < realStepsCount() - 1"
+            [disabled]="isNextDisabled(i)">
+            Suivant
+          </button>
+
+          <!-- Dernière étape AVEC résumé -->
+          <button
+            nz-button
+            nzType="primary"
+            (click)="go(summaryIndex())"
+            *ngIf="i === realStepsCount() - 1 && summaryEnabled()"
+            [disabled]="!isCurrentStepValid() || form.pending">
+            Voir le résumé
+          </button>
+
+          <!-- Dernière étape SANS résumé -->
+          <button
+            nz-button
+            nzType="primary"
+            (click)="submit()"
+            *ngIf="i === realStepsCount() - 1 && !summaryEnabled()"
+            [disabled]="isSubmitDisabled()">
+            Valider
+          </button>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <!-- Step Résumé -->
+    <ng-container *ngIf="summaryEnabled() && current() === summaryIndex()">
+      <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
+
+      <ng-container *ngFor="let st of summaryModel()">
+        <h4 class="df-summary-step">{{ st.title }}</h4>
+        <ng-container *ngFor="let sec of st.sections">
+          <div *ngIf="sec.title" class="df-summary-section">{{ sec.title }}</div>
+          <table class="df-summary-table">
+            <tbody>
+              <tr *ngFor="let r of sec.rows">
+                <td class="k">{{ r.label }}</td>
+                <td class="v">{{ r.value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+      </ng-container>
+
+      <div class="df-actions">
+        <button nz-button (click)="go(realStepsCount() - 1)">Modifier</button>
+        <button nz-button nzType="primary" (click)="submit()" [disabled]="isSubmitDisabled()">Valider</button>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <!-- ===== Mode SANS STEPPER ===== -->
+  <ng-template #noStepper>
+    <ng-container *ngIf="visibleSections().length; else flatMode">
+      <!-- 🔁 Boucle sur les sections racine -->
+      <ng-container *ngFor="let sec of visibleSections()">
+        <df-section [section]="sec" [form]="form" [ui]="ui"></df-section>
+      </ng-container>
+
+      <ng-container *ngIf="summaryEnabled()">
+        <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
+        <ng-container *ngFor="let st of summaryModel()">
+          <ng-container *ngFor="let sec of st.sections">
+            <div *ngIf="sec.title" class="df-summary-section">{{ sec.title }}</div>
+            <table class="df-summary-table">
+              <tbody>
+                <tr *ngFor="let r of sec.rows">
+                  <td class="k">{{ r.label }}</td>
+                  <td class="v">{{ r.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <div class="df-actions">
+        <button
+          nz-button
+          nzType="primary"
+          (click)="form.valid ? submit() : form.markAllAsTouched()"
+          [disabled]="isSubmitDisabled()">
+          Valider
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Flat: fields[] au niveau racine -->
+    <ng-template #flatMode>
+      <!-- ✅ flatSection() retourne un SectionConfig (objet), pas un tableau -->
+      <df-section [section]="flatSection()" [form]="form" [ui]="ui"></df-section>
+
+      <ng-container *ngIf="summaryEnabled()">
+        <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
+        <ng-container *ngFor="let st of summaryModel()">
+          <ng-container *ngFor="let sec of st.sections">
+            <table class="df-summary-table">
+              <tbody>
+                <tr *ngFor="let r of sec.rows">
+                  <td class="k">{{ r.label }}</td>
+                  <td class="v">{{ r.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <div class="df-actions">
+        <button
+          nz-button
+          nzType="primary"
+          (click)="form.valid ? submit() : form.markAllAsTouched()"
+          [disabled]="isSubmitDisabled()">
+          Valider
+        </button>
+      </div>
+    </ng-template>
+  </ng-template>
+</form>
+

@@ -1,0 +1,84 @@
+.navbar {
+    height: 100%;
+    background-color: #F8FAFC;
+    padding: 11px;
+    border-radius: 13px;
+}
+
+.item-navbar {
+    height: 40px;
+    width: 40px;
+    border-radius: 13px;
+    transition: background 0.3s ease;
+
+    margin-bottom: 7px;
+    /* Durée et type de transition */
+}
+
+.active-link {
+    background: #0080ff;
+    color: white
+}
+
+.item-navbar:hover {
+    background: #75baff;
+    color: white
+}
+
+::ng-deep .ant-menu-item {
+  //padding: 10px 20px !important;
+  border-radius: 8px;
+  margin: 6px !important;
+  width: auto !important;
+}
+
+::ng-deep  .ant-menu-submenu-title {
+  border-radius: 8px;
+  margin: 6px !important;
+  width: auto !important;
+ }
+
+
+.ant-menu.ant-menu-inline-collapsed > .ant-menu-item {
+padding: 0 calc(50% - 32px / 2);
+}
+
+::ng-deep .ant-menu.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title   {
+padding: 0 calc(50% - 32px / 2) !important;
+}
+
+
+.logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(82, 82, 82, 0.3);
+}
+
+nz-header {
+    background: #fff;
+    padding: 0;
+}
+
+nz-content {
+    //margin: 0 16px;
+    height: 100%;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.inner-content {
+  //  padding: 24px;
+    background: #fff;
+    height: 100%;
+}
+
+::ng-deep  .ant-layout-sider-light .ant-layout-sider-trigger{
+    border-right: 1px solid #E2E1E4;
+
+}
+
+nz-footer {
+    text-align: center;
+}

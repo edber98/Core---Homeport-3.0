@@ -1,0 +1,182 @@
+<div nz-flex [nzVertical]="false" class=" full-width full-height">
+
+
+  <div class=" full-height " style="min-width: 350px">
+
+    <div style="margin-top: 11px; margin-bottom: 9px" nz-flex [nzVertical]="false">
+      <div nz-flex [nzVertical]="false" style="font-size: 23px; width: 50px" [nzJustify]="'center'"
+        [nzAlign]="'center'">
+        <nz-icon nzType="database" nzTheme="outline" />
+
+      </div>
+      <div>
+        <h3 style="margin-bottom: 0px;">Schéma Builder</h3>
+        <p style="margin-bottom: 0px;">Création d'un schéma</p>
+      </div>
+
+    </div>
+
+    <div>
+      <nz-divider class="no-margin"></nz-divider>
+    </div>
+
+
+    <ul style="padding: 5px; margin-top: 0px; margin-bottom: 7px; " nz-menu>
+      <li *ngFor="let i of metadatas" nz-menu-item>{{i.name}}</li>
+    </ul>
+
+    <p style="text-align: center;">
+      <button nz-button nzType="primary">
+        <nz-icon nzType="plus-circle" nzTheme="outline" />
+        Ajouter un schéma
+      </button>
+    </p>
+  </div>
+
+  <div class="full-width">
+
+    <vflow view="auto" background="#EEF0F4"
+    [nodes]="metadatas" [edges]="edges" [connection]="connectionSettings"
+      (onConnect)="createEdge($event)">
+      <ng-template let-ctx nodeHtml>
+
+
+
+        <div class="custom-node" (click)="selectItem(ctx.node)" [ngClass]="{'select-node': selection_item && selection_item._id == ctx.node._id}" style="padding-bottom: 0px !important;">
+          <div class="border-bottom-primary">
+            <h4 class="margin-11 text-center">{{ctx.node.name}}</h4>
+          </div>
+   <div class="data-block">
+            <div class="margin-left-right-11 border-bottom-primary full-width full-height flex flex-center-vertical ">
+              <span class="text-description">_id: ObjectId*</span>
+            </div>
+   
+          </div>
+          <div *ngFor="let item of ctx.node.fields" class="data-block">
+            <div class="margin-left-right-11 border-bottom-primary full-width full-height flex flex-center-vertical ">
+              <span>{{item.name}}: {{item.type}}<span *ngIf="item.required">*</span> </span>
+            </div>
+
+            <!--             <handle position="right" type="source" [id]="ctx.node.data.output1" [template]="squareHandleTemplate" />
+            <handle position="left" type="source" [id]="ctx.node.data.output1" [template]="squareHandleTemplate" /> -->
+          </div>
+          <!--      <div class="data-block">
+            <div class="margin-left-right-11 border-bottom-primary full-width full-height flex flex-center-vertical ">
+              <span> Output 2</span>
+            </div>
+   
+          </div> -->
+
+
+          <p style="text-align: center; margin-top: 7px; margin-bottom: 7px">
+            <button nz-button nzType="text">
+              <nz-icon nzType="plus-circle" nzTheme="outline" />
+              Ajouter un champ
+            </button>
+          </p>
+        </div>
+
+      </ng-template>
+
+      <mini-map [scaleOnHover]="true" />
+    </vflow>
+
+    <ng-template #handleTemplate let-ctx>
+      <!--   <svg:circle stroke-width="1" stroke="black" r="6" fill="#1b262c" [attr.cx]="ctx.point().x"
+    [attr.cy]="ctx.point().y" /> -->
+      <svg:rect width="10" height="10" stroke-width="1" stroke="black" rx="1" ry="1" [attr.x]="ctx.point().x - 5"
+        [attr.y]="ctx.point().y - 5" />
+    </ng-template>
+
+    <ng-template #squareHandleTemplate let-ctx>
+      <svg:circle [attr.cx]="ctx.point().x" [attr.cy]="ctx.point().y" [attr.r]="ctx.state() === 'valid' ? 6 : 4"
+        [attr.fill]="ctx.state() === 'idle' ? '#ffffff' : 'red'" stroke="black" stroke-width="1"></svg:circle>
+
+    </ng-template>
+
+
+  </div>
+
+  <div *ngIf="selection_item"  @slideInOut class=" full-height " style="min-width: 350px">
+
+    <div style="margin-top: 11px; margin-bottom: 9px" nz-flex [nzVertical]="false">
+      <div nz-flex [nzVertical]="false" style="font-size: 23px; width: 50px" [nzJustify]="'center'"
+        [nzAlign]="'center'">
+        <nz-icon nzType="unordered-list" nzTheme="outline" />
+
+      </div>
+      <div>
+        <h3 style="margin-bottom: 0px;">{{selection_item.name}}</h3>
+        <p style="margin-bottom: 0px;">Création d'un schéma</p>
+      </div>
+
+    </div>
+
+    <div>
+      <nz-divider class="no-margin"></nz-divider>
+    </div>
+
+
+    <ul style="padding: 5px; margin-top: 0px; margin-bottom: 7px; " nz-menu>
+      <li nz-menu-item>Menu 1</li>
+      <li nz-menu-item>Menu 2</li>
+    </ul>
+
+        <input nz-input placeholder="Basic usage" type="text" />
+
+
+<!-- dashboard-stats.html -->
+<!-- <ngx-codemirror
+  [(ngModel)]="code"
+  [options]="{ mode: 'nunjucks-html', lineNumbers: true }">
+</ngx-codemirror> -->
+<app-expression-editor-testing-component  [variableList]="['customer', 'invoice.number']"  [context]="ctx_var"></app-expression-editor-testing-component>
+    <p style="text-align: center;">
+      <button nz-button nzType="primary">
+        <nz-icon nzType="plus-circle" nzTheme="outline" />
+        Ajouter un schéma
+      </button>
+    </p>
+  </div>
+
+  <!--         <div class="padding-header">
+            <div class=" full-width" >
+                <p>dashboard-stats works!</p>
+            </div>
+        </div>
+
+    <nz-list  nzHeader="Header" nzFooter="Footer">
+      @for (item of listOfData; track item) {
+        <nz-list-item>
+          <span nz-typography><mark>[ITEM]</mark></span>
+          {{ item.name }}
+        </nz-list-item>
+      }
+    </nz-list>
+
+  <nz-table #basicTable [nzSize]="'middle'"[nzOuterBordered]="false" nzBordered [nzData]="listOfData">
+      <thead>
+        <tr>
+          <th class="color-blue-light" >Name</th>
+          <th class="color-blue-light">Age</th>
+          <th class="color-blue-light">Address</th>
+          <th class="color-blue-light">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data) {
+          <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.address }}</td>
+            <td>
+              <a>Action 一 {{ data.name }}</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a>Delete</a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table> -->
+
+</div>

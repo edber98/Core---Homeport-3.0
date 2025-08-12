@@ -1,1 +1,186 @@
-<p>home works!</p>
+<div style="  height: 100%; ">
+  <!--   <p>home works!</p>
+  <p style="height: 200px">home works!</p>
+
+  <div class="wrapper">
+
+    <div cdkDropList #sourceList="cdkDropList" [cdkDropListData]="availableItems"
+      [cdkDropListConnectedTo]="[targetList]" class="source-list">
+      <div class="item" *ngFor="let item of availableItems" cdkDrag>{{item}}</div>
+    </div>
+
+    <div cdkDropList #targetList="cdkDropList" (cdkDropListDropped)="onItemDropped($event)" class="drop-zone">
+      Dépose les éléments ici
+    </div>
+
+  </div> -->
+
+
+
+
+
+  <div class="flex flex-center-horizontal ">
+
+
+    <div class="flex gap-13 padding-13 padding-top-0  full-width">
+
+      <div style="min-width: 450px; ">
+        <div style=" border-radius: 13px;  background: white;">
+
+
+          <div class="border-bottom-primary">
+            <h3 class="padding-10  text-center">Noeud</h3>
+          </div>
+
+          <div class="padding-13" cdkDropList [cdkDropListData]="types" [cdkDropListConnectedTo]="['targetList']">
+            <div class="custom-node margin-bottom-13" *ngFor="let item of types; let first = first;" cdkDrag>
+
+
+              <div class="data-block padding-10">
+
+                <div class="  full-width full-height flex flex-center-vertical ">
+
+                  <div class="flex flex-center-vertical flex-center-horizontal"
+                    style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                    <span nz-icon style="font-size: 25px;" nzType="build" nzTheme="twotone"></span>
+                  </div>
+
+                  <div class="margin-left-11">
+                    <p class="no-margin">{{item.name}}</p>
+                    <p class="no-margin text-description">Logique</p>
+                  </div>
+                </div>
+
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+      <div style="min-width: 30%;flex: 1;">
+
+        <div style=" border-radius: 13px; height: 53px;  background: white; margin-bottom: 13px">
+          <h3 class="padding-10 text-center">Champs</h3>
+        </div>
+
+        <div cdkDropList id="targetList" (cdkDropListDropped)="drop($event)" [cdkDropListData]="schemas_fields">
+
+          <div (click)="selectItem(item)" *ngFor="let item of schemas_fields; let first = first;" cdkDrag
+            class="custom-node margin-top-bottom-13"
+            [ngClass]="{'select-node': selected_item && selected_item._id == item._id}">
+
+
+            <div class="data-block padding-10">
+
+              <div class="  full-width full-height flex flex-center-vertical ">
+
+                <div class="flex flex-center-vertical flex-center-horizontal"
+                  style="height: 55px; width: 55px;  border-radius: 10px; border: 1px solid #E2E1E4; background-color: #EEF0F4;">
+                  <span nz-icon style="font-size: 25px;" nzType="build" nzTheme="twotone"></span>
+                </div>
+
+                <div class="margin-left-11">
+                  <p class="no-margin">{{item.label}} ({{item.name}})</p>
+                  <p class="no-margin text-description">{{item.type}}</p>
+                </div>
+              </div>
+
+              <!--                     <handle position="top" type="target" [id]="ctx.node.data.input" [template]="squareHandleTemplate" />
+ --> <!--   <handle position="bottom" type="source" [id]="ctx.node.data.input1" [template]="squareHandleTemplate" />
+ -->
+            </div>
+            <!--                 <div class="flex border-top-primary">
+                    <div style="width: 50%; " class="border-right-primary">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">Si vrai</p>
+
+                        <handle position="bottom" type="source" [id]="ctx.node.data.output_1"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                    <div style="width: 50%;">
+                        <p class="text-center no-margin padding-7 padding-top-7 ">Si faux</p>
+                        <handle position="bottom" type="source" [id]="ctx.node.data.output_2"
+                            [template]="squareHandleTemplate" />
+
+                    </div>
+                </div> -->
+          </div>
+
+        </div>
+      </div>
+
+
+      <div style="width: 800px;" *ngIf="selected_item">
+
+        <div style=" border-radius: 13px;  background: white;">
+
+
+          <div class="border-bottom-primary">
+            <h3 class="padding-10  text-center">Paramètres ({{selected_item.label}})</h3>
+          </div>
+
+          <div class="padding-13">
+
+            <form nz-form [nzLayout]="'vertical'">
+
+
+              <nz-form-item>
+                <nz-form-label [nzSpan]=" null">Label</nz-form-label>
+                <nz-form-control [nzSpan]="null">
+                  <input nz-input placeholder="Basic usage" type="text" />
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label [nzSpan]=" null">Nom</nz-form-label>
+                <nz-form-control [nzSpan]="null">
+                  <input nz-input placeholder="Basic usage" type="text" />
+                </nz-form-control>
+              </nz-form-item>
+
+
+              <nz-form-item>
+                <nz-form-label [nzSpan]=" null">Type</nz-form-label>
+                <nz-form-control [nzSpan]="null">
+                  <nz-select>
+                    <nz-option *ngFor="let item of types" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item>
+                <nz-form-label [nzSpan]=" null">Obligatoire</nz-form-label>
+                <nz-form-control [nzSpan]="null">
+                  <label nz-checkbox>
+                    <span>Le champ est-il obligatoire ?</span>
+                  </label>
+                </nz-form-control>
+              </nz-form-item>
+
+
+              <nz-form-item>
+                <nz-form-label [nzSpan]=" null">Unique</nz-form-label>
+                <nz-form-control [nzSpan]="null">
+                  <label nz-checkbox>
+                    <span>Le champ est-il unique ?</span>
+                  </label>
+                </nz-form-control>
+              </nz-form-item>
+
+            </form>
+
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

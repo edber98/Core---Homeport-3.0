@@ -1,0 +1,16 @@
+/* marge/padding par défaut pour tous les items */
+.df-form-item {
+  margin-bottom: 16px; // marge verticale entre champs
+  padding: 4px 0;      // padding vertical interne
+}
+
+/* si c'est un textblock => pas de marge, pas de padding */
+.df-form-item.df-textblock {
+  margin: 0;
+  padding: 0;
+
+  /* pour enlever les styles par défaut de ng-zorro si besoin */
+  .ant-form-item-control {
+    padding: 0;
+  }
+}
