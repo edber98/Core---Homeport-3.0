@@ -28,6 +28,10 @@ export const routes: Routes = [
         component: LayoutBuilder,
         children: [
             {
+                path: 'dynamic-form',
+                loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
+            },
+            {
                 path: 'builder',
                 loadChildren: () =>
                     import('./features/builder/builder-module').then(m => m.BuilderModule)

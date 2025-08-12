@@ -1,0 +1,84 @@
+<div class="builder">
+  <div class="controls">
+    <button nz-button nzType="default" (click)="addStep()">Add Step</button>
+  </div>
+  <div class="canvas" cdkDropList [cdkDropListData]="schema.steps || []" (cdkDropListDropped)="dropStep($event)">
+    <div class="step" *ngFor="let step of schema.steps; let si = index" cdkDrag (click)="select(step)">
+      <div class="step-header">{{ step.title || 'Step ' + (si + 1) }}</div>
+      <div class="sections" cdkDropList [cdkDropListData]="step.sections" (cdkDropListDropped)="dropSection($event, step)">
+        <div class="section" *ngFor="let section of step.sections" cdkDrag (click)="select(section)">
+          <div class="section-header">
+            {{ section.title || 'Section' }}
+            <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+          </div>
+          <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
+            <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
+              {{ field.label || field.type }}
+            </div>
+          </div>
+        </div>
+        <button nz-button nzSize="small" (click)="addSection(step)">+ Section</button>
+      </div>
+    </div>
+  </div>
+  <div class="inspector" *ngIf="selected">
+    <form nz-form [formGroup]="inspector">
+      <nz-form-item>
+        <nz-form-label>Title</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="title" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Key</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="key" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Label</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="label" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Placeholder</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="placeholder" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Options</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="options"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>visibleIf</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="visibleIf"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>requiredIf</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="requiredIf"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>disabledIf</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="disabledIf"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="preview">
+    <dynamic-form [schema]="schema"></dynamic-form>
+  </div>
+  <div class="io">
+    <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}"></textarea>
+    <button nz-button nzType="default" (click)="import()">Import</button>
+    <button nz-button nzType="default" (click)="export()">Export</button>
+  </div>
+</div>
