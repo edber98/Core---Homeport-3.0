@@ -1,0 +1,10 @@
+/* Mode édition: overlay de sélection + actions */
+.df-edit-item {
+  position: relative;
+  border-radius: 8px;
+}
+.df-edit-item.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); }
+.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); box-shadow: 0 0 0 2px rgba(22,119,255,.2) inset; }
+.df-edit-actions {
+  position: absolute; top: 4px; right: 4px; display: flex; gap: 4px;
+}

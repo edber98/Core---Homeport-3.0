@@ -6,19 +6,83 @@
   class="df-container">
 
   <!-- ===== Mode STEPS ===== -->
-  <ng-container *ngIf="visibleSteps().length; else noStepper">
-    <nz-steps [nzCurrent]="current()" class="df-steps">
-      <nz-step *ngFor="let s of visibleSteps()" [nzTitle]="s.title || 'Étape'"></nz-step>
-      <nz-step *ngIf="summaryEnabled()" [nzTitle]="summaryTitle()"></nz-step>
+  <ng-container *ngIf="visibleSteps.length; else noStepper">
+    <nz-steps [nzCurrent]="current()" class="df-steps" (nzIndexChange)="onStepHeaderIndexChange($event)" (click)="onStepperClick()">
+      <nz-step *ngFor="let s of visibleSteps" [nzTitle]="s.title || 'Étape'"></nz-step>
+      <nz-step *ngIf="summaryEnabled" [nzTitle]="summaryTitle"></nz-step>
     </nz-steps>
+    <div class="df-edit-toolbar" *ngIf="editMode" style="margin:8px 0; display:flex; gap:8px;">
+      <button nz-button nzSize="small" (click)="editAddStep.emit()">+ Step</button>
+    </div>
 
     <!-- Étapes visibles -->
-    <ng-container *ngFor="let s of visibleSteps(); let i = index">
+    <ng-container *ngFor="let s of visibleSteps; let i = index">
       <ng-container *ngIf="current() === i">
-        <!-- 🔁 Boucle sur les sections de l’étape -->
-        <ng-container *ngFor="let sec of s.sections">
-          <df-section [section]="sec" [form]="form" [ui]="ui"></df-section>
+        <div class="df-edit-step-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedStep === s" (click)="onSelectStep(i, s, $event)" (contextmenu)="openStepMenu($event,i)">
+        <!-- Champs root de l'étape (sans section) -->
+        <ng-container *ngIf="s.fields?.length">
+          <df-section [section]="{ fields: (s.fields || []) }"
+                      [form]="form" [ui]="ui"
+                      [editMode]="editMode"
+                      [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
+                      [selectedField]="selectedField"
+                      (moveField)="onMoveInStepRoot($event.index, $event.dir, i)"
+                      (deleteField)="onDeleteInStepRoot($event.index, i)"
+                      (selectField)="onSelectInStepRoot($event.index, i, (s.fields || [])[ $event.index ])"
+          ></df-section>
         </ng-container>
+
+        <!-- Sections de l'étape: empilé -->
+        <ng-container *ngFor="let sec of s.sections; let j = index">
+          <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === sec" (click)="onSelectSection(i, j, sec, $event)" (contextmenu)="openSectionMenu($event,i,j)">
+          <div class="df-fab" *ngIf="editMode" style="top:6px;right:6px;">
+            <button nz-button nzShape="circle" nzSize="small" nz-dropdown [nzDropdownMenu]="sectionAddMenu" (nzVisibleChange)="menuCtxSectionStepIndex = i; menuCtxSectionIndex = j">+</button>
+            <nz-dropdown-menu #sectionAddMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="addFieldInSectionFromMenu()">+ Field</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('text')">+ Text</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('textarea')">+ Textarea</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('number')">+ Number</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('date')">+ Date</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('select')">+ Select</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('radio')">+ Radio</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('checkbox')">+ Checkbox</li>
+                <li nz-menu-item (click)="addFieldInSectionTyped('textblock')">+ Textblock</li>
+                <li nz-menu-divider></li>
+                <li nz-menu-item (click)="editMoveSection.emit({ path: 'stepSections', stepIndex: menuCtxSectionStepIndex!, sectionIndex: menuCtxSectionIndex!, dir: 'up' })">Monter</li>
+                <li nz-menu-item (click)="editMoveSection.emit({ path: 'stepSections', stepIndex: menuCtxSectionStepIndex!, sectionIndex: menuCtxSectionIndex!, dir: 'down' })">Descendre</li>
+                <li nz-menu-item nzDanger (click)="deleteSectionFromMenu()">Supprimer</li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+          <df-section [section]="sec" [form]="form" [ui]="ui"
+                       [editMode]="editMode" [selectedField]="selectedField"
+                       [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
+                       (moveField)="onMoveInSection($event.index, $event.dir, i, j)"
+                       (deleteField)="onDeleteInSection($event.index, i, j)"
+                       (selectField)="onSelectInSection($event.index, i, j, (sec.fields || [])[ $event.index ])"
+          ></df-section>
+          </div>
+        </ng-container>
+
+        <div class="df-fab df-fab-step" *ngIf="editMode">
+          <button nz-button nzShape="circle" nzSize="small" nz-dropdown [nzDropdownMenu]="stepAddMenu" (nzVisibleChange)="menuCtxStepIndex = i">+</button>
+            <nz-dropdown-menu #stepAddMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="addSectionFromMenu()">+ Section</li>
+                <li nz-menu-item (click)="addFieldAtStepFromMenu()">+ Field (étape)</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('text')">+ Text</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('textarea')">+ Textarea</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('number')">+ Number</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('date')">+ Date</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('select')">+ Select</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('radio')">+ Radio</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('checkbox')">+ Checkbox</li>
+                <li nz-menu-item (click)="addFieldAtStepTyped('textblock')">+ Textblock</li>
+                <li nz-menu-item nzDanger (click)="deleteStepFromMenu()">Supprimer l'étape</li>
+              </ul>
+            </nz-dropdown-menu>
+        </div>
 
         <div class="df-actions">
           <button nz-button (click)="prev()" *ngIf="i > 0">Précédent</button>
@@ -27,7 +91,7 @@
             nz-button
             nzType="primary"
             (click)="next()"
-            *ngIf="i < realStepsCount() - 1"
+            *ngIf="i < realStepsCount - 1"
             [disabled]="isNextDisabled(i)">
             Suivant
           </button>
@@ -36,8 +100,8 @@
           <button
             nz-button
             nzType="primary"
-            (click)="go(summaryIndex())"
-            *ngIf="i === realStepsCount() - 1 && summaryEnabled()"
+            (click)="go(summaryIndex)"
+            *ngIf="i === realStepsCount - 1 && summaryEnabled"
             [disabled]="!isCurrentStepValid() || form.pending">
             Voir le résumé
           </button>
@@ -47,19 +111,20 @@
             nz-button
             nzType="primary"
             (click)="submit()"
-            *ngIf="i === realStepsCount() - 1 && !summaryEnabled()"
+            *ngIf="i === realStepsCount - 1 && !summaryEnabled"
             [disabled]="isSubmitDisabled()">
             Valider
           </button>
+        </div>
         </div>
       </ng-container>
     </ng-container>
 
     <!-- Step Résumé -->
-    <ng-container *ngIf="summaryEnabled() && current() === summaryIndex()">
-      <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
+    <ng-container *ngIf="summaryEnabled && current() === summaryIndex">
+      <h3 class="df-summary-title">{{ summaryTitle }}</h3>
 
-      <ng-container *ngFor="let st of summaryModel()">
+      <ng-container *ngFor="let st of summaryModel">
         <h4 class="df-summary-step">{{ st.title }}</h4>
         <ng-container *ngFor="let sec of st.sections">
           <div *ngIf="sec.title" class="df-summary-section">{{ sec.title }}</div>
@@ -75,7 +140,7 @@
       </ng-container>
 
       <div class="df-actions">
-        <button nz-button (click)="go(realStepsCount() - 1)">Modifier</button>
+        <button nz-button (click)="go(realStepsCount - 1)">Modifier</button>
         <button nz-button nzType="primary" (click)="submit()" [disabled]="isSubmitDisabled()">Valider</button>
       </div>
     </ng-container>
@@ -83,15 +148,28 @@
 
   <!-- ===== Mode SANS STEPPER ===== -->
   <ng-template #noStepper>
-    <ng-container *ngIf="visibleSections().length; else flatMode">
+    <ng-container *ngIf="visibleSections.length; else flatMode">
       <!-- 🔁 Boucle sur les sections racine -->
-      <ng-container *ngFor="let sec of visibleSections()">
-        <df-section [section]="sec" [form]="form" [ui]="ui"></df-section>
+      <ng-container *ngFor="let sec of visibleSections; let j = index">
+        <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === sec" (click)="onSelectSection(undefined, j, sec, $event)">
+        <div class="df-edit-toolbar" *ngIf="editMode" style="display:flex; gap:6px; align-items:center; margin:6px 0;">
+          <button nz-button nzSize="small" (click)="$event.stopPropagation(); onSelectSection(undefined, j, sec, $event)">Sélectionner la section</button>
+          <button nz-button nzSize="small" (click)="editAddFieldInSection.emit({ sectionIndex: j }); $event.stopPropagation()">+ Field</button>
+          <button nz-button nzSize="small" nzDanger (click)="editDeleteSection.emit({ sectionIndex: j }); $event.stopPropagation()">Supprimer</button>
+        </div>
+        <df-section [section]="sec" [form]="form" [ui]="ui"
+                    [editMode]="editMode" [selectedField]="selectedField"
+                    [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
+                    (moveField)="onMoveInSection($event.index, $event.dir, undefined, j)"
+                    (deleteField)="onDeleteInSection($event.index, undefined, j)"
+                    (selectField)="onSelectInSection($event.index, undefined, j, (sec.fields || [])[ $event.index ])"
+        ></df-section>
+        </div>
       </ng-container>
 
-      <ng-container *ngIf="summaryEnabled()">
-        <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
-        <ng-container *ngFor="let st of summaryModel()">
+      <ng-container *ngIf="summaryEnabled">
+        <h3 class="df-summary-title">{{ summaryTitle }}</h3>
+        <ng-container *ngFor="let st of summaryModel">
           <ng-container *ngFor="let sec of st.sections">
             <div *ngIf="sec.title" class="df-summary-section">{{ sec.title }}</div>
             <table class="df-summary-table">
@@ -119,12 +197,18 @@
 
     <!-- Flat: fields[] au niveau racine -->
     <ng-template #flatMode>
-      <!-- ✅ flatSection() retourne un SectionConfig (objet), pas un tableau -->
-      <df-section [section]="flatSection()" [form]="form" [ui]="ui"></df-section>
+      <!-- ✅ flatSection retourne un SectionConfig (objet), pas un tableau -->
+      <df-section [section]="flatSection" [form]="form" [ui]="ui"
+                  [editMode]="editMode" [selectedField]="selectedField"
+                  [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
+                  (moveField)="onMoveInFlat($event.index, $event.dir)"
+                  (deleteField)="onDeleteInFlat($event.index)"
+                  (selectField)="onSelectInFlat($event.index, flatSection.fields[$event.index])"
+      ></df-section>
 
-      <ng-container *ngIf="summaryEnabled()">
-        <h3 class="df-summary-title">{{ summaryTitle() }}</h3>
-        <ng-container *ngFor="let st of summaryModel()">
+      <ng-container *ngIf="summaryEnabled">
+        <h3 class="df-summary-title">{{ summaryTitle }}</h3>
+        <ng-container *ngFor="let st of summaryModel">
           <ng-container *ngFor="let sec of st.sections">
             <table class="df-summary-table">
               <tbody>
@@ -150,4 +234,17 @@
     </ng-template>
   </ng-template>
 </form>
-
+    <!-- Shared context menus for right-click anywhere -->
+    <nz-dropdown-menu #sharedStepMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="addSectionFromMenu()">+ Section</li>
+        <li nz-menu-item (click)="addFieldAtStepFromMenu()">+ Field (étape)</li>
+        <li nz-menu-item nzDanger (click)="deleteStepFromMenu()">Supprimer l'étape</li>
+      </ul>
+    </nz-dropdown-menu>
+    <nz-dropdown-menu #sharedSectionMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="addFieldInSectionFromMenu()">+ Field</li>
+        <li nz-menu-item nzDanger (click)="deleteSectionFromMenu()">Supprimer</li>
+      </ul>
+    </nz-dropdown-menu>

@@ -5,7 +5,7 @@ import { DynamicFormBuilder } from '../../../../modules/dynamic-form-builder/dyn
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule, DynamicFormBuilder],
+  imports: [CommonModule, DynamicFormBuilder, DynamicForm],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss'
 })

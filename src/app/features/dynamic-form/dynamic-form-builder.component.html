@@ -3,41 +3,83 @@
   <div class="left">
     <nz-card nzTitle="Palette & Contexte" nzSize="small" class="card sticky">
       <div class="toolbar">
-        <button nz-button nzSize="small" (click)="addStep()">+ Step</button>
-        <button nz-button nzSize="small" (click)="addSection()">+ Section</button>
-        <button nz-button nzSize="small" (click)="addField()">+ Field (racine)</button>
+        <button nz-button nzSize="small" (click)="select(schema)">Form Settings</button>
+        <button nz-button nzSize="small" (click)="addStep()" [disabled]="!canAddStep()">+ Step</button>
+        <button nz-button nzSize="small" (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()">+ Section</button>
+        <button nz-button nzSize="small" (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()">+ Field</button>
       </div>
 
-      <nz-divider nzText="Contexte Step/Section"></nz-divider>
-      <div class="context">
-        <nz-select
-          nzSize="small"
-          style="width:100%;"
-          [ngModelOptions]="{standalone:true}"
-          [(ngModel)]="ctxStepIndex"
-          nzPlaceHolder="Choisir un step"
-          *ngIf="schema.steps?.length">
-          <nz-option *ngFor="let s of schema.steps; index as i"
-                     [nzValue]="i"
-                     [nzLabel]="s.title || ('Step ' + (i+1))"></nz-option>
-        </nz-select>
+      <nz-divider nzText="Structure"></nz-divider>
+      <div class="tree">
+        <nz-tree [nzData]="treeNodes" nzBlockNode (nzClick)="onTreeClick($event)" [nzSelectedKeys]="treeSelectedKeys" (nzExpandChange)="onTreeExpand($event)">
+          <ng-template #nzTreeTemplate let-node>
+            <!-- Root -->
+            <span *ngIf="node.key==='root'; else notRoot"
+                  (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
+                  class="tree-node-label">{{ node.title }}</span>
+            <ng-template #notRoot>
+            <!-- Step -->
+            <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
+                  (contextmenu)="openTreeMenu($event, menuStep, node.key)"
+                  class="tree-node-label">{{ node.title }}</span>
+            <ng-template #notStep>
+              <!-- Section -->
+              <span *ngIf="node.key.indexOf(':section:')> -1 && !node.isLeaf; else leafField"
+                    (contextmenu)="openTreeMenu($event, menuSection, node.key)"
+                    class="tree-node-label">{{ node.title }}</span>
+            </ng-template>
+            <!-- Field -->
+            <ng-template #leafField>
+              <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
+                    class="tree-node-label">{{ node.title }}</span>
+            </ng-template>
+            </ng-template>
+          </ng-template>
+        </nz-tree>
 
-        <nz-select
-          nzSize="small"
-          style="width:100%; margin-top:6px;"
-          [ngModelOptions]="{standalone:true}"
-          [(ngModel)]="ctxSectionIndex"
-          nzPlaceHolder="Choisir une section"
-          *ngIf="ctxStepIndex!=null">
-          <nz-option *ngFor="let sec of schema.steps![ctxStepIndex].sections; index as j"
-                     [nzValue]="j"
-                     [nzLabel]="sec.title || ('Section ' + (j+1))"></nz-option>
-        </nz-select>
-
-        <div class="context-actions">
-          <button nz-button nzSize="small" (click)="addSectionToCtx()" [disabled]="ctxStepIndex==null">+ Section au step</button>
-          <button nz-button nzSize="small" (click)="addFieldToCtx()" [disabled]="ctxStepIndex==null">+ Field à la section</button>
-        </div>
+        <!-- Menus contextuels -->
+        <nz-dropdown-menu #menuStep="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="ctxAddSection()">+ Section</li>
+            <li nz-menu-item (click)="ctxAddFieldToStep()">+ Field (étape)</li>
+            <li nz-menu-item nzDanger (click)="ctxDeleteStep()">Supprimer l'étape</li>
+          </ul>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #menuSection="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="ctxAddFieldToSection()">+ Field</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('text')">+ Text</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('textarea')">+ Textarea</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('number')">+ Number</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('date')">+ Date</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('select')">+ Select</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('radio')">+ Radio</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('checkbox')">+ Checkbox</li>
+            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('textblock')">+ Textblock</li>
+            <li nz-menu-item nzDanger (click)="ctxDeleteSection()">Supprimer</li>
+          </ul>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #menuField="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item nzDanger (click)="ctxDeleteField()">Supprimer</li>
+          </ul>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #menuRoot="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="ctxAddStep()">+ Step</li>
+            <li nz-menu-item (click)="ctxAddSectionRoot()" [nzDisabled]="schema.steps?.length">+ Section (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRoot()" [nzDisabled]="schema.steps?.length">+ Field (racine)</li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('text')" [nzDisabled]="schema.steps?.length">+ Text (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('textarea')" [nzDisabled]="schema.steps?.length">+ Textarea (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('number')" [nzDisabled]="schema.steps?.length">+ Number (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('date')" [nzDisabled]="schema.steps?.length">+ Date (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('select')" [nzDisabled]="schema.steps?.length">+ Select (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('radio')" [nzDisabled]="schema.steps?.length">+ Radio (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('checkbox')" [nzDisabled]="schema.steps?.length">+ Checkbox (racine)</li>
+            <li nz-menu-item (click)="ctxAddFieldRootTyped('textblock')" [nzDisabled]="schema.steps?.length">+ Textblock (racine)</li>
+          </ul>
+        </nz-dropdown-menu>
       </div>
 
       <nz-divider nzText="Champs rapides"></nz-divider>
@@ -52,6 +94,20 @@
         <button nz-button nzSize="small" (click)="quickAdd('textblock')">TextBlock</button>
       </div>
 
+      <nz-divider nzText="Grille"></nz-divider>
+      <div class="context">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+          <nz-select nzSize="small" [ngModelOptions]="{standalone:true}" [(ngModel)]="gridBp">
+            <nz-option nzLabel="xs" nzValue="xs"></nz-option>
+            <nz-option nzLabel="sm" nzValue="sm"></nz-option>
+            <nz-option nzLabel="md" nzValue="md"></nz-option>
+            <nz-option nzLabel="lg" nzValue="lg"></nz-option>
+            <nz-option nzLabel="xl" nzValue="xl"></nz-option>
+          </nz-select>
+          <label nz-switch [ngModelOptions]="{standalone:true}" [(ngModel)]="showGrid">Afficher grille</label>
+        </div>
+      </div>
+
       <nz-divider nzText="Import / Export"></nz-divider>
       <div class="io">
         <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}" placeholder="Colle ton JSON ici"></textarea>
@@ -64,6 +120,10 @@
 
     <nz-card nzTitle="Prévisualisation responsive" nzSize="small" class="card sticky mt">
       <div class="bp">
+        <label style="display:flex;align-items:center;gap:6px;margin-right:auto">
+          <span>Mode édition</span>
+          <nz-switch [(ngModel)]="editMode" [ngModelOptions]="{standalone:true}"></nz-switch>
+        </label>
         <button nz-button nzSize="small" (click)="setPreviewWidth()">Auto</button>
         <button nz-button nzSize="small" (click)="setPreviewWidth(360)">XS</button>
         <button nz-button nzSize="small" (click)="setPreviewWidth(576)">SM</button>
@@ -77,12 +137,31 @@
 
   <!-- CANVAS -->
   <div class="center">
-    <nz-card nzTitle="Canvas" class="card fill">
+    <nz-card nzTitle="Aperçu éditable" class="card fill">
+      <app-dynamic-form
+        [schema]="schema"
+        [editMode]="editMode"
+        [selectedField]="selectedField"
+        [selectedSection]="selectedSectionForPreview"
+        [selectedStep]="selectedStepForPreview"
+        (editMoveField)="onEditMoveField($event)"
+        (editMoveSection)="onEditMoveSection($event)"
+        (editDeleteField)="onEditDeleteField($event)"
+        (editSelectField)="onEditSelectField($event)"
+        (editSelectSection)="onEditSelectSection($event)"
+        (editSelectStep)="onEditSelectStep($event)"
+        (editAddFieldTyped)="onEditAddFieldTyped($event)"
+        (editAddStep)="onEditAddStep()"
+        (editAddSection)="onEditAddSection($event)"
+        (editAddFieldStepRoot)="onEditAddFieldStepRoot($event)"
+        (editAddFieldInSection)="onEditAddFieldInSection($event)"
+      ></app-dynamic-form>
+      <ng-container *ngIf="false">
       <!-- STEPPER -->
       <div class="steps"
            *ngIf="schema.steps"
            cdkDropList
-           [cdkDropListData]="schema.steps"
+           [cdkDropListData]="schema.steps || []"
            (cdkDropListDropped)="dropStep($event)">
 
         <div class="step"
@@ -95,13 +174,37 @@
             <strong>{{ step.title || ('Step ' + (si+1)) }}</strong>
             <div class="actions">
               <button nz-button nzSize="small" (click)="addSection(step); $event.stopPropagation()">+ Section</button>
+              <button nz-button nzSize="small" (click)="addFieldToStep(step); $event.stopPropagation()">+ Field (step)</button>
               <button nz-button nzSize="small" nzDanger (click)="removeStep(step); $event.stopPropagation()">Delete</button>
+            </div>
+          </div>
+
+          <!-- Champs racine du step (sans section) -->
+          <div class="fields grid" [class.show-grid]="showGrid"
+               *ngIf="step.fields?.length"
+               cdkDropList
+               [cdkDropListData]="step.fields || []"
+               (cdkDropListDropped)="dropFieldInStepRoot($event, step)">
+            <div class="field"
+                 *ngFor="let field of step.fields"
+                 cdkDrag
+                 [class.selected]="isSelected(field)"
+                 (click)="select(field)">
+              <span class="drag-handle" cdkDragHandle title="Déplacer">⋮⋮</span>
+              <span class="f-label">{{ field.label || field.type }}</span>
+              <span class="span-ctrls">
+                <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
+                <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
+                <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
+              </span>
+              <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
+              <button nz-button nzSize="small" nzDanger (click)="removeFieldFromStep(field, step); $event.stopPropagation()">Delete</button>
             </div>
           </div>
 
           <div class="sections"
                cdkDropList
-               [cdkDropListData]="step.sections"
+               [cdkDropListData]="step.sections || []"
                (cdkDropListDropped)="dropSection($event, step)">
             <div class="section"
                  *ngFor="let section of step.sections; let si2=index"
@@ -120,7 +223,7 @@
                 </div>
               </div>
 
-              <div class="fields"
+              <div class="fields grid" [class.show-grid]="showGrid"
                    cdkDropList
                    [cdkDropListData]="section.fields || []"
                    (cdkDropListDropped)="dropField($event, section)">
@@ -129,7 +232,14 @@
                      cdkDrag
                      [class.selected]="isSelected(field)"
                      (click)="select(field)">
+                  <span class="drag-handle" cdkDragHandle title="Déplacer">⋮⋮</span>
                   <span class="f-label">{{ field.label || field.type }}</span>
+                  <span class="span-ctrls">
+                    <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
+                    <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
+                    <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
+                  </span>
+                  <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
                   <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
                 </div>
               </div>
@@ -142,7 +252,7 @@
       <div class="sections"
            *ngIf="schema.sections && !schema.steps"
            cdkDropList
-           [cdkDropListData]="schema.sections"
+           [cdkDropListData]="schema.sections || []"
            (cdkDropListDropped)="dropSection($event)">
         <div class="section"
              *ngFor="let section of schema.sections"
@@ -160,7 +270,7 @@
             </div>
           </div>
 
-          <div class="fields"
+          <div class="fields grid" [class.show-grid]="showGrid"
                cdkDropList
                [cdkDropListData]="section.fields || []"
                (cdkDropListDropped)="dropField($event, section)">
@@ -170,6 +280,12 @@
                  [class.selected]="isSelected(field)"
                  (click)="select(field)">
               <span class="f-label">{{ field.label || field.type }}</span>
+              <span class="span-ctrls">
+                <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
+                <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
+                <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
+              </span>
+              <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
               <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
             </div>
           </div>
@@ -177,20 +293,28 @@
       </div>
 
       <!-- FLAT -->
-      <div class="fields"
+      <div class="fields grid" [class.show-grid]="showGrid"
            *ngIf="schema.fields && !schema.steps && !schema.sections"
            cdkDropList
-           [cdkDropListData]="schema.fields"
+           [cdkDropListData]="schema.fields || []"
            (cdkDropListDropped)="dropField($event)">
         <div class="field"
              *ngFor="let field of schema.fields"
              cdkDrag
              [class.selected]="isSelected(field)"
              (click)="select(field)">
+          <span class="drag-handle" cdkDragHandle title="Déplacer">⋮⋮</span>
           <span class="f-label">{{ field.label || field.type }}</span>
+          <span class="span-ctrls">
+            <nz-tag nzColor="blue">{{ gridBp }}: {{ getSpan(field) }}</nz-tag>
+            <button nz-button nzSize="small" (click)="changeSpan(field,-1); $event.stopPropagation()">-</button>
+            <button nz-button nzSize="small" (click)="changeSpan(field,1); $event.stopPropagation()">+</button>
+          </span>
+          <span class="resize-handle" (mousedown)="onResizeStart($event, field)" title="Glisser pour redimensionner"></span>
           <button nz-button nzSize="small" nzDanger (click)="removeField(field); $event.stopPropagation()">Delete</button>
         </div>
       </div>
+      </ng-container>
     </nz-card>
   </div>
 
@@ -226,6 +350,10 @@
               <nz-form-item>
                 <nz-form-label>Grid gutter</nz-form-label>
                 <nz-form-control><nz-input-number formControlName="gridGutter" [nzMin]="0"></nz-input-number></nz-form-control>
+              </nz-form-item>
+              <nz-form-item>
+                <nz-form-label>visibleIf (JSON)</nz-form-label>
+                <nz-form-control><textarea nz-input rows="3" formControlName="visibleIf" placeholder='{"==":[{"var":"country"},"FR"]}'></textarea></nz-form-control>
               </nz-form-item>
             </ng-container>
 
@@ -358,7 +486,7 @@
             <nz-divider nzText="Résumé"></nz-divider>
             <nz-form-item>
               <nz-form-label>enabled</nz-form-label>
-              <nz-form-control><label nz-switch formControlName="summary_enabled"></label></nz-form-control>
+              <nz-form-control><nz-switch formControlName="summary_enabled"></nz-switch></nz-form-control>
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>title</nz-form-label>
@@ -366,7 +494,7 @@
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>includeHidden</nz-form-label>
-              <nz-form-control><label nz-switch formControlName="summary_includeHidden"></label></nz-form-control>
+              <nz-form-control><nz-switch formControlName="summary_includeHidden"></nz-switch></nz-form-control>
             </nz-form-item>
             <nz-form-item>
               <nz-form-label>dateFormat</nz-form-label>

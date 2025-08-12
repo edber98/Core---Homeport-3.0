@@ -4,7 +4,7 @@
 
     <div style="margin-bottom:16px">
       <nz-row [nzGutter]="section.grid?.gutter || 16">
-        <ng-container *ngFor="let f of section.fields">
+        <ng-container *ngFor="let f of section.fields; let i = index">
           <ng-container *ngIf="dfs.isFieldVisible(f, form)">
             <nz-col
               [nzXs]="dfs.getFieldSpans(f).xs"
@@ -13,7 +13,15 @@
               [nzLg]="dfs.getFieldSpans(f).lg"
               [nzXl]="dfs.getFieldSpans(f).xl"
             >
-              <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+              <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
+                   (click)="onClickField(i, $event)">
+                <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+                <div class="df-edit-actions" *ngIf="editMode">
+                  <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'up'}); $event.stopPropagation()">▲</button>
+                  <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'down'}); $event.stopPropagation()">▼</button>
+                  <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="deleteField.emit({index: i}); $event.stopPropagation()">✕</button>
+                </div>
+              </div>
             </nz-col>
           </ng-container>
         </ng-container>

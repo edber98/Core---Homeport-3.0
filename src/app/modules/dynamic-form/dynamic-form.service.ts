@@ -53,7 +53,18 @@ export interface StepConfig {
     key?: string;
     title: string;
     visibleIf?: JSONVal;
+    /**
+     * Sections de l'étape. Si `style === 'tabs'`, ces sections sont rendues en onglets.
+     */
     sections: SectionConfig[];
+    /**
+     * Champs à la racine de l'étape (optionnels), sans devoir créer une section.
+     */
+    fields?: FieldConfig[];
+    /**
+     * Rendu des sections: 'stack' (défaut) ou 'tabs'.
+     */
+    style?: 'stack' | 'tabs';
 }
 
 export interface FormUI {
@@ -108,11 +119,17 @@ export class DynamicFormService {
     collectFields(schema: FormSchema): FieldConfig[] {
         const out: FieldConfig[] = [];
         if (schema.steps?.length) {
-            for (const st of schema.steps) for (const sec of st.sections || []) for (const f of sec.fields || []) out.push(f);
-        } else if (schema.sections?.length) {
-            for (const sec of schema.sections) for (const f of sec.fields || []) out.push(f);
-        } else if (schema.fields?.length) {
-            for (const f of schema.fields) out.push(f);
+            for (const st of schema.steps) {
+                for (const f of (st.fields || [])) out.push(f);
+                for (const sec of st.sections || []) for (const f of sec.fields || []) out.push(f);
+            }
+        } else {
+            if (schema.sections?.length) {
+                for (const sec of schema.sections) for (const f of sec.fields || []) out.push(f);
+            }
+            if (schema.fields?.length) {
+                for (const f of schema.fields) out.push(f);
+            }
         }
         return out;
     }
@@ -264,6 +281,16 @@ export class DynamicFormService {
             schema.steps.forEach((step, si) => {
                 if (!includeHidden && step.visibleIf && !this.evalRule(step.visibleIf, value)) return;
                 const stepBlock = { title: step.title || `Étape ${si + 1}`, sections: [] as any[] };
+                // champs racine de l'étape
+                const rootRows = (step.fields || [])
+                    .filter(f => f.type !== 'textblock')
+                    .filter(considerField)
+                    .map(f => ({
+                        key: (f as any).key,
+                        label: f.label || (f as any).key || '',
+                        value: this.displayValue(f, value[(f as any).key], schema)
+                    }));
+                if (rootRows.length) stepBlock.sections.push({ title: undefined, rows: rootRows });
                 step.sections?.forEach(sec => {
                     const rows = (sec.fields || [])
                         .filter(f => f.type !== 'textblock')
@@ -277,9 +304,9 @@ export class DynamicFormService {
                 });
                 if (stepBlock.sections.length) byStep.push(stepBlock);
             });
-        } else if (schema.sections?.length) {
+        } else {
             const stepBlock = { title: schema.title || 'Résumé', sections: [] as any[] };
-            schema.sections.forEach(sec => {
+            (schema.sections || []).forEach(sec => {
                 const rows = (sec.fields || [])
                     .filter(f => f.type !== 'textblock')
                     .filter(considerField)
@@ -290,9 +317,7 @@ export class DynamicFormService {
                     }));
                 if (rows.length) stepBlock.sections.push({ title: sec.title, rows });
             });
-            if (stepBlock.sections.length) byStep.push(stepBlock);
-        } else if (schema.fields?.length) {
-            const rows = schema.fields
+            const flatRows = (schema.fields || [])
                 .filter(f => f.type !== 'textblock')
                 .filter(considerField)
                 .map(f => ({
@@ -300,7 +325,8 @@ export class DynamicFormService {
                     label: f.label || (f as any).key || '',
                     value: this.displayValue(f, value[(f as any).key], schema)
                 }));
-            if (rows.length) byStep.push({ title: schema.title || 'Résumé', sections: [{ rows }] as any });
+            if (flatRows.length) stepBlock.sections.push({ rows: flatRows } as any);
+            if (stepBlock.sections.length) byStep.push(stepBlock);
         }
 
         return byStep;

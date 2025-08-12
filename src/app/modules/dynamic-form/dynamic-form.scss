@@ -40,3 +40,14 @@
     background: #fafafa;
   }
 }
+.df-edit-step-wrap.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); border-radius: 8px; }
+.df-edit-step-wrap.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); border-radius: 8px; }
+.df-edit-step-wrap { position: relative; }
+
+.df-edit-section-wrap.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); border-radius: 8px; }
+.df-edit-section-wrap.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); border-radius: 8px; }
+
+.df-fab { position: relative; }
+.df-fab > button[nz-button] { position: absolute; top: 6px; right: 6px; }
+.df-fab-step { position: absolute; right: 6px; bottom: 6px; }
+.df-fab-step > button[nz-button] { position: static; }
