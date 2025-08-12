@@ -8,20 +8,29 @@
   <div class="canvas">
     <div class="steps" *ngIf="schema.steps" cdkDropList [cdkDropListData]="schema.steps" (cdkDropListDropped)="dropStep($event)">
       <div class="step" *ngFor="let step of schema.steps; let si = index" cdkDrag (click)="select(step)">
-        <div class="step-header">{{ step.title || 'Step ' + (si + 1) }}</div>
+        <div class="step-header">
+          {{ step.title || 'Step ' + (si + 1) }}
+          <div class="actions">
+            <button nz-button nzSize="small" (click)="addSection(step); $event.stopPropagation()">+ Section</button>
+            <button nz-button nzSize="small" nzDanger (click)="removeStep(step); $event.stopPropagation()">Delete</button>
+          </div>
+        </div>
         <div class="sections" cdkDropList [cdkDropListData]="step.sections" (cdkDropListDropped)="dropSection($event, step)">
           <div class="section" *ngFor="let section of step.sections" cdkDrag (click)="select(section)">
             <div class="section-header">
               {{ section.title || 'Section' }}
-              <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+              <div class="actions">
+                <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+                <button nz-button nzSize="small" nzDanger (click)="removeSection(section, step); $event.stopPropagation()">Delete</button>
+              </div>
             </div>
             <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
               <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
-                {{ field.label || field.type }}
+                <span>{{ field.label || field.type }}</span>
+                <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
               </div>
             </div>
           </div>
-          <button nz-button nzSize="small" (click)="addSection(step)">+ Section</button>
         </div>
       </div>
     </div>
@@ -29,18 +38,23 @@
       <div class="section" *ngFor="let section of schema.sections" cdkDrag (click)="select(section)">
         <div class="section-header">
           {{ section.title || 'Section' }}
-          <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+          <div class="actions">
+            <button nz-button nzSize="small" (click)="addField(section); $event.stopPropagation()">+ Field</button>
+            <button nz-button nzSize="small" nzDanger (click)="removeSection(section); $event.stopPropagation()">Delete</button>
+          </div>
         </div>
         <div class="fields" cdkDropList [cdkDropListData]="section.fields || []" (cdkDropListDropped)="dropField($event, section)">
           <div class="field" *ngFor="let field of (section.fields || [])" cdkDrag (click)="select(field)">
-            {{ field.label || field.type }}
+            <span>{{ field.label || field.type }}</span>
+            <button nz-button nzSize="small" nzDanger (click)="removeField(field, section); $event.stopPropagation()">Delete</button>
           </div>
         </div>
       </div>
     </div>
     <div class="fields" *ngIf="schema.fields" cdkDropList [cdkDropListData]="schema.fields" (cdkDropListDropped)="dropField($event)">
       <div class="field" *ngFor="let field of schema.fields" cdkDrag (click)="select(field)">
-        {{ field.label || field.type }}
+        <span>{{ field.label || field.type }}</span>
+        <button nz-button nzSize="small" nzDanger (click)="removeField(field); $event.stopPropagation()">Delete</button>
       </div>
     </div>
   </div>
@@ -100,6 +114,18 @@
           <textarea nz-input formControlName="disabledIf"></textarea>
         </nz-form-control>
       </nz-form-item>
+      <nz-form-item *ngIf="isSection(selected)">
+        <nz-form-label>Grid Gutter</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="gridGutter" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *ngIf="isField(selected)">
+        <nz-form-label>Col</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input formControlName="col"></textarea>
+        </nz-form-control>
+      </nz-form-item>
       <ng-container *ngIf="selected === schema">
         <nz-form-item>
           <nz-form-label>Layout</nz-form-label>
@@ -135,7 +161,7 @@
     </form>
   </div>
   <div class="preview">
-    <dynamic-form [schema]="schema"></dynamic-form>
+    <app-dynamic-form [schema]="schema"></app-dynamic-form>
   </div>
   <div class="io">
     <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}"></textarea>

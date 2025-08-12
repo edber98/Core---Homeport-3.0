@@ -7,8 +7,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { DynamicFormComponent } from './dynamic-form.component';
-import { FieldConfig, FormSchema, SectionConfig, StepConfig } from './dynamic-form.types';
+import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
+import { FieldConfig, FormSchema, SectionConfig, StepConfig } from '../../modules/dynamic-form/dynamic-form.service';
 
 @Component({
   selector: 'dynamic-form-builder',
@@ -23,7 +23,7 @@ import { FieldConfig, FormSchema, SectionConfig, StepConfig } from './dynamic-fo
     NzSelectModule,
     NzFormModule,
     NzCardModule,
-    DynamicFormComponent,
+    DynamicForm,
   ],
   templateUrl: './dynamic-form-builder.component.html',
   styleUrl: './dynamic-form-builder.component.scss',
@@ -49,6 +49,8 @@ export class DynamicFormBuilderComponent {
       visibleIf: [''],
       requiredIf: [''],
       disabledIf: [''],
+      gridGutter: [''],
+      col: [''],
       layout: [''],
       labelAlign: [''],
       labelColSpan: [''],
@@ -80,6 +82,12 @@ export class DynamicFormBuilderComponent {
           requiredIf: v.requiredIf ? JSON.parse(v.requiredIf) : undefined,
           disabledIf: v.disabledIf ? JSON.parse(v.disabledIf) : undefined,
         });
+        if (this.isSection(this.selected)) {
+          this.selected.grid = v.gridGutter ? { gutter: Number(v.gridGutter) } : undefined;
+        }
+        if (this.isField(this.selected)) {
+          this.selected.col = v.col ? JSON.parse(v.col) : undefined;
+        }
       }
       this.refresh();
     });
@@ -97,6 +105,8 @@ export class DynamicFormBuilderComponent {
       visibleIf: obj.visibleIf ? JSON.stringify(obj.visibleIf) : '',
       requiredIf: obj.requiredIf ? JSON.stringify(obj.requiredIf) : '',
       disabledIf: obj.disabledIf ? JSON.stringify(obj.disabledIf) : '',
+      gridGutter: obj.grid?.gutter ?? '',
+      col: obj.col ? JSON.stringify(obj.col) : '',
       layout: this.schema.ui?.layout ?? '',
       labelAlign: this.schema.ui?.labelAlign ?? '',
       labelColSpan: this.schema.ui?.labelCol?.span ?? '',
@@ -137,6 +147,36 @@ export class DynamicFormBuilderComponent {
       this.schema.fields.push(field);
     }
     this.refresh();
+  }
+
+  removeStep(step: StepConfig): void {
+    if (!this.schema.steps) return;
+    this.schema.steps = this.schema.steps.filter(s => s !== step);
+    this.refresh();
+  }
+
+  removeSection(section: SectionConfig, step?: StepConfig): void {
+    const arr = step ? step.sections : this.schema.sections;
+    if (!arr) return;
+    const idx = arr.indexOf(section);
+    if (idx > -1) arr.splice(idx, 1);
+    this.refresh();
+  }
+
+  removeField(field: FieldConfig, section?: SectionConfig): void {
+    const arr = section ? section.fields : this.schema.fields;
+    if (!arr) return;
+    const idx = arr.indexOf(field);
+    if (idx > -1) arr.splice(idx, 1);
+    this.refresh();
+  }
+
+  isField(obj: any): obj is FieldConfig {
+    return obj && 'type' in obj && !('fields' in obj);
+  }
+
+  isSection(obj: any): obj is SectionConfig {
+    return obj && 'fields' in obj && !('sections' in obj);
   }
 
   dropStep(event: CdkDragDrop<StepConfig[]>): void {
