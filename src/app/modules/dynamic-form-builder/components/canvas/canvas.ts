@@ -3,8 +3,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BuilderState } from '../../builder-state.service';
+import { FieldConfig } from '../../builder.types';
 
 @Component({
   selector: 'df-canvas',
@@ -26,6 +27,13 @@ export class Canvas {
     this.state.reorderSection(stepIndex, ev.previousIndex, ev.currentIndex);
   }
   dropField(stepIndex: number | undefined, sectionIndex: number, ev: CdkDragDrop<any[]>) {
-    this.state.reorderField(stepIndex, sectionIndex, ev.previousIndex, ev.currentIndex);
+    if (ev.previousContainer === ev.container) {
+      this.state.reorderField(stepIndex, sectionIndex, ev.previousIndex, ev.currentIndex);
+    } else {
+      const kind = ev.item.data as FieldConfig['type'];
+      if (kind) {
+        this.state.addField(kind, stepIndex, sectionIndex, ev.currentIndex);
+      }
+    }
   }
 }

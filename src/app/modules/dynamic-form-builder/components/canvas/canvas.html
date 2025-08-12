@@ -17,7 +17,7 @@
             <button nz-button size="small" (click)="$event.stopPropagation(); state.addField('text', si, secIdx)">+ Champ</button>
           </div>
 
-          <div class="fields" cdkDropList (cdkDropListDropped)="dropField(si, secIdx, $event)">
+          <div class="fields" cdkDropList [cdkDropListConnectedTo]="['palette']" (cdkDropListDropped)="dropField(si, secIdx, $event)">
             <div class="field" *ngFor="let f of sec.fields; let fi = index" cdkDrag (click)="state.selectField(fi, secIdx, si)">
               <code>{{ f.type }}</code> <span *ngIf="f.type!=='textblock'">• {{ f.key }}</span>
             </div>
@@ -39,7 +39,7 @@
         <button nz-button size="small" (click)="$event.stopPropagation(); state.addField('text', undefined, secIdx)">+ Champ</button>
       </div>
 
-      <div class="fields" cdkDropList (cdkDropListDropped)="dropField(undefined, secIdx, $event)">
+      <div class="fields" cdkDropList [cdkDropListConnectedTo]="['palette']" (cdkDropListDropped)="dropField(undefined, secIdx, $event)">
         <div class="field" *ngFor="let f of sec.fields; let fi = index" cdkDrag (click)="state.selectField(fi, secIdx)">
           <code>{{ f.type }}</code> <span *ngIf="f.type!=='textblock'">{{ f.key }}</span>
         </div>
