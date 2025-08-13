@@ -46,6 +46,25 @@
 
 .df-edit-section-wrap.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); border-radius: 8px; }
 .df-edit-section-wrap.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); border-radius: 8px; }
+.df-edit-section-wrap { position: relative; }
+
+/* Actions flottantes génériques pour les items (ne changent pas la hauteur) */
+.df-edit-item { position: relative; border-radius: 8px; }
+.df-edit-item.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); }
+.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); box-shadow: 0 0 0 2px rgba(22,119,255,.2) inset; }
+.df-edit-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 6px; z-index: 2; }
+
+/* Couche de clic en mode édition pour assurer la sélection des fields */
+.df-hitlayer {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1; /* sous les actions */
+}
 
 .df-fab { position: relative; }
 .df-fab > button[nz-button] { position: absolute; top: 6px; right: 6px; }

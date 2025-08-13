@@ -23,6 +23,9 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "nunjucks"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -44,8 +47,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1800kB",
+                  "maximumError": "2200kB"
                 },
                 {
                   "type": "anyComponentStyle",

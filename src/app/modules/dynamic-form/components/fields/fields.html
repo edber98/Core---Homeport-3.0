@@ -2,7 +2,9 @@
   <nz-form-item
     class="df-form-item"
     [class.df-textblock]="field.type === 'textblock'"
-    [ngStyle]="itemStyle">
+    [ngStyle]="itemStyle"
+    [style.--df-label-color]="$any(field).labelStyle?.color || null"
+    [style.--df-label-font-size]="$any(field).labelStyle?.fontSize || null">
 
     <ng-container [ngSwitch]="field.type">
 
@@ -10,7 +12,7 @@
       <ng-container *ngSwitchCase="'textblock'">
         <nz-form-control [nzSpan]="24">
           <nz-typography>
-            <div [innerHTML]="field.textHtml || ''"></div>
+            <div [innerHTML]="field.textHtml || ''" [ngStyle]="$any(field).textStyle || null"></div>
           </nz-typography>
         </nz-form-control>
       </ng-container>

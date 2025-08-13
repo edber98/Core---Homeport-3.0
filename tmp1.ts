@@ -1,7 +1,7 @@
 // dynamic-form-builder.component.ts
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -29,6 +29,7 @@ import { StyleEditorComponent } from './components/style-editor.component';
 import { CustomizeDialogComponent } from './components/customize-dialog.component';
 import { BuilderTreeService } from './services/builder-tree.service';
 import { BuilderCustomizeService } from './services/builder-customize.service';
+import { CustomizeDialogComponent } from './components/customize-dialog.component';
 import { DynamicFormService } from '../../modules/dynamic-form/dynamic-form.service';
 import type {
   FieldConfig,
@@ -104,7 +105,7 @@ export class DynamicFormBuilderComponent {
   descStyleModalVisible = false;
   titleStyleForm!: FormGroup;
   descStyleForm!: FormGroup;
-  // Dialogue générique de personnalisation (extrait via service)
+  // Dialogue générique de personnalisation
   custVisible = false;
   custTitle = 'Personnaliser';
   custForm!: FormGroup;
@@ -118,9 +119,6 @@ export class DynamicFormBuilderComponent {
 
   // Prévisualisation responsive (par défaut AUTO)
   previewWidth: number | null = null;
-
-  // Référence direct à l'aperçu pour piloter la navigation des steps
-  @ViewChild(DynamicForm) private df?: DynamicForm;
 
   // Grille / breakpoint en édition
   gridBp: 'xs'|'sm'|'md'|'lg'|'xl' = 'xs';
@@ -1047,26 +1045,15 @@ export class DynamicFormBuilderComponent {
   addSectionFromToolbar(): void {
     if (this.selected && this.isStep(this.selected)) {
       this.addSection(this.selected);
-    } else if (this.selected && this.isSection(this.selected)) {
-      this.addSection(undefined); // ajouter à la racine si flat; sinon, on passe par ctxAddSectionInside via menu
-      // en mode steps et sélection section, préférer l'ajout via menu contexte dans la section
-    } else if (!this.isStepsMode) {
-      this.addSection();
     } else {
-      // mode steps sans sélection valide → ignorer
-      return;
+      this.addSection();
     }
   }
   addFieldFromToolbar(): void {
     if (this.selected && this.isSection(this.selected)) {
       this.addField(this.selected);
-    } else if (this.selected && this.isStep(this.selected)) {
-      this.addFieldToStep(this.selected);
-    } else if (!this.isStepsMode) {
-      this.addField();
     } else {
-      // mode steps sans sélection → ignorer
-      return;
+      this.addField();
     }
   }
 
@@ -1077,22 +1064,13 @@ export class DynamicFormBuilderComponent {
 
   canAddStep(): boolean { return true; }
   canAddSectionBtn(): boolean {
-    // Flat mode: autorisé (ajoute à la racine)
-    if (!this.isStepsMode) return true;
-    // Steps mode: autorisé si un step ou une section est sélectionné
-    return !!(this.selected && (this.isStep(this.selected) || this.isSection(this.selected)));
+    // toujours actif: ajoute dans le step sélectionné si présent, sinon à la racine
+    return true;
   }
   canAddFieldBtn(): boolean {
-    // Flat mode: autorisé
-    if (!this.isStepsMode) return true;
-    // Steps mode: autorisé si section ou step sélectionné
-    return !!(this.selected && (this.isSection(this.selected) || this.isStep(this.selected)));
-  }
-
-  // Palette rapide: activer uniquement si contexte valide
-  get canQuickAddField(): boolean {
-    if (!this.isStepsMode) return true; // à la racine en flat
-    return !!(this.selected && (this.isSection(this.selected) || this.isStep(this.selected)));
+    if (this.selected && this.isSection(this.selected)) return true;
+    // sinon autoriser, il sera ajouté au bon endroit (step root/section root/flat)
+    return true;
   }
 
   addSection(step?: StepConfig): void {
@@ -1853,17 +1831,7 @@ export class DynamicFormBuilderComponent {
     if (parts[0] === 'step') {
       const si = n(parts[1]);
       if (!this.schema.steps || !this.schema.steps[si]) return;
-      if (parts.length === 2) {
-        // Sélectionner le step et synchroniser l'index courant de l'aperçu
-        const step = this.schema.steps[si];
-        this.toggleSelect(step);
-        try {
-          const list = this.df?.visibleSteps || [];
-          const vi = list.findIndex(s => s === step);
-          if (vi >= 0) this.df?.go(vi, true);
-        } catch {}
-        return;
-      }
+      if (parts.length === 2) { this.toggleSelect(this.schema.steps[si]); return; }
       // traverse fields chain
       let cur: any[] | undefined = this.schema.steps[si].fields;
       let obj: any = null;
@@ -1914,13 +1882,105 @@ export class DynamicFormBuilderComponent {
     this.onTreeSelect([key]);
   }
   // Drag & Drop dans le tree (déplacer fields/sections entre niveaux compatibles)
-  
   onTreeDrop(e: any) {
     try {
-      const key = this.treeSvc.handleDrop(this.schema, e);
-      if (!key) return;
-      this.refresh();
-      this.treeSelectedKeys = [key];
+      const dragKey: string = String(e?.dragNode?.key || '');
+      const dropKey: string = String(e?.node?.key || '');
+      // -1 avant, 0 dedans, 1 après (fallback: dropToGap => -1/1 approximé)
+      const rawPos = (e as any)?.dropPosition;
+      const dropToGap = !!((e as any)?.event?.dropToGap);
+      let pos: number = typeof rawPos === 'number' ? Number(rawPos) : (dropToGap ? 1 : 0);
+      if (!dragKey || !dropKey || dragKey === dropKey) return;
+
+      const src = this.ctxFromKey(dragKey);
+      if (!src || !src.obj) return;
+      const isSection = (src.obj as any).type === 'section';
+      const isField = (src.obj as any).type && (src.obj as any).type !== 'section';
+      if (!isSection && !isField) return; // on ne gère que fields/sections
+
+      const dst = this.ctxFromKey(dropKey);
+      if (!dst) return;
+
+      // Déterminer le tableau destination et l'index d'insertion
+      let targetArr: any[] | undefined;
+      let insertIndex = 0;
+
+      const stepsMode = !!this.schema.steps?.length;
+      const dropIsStep = dropKey.startsWith('step:') && dropKey.split(':').length === 2;
+      const dropIsRoot = dropKey === 'root';
+      const dropIsFieldOrSection = !dropIsStep && !dropIsRoot;
+
+      if (pos === 0 && !dropToGap) {
+        // Insérer à l'intérieur du node cible
+        if (dropIsStep) {
+          if (!stepsMode) return; // sécurité
+          const si = Number(dropKey.split(':')[1]);
+          const step = this.schema.steps?.[si]; if (!step) return;
+          step.fields = step.fields || [];
+          targetArr = step.fields;
+          insertIndex = targetArr.length;
+        } else if (dropIsRoot) {
+          // racine uniquement si pas de steps
+          if (stepsMode) return; // interdit
+          this.ensureFlatMode();
+          targetArr = this.schema.fields;
+          insertIndex = (targetArr || []).length;
+        } else {
+          // peut-on insérer dans une section ?
+          if ((dst.obj as any).type === 'section') {
+            const sec = dst.obj as any;
+            sec.fields = sec.fields || [];
+            targetArr = sec.fields;
+            insertIndex = sec.fields.length;
+          } else {
+            // pas d'insertion dans un field (non-section)
+            return;
+          }
+        }
+      } else {
+        // Avant/Après: insérer à côté de la cible (même parent)
+        if (dropIsStep) {
+          // on ne réordonne pas les steps via DnD dans ce handler
+          return;
+        }
+        if (dst.parentArr) {
+          targetArr = dst.parentArr;
+          const baseIndex = dst.index ?? 0;
+          insertIndex = baseIndex + (pos > 0 ? 1 : 0);
+        } else {
+          return;
+        }
+      }
+
+      if (!targetArr) return;
+
+      // En steps mode: pas d'insertion à la racine globale
+      if (stepsMode && targetArr === this.schema.fields) return;
+
+      // En flat mode: insertion dans steps interdite
+      if (!stepsMode && dropIsStep) return;
+
+      // Retirer de l'origine
+      if (src.parentArr && src.index != null) {
+        const [moved] = src.parentArr.splice(src.index, 1);
+        if (!moved) return;
+
+        // Si on déplace dans le même tableau et que l'index d'insertion après retrait change
+        if (targetArr === src.parentArr) {
+          if (insertIndex > src.index) insertIndex -= 1;
+        }
+
+        // Interdire field à la racine si steps existent
+        if (stepsMode && targetArr === this.schema.fields) return;
+
+        // Pousser dans la destination
+        targetArr.splice(Math.max(0, Math.min(insertIndex, targetArr.length)), 0, moved);
+
+        // Rébuild + resélection
+        this.refresh();
+        const key = this.keyForObject(moved);
+        if (key) this.treeSelectedKeys = [key];
+      }
     } catch (err) {
       console.warn('onTreeDrop error', err);
     }

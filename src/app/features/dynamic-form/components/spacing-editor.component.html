@@ -1,0 +1,41 @@
+<div class="spacing" [formGroup]="group">
+  <div class="frame margin">
+    <div class="slot top">
+      <label>margin-top</label>
+      <nz-input-number formControlName="m_top" [nzMin]="0"></nz-input-number>
+    </div>
+    <div class="slot left">
+      <label>margin-left</label>
+      <nz-input-number formControlName="m_left" [nzMin]="0"></nz-input-number>
+    </div>
+    <div class="box">content</div>
+    <div class="slot right">
+      <nz-input-number formControlName="m_right" [nzMin]="0"></nz-input-number>
+      <label>margin-right</label>
+    </div>
+    <div class="slot bottom">
+      <nz-input-number formControlName="m_bottom" [nzMin]="0"></nz-input-number>
+      <label>margin-bottom</label>
+    </div>
+  </div>
+
+  <div class="frame padding">
+    <div class="slot top">
+      <label>padding-top</label>
+      <nz-input-number formControlName="p_top" [nzMin]="0"></nz-input-number>
+    </div>
+    <div class="slot left">
+      <label>padding-left</label>
+      <nz-input-number formControlName="p_left" [nzMin]="0"></nz-input-number>
+    </div>
+    <div class="box inner">padding</div>
+    <div class="slot right">
+      <nz-input-number formControlName="p_right" [nzMin]="0"></nz-input-number>
+      <label>padding-right</label>
+    </div>
+    <div class="slot bottom">
+      <nz-input-number formControlName="p_bottom" [nzMin]="0"></nz-input-number>
+      <label>padding-bottom</label>
+    </div>
+  </div>
+</div>

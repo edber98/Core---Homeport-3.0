@@ -25,6 +25,7 @@ export interface FieldConfigCommon {
     requiredIf?: JSONVal;
     disabledIf?: JSONVal;
     col?: Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', number>>;
+    itemStyle?: Record<string, any>; // margins/paddings/styles appliqués au conteneur
     textHtml?: string; // textblock
 }
 
@@ -43,6 +44,8 @@ export interface SectionFieldConfig extends FieldConfigCommon {
     key?: string;
     title?: string;
     description?: string;
+    titleStyle?: Record<string, any>;       // style h3
+    descriptionStyle?: Record<string, any>; // style p
     grid?: { gutter?: number };
     visibleIf?: JSONVal;
     fields: FieldConfig[];
@@ -58,6 +61,10 @@ export interface StepConfig {
     title: string;
     visibleIf?: JSONVal;
     fields?: FieldConfig[];
+    prevText?: string;
+    nextText?: string;
+    prevBtn?: ButtonUI;
+    nextBtn?: ButtonUI;
 }
 
 export interface FormUI {
@@ -67,6 +74,26 @@ export interface FormUI {
     labelCol?: { span?: number; offset?: number };
     controlCol?: { span?: number; offset?: number };
     widthPx?: number;
+    containerStyle?: Record<string, any>;   // style du <form>
+    actions?: {
+        showReset?: boolean;
+        showCancel?: boolean;
+        submitText?: string;
+        cancelText?: string;
+        resetText?: string;
+        actionsStyle?: Record<string, any>; // style de la barre d'actions
+        buttonStyle?: Record<string, any>;  // style appliqué aux boutons (défaut)
+        submitBtn?: ButtonUI;
+        cancelBtn?: ButtonUI;
+        resetBtn?: ButtonUI;
+    };
+}
+
+export interface ButtonUI {
+    text?: string;
+    style?: Record<string, any>;
+    enabled?: boolean;
+    ariaLabel?: string;
 }
 
 export interface SummaryConfig {
@@ -90,6 +117,9 @@ export const isInputField = (f: FieldConfig): f is InputFieldConfig => (f.type !
 export class DynamicFormService {
 
     private locale = 'fr-FR';
+    // Mémoires pour éviter des re-applies inutiles (et boucles de validation)
+    private lastDisabled = new WeakMap<FormControl, boolean>();
+    private lastValidatorsSig = new WeakMap<FormControl, string>();
 
     constructor(private fb: FormBuilder) { }
 
@@ -102,7 +132,7 @@ export class DynamicFormService {
         }
         const form = this.fb.group(controls);
 
-        // règles + réactivité
+        // règles + réactivité (appliquer une fois puis écouter les changements)
         this.applyRules(schema, form);
         form.valueChanges.subscribe(() => this.applyRules(schema, form));
         return form;
@@ -149,10 +179,10 @@ export class DynamicFormService {
         return v;
     }
 
-    // Visibilité
-    isStepVisible(s: StepConfig, form: FormGroup) { return s.visibleIf ? this.evalRule(s.visibleIf, form) !== false : true; }
-    isSectionVisible(s: SectionConfig, form: FormGroup) { return s.visibleIf ? this.evalRule(s.visibleIf, form) !== false : true; }
-    isFieldVisible(f: FieldConfig, form: FormGroup) { return f.visibleIf ? this.evalRule(f.visibleIf, form) !== false : true; }
+    // Visibilité: un rule "truthy" => visible (compat conditions directes)
+    isStepVisible(s: StepConfig, form: FormGroup) { return s.visibleIf ? !!this.evalRule(s.visibleIf, form) : true; }
+    isSectionVisible(s: SectionConfig, form: FormGroup) { return s.visibleIf ? !!this.evalRule(s.visibleIf, form) : true; }
+    isFieldVisible(f: FieldConfig, form: FormGroup) { return f.visibleIf ? !!this.evalRule(f.visibleIf, form) : true; }
 
     // Cols
     getFieldSpans(field: FieldConfig) {
@@ -172,35 +202,45 @@ export class DynamicFormService {
             const ctrl = form.get(f.key);
             if (!ctrl) continue;
 
-            // disabled
-            const shouldDisable = f.disabledIf ? this.evalRule(f.disabledIf, form) === true : false;
-            shouldDisable ? ctrl.disable({ emitEvent: false }) : ctrl.enable({ emitEvent: false });
+            let needsUpdate = false;
+
+            // visibilité et disabled
+            const isVisible = this.isFieldVisible(f, form);
+            // disabledIf OU pas visible → disable
+            const shouldDisable = (f.disabledIf ? this.evalRule(f.disabledIf, form) === true : false) || !isVisible;
+            const prevDisabled = this.lastDisabled.get(ctrl as FormControl) ?? false;
+            if (shouldDisable !== prevDisabled) {
+                shouldDisable ? ctrl.disable({ emitEvent: false }) : ctrl.enable({ emitEvent: false });
+                this.lastDisabled.set(ctrl as FormControl, shouldDisable);
+                needsUpdate = true;
+            }
 
             // required
             const base = this.mapValidators(f.validators || []);
-            const needReq = f.requiredIf ? this.evalRule(f.requiredIf, form) === true : false;
-            ctrl.setValidators(needReq ? [...base, Validators.required] : base);
+            // Un champ non visible ou désactivé ne doit pas être requis
+            const needReq = !shouldDisable && (f.requiredIf ? this.evalRule(f.requiredIf, form) === true : false);
+            const sig = JSON.stringify({ validators: (f.validators || []).map(v => ({ t: v.type, v: v.value })), req: needReq });
+            if (this.lastValidatorsSig.get(ctrl as FormControl) !== sig) {
+                ctrl.setValidators(needReq ? [...base, Validators.required] : base);
+                this.lastValidatorsSig.set(ctrl as FormControl, sig);
+                needsUpdate = true;
+            }
 
             // sécurité "pas d'undefined" si l'app t'envoie une value ensuite
             const val = ctrl.value;
             const sane = this.neutralize(f.type, val);
-            if (sane !== val) ctrl.setValue(sane, { emitEvent: false });
-
-            ctrl.updateValueAndValidity({ emitEvent: false });
+            if (sane !== val) {
+                ctrl.setValue(sane, { emitEvent: false });
+                needsUpdate = true;
+            }
+            if (needsUpdate) ctrl.updateValueAndValidity({ emitEvent: false });
         }
     }
 
     /** Retourne les champs "input" (hors textblock) réellement affichés */
     visibleInputFields(schema: FormSchema, form: FormGroup): FieldConfig[] {
         const all = this.flattenAllInputFields(schema);
-        return all.filter(f => this.isVisible(f, form.value)); // ta logique existante visibleIf(...)
-    }
-
-    isVisible(field: FieldConfig, formValue: any): boolean {
-        if (field.visibleIf) {
-            return this.evalRule(field.visibleIf, { value: formValue } as any) !== false;
-        }
-        return true;
+        return all.filter(f => this.isFieldVisible(f, form));
     }
 
     /** Aplatis tous les champs "input" (steps/sections/flat), sans filtrer la visibilité */
@@ -267,9 +307,9 @@ export class DynamicFormService {
             }>;
         }> = [];
 
-        const considerField = (f: FieldConfig) => includeHidden || this.isVisible(f, value);
+        const considerField = (f: FieldConfig) => includeHidden || this.isFieldVisible(f, form);
 
-        const sectionsFrom = (fields?: FieldConfig[], parentTitle?: string) => {
+        const sectionsFrom = (fields?: FieldConfig[], parentTitle?: string, onlySections = false) => {
             const blocks: Array<{ title?: string; rows: Array<{ key: string; label: string; value: string }> }> = [];
             const rootRows: Array<{ key: string; label: string; value: string }> = [];
             for (const f of fields || []) {
@@ -289,25 +329,27 @@ export class DynamicFormService {
                             value: this.displayValue(ff, value[ff.key], schema)
                         }));
                     if (directRows.length) blocks.push({ title: sec.title, rows: directRows });
-                    // nested sections
-                    blocks.push(...sectionsFrom(sec.fields, sec.title || parentTitle));
+                    // nested sections: ne pas re-collecter les champs directs (évite les doublons)
+                    blocks.push(
+                        ...sectionsFrom(sec.fields, sec.title || parentTitle, true)
+                    );
                 } else if (f.type !== 'textblock') {
-                    if (considerField(f)) rootRows.push({
+                    if (!onlySections && considerField(f)) rootRows.push({
                         key: (f as any).key,
                         label: f.label || (f as any).key || '',
                         value: this.displayValue(f, value[(f as any).key], schema)
                     });
                 }
             }
-            if (rootRows.length) blocks.unshift({ title: parentTitle, rows: rootRows });
+            if (!onlySections && rootRows.length) blocks.unshift({ title: parentTitle, rows: rootRows });
             return blocks;
         };
 
         if (schema.steps?.length) {
             schema.steps.forEach((step, si) => {
-                if (!includeHidden && step.visibleIf && !this.evalRule(step.visibleIf, value)) return;
+                if (!includeHidden && !this.isStepVisible(step, form)) return;
                 const stepBlock = { title: step.title || `Étape ${si + 1}`, sections: [] as any[] };
-                stepBlock.sections.push(...sectionsFrom(step.fields));
+            stepBlock.sections.push(...sectionsFrom(step.fields));
                 if (stepBlock.sections.length) byStep.push(stepBlock);
             });
         } else if (schema.fields?.length) {
@@ -319,19 +361,26 @@ export class DynamicFormService {
         return byStep;
     }
 
-    private evalRule(rule: any, form: FormGroup): any {
+    private evalRule(rule: any, formOrValue: FormGroup | any): any {
         if (rule === null || rule === undefined) return undefined;
         if (typeof rule !== 'object') return rule;
         const [op] = Object.keys(rule);
         const args = rule[op];
 
+        const getByVar = (src: any, path: string) => {
+            if (!path) return undefined;
+            // FormGroup avec .get
+            if (src && typeof src.get === 'function') return src.get(path)?.value;
+            // Objet brut: naviguer par dot-notation
+            return path.split('.').reduce((acc: any, k: string) => (acc == null ? undefined : acc[k]), src);
+        };
         const val = (x: any) => {
-            if (x && typeof x === 'object' && 'var' in x) return form.get(x.var)?.value;
-            return (typeof x === 'object') ? this.evalRule(x, form) : x;
+            if (x && typeof x === 'object' && 'var' in x) return getByVar(formOrValue, (x as any).var);
+            return (typeof x === 'object') ? this.evalRule(x, formOrValue) : x;
         };
 
         switch (op) {
-            case 'var': return form.get(args)?.value;
+            case 'var': return getByVar(formOrValue, args);
             case 'not': return !val(args);
             case 'all': return (args as any[]).every(a => !!val(a));
             case 'any': return (args as any[]).some(a => !!val(a));

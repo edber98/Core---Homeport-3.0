@@ -1,26 +1,34 @@
- <ng-container *ngIf="visible">
-    <h3 *ngIf="section.title" style="margin:16px 0 6px">{{ section.title }}</h3>
-    <p *ngIf="section.description" style="margin:0 0 12px; color:#6b7280">{{ section.description }}</p>
+ <div *ngIf="visible" [ngStyle]="section.itemStyle">
+    <h3 *ngIf="section.title" [ngStyle]="section.titleStyle || { margin: '16px 0 6px' }">{{ section.title }}</h3>
+    <p *ngIf="section.description" [ngStyle]="section.descriptionStyle || { margin: '0 0 12px', color: '#6b7280' }">{{ section.description }}</p>
 
     <div style="margin-bottom:16px">
       <nz-row [nzGutter]="section.grid?.gutter || 16">
         <ng-container *ngFor="let f of section.fields; let i = index">
           <ng-container *ngIf="dfs.isFieldVisible(f, form)">
             <nz-col
-              [nzXs]="dfs.getFieldSpans(f).xs"
-              [nzSm]="dfs.getFieldSpans(f).sm"
-              [nzMd]="dfs.getFieldSpans(f).md"
-              [nzLg]="dfs.getFieldSpans(f).lg"
-              [nzXl]="dfs.getFieldSpans(f).xl"
+              [nzSpan]="forceBp ? fieldSpanFor(f, forceBp) : null"
+              [nzXs]="!forceBp ? dfs.getFieldSpans(f).xs : null"
+              [nzSm]="!forceBp ? dfs.getFieldSpans(f).sm : null"
+              [nzMd]="!forceBp ? dfs.getFieldSpans(f).md : null"
+              [nzLg]="!forceBp ? dfs.getFieldSpans(f).lg : null"
+              [nzXl]="!forceBp ? dfs.getFieldSpans(f).xl : null"
+              [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
+              [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
             >
               <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
                    (click)="onClickField(i, $event)">
                 <ng-container [ngSwitch]="f.type">
                   <ng-container *ngSwitchCase="'section'">
-                    <df-section [section]="$any(f)" [form]="form" [ui]="ui" [editMode]="false"></df-section>
+                    <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp"
+                                [editMode]="editMode" [selectedField]="selectedField"
+                                [allowMove]="allowMove" [allowDelete]="allowDelete"
+                                (moveField)="moveField.emit($event)"
+                                (deleteField)="deleteField.emit($event)"
+                                (selectField)="selectField.emit({ index: $event.index, field: ($any(f).fields||[])[ $event.index ], section: $any(f) })"></df-section>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <df-field [field]="f" [form]="form" [ui]="ui"></df-field>
+                    <df-field [field]="f" [form]="form" [ui]="ui" (click)="onInnerFieldClick($event)"></df-field>
                   </ng-container>
                 </ng-container>
                 <div class="df-edit-actions" *ngIf="editMode">
@@ -34,4 +42,4 @@
         </ng-container>
       </nz-row>
     </div>
-  </ng-container>
+  </div>

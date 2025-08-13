@@ -20,17 +20,21 @@ export const routes: Routes = [
                 path: 'dashboard',
                 loadChildren: () =>
                     import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
-            }
+            },
+                {
+                path: 'dynamic-form',
+                loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
+            },
         ]
     },
         {
         path: '',
         component: LayoutBuilder,
         children: [
-            {
+       /*      {
                 path: 'dynamic-form',
                 loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
-            },
+            }, */
             {
                 path: 'builder',
                 loadChildren: () =>

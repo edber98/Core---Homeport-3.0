@@ -46,8 +46,8 @@ import { Sections } from './components/sections/sections';
     NzDatePickerModule,
     NzDropDownModule,
     NzTabsModule,
- 
-    Sections
+    Sections,
+    Fields
   ],
   templateUrl: './dynamic-form.html',
   styleUrl: './dynamic-form.scss'
@@ -57,6 +57,7 @@ export class DynamicForm implements OnInit, OnChanges {
   @Input({ required: true }) schema!: FormSchema;
   @Input() value?: Record<string, any>;
   @Input() editMode = false;
+  @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() selectedField: FieldConfig | null = null;
   @Input() selectedSection: SectionConfig | null = null;
   @Input() selectedStep: StepConfig | null = null;
@@ -120,6 +121,7 @@ export class DynamicForm implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('CHANGE')
     if (changes['schema'] && this.form) {
       const prevIndex = this.current();
       this.form = this.dfs.buildForm(this.schema, this.sanitizedValue(this.value));
@@ -179,6 +181,34 @@ export class DynamicForm implements OnInit, OnChanges {
   get layout() { return this.schema.ui?.layout ?? 'horizontal'; }
   get maxWidth() { return this.schema.ui?.widthPx ?? 1040; }
   get ui() { return this.schema.ui; }
+  get containerStyle() { return this.schema.ui?.containerStyle || {}; }
+  get actionsStyle() { return this.schema.ui?.actions?.actionsStyle || {}; }
+  get buttonStyle() { return this.schema.ui?.actions?.buttonStyle || {}; }
+  get showReset() { return !!this.schema.ui?.actions?.showReset; }
+  get showCancel() { return !!this.schema.ui?.actions?.showCancel; }
+  get submitText() { return this.schema.ui?.actions?.submitText || 'Valider'; }
+  get resetText() { return this.schema.ui?.actions?.resetText || 'Réinitialiser'; }
+  get cancelText() { return this.schema.ui?.actions?.cancelText || 'Modifier'; }
+
+  private mergeStyle(base: any, override?: any) {
+    return { ...(base || {}), ...(override || {}) };
+  }
+  stepPrevTextAt(i: number) {
+    const st = this.visibleSteps[i];
+    return (st?.prevBtn?.text) || st?.prevText || 'Précédent';
+  }
+  stepNextTextAt(i: number) {
+    const st = this.visibleSteps[i];
+    return (st?.nextBtn?.text) || st?.nextText || 'Suivant';
+  }
+  stepBtnStyle(i: number, kind: 'prev'|'next') {
+    const st = this.visibleSteps[i];
+    const override = (kind === 'prev') ? st?.prevBtn?.style : st?.nextBtn?.style;
+    return this.mergeStyle(this.buttonStyle, override);
+  }
+  submitBtnStyle() { return this.mergeStyle(this.buttonStyle, this.schema.ui?.actions?.submitBtn?.style); }
+  cancelBtnStyle() { return this.mergeStyle(this.buttonStyle, this.schema.ui?.actions?.cancelBtn?.style); }
+  resetBtnStyle() { return this.mergeStyle(this.buttonStyle, this.schema.ui?.actions?.resetBtn?.style); }
 
   // Wrap a single field into a stable SectionConfig (cached) for rendering layout
   singleFieldSection(f: FieldConfig): SectionConfig {
@@ -188,6 +218,23 @@ export class DynamicForm implements OnInit, OnChanges {
       this.oneFieldSectionCache.set(f, s as SectionConfig);
     }
     return s as SectionConfig;
+  }
+
+  fieldSpanFor(field: FieldConfig, bp: 'xs'|'sm'|'md'|'lg'|'xl'): number {
+    const spans = this.dfs.getFieldSpans(field) as any;
+    switch (bp) {
+      case 'xs': return spans.xs;
+      case 'sm': return spans.sm;
+      case 'md': return spans.md;
+      case 'lg': return spans.lg;
+      case 'xl': return spans.xl;
+    }
+  }
+
+  fieldPercentFor(field: FieldConfig, bp: 'xs'|'sm'|'md'|'lg'|'xl'): number {
+    const span = this.fieldSpanFor(field, bp);
+    const clamped = Math.max(1, Math.min(24, Number(span) || 24));
+    return clamped * 100 / 24;
   }
 
   // ===== Helpers ordre: parcourt fields uniquement =====
@@ -217,6 +264,10 @@ export class DynamicForm implements OnInit, OnChanges {
   get visibleFieldsFlat(): FieldConfig[] {
     // root-level non-section visible fields
     return (this.schema.fields || []).filter(f => f.type !== 'section').filter(f => this.dfs.isFieldVisible(f, this.form));
+  }
+
+  get hasAnyRootSection(): boolean {
+    return (this.schema.fields || []).some((f: any) => f.type === 'section');
   }
 
   get currentStep(): StepConfig | null { return this.visibleSteps[this.current()] ?? null; }
@@ -349,4 +400,56 @@ export class DynamicForm implements OnInit, OnChanges {
     // 👉 ici, fais ton emit/HTTP, etc.
     console.log('Payload', this.form.value);
   }
+
+  reset() {
+    // Reconstruire le formulaire avec les valeurs initiales
+    this.form = this.dfs.buildForm(this.schema, this.sanitizedValue(this.value));
+    this.current.set(0);
+  }
+
+  // ===== Sélection par clic sur le conteneur des fields (sans gêner les inputs)
+  onFieldContainerClickStep(ev: MouseEvent, stepIndex: number, fieldIndex: number, f: FieldConfig) {
+    if (!this.editMode) return;
+    if (this.isInteractiveClick(ev)) return; // laisser l'input bosser
+    this.onSelectInStepRoot(fieldIndex, stepIndex, f);
+  }
+  onFieldContainerClickRoot(ev: MouseEvent, fieldIndex: number, f: FieldConfig) {
+    if (!this.editMode) return;
+    if (this.isInteractiveClick(ev)) return;
+    this.onSelectInFlat(fieldIndex, f);
+  }
+  onSectionContainerClick(ev: MouseEvent, stepIndex: number | undefined, sectionIndex: number, s: SectionConfig) {
+    if (!this.editMode) return;
+    if (this.isInteractiveClick(ev)) return;
+    this.onSelectSection(stepIndex, sectionIndex, s, ev);
+  }
+  private isInteractiveClick(ev: MouseEvent): boolean {
+    const target = ev.target as HTMLElement | null;
+    const current = ev.currentTarget as HTMLElement | null;
+    if (!target) return false;
+    const isEditable = (el: HTMLElement) => (
+      el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.tagName === 'BUTTON' ||
+      el.isContentEditable || el.getAttribute('contenteditable') === 'true' ||
+      /ant-select|ant-radio|ant-checkbox|ant-picker|ant-input|cm-editor/.test(el.className)
+    );
+    let el: HTMLElement | null = target;
+    while (el && current && el !== current) {
+      if (isEditable(el)) return true;
+      el = el.parentElement;
+    }
+    return isEditable(target);
+  }
+
+  // Stop bubbling only when clicking inside an interactive element of a field
+  onInnerClick(ev: MouseEvent) {
+    if (!this.editMode) return;
+    if (this.isInteractiveClick(ev)) {
+      ev.stopPropagation();
+    }
+  }
+
+  // ===== TrackBy to avoid DOM churn (preserve control state)
+  trackByIndex(i: number) { return i; }
+  trackByField = (_: number, f: FieldConfig) => (isInputField(f) ? (f as any).key || f : f);
+  trackByMixedItem = (_: number, it: any) => `${it.ent.t}:${it.ent.i}`;
 }

@@ -2,6 +2,7 @@
 .df-form-item {
   margin-bottom: 16px; // marge verticale entre champs
   padding: 4px 0;      // padding vertical interne
+  width: 100%;         // assure la prise de largeur de la colonne, y compris en layout inline
 }
 
 /* si c'est un textblock => pas de marge, pas de padding */
@@ -13,4 +14,15 @@
   .ant-form-item-control {
     padding: 0;
   }
+}
+
+/* En layout inline, s'assurer que chaque form-item occupe bien la largeur de sa colonne */
+.ant-form-inline .df-form-item {
+  width: 100%;
+}
+
+/* Forcer style des labels via variables CSS (peut écraser NG Zorro) */
+.df-form-item .ant-form-item-label > label {
+  color: var(--df-label-color) !important;
+  font-size: var(--df-label-font-size) !important;
 }
