@@ -186,4 +186,61 @@ export class BuilderTreeService {
     else if ((root as StepConfig)?.fields) collect((root as StepConfig).fields as any);
     return arrays.includes(targetArr);
   }
+
+  /** Construit les nodes pour nz-tree depuis le schéma courant */
+  buildTreeNodes(schema: FormSchema, isExpanded: (key: string, def?: boolean) => boolean): any[] {
+    const nodes: any[] = [];
+    const pushFieldNodes = (acc: any[], baseKey: string, fields?: FieldConfig[]) => {
+      (fields || []).forEach((f: any, i: number) => {
+        const isStepBase = baseKey.startsWith('step:');
+        const key = isStepBase ? `${baseKey}:field:${i}` : `${baseKey}:${i}`;
+        if (f.type === 'section') {
+          const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExpanded(key, false), children: [] };
+          const childBase = isStepBase ? key : `${key}:field`;
+          pushFieldNodes(secNode.children, childBase, f.fields || []);
+          acc.push(secNode);
+        } else {
+          acc.push({ title: f.label || f.key || f.type, key, isLeaf: true });
+        }
+      });
+    };
+    if (schema.steps?.length) {
+      const children: any[] = [];
+      schema.steps.forEach((st, si) => {
+        const stepKey = `step:${si}`;
+        const stepNode: any = { title: st.title || `Step ${si + 1}`, key: stepKey, isLeaf: false, expanded: isExpanded(stepKey, false), children: [] };
+        pushFieldNodes(stepNode.children, stepKey, st.fields || []);
+        children.push(stepNode);
+      });
+      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
+    } else if (schema.fields?.length) {
+      const children: any[] = [];
+      pushFieldNodes(children, 'field', schema.fields);
+      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
+    } else {
+      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: true });
+    }
+    return nodes;
+  }
+
+  /** Parse une clé pour menus contextuels (root/step/fieldPath/rootFieldPath) */
+  parseKey(key: string): any | null {
+    if (!key) return null;
+    const parts = key.split(':');
+    const n = (s: string) => Number(s);
+    if (parts[0] === 'step') {
+      const si = n(parts[1]);
+      if (parts.length === 2) return { key, type: 'step', stepIndex: si };
+      const idxs: number[] = [];
+      for (let i = 2; i < parts.length; i += 2) { if (parts[i] !== 'field') break; idxs.push(n(parts[i+1])); }
+      return { key, type: 'fieldPath', stepIndex: si, path: idxs };
+    }
+    if (parts[0] === 'field') {
+      const idxs: number[] = [];
+      for (let i = 1; i < parts.length; i += 2) { if (parts[i-1] !== 'field') break; idxs.push(n(parts[i])); }
+      return { key, type: 'rootFieldPath', path: idxs };
+    }
+    if (parts[0] === 'root') return { key, type: 'root' };
+    return null;
+  }
 }

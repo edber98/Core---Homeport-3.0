@@ -8,10 +8,10 @@ Objectif: réduire la taille du composant `dynamic-form-builder` en séparant la
   - Orchestration: sélection courante, import/export, rafraîchissement, liaison avec l’aperçu.
   - Délègue la logique de DnD et de personnalisation à des services.
 - components/
-  - context-panel.component.{ts,html}
+  - context-panel.component.{ts,html} [FAIT]
     - Contient la « Palette & Contexte »: boutons d’ajout (+Step, +Section, +Field), arbre de navigation, import/export.
-    - Inputs: `schema`, `isStepsMode`, `selected`.
-    - Outputs: événements d’ajout/suppression/sélection; relaye `(nzOnDrop)` vers le service.
+    - Inputs: `treeNodes`, `treeSelectedKeys`, `stepsMode`, `canAddSectionBtn`, `canAddFieldBtn`, `canQuickAddField`, `json`.
+    - Outputs: `selectFormSettings`, `addStep`, `addSection`, `addField`, `treeDrop`, `treeClick`, `treeExpand`, menus contextuels (step/section/field/root), `quickAdd`, `jsonChange`, `doImport`, `doExport`.
   - inspector-panel.component.{ts,html}
     - Inspecteur des propriétés (Step/Section/Field/Form Settings) + modales (options/conditions/styles).
     - Input: `selected`, `formGroup` (inspector), `hasSections`.
@@ -21,12 +21,12 @@ Objectif: réduire la taille du composant `dynamic-form-builder` en séparant la
     - Inputs: `schema`, `editMode`, `selected*`, `forceBp`, `simValues`.
     - Output: relaye les événements d’édition (move/delete/select/add).
 - services/
-  - builder-tree.service.ts (existant)
+  - builder-tree.service.ts [OK]
     - Génère/résout les clés des nodes; applique les drops avec règles (root/step/section); garde « anti-self-drop » et cas « section vide ».
-  - builder-customize.service.ts (existant)
+  - builder-customize.service.ts [OK]
     - Construit les `FormGroup` des dialogues de personnalisation et applique au schéma.
-  - builder-issues.service.ts (nouveau, à extraire)
-    - Calcule la liste des problèmes (blockers/errors/warnings): clés dupliquées, références invalides, inline interdit.
+  - builder-issues.service.ts [NOUVEAU — EN PLACE]
+    - Calcule la liste des problèmes (blockers/errors/warnings): clés dupliquées, références invalides; l’interdiction d’inline est gérée au niveau composant (dépend de l’inspector).
 
 ## Règles DnD (tree)
 
@@ -62,9 +62,8 @@ Objectif: réduire la taille du composant `dynamic-form-builder` en séparant la
 
 ## Étapes suivantes (refactor)
 
-- Extraire: context-panel, inspector-panel, preview-frame (découplage TS/HTML).
-- Extraire issues/validation vers `builder-issues.service.ts`.
+- Extraire: inspector-panel, preview-frame (découplage TS/HTML).
+- Finaliser l’extraction des validations dans `builder-issues.service.ts` (helpers internes restants à supprimer si non utilisés).
 - Ajouter une registry déclarative pour la personnalisation (clé → propriétés configurables), afin de générer le form automatiquement.
 
 Notes: ce document sert de guide pour le découpage; les services existants (tree/customize) sont déjà utilisés par le builder. Le refactor peut être réalisé par itérations pour minimiser le risque.
-

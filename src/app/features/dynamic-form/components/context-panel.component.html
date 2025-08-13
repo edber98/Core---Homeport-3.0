@@ -1,0 +1,116 @@
+<nz-card nzTitle="Palette & Contexte" nzSize="small" class="card">
+  <div class="toolbar">
+    <button nz-button nzSize="small" (click)="selectFormSettings.emit()">Form Settings</button>
+    <button nz-button nzSize="small" (click)="addStep.emit()">+ Step</button>
+    <button nz-button nzSize="small" (click)="addSection.emit()" [disabled]="!canAddSectionBtn">+ Section</button>
+    <button nz-button nzSize="small" (click)="addField.emit()" [disabled]="!canAddFieldBtn">+ Field</button>
+  </div>
+
+  <nz-divider nzText="Structure"></nz-divider>
+  <div class="tree">
+    <nz-tree [nzData]="treeNodes" nzBlockNode [nzDraggable]="true"
+             (nzOnDrop)="onTreeDrop($event)"
+             (nzClick)="onTreeClick($event)"
+             [nzSelectedKeys]="treeSelectedKeys"
+             (nzExpandChange)="onTreeExpand($event)">
+      <ng-template #nzTreeTemplate="" nzTreeTemplate let-node>
+        <!-- Root -->
+        <span *ngIf="node.key==='root'; else notRoot"
+              (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
+              class="tree-node-label" style="display:block">{{ node.title }}</span>
+        <ng-template #notRoot>
+          <!-- Step -->
+          <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
+                (contextmenu)="openTreeMenu($event, menuStep, node.key)"
+                class="tree-node-label" style="display:block">{{ node.title }}</span>
+          <ng-template #notStep>
+            <!-- Section (any non-leaf that is not step/root) -->
+            <span *ngIf="!node.isLeaf; else leafField"
+                  (contextmenu)="openTreeMenu($event, menuSection, node.key)"
+                  class="tree-node-label" style="display:block">{{ node.title }}</span>
+          </ng-template>
+          <!-- Field -->
+          <ng-template #leafField>
+            <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
+                  class="tree-node-label" style="display:block">{{ node.title }}</span>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+    </nz-tree>
+
+    <!-- Menus contextuels -->
+    <nz-dropdown-menu #menuStep="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="onCtxStepAddSection()">+ Section</li>
+        <li nz-menu-item (click)="onCtxStepAddField()">+ Field (étape)</li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('text')">+ Text</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('textarea')">+ Textarea</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('number')">+ Number</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('date')">+ Date</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('select')">+ Select</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('radio')">+ Radio</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('checkbox')">+ Checkbox</li>
+        <li nz-menu-item (click)="onCtxStepAddFieldTyped('textblock')">+ Textblock</li>
+        <li nz-menu-item nzDanger (click)="onCtxStepDelete()">Supprimer l'étape</li>
+      </ul>
+    </nz-dropdown-menu>
+    <nz-dropdown-menu #menuSection="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="onCtxSectionAddSection()">+ Section</li>
+        <li nz-menu-item (click)="onCtxSectionAddField()">+ Field</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('text')">+ Text</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textarea')">+ Textarea</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('number')">+ Number</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('date')">+ Date</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('select')">+ Select</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('radio')">+ Radio</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('checkbox')">+ Checkbox</li>
+        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textblock')">+ Textblock</li>
+        <li nz-menu-item nzDanger (click)="onCtxSectionDelete()">Supprimer</li>
+      </ul>
+    </nz-dropdown-menu>
+    <nz-dropdown-menu #menuField="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item nzDanger (click)="onCtxFieldDelete()">Supprimer</li>
+      </ul>
+    </nz-dropdown-menu>
+    <nz-dropdown-menu #menuRoot="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="onCtxAddStep()">+ Step</li>
+        <li nz-menu-item (click)="onCtxAddSectionRoot()" [nzDisabled]="stepsMode">+ Section (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRoot()" [nzDisabled]="stepsMode">+ Field (racine)</li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('text')" [nzDisabled]="stepsMode">+ Text (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('textarea')" [nzDisabled]="stepsMode">+ Textarea (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('number')" [nzDisabled]="stepsMode">+ Number (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('date')" [nzDisabled]="stepsMode">+ Date (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('select')" [nzDisabled]="stepsMode">+ Select (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('radio')" [nzDisabled]="stepsMode">+ Radio (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('checkbox')" [nzDisabled]="stepsMode">+ Checkbox (racine)</li>
+        <li nz-menu-item (click)="onCtxAddFieldRootTyped('textblock')" [nzDisabled]="stepsMode">+ Textblock (racine)</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+
+  <nz-divider nzText="Champs rapides"></nz-divider>
+  <div class="palette">
+    <button nz-button nzSize="small" (click)="quickAdd.emit('text')" [disabled]="!canQuickAddField">Text</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('textarea')" [disabled]="!canQuickAddField">Textarea</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('number')" [disabled]="!canQuickAddField">Number</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('date')" [disabled]="!canQuickAddField">Date</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('select')" [disabled]="!canQuickAddField">Select</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('radio')" [disabled]="!canQuickAddField">Radio</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('checkbox')" [disabled]="!canQuickAddField">Checkbox</button>
+    <button nz-button nzSize="small" (click)="quickAdd.emit('textblock')" [disabled]="!canQuickAddField">TextBlock</button>
+  </div>
+
+  <nz-divider nzText="Import / Export"></nz-divider>
+  <div class="io">
+    <textarea [(ngModel)]="json" (ngModelChange)="jsonChange.emit($event)" [ngModelOptions]="{standalone: true}" placeholder="Colle ton JSON ici"></textarea>
+    <div class="io-actions">
+      <button nz-button nzSize="small" (click)="doImport.emit()">Import</button>
+      <button nz-button nzSize="small" (click)="doExport.emit()">Export</button>
+    </div>
+  </div>
+</nz-card>

@@ -1,120 +1,39 @@
 <div class="builder">
   <!-- PALETTE / CONTEXTE -->
   <div class="left">
-    <nz-card nzTitle="Palette & Contexte" nzSize="small" class="card">
-      <div class="toolbar">
-        <button nz-button nzSize="small" (click)="select(schema)">Form Settings</button>
-        <button nz-button nzSize="small" (click)="addStep()" [disabled]="!canAddStep()">+ Step</button>
-        <button nz-button nzSize="small" (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()">+ Section</button>
-        <button nz-button nzSize="small" (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()">+ Field</button>
-      </div>
-
-      <nz-divider nzText="Structure"></nz-divider>
-      <div class="tree">
-        <nz-tree [nzData]="treeNodes" nzBlockNode [nzDraggable]="true" (nzOnDrop)="onTreeDrop($event)" (nzClick)="onTreeClick($event)" [nzSelectedKeys]="treeSelectedKeys" (nzExpandChange)="onTreeExpand($event)">
-          <ng-template #nzTreeTemplate="" nzTreeTemplate let-node>
-            <!-- Root -->
-            <span *ngIf="node.key==='root'; else notRoot"
-                  (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
-                  class="tree-node-label">{{ node.title }}</span>
-            <ng-template #notRoot>
-              <!-- Step -->
-              <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
-                    (contextmenu)="openTreeMenu($event, menuStep, node.key)"
-                    class="tree-node-label">{{ node.title }}</span>
-              <ng-template #notStep>
-                <!-- Section (any non-leaf that is not step/root) -->
-                <span *ngIf="!node.isLeaf; else leafField"
-                      (contextmenu)="openTreeMenu($event, menuSection, node.key)"
-                      class="tree-node-label">{{ node.title }}</span>
-              </ng-template>
-              <!-- Field -->
-              <ng-template #leafField>
-                <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
-                      class="tree-node-label">{{ node.title }}</span>
-              </ng-template>
-            </ng-template>
-          </ng-template>
-        </nz-tree>
-
-        <!-- Menus contextuels -->
-        <nz-dropdown-menu #menuStep="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item (click)="ctxAddSection()">+ Section</li>
-            <li nz-menu-item (click)="ctxAddFieldToStep()">+ Field (étape)</li>
-            <li nz-menu-divider></li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('text')">+ Text</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('textarea')">+ Textarea</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('number')">+ Number</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('date')">+ Date</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('select')">+ Select</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('radio')">+ Radio</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('checkbox')">+ Checkbox</li>
-            <li nz-menu-item (click)="addFieldAtStepTyped('textblock')">+ Textblock</li>
-            <li nz-menu-item nzDanger (click)="ctxDeleteStep()">Supprimer l'étape</li>
-          </ul>
-        </nz-dropdown-menu>
-        <nz-dropdown-menu #menuSection="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item (click)="ctxAddSectionInside()">+ Section</li>
-            <li nz-menu-item (click)="ctxAddFieldToSection()">+ Field</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('text')">+ Text</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('textarea')">+ Textarea</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('number')">+ Number</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('date')">+ Date</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('select')">+ Select</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('radio')">+ Radio</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('checkbox')">+ Checkbox</li>
-            <li nz-menu-item (click)="ctxAddFieldToSectionTyped('textblock')">+ Textblock</li>
-            <li nz-menu-item nzDanger (click)="ctxDeleteSection()">Supprimer</li>
-          </ul>
-        </nz-dropdown-menu>
-        <nz-dropdown-menu #menuField="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item nzDanger (click)="ctxDeleteField()">Supprimer</li>
-          </ul>
-        </nz-dropdown-menu>
-        <nz-dropdown-menu #menuRoot="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item (click)="ctxAddStep()">+ Step</li>
-            <li nz-menu-item (click)="ctxAddSectionRoot()" [nzDisabled]="schema.steps?.length">+ Section (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRoot()" [nzDisabled]="schema.steps?.length">+ Field (racine)</li>
-            <li nz-menu-divider></li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('text')" [nzDisabled]="schema.steps?.length">+ Text (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('textarea')" [nzDisabled]="schema.steps?.length">+ Textarea (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('number')" [nzDisabled]="schema.steps?.length">+ Number (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('date')" [nzDisabled]="schema.steps?.length">+ Date (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('select')" [nzDisabled]="schema.steps?.length">+ Select (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('radio')" [nzDisabled]="schema.steps?.length">+ Radio (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('checkbox')" [nzDisabled]="schema.steps?.length">+ Checkbox (racine)</li>
-            <li nz-menu-item (click)="ctxAddFieldRootTyped('textblock')" [nzDisabled]="schema.steps?.length">+ Textblock (racine)</li>
-          </ul>
-        </nz-dropdown-menu>
-      </div>
-
-      <nz-divider nzText="Champs rapides"></nz-divider>
-      <div class="palette">
-        <button nz-button nzSize="small" (click)="quickAdd('text')" [disabled]="!canQuickAddField">Text</button>
-        <button nz-button nzSize="small" (click)="quickAdd('textarea')" [disabled]="!canQuickAddField">Textarea</button>
-        <button nz-button nzSize="small" (click)="quickAdd('number')" [disabled]="!canQuickAddField">Number</button>
-        <button nz-button nzSize="small" (click)="quickAdd('date')" [disabled]="!canQuickAddField">Date</button>
-        <button nz-button nzSize="small" (click)="quickAdd('select')" [disabled]="!canQuickAddField">Select</button>
-        <button nz-button nzSize="small" (click)="quickAdd('radio')" [disabled]="!canQuickAddField">Radio</button>
-        <button nz-button nzSize="small" (click)="quickAdd('checkbox')" [disabled]="!canQuickAddField">Checkbox</button>
-        <button nz-button nzSize="small" (click)="quickAdd('textblock')" [disabled]="!canQuickAddField">TextBlock</button>
-      </div>
-
-      <!-- Section Grille supprimée -->
-
-      <nz-divider nzText="Import / Export"></nz-divider>
-      <div class="io">
-        <textarea [(ngModel)]="json" [ngModelOptions]="{standalone: true}" placeholder="Colle ton JSON ici"></textarea>
-        <div class="io-actions">
-          <button nz-button nzSize="small" (click)="import()">Import</button>
-          <button nz-button nzSize="small" (click)="export()">Export</button>
-        </div>
-      </div>
-    </nz-card>
+    <df-context-panel
+      [treeNodes]="treeNodes"
+      [treeSelectedKeys]="treeSelectedKeys"
+      [stepsMode]="isStepsMode"
+      [canAddSectionBtn]="canAddSectionBtn()"
+      [canAddFieldBtn]="canAddFieldBtn()"
+      [canQuickAddField]="canQuickAddField"
+      [json]="json"
+      (selectFormSettings)="select(schema)"
+      (addStep)="addStep()"
+      (addSection)="addSectionFromToolbar()"
+      (addField)="addFieldFromToolbar()"
+      (treeDrop)="onTreeDrop($event)"
+      (treeClick)="onTreeSelect([$event])"
+      (treeExpand)="onTreeExpand({ node: { key: $event.key }, isExpanded: $event.expanded })"
+      (ctxAddStep)="ctxAddStep()"
+      (ctxAddSectionRoot)="ctxAddSectionRoot()"
+      (ctxAddFieldRoot)="ctxAddFieldRoot()"
+      (ctxAddFieldRootTyped)="ctxAddFieldRootTyped($event.type)"
+      (ctxStepAddSection)="dropdownKey=$event.key; ctxAddSection()"
+      (ctxStepAddField)="dropdownKey=$event.key; ctxAddFieldToStep()"
+      (ctxStepAddFieldTyped)="dropdownKey=$event.key; addFieldAtStepTyped($event.type)"
+      (ctxStepDelete)="dropdownKey=$event.key; ctxDeleteStep()"
+      (ctxSectionAddSection)="dropdownKey=$event.key; ctxAddSectionInside()"
+      (ctxSectionAddField)="dropdownKey=$event.key; ctxAddFieldToSection()"
+      (ctxSectionAddFieldTyped)="dropdownKey=$event.key; ctxAddFieldToSectionTyped($event.type)"
+      (ctxSectionDelete)="dropdownKey=$event.key; ctxDeleteSection()"
+      (ctxFieldDelete)="dropdownKey=$event.key; ctxDeleteField()"
+      (quickAdd)="quickAdd($any($event))"
+      (jsonChange)="json=$event"
+      (doImport)="import()"
+      (doExport)="export()"
+    ></df-context-panel>
 
     <nz-card nzTitle="Prévisualisation responsive" nzSize="small" class="card sticky mt">
       <div class="bp">
@@ -310,422 +229,24 @@
           <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
             <!-- STEP -->
             <ng-container *ngIf="isStep(selected)">
-              <nz-form-item>
-                <nz-form-label>Titre</nz-form-label>
-                <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>visibleIf (JSON)</nz-form-label>
-                <nz-form-control><textarea nz-input rows="3" formControlName="visibleIf"></textarea></nz-form-control>
-              </nz-form-item>
+              <inspector-step [group]="inspector"></inspector-step>
             </ng-container>
 
             <!-- SECTION -->
             <ng-container *ngIf="isSection(selected)">
-              <nz-form-item>
-                <nz-form-label>Titre</nz-form-label>
-                <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>Description</nz-form-label>
-                <nz-form-control><textarea nz-input rows="3" formControlName="description"></textarea></nz-form-control>
-              </nz-form-item>
-              <nz-divider nzText="Titre & Description Styles"></nz-divider>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <nz-form-item>
-                  <nz-form-label>Titre couleur</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="sec_titleColor" placeholder="#000 or red"/></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Titre fontSize</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="sec_titleFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Titre MT/MB</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px;">
-                      <nz-input-number formControlName="sec_titleMT" [nzMin]="0" placeholder="MT"></nz-input-number>
-                      <nz-input-number formControlName="sec_titleMB" [nzMin]="0" placeholder="MB"></nz-input-number>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Desc couleur</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="sec_descColor" placeholder="#666"/></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Desc fontSize</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="sec_descFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Desc MT/MB</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px;">
-                      <nz-input-number formControlName="sec_descMT" [nzMin]="0" placeholder="MT"></nz-input-number>
-                      <nz-input-number formControlName="sec_descMB" [nzMin]="0" placeholder="MB"></nz-input-number>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
-              <nz-form-item>
-                <nz-form-label>Grid gutter</nz-form-label>
-                <nz-form-control><nz-input-number formControlName="gridGutter" [nzMin]="0"></nz-input-number></nz-form-control>
-              </nz-form-item>
-              <nz-divider nzText="Condition"></nz-divider>
-              <nz-form-item>
-                <nz-form-label>visibleIf (JSON)</nz-form-label>
-                <nz-form-control><textarea nz-input rows="3" formControlName="visibleIf" placeholder='{"==":[{"var":"country"},"FR"]}'></textarea></nz-form-control>
-              </nz-form-item>
-              <nz-divider nzText="Colonnes"></nz-divider>
-              <div style="display:flex; flex-direction:row; gap:8px;">
-                <nz-form-item>
-                  <nz-form-label>XS</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="col_xs" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>SM</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="col_sm" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>MD</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="col_md" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>LG</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="col_lg" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>XL</nz-form-label>
-                  <nz-form-control><nz-input-number formControlName="col_xl" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                </nz-form-item>
-              </div>
-
-              <nz-divider nzText="Espacement (margin / padding)"></nz-divider>
-              <app-spacing-editor [group]="inspector"></app-spacing-editor>
-              <div style="display:flex; gap:8px; margin-top:8px;">
-                <button nz-button (click)="openTitleStyleEditor()">Configurer style Titre…</button>
-                <button nz-button (click)="openDescStyleEditor()">Configurer style Description…</button>
-              </div>
+              <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
             </ng-container>
 
             <!-- FIELD -->
             <ng-container *ngIf="isField(selected)">
-              <nz-form-item>
-                <nz-form-label>Type</nz-form-label>
-                <nz-form-control>
-                  <nz-select formControlName="type">
-                    <nz-option nzValue="text" nzLabel="text"></nz-option>
-                    <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
-                    <nz-option nzValue="number" nzLabel="number"></nz-option>
-                    <nz-option nzValue="date" nzLabel="date"></nz-option>
-                    <nz-option nzValue="select" nzLabel="select"></nz-option>
-                    <nz-option nzValue="radio" nzLabel="radio"></nz-option>
-                    <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
-                    <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
-
-              <ng-container *ngIf="inspector.get('type')?.value !== 'textblock'">
-                <nz-form-item>
-                  <nz-form-label>Key</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="key"/></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Label</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="label"/></nz-form-control>
-                </nz-form-item>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                  <nz-form-item>
-                  <nz-form-label>Label color</nz-form-label>
-                  <nz-form-control>
-                    <nz-color-picker formControlName="fld_labelColor"></nz-color-picker>
-                  </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>Label fontSize</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="fld_labelFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                </div>
-                <nz-form-item>
-                  <nz-form-label>Placeholder</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="placeholder"/></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Description</nz-form-label>
-                  <nz-form-control><textarea nz-input rows="2" formControlName="description"></textarea></nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>Default</nz-form-label>
-                  <nz-form-control><input nz-input formControlName="default"/></nz-form-control>
-                </nz-form-item>
-                <nz-form-item *ngIf="inspector.get('type')?.value==='select' || inspector.get('type')?.value==='radio'">
-                  <nz-form-label>Options (JSON)</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <textarea nz-input rows="3" formControlName="options" placeholder='[{"label":"A","value":"a"}]' style="flex:1"></textarea>
-                      <button nz-button nzSize="small" (click)="openOptionsBuilder(); $event.preventDefault(); $event.stopPropagation()">Builder</button>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-divider nzText="Condition"></nz-divider>
-                <nz-form-item>
-                  <nz-form-label>visibleIf (JSON)</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <textarea nz-input rows="2" formControlName="visibleIf" style="flex:1"></textarea>
-                      <button nz-button nzSize="small" (click)="openConditionBuilder('visibleIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>requiredIf (JSON)</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <textarea nz-input rows="2" formControlName="requiredIf" style="flex:1"></textarea>
-                      <button nz-button nzSize="small" (click)="openConditionBuilder('requiredIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                  <nz-form-label>disabledIf (JSON)</nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <textarea nz-input rows="2" formControlName="disabledIf" style="flex:1"></textarea>
-                      <button nz-button nzSize="small" (click)="openConditionBuilder('disabledIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
-                    </div>
-                  </nz-form-control>
-                </nz-form-item>
-
-                <nz-form-item>
-                  <nz-form-label>validators (JSON)</nz-form-label>
-                  <nz-form-control><textarea nz-input rows="3" formControlName="validators" placeholder='[{"type":"required"},{"type":"min","value":0}]'></textarea></nz-form-control>
-                </nz-form-item>
-
-                <nz-divider nzText="Colonnes"></nz-divider>
-                <div style="display:flex; flex-direction:row; gap:8px;">
-                  <nz-form-item>
-                    <nz-form-label>XS</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_xs" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>SM</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_sm" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>MD</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_md" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>LG</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_lg" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>XL</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_xl" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                </div>
-
-                <nz-divider nzText="Espacement (margin / padding)"></nz-divider>
-                <app-spacing-editor [group]="inspector"></app-spacing-editor>
-              </ng-container>
-
-              <ng-container *ngIf="inspector.get('type')?.value==='textblock'">
-                <nz-form-item>
-                  <nz-form-label>HTML</nz-form-label>
-                  <nz-form-control><textarea nz-input rows="6" formControlName="textHtml"></textarea></nz-form-control>
-                </nz-form-item>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                  <nz-form-item>
-                    <nz-form-label>Texte color</nz-form-label>
-                    <nz-form-control>
-                      <nz-color-picker formControlName="tb_textColor"></nz-color-picker>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>Texte fontSize</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="tb_textFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                </div>
-                <nz-divider nzText="Colonnes"></nz-divider>
-                <div style="display:flex; flex-direction:row; gap:8px;">
-                  <nz-form-item>
-                    <nz-form-label>XS</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_xs" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>SM</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_sm" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>MD</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_md" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>LG</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_lg" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label>XL</nz-form-label>
-                    <nz-form-control><nz-input-number formControlName="col_xl" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
-                  </nz-form-item>
-                </div>
-              </ng-container>
+              <inspector-field [group]="inspector" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
             </ng-container>
           </form>
         </nz-tab>
 
         <!-- FORM SETTINGS (UI + SUMMARY) -->
         <nz-tab nzTitle="Form Settings" *ngIf="selected === schema">
-          <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
-            <nz-form-item>
-              <nz-form-label>Form Title</nz-form-label>
-              <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
-            </nz-form-item>
-
-            <nz-divider nzText="UI"></nz-divider>
-            <nz-form-item>
-              <nz-form-label>
-                layout
-                <i *ngIf="hasSections" nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Inline indisponible: des sections sont présentes."></i>
-              </nz-form-label>
-              <nz-form-control>
-                <nz-select formControlName="ui_layout">
-                  <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
-                  <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
-                  <nz-option nzValue="inline" nzLabel="inline" [nzDisabled]="hasSections"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item *ngIf="inspector.get('ui_layout')?.value !== 'vertical'">
-              <nz-form-label>labelAlign</nz-form-label>
-              <nz-form-control>
-                <nz-select formControlName="ui_labelAlign">
-                  <nz-option nzValue="left" nzLabel="left"></nz-option>
-                  <nz-option nzValue="right" nzLabel="right"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item *ngIf="inspector.get('ui_layout')?.value === 'horizontal'">
-              <nz-form-control>
-                <label nz-checkbox formControlName="ui_labelsOnTop">Labels on top</label>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <nz-form-label>labelCol.span</nz-form-label>
-              <nz-form-control><nz-input-number formControlName="ui_labelColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>controlCol.span</nz-form-label>
-              <nz-form-control><nz-input-number formControlName="ui_controlColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>widthPx</nz-form-label>
-              <nz-form-control><nz-input-number formControlName="ui_widthPx" [nzMin]="0" style="width:100%"></nz-input-number></nz-form-control>
-            </nz-form-item>
-
-            <nz-divider nzText="Form Spacing"></nz-divider>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Margin</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_form_m_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_m_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_m_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_m_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Padding</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_form_p_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_p_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_p_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_form_p_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-            </div>
-
-            <nz-divider nzText="Actions & Boutons"></nz-divider>
-            <nz-form-item>
-              <nz-form-control><label nz-checkbox formControlName="ui_showReset">Afficher le bouton Reset</label></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-control><label nz-checkbox formControlName="ui_showCancel">Afficher le bouton Cancel</label></nz-form-control>
-            </nz-form-item>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-              <nz-form-item>
-                <nz-form-label>submitText</nz-form-label>
-                <nz-form-control><input nz-input formControlName="ui_submitText"/></nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>resetText</nz-form-label>
-                <nz-form-control><input nz-input formControlName="ui_resetText"/></nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label>cancelText</nz-form-label>
-                <nz-form-control><input nz-input formControlName="ui_cancelText"/></nz-form-control>
-              </nz-form-item>
-            </div>
-            <div style="display:flex; gap:12px; flex-wrap:wrap;">
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Actions margin</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_actions_m_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_m_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_m_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_m_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Actions padding</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_actions_p_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_p_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_p_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_actions_p_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Button margin</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_button_m_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_m_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_m_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_m_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-              <div>
-                <div style="font-weight:600; margin-bottom:6px;">Button padding</div>
-                <div style="display:flex; gap:6px;">
-                  <nz-input-number formControlName="ui_button_p_top" [nzMin]="0" placeholder="top"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_p_right" [nzMin]="0" placeholder="right"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_p_bottom" [nzMin]="0" placeholder="bottom"></nz-input-number>
-                  <nz-input-number formControlName="ui_button_p_left" [nzMin]="0" placeholder="left"></nz-input-number>
-                </div>
-              </div>
-            </div>
-
-            <nz-divider nzText="Résumé"></nz-divider>
-            <nz-form-item>
-              <nz-form-control><label nz-checkbox formControlName="summary_enabled">Résumé activé</label></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>title</nz-form-label>
-              <nz-form-control><input nz-input formControlName="summary_title"/></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-control><label nz-checkbox formControlName="summary_includeHidden">Inclure les champs cachés</label></nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-              <nz-form-label>dateFormat</nz-form-label>
-              <nz-form-control><input nz-input formControlName="summary_dateFormat" placeholder="dd/MM/yyyy"/></nz-form-control>
-            </nz-form-item>
-          </form>
+          <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
         </nz-tab>
 
         <!-- APERCU JSON -->
@@ -742,16 +263,7 @@
 <!-- Modals -->
 <nz-modal [(nzVisible)]="optionsModalVisible" nzTitle="Options" [nzWidth]="840" (nzOnCancel)="cancelOptions()" (nzOnOk)="saveOptions()">
   <ng-container *nzModalContent>
-    <form [formGroup]="optionsForm">
-      <div formArrayName="items">
-        <div *ngFor="let grp of optionsItems.controls; let i=index" [formGroupName]="i" style="display:flex; gap:6px; margin-bottom:6px;">
-          <input nz-input placeholder="Label" formControlName="label" />
-          <input nz-input placeholder="Value" formControlName="value" />
-          <button nz-button nzType="text" nzDanger (click)="removeOptionRow(i); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
-        </div>
-      </div>
-      <button nz-button nzType="dashed" (click)="addOptionRow(); $event.preventDefault(); $event.stopPropagation()">+ Ajouter une option</button>
-    </form>
+    <options-builder [group]="optionsForm" (add)="addOptionRow()" (remove)="removeOptionRow($event)"></options-builder>
   </ng-container>
 </nz-modal>
 
@@ -774,85 +286,13 @@
 
 <nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="960" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
   <ng-container *nzModalContent>
-    <form [formGroup]="conditionForm">
-      <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
-        <label>Logique</label>
-        <nz-select formControlName="logic" style="min-width:160px;">
-          <nz-option nzValue="single" nzLabel="single (1 règle)"></nz-option>
-          <nz-option nzValue="any" nzLabel="any (OR)"></nz-option>
-          <nz-option nzValue="all" nzLabel="all (AND)"></nz-option>
-        </nz-select>
-        <button nz-button nzType="dashed" (click)="addConditionRow(); $event.preventDefault(); $event.stopPropagation()">+ Ajouter une règle</button>
-      </div>
-
-      <div formArrayName="items" style="display:flex; flex-direction:row; gap:8px;">
-        <ng-container *ngFor="let grp of conditionItems.controls; let i=index">
-          <div [formGroupName]="i" style="display:flex; flex-direction:row; gap:6px; padding:8px; border:1px solid #f0f0f0; border-radius:6px;">
-            <div style="display:flex; gap:8px; align-items:center;">
-              <label>Type</label>
-              <nz-select [ngModelOptions]="{standalone:true}" [(ngModel)]="$any(grp).controls.kind.value" (ngModelChange)="changeCondKind(i, $event)" style="width:120px;">
-                <nz-option nzValue="rule" nzLabel="Règle"></nz-option>
-                <nz-option nzValue="group" nzLabel="Groupe"></nz-option>
-              </nz-select>
-              <button nz-button nzType="text" nzDanger (click)="removeConditionRow(i); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
-            </div>
-
-            <!-- Règle -->
-            <div *ngIf="$any(grp).controls.kind.value==='rule'" style="display:grid; grid-template-columns: 1fr 120px 1fr; gap:8px; align-items:center;">
-              <nz-select formControlName="field" nzPlaceHolder="Champ">
-                <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
-              </nz-select>
-              <nz-select formControlName="operator">
-                <nz-option nzValue="==" nzLabel="=="></nz-option>
-                <nz-option nzValue="!=" nzLabel="!="></nz-option>
-                <nz-option nzValue=">" nzLabel=">"></nz-option>
-                <nz-option nzValue=">=" nzLabel=">="></nz-option>
-                <nz-option nzValue="<" nzLabel="<"></nz-option>
-                <nz-option nzValue="<=" nzLabel="<="></nz-option>
-              </nz-select>
-              <input nz-input formControlName="value" placeholder="valeur" />
-            </div>
-
-            <!-- Groupe -->
-            <div *ngIf="$any(grp).controls.kind.value==='group'" style="display:flex; flex-direction:row; gap:6px;">
-              <div style="display:flex; gap:8px; align-items:center;">
-                <label>Logique</label>
-                <nz-select formControlName="logic" style="min-width:160px;">
-                  <nz-option nzValue="any" nzLabel="any (OR)"></nz-option>
-                  <nz-option nzValue="all" nzLabel="all (AND)"></nz-option>
-                </nz-select>
-                <button nz-button nzType="dashed" (click)="addSubRule(i); $event.preventDefault(); $event.stopPropagation()">+ Règle</button>
-                <button nz-button nzType="dashed" (click)="addSubGroup(i); $event.preventDefault(); $event.stopPropagation()">+ Groupe</button>
-              </div>
-              <div formArrayName="items" style="display:flex; flex-direction:row; gap:6px;">
-                <div *ngFor="let sub of subItemsAt(i).controls; let j=index" [formGroupName]="j" style="display:flex; gap:8px; align-items:center;">
-                  <ng-container *ngIf="$any(sub).controls.kind?.value==='group'; else ruleRow">
-                    <!-- sous-groupe (affiché comme résumé) -->
-                    <span>Groupe imbriqué</span>
-                    <button nz-button nzType="text" nzDanger (click)="removeSubAt(i,j); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
-                  </ng-container>
-                  <ng-template #ruleRow>
-                    <nz-select formControlName="field" nzPlaceHolder="Champ">
-                      <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
-                    </nz-select>
-                    <nz-select formControlName="operator">
-                      <nz-option nzValue="==" nzLabel="=="></nz-option>
-                      <nz-option nzValue="!=" nzLabel="!="></nz-option>
-                      <nz-option nzValue=">" nzLabel=">"></nz-option>
-                      <nz-option nzValue=">=" nzLabel=">="></nz-option>
-                      <nz-option nzValue="<" nzLabel="<"></nz-option>
-                      <nz-option nzValue="<=" nzLabel="<="></nz-option>
-                    </nz-select>
-                    <input nz-input formControlName="value" placeholder="valeur" />
-                    <button nz-button nzType="text" nzDanger (click)="removeSubAt(i,j); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
-                  </ng-template>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-    </form>
+    <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
+                      (addConditionRow)="addConditionRow()"
+                      (removeConditionRow)="removeConditionRow($event)"
+                      (changeCondKind)="changeCondKind($event.index, $event.kind)"
+                      (addSubRule)="addSubRule($event)"
+                      (addSubGroup)="addSubGroup($event)"
+                      (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
   </ng-container>
 </nz-modal>
 

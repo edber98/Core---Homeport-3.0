@@ -185,7 +185,8 @@ export class DynamicForm implements OnInit, OnChanges {
   get actionsStyle() { return this.schema.ui?.actions?.actionsStyle || {}; }
   get buttonStyle() { return this.schema.ui?.actions?.buttonStyle || {}; }
   get showReset() { return !!this.schema.ui?.actions?.showReset; }
-  get showCancel() { return !!this.schema.ui?.actions?.showCancel; }
+  // Hide cancel button as requested; keep only Reset/Submit
+  get showCancel() { return false; }
   get submitText() { return this.schema.ui?.actions?.submitText || 'Valider'; }
   get resetText() { return this.schema.ui?.actions?.resetText || 'Réinitialiser'; }
   get cancelText() { return this.schema.ui?.actions?.cancelText || 'Modifier'; }

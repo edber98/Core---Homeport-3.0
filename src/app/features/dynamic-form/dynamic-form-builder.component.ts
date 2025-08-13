@@ -24,11 +24,21 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
-import { SpacingEditorComponent } from './components/spacing-editor.component';
 import { StyleEditorComponent } from './components/style-editor.component';
 import { CustomizeDialogComponent } from './components/customize-dialog.component';
+import { ContextPanelComponent } from './components/context-panel.component';
+import { InspectorFormSettingsComponent } from './components/inspector-form-settings.component';
+import { InspectorStepComponent } from './components/inspector-step.component';
+import { InspectorSectionComponent } from './components/inspector-section.component';
+import { InspectorFieldComponent } from './components/inspector-field.component';
+import { ConditionBuilderComponent } from './components/condition-builder.component';
+import { OptionsBuilderComponent } from './components/options-builder.component';
 import { BuilderTreeService } from './services/builder-tree.service';
 import { BuilderCustomizeService } from './services/builder-customize.service';
+import { BuilderIssuesService } from './services/builder-issues.service';
+import { BuilderPreviewService } from './services/builder-preview.service';
+import { BuilderDepsService } from './services/builder-deps.service';
+import { ConditionFormService } from './services/condition-form.service';
 import { DynamicFormService } from '../../modules/dynamic-form/dynamic-form.service';
 import type {
   FieldConfig,
@@ -64,10 +74,16 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     NzRadioModule, NzCheckboxModule,
     NzToolTipModule,
     NzColorPickerModule,
-    SpacingEditorComponent,
     StyleEditorComponent,
     CustomizeDialogComponent,
     CustomizeDialogComponent,
+    ContextPanelComponent,
+    InspectorFormSettingsComponent,
+    InspectorStepComponent,
+    InspectorSectionComponent,
+    InspectorFieldComponent,
+    ConditionBuilderComponent,
+    OptionsBuilderComponent,
 
     DynamicForm,
   ],
@@ -144,7 +160,7 @@ export class DynamicFormBuilderComponent {
   // Contrôles / validation
   issues: Issue[] = [];
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService) {
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -152,7 +168,7 @@ export class DynamicFormBuilderComponent {
     this.optionsForm = this.fb.group({ items: this.fb.array([]) });
     this.conditionForm = this.fb.group({
       logic: ['single'],
-      items: this.fb.array([ this.newCondRow() ])
+      items: this.fb.array([ this.condSvc.newRow('rule') ])
     });
     // section styles forms
     const mkStyleForm = () => this.fb.group({
@@ -668,26 +684,17 @@ export class DynamicFormBuilderComponent {
         actions: [ { label: 'Basculer en horizontal', run: () => this.inspector.get('ui_layout')?.setValue('horizontal') } ]
       });
     }
-    // Duplicates
-    const map = new Map<string, any[]>();
-    this.forEachEntity(ent => { if (ent.kind==='field') { const k = ent.obj.key; if (k) { const a = map.get(k)||[]; a.push(ent.obj); map.set(k,a); } } });
-    for (const [k, arr] of map.entries()) if (arr.length > 1) {
-      issues.push({ level: 'warning', message: `Clé de champ dupliquée: "${k}" (${arr.length} occurrences)`, actions: arr.slice(0,3).map((o,i)=>({label:`Voir ${i+1}`, run:()=>this.selectEntity(o)})) });
+    // Duplicates via service
+    for (const d of this.issuesSvc.findDuplicates(this.schema)) {
+      const arr = d.objs;
+      issues.push({ level: 'warning', message: `Clé de champ dupliquée: "${d.key}" (${arr.length} occurrences)`, actions: arr.slice(0,3).map((o,i)=>({label:`Voir ${i+1}`, run:()=>this.selectEntity(o)})) });
     }
-    // Conditions -> clés manquantes
-    const all = new Set(this.allFieldKeys());
-    const props: Array<'visibleIf'|'requiredIf'|'disabledIf'> = ['visibleIf','requiredIf','disabledIf'];
-    this.forEachEntity(ent => {
-      for (const p of props) {
-        const rule = ent.obj[p];
-        if (!rule) continue;
-        const used = Array.from(this.collectRuleVars(rule));
-        const missing = used.filter(k => !all.has(k));
-        if (missing.length) {
-          issues.push({ level: 'error', message: `${ent.kind} « ${ent.title || ent.kind} »: ${p} référence ${missing.join(', ')} (inexistants)`, actions: [ { label: 'Effacer la condition', run: () => this.clearCondition(ent.obj, p) }, { label: 'Éditer', run: () => { this.selectEntity(ent.obj); this.openConditionBuilder(p); } } ] });
-        }
-      }
-    });
+    // Invalid condition refs via service
+    for (const it of this.issuesSvc.findInvalidConditionRefs(this.schema)) {
+      const title = it.title || it.kind;
+      const p = it.prop;
+      issues.push({ level: 'error', message: `${it.kind} « ${title} »: ${p} référence ${it.missing.join(', ')} (inexistants)`, actions: [ { label: 'Effacer la condition', run: () => this.clearCondition(it.obj, p) }, { label: 'Éditer', run: () => { this.selectEntity(it.obj); this.openConditionBuilder(p); } } ] });
+    }
     this.issues = issues;
   }
 
@@ -734,34 +741,18 @@ export class DynamicFormBuilderComponent {
     const ctrl = this.inspector.get(target);
     let parsed: any = undefined;
     try { parsed = ctrl?.value ? JSON.parse(ctrl.value) : undefined; } catch { parsed = undefined; }
-    const items = this.conditionItems;
-    items.clear();
+    const items = this.conditionItems; items.clear();
     let logic: 'single'|'any'|'all' = 'single';
     if (parsed && typeof parsed === 'object') {
-      if (parsed.any && Array.isArray(parsed.any)) {
-        logic = 'any';
-        parsed.any.forEach((r: any) => items.push(this.rowFromNode(r)));
-      } else if (parsed.all && Array.isArray(parsed.all)) {
-        logic = 'all';
-        parsed.all.forEach((r: any) => items.push(this.rowFromNode(r)));
-      } else {
-        items.push(this.rowFromNode(parsed));
-      }
+      if (Array.isArray(parsed.any)) { logic = 'any'; parsed.any.forEach((r: any) => items.push(this.condSvc.fromNode(r))); }
+      else if (Array.isArray(parsed.all)) { logic = 'all'; parsed.all.forEach((r: any) => items.push(this.condSvc.fromNode(r))); }
+      else { items.push(this.condSvc.fromNode(parsed)); }
     }
-    if (!items.length) items.push(this.newCondRow());
-    this.conditionForm.patchValue({ logic });
+    if (!items.length) items.push(this.condSvc.newRow('rule'));
+    this.conditionForm.patchValue({ logic }, { emitEvent: false });
     this.conditionModalVisible = true;
   }
-  buildConditionObject(): any {
-    const v = this.conditionForm.value as any;
-    const items = (this.conditionItems.controls || []);
-    if (v.logic === 'single' && items.length === 1) {
-      return this.buildNodeFromForm(items[0]);
-    }
-    const arr = items.map(c => this.buildNodeFromForm(c));
-    return { [v.logic]: arr };
-  }
-  private parseMaybeNumber(x: any) { const n = Number(x); return isNaN(n) ? x : n; }
+  buildConditionObject(): any { return this.condSvc.buildConditionObject(this.conditionForm); }
   saveCondition() {
     const obj = this.buildConditionObject();
     this.inspector.get(this.conditionTarget)?.setValue(JSON.stringify(obj));
@@ -778,63 +769,13 @@ export class DynamicFormBuilderComponent {
   }
 
   get conditionItems(): FormArray { return this.conditionForm.get('items') as FormArray; }
-  newCondRow(kind: 'rule'|'group' = 'rule'): FormGroup {
-    if (kind === 'group') {
-      return this.fb.group({ kind: ['group'], logic: ['all'], items: this.fb.array([ this.newCondRow('rule') ]) });
-    }
-    return this.fb.group({ kind: ['rule'], field: [''], operator: ['=='], value: [''] });
-  }
-  addConditionRow() { this.conditionItems.push(this.newCondRow('rule')); }
-  addConditionGroup() { this.conditionItems.push(this.newCondRow('group')); }
+  addConditionRow() { this.conditionItems.push(this.condSvc.newRow('rule')); }
+  addConditionGroup() { this.conditionItems.push(this.condSvc.newRow('group')); }
   removeConditionRow(i: number) { this.conditionItems.removeAt(i); }
-  changeCondKind(i: number, kind: 'rule'|'group') {
-    this.conditionItems.setControl(i, this.newCondRow(kind));
-  }
-  // Sub-items helpers for nested groups
-  subItemsAt(i: number): FormArray { return (this.conditionItems.at(i).get('items') as FormArray); }
-  addSubRule(i: number) { this.subItemsAt(i).push(this.newCondRow('rule')); }
-  addSubGroup(i: number) { this.subItemsAt(i).push(this.newCondRow('group')); }
-  removeSubAt(i: number, j: number) { this.subItemsAt(i).removeAt(j); }
-  private rowFromNode(rule: any): FormGroup {
-    if (!rule || typeof rule !== 'object') return this.newCondRow('rule');
-    if (Array.isArray(rule.any)) {
-      const g = this.newCondRow('group');
-      g.get('logic')?.setValue('any');
-      const arr = g.get('items') as FormArray;
-      rule.any.forEach((r: any) => arr.push(this.rowFromNode(r)));
-      return g;
-    }
-    if (Array.isArray(rule.all)) {
-      const g = this.newCondRow('group');
-      g.get('logic')?.setValue('all');
-      const arr = g.get('items') as FormArray;
-      rule.all.forEach((r: any) => arr.push(this.rowFromNode(r)));
-      return g;
-    }
-    // simple rule
-    const op = Object.keys(rule)[0];
-    const args = rule[op] || [];
-    const field = args[0]?.var ?? '';
-    const value = args[1] ?? '';
-    const fg = this.newCondRow('rule');
-    fg.get('operator')?.setValue(op);
-    fg.get('field')?.setValue(field);
-    fg.get('value')?.setValue(value);
-    return fg;
-  }
-  private buildNodeFromForm(ctrl: AbstractControl): any {
-    const fg = ctrl as FormGroup;
-    const kind = fg.get('kind')?.value;
-    if (kind === 'group') {
-      const logic = fg.get('logic')?.value || 'all';
-      const arr = (fg.get('items') as FormArray).controls.map(c => this.buildNodeFromForm(c));
-      return { [logic]: arr };
-    }
-    const field = fg.get('field')?.value || '';
-    const op = fg.get('operator')?.value || '==';
-    const value = this.parseMaybeNumber(fg.get('value')?.value);
-    return { [op]: [ { var: field }, value ] };
-  }
+  changeCondKind(i: number, kind: 'rule'|'group') { this.condSvc.changeKind(this.conditionItems, i, kind); }
+  addSubRule(i: number) { this.condSvc.addSubRule(this.conditionItems, i); }
+  addSubGroup(i: number) { this.condSvc.addSubGroup(this.conditionItems, i); }
+  removeSubAt(i: number, j: number) { this.condSvc.removeSubAt(this.conditionItems, i, j); }
 
   // ---------- Sélection / patch inspector ----------
   select(obj: StepConfig | SectionConfig | FieldConfig | FormSchema): void {
@@ -1388,98 +1329,7 @@ export class DynamicFormBuilderComponent {
     return out;
   }
 
-  private fieldByKey(): Record<string, any> {
-    const map: Record<string, any> = {};
-    const visit = (fields?: any[]) => (fields || []).forEach(f => {
-      if (f.type === 'section') visit(f.fields || []);
-      else if (f.type !== 'textblock' && f.key) map[f.key] = f;
-    });
-    if (this.schema.steps?.length) this.schema.steps.forEach(st => visit(st.fields)); else visit(this.schema.fields);
-    return map;
-  }
-
-  private truthySampleForField(f: any): any {
-    switch (f?.type) {
-      case 'checkbox': return true;
-      case 'number': return 1;
-      case 'date': return new Date();
-      case 'select':
-      case 'radio': return f?.options?.[0]?.value ?? 'x';
-      default: return 'x'; // text/textarea
-    }
-  }
-  private falseySampleForField(f: any): any {
-    switch (f?.type) {
-      case 'checkbox': return false;
-      case 'number': return 0;
-      case 'date': return null;
-      default: return '';
-    }
-  }
-
-  private ruleToAssignments(rule: any): Record<string, any> {
-    const map = this.fieldByKey();
-    const merge = (a: Record<string, any>, b: Record<string, any>) => ({ ...a, ...b });
-    const assignEq = (field: string, value: any) => ({ [field]: value });
-    if (rule == null) return {};
-    if (typeof rule !== 'object') return {};
-    if (Array.isArray(rule.any)) {
-      const first = (rule.any as any[])[0];
-      return this.ruleToAssignments(first);
-    }
-    if (Array.isArray(rule.all)) {
-      return (rule.all as any[]).reduce((acc, r) => merge(acc, this.ruleToAssignments(r)), {} as Record<string, any>);
-    }
-    if (rule.var) {
-      const key = rule.var;
-      const f = map[key];
-      return assignEq(key, this.truthySampleForField(f));
-    }
-    const op = Object.keys(rule)[0];
-    const args = (rule as any)[op] || [];
-    const lhs = args[0];
-    const rhs = args[1];
-    const getKey = (x: any) => (x && typeof x === 'object' && x.var) ? x.var : undefined;
-    const k = getKey(lhs);
-    const f = k ? map[k] : undefined;
-    switch (op) {
-      case '==':
-        if (k !== undefined) return assignEq(k, rhs);
-        return {};
-      case '!=':
-        if (k !== undefined) {
-          // essayer un autre choix
-          if (f?.options?.length) {
-            const other = f.options.find((o: any) => o.value !== rhs)?.value;
-            if (other !== undefined) return assignEq(k, other);
-          }
-          return assignEq(k, this.falseySampleForField(f));
-        }
-        return {};
-      case '>':
-      case '>=':
-        if (k !== undefined) {
-          const base = Number(rhs);
-          if (!isNaN(base)) return assignEq(k, op === '>' ? base + 1 : base);
-        }
-        return {};
-      case '<':
-      case '<=':
-        if (k !== undefined) {
-          const base2 = Number(rhs);
-          if (!isNaN(base2)) return assignEq(k, op === '<' ? base2 - 1 : base2);
-        }
-        return {};
-      case 'not':
-        if (args && typeof args === 'object' && 'var' in args) {
-          const key2 = (args as any).var;
-          return assignEq(key2, this.falseySampleForField(map[key2]));
-        }
-        return {};
-      default:
-        return {};
-    }
-  }
+  private ruleToAssignments(rule: any): Record<string, any> { return this.prevSvc.ruleToAssignments(this.schema, rule); }
 
   activateCondition(entry: { rule: any }): void {
     // si déjà satisfait → désactiver (retirer ce que cette règle a posé)
@@ -1562,7 +1412,7 @@ export class DynamicFormBuilderComponent {
   private recomputeConflictPreview() {
     if (!this.conflictModalVisible) return;
     const baseVal = this.previewUseSim ? { ...this.simValues } : {};
-    const currentState = this.measureState(baseVal);
+    const currentState = this.prevSvc.measureState(this.schema, baseVal);
 
     let targetVal: Record<string, any> = { ...baseVal };
     if (this.pendingEntry) {
@@ -1571,7 +1421,7 @@ export class DynamicFormBuilderComponent {
       targetVal = { ...targetVal, ...baseAssign };
       for (const it of this.conflictItems) targetVal[it.key] = it.selected;
     }
-    const nextState = this.measureState(targetVal);
+    const nextState = this.prevSvc.measureState(this.schema, targetVal);
 
     const keys = Array.from(new Set([...Object.keys(currentState), ...Object.keys(nextState)]));
     const appear: string[] = []; const disappear: string[] = [];
@@ -1620,74 +1470,9 @@ export class DynamicFormBuilderComponent {
   }
 
   // ====== Description textuelle simple des conditions + évaluation
-  describeRule(rule: any): string {
-    if (rule == null) return '';
-    if (Array.isArray(rule.any)) return '(' + (rule.any as any[]).map(r => this.describeRule(r)).join(') OU (') + ')';
-    if (Array.isArray(rule.all)) return '(' + (rule.all as any[]).map(r => this.describeRule(r)).join(') ET (') + ')';
-    if (rule.var) return `${rule.var} est renseigné`;
-    if (rule.not && rule.not.var) return `${rule.not.var} n'est pas renseigné`;
-    const op = Object.keys(rule)[0];
-    const args = (rule as any)[op] || [];
-    const field = args[0]?.var ?? '';
-    const val = args[1];
-    const valStr = typeof val === 'string' ? `'${val}'` : String(val);
-    switch (op) {
-      case '==': return `${field} est égal à ${valStr}`;
-      case '!=': return `${field} est différent de ${valStr}`;
-      case '>': return `${field} est supérieur à ${valStr}`;
-      case '>=': return `${field} est supérieur ou égal à ${valStr}`;
-      case '<': return `${field} est inférieur à ${valStr}`;
-      case '<=': return `${field} est inférieur ou égal à ${valStr}`;
-      default: return JSON.stringify(rule);
-    }
-  }
-  private evalRuleLocal(rule: any, formOrValue: any): any {
-    if (rule === null || rule === undefined) return undefined;
-    if (typeof rule !== 'object') return rule;
-    const [op] = Object.keys(rule);
-    const args = (rule as any)[op];
-    const getByVar = (src: any, path: string) => {
-      if (!path) return undefined;
-      if (src && typeof src.get === 'function') return src.get(path)?.value;
-      return path.split('.').reduce((acc: any, k: string) => (acc == null ? undefined : acc[k]), src);
-    };
-    const val = (x: any) => {
-      if (x && typeof x === 'object' && 'var' in x) return getByVar(formOrValue, (x as any).var);
-      return (typeof x === 'object') ? this.evalRuleLocal(x, formOrValue) : x;
-    };
-    switch (op) {
-      case 'var': return getByVar(formOrValue, args);
-      case 'not': return !val(args);
-      case 'all': return (args as any[]).every((a: any) => !!val(a));
-      case 'any': return (args as any[]).some((a: any) => !!val(a));
-      case '==': return val(args[0]) === val(args[1]);
-      case '!=': return val(args[0]) !== val(args[1]);
-      case '>': return val(args[0]) > val(args[1]);
-      case '>=': return val(args[0]) >= val(args[1]);
-      case '<': return val(args[0]) < val(args[1]);
-      case '<=': return val(args[0]) <= val(args[1]);
-      default: return true;
-    }
-  }
-  isRuleSatisfied(rule: any, value: Record<string, any>): boolean {
-    const form = this.dfs.buildForm(this.schema as any, value);
-    return !!this.evalRuleLocal(rule, form);
-  }
-
-  displayChoiceLabel(key: string, value: any): string {
-    const map = this.fieldByKey();
-    const f = map[key];
-    if (!f) return String(value);
-    if (f.type === 'checkbox') return value ? 'Oui' : 'Non';
-    if ((f.type === 'select' || f.type === 'radio') && Array.isArray(f.options)) {
-      const hit = f.options.find((o: any) => value === o.value);
-      return hit ? `${hit.label} (${JSON.stringify(value)})` : String(value);
-    }
-    if (f.type === 'date') {
-      try { return new Date(value).toISOString().slice(0, 10); } catch { return String(value); }
-    }
-    return String(value);
-  }
+  describeRule(rule: any): string { return this.prevSvc.describeRule(rule); }
+  isRuleSatisfied(rule: any, value: Record<string, any>): boolean { return this.prevSvc.isRuleSatisfied(this.schema, rule, value); }
+  displayChoiceLabel(key: string, value: any): string { return this.prevSvc.displayChoiceLabel(this.schema, key, value); }
   get forceBp(): 'xs'|'sm'|'md'|'lg'|'xl' | undefined {
     const w = this.previewWidth;
     if (w == null) return undefined;
@@ -1707,46 +1492,8 @@ export class DynamicFormBuilderComponent {
   @HostListener('window:resize') onResize() { this.updateAutoBp(); }
 
   // ====== Dépendances: champs impactés par une clé (utilisés dans visibleIf/requiredIf/disabledIf)
-  private nodeUsesKey(rule: any, key: string): boolean {
-    if (!rule || typeof rule !== 'object') return false;
-    if (rule.var === key) return true;
-    for (const k of Object.keys(rule)) {
-      const v: any = (rule as any)[k];
-      if (Array.isArray(v)) { if (v.some(x => this.nodeUsesKey(x, key))) return true; }
-      else if (typeof v === 'object') { if (this.nodeUsesKey(v, key)) return true; }
-    }
-    return false;
-  }
-  dependentsForKey(key: string): Array<{ targetType: 'step'|'section'|'field'; kind: 'visibleIf'|'requiredIf'|'disabledIf'; label: string }>{
-    const out: Array<{ targetType: 'step'|'section'|'field'; kind: 'visibleIf'|'requiredIf'|'disabledIf'; label: string }> = [];
-    const visit = (fields?: any[]) => {
-      (fields || []).forEach((f: any) => {
-        if (f.type === 'section') {
-          if (f.visibleIf && this.nodeUsesKey(f.visibleIf, key)) out.push({ targetType: 'section', kind: 'visibleIf', label: f.title || 'Section' });
-          visit(f.fields || []);
-        } else if (f.type !== 'textblock') {
-          if (f.visibleIf && this.nodeUsesKey(f.visibleIf, key)) out.push({ targetType: 'field', kind: 'visibleIf', label: f.label || f.key || 'Field' });
-          if (f.requiredIf && this.nodeUsesKey(f.requiredIf, key)) out.push({ targetType: 'field', kind: 'requiredIf', label: f.label || f.key || 'Field' });
-          if (f.disabledIf && this.nodeUsesKey(f.disabledIf, key)) out.push({ targetType: 'field', kind: 'disabledIf', label: f.label || f.key || 'Field' });
-        }
-      });
-    };
-    if (this.schema.steps?.length) {
-      this.schema.steps.forEach(st => {
-        if (st.visibleIf && this.nodeUsesKey(st.visibleIf, key)) out.push({ targetType: 'step', kind: 'visibleIf', label: st.title || 'Step' });
-        visit(st.fields || []);
-      });
-    } else {
-      visit(this.schema.fields || []);
-    }
-    return out;
-  }
-
-  formatDependents(key: string): string {
-    const arr = this.dependentsForKey(key);
-    if (!arr.length) return 'Aucun';
-    return arr.map(d => `${d.label} (${d.kind})`).join(', ');
-  }
+  dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }
+  formatDependents(key: string): string { return this.depsSvc.formatDependents(this.schema, key); }
 
   private newField(type: FieldType): FieldConfig {
     if (type === 'textblock') {
@@ -1808,89 +1555,44 @@ export class DynamicFormBuilderComponent {
 
   // ====== Tree ======
   private rebuildTree() {
-    const nodes: any[] = [];
-    const isExp = (key: string, def = false) => this.treeExpanded.has(key) || def;
-    const pushFieldNodes = (acc: any[], baseKey: string, fields?: FieldConfig[]) => {
-      (fields || []).forEach((f: any, i: number) => {
-        const isStepBase = baseKey.startsWith('step:');
-        const key = isStepBase ? `${baseKey}:field:${i}` : `${baseKey}:${i}`; // root uses 'field:0', step uses 'step:0:field:0'
-        if (f.type === 'section') {
-          const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExp(key, false), children: [] };
-          const childBase = isStepBase ? key : `${key}:field`; // root nested path needs the ':field' marker between numbers
-          pushFieldNodes(secNode.children, childBase, f.fields || []);
-          acc.push(secNode);
-        } else {
-          acc.push({ title: f.label || f.key || f.type, key, isLeaf: true });
-        }
-      });
-    };
-    if (this.schema.steps?.length) {
-      const children: any[] = [];
-      this.schema.steps.forEach((st, si) => {
-        const stepKey = `step:${si}`;
-        const stepNode: any = { title: st.title || `Step ${si + 1}`, key: stepKey, isLeaf: false, expanded: isExp(stepKey, false), children: [] };
-        pushFieldNodes(stepNode.children, stepKey, st.fields || []);
-        children.push(stepNode);
-      });
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
-    } else if (this.schema.fields?.length) {
-      const children: any[] = [];
-      pushFieldNodes(children, 'field', this.schema.fields);
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
-    } else {
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: true });
+    // Assurer l'expansion automatique des ancêtres de l'élément sélectionné
+    const selKey = this.treeSvc.keyForObject(this.schema, this.selected);
+    if (selKey) {
+      const parts = selKey.split(':');
+      const ancestors: string[] = [];
+      if (parts[0] === 'step') {
+        // ex: step:0:field:3:field:2 => ancestors: step:0, step:0:field:3
+        ancestors.push(`${parts[0]}:${parts[1]}`);
+        for (let i = 2; i < parts.length - 1; i += 2) ancestors.push(parts.slice(0, i + 2).join(':'));
+      } else if (parts[0] === 'field') {
+        // ex: field:0:field:2 => ancestors: field:0
+        for (let i = 0; i < parts.length - 1; i += 2) ancestors.push(parts.slice(0, i + 2).join(':'));
+      }
+      ancestors.forEach(k => this.treeExpanded.add(k));
     }
-    this.treeNodes = nodes;
+    const isExp = (key: string, def = false) => this.treeExpanded.has(key) || def;
+    this.treeNodes = this.treeSvc.buildTreeNodes(this.schema, isExp);
     this.updateTreeSelectedKeys();
   }
 
   onTreeSelect(keys: string[]) {
     const key = keys[0];
     if (!key) return;
-    const parts = key.split(':');
-    const n = (s: string) => Number(s);
-    if (parts[0] === 'root') { this.select(this.schema); return; }
-    if (parts[0] === 'step') {
-      const si = n(parts[1]);
-      if (!this.schema.steps || !this.schema.steps[si]) return;
-      if (parts.length === 2) {
-        // Sélectionner le step et synchroniser l'index courant de l'aperçu
-        const step = this.schema.steps[si];
-        this.toggleSelect(step);
-        try {
-          const list = this.df?.visibleSteps || [];
-          const vi = list.findIndex(s => s === step);
-          if (vi >= 0) this.df?.go(vi, true);
-        } catch {}
-        return;
-      }
-      // traverse fields chain
-      let cur: any[] | undefined = this.schema.steps[si].fields;
-      let obj: any = null;
-      for (let i = 2; i < parts.length; i += 2) {
-        if (parts[i] !== 'field') break;
-        const fi = n(parts[i + 1]);
-        obj = cur?.[fi];
-        if (!obj) break;
-        cur = (obj as any).fields; // if section, next cur is its fields
-      }
-      if (obj) this.toggleSelect(obj);
+    if (key === 'root') { this.select(this.schema); return; }
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    if (!ctx) return;
+    const obj = ctx.obj;
+    // si step sélectionné → synchroniser l'aperçu
+    if (this.isStep(obj)) {
+      this.toggleSelect(obj);
+      try {
+        const list = this.df?.visibleSteps || [];
+        const vi = list.findIndex(s => s === obj);
+        if (vi >= 0) this.df?.go(vi, true);
+      } catch {}
       return;
     }
-    if (parts[0] === 'field') {
-      // root fields chain
-      let cur: any[] | undefined = this.schema.fields;
-      let obj: any = null;
-      for (let i = 1; i < parts.length; i += 2) {
-        if (parts[i - 1] !== 'field') break;
-        const fi = n(parts[i]);
-        obj = cur?.[fi];
-        if (!obj) break;
-        cur = (obj as any).fields;
-      }
-      if (obj) this.toggleSelect(obj);
-      return;
-    }
+    if (obj) this.toggleSelect(obj);
   }
 
   private toggleSelect(obj: any) {
@@ -1928,82 +1630,15 @@ export class DynamicFormBuilderComponent {
   onTreeDropdownVisible(vis: boolean, key: string) { this.dropdownKey = vis ? key : null; }
 
   onTreeExpand(e: any) {
-    const key = e?.node?.key as string | undefined;
-    if (!key) return;
-    if (e?.node?.isExpanded) this.treeExpanded.add(key); else this.treeExpanded.delete(key);
-  }
-
-  private keyForObject(obj: any): string | null {
-    if (obj === this.schema) return 'root';
-    const searchFields = (base: string, fields?: any[]): string | null => {
-      for (let i = 0; i < (fields || []).length; i++) {
-        const f = fields![i];
-        const isStepBase = base.startsWith('step:');
-        const key = isStepBase ? `${base}:field:${i}` : `${base}:${i}`;
-        if (f === obj) return key;
-        if (f && f.type === 'section') {
-          const childBase = isStepBase ? key : `${key}:field`;
-          const sub = searchFields(childBase, f.fields || []);
-          if (sub) return sub;
-        }
-      }
-      return null;
-    };
-    if (this.schema.steps) {
-      for (let si = 0; si < this.schema.steps.length; si++) {
-        const st = this.schema.steps[si];
-        if (obj === st) return `step:${si}`;
-        const sub = searchFields(`step:${si}`, st.fields || []);
-        if (sub) return sub;
-      }
-    }
-    const subRoot = searchFields('field', this.schema.fields || []);
-    if (subRoot) return subRoot;
-    return null;
-  }
-
-  // Contexte depuis une clé de tree: objet, parent array, index
-  private ctxFromKey(key: string): { obj: any; parentArr?: any[]; index?: number } | null {
-    if (!key) return null;
-    if (key === 'root') return { obj: this.schema } as any;
-    const parts = key.split(':');
-    const n = (s: string) => Number(s);
-    let obj: any = null;
-    let parentArr: any[] | undefined;
-    let index: number | undefined;
-
-    const drillFields = (arr: any[] | undefined, chain: string[], start: number): { obj: any; parentArr?: any[]; index?: number } | null => {
-      let curArr = arr;
-      let curObj: any = null;
-      let parent: any[] | undefined;
-      let idx: number | undefined;
-      for (let i = start; i < chain.length; i += 2) {
-        if (chain[i] !== 'field') return null;
-        const fi = n(chain[i + 1]);
-        parent = curArr;
-        idx = fi;
-        curObj = curArr?.[fi];
-        if (!curObj) return null;
-        curArr = curObj?.fields; // si section, next arr = fields
-      }
-      return { obj: curObj, parentArr: parent, index: idx };
-    };
-
-    if (parts[0] === 'step') {
-      const si = n(parts[1]);
-      const step = this.schema.steps?.[si];
-      if (!step) return null;
-      if (parts.length === 2) return { obj: step } as any;
-      return drillFields(step.fields || [], parts, 2);
-    }
-    if (parts[0] === 'field') {
-      return drillFields(this.schema.fields || [], parts, 0);
-    }
-    return null;
+    // Support both NzFormatEmitEvent and our forwarded { key, expanded }
+    const key = (e?.node?.key as string | undefined) ?? (e?.key as string | undefined);
+    const expanded = (e?.node?.isExpanded as boolean | undefined) ?? (e?.expanded as boolean | undefined) ?? (e?.isExpanded as boolean | undefined);
+    if (!key || expanded == null) return;
+    if (expanded) this.treeExpanded.add(key); else this.treeExpanded.delete(key);
   }
 
   private updateTreeSelectedKeys() {
-    const k = this.keyForObject(this.selected);
+    const k = this.treeSvc.keyForObject(this.schema, this.selected);
     this.treeSelectedKeys = k ? [k] : [];
   }
 
@@ -2013,24 +1648,7 @@ export class DynamicFormBuilderComponent {
     this.dropdown.create(event, menu);
   }
 
-  private parseKey(key: string): any | null {
-    const parts = key.split(':');
-    const n = (s: string) => Number(s);
-    if (parts[0] === 'step') {
-      const si = n(parts[1]);
-      if (parts.length === 2) return { key, type: 'step', stepIndex: si };
-      const idxs: number[] = [];
-      for (let i = 2; i < parts.length; i += 2) { if (parts[i] !== 'field') break; idxs.push(n(parts[i+1])); }
-      return { key, type: 'fieldPath', stepIndex: si, path: idxs };
-    }
-    if (parts[0] === 'field') {
-      const idxs: number[] = [];
-      for (let i = 1; i < parts.length; i += 2) { if (parts[i-1] !== 'field') break; idxs.push(n(parts[i])); }
-      return { key, type: 'rootFieldPath', path: idxs };
-    }
-    if (parts[0] === 'root') return { key, type: 'root' };
-    return null;
-  }
+  private parseKey(key: string): any | null { return this.treeSvc.parseKey(key); }
 
   // actions via menu contextuel (tree) — basées sur dropdownKey
   private currentCtxFromDropdown() {
@@ -2078,59 +1696,32 @@ export class DynamicFormBuilderComponent {
     this.refresh();
   }
   ctxAddFieldToSection() {
-    const ctx = this.currentCtxFromDropdown();
-    if (!ctx) return;
-    let sec: any = null;
-    if (ctx.type === 'fieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.steps?.[ctx.stepIndex!].fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    }
-    if (!sec) return; sec.fields = sec.fields || [];
-    const f = this.newField('text'); sec.fields.push(f);
-    this.select(f);
-    this.refresh();
+    const key = this.dropdownKey; if (!key) return;
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    const sec = ctx?.obj;
+    if (!sec || (sec as any).type !== 'section') return;
+    (sec as any).fields = (sec as any).fields || [];
+    const f = this.newField('text'); (sec as any).fields.push(f);
+    this.select(f); this.refresh();
   }
   ctxAddFieldToSectionTyped(t: string) {
-    const ctx = this.currentCtxFromDropdown();
-    if (!ctx) return;
-    let sec: any = null;
-    if (ctx.type === 'fieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.steps?.[ctx.stepIndex!].fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    }
-    if (!sec) return; sec.fields = sec.fields || [];
-    const f = this.newField(t as any); sec.fields.push(f);
+    const key = this.dropdownKey; if (!key) return;
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    const sec = ctx?.obj;
+    if (!sec || (sec as any).type !== 'section') return;
+    (sec as any).fields = (sec as any).fields || [];
+    const f = this.newField(t as any); (sec as any).fields.push(f);
     this.select(f); this.refresh();
   }
   ctxAddSectionInside() {
-    const ctx = this.currentCtxFromDropdown();
-    if (!ctx) return;
-    let sec: any = null;
-    if (ctx.type === 'fieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.steps?.[ctx.stepIndex!].fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
-      let cur: any = this.schema.fields;
-      for (const i of ctx.path) cur = cur?.[i];
-      if (cur && cur.type === 'section') sec = cur;
-    }
-    if (!sec) return;
-    sec.fields = sec.fields || [];
+    const key = this.dropdownKey; if (!key) return;
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    const sec = ctx?.obj;
+    if (!sec || (sec as any).type !== 'section') return;
+    (sec as any).fields = (sec as any).fields || [];
     const ns: SectionConfig = { type: 'section', title: 'Section', fields: [], col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } } as any;
-    sec.fields.push(ns as any);
-    this.select(ns as any);
-    this.refresh();
+    (sec as any).fields.push(ns as any);
+    this.select(ns as any); this.refresh();
   }
   ctxAddFieldRootTyped(t: string) {
     if (this.schema.steps?.length) return;
@@ -2168,44 +1759,24 @@ export class DynamicFormBuilderComponent {
     this.refresh();
   }
   ctxDeleteSection() {
-    const ctx = this.currentCtxFromDropdown();
-    if (!ctx) return;
-    if (ctx.type === 'fieldPath' && ctx.path?.length) {
-      const step = this.schema.steps?.[ctx.stepIndex!];
-      if (!step) return;
-      let parent: any[] | undefined = step.fields;
-      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
-      const idx = ctx.path[ctx.path.length - 1];
-      parent?.splice(idx, 1);
-      if (this.selected && this.isSection(this.selected)) this.select(step);
-    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
-      let parent: any[] | undefined = this.schema.fields;
-      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
-      const idx = ctx.path[ctx.path.length - 1];
-      parent?.splice(idx, 1);
+    const key = this.dropdownKey; if (!key) return;
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    if (!ctx || (ctx.obj as any)?.type !== 'section') return;
+    if (ctx.parentArr && ctx.index != null) {
+      ctx.parentArr.splice(ctx.index, 1);
       if (this.selected && this.isSection(this.selected)) this.select(this.schema);
+      this.refresh();
     }
-    this.refresh();
   }
   ctxDeleteField() {
-    const ctx = this.currentCtxFromDropdown();
-    if (!ctx) return;
-    if (ctx.type === 'fieldPath' && ctx.path?.length) {
-      const step = this.schema.steps?.[ctx.stepIndex!];
-      if (!step) return;
-      let parent: any[] | undefined = step.fields;
-      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
-      const idx = ctx.path[ctx.path.length - 1];
-      parent?.splice(idx, 1);
-      if (this.selected && this.isField(this.selected)) this.select(step);
-    } else if (ctx.type === 'rootFieldPath' && ctx.path?.length) {
-      let parent: any[] | undefined = this.schema.fields;
-      for (let i = 0; i < ctx.path.length - 1; i++) parent = (parent?.[ctx.path[i]] as any)?.fields;
-      const idx = ctx.path[ctx.path.length - 1];
-      parent?.splice(idx, 1);
+    const key = this.dropdownKey; if (!key) return;
+    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
+    if (!ctx || (ctx.obj as any)?.type === 'section') return; // only fields
+    if (ctx.parentArr && ctx.index != null) {
+      ctx.parentArr.splice(ctx.index, 1);
       if (this.selected && this.isField(this.selected)) this.select(this.schema);
+      this.refresh();
     }
-    this.refresh();
   }
 
   // ====== Helpers Canvas (Grid/Cols) ======

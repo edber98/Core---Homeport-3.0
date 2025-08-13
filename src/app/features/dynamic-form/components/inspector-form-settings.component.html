@@ -1,0 +1,102 @@
+<form nz-form [formGroup]="group" class="inspector-form" nzLayout="vertical">
+  <nz-form-item>
+    <nz-form-label>Form Title</nz-form-label>
+    <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
+  </nz-form-item>
+
+  <nz-divider nzText="UI"></nz-divider>
+  <nz-form-item>
+    <nz-form-label>
+      layout
+      <i *ngIf="hasSections" nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Inline indisponible: des sections sont présentes."></i>
+    </nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="ui_layout">
+        <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
+        <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
+        <nz-option nzValue="inline" nzLabel="inline" [nzDisabled]="hasSections"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="group.get('ui_layout')?.value !== 'vertical'">
+    <nz-form-label>labelAlign</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="ui_labelAlign">
+        <nz-option nzValue="left" nzLabel="left"></nz-option>
+        <nz-option nzValue="right" nzLabel="right"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="group.get('ui_layout')?.value === 'horizontal'">
+    <nz-form-control>
+      <label nz-checkbox formControlName="ui_labelsOnTop">Labels on top</label>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>labelCol.span</nz-form-label>
+    <nz-form-control><nz-input-number formControlName="ui_labelColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>controlCol.span</nz-form-label>
+    <nz-form-control><nz-input-number formControlName="ui_controlColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>widthPx</nz-form-label>
+    <nz-form-control><nz-input-number formControlName="ui_widthPx" [nzMin]="0" style="width:100%"></nz-input-number></nz-form-control>
+  </nz-form-item>
+
+  <nz-divider nzText="Form Spacing"></nz-divider>
+  <app-prefixed-spacing-editor [group]="group" prefix="ui_form_"></app-prefixed-spacing-editor>
+
+  <nz-divider nzText="Actions & Boutons"></nz-divider>
+  <nz-form-item>
+    <nz-form-control><label nz-checkbox formControlName="ui_showReset">Afficher le bouton Reset</label></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control><label nz-checkbox formControlName="ui_showCancel">Afficher le bouton Cancel</label></nz-form-control>
+  </nz-form-item>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+    <nz-form-item>
+      <nz-form-label>submitText</nz-form-label>
+      <nz-form-control><input nz-input formControlName="ui_submitText"/></nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>resetText</nz-form-label>
+      <nz-form-control><input nz-input formControlName="ui_resetText"/></nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>cancelText</nz-form-label>
+      <nz-form-control><input nz-input formControlName="ui_cancelText"/></nz-form-control>
+    </nz-form-item>
+  </div>
+  <div style="display:grid; grid-template-columns: 1fr; gap:12px;">
+    <div>
+      <div style="font-weight:600; margin:6px 0;">Actions Spacing</div>
+      <app-prefixed-spacing-editor [group]="group" prefix="ui_actions_"></app-prefixed-spacing-editor>
+    </div>
+    <div>
+      <div style="font-weight:600; margin:6px 0;">Button Spacing</div>
+      <app-prefixed-spacing-editor [group]="group" prefix="ui_button_"></app-prefixed-spacing-editor>
+    </div>
+  </div>
+
+  <nz-divider nzText="Résumé"></nz-divider>
+  <nz-form-item>
+    <nz-form-control><label nz-checkbox formControlName="summary_enabled">Résumé activé</label></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>title</nz-form-label>
+    <nz-form-control><input nz-input formControlName="summary_title"/></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control><label nz-checkbox formControlName="summary_includeHidden">Inclure les champs cachés</label></nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>dateFormat</nz-form-label>
+    <nz-form-control><input nz-input formControlName="summary_dateFormat" placeholder="dd/MM/yyyy"/></nz-form-control>
+  </nz-form-item>
+</form>
+
