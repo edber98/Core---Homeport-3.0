@@ -158,6 +158,9 @@ export class DynamicFormBuilderComponent {
   // Simulation des conditions dans l'aperçu
   previewUseSim = false;
   simValues: Record<string, any> = {};
+  scenarios: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
+  scenariosAll: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
+  formScenarios: Array<{ label: string; description: string; value: Record<string, any> }> = [];
   // Conflits/choix pour conditions sur le même champ
   conflictModalVisible = false;
   conflictItems: Array<{ key: string; choices: any[]; selected: any }> = [];
@@ -1378,6 +1381,7 @@ export class DynamicFormBuilderComponent {
       const parsed = JSON.parse(this.json) as FormSchema;
       this.schema = parsed || {};
       this.select(this.schema);
+      this.refresh();
     } catch (e) {
       alert('JSON invalide');
     }
@@ -1659,6 +1663,44 @@ export class DynamicFormBuilderComponent {
   dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }
   formatDependents(key: string): string { return this.depsSvc.formatDependents(this.schema, key); }
 
+  buildBaseline(): any { return this.prevSvc.buildValidBaseline(this.schema); }
+
+  applyScenario(sc: { patch: Record<string, any>; arrayKey?: string }) {
+    const base = this.buildBaseline();
+    let merged: any = { ...base };
+    if (sc.arrayKey) {
+      const arr = merged[sc.arrayKey] = Array.isArray(merged[sc.arrayKey]) ? merged[sc.arrayKey] : [{}];
+      const item = { ...(arr[0] || {}), ...sc.patch };
+      arr[0] = item;
+    } else {
+      merged = { ...merged, ...sc.patch };
+    }
+    this.simValues = merged;
+    this.previewUseSim = true;
+    this.refresh();
+  }
+
+  applyScenarioAll(sc: { patch: Record<string, any>; arrayKey?: string }) {
+    const base = this.buildBaseline();
+    let merged: any = { ...base };
+    if (sc.arrayKey) {
+      const arr = merged[sc.arrayKey] = Array.isArray(merged[sc.arrayKey]) ? merged[sc.arrayKey] : [{}];
+      const item = { ...(arr[0] || {}), ...sc.patch };
+      arr[0] = item;
+    } else {
+      merged = { ...merged, ...sc.patch };
+    }
+    this.simValues = merged;
+    this.previewUseSim = true;
+    this.refresh();
+  }
+
+  applyFormScenario(sc: { value: Record<string, any> }) {
+    this.simValues = JSON.parse(JSON.stringify(sc.value));
+    this.previewUseSim = true;
+    this.refresh();
+  }
+
   private newField(type: FieldType): FieldConfig { return this.factory.newField(type); }
 
   private ensureStepperMode(): void {
@@ -1710,6 +1752,11 @@ export class DynamicFormBuilderComponent {
     this.rebuildTree();
     // Recalculer les contrôles à chaque refresh
     try { this.recomputeIssues(); } catch {}
+    try {
+      this.scenarios = this.prevSvc.enumerateScenarios(this.schema);
+      (this as any).scenariosAll = this.prevSvc.enumerateFieldVariations(this.schema);
+      (this as any).formScenarios = this.prevSvc.enumerateFormScenarios(this.schema);
+    } catch {}
   }
 
   // ====== Tree ======

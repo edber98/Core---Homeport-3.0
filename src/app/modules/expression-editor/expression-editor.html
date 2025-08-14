@@ -1,0 +1,44 @@
+<div #host class="expr-host" [class.inline]="inline"
+     nz-popover
+     [nzPopoverTrigger]="null"
+     [nzPopoverVisible]="showMenu"
+     nzPopoverPlacement="bottomRight"
+     [nzPopoverOrigin]="originRef"
+     [nzPopoverOverlayClassName]="'expr-popover'"
+     [nzPopoverContent]="popoverTpl">
+  <div #cm class="cm-host" aria-label="expression-editor"></div>
+  <div #originEl class="expr-origin" [ngStyle]="{ top: originTop + 'px', left: originLeft + 'px' }"></div>
+</div>
+
+<div class="expr-preview" *ngIf="showPreview && preview">
+  {{ preview }}
+</div>
+
+<ng-template #popoverTpl>
+  <div class="expr-popover-body">
+    <div class="expr-popover-left">
+      <ul #list role="listbox" aria-expanded="true" aria-label="Completions">
+        <li *ngFor="let it of options; let i = index"
+            role="option"
+            [class.cm-completionSelected]="i === selIndex"
+            [class.active]="i === selIndex"
+            (mousedown)="$event.preventDefault(); clickItem(it)">
+          <span class="cm-completionLabel">
+            <span class="cm-completionMatchedText"></span>{{ it.label }}
+          </span>
+          <span class="cm-completionDetail" *ngIf="it.detail">{{ it.detail }}</span>
+        </li>
+      </ul>
+    </div>
+    <div class="expr-popover-right">
+      <div class="autocomplete-info-container">
+        <div class="autocomplete-info-header">
+          <span class="autocomplete-info-name">{{ infoTitle }}</span>
+        </div>
+        <div class="autocomplete-info-description" *ngIf="infoBody">
+          <p>{{ infoBody }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

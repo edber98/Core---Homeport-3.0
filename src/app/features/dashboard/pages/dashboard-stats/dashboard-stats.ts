@@ -18,7 +18,7 @@ import {
 
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExpressionEditorTestingComponent } from '../../components/expression-editor-testing-component/expression-editor-testing-component';
+import { ExpressionEditorComponent } from '../../../../modules/expression-editor/expression-editor';
 
 
 
@@ -39,7 +39,7 @@ import { ExpressionEditorTestingComponent } from '../../components/expression-ed
     FormsModule,
     ReactiveFormsModule,
     Vflow,
-    ExpressionEditorTestingComponent
+    ExpressionEditorComponent
   ],
   animations: [
     trigger('slideInOut', [
@@ -56,6 +56,21 @@ import { ExpressionEditorTestingComponent } from '../../components/expression-ed
   styleUrl: './dashboard-stats.scss'
 })
 export class DashboardStats {
+
+// any.component.ts
+expr = '{{ json.id }}';
+ctx = {
+  json: { id: 'abc-123', user: { name: 'Alice', email: 'a@example.com' } },
+  env: { NODE_ENV: 'development' },
+  node: { 'Fetch User': { data: { id: 42 } } },
+  now: new Date(),
+};
+
+// Exemple de fonctions suggérées avec arguments (facultatif)
+fnSpecs = {
+/*   add: { args: ['a', 'b'] },
+  toUpper: { args: ['text'] }, */
+};
 
  ctx_var:any = {
   user: {

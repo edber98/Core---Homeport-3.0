@@ -7,11 +7,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { SpacingEditorComponent } from './spacing-editor.component';
+import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 
 @Component({
   selector: 'inspector-section',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzDividerModule, NzInputNumberModule, NzSelectModule, SpacingEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzDividerModule, NzInputNumberModule, NzSelectModule, SpacingEditorComponent, MonacoJsonEditorComponent],
   template: `
     <div [formGroup]="group">
       <nz-form-item>
@@ -148,7 +149,7 @@ import { SpacingEditorComponent } from './spacing-editor.component';
         <nz-form-label>visibleIf (JSON)</nz-form-label>
         <nz-form-control>
           <div style="display:flex; gap:6px; align-items:center;">
-            <textarea nz-input rows="3" formControlName="visibleIf" placeholder='{"==":[{"var":"country"},"FR"]}' style="flex:1"></textarea>
+            <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" style="flex:1"></monaco-json-editor>
             <button nz-button nzSize="small" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">Builder</button>
           </div>
         </nz-form-control>

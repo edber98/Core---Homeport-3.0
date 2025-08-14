@@ -60,6 +60,33 @@
         <button nz-button nzSize="small" (click)="setPreviewWidth(1200)">XL</button>
         <button nz-button nzSize="small" (click)="setPreviewWidth(1600)">XXL</button>
       </div>
+      <nz-divider nzText="Hypothèses de test"></nz-divider>
+      <div style="max-height:180px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
+        <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:600;">{{ sc.label }}</span>
+          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+          <span style="flex:1"></span>
+          <button nz-button nzSize="small" (click)="applyScenario(sc)">Appliquer</button>
+        </div>
+      </div>
+      <nz-divider nzText="Cas du formulaire (variations)"></nz-divider>
+      <div style="max-height:220px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
+        <div *ngFor="let sc of scenariosAll" style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:600;">{{ sc.label }}</span>
+          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+          <span style="flex:1"></span>
+          <button nz-button nzSize="small" (click)="applyScenarioAll(sc)">Remplir</button>
+        </div>
+      </div>
+      <nz-divider nzText="Formulaire entier"></nz-divider>
+      <div style="max-height:220px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
+        <div *ngFor="let sc of formScenarios" style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:600;">{{ sc.label }}</span>
+          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+          <span style="flex:1"></span>
+          <button nz-button nzSize="small" (click)="applyFormScenario(sc)">Remplir</button>
+        </div>
+      </div>
     </nz-card>
 
     <nz-card nzTitle="Conditions & Simulation" nzSize="small" class="card sticky mt">

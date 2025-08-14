@@ -118,7 +118,7 @@
 
   <nz-divider nzText="Import / Export"></nz-divider>
   <div class="io">
-    <textarea [(ngModel)]="json" (ngModelChange)="jsonChange.emit($event)" [ngModelOptions]="{standalone: true}" placeholder="Colle ton JSON ici"></textarea>
+    <monaco-json-editor [value]="json" (valueChange)="jsonChange.emit($event)"></monaco-json-editor>
     <div class="io-actions">
       <button nz-button nzSize="small" (click)="doImport.emit()">Import</button>
       <button nz-button nzSize="small" (click)="doExport.emit()">Export</button>

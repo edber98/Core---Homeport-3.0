@@ -8,11 +8,12 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { SpacingEditorComponent } from './spacing-editor.component';
+import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 
 @Component({
   selector: 'inspector-field',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzColorPickerModule, SpacingEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzColorPickerModule, SpacingEditorComponent, MonacoJsonEditorComponent],
   template: `
     <div [formGroup]="group">
       <nz-form-item>
@@ -68,14 +69,14 @@ import { SpacingEditorComponent } from './spacing-editor.component';
           <nz-form-label>Options (JSON)</nz-form-label>
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
-              <textarea nz-input rows="3" formControlName="options" placeholder='[{"label":"A","value":"a"}]' style="flex:1"></textarea>
+              <monaco-json-editor [value]="$any(group.controls['options'].value)" (valueChange)="group.get('options')?.setValue($event)" style="flex:1"></monaco-json-editor>
               <button nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
             </div>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>validators (JSON)</nz-form-label>
-          <nz-form-control><textarea nz-input rows="3" formControlName="validators" placeholder='[{"type":"required"},{"type":"min","value":0}]'></textarea></nz-form-control>
+          <nz-form-control><monaco-json-editor [value]="$any(group.controls['validators'].value)" (valueChange)="group.get('validators')?.setValue($event)"></monaco-json-editor></nz-form-control>
         </nz-form-item>
 
         <nz-divider nzText="Condition"></nz-divider>
@@ -83,7 +84,7 @@ import { SpacingEditorComponent } from './spacing-editor.component';
           <nz-form-label>visibleIf (JSON)</nz-form-label>
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
-              <textarea nz-input rows="2" formControlName="visibleIf" style="flex:1"></textarea>
+              <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" style="flex:1"></monaco-json-editor>
               <button nz-button nzSize="small" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
             </div>
           </nz-form-control>
@@ -92,7 +93,7 @@ import { SpacingEditorComponent } from './spacing-editor.component';
           <nz-form-label>requiredIf (JSON)</nz-form-label>
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
-              <textarea nz-input rows="2" formControlName="requiredIf" style="flex:1"></textarea>
+              <monaco-json-editor [value]="$any(group.controls['requiredIf'].value)" (valueChange)="group.get('requiredIf')?.setValue($event)" style="flex:1"></monaco-json-editor>
               <button nz-button nzSize="small" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
             </div>
           </nz-form-control>
@@ -101,7 +102,7 @@ import { SpacingEditorComponent } from './spacing-editor.component';
           <nz-form-label>disabledIf (JSON)</nz-form-label>
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
-              <textarea nz-input rows="2" formControlName="disabledIf" style="flex:1"></textarea>
+              <monaco-json-editor [value]="$any(group.controls['disabledIf'].value)" (valueChange)="group.get('disabledIf')?.setValue($event)" style="flex:1"></monaco-json-editor>
               <button nz-button nzSize="small" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
             </div>
           </nz-form-control>

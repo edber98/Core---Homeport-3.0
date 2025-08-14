@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 
 @Component({
   selector: 'inspector-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule],
+  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, MonacoJsonEditorComponent],
   template: `
     <div [formGroup]="group">
       <nz-form-item>
@@ -16,7 +17,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>visibleIf (JSON)</nz-form-label>
-        <nz-form-control><textarea nz-input rows="3" formControlName="visibleIf"></textarea></nz-form-control>
+        <nz-form-control><monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)"></monaco-json-editor></nz-form-control>
       </nz-form-item>
     </div>
   `

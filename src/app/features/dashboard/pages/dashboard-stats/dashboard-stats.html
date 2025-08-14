@@ -3,6 +3,8 @@
 
   <div class=" full-height " style="min-width: 350px">
 
+
+
     <div style="margin-top: 11px; margin-bottom: 9px" nz-flex [nzVertical]="false">
       <div nz-flex [nzVertical]="false" style="font-size: 23px; width: 50px" [nzJustify]="'center'"
         [nzAlign]="'center'">
@@ -20,6 +22,7 @@
       <nz-divider class="no-margin"></nz-divider>
     </div>
 
+  
 
     <ul style="padding: 5px; margin-top: 0px; margin-bottom: 7px; " nz-menu>
       <li *ngFor="let i of metadatas" nz-menu-item>{{i.name}}</li>
@@ -130,8 +133,18 @@
   [(ngModel)]="code"
   [options]="{ mode: 'nunjucks-html', lineNumbers: true }">
 </ngx-codemirror> -->
-<app-expression-editor-testing-component  [variableList]="['customer', 'invoice.number']"  [context]="ctx_var"></app-expression-editor-testing-component>
-    <p style="text-align: center;">
+<!-- <app-expression-editor-testing-component  [variableList]="['customer', 'invoice.number']"  [context]="ctx_var"></app-expression-editor-testing-component>
+ -->   
+<div style="padding: 0">
+  <app-expression-editor
+    [(value)]="expr"
+    [context]="ctx"
+    [inline]="true"
+  ></app-expression-editor>
+
+</div>
+
+ <p style="text-align: center;">
       <button nz-button nzType="primary">
         <nz-icon nzType="plus-circle" nzTheme="outline" />
         Ajouter un schéma

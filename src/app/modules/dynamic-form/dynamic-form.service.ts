@@ -225,12 +225,10 @@ export class DynamicFormService {
             const isVisible = this.isFieldVisible(f, form);
             // disabledIf OU pas visible → disable
             const shouldDisable = (f.disabledIf ? this.evalRule(f.disabledIf, form) === true : false) || !isVisible;
-            const prevDisabled = this.lastDisabled.get(ctrl as FormControl) ?? false;
-            if (shouldDisable !== prevDisabled) {
-                shouldDisable ? ctrl.disable({ emitEvent: false }) : ctrl.enable({ emitEvent: false });
-                this.lastDisabled.set(ctrl as FormControl, shouldDisable);
-                needsUpdate = true;
-            }
+            // Appliquer l'état disabled de façon déterministe (évite des cas où la map de cache diverge)
+            if (shouldDisable && !ctrl.disabled) { ctrl.disable({ emitEvent: false }); needsUpdate = true; }
+            if (!shouldDisable && ctrl.disabled) { ctrl.enable({ emitEvent: false }); needsUpdate = true; }
+            this.lastDisabled.set(ctrl as FormControl, shouldDisable);
 
             // required
             const base = this.mapValidators(f.validators || []);

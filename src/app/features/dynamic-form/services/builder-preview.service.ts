@@ -192,4 +192,130 @@ export class BuilderPreviewService {
       default: return true;
     }
   }
+
+  // ===== Test generation =====
+  enumerateScenarios(schema: FormSchema): Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> {
+    const out: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
+    const describe = (rule: any) => this.describeRule(rule);
+    const pushRule = (target: any, kind: 'visibleIf'|'requiredIf'|'disabledIf', rule: any, ctx?: { arrayKey?: string; arrayTitle?: string }) => {
+      const patch = this.ruleToAssignments(schema, rule);
+      const title = (target?.title || target?.label || target?.key || 'Cible');
+      const desc = describe(rule);
+      const label = `${kind} • ${title}`;
+      out.push({ label, description: ctx?.arrayKey ? `${ctx.arrayTitle || ctx.arrayKey}[0] · ${desc}` : desc, patch, arrayKey: ctx?.arrayKey, arrayTitle: ctx?.arrayTitle });
+    };
+    const visit = (fields?: any[], ctx?: { arrayKey?: string; arrayTitle?: string }) => {
+      (fields || []).forEach(f => {
+        if (f.type === 'section' || f.type === 'section_array') {
+          const nextCtx = (f.type === 'section_array' || f.mode === 'array') ? { arrayKey: f.key, arrayTitle: f.title || ctx?.arrayTitle } : ctx;
+          if (f.visibleIf) pushRule(f, 'visibleIf', f.visibleIf, nextCtx);
+          visit(f.fields || [], nextCtx);
+        } else if (f.type !== 'textblock') {
+          if (f.visibleIf) pushRule(f, 'visibleIf', f.visibleIf, ctx);
+          if (f.requiredIf) pushRule(f, 'requiredIf', f.requiredIf, ctx);
+          if (f.disabledIf) pushRule(f, 'disabledIf', f.disabledIf, ctx);
+        }
+      });
+    };
+    if (schema.steps?.length) schema.steps.forEach(st => { if (st.visibleIf) pushRule(st, 'visibleIf', st.visibleIf); visit(st.fields || [], undefined); });
+    else visit(schema.fields || [], undefined);
+    return out;
+  }
+
+  enumerateFormScenarios(schema: FormSchema): Array<{ label: string; description: string; value: Record<string, any> }> {
+    const scenarios: Array<{ label: string; description: string; value: Record<string, any> }> = [];
+    const baseline = this.buildValidBaseline(schema);
+    scenarios.push({ label: 'Baseline (tout rempli)', description: 'Remplit tout le formulaire avec des valeurs plausibles (1 item/array).', value: baseline });
+
+    // Par step: activer la première règle de chaque entité (si présente) sur la baseline
+    const steps = schema.steps?.length ? schema.steps : [{ title: schema.title || 'Form', fields: schema.fields }] as any[];
+    steps.forEach((st: any, si: number) => {
+      const label = steps.length > 1 ? `Step ${si + 1} (règles principales)` : 'Form (règles principales)';
+      const desc = 'Active une hypothèse par entité pour ce bloc.';
+      const val = JSON.parse(JSON.stringify(baseline));
+      const apply = (patch: any, arrayKey?: string) => {
+        if (arrayKey) {
+          const arr = val[arrayKey] = Array.isArray(val[arrayKey]) ? val[arrayKey] : [{}];
+          arr[0] = { ...(arr[0] || {}), ...patch };
+        } else Object.assign(val, patch);
+      };
+      const rules = this.enumerateScenarios({ ...schema, fields: st.fields, steps: undefined } as any);
+      // garder au plus 1 patch par entité cible (field/section)
+      const seen = new Set<string>();
+      for (const r of rules) {
+        const sig = `${r.arrayKey || 'root'}:${JSON.stringify(r.patch)}`;
+        if (seen.has(sig)) continue; seen.add(sig);
+        apply(r.patch, r.arrayKey);
+      }
+      scenarios.push({ label, description: desc, value: val });
+    });
+    return scenarios;
+  }
+
+  buildValidBaseline(schema: FormSchema): Record<string, any> {
+    const val: Record<string, any> = {};
+    const visit = (fields?: any[], target: any = val) => {
+      (fields || []).forEach(f => {
+        if (f.type === 'section') visit(f.fields || [], target);
+        else if (f.type === 'section_array' || f.mode === 'array') {
+          const key = f.key || 'items';
+          const item: any = {};
+          visit(f.fields || [], item);
+          target[key] = [item];
+        } else if (f.type !== 'textblock') {
+          target[f.key] = this.truthySampleForField(f);
+        }
+      });
+    };
+    if (schema.steps?.length) schema.steps.forEach(st => visit(st.fields || [], val)); else visit(schema.fields || [], val);
+    return val;
+  }
+
+  // ===== Global form test cases (per-field variations)
+  enumerateFieldVariations(schema: FormSchema): Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> {
+    const out: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
+    const valsFor = (f: any): any[] => {
+      if (!f) return [];
+      switch (f.type) {
+        case 'checkbox': return [false, true];
+        case 'select':
+        case 'radio': {
+          const opts = Array.isArray(f.options) ? f.options : [];
+          return opts.slice(0, 3).map((o: any) => o.value).filter((v: any) => v !== undefined);
+        }
+        case 'number': {
+          const vs = [] as number[];
+          const validators = Array.isArray(f.validators) ? f.validators : [];
+          const minV = validators.find((v: any) => v?.type === 'min')?.value;
+          const maxV = validators.find((v: any) => v?.type === 'max')?.value;
+          if (typeof minV === 'number') { vs.push(minV, minV + 1); }
+          if (typeof maxV === 'number') { vs.push(maxV - 1, maxV); }
+          if (!vs.length) vs.push(0, 1);
+          // Unique keep order
+          return vs.filter((v, i) => vs.indexOf(v) === i);
+        }
+        case 'date': return [new Date()];
+        default: return ['x']; // text / textarea
+      }
+    };
+    const push = (title: string, key: string, v: any, ctx?: { arrayKey?: string; arrayTitle?: string }) => {
+      const patch: any = { [key]: v };
+      const label = `${title}`;
+      const desc = `${title} = ${typeof v === 'string' ? `'${v}'` : String(v)}`;
+      out.push({ label, description: ctx?.arrayKey ? `${ctx.arrayTitle || ctx.arrayKey}[0] · ${desc}` : desc, patch, arrayKey: ctx?.arrayKey, arrayTitle: ctx?.arrayTitle });
+    };
+    const visit = (fields?: any[], ctx?: { arrayKey?: string; arrayTitle?: string }) => {
+      (fields || []).forEach(f => {
+        if (f.type === 'section' || f.type === 'section_array') {
+          const nextCtx = (f.type === 'section_array' || f.mode === 'array') ? { arrayKey: f.key, arrayTitle: f.title || ctx?.arrayTitle } : ctx;
+          visit(f.fields || [], nextCtx);
+        } else if (f.type !== 'textblock') {
+          const values = valsFor(f);
+          values.forEach(v => push(f.label || f.key || 'Field', f.key, v, ctx));
+        }
+      });
+    };
+    if (schema.steps?.length) schema.steps.forEach(st => visit(st.fields || [], undefined)); else visit(schema.fields || [], undefined);
+    return out;
+  }
 }
