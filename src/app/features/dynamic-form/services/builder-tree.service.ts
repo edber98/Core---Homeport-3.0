@@ -23,6 +23,7 @@ export class BuilderTreeService {
         const key = isStepBase ? `${base}:field:${i}` : `${base}:${i}`;
         if (f === obj) return key;
         if (f && f.type === 'section') {
+          // Under a step, child base stays the section key; at root, descend with ':field'
           const childBase = isStepBase ? key : `${key}:field`;
           const sub = searchFields(childBase, f.fields || []);
           if (sub) return sub;
@@ -196,6 +197,7 @@ export class BuilderTreeService {
         const key = isStepBase ? `${baseKey}:field:${i}` : `${baseKey}:${i}`;
         if (f.type === 'section') {
           const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExpanded(key, false), children: [] };
+          // Under step, keep child base as section key; at root, use ':field' marker
           const childBase = isStepBase ? key : `${key}:field`;
           pushFieldNodes(secNode.children, childBase, f.fields || []);
           acc.push(secNode);

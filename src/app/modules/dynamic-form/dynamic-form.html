@@ -32,11 +32,13 @@
               <ng-container *ngIf="f.type==='section'; else stepSingleField">
             <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === f" (click)="editMode && onSectionContainerClick($event, i, k, $any(f))">
               <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp"
-                          [editMode]="editMode" [selectedField]="selectedField"
+                          [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                           [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
                           (moveField)="onMoveInSection($event.index, $event.dir, i, k)"
                           (deleteField)="onDeleteInSection($event.index, i, k)"
-                          (selectField)="onSelectInSection($event.index, i, k, (($any(f).fields)||[])[ $event.index ])">
+                          (selectField)="onSelectInSection($event.index, i, k, (($any(f).fields)||[])[ $event.index ])"
+                          (selectSection)="editSelectSection.emit({ stepIndex: i, sectionIndex: k, section: $any(f) })"
+                          (addFieldTyped)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, sectionPath: $event.path, type: $event.type })">
               </df-section>
                   <div *ngIf="editMode" class="df-edit-actions">
                     <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectSection(i, k, $any(f), $event)">Select</button>
@@ -113,19 +115,7 @@
 
   <!-- ===== Mode SANS STEPS (racine) ===== -->
   <ng-template #rootMode>
-  <!-- Si aucune section à la racine, rendre tous les fields dans une seule section pour supporter les cols -->
-  <ng-container *ngIf="!hasAnyRootSection; else rootMixed">
-    <df-section [section]="flatSection" [form]="form" [ui]="ui" [forceBp]="forceBp"
-                [editMode]="editMode" [selectedField]="selectedField"
-                [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
-                (moveField)="onMoveInFlat($event.index, $event.dir)"
-                (deleteField)="onDeleteInFlat($event.index)"
-                (selectField)="onSelectInFlat($event.index, (flatSection.fields||[])[ $event.index ])">
-    </df-section>
-  </ng-container>
-
-  <!-- Sinon: Parcours mixte sections + fields en gardant l'ordre -->
-  <ng-template #rootMixed>
+  <!-- Parcours mixte sections + fields à la racine en gardant l'ordre -->
   <nz-row [nzGutter]="16">
   <ng-container *ngFor="let it of rootItems(); let i = index; trackBy: trackByMixedItem">
     <!-- Section -->
@@ -141,12 +131,14 @@
         [style.flex-basis.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null">
       <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === ($any(schema.fields)[it.ent.i])" (click)="editMode && onSectionContainerClick($event, undefined, it.ent.i, ($any(schema.fields)[it.ent.i]))">
         <df-section [section]="$any(($any(schema.fields))[it.ent.i])" [form]="form" [ui]="ui" [forceBp]="forceBp"
-                    [editMode]="editMode" [selectedField]="selectedField"
+                    [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                     [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
                     (moveField)="onMoveInSection($event.index, $event.dir, undefined, it.ent.i)"
                     (deleteField)="onDeleteInSection($event.index, undefined, it.ent.i)"
-                    (selectField)="onSelectInSection($event.index, undefined, it.ent.i, ($event.field || (($any(schema.fields)[it.ent.i]).fields || [])[ $event.index ]))">
-        </df-section>
+                    (selectField)="onSelectInSection($event.index, undefined, it.ent.i, ($event.field || (($any(schema.fields)[it.ent.i]).fields || [])[ $event.index ]))"
+                    (selectSection)="editSelectSection.emit({ sectionIndex: it.ent.i, section: $event.section })"
+                    (addFieldTyped)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, sectionPath: $event.path, type: $event.type })"
+        ></df-section>
         <div *ngIf="editMode" class="df-edit-actions">
           <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectSection(undefined, it.ent.i, ($any(schema.fields)[it.ent.i]), $event)">Select</button>
           <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'up' })">▲</button>
@@ -191,7 +183,6 @@
     </ng-template>
   </ng-container>
   </nz-row>
-  </ng-template>
 
   <div class="df-actions" [ngStyle]="actionsStyle">
     <button nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>

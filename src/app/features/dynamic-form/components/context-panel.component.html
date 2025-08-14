@@ -59,6 +59,10 @@
       <ul nz-menu>
         <li nz-menu-item (click)="onCtxSectionAddSection()">+ Section</li>
         <li nz-menu-item (click)="onCtxSectionAddField()">+ Field</li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="onCtxSectionDuplicate()">Dupliquer</li>
+        <li nz-menu-item (click)="onCtxSectionInsertBefore()">Insérer une section avant</li>
+        <li nz-menu-item (click)="onCtxSectionInsertAfter()">Insérer une section après</li>
         <li nz-menu-item (click)="onCtxSectionAddFieldTyped('text')">+ Text</li>
         <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textarea')">+ Textarea</li>
         <li nz-menu-item (click)="onCtxSectionAddFieldTyped('number')">+ Number</li>
@@ -72,6 +76,9 @@
     </nz-dropdown-menu>
     <nz-dropdown-menu #menuField="nzDropdownMenu">
       <ul nz-menu>
+        <li nz-menu-item (click)="onCtxFieldDuplicate()">Dupliquer</li>
+        <li nz-menu-item (click)="onCtxFieldInsertBefore()">Insérer un field avant</li>
+        <li nz-menu-item (click)="onCtxFieldInsertAfter()">Insérer un field après</li>
         <li nz-menu-item nzDanger (click)="onCtxFieldDelete()">Supprimer</li>
       </ul>
     </nz-dropdown-menu>

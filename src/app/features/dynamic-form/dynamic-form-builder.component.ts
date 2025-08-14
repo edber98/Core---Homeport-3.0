@@ -34,11 +34,15 @@ import { InspectorFieldComponent } from './components/inspector-field.component'
 import { ConditionBuilderComponent } from './components/condition-builder.component';
 import { OptionsBuilderComponent } from './components/options-builder.component';
 import { BuilderTreeService } from './services/builder-tree.service';
+import { BuilderCtxActionsService } from './services/builder-ctx-actions.service';
 import { BuilderCustomizeService } from './services/builder-customize.service';
 import { BuilderIssuesService } from './services/builder-issues.service';
 import { BuilderPreviewService } from './services/builder-preview.service';
 import { BuilderDepsService } from './services/builder-deps.service';
 import { ConditionFormService } from './services/condition-form.service';
+import { BuilderFactoryService } from './services/builder-factory.service';
+import { BuilderGridService } from './services/builder-grid.service';
+import { BuilderStateService } from './services/builder-state.service';
 import { DynamicFormService } from '../../modules/dynamic-form/dynamic-form.service';
 import type {
   FieldConfig,
@@ -94,10 +98,11 @@ export class DynamicFormBuilderComponent {
   // Schéma en cours d’édition
   schema: FormSchema = { title: 'Nouveau formulaire' };
 
-  // Sélection courante dans le canvas
-  selected: StepConfig | SectionConfig | FieldConfig | FormSchema | null = null;
-  // Sélection éditable (champ)
-  selectedField: FieldConfig | null = null;
+  // Sélection (centralisée via service)
+  get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
+  set selected(v: any) { this.state.selected = v; }
+  get selectedField(): FieldConfig | null { return this.state.selectedField; }
+  set selectedField(v: FieldConfig | null) { this.state.selectedField = v; }
 
   // Sélections typées pour l'aperçu (évite les casts dans le template)
   get selectedSectionForPreview(): SectionConfig | null {
@@ -160,7 +165,7 @@ export class DynamicFormBuilderComponent {
   // Contrôles / validation
   issues: Issue[] = [];
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService) {
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -737,19 +742,8 @@ export class DynamicFormBuilderComponent {
   // ---------- Condition Builder ----------
   openConditionBuilder(target: 'visibleIf'|'requiredIf'|'disabledIf') {
     this.conditionTarget = target;
-    // seed from existing JSON
     const ctrl = this.inspector.get(target);
-    let parsed: any = undefined;
-    try { parsed = ctrl?.value ? JSON.parse(ctrl.value) : undefined; } catch { parsed = undefined; }
-    const items = this.conditionItems; items.clear();
-    let logic: 'single'|'any'|'all' = 'single';
-    if (parsed && typeof parsed === 'object') {
-      if (Array.isArray(parsed.any)) { logic = 'any'; parsed.any.forEach((r: any) => items.push(this.condSvc.fromNode(r))); }
-      else if (Array.isArray(parsed.all)) { logic = 'all'; parsed.all.forEach((r: any) => items.push(this.condSvc.fromNode(r))); }
-      else { items.push(this.condSvc.fromNode(parsed)); }
-    }
-    if (!items.length) items.push(this.condSvc.newRow('rule'));
-    this.conditionForm.patchValue({ logic }, { emitEvent: false });
+    this.condSvc.seedFormFromJson(this.conditionForm, ctrl?.value);
     this.conditionModalVisible = true;
   }
   buildConditionObject(): any { return this.condSvc.buildConditionObject(this.conditionForm); }
@@ -769,13 +763,13 @@ export class DynamicFormBuilderComponent {
   }
 
   get conditionItems(): FormArray { return this.conditionForm.get('items') as FormArray; }
-  addConditionRow() { this.conditionItems.push(this.condSvc.newRow('rule')); }
-  addConditionGroup() { this.conditionItems.push(this.condSvc.newRow('group')); }
-  removeConditionRow(i: number) { this.conditionItems.removeAt(i); }
-  changeCondKind(i: number, kind: 'rule'|'group') { this.condSvc.changeKind(this.conditionItems, i, kind); }
-  addSubRule(i: number) { this.condSvc.addSubRule(this.conditionItems, i); }
-  addSubGroup(i: number) { this.condSvc.addSubGroup(this.conditionItems, i); }
-  removeSubAt(i: number, j: number) { this.condSvc.removeSubAt(this.conditionItems, i, j); }
+  addConditionRow() { this.condSvc.addRootRule(this.conditionForm); }
+  addConditionGroup() { this.condSvc.addRootGroup(this.conditionForm); }
+  removeConditionRow(i: number) { this.condSvc.removeRootAt(this.conditionForm, i); }
+  changeCondKind(i: number, kind: 'rule'|'group') { this.condSvc.changeRootKind(this.conditionForm, i, kind); }
+  addSubRule(i: number) { this.condSvc.addSubRuleAt(this.conditionForm, i); }
+  addSubGroup(i: number) { this.condSvc.addSubGroupAt(this.conditionForm, i); }
+  removeSubAt(i: number, j: number) { this.condSvc.removeSubAtRoot(this.conditionForm, i, j); }
 
   // ---------- Sélection / patch inspector ----------
   select(obj: StepConfig | SectionConfig | FieldConfig | FormSchema): void {
@@ -1128,63 +1122,20 @@ export class DynamicFormBuilderComponent {
 
   // ---------- Edition via DynamicForm (overlay) ----------
   onEditMoveItem(e: { path: 'step'|'root'; stepIndex?: number; index: number; dir: 'up'|'down' }) {
-    const move = (arr: any[] | undefined) => {
-      if (!arr) return;
-      const from = e.index;
-      const to = e.dir === 'up' ? e.index - 1 : e.index + 1;
-      if (to < 0 || to >= arr.length) return;
-      moveItemInArray(arr, from, to);
-    };
-    if (e.path === 'root') move(this.schema.fields);
-    if (e.path === 'step') move(this.schema.steps?.[e.stepIndex!].fields);
+    this.ctxActions.moveMixed(this.schema, e);
     this.refresh();
   }
   onEditMoveField(e: { path: 'flat'|'section'|'stepRoot'; stepIndex?: number; sectionIndex?: number; index: number; dir: 'up'|'down' }) {
-    const move = <T>(arr: T[] | undefined) => {
-      if (!arr) return;
-      const from = e.index;
-      const to = e.dir === 'up' ? e.index - 1 : e.index + 1;
-      if (to < 0 || to >= arr.length) return;
-      moveItemInArray(arr, from, to);
-    };
-    if (e.path === 'flat') move(this.schema.fields);
-    if (e.path === 'section') {
-      if (e.stepIndex != null) {
-        const f = this.schema.steps?.[e.stepIndex].fields?.[e.sectionIndex!];
-        const sec = f && (f as any).type === 'section' ? (f as any) : null;
-        move(sec?.fields);
-      } else {
-        const f = this.schema.fields?.[e.sectionIndex!];
-        const sec = f && (f as any).type === 'section' ? (f as any) : null;
-        move(sec?.fields);
-      }
-    }
-    if (e.path === 'stepRoot') move(this.schema.steps?.[e.stepIndex!].fields);
+    this.ctxActions.moveField(this.schema, e);
     this.refresh();
   }
   onEditDeleteField(e: { path: 'flat'|'section'|'stepRoot'; stepIndex?: number; sectionIndex?: number; index: number }) {
-    const del = <T>(arr: T[] | undefined) => {
-      if (!arr) return;
-      arr.splice(e.index, 1);
-    };
-    if (e.path === 'flat') del(this.schema.fields);
-    if (e.path === 'section') {
-      if (e.stepIndex != null) {
-        const f = this.schema.steps?.[e.stepIndex].fields?.[e.sectionIndex!];
-        const sec = f && (f as any).type === 'section' ? (f as any) : null;
-        del(sec?.fields);
-      } else {
-        const f = this.schema.fields?.[e.sectionIndex!];
-        const sec = f && (f as any).type === 'section' ? (f as any) : null;
-        del(sec?.fields);
-      }
-    }
-    if (e.path === 'stepRoot') del(this.schema.steps?.[e.stepIndex!].fields);
+    this.ctxActions.deleteFieldByPosition(this.schema, e);
     if (this.selectedField && e.path) this.selectedField = null;
     this.refresh();
   }
   // removed legacy onEditMoveSection; use onEditMoveItem instead
-  onEditAddFieldTyped(e: { path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string }) {
+  onEditAddFieldTyped(e: { path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string; sectionPath?: number[] }) {
     const make = (t: any) => this.newField(t as any);
     if (e.path === 'root') {
       this.ensureFlatMode();
@@ -1192,25 +1143,39 @@ export class DynamicFormBuilderComponent {
       const f = make(e.type);
       this.schema.fields.push(f);
       this.select(f);
-    } else if (e.path === 'stepRoot') {
+      this.refresh();
+      return;
+    }
+    if (e.path === 'stepRoot') {
       const st = this.schema.steps?.[e.stepIndex!]; if (!st) return;
       st.fields = st.fields || [];
       const f = make(e.type); st.fields.push(f);
       this.select(f);
-    } else if (e.path === 'section') {
-      let sec: any = null;
-      if (e.stepIndex != null) {
-        const f = this.schema.steps?.[e.stepIndex!].fields?.[e.sectionIndex!];
-        if (f && (f as any).type === 'section') sec = f as any;
-      } else {
-        const f = this.schema.fields?.[e.sectionIndex!];
-        if (f && (f as any).type === 'section') sec = f as any;
-      }
-      if (!sec) return; sec.fields = sec.fields || [];
-      const f = make(e.type); sec.fields.push(f);
-      this.select(f);
+      this.refresh();
+      return;
     }
-    this.refresh();
+    if (e.path === 'section') {
+      const descend = (rootSec: any, path: number[] | undefined) => {
+        let cur = rootSec;
+        for (const idx of (path || [])) {
+          const next = (cur.fields || [])[idx];
+          if (!next || (next as any).type !== 'section') break;
+          cur = next as any;
+        }
+        return cur;
+      };
+      let start: any = null;
+      if (e.stepIndex != null) start = this.schema.steps?.[e.stepIndex!].fields?.[e.sectionIndex!];
+      else start = this.schema.fields?.[e.sectionIndex!];
+      if (!start || (start as any).type !== 'section') return;
+      const target = descend(start, e.sectionPath);
+      target.fields = target.fields || [];
+      const f = make(e.type);
+      target.fields.push(f);
+      this.select(f);
+      this.refresh();
+      return;
+    }
   }
   onEditSelectField(e: { path: 'flat'|'section'|'stepRoot'; stepIndex?: number; sectionIndex?: number; index: number; field: FieldConfig }) {
     this.selectedField = e.field;
@@ -1495,12 +1460,7 @@ export class DynamicFormBuilderComponent {
   dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }
   formatDependents(key: string): string { return this.depsSvc.formatDependents(this.schema, key); }
 
-  private newField(type: FieldType): FieldConfig {
-    if (type === 'textblock') {
-      return { type, textHtml: '<p>Nouveau bloc</p>', col: { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 } } as any;
-    }
-    return { type, key: 'field', label: 'Field', col: { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 } } as FieldConfig;
-  }
+  private newField(type: FieldType): FieldConfig { return this.factory.newField(type); }
 
   private ensureStepperMode(): void {
     if (!this.schema.steps) {
@@ -1657,71 +1617,45 @@ export class DynamicFormBuilderComponent {
   }
   ctxAddStep() {
     this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', sections: [], fields: [] } as any;
-    this.schema.steps!.push(step);
+    const step = this.ctxActions.addStep(this.schema) as StepConfig;
     this.select(step);
     this.refresh();
   }
   ctxAddSection() {
     const ctx = this.currentCtxFromDropdown();
     if (!ctx || ctx.type !== 'step') return;
-    const step = this.schema.steps?.[ctx.stepIndex!];
-    if (!step) return;
-    step.fields = step.fields || [];
-    const sec: SectionConfig = { type: 'section', title: 'Section', fields: [], col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } } as any;
-    step.fields.push(sec as any);
-    this.select(sec as any);
+    const sec = this.ctxActions.addSectionToStep(this.schema, ctx.key);
+    if (sec) this.select(sec as any);
     this.refresh();
   }
   ctxAddFieldToStep() {
     const ctx = this.currentCtxFromDropdown();
     if (ctx?.type !== 'step') return;
-    const step = this.schema.steps?.[ctx.stepIndex!];
-    if (!step) return;
-    step.fields = step.fields || [];
-    const f = this.newField('text');
-    step.fields.push(f);
-    this.select(f);
+    const f = this.ctxActions.addFieldToStep(this.schema, ctx.key, 'text');
+    if (f) this.select(f);
     this.refresh();
   }
   addFieldAtStepTyped(t: string) {
     const ctx = this.currentCtxFromDropdown();
     if (ctx?.type !== 'step') return;
-    const step = this.schema.steps?.[ctx.stepIndex!];
-    if (!step) return;
-    step.fields = step.fields || [];
-    const f = this.newField(t as any);
-    step.fields.push(f);
-    this.select(f);
+    const f = this.ctxActions.addFieldToStep(this.schema, ctx.key, t);
+    if (f) this.select(f);
     this.refresh();
   }
   ctxAddFieldToSection() {
     const key = this.dropdownKey; if (!key) return;
-    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
-    const sec = ctx?.obj;
-    if (!sec || (sec as any).type !== 'section') return;
-    (sec as any).fields = (sec as any).fields || [];
-    const f = this.newField('text'); (sec as any).fields.push(f);
-    this.select(f); this.refresh();
+    const f = this.ctxActions.addFieldToSection(this.schema, key, 'text');
+    if (f) { this.select(f); this.refresh(); }
   }
   ctxAddFieldToSectionTyped(t: string) {
     const key = this.dropdownKey; if (!key) return;
-    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
-    const sec = ctx?.obj;
-    if (!sec || (sec as any).type !== 'section') return;
-    (sec as any).fields = (sec as any).fields || [];
-    const f = this.newField(t as any); (sec as any).fields.push(f);
-    this.select(f); this.refresh();
+    const f = this.ctxActions.addFieldToSection(this.schema, key, t);
+    if (f) { this.select(f); this.refresh(); }
   }
   ctxAddSectionInside() {
     const key = this.dropdownKey; if (!key) return;
-    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
-    const sec = ctx?.obj;
-    if (!sec || (sec as any).type !== 'section') return;
-    (sec as any).fields = (sec as any).fields || [];
-    const ns: SectionConfig = { type: 'section', title: 'Section', fields: [], col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } } as any;
-    (sec as any).fields.push(ns as any);
-    this.select(ns as any); this.refresh();
+    const ns = this.ctxActions.addSectionInside(this.schema, key);
+    if (ns) { this.select(ns as any); this.refresh(); }
   }
   ctxAddFieldRootTyped(t: string) {
     if (this.schema.steps?.length) return;
@@ -1734,18 +1668,14 @@ export class DynamicFormBuilderComponent {
     // Only when no steps (root-level sections)
     if (this.schema.steps?.length) return;
     this.ensureFlatMode();
-    const sec: SectionConfig = { type: 'section', title: 'Section', fields: [], col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } } as any;
-    this.schema.fields = this.schema.fields || [];
-    this.schema.fields.push(sec as any);
+    const sec = this.ctxActions.addSectionToRoot(this.schema);
     this.select(sec as any);
     this.refresh();
   }
   ctxAddFieldRoot() {
     // Only when no steps (root-level fields)
     this.ensureFlatMode();
-    const f = this.newField('text');
-    this.schema.fields = this.schema.fields || [];
-    this.schema.fields.push(f);
+    const f = this.ctxActions.addFieldToRoot(this.schema, 'text');
     this.select(f);
     this.refresh();
   }
@@ -1760,67 +1690,60 @@ export class DynamicFormBuilderComponent {
   }
   ctxDeleteSection() {
     const key = this.dropdownKey; if (!key) return;
-    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
-    if (!ctx || (ctx.obj as any)?.type !== 'section') return;
-    if (ctx.parentArr && ctx.index != null) {
-      ctx.parentArr.splice(ctx.index, 1);
+    if (this.ctxActions.deleteSection(this.schema, key)) {
       if (this.selected && this.isSection(this.selected)) this.select(this.schema);
       this.refresh();
     }
   }
   ctxDeleteField() {
     const key = this.dropdownKey; if (!key) return;
-    const ctx = this.treeSvc.ctxFromKey(this.schema, key);
-    if (!ctx || (ctx.obj as any)?.type === 'section') return; // only fields
-    if (ctx.parentArr && ctx.index != null) {
-      ctx.parentArr.splice(ctx.index, 1);
+    if (this.ctxActions.deleteField(this.schema, key)) {
       if (this.selected && this.isField(this.selected)) this.select(this.schema);
       this.refresh();
     }
   }
 
+  // New: duplicate / insert before/after
+  ctxDuplicateSection() {
+    const key = this.dropdownKey; if (!key) return;
+    const clone = this.ctxActions.duplicateAtKey(this.schema, key);
+    if (clone) { this.select(clone as any); this.refresh(); }
+  }
+  ctxInsertSectionBefore() {
+    const key = this.dropdownKey; if (!key) return;
+    const sec = this.ctxActions.insertSectionBefore(this.schema, key);
+    if (sec) { this.select(sec as any); this.refresh(); }
+  }
+  ctxInsertSectionAfter() {
+    const key = this.dropdownKey; if (!key) return;
+    const sec = this.ctxActions.insertSectionAfter(this.schema, key);
+    if (sec) { this.select(sec as any); this.refresh(); }
+  }
+  ctxDuplicateField() {
+    const key = this.dropdownKey; if (!key) return;
+    const clone = this.ctxActions.duplicateAtKey(this.schema, key);
+    if (clone) { this.select(clone as any); this.refresh(); }
+  }
+  ctxInsertFieldBefore() {
+    const key = this.dropdownKey; if (!key) return;
+    const f = this.ctxActions.insertFieldBefore(this.schema, key, 'text');
+    if (f) { this.select(f as any); this.refresh(); }
+  }
+  ctxInsertFieldAfter() {
+    const key = this.dropdownKey; if (!key) return;
+    const f = this.ctxActions.insertFieldAfter(this.schema, key, 'text');
+    if (f) { this.select(f as any); this.refresh(); }
+  }
+
   // ====== Helpers Canvas (Grid/Cols) ======
-  private spanForBp(field: FieldConfig, bp: 'xs'|'sm'|'md'|'lg'|'xl'): number {
-    const col = (field as any).col || {};
-    const xs = typeof col.xs === 'number' ? col.xs : 24;
-    const sm = typeof col.sm === 'number' ? col.sm : xs;
-    const md = typeof col.md === 'number' ? col.md : sm;
-    const lg = typeof col.lg === 'number' ? col.lg : md;
-    const xl = typeof col.xl === 'number' ? col.xl : lg;
-    return { xs, sm, md, lg, xl }[bp];
-  }
-  getSpan(field: FieldConfig): number { return this.spanForBp(field, this.gridBp); }
-  setSpan(field: FieldConfig, span: number) {
-    const col = { ...(field as any).col };
-    col[this.gridBp] = Math.max(1, Math.min(24, Math.round(span)));
-    (field as any).col = col;
-    this.refresh();
-  }
+  getSpan(field: FieldConfig): number { return this.gridSvc.getSpan(field, this.gridBp); }
+  setSpan(field: FieldConfig, span: number) { this.gridSvc.setSpan(field, this.gridBp, span); this.refresh(); }
   changeSpan(field: FieldConfig, delta: number) { this.setSpan(field, this.getSpan(field) + delta); }
 
-  private _resizing: { field: FieldConfig; containerLeft: number; containerWidth: number } | null = null;
   onResizeStart(ev: MouseEvent, field: FieldConfig) {
     ev.stopPropagation();
-    const grid = (ev.currentTarget as HTMLElement).closest('.fields.grid') as HTMLElement | null;
-    if (!grid) return;
-    const rect = grid.getBoundingClientRect();
-    this._resizing = { field, containerLeft: rect.left + window.scrollX, containerWidth: rect.width };
-    window.addEventListener('mousemove', this.onResizeMove);
-    window.addEventListener('mouseup', this.onResizeEnd);
+    this.gridSvc.startResize(ev.currentTarget as HTMLElement, ev.pageX, field, this.gridBp, (f, span) => this.setSpan(f, span));
   }
-  onResizeMove = (ev: MouseEvent) => {
-    if (!this._resizing) return;
-    const { field, containerLeft, containerWidth } = this._resizing;
-    const x = ev.pageX - containerLeft;
-    const ratio = Math.max(0, Math.min(1, x / containerWidth));
-    const span = Math.max(1, Math.min(24, Math.round(ratio * 24)));
-    this.setSpan(field, span);
-  };
-  onResizeEnd = () => {
-    this._resizing = null;
-    window.removeEventListener('mousemove', this.onResizeMove);
-    window.removeEventListener('mouseup', this.onResizeEnd);
-  };
 
   dropFieldInStepRoot(event: CdkDragDrop<FieldConfig[]>, step: StepConfig): void {
     step.fields = step.fields || [];

@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { FormGroup } from '@angular/forms';
 import { SectionConfig, FieldConfig, FormUI, DynamicFormService } from '../../dynamic-form.service';
 import { Fields } from '../fields/fields';
@@ -8,7 +11,7 @@ import { Fields } from '../fields/fields';
 @Component({
   selector: 'df-section',
   standalone: true,
-  imports: [CommonModule, NzGridModule, Fields],
+  imports: [CommonModule, NzGridModule, NzButtonModule, NzDropDownModule, NzMenuModule, Fields],
   templateUrl: './sections.html',
   styleUrl: './sections.scss'
 })
@@ -19,15 +22,19 @@ export class Sections {
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() editMode = false;
   @Input() selectedField: FieldConfig | null = null;
+  @Input() selectedSection: SectionConfig | null = null;
   @Input() allowMove = true;
   @Input() allowDelete = true;
   @Output() moveField = new EventEmitter<{ index: number; dir: 'up'|'down' }>();
   @Output() deleteField = new EventEmitter<{ index: number }>();
   @Output() selectField = new EventEmitter<{ index: number; field?: FieldConfig; section?: SectionConfig }>();
+  // New: select this child section item and add typed field inside it
+  @Output() selectSection = new EventEmitter<{ index: number; section: SectionConfig }>();
+  @Output() addFieldTyped = new EventEmitter<{ index: number; type: string; path?: number[] }>();
 
   constructor(public dfs: DynamicFormService) {}
   get visible() { return this.dfs.isSectionVisible(this.section, this.form); }
-  isSelected(f: FieldConfig) { return this.selectedField === f; }
+  isSelected(f: FieldConfig) { return (f.type === 'section') ? (this.selectedSection === (f as any)) : (this.selectedField === f); }
 
   fieldSpanFor(field: FieldConfig, bp: 'xs'|'sm'|'md'|'lg'|'xl'): number {
     const spans = this.dfs.getFieldSpans(field) as any;
@@ -56,6 +63,14 @@ export class Sections {
   onInnerFieldClick(ev: MouseEvent) {
     if (!this.editMode) return;
     if (this.isInteractiveClick(ev)) ev.stopPropagation();
+  }
+
+  onClickSection(index: number, ev: MouseEvent) {
+    if (!this.editMode) return;
+    if (this.isInteractiveClick(ev)) return;
+    const sec = (this.section.fields || [])[index] as any;
+    if (sec && sec.type === 'section') this.selectSection.emit({ index, section: sec });
+    ev.stopPropagation();
   }
 
   private isInteractiveClick(ev: MouseEvent): boolean {

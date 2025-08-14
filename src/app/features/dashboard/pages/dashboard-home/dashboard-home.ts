@@ -83,49 +83,206 @@ export class DashboardHome {
   };
 
   testing: any = {
-    "title": "Nouveau formulaire",
-    "steps": [
-      {
-        "title": "Step",
-        "fields": [
-          {
-            "type": "section",
-            "title": "Section",
-            "fields": [
-              {
-                "type": "text",
-                "key": "field",
-                "label": "Field",
-                "default": "",
-                "col": {
-                  "md": 12
-                }
+  "title": "Nouveau formulaire",
+  "steps": [
+    {
+      "title": "Identité",
+      "fields": [
+        {
+          "type": "section",
+          "title": "Information d'identité",
+          "fields": [
+            {
+              "type": "text",
+              "key": "firstName",
+              "label": "Prénom",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 12,
+                "lg": 12,
+                "xl": 12
               },
-              {
-                "type": "text",
-                "key": "field",
-                "label": "Field",
-                "default": "",
-                "col": {
-                  "md": 12
-                }
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "field",
-            "label": "Field",
-            "default": "",
-            "col": {
-              "md": 12
+              "placeholder": "Jean",
+              "default": ""
+            },
+            {
+              "type": "text",
+              "key": "lastName",
+              "label": "Nom de famille",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 12,
+                "lg": 12,
+                "xl": 12
+              },
+              "placeholder": "Dupont",
+              "default": ""
             }
+          ],
+          "col": {
+            "xs": 24,
+            "sm": 24,
+            "md": 24,
+            "lg": 24,
+            "xl": 24
+          },
+          "description": "Saisir vos informations d'identité.",
+          "grid": {
+            "gutter": 16
           }
-        ],
-        "style": "stack"
-      }
-    ]
+        },
+        {
+          "type": "section",
+          "title": "Coordonnées",
+          "fields": [
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Numero de téléphone",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 8,
+                "lg": 8,
+                "xl": 8
+              },
+              "placeholder": "0633967711",
+              "default": ""
+            },
+            {
+              "type": "text",
+              "key": "phone_fix",
+              "label": "Numéro fixe",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 8,
+                "lg": 8,
+                "xl": 8
+              },
+              "placeholder": "0491502356",
+              "default": ""
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 8,
+                "lg": 8,
+                "xl": 8
+              },
+              "placeholder": "edouard@bernier.com",
+              "default": ""
+            }
+          ],
+          "col": {
+            "xs": 24,
+            "sm": 24,
+            "md": 24,
+            "lg": 24,
+            "xl": 24
+          },
+          "description": "Saisir vos informations de coordonnées.",
+          "grid": {
+            "gutter": 16
+          }
+        }
+      ],
+      "style": "stack"
+    },
+    {
+      "title": "Coordonnées bancaires",
+      "fields": [
+        {
+          "type": "section",
+          "title": "Information banque",
+          "fields": [
+            {
+              "type": "select",
+              "key": "banque",
+              "label": "Banque",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 12,
+                "lg": 12,
+                "xl": 12
+              },
+              "default": "option1",
+              "options": [
+                {
+                  "label": "SG",
+                  "value": "option1"
+                },
+                {
+                  "label": "Credit agricole",
+                  "value": "option2"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "key": "pays",
+              "label": "Pays",
+              "col": {
+                "xs": 24,
+                "sm": 24,
+                "md": 12,
+                "lg": 12,
+                "xl": 12
+              },
+              "default": "france",
+              "options": [
+                {
+                  "label": "France",
+                  "value": "france"
+                }
+              ]
+            }
+          ],
+          "col": {
+            "xs": 24,
+            "sm": 24,
+            "md": 24,
+            "lg": 24,
+            "xl": 24
+          },
+          "description": "Saisir les informations lié a votre banque.",
+          "grid": {
+            "gutter": 16
+          }
+        }
+      ],
+      "style": "stack"
+    }
+  ],
+  "ui": {
+    "layout": "vertical",
+    "labelAlign": "left",
+    "labelsOnTop": true,
+    "labelCol": {
+      "span": 8
+    },
+    "controlCol": {
+      "span": 16
+    },
+    "widthPx": 1040,
+    "actions": {
+      "showReset": false,
+      "showCancel": false
+    }
+  },
+  "summary": {
+    "enabled": false,
+    "includeHidden": false,
+    "dateFormat": "dd/MM/yyyy"
   }
+}
 
 
   accounts: any = {

@@ -44,6 +44,16 @@ export class ConditionFormService {
     arr?.removeAt(j);
   }
 
+  // ----- Root-level helpers to reduce component logic -----
+  private rootItems(form: FormGroup): FormArray { return form.get('items') as FormArray; }
+  addRootRule(form: FormGroup) { this.rootItems(form).push(this.newRow('rule')); }
+  addRootGroup(form: FormGroup) { this.rootItems(form).push(this.newRow('group')); }
+  removeRootAt(form: FormGroup, i: number) { this.rootItems(form).removeAt(i); }
+  changeRootKind(form: FormGroup, i: number, kind: 'rule'|'group') { this.changeKind(this.rootItems(form), i, kind); }
+  addSubRuleAt(form: FormGroup, i: number) { this.addSubRule(this.rootItems(form), i); }
+  addSubGroupAt(form: FormGroup, i: number) { this.addSubGroup(this.rootItems(form), i); }
+  removeSubAtRoot(form: FormGroup, i: number, j: number) { this.removeSubAt(this.rootItems(form), i, j); }
+
   buildNodeFromForm(grp: FormGroup): any {
     const kind = grp.get('kind')?.value;
     if (kind === 'group') {
@@ -63,5 +73,25 @@ export class ConditionFormService {
     return { [logic]: items.map(c => this.buildNodeFromForm(c as FormGroup)) };
   }
   private parseMaybeNumber(x: any) { const n = Number(x); return isNaN(n) ? x : n; }
-}
 
+  // ---------- High-level helpers for the builder ----------
+  seedFormFromJson(conditionForm: FormGroup, jsonText?: string) {
+    const items = conditionForm.get('items') as FormArray;
+    items.clear();
+    let parsed: any = undefined;
+    try { parsed = jsonText ? JSON.parse(jsonText) : undefined; } catch { parsed = undefined; }
+    let logic: 'single'|'any'|'all' = 'single';
+    if (parsed && typeof parsed === 'object') {
+      if (Array.isArray(parsed.any)) { logic = 'any'; parsed.any.forEach((r: any) => items.push(this.fromNode(r))); }
+      else if (Array.isArray(parsed.all)) { logic = 'all'; parsed.all.forEach((r: any) => items.push(this.fromNode(r))); }
+      else { items.push(this.fromNode(parsed)); }
+    }
+    if (!items.length) items.push(this.newRow('rule'));
+    conditionForm.patchValue({ logic }, { emitEvent: false });
+  }
+
+  buildJsonString(conditionForm: FormGroup): string {
+    const obj = this.buildConditionObject(conditionForm);
+    return JSON.stringify(obj);
+  }
+}

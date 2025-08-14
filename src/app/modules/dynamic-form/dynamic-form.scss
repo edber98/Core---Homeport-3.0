@@ -51,7 +51,7 @@
 /* Actions flottantes génériques pour les items (ne changent pas la hauteur) */
 .df-edit-item { position: relative; border-radius: 8px; }
 .df-edit-item.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); }
-.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); box-shadow: 0 0 0 2px rgba(22,119,255,.2) inset; }
+.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); }
 .df-edit-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 6px; z-index: 2; }
 
 /* Couche de clic en mode édition pour assurer la sélection des fields */

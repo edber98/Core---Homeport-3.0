@@ -51,6 +51,14 @@ export class ContextPanelComponent {
 
   @Output() ctxFieldDelete = new EventEmitter<{ key: string }>();
 
+  // New actions: duplicate and insert before/after
+  @Output() ctxSectionDuplicate = new EventEmitter<{ key: string }>();
+  @Output() ctxSectionInsertBefore = new EventEmitter<{ key: string }>();
+  @Output() ctxSectionInsertAfter = new EventEmitter<{ key: string }>();
+  @Output() ctxFieldDuplicate = new EventEmitter<{ key: string }>();
+  @Output() ctxFieldInsertBefore = new EventEmitter<{ key: string }>();
+  @Output() ctxFieldInsertAfter = new EventEmitter<{ key: string }>();
+
   @Output() quickAdd = new EventEmitter<string>();
   @Output() jsonChange = new EventEmitter<string>();
   @Output() doImport = new EventEmitter<void>();
@@ -98,4 +106,12 @@ export class ContextPanelComponent {
 
   // Field
   onCtxFieldDelete() { this.dropdown.close(); if (this.currentCtxKey) this.ctxFieldDelete.emit({ key: this.currentCtxKey }); }
+
+  // Duplicate/Insert helpers
+  onCtxSectionDuplicate() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionDuplicate.emit({ key: this.currentCtxKey }); }
+  onCtxSectionInsertBefore() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionInsertBefore.emit({ key: this.currentCtxKey }); }
+  onCtxSectionInsertAfter() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionInsertAfter.emit({ key: this.currentCtxKey }); }
+  onCtxFieldDuplicate() { this.dropdown.close(); if (this.currentCtxKey) this.ctxFieldDuplicate.emit({ key: this.currentCtxKey }); }
+  onCtxFieldInsertBefore() { this.dropdown.close(); if (this.currentCtxKey) this.ctxFieldInsertBefore.emit({ key: this.currentCtxKey }); }
+  onCtxFieldInsertAfter() { this.dropdown.close(); if (this.currentCtxKey) this.ctxFieldInsertAfter.emit({ key: this.currentCtxKey }); }
 }

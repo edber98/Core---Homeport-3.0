@@ -12,13 +12,15 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
   selector: 'condition-builder',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, NzFormModule, NzSelectModule, NzInputModule, NzButtonModule, NzDividerModule],
-  templateUrl: './condition-builder.component.html'
+  templateUrl: './condition-builder.component.html',
+  styleUrls: ['./condition-builder.component.scss']
 })
 export class ConditionBuilderComponent {
   @Input({ required: true }) group!: FormGroup; // conditionForm { logic, items[] }
   @Input() inputFieldKeys: string[] = [];
 
   @Output() addConditionRow = new EventEmitter<void>();
+  @Output() addConditionGroup = new EventEmitter<void>();
   @Output() removeConditionRow = new EventEmitter<number>();
   @Output() changeCondKind = new EventEmitter<{ index: number; kind: 'rule'|'group' }>();
   @Output() addSubRule = new EventEmitter<number>();

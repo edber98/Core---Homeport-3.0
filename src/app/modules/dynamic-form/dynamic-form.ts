@@ -77,7 +77,7 @@ export class DynamicForm implements OnInit, OnChanges {
   @Output() editDeleteStep = new EventEmitter<{ stepIndex: number }>();
   @Output() editDeleteSection = new EventEmitter<{ stepIndex?: number; sectionIndex: number }>();
   // removed legacy section move event (sections moved via editMoveItem)
-  @Output() editAddFieldTyped = new EventEmitter<{ path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string }>();
+  @Output() editAddFieldTyped = new EventEmitter<{ path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string; sectionPath?: number[] }>();
 
   form!: FormGroup;
   current = signal(0);

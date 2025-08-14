@@ -1,18 +1,19 @@
-<form [formGroup]="group">
-  <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+<form [formGroup]="group" class="qb">
+  <div class="qb-toolbar">
     <label>Logique</label>
     <nz-select formControlName="logic" style="min-width:160px;">
       <nz-option nzValue="single" nzLabel="single (1 règle)"></nz-option>
       <nz-option nzValue="any" nzLabel="any (OR)"></nz-option>
       <nz-option nzValue="all" nzLabel="all (AND)"></nz-option>
     </nz-select>
-    <button nz-button nzType="dashed" (click)="addConditionRow.emit(); $event.preventDefault(); $event.stopPropagation()">+ Ajouter une règle</button>
+    <button nz-button nzType="dashed" (click)="addConditionRow.emit(); $event.preventDefault(); $event.stopPropagation()">+ Règle</button>
+    <button nz-button nzType="dashed" (click)="addConditionGroup.emit(); $event.preventDefault(); $event.stopPropagation()">+ Groupe</button>
   </div>
 
-  <div formArrayName="items" style="display:flex; flex-direction:row; gap:8px;">
+  <div formArrayName="items" class="qb-items">
     <ng-container *ngFor="let grp of items.controls; let i=index">
-      <div [formGroupName]="i" style="display:inline-flex; flex-direction:row; gap:6px; padding:8px; border:1px solid #f0f0f0; border-radius:6px;">
-        <div style="display:flex; gap:8px; align-items:center;">
+      <div [formGroupName]="i" class="qb-item" [class.qb-item-group]="$any(grp).controls.kind.value==='group'" [class.qb-item-rule]="$any(grp).controls.kind.value==='rule'">
+        <div class="qb-kind">
           <label>Type</label>
           <nz-select [ngModelOptions]="{standalone:true}" [(ngModel)]="$any(grp).controls.kind.value" (ngModelChange)="onChangeKind(i,$event)" style="width:120px;">
             <nz-option nzValue="rule" nzLabel="Règle"></nz-option>
@@ -21,12 +22,11 @@
           <button nz-button nzType="text" nzDanger (click)="removeConditionRow.emit(i); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
         </div>
 
-        <!-- Règle -->
-        <div *ngIf="$any(grp).controls.kind.value==='rule'" style="display:grid; grid-template-columns: 1fr 120px 1fr; gap:8px; align-items:center;">
+        <div *ngIf="$any(grp).controls.kind.value==='rule'" class="qb-rule">
           <nz-select formControlName="field" nzPlaceHolder="Champ">
             <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
           </nz-select>
-          <nz-select formControlName="operator">
+          <nz-select formControlName="operator" class="op">
             <nz-option nzValue="==" nzLabel="=="></nz-option>
             <nz-option nzValue="!=" nzLabel="!="></nz-option>
             <nz-option nzValue=">" nzLabel=">"></nz-option>
@@ -34,12 +34,11 @@
             <nz-option nzValue="<" nzLabel="<"></nz-option>
             <nz-option nzValue="<=" nzLabel="<="></nz-option>
           </nz-select>
-          <input nz-input formControlName="value" placeholder="valeur" />
+          <input nz-input formControlName="value" placeholder="valeur" class="val"/>
         </div>
 
-        <!-- Groupe -->
-        <div *ngIf="$any(grp).controls.kind.value==='group'" style="display:flex; flex-direction:row; gap:6px;">
-          <div style="display:flex; gap:8px; align-items:center;">
+        <div *ngIf="$any(grp).controls.kind.value==='group'" class="qb-group">
+          <div class="qb-group-head">
             <label>Logique</label>
             <nz-select formControlName="logic" style="min-width:160px;">
               <nz-option nzValue="any" nzLabel="any (OR)"></nz-option>
@@ -48,10 +47,11 @@
             <button nz-button nzType="dashed" (click)="addSubRule.emit(i); $event.preventDefault(); $event.stopPropagation()">+ Règle</button>
             <button nz-button nzType="dashed" (click)="addSubGroup.emit(i); $event.preventDefault(); $event.stopPropagation()">+ Groupe</button>
           </div>
-          <div formArrayName="items" style="display:flex; flex-direction:row; gap:6px;">
-            <div *ngFor="let sub of subItemsAt(i).controls; let j=index" [formGroupName]="j" style="display:inline-flex; flex-direction:row; gap:8px; align-items:center;">
-              <ng-container *ngIf="$any(sub).controls.kind?.value==='group'; else ruleRow">
-                <div style="display:flex; gap:8px; align-items:center;">
+          <div formArrayName="items" class="qb-subitems">
+            <div *ngFor="let sub of subItemsAt(i).controls; let j=index" [formGroupName]="j" class="qb-item">
+              <span class="qb-joiner" *ngIf="j>0">{{ $any(grp).controls.logic.value === 'any' ? 'OR' : 'AND' }}</span>
+              <ng-container *ngIf="$any(sub).controls.kind?.value==='group'; else subRule">
+                <div class="qb-group-head">
                   <label>Logique</label>
                   <nz-select formControlName="logic" style="min-width:140px;">
                     <nz-option nzValue="any" nzLabel="any (OR)"></nz-option>
@@ -59,42 +59,47 @@
                   </nz-select>
                   <button nz-button nzType="text" nzDanger (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
                 </div>
-                <div formArrayName="items" style="display:flex; flex-direction:row; gap:6px;">
-                  <div *ngFor="let sub2 of subItemsAtNested(i,j).controls; let k=index" [formGroupName]="k" style="display:inline-flex; flex-direction:row; gap:8px; align-items:center;">
-                    <ng-container *ngIf="$any(sub2).controls.kind?.value==='group'; else nestedRuleRow">
+                <div formArrayName="items" class="qb-subitems">
+                  <div *ngFor="let sub2 of subItemsAtNested(i,j).controls; let k=index" [formGroupName]="k" class="qb-item">
+                    <span class="qb-joiner" *ngIf="k>0">{{ $any(sub).controls.logic.value === 'any' ? 'OR' : 'AND' }}</span>
+                    <ng-container *ngIf="$any(sub2).controls.kind?.value==='group'; else nestedRule">
                       <span style="font-style:italic; color:#999;">Groupe imbriqué</span>
                     </ng-container>
-                    <ng-template #nestedRuleRow>
-                      <nz-select formControlName="field" nzPlaceHolder="Champ">
-                        <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
-                      </nz-select>
-                      <nz-select formControlName="operator">
-                        <nz-option nzValue="==" nzLabel="=="></nz-option>
-                        <nz-option nzValue="!=" nzLabel="!="></nz-option>
-                        <nz-option nzValue=">" nzLabel=">"></nz-option>
-                        <nz-option nzValue=">=" nzLabel=">="></nz-option>
-                        <nz-option nzValue="<" nzLabel="<"></nz-option>
-                        <nz-option nzValue="<=" nzLabel="<="></nz-option>
-                      </nz-select>
-                      <input nz-input formControlName="value" placeholder="valeur" />
+                    <ng-template #nestedRule>
+                      <div class="qb-rule">
+                        <nz-select formControlName="field" nzPlaceHolder="Champ">
+                          <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
+                        </nz-select>
+                        <nz-select formControlName="operator" class="op">
+                          <nz-option nzValue="==" nzLabel="=="></nz-option>
+                          <nz-option nzValue="!=" nzLabel="!="></nz-option>
+                          <nz-option nzValue=">" nzLabel=">"></nz-option>
+                          <nz-option nzValue=">=" nzLabel=">="></nz-option>
+                          <nz-option nzValue="<" nzLabel="<"></nz-option>
+                          <nz-option nzValue="<=" nzLabel="<="></nz-option>
+                        </nz-select>
+                        <input nz-input formControlName="value" placeholder="valeur" class="val"/>
+                      </div>
                     </ng-template>
                   </div>
                 </div>
               </ng-container>
-              <ng-template #ruleRow>
-                <nz-select formControlName="field" nzPlaceHolder="Champ">
-                  <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
-                </nz-select>
-                <nz-select formControlName="operator">
-                  <nz-option nzValue="==" nzLabel="=="></nz-option>
-                  <nz-option nzValue="!=" nzLabel="!="></nz-option>
-                  <nz-option nzValue=">" nzLabel=">"></nz-option>
-                  <nz-option nzValue=">=" nzLabel=">="></nz-option>
-                  <nz-option nzValue="<" nzLabel="<"></nz-option>
-                  <nz-option nzValue="<=" nzLabel="<="></nz-option>
-                </nz-select>
-                <input nz-input formControlName="value" placeholder="valeur" />
-                <button nz-button nzType="text" nzDanger (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
+              <ng-template #subRule>
+                <div class="qb-rule">
+                  <nz-select formControlName="field" nzPlaceHolder="Champ">
+                    <nz-option *ngFor="let k of inputFieldKeys" [nzValue]="k" [nzLabel]="k"></nz-option>
+                  </nz-select>
+                  <nz-select formControlName="operator" class="op">
+                    <nz-option nzValue="==" nzLabel="=="></nz-option>
+                    <nz-option nzValue="!=" nzLabel="!="></nz-option>
+                    <nz-option nzValue=">" nzLabel=">"></nz-option>
+                    <nz-option nzValue=">=" nzLabel=">="></nz-option>
+                    <nz-option nzValue="<" nzLabel="<"></nz-option>
+                    <nz-option nzValue="<=" nzLabel="<="></nz-option>
+                  </nz-select>
+                  <input nz-input formControlName="value" placeholder="valeur" class="val"/>
+                  <button nz-button nzType="text" nzDanger (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">Supprimer</button>
+                </div>
               </ng-template>
             </div>
           </div>
