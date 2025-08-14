@@ -1,0 +1,13 @@
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  font-size: 12px;
+  cursor: grab;
+  user-select: none;
+}
+.tag:active { cursor: grabbing; }

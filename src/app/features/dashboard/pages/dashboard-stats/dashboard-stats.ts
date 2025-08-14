@@ -19,6 +19,7 @@ import {
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExpressionEditorComponent } from '../../../../modules/expression-editor/expression-editor';
+import { FieldTagsComponent, ExprTag } from '../../components/field-tags/field-tags';
 
 
 
@@ -39,7 +40,8 @@ import { ExpressionEditorComponent } from '../../../../modules/expression-editor
     FormsModule,
     ReactiveFormsModule,
     Vflow,
-    ExpressionEditorComponent
+    ExpressionEditorComponent,
+    FieldTagsComponent
   ],
   animations: [
     trigger('slideInOut', [
@@ -87,6 +89,8 @@ fnSpecs = {
   },
   date: '31/07/2025'
 };
+
+tags: ExprTag[] = [];
 
 
 
@@ -187,4 +191,26 @@ fnSpecs = {
       },
     ];
   }
+
+  constructor() {
+    // Build tags from ctx.json by default (path starts with 'json')
+    this.tags = flattenToTags(this.ctx.json ?? {}, 'json');
+  }
+}
+
+function flattenToTags(obj: any, prefix: string): ExprTag[] {
+  const out: ExprTag[] = [];
+  const walk = (o: any, path: string) => {
+    if (o && typeof o === 'object' && !Array.isArray(o)) {
+      for (const k of Object.keys(o)) walk(o[k], path ? `${path}.${k}` : k);
+    } else if (Array.isArray(o)) {
+      // suggest first element index as entry point
+      walk(o[0], `${path}[0]`);
+    } else {
+      const name = path.split('.').pop() || path;
+      out.push({ path, name });
+    }
+  };
+  walk(obj, prefix);
+  return out;
 }

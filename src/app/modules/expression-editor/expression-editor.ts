@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule } from '@angular/forms';
-import { EditorState, RangeSetBuilder } from '@codemirror/state';
+import { EditorState, RangeSetBuilder, Compartment } from '@codemirror/state';
 import { EditorView, Decoration, ViewPlugin, ViewUpdate, keymap } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { ExpressionSandboxService } from '../../features/dashboard/components/expression-editor-testing-component/expression-sandbox.service';
@@ -12,25 +14,40 @@ type Context = Record<string, any>;
 @Component({
   standalone: true,
   selector: 'app-expression-editor',
-  imports: [CommonModule, FormsModule, NzPopoverModule],
+  imports: [CommonModule, FormsModule, NzPopoverModule, NzInputModule],
   templateUrl: './expression-editor.html',
-  styleUrl: './expression-editor.scss'
+  styleUrl: './expression-editor.scss',
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ExpressionEditorComponent), multi: true }
+  ]
 })
-export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
+export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, ControlValueAccessor {
   @Input() value = '';
   @Output() valueChange = new EventEmitter<string>();
   @Input() context: Context = { $json: {}, $env: {}, $node: {}, $now: new Date() };
   @Input() inline = true;
   @Input() errorMode = false;
   @Input() showPreview = true;
+  @Input() showFormulaAction = true;
+  @Input() formulaTitle = 'Ouvrir l\'éditeur d\'expression';
+  @Output() formulaClick = new EventEmitter<void>();
 
-  @ViewChild('host', { static: true }) hostRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('cm', { static: true }) cmRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('host', { static: false }) hostRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('cm', { static: false }) cmRef!: ElementRef<HTMLDivElement>;
   @ViewChild('menu', { static: false }) menuRef?: ElementRef<HTMLDivElement>;
   @ViewChild('list', { static: false }) listRef?: ElementRef<HTMLUListElement>;
   @ViewChild('originEl', { static: false }) originRef?: ElementRef<HTMLElement>;
 
   view!: EditorView;
+  private editableCompartment = new Compartment();
+  private suppressChange = false;
+  private _disabled = false;
+  // drag preview caret
+  dragCaretVisible = false;
+  dragCaretLeft = 0;
+  dragCaretTop = 0;
+  dragCaretHeight = 18;
+  private dropProcessing = false;
   // suggestion state
   showMenu = false;
   popoverPlacement: 'bottomLeft'|'bottom'|'bottomRight'|'topLeft'|'top'|'topRight' = 'bottomLeft';
@@ -59,8 +76,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value'] || changes['context']) {
       try {
-        const r = this.sandbox.evaluateTemplate(this.value || '', this.context);
-        this.preview = typeof r === 'string' ? r : JSON.stringify(r);
+        const r = this.sandbox.evaluateTemplateDetailed(this.value || '', this.context);
+        this.preview = r.text + (r.errors.length ? `\nErrors:\n- ` + r.errors.map(e => e.message).join('\n- ') : '');
       } catch { this.preview = ''; }
     }
   }
@@ -69,10 +86,79 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.view?.destroy();
   }
 
+  // ControlValueAccessor
+  private onChange: (val: any) => void = () => {};
+  private onTouched: () => void = () => {};
+  writeValue(val: any): void {
+    const next = val == null ? '' : String(val);
+    this.value = next;
+    if (this.view) {
+      const cur = this.view.state.doc.toString();
+      if (cur !== next) {
+        this.suppressChange = true;
+        this.view.dispatch({ changes: { from: 0, to: cur.length, insert: next } });
+        this.suppressChange = false;
+      }
+    }
+  }
+  registerOnChange(fn: any): void { this.onChange = fn; }
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  setDisabledState(isDisabled: boolean): void {
+    this._disabled = !!isDisabled;
+    if (this.view) this.view.dispatch({ effects: this.editableCompartment.reconfigure(EditorView.editable.of(!this._disabled)) });
+  }
+
   ngAfterViewInit() {
+    // Defer initialization until view children are available
+    setTimeout(() => this.initEditorDom(), 0);
+  }
+
+  private initEditorDom() {
+    if (!this.cmRef?.nativeElement || !this.hostRef?.nativeElement) {
+      // If view is not ready yet (conditional template), retry next tick
+      setTimeout(() => this.initEditorDom(), 0);
+      return;
+    }
     this.mount();
     // Capture key events on the CodeMirror host (capture + non-passive)
     this.cmRef.nativeElement.addEventListener('keydown', this.keyCapture, { capture: true, passive: false });
+    // Drag & drop support for external tags
+    const host = this.cmRef.nativeElement;
+    const onDragOver = (e: DragEvent) => {
+      if (!e.dataTransfer) return;
+      if (e.dataTransfer.types.includes('application/x-expression-tag') || e.dataTransfer.types.includes('text/plain')) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation(); (e as any).stopImmediatePropagation?.();
+        e.dataTransfer.dropEffect = 'copy';
+        const pos = this.view.posAtCoords({ x: e.clientX, y: e.clientY });
+        if (pos != null) {
+          this.view.focus();
+          this.view.dispatch({ selection: { anchor: pos } });
+          this.ensureCaretVisible();
+          this.updateDragCaret(pos);
+        }
+      }
+    };
+    const onDrop = (e: DragEvent) => {
+      if (!e.dataTransfer) return;
+      if (this.dropProcessing) { e.preventDefault(); return; }
+      this.dropProcessing = true;
+      const raw = e.dataTransfer.getData('application/x-expression-tag') || e.dataTransfer.getData('text/plain');
+      if (!raw) return;
+      try {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation(); (e as any).stopImmediatePropagation?.();
+        const data = safeParseTag(raw);
+        const pos = this.view.posAtCoords({ x: e.clientX, y: e.clientY });
+        const insertAt = pos != null ? pos : this.view.state.selection.main.head;
+        this.insertTagAt(data, insertAt);
+        this.hideDragCaret();
+      } catch {}
+      setTimeout(() => { this.dropProcessing = false; }, 0);
+    };
+    host.addEventListener('dragover', onDragOver, { capture: true });
+    host.addEventListener('drop', onDrop, { capture: true });
+    host.addEventListener('dragleave', () => { this.hideDragCaret(); }, { capture: true });
   }
 
   private keyCapture = (event: KeyboardEvent) => {
@@ -131,6 +217,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
       state: EditorState.create({
         doc: this.value,
         extensions: [
+          this.editableCompartment.of(EditorView.editable.of(!this._disabled)),
           // Put our key bindings before defaults to ensure they fire
           keymap.of([
             { key: 'Tab', preventDefault: true, run: (v) => this.acceptSelected(v) },
@@ -153,7 +240,46 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
               if (k === 'Tab' || k === 'Enter') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.acceptSelected(view); return true; }
               if ((event.ctrlKey || event.metaKey) && k === ' ') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.closeMenu(); return true; }
               return false;
-            }
+            },
+            dragover: (event, view) => {
+              const dt = (event as DragEvent).dataTransfer;
+              if (!dt) return false;
+              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation(); (event as any).stopImmediatePropagation?.();
+                const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
+                if (pos != null) {
+                  view.dispatch({ selection: { anchor: pos } });
+                  this.ensureCaretVisible();
+                  this.updateDragCaret(pos);
+                }
+                return true;
+              }
+              return false;
+            },
+            drop: (event, view) => {
+              const dt = (event as DragEvent).dataTransfer;
+              if (!dt) return false;
+              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
+                if (this.dropProcessing) { if (event.cancelable) event.preventDefault(); return true; }
+                this.dropProcessing = true;
+                const raw = dt.getData('application/x-expression-tag') || dt.getData('text/plain');
+                if (!raw) return true;
+                try {
+                  if (event.cancelable) event.preventDefault();
+                  event.stopPropagation(); (event as any).stopImmediatePropagation?.();
+                  const data = safeParseTag(raw);
+                  const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
+                  const insertAt = pos != null ? pos : view.state.selection.main.head;
+                  this.insertTagAt(data, insertAt);
+                  this.hideDragCaret();
+                } catch {}
+                setTimeout(() => { this.dropProcessing = false; }, 0);
+                return true;
+              }
+              return false;
+            },
+            blur: () => { this.onTouched(); return false; }
           }),
           EditorView.updateListener.of(u => this.onUpdate(u)),
           highlighter,
@@ -174,18 +300,22 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private onUpdate(u: ViewUpdate) {
+    const pos = u.state.selection.main.head;
     if (u.docChanged) {
       this.value = u.state.doc.toString();
-      this.valueChange.emit(this.value);
+      if (!this.suppressChange) {
+        this.valueChange.emit(this.value);
+        this.onChange(this.value);
+      }
       // live preview
-      try { const r = this.sandbox.evaluateTemplate(this.value, this.context); this.preview = typeof r === 'string' ? r : JSON.stringify(r); } catch { this.preview = ''; }
+      try {
+        const r = this.sandbox.evaluateTemplateDetailed(this.value, this.context);
+        this.preview = r.text + (r.errors.length ? `\nErrors:\n- ` + r.errors.map(e => e.message).join('\n- ') : '');
+      } catch { this.preview = ''; }
       // Normalize when user types '}}'
-      const head = u.state.selection.main.head;
+      const head = pos;
       const prev2 = head >= 2 ? u.state.doc.sliceString(head - 2, head) : '';
       if (prev2 === '}}') this.normalizeAroundClose(head);
-      // Auto-open on '{{' or '.' inside an island
-      const just1 = head >= 1 ? u.state.doc.sliceString(head - 1, head) : '';
-      if (prev2 === '{{' || just1 === '.') setTimeout(() => this.updateSuggestions(u.view), 0);
     }
     // Si le menu est ouvert, recalculer l'état et fermer si l'îlot n'existe plus (ex: "{{" devient "{")
     if (this.showMenu) this.updateSuggestions(u.view);
@@ -202,8 +332,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     // Determine token bounds
     let from = pos, to = pos;
-    while (from > island.innerStart && /[A-Za-z0-9_.$]/.test(doc[from - 1])) from--;
-    while (to < (island.innerEnd ?? pos) && /[A-Za-z0-9_.$]/.test(doc[to])) to++;
+    while (from > island.innerStart && /[A-Za-z0-9_.$\[\]]/.test(doc[from - 1])) from--;
+    while (to < (island.innerEnd ?? pos) && /[A-Za-z0-9_.$\[\]]/.test(doc[to])) to++;
     const token = doc.slice(from, pos);
     const endsWithDot = token.endsWith('.');
 
@@ -220,7 +350,9 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    const rawParts = token.split('.');
+    // Parse path parts including bracket indices, normalize [n] to segment 'n'
+    const parts = parsePathParts(token);
+    const rawParts = parts;
     const root = rawParts[0];
     const matchingRoots = ctxRoots.filter(r => r.startsWith(root));
     if (!ctxRoots.includes(root)) {
@@ -233,23 +365,31 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    // Traverse object for deep suggestions
+    // Traverse object for deep suggestions: if endsWithDot, traverse all parts; else traverse up to the parent of the current (partial) segment
     let target: any = (this.context as any)[root];
-    // if token ends with dot, traverse all parts except the empty trailing one
-    if (endsWithDot) {
-      for (let i = 1; i < rawParts.length - 1; i++) target = target?.[rawParts[i]];
-    } else {
-      for (let i = 1; i < rawParts.length - 1; i++) target = target?.[rawParts[i]];
-    }
-    const prefix = endsWithDot ? '' : (rawParts.length > 1 ? rawParts[rawParts.length - 1] : '');
+    const traverseParts = endsWithDot ? rawParts.slice(1) : (rawParts.length > 1 ? rawParts.slice(1, -1) : []);
+    for (const p of traverseParts) target = target?.[p];
+    const lastSep = Math.max(token.lastIndexOf('.'), token.lastIndexOf('['));
+    const endsWithBracket = token.endsWith('[');
+    const prefix = (endsWithDot || endsWithBracket) ? '' : (lastSep >= 0 ? token.slice(lastSep + 1) : token);
     const fields = objectKeys(target)
       .filter(k => !prefix || k.toLowerCase().startsWith(prefix.toLowerCase()))
       .map(k => {
         const v = target?.[k];
         const detail = Array.isArray(v) ? 'array' : typeof v;
         const insert = k; // do not auto-append '.'; user decides
-        return { label: k, detail, insert, kind: 'field' } as SuggestItem;
+        const isObject = (v && typeof v === 'object') || Array.isArray(v);
+        return { label: k, detail, insert, kind: 'field', ...(isObject ? { isObject: true } : {}) } as any as SuggestItem;
       });
+
+    // If the current target is an array, suggest index access [0]
+    if (Array.isArray(target)) {
+      const idxLabel = '[0]';
+      if (!prefix || idxLabel.startsWith(prefix) || prefix === '0' || prefix === '[') {
+        const v0 = target[0];
+        fields.unshift({ label: idxLabel, insert: '[0]', detail: typeof v0, kind: 'field', ...(v0 && typeof v0 === 'object' ? { isObject: true } : {}) } as any);
+      }
+    }
 
     if (!fields.length) { this.closeMenu(); return; }
     this.zone.run(() => { this.sections = [{ title: 'Fields', items: fields }]; this.setOptions(fields, !this.showMenu); });
@@ -334,8 +474,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!island) return false;
     // Determine token bounds (replace only current segment)
     let from = pos, to = pos;
-    while (from > island.innerStart && /[A-Za-z0-9_.$]/.test(doc[from - 1])) from--;
-    while (to < (island.innerEnd ?? pos) && /[A-Za-z0-9_.$]/.test(doc[to])) to++;
+    while (from > island.innerStart && /[A-Za-z0-9_.$\[\]]/.test(doc[from - 1])) from--;
+    while (to < (island.innerEnd ?? pos) && /[A-Za-z0-9_.$\[\]]/.test(doc[to])) to++;
     const token = doc.slice(from, pos);
     const lastDot = token.lastIndexOf('.');
     const segFrom = lastDot >= 0 ? pos - (token.length - lastDot - 1) : from;
@@ -466,10 +606,75 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges {
     } catch {}
   }
 
+  private updateDragCaret(pos: number) {
+    try {
+      const cmHost = this.cmRef.nativeElement as HTMLElement;
+      const caret = this.view.coordsAtPos(pos);
+      if (!caret) return;
+      const hostRect = cmHost.getBoundingClientRect();
+      const top = Math.max(0, caret.top - hostRect.top);
+      const bottom = Math.max(top + 14, caret.bottom - hostRect.top);
+      this.zone.run(() => {
+        this.dragCaretVisible = true;
+        this.dragCaretLeft = Math.max(0, caret.left - hostRect.left);
+        this.dragCaretTop = top;
+        this.dragCaretHeight = bottom - top;
+      });
+      this.cdr.detectChanges();
+    } catch {}
+  }
+  private hideDragCaret() {
+    this.zone.run(() => { this.dragCaretVisible = false; });
+    this.cdr.detectChanges();
+  }
+
+  /** Insert a dragged tag (e.g., { path: 'json.user.name', name: 'name' }) at a given document position */
+  private insertTagAt(tag: { path: string; name?: string }, pos: number) {
+    const doc = this.view.state.doc.toString();
+    const island = findIsland(doc, pos);
+    if (island) {
+      // Inside an island: insert tag.path exactly at caret (no auto-dot)
+      const insert = tag.path;
+      this.view.dispatch({ changes: { from: pos, to: pos, insert }, selection: { anchor: pos + insert.length } });
+      this.ensureCaretVisible();
+      this.closeMenu();
+    } else {
+      // Outside: wrap the current token (if any) to avoid splitting like: json{{ json.id }}.id
+      let from = pos, to = pos;
+      const isPathChar = (ch: string) => /[A-Za-z0-9_.$\[\]]/.test(ch);
+      while (from > 0 && isPathChar(doc[from - 1])) from--;
+      while (to < doc.length && isPathChar(doc[to])) to++;
+      const insert = `{{ ${tag.path} }}`;
+      this.view.dispatch({ changes: { from, to, insert }, selection: { anchor: from + insert.length } });
+      this.ensureCaretVisible();
+    }
+  }
+
   preview = '';
+
+  onFormulaClick(e: MouseEvent) {
+    e.preventDefault(); e.stopPropagation();
+    this.formulaClick.emit();
+  }
 }
 
 function objectKeys(obj: any): string[] { return obj && typeof obj === 'object' ? Object.keys(obj) : []; }
+
+function parsePathParts(token: string): string[] {
+  // Convert bracket indices [n] to .n then split by '.' and remove empty segments
+  if (!token) return [];
+  const normalized = token.replace(/\[(\d+)\]/g, '.$1');
+  return normalized.split('.').filter(s => s.length > 0);
+}
+
+function safeParseTag(raw: string): { path: string; name?: string } {
+  try {
+    const j = JSON.parse(raw);
+    if (j && typeof j.path === 'string') return j;
+  } catch {}
+  // fallback: consider plain text as the path
+  return { path: String(raw) };
+}
 
 function findIsland(doc: string, pos: number): { open: number; close?: number; innerStart: number; innerEnd?: number } | null {
   const before = doc.slice(0, pos);

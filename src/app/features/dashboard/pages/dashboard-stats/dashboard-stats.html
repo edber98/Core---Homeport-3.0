@@ -136,6 +136,8 @@
 <!-- <app-expression-editor-testing-component  [variableList]="['customer', 'invoice.number']"  [context]="ctx_var"></app-expression-editor-testing-component>
  -->   
 <div style="padding: 0">
+  <app-field-tags [tags]="tags"></app-field-tags>
+  <div style="height: 8px"></div>
   <app-expression-editor
     [(value)]="expr"
     [context]="ctx"

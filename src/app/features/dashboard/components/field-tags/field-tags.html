@@ -1,0 +1,12 @@
+<div class="tags-wrap">
+  <span
+    class="tag"
+    *ngFor="let t of tags; trackBy: track"
+    draggable="true"
+    (dragstart)="onDragStart($event, t)"
+    title="{{ t.path }}"
+  >
+    {{ t.name || t.path }}
+  </span>
+</div>
+

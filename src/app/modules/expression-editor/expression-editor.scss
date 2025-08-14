@@ -1,9 +1,10 @@
 .expr-host { position: relative; display:block; max-width: 100%; }
+.expr-host:not(.in-group) { width: 100%; }
 .expr-host { -webkit-tap-highlight-color: transparent;  }
 .expr-host.inline { /* overflow-x: auto; */ scrollbar-width: none !important;/*  padding-right: 3px !important; */ }
 .expr-host.inline::-webkit-scrollbar { display: none !important;  }
-.expr-host.inline .cm-editor { min-height: 30px; max-height: 30px; }
-.cm-host { flex:1; min-height: 30px; max-height: 200px; overflow: visible; border:1px solid #d9d9d9; border-radius:6px; background:#fff; }
+.expr-host.inline .cm-editor { min-height: 32px; max-height: 32px; width: 100%; }
+.cm-host { position: relative; flex:1; min-height: 30px; max-height: 200px; overflow: hidden; border:1px solid #d9d9d9; border-radius:6px; background:#fff; }
 /* Remove default outlines from inner CM nodes */
 .cm-host, .cm-host * { outline: none !important; }
 .expr-host *:focus, .expr-host *:focus-visible { outline: none !important; }
@@ -29,7 +30,51 @@
   border-right-width: 1px;
   outline: 0;
 }
-.expr-host.inline .cm-host { max-height: 32px; }
+.expr-host.inline .cm-host { max-height: 32px;  }
+/* When inside nz-input-group (prepend), blend borders */
+.expr-group { max-width: 100%; width: 100%; display: inline-flex; }
+/* In input-group, let host follow container and shrink */
+.expr-group .expr-host.in-group { flex: 1 1 auto; min-width: 0; max-width: 100%; }
+/* .expr-group .expr-host.in-group { flex: 1 1 auto; min-width: 0; } */
+.expr-group { position: relative; }
+/* Ant wrapper created by nz-input-group: ensure it stretches to container width */
+:host ::ng-deep .ant-input-wrapper.ant-input-group { width: 100% !important; display: flex; align-items: stretch; }
+:host ::ng-deep .ant-input-wrapper.ant-input-group > .ant-input-group-addon { flex: 0 0 auto; }
+:host ::ng-deep .ant-input-wrapper.ant-input-group > .expr-host.in-group { flex: 1 1 auto; min-width: 0; max-width: 100%; }
+.expr-host.in-group .cm-host {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+
+/* Drag preview caret */
+.drop-caret {
+  position: absolute;
+  width: 2px;
+  background: #1890ff;
+  border-radius: 1px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Formula action button inside addon-before */
+.expr-addon-btn {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #7D838F;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.expr-addon-btn svg { width: 16px; height: 16px; display: block; }
+.expr-addon-btn:hover { color: #1677ff; }
+/* Ensure the addon gives full height to the button */
+:host ::ng-deep .ant-input-group-addon { padding: 0 8px; display: flex; align-items: center; height: 32px; width: 32px }
 
 /* Hover state like Ant Input */
 .cm-host:hover {
@@ -53,8 +98,8 @@
  outline: none !important; 
 }
 /* Ensure horizontal scrolling happens inside CM scroller (not page/host) */
-/* .expr-host { overflow-x: hidden; } */
-.expr-host.inline .cm-scroller { /* overflow-x: auto !important; overflow-y: hidden !important; */ }
+.expr-host.inline { overflow: hidden; }
+.expr-host.inline .cm-scroller { overflow-x: auto !important; overflow-y: hidden !important; }
 .expr-host.inline .cm-scroller::-webkit-scrollbar { display: none; }
 .expr-host.inline .cm-scroller { scrollbar-width: none; }
 .cm-host { box-sizing: border-box; }
@@ -80,8 +125,7 @@
 .cm-completionDetail { color:#94a3b8; font-size:11px; }
 .cm-completionMatchedText { color:#1677ff; font-weight:600; }
 
-/* Hide all scrollbars and enforce single line in inline mode */
-.expr-host.inline .cm-scroller { overflow: hidden !important; }
+/* Hide vertical scrollbar and enforce single line in inline mode */
 .expr-host.inline .cm-content { white-space: nowrap; }
 /* Host provides the visual inset around the editor */
 .expr-host.inline .cm-host { padding-right: 11px; padding-left: 11px; }
