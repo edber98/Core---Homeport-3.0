@@ -10,7 +10,7 @@ export class BuilderIssuesService {
     const keys = new Set<string>();
     const walk = (arr?: FieldConfig[]) => {
       for (const f of (arr || [])) {
-        if ((f as any).type === 'section') walk((f as any).fields);
+        if ((f as any).type === 'section' || (f as any).type === 'section_array') walk((f as any).fields);
         else { const k = (f as any).key; if (k) keys.add(k); }
       }
     };
@@ -35,7 +35,7 @@ export class BuilderIssuesService {
       for (const st of schema.steps) {
         cb({ kind: 'step', obj: st, title: st.title });
         for (const it of (st.fields || [])) {
-          if ((it as any).type === 'section') {
+          if ((it as any).type === 'section' || (it as any).type === 'section_array') {
             const sec = it as any;
             cb({ kind: 'section', obj: sec, title: sec.title });
             for (const f of (sec.fields || [])) cb({ kind: 'field', obj: f, title: (f as any).label || (f as any).key });
@@ -44,7 +44,7 @@ export class BuilderIssuesService {
       }
     } else {
       for (const it of (schema.fields || [])) {
-        if ((it as any).type === 'section') {
+        if ((it as any).type === 'section' || (it as any).type === 'section_array') {
           const sec = it as any; cb({ kind: 'section', obj: sec, title: sec.title });
           for (const f of (sec.fields || [])) cb({ kind: 'field', obj: f, title: (f as any).label || (f as any).key });
         } else cb({ kind: 'field', obj: it, title: (it as any).label || (it as any).key });
@@ -85,4 +85,3 @@ export class BuilderIssuesService {
     return out;
   }
 }
-

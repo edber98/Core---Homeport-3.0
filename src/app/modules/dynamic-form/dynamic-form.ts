@@ -240,18 +240,18 @@ export class DynamicForm implements OnInit, OnChanges {
 
   // ===== Helpers ordre: parcourt fields uniquement =====
   stepItems(step: StepConfig) {
-    const items = (step.fields || []).map((f, i) => ({ t: (f.type === 'section' ? 'section' : 'field') as 'section'|'field', i }));
+    const items = (step.fields || []).map((f, i) => ({ t: ((f as any).type === 'section' || (f as any).type === 'section_array' ? 'section' : 'field') as 'section'|'field', i }));
     return items.map((ent, k) => ({ ent, k }));
   }
   
   rootItems() {
-    const items = (this.schema.fields || []).map((f, i) => ({ t: (f.type === 'section' ? 'section' : 'field') as 'section'|'field', i }));
+    const items = (this.schema.fields || []).map((f, i) => ({ t: (((f as any).type === 'section' || (f as any).type === 'section_array') ? 'section' : 'field') as 'section'|'field', i }));
     return items.map((ent, k) => ({ ent, k }));
   }
 
   sectionAt(step: StepConfig, ent: { i: number }): SectionConfig | null {
     const f = (step.fields || [])[ent.i] as any;
-    return f && f.type === 'section' ? (f as SectionConfig) : null;
+    return f && (f.type === 'section' || f.type === 'section_array') ? (f as SectionConfig) : null;
   }
 
   // ===== Visibilités calculées (getters, pas de signals pour dépendre de schema dynamique)
@@ -259,16 +259,16 @@ export class DynamicForm implements OnInit, OnChanges {
     return (this.schema.steps || []).filter(s => this.dfs.isStepVisible(s, this.form));
   }
   get visibleSections(): SectionConfig[] {
-    return ((this.schema.fields || []).filter((f: any) => f.type === 'section') as SectionConfig[])
+    return ((this.schema.fields || []).filter((f: any) => (f.type === 'section' || f.type === 'section_array')) as SectionConfig[])
       .filter(s => this.dfs.isSectionVisible(s, this.form));
   }
   get visibleFieldsFlat(): FieldConfig[] {
     // root-level non-section visible fields
-    return (this.schema.fields || []).filter(f => f.type !== 'section').filter(f => this.dfs.isFieldVisible(f, this.form));
+    return (this.schema.fields || []).filter((f: any) => f.type !== 'section' && f.type !== 'section_array').filter(f => this.dfs.isFieldVisible(f, this.form));
   }
 
   get hasAnyRootSection(): boolean {
-    return (this.schema.fields || []).some((f: any) => f.type === 'section');
+    return (this.schema.fields || []).some((f: any) => f.type === 'section' || f.type === 'section_array');
   }
 
   get currentStep(): StepConfig | null { return this.visibleSteps[this.current()] ?? null; }
@@ -292,7 +292,7 @@ export class DynamicForm implements OnInit, OnChanges {
     const out: InputFieldConfig[] = [];
     const visitFields = (fields?: FieldConfig[]) => {
       for (const f of fields || []) {
-        if (f.type === 'section') {
+        if ((f as any).type === 'section' || (f as any).type === 'section_array') {
           const sec = f as any as SectionConfig;
           if (this.dfs.isSectionVisible(sec, this.form)) visitFields(sec.fields);
         } else if (isInputField(f) && this.dfs.isFieldVisible(f, this.form)) {

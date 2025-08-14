@@ -2,6 +2,113 @@
     <h3 *ngIf="section.title" [ngStyle]="section.titleStyle || { margin: '16px 0 6px' }">{{ section.title }}</h3>
     <p *ngIf="section.description" [ngStyle]="section.descriptionStyle || { margin: '0 0 12px', color: '#6b7280' }">{{ section.description }}</p>
 
+    <ng-container *ngIf="($any(section).mode === 'array') || ($any(section).type === 'section_array'); else normalSection">
+      <!-- Array mode: liste d'items répétés -->
+      <div class="df-array">
+        <div class="df-array-item" *ngFor="let g of arrayItems; let i = index">
+          <div class="df-array-controls top">
+            <button nz-button nzSize="small" (click)="moveArrayItem(i,'up')" [disabled]="!canMoveUp(i)">▲</button>
+            <button nz-button nzSize="small" (click)="moveArrayItem(i,'down')" [disabled]="!canMoveDown(i)">▼</button>
+            <button nz-button nzSize="small" (click)="duplicateArrayItem(i)">Dupliquer</button>
+            <span style="flex:1"></span>
+            <button nz-button nzType="default" nzSize="small" *ngIf="canRemoveAt(i)" (click)="removeArrayItem(i)">{{ removeBtnText }}</button>
+          </div>
+          <nz-row [nzGutter]="section.grid?.gutter || 16">
+            <ng-container *ngFor="let f of section.fields; let j = index">
+              <ng-container *ngIf="dfs.isFieldVisible(f, g)">
+                <nz-col
+                  [nzSpan]="forceBp ? fieldSpanFor(f, forceBp) : null"
+                  [nzXs]="!forceBp ? dfs.getFieldSpans(f).xs : null"
+                  [nzSm]="!forceBp ? dfs.getFieldSpans(f).sm : null"
+                  [nzMd]="!forceBp ? dfs.getFieldSpans(f).md : null"
+                  [nzLg]="!forceBp ? dfs.getFieldSpans(f).lg : null"
+                  [nzXl]="!forceBp ? dfs.getFieldSpans(f).xl : null"
+                  [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
+                  [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null">
+
+                  <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
+                       (click)="onClickField(j, $event)">
+                    <ng-container [ngSwitch]="f.type">
+                      <ng-container *ngSwitchCase="'section'">
+                        <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
+                             (click)="onClickSection(j, $event)">
+                      <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null"
+                                  [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
+                                      [allowMove]="allowMove" [allowDelete]="allowDelete"
+                                      (moveField)="moveField.emit($event)"
+                                      (deleteField)="deleteField.emit($event)"
+                                      (selectField)="selectField.emit({ index: $event.index, field: ($any(f).fields||[])[ $event.index ], section: $any(f) })"
+                                      (selectSection)="selectSection.emit({ index: j, section: $any(f) })"
+                                      (addFieldTyped)="addFieldTyped.emit({ index: j, type: $event.type, path: [j].concat($event.path || []) })"
+                          ></df-section>
+                          <div *ngIf="editMode" class="df-edit-actions">
+                            <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: j, section: $any(f) })">Select</button>
+                            <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'up' })">▲</button>
+                            <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'down' })">▼</button>
+                            <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: j })">✕</button>
+                            <button nz-button nzSize="small" nzType="default" nz-dropdown [nzTrigger]="'click'" [nzDropdownMenu]="addMenuNestedSecArr" (click)="$event.stopPropagation()">+ Add</button>
+                            <nz-dropdown-menu #addMenuNestedSecArr="nzDropdownMenu">
+                              <ul nz-menu>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'text', path: [j] })">Text</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'textarea', path: [j] })">Textarea</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'number', path: [j] })">Number</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'date', path: [j] })">Date</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'select', path: [j] })">Select</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'radio', path: [j] })">Radio</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'checkbox', path: [j] })">Checkbox</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'textblock', path: [j] })">Textblock</li>
+                                <li nz-menu-divider></li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'section', path: [j] })">Section</li>
+                                <li nz-menu-item (click)="addFieldTyped.emit({ index: j, type: 'section_array', path: [j] })">Section Array</li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'section_array'">
+                        <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
+                             (click)="onClickSection(j, $event)">
+                          <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null"
+                                      [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
+                                      [allowMove]="allowMove" [allowDelete]="allowDelete"
+                                      (moveField)="moveField.emit($event)"
+                                      (deleteField)="deleteField.emit($event)"
+                                      (selectField)="selectField.emit({ index: $event.index, field: ($any(f).fields||[])[ $event.index ], section: $any(f) })"
+                                      (selectSection)="selectSection.emit({ index: j, section: $any(f) })"
+                                      (addFieldTyped)="addFieldTyped.emit({ index: j, type: $event.type, path: [j].concat($event.path || []) })"
+                          ></df-section>
+                          <div *ngIf="editMode" class="df-edit-actions">
+                            <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: j, section: $any(f) })">Select</button>
+                            <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'up' })">▲</button>
+                            <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'down' })">▼</button>
+                            <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: j })">✕</button>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <df-field [field]="f" [form]="g" [ui]="sectionUi" (click)="onInnerFieldClick($event)"></df-field>
+                        <div class="df-edit-actions" *ngIf="editMode">
+                          <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectField.emit({ index: j, field: f, section: section })">Select</button>
+                          <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: j, dir: 'up'}); $event.stopPropagation()">▲</button>
+                          <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: j, dir: 'down'}); $event.stopPropagation()">▼</button>
+                          <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="deleteField.emit({index: j}); $event.stopPropagation()">✕</button>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+
+                </nz-col>
+              </ng-container>
+            </ng-container>
+          </nz-row>
+        </div>
+        <div class="df-array-controls bottom">
+          <button nz-button nzType="dashed" nzSize="small" (click)="addArrayItem()" [disabled]="!canAddMore()">{{ addBtnText }}</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #normalSection>
     <div style="margin-bottom:16px">
       <nz-row [nzGutter]="section.grid?.gutter || 16">
         <ng-container *ngFor="let f of section.fields; let i = index">
@@ -16,14 +123,47 @@
               [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
               [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
             >
-              <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && isSelected(f)"
+               <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
                    (click)="onClickField(i, $event)">
                 <ng-container [ngSwitch]="f.type">
                   <!-- Nested Section: show proper section overlay (Select, arrows, delete, +Add) -->
                   <ng-container *ngSwitchCase="'section'">
                     <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
                          (click)="onClickSection(i, $event)">
-                      <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp"
+                      <df-section [section]="$any(f)" [form]="form" [ui]="sectionUi" [forceBp]="forceBp"
+                                  [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
+                                  [allowMove]="allowMove" [allowDelete]="allowDelete"
+                                  (moveField)="moveField.emit($event)"
+                                  (deleteField)="deleteField.emit($event)"
+                                  (selectField)="selectField.emit({ index: $event.index, field: ($any(f).fields||[])[ $event.index ], section: $any(f) })"
+                                  (selectSection)="selectSection.emit({ index: i, section: $any(f) })"
+                                  (addFieldTyped)="addFieldTyped.emit({ index: i, type: $event.type, path: [i].concat($event.path || []) })"
+                      ></df-section>
+                      <div *ngIf="editMode" class="df-edit-actions">
+                        <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: i, section: $any(f) })">Select</button>
+                        <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'up' })">▲</button>
+                        <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'down' })">▼</button>
+                        <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: i })">✕</button>
+                        <button nz-button nzSize="small" nzType="default" nz-dropdown [nzTrigger]="'click'" [nzDropdownMenu]="addMenuNestedSec" (click)="$event.stopPropagation()">+ Add</button>
+                        <nz-dropdown-menu #addMenuNestedSec="nzDropdownMenu">
+                          <ul nz-menu>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'text', path: [i] })">Text</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'textarea', path: [i] })">Textarea</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'number', path: [i] })">Number</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'date', path: [i] })">Date</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'select', path: [i] })">Select</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'radio', path: [i] })">Radio</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'checkbox', path: [i] })">Checkbox</li>
+                            <li nz-menu-item (click)="addFieldTyped.emit({ index: i, type: 'textblock', path: [i] })">Textblock</li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'section_array'">
+                    <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
+                         (click)="onClickSection(i, $event)">
+                      <df-section [section]="$any(f)" [form]="form" [ui]="sectionUi" [forceBp]="forceBp"
                                   [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                                   [allowMove]="allowMove" [allowDelete]="allowDelete"
                                   (moveField)="moveField.emit($event)"
@@ -55,7 +195,7 @@
                   </ng-container>
                   <!-- Default: input field -->
                   <ng-container *ngSwitchDefault>
-                    <df-field [field]="f" [form]="form" [ui]="ui" (click)="onInnerFieldClick($event)"></df-field>
+                    <df-field [field]="f" [form]="form" [ui]="sectionUi" (click)="onInnerFieldClick($event)"></df-field>
                     <div class="df-edit-actions" *ngIf="editMode">
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectField.emit({ index: i, field: f, section: section })">Select</button>
                       <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'up'}); $event.stopPropagation()">▲</button>
@@ -70,4 +210,5 @@
         </ng-container>
       </nz-row>
     </div>
+    </ng-template>
   </div>

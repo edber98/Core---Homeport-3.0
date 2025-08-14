@@ -28,6 +28,7 @@ export class ContextPanelComponent {
   @Output() selectFormSettings = new EventEmitter<void>();
   @Output() addStep = new EventEmitter<void>();
   @Output() addSection = new EventEmitter<void>();
+  @Output() addSectionArray = new EventEmitter<void>();
   @Output() addField = new EventEmitter<void>();
 
   @Output() treeDrop = new EventEmitter<any>();
@@ -38,16 +39,19 @@ export class ContextPanelComponent {
   @Output() ctxAddSectionRoot = new EventEmitter<void>();
   @Output() ctxAddFieldRoot = new EventEmitter<void>();
   @Output() ctxAddFieldRootTyped = new EventEmitter<{ type: string }>();
+  @Output() ctxAddSectionRootArray = new EventEmitter<void>();
 
   @Output() ctxStepAddSection = new EventEmitter<{ key: string }>();
   @Output() ctxStepAddField = new EventEmitter<{ key: string }>();
   @Output() ctxStepAddFieldTyped = new EventEmitter<{ key: string; type: string }>();
   @Output() ctxStepDelete = new EventEmitter<{ key: string }>();
+  @Output() ctxStepAddSectionArray = new EventEmitter<{ key: string }>();
 
   @Output() ctxSectionAddSection = new EventEmitter<{ key: string }>();
   @Output() ctxSectionAddField = new EventEmitter<{ key: string }>();
   @Output() ctxSectionAddFieldTyped = new EventEmitter<{ key: string; type: string }>();
   @Output() ctxSectionDelete = new EventEmitter<{ key: string }>();
+  @Output() ctxSectionAddSectionArray = new EventEmitter<{ key: string }>();
 
   @Output() ctxFieldDelete = new EventEmitter<{ key: string }>();
 
@@ -91,18 +95,21 @@ export class ContextPanelComponent {
   onCtxAddFieldRoot() { this.dropdown.close(); this.ctxAddFieldRoot.emit(); }
   onCtxAddSectionRoot() { this.dropdown.close(); this.ctxAddSectionRoot.emit(); }
   onCtxAddFieldRootTyped(t: string) { this.dropdown.close(); this.ctxAddFieldRootTyped.emit({ type: t }); }
+  onCtxAddSectionRootArray() { this.dropdown.close(); this.ctxAddSectionRootArray.emit(); }
 
   // Step
   onCtxStepAddSection() { this.dropdown.close(); if (this.currentCtxKey) this.ctxStepAddSection.emit({ key: this.currentCtxKey }); }
   onCtxStepAddField() { this.dropdown.close(); if (this.currentCtxKey) this.ctxStepAddField.emit({ key: this.currentCtxKey }); }
   onCtxStepAddFieldTyped(t: string) { this.dropdown.close(); if (this.currentCtxKey) this.ctxStepAddFieldTyped.emit({ key: this.currentCtxKey, type: t }); }
   onCtxStepDelete() { this.dropdown.close(); if (this.currentCtxKey) this.ctxStepDelete.emit({ key: this.currentCtxKey }); }
+  onCtxStepAddSectionArray() { this.dropdown.close(); if (this.currentCtxKey) this.ctxStepAddSectionArray.emit({ key: this.currentCtxKey }); }
 
   // Section
   onCtxSectionAddSection() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionAddSection.emit({ key: this.currentCtxKey }); }
   onCtxSectionAddField() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionAddField.emit({ key: this.currentCtxKey }); }
   onCtxSectionAddFieldTyped(t: string) { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionAddFieldTyped.emit({ key: this.currentCtxKey, type: t }); }
   onCtxSectionDelete() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionDelete.emit({ key: this.currentCtxKey }); }
+  onCtxSectionAddSectionArray() { this.dropdown.close(); if (this.currentCtxKey) this.ctxSectionAddSectionArray.emit({ key: this.currentCtxKey }); }
 
   // Field
   onCtxFieldDelete() { this.dropdown.close(); if (this.currentCtxKey) this.ctxFieldDelete.emit({ key: this.currentCtxKey }); }

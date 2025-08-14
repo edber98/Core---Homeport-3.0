@@ -11,7 +11,7 @@ export interface FieldValidator {
 }
 
 export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date';
-export type FieldType = FieldTypeInput | 'textblock' | 'section';
+export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
     type: FieldType;
@@ -40,13 +40,28 @@ export interface TextBlockFieldConfig extends FieldConfigCommon {
 }
 
 export interface SectionFieldConfig extends FieldConfigCommon {
-    type: 'section';
+    type: 'section' | 'section_array';
+    // Si mode === 'array', une clé est requise pour stocker le FormArray
     key?: string;
+    // Mode d'affichage/comportement: normal (par défaut) ou tableau d'items
+    mode?: 'normal' | 'array';
+    // Configuration spécifique au mode array
+    array?: {
+        initialItems?: number; // défaut 1
+        minItems?: number;     // défaut 0
+        maxItems?: number;     // optionnel
+        controls?: {
+            add?: { kind?: 'icon'|'text'; text?: string };
+            remove?: { kind?: 'icon'|'text'; text?: string };
+        };
+    };
     title?: string;
     description?: string;
     titleStyle?: Record<string, any>;       // style h3
     descriptionStyle?: Record<string, any>; // style p
     grid?: { gutter?: number };
+    // UI overrides (appliquées aux champs internes de cette section)
+    ui?: Partial<FormUI>;
     visibleIf?: JSONVal;
     fields: FieldConfig[];
 }
@@ -111,7 +126,7 @@ export interface FormSchema {
     summary?: SummaryConfig;
 }
 
-export const isInputField = (f: FieldConfig): f is InputFieldConfig => (f.type !== 'textblock' && f.type !== 'section');
+export const isInputField = (f: FieldConfig): f is InputFieldConfig => (f.type !== 'textblock' && f.type !== 'section' && (f as any).type !== 'section_array');
 
 @Injectable({ providedIn: 'root' })
 export class DynamicFormService {
@@ -142,7 +157,9 @@ export class DynamicFormService {
         const out: FieldConfig[] = [];
         const visit = (fields?: FieldConfig[]) => {
             for (const f of fields || []) {
-                if (f.type === 'section') {
+                if (f.type === 'section' || (f as any).type === 'section_array') {
+                    // En mode tableau, les champs sont gérés dynamiquement via FormArray -> ne pas aplatir
+                    if ((f as any).mode === 'array' || (f as any).type === 'section_array') continue;
                     visit((f as any).fields);
                 } else {
                     out.push(f);
@@ -248,7 +265,7 @@ export class DynamicFormService {
         const out: FieldConfig[] = [];
         const visit = (fs?: FieldConfig[]) => {
             for (const f of fs || []) {
-                if (f.type === 'section') visit((f as any).fields);
+                if (f.type === 'section' || (f as any).type === 'section_array') visit((f as any).fields);
                 else if (f.type !== 'textblock') out.push(f);
             }
         };
@@ -313,15 +330,32 @@ export class DynamicFormService {
             const blocks: Array<{ title?: string; rows: Array<{ key: string; label: string; value: string }> }> = [];
             const rootRows: Array<{ key: string; label: string; value: string }> = [];
             for (const f of fields || []) {
-                if (f.type === 'section') {
+                if (f.type === 'section' || (f as any).type === 'section_array') {
                     const sec: any = f;
                     if (!includeHidden && !this.isSectionVisible(sec, form)) {
                         // skip entire section and its subtree
                         continue;
                     }
+                    // Section en mode tableau => produire un bloc par item
+                    if ((((sec as any).mode === 'array') || ((sec as any).type === 'section_array')) && sec.key) {
+                        const arrVal: any[] = (form.value || {})[sec.key] || [];
+                        const items = Array.isArray(arrVal) ? arrVal : [];
+                        items.forEach((it, idx) => {
+                            const rows = (sec.fields || [])
+                              .filter((ff: FieldConfig) => ff.type !== 'textblock' && ff.type !== 'section' && (ff as any).type !== 'section_array')
+                              .map((ff: any) => ({
+                                  key: ff.key,
+                                  label: ff.label || ff.key || '',
+                                  value: this.displayValue(ff, it ? it[ff.key] : undefined, schema)
+                              }));
+                            if (rows.length) blocks.push({ title: `${sec.title || parentTitle || 'Item'} #${idx + 1}` , rows });
+                        });
+                        // ne pas descendre dans des sections internes (non supportées dans array pour le résumé)
+                        continue;
+                    }
                     // direct rows in this section
                     const directRows = (sec.fields || [])
-                        .filter((ff: FieldConfig) => ff.type !== 'textblock' && ff.type !== 'section')
+                        .filter((ff: FieldConfig) => ff.type !== 'textblock' && ff.type !== 'section' && (ff as any).type !== 'section_array')
                         .filter(considerField)
                         .map((ff: any) => ({
                             key: ff.key,
@@ -394,7 +428,8 @@ export class DynamicFormService {
         }
     }
 
-    private mapValidators(vs: FieldValidator[]) {
+    // Exposé publiquement pour que les composants avancés (p.ex. array) puissent créer des contrôles
+    mapValidators(vs: FieldValidator[]) {
         const arr = [];
         for (const v of vs) {
             switch (v.type) {

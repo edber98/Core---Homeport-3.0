@@ -7,6 +7,17 @@ export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'chec
 export class BuilderFactoryService {
   newStep(): StepConfig { return { title: 'Step', fields: [] } as any; }
   newSection(): SectionConfig { return { type: 'section', title: 'Section', fields: [], col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } } as any; }
+  newArraySection(): SectionConfig {
+    return {
+      type: 'section',
+      title: 'Section (Array)',
+      mode: 'array',
+      key: 'items',
+      array: { initialItems: 1, minItems: 0 },
+      fields: [],
+      col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 }
+    } as any;
+  }
 
   newField(type: FieldType): FieldConfig {
     const base: any = { type };
@@ -27,4 +38,3 @@ export class BuilderFactoryService {
     return base as FieldConfig;
   }
 }
-

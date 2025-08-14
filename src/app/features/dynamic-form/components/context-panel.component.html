@@ -3,6 +3,7 @@
     <button nz-button nzSize="small" (click)="selectFormSettings.emit()">Form Settings</button>
     <button nz-button nzSize="small" (click)="addStep.emit()">+ Step</button>
     <button nz-button nzSize="small" (click)="addSection.emit()" [disabled]="!canAddSectionBtn">+ Section</button>
+    <button nz-button nzSize="small" (click)="addSectionArray.emit()" [disabled]="!canAddSectionBtn">+ Section Array</button>
     <button nz-button nzSize="small" (click)="addField.emit()" [disabled]="!canAddFieldBtn">+ Field</button>
   </div>
 
@@ -42,6 +43,7 @@
     <nz-dropdown-menu #menuStep="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item (click)="onCtxStepAddSection()">+ Section</li>
+        <li nz-menu-item (click)="onCtxStepAddSectionArray()">+ Section Array</li>
         <li nz-menu-item (click)="onCtxStepAddField()">+ Field (étape)</li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="onCtxStepAddFieldTyped('text')">+ Text</li>
@@ -58,6 +60,7 @@
     <nz-dropdown-menu #menuSection="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item (click)="onCtxSectionAddSection()">+ Section</li>
+        <li nz-menu-item (click)="onCtxSectionAddSectionArray()">+ Section Array</li>
         <li nz-menu-item (click)="onCtxSectionAddField()">+ Field</li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="onCtxSectionDuplicate()">Dupliquer</li>
@@ -86,6 +89,7 @@
       <ul nz-menu>
         <li nz-menu-item (click)="onCtxAddStep()">+ Step</li>
         <li nz-menu-item (click)="onCtxAddSectionRoot()" [nzDisabled]="stepsMode">+ Section (racine)</li>
+        <li nz-menu-item (click)="onCtxAddSectionRootArray()" [nzDisabled]="stepsMode">+ Section Array (racine)</li>
         <li nz-menu-item (click)="onCtxAddFieldRoot()" [nzDisabled]="stepsMode">+ Field (racine)</li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="onCtxAddFieldRootTyped('text')" [nzDisabled]="stepsMode">+ Text (racine)</li>

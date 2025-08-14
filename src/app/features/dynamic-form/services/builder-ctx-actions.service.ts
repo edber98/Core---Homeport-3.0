@@ -42,7 +42,7 @@ export class BuilderCtxActionsService {
   addFieldToSection(schema: FormSchema, key: string, type: string = 'text'): FieldConfig | null {
     const ctx = this.resolveCtx(schema, key);
     const sec = ctx?.obj as any;
-    if (!sec || sec.type !== 'section') return null;
+    if (!sec || (sec.type !== 'section' && (sec as any).type !== 'section_array')) return null;
     sec.fields = sec.fields || [];
     const f = this.factory.newField(type as any);
     sec.fields.push(f);
@@ -52,9 +52,19 @@ export class BuilderCtxActionsService {
   addSectionInside(schema: FormSchema, key: string): SectionConfig | null {
     const ctx = this.resolveCtx(schema, key);
     const sec = ctx?.obj as any;
-    if (!sec || sec.type !== 'section') return null;
+    if (!sec || (sec.type !== 'section' && (sec as any).type !== 'section_array')) return null;
     sec.fields = sec.fields || [];
     const ns: SectionConfig = this.factory.newSection();
+    sec.fields.push(ns as any);
+    return ns as any;
+  }
+
+  addArraySectionInside(schema: FormSchema, key: string): SectionConfig | null {
+    const ctx = this.resolveCtx(schema, key);
+    const sec = ctx?.obj as any;
+    if (!sec || (sec.type !== 'section' && (sec as any).type !== 'section_array')) return null;
+    sec.fields = sec.fields || [];
+    const ns: SectionConfig = this.factory.newArraySection();
     sec.fields.push(ns as any);
     return ns as any;
   }
@@ -137,6 +147,16 @@ export class BuilderCtxActionsService {
     st.fields.push(sec);
     return sec;
   }
+  addArraySectionToStep(schema: FormSchema, key: string): SectionConfig | null {
+    const parsed = this.tree.parseKey(key) as any;
+    if (!parsed || parsed.type !== 'step') return null;
+    const st = schema.steps?.[parsed.stepIndex!];
+    if (!st) return null;
+    st.fields = st.fields || [];
+    const sec = this.factory.newArraySection();
+    st.fields.push(sec);
+    return sec;
+  }
   addFieldToStep(schema: FormSchema, key: string, type: string = 'text'): FieldConfig | null {
     const parsed = this.tree.parseKey(key) as any;
     if (!parsed || parsed.type !== 'step') return null;
@@ -150,6 +170,12 @@ export class BuilderCtxActionsService {
   addSectionToRoot(schema: FormSchema): SectionConfig {
     schema.fields = schema.fields || [];
     const sec = this.factory.newSection();
+    (schema.fields as any).push(sec);
+    return sec;
+  }
+  addArraySectionToRoot(schema: FormSchema): SectionConfig {
+    schema.fields = schema.fields || [];
+    const sec = this.factory.newArraySection();
     (schema.fields as any).push(sec);
     return sec;
   }

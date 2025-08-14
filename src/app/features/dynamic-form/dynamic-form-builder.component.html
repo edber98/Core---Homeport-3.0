@@ -12,19 +12,23 @@
       (selectFormSettings)="select(schema)"
       (addStep)="addStep()"
       (addSection)="addSectionFromToolbar()"
+      (addSectionArray)="addArraySectionFromToolbar()"
       (addField)="addFieldFromToolbar()"
       (treeDrop)="onTreeDrop($event)"
       (treeClick)="onTreeSelect([$event])"
       (treeExpand)="onTreeExpand({ node: { key: $event.key }, isExpanded: $event.expanded })"
       (ctxAddStep)="ctxAddStep()"
       (ctxAddSectionRoot)="ctxAddSectionRoot()"
+      (ctxAddSectionRootArray)="ctxAddSectionRootArray()"
       (ctxAddFieldRoot)="ctxAddFieldRoot()"
       (ctxAddFieldRootTyped)="ctxAddFieldRootTyped($event.type)"
       (ctxStepAddSection)="dropdownKey=$event.key; ctxAddSection()"
+      (ctxStepAddSectionArray)="dropdownKey=$event.key; ctxAddSectionArray()"
       (ctxStepAddField)="dropdownKey=$event.key; ctxAddFieldToStep()"
       (ctxStepAddFieldTyped)="dropdownKey=$event.key; addFieldAtStepTyped($event.type)"
       (ctxStepDelete)="dropdownKey=$event.key; ctxDeleteStep()"
       (ctxSectionAddSection)="dropdownKey=$event.key; ctxAddSectionInside()"
+      (ctxSectionAddSectionArray)="dropdownKey=$event.key; ctxAddSectionInsideArray()"
       (ctxSectionAddField)="dropdownKey=$event.key; ctxAddFieldToSection()"
       (ctxSectionAddFieldTyped)="dropdownKey=$event.key; ctxAddFieldToSectionTyped($event.type)"
       (ctxSectionDelete)="dropdownKey=$event.key; ctxDeleteSection()"
@@ -45,7 +49,7 @@
       <div class="bp">
         <label style="display:flex;align-items:center;gap:6px;margin-right:auto">
           <span>Mode édition</span>
-          <nz-switch [(ngModel)]="editMode" [ngModelOptions]="{standalone:true}"></nz-switch>
+          <nz-switch [(ngModel)]="editMode" (ngModelChange)="onEditModeChange($event)" [ngModelOptions]="{standalone:true}"></nz-switch>
         </label>
         <nz-tag nzColor="blue">BP: {{ forceBp || ('auto: ' + autoBp) }}</nz-tag>
         <button nz-button nzSize="small" (click)="setPreviewWidth()">Auto</button>
@@ -71,8 +75,8 @@
           <div style="display:flex; align-items:center; gap:6px;">
             <nz-tag nzColor="blue">{{ c.kind }}</nz-tag>
             <strong style="flex:1;">{{ c.targetLabel }}</strong>
-            <span style="color:#64748b; font-size:12px;">{{ describeRule(c.rule) }}</span>
-            <button nz-button nzSize="small" (click)="activateCondition(c)">{{ isRuleSatisfied(c.rule, previewUseSim ? simValues : {}) ? 'Désactiver' : 'Activer' }}</button>
+            <span style="color:#64748b; font-size:12px;" nz-tooltip [nzTooltipTitle]="describeRule(c.rule)">{{ describeRuleWithCtx(c) }}</span>
+            <button nz-button nzSize="small" (click)="activateCondition(c)">{{ isRuleSatisfiedWithCtx(c) ? 'Désactiver' : 'Activer' }}</button>
           </div>
         </div>
       </div>

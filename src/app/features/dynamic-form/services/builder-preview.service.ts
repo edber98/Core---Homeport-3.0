@@ -30,8 +30,8 @@ export class BuilderPreviewService {
   }
 
   isRuleSatisfied(schema: FormSchema, rule: any, value: Record<string, any>): boolean {
-    const form = this.dfs.buildForm(schema as any, value);
-    return !!this.evalRuleLocal(rule, form);
+    // Utilise une évaluation locale basée sur l'objet de valeurs (supporte aussi les champs d'array)
+    return !!this.evalRuleLocal(rule, value || {});
   }
 
   displayChoiceLabel(schema: FormSchema, key: string, value: any): string {
@@ -50,22 +50,24 @@ export class BuilderPreviewService {
   }
 
   measureState(schema: FormSchema, val: Record<string, any>): Record<string, { visible: boolean; disabled: boolean; required: boolean; label: string }> {
-    const form = this.dfs.buildForm(schema as any, val);
+    const value = val || {};
     const out: Record<string, { visible: boolean; disabled: boolean; required: boolean; label: string }> = {};
     const visit = (fields?: any[]) => {
       (fields || []).forEach((f: any) => {
-        if (f.type === 'section') {
-          if (this.dfs.isSectionVisible(f, form)) visit(f.fields || []);
+        if (f.type === 'section' || f.type === 'section_array') {
+          // Les sous-sections array ne sont pas “visitées” niveau item ici (simulation globale),
+          // mais on descend dans les sections classiques pour récupérer les champs
+          if (f.type === 'section') visit(f.fields || []);
         } else if (f.type !== 'textblock') {
-          const key = f.key; const ctrl = form.get(key);
-          const vis = this.dfs.isFieldVisible(f, form);
-          const disabled = !!ctrl?.disabled;
-          const required = !!ctrl?.hasValidator?.(Validators.required);
-          out[key] = { visible: vis, disabled, required, label: f.label || f.key || 'Field' };
+          const key = f.key;
+          const vis = f.visibleIf ? !!this.evalRuleLocal(f.visibleIf, value) : true;
+          const dis = f.disabledIf ? !!this.evalRuleLocal(f.disabledIf, value) : false;
+          const req = f.requiredIf ? !!this.evalRuleLocal(f.requiredIf, value) : false;
+          out[key] = { visible: vis, disabled: dis || !vis, required: req && vis && !dis, label: f.label || f.key || 'Field' };
         }
       });
     };
-    if (schema.steps?.length) schema.steps.forEach(st => { if (this.dfs.isStepVisible(st, form)) visit(st.fields || []); });
+    if (schema.steps?.length) schema.steps.forEach(st => { if (st.visibleIf ? !!this.evalRuleLocal(st.visibleIf, value) : true) visit(st.fields || []); });
     else visit(schema.fields || []);
     return out;
   }
@@ -137,7 +139,7 @@ export class BuilderPreviewService {
   private fieldByKey(schema: FormSchema): Record<string, any> {
     const map: Record<string, any> = {};
     const visit = (fields?: any[]) => (fields || []).forEach(f => {
-      if (f.type === 'section') visit(f.fields || []);
+      if (f.type === 'section' || f.type === 'section_array') visit(f.fields || []);
       else if (f.type !== 'textblock' && f.key) map[f.key] = f;
     });
     if (schema.steps?.length) schema.steps.forEach(st => visit(st.fields)); else visit(schema.fields);
@@ -191,4 +193,3 @@ export class BuilderPreviewService {
     }
   }
 }
-

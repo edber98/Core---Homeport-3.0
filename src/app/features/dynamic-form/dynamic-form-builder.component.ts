@@ -353,6 +353,22 @@ export class DynamicFormBuilderComponent {
       // SECTION
       description: [''],
       gridGutter: [null],
+      // Section advanced: array mode
+      sec_mode: ['normal'], // 'normal' | 'array'
+      sec_key: [''],
+      arr_initial: [1],
+      arr_min: [0],
+      arr_max: [null],
+      arr_addKind: ['text'],
+      arr_addText: ['Ajouter'],
+      arr_removeKind: ['text'],
+      arr_removeText: ['Supprimer'],
+      // Section UI overrides
+      sec_ui_layout: [''],
+      sec_ui_labelAlign: [''],
+      sec_ui_labelsOnTop: [null],
+      sec_ui_labelColSpan: [null],
+      sec_ui_controlColSpan: [null],
 
       // FIELD
       type: ['text'],
@@ -473,6 +489,24 @@ export class DynamicFormBuilderComponent {
         const gut = (v.gridGutter == null || v.gridGutter === '') ? 16 : Number(v.gridGutter);
         this.selected.grid = { gutter: gut };
         (this.selected as any).visibleIf = this.parseJson(v.visibleIf);
+        // Section mode / array config
+        (this.selected as any).mode = (v.sec_mode || 'normal') as any;
+        if ((this.selected as any).mode === 'array') {
+          (this.selected as any).key = v.sec_key || (this.selected as any).key || 'items';
+          (this.selected as any).array = {
+            initialItems: (v.arr_initial != null && v.arr_initial !== '') ? Number(v.arr_initial) : 1,
+            minItems: (v.arr_min != null && v.arr_min !== '') ? Number(v.arr_min) : 0,
+            maxItems: (v.arr_max != null && v.arr_max !== '' && !isNaN(Number(v.arr_max))) ? Number(v.arr_max) : undefined,
+            controls: {
+              add: { kind: (v.arr_addKind || 'text') as any, text: v.arr_addText || undefined },
+              remove: { kind: (v.arr_removeKind || 'text') as any, text: v.arr_removeText || undefined }
+            }
+          };
+        } else {
+          // cleanup array specifics when leaving array mode
+          (this.selected as any).array = undefined;
+          // key remains optional for normal sections
+        }
         // col spans
         (this.selected as any).col = {
           xs: Number(v.col_xs ?? 24) || 24,
@@ -481,6 +515,14 @@ export class DynamicFormBuilderComponent {
           lg: Number(v.col_lg ?? 24) || 24,
           xl: Number(v.col_xl ?? 24) || 24,
         };
+        // Section UI overrides
+        const secUi: any = {};
+        if (v.sec_ui_layout) secUi.layout = v.sec_ui_layout;
+        if (v.sec_ui_labelAlign) secUi.labelAlign = v.sec_ui_labelAlign;
+        if (typeof v.sec_ui_labelsOnTop === 'boolean') secUi.labelsOnTop = v.sec_ui_labelsOnTop;
+        if (v.sec_ui_labelColSpan != null && v.sec_ui_labelColSpan !== '') secUi.labelCol = { span: Number(v.sec_ui_labelColSpan) };
+        if (v.sec_ui_controlColSpan != null && v.sec_ui_controlColSpan !== '') secUi.controlCol = { span: Number(v.sec_ui_controlColSpan) };
+        (this.selected as any).ui = Object.keys(secUi).length ? secUi : undefined;
         // Spacing section (si saisi)
         const sstyle: any = {};
         const sadd = (k: string, val: any) => { if (val !== null && val !== '' && !isNaN(Number(val))) sstyle[k] = `${Number(val)}px`; };
@@ -756,10 +798,41 @@ export class DynamicFormBuilderComponent {
 
   // Helpers for builder UI
   get inputFieldKeys(): string[] {
+    // Contexte: si on édite un champ ou une section 'array', limiter aux clés des champs frères
+    const localKeys: string[] | null = this.localKeysForSelected();
+    if (localKeys) return localKeys;
+    // Sinon: global
     const keys: string[] = [];
-    const visit = (fs?: any[]) => (fs||[]).forEach(f => { if (f.type==='section') visit(f.fields); else if (f.type!=='textblock' && f.key) keys.push(f.key); });
+    const visit = (fs?: any[]) => (fs||[]).forEach(f => { if ((f.type==='section') || (f.type==='section_array')) visit(f.fields); else if (f.type!=='textblock' && f.key) keys.push(f.key); });
     if (this.schema.steps?.length) this.schema.steps.forEach(st => visit(st.fields)); else visit(this.schema.fields);
     return Array.from(new Set(keys));
+  }
+  private localKeysForSelected(): string[] | null {
+    const sec = this.arrayAncestorOfSelected();
+    if (!sec) return null;
+    const keys: string[] = [];
+    (sec.fields || []).forEach((f: any) => { if (f.type!=='textblock' && f.type!=='section' && f.type!=='section_array' && f.key) keys.push(f.key); });
+    return keys.length ? keys : null;
+  }
+  private arrayAncestorOfSelected(): any | null {
+    // Si selected est une section array → c'est l'ancêtre
+    if (this.selected && this.isSection(this.selected) && (((this.selected as any).mode === 'array') || ((this.selected as any).type === 'section_array'))) return this.selected as any;
+    // Si selected est un field → trouver sa section parente la plus proche qui est array
+    if (this.selected && this.isField(this.selected)) {
+      const target = this.selected as any;
+      let found: any = null;
+      const visit = (fs?: any[], parent?: any): boolean => {
+        for (const f of (fs || [])) {
+          if (f === target) { if (parent && (((parent.mode==='array') || (parent.type==='section_array')))) { found = parent; } return true; }
+          if (f && (f.type==='section' || f.type==='section_array')) { if (visit(f.fields, f)) return true; }
+        }
+        return false;
+      };
+      if (this.schema.steps?.length) { for (const st of this.schema.steps) if (visit(st.fields)) break; }
+      else visit(this.schema.fields);
+      return found;
+    }
+    return null;
   }
 
   get conditionItems(): FormArray { return this.conditionForm.get('items') as FormArray; }
@@ -853,6 +926,21 @@ export class DynamicFormBuilderComponent {
         description: obj.description ?? '',
         gridGutter: obj.grid?.gutter ?? 16,
         visibleIf: this.stringifyJson(obj.visibleIf),
+        sec_mode: ((obj as any).mode || 'normal'),
+        sec_key: (obj as any).key || '',
+        arr_initial: (obj as any).array?.initialItems ?? 1,
+        arr_min: (obj as any).array?.minItems ?? 0,
+        arr_max: (obj as any).array?.maxItems ?? null,
+        arr_addKind: (obj as any).array?.controls?.add?.kind || 'text',
+        arr_addText: (obj as any).array?.controls?.add?.text || 'Ajouter',
+        arr_removeKind: (obj as any).array?.controls?.remove?.kind || 'text',
+        arr_removeText: (obj as any).array?.controls?.remove?.text || 'Supprimer',
+        // Per-section UI overrides
+        sec_ui_layout: (obj as any).ui?.layout ?? '',
+        sec_ui_labelAlign: (obj as any).ui?.labelAlign ?? '',
+        sec_ui_labelsOnTop: typeof (obj as any).ui?.labelsOnTop === 'boolean' ? (obj as any).ui?.labelsOnTop : null,
+        sec_ui_labelColSpan: (obj as any).ui?.labelCol?.span ?? null,
+        sec_ui_controlColSpan: (obj as any).ui?.controlCol?.span ?? null,
         sec_titleColor: (obj as any).titleStyle?.color ?? '',
         sec_titleFontSize: this.pickStyleNumber((obj as any).titleStyle?.fontSize),
         sec_titleMT: this.pickStyleNumber((obj as any).titleStyle?.marginTop),
@@ -945,7 +1033,7 @@ export class DynamicFormBuilderComponent {
     return !!obj && obj !== this.schema && !('type' in obj) && (('fields' in obj) || ('sections' in obj)) && !('steps' in obj);
   }
   isSection(obj: any): obj is SectionConfig {
-    return !!obj && ('type' in obj) && (obj as any).type === 'section';
+    return !!obj && ('type' in obj) && (((obj as any).type === 'section') || ((obj as any).type === 'section_array'));
   }
   isField(obj: any): obj is FieldConfig {
     return !!obj && 'type' in obj && (obj as any).type !== 'section';
@@ -989,6 +1077,22 @@ export class DynamicFormBuilderComponent {
       this.addSection();
     } else {
       // mode steps sans sélection valide → ignorer
+      return;
+    }
+  }
+  addArraySectionFromToolbar(): void {
+    if (this.selected && this.isStep(this.selected)) {
+      // Ajouter dans le step sélectionné
+      const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
+      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionArray(); return; }
+    } else if (this.selected && this.isSection(this.selected)) {
+      // Ajouter comme sous-section de la section sélectionnée
+      const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
+      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionInsideArray(); return; }
+      // sinon, à la racine si flat
+      if (!this.isStepsMode) { this.ctxAddSectionRootArray(); return; }
+    } else if (!this.isStepsMode) {
+      this.ctxAddSectionRootArray();
       return;
     }
   }
@@ -1137,6 +1241,10 @@ export class DynamicFormBuilderComponent {
   // removed legacy onEditMoveSection; use onEditMoveItem instead
   onEditAddFieldTyped(e: { path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string; sectionPath?: number[] }) {
     const make = (t: any) => this.newField(t as any);
+    const makeSection = (t: string) => {
+      if (t === 'section_array') return this.factory.newArraySection();
+      return this.factory.newSection();
+    };
     if (e.path === 'root') {
       this.ensureFlatMode();
       this.schema.fields = this.schema.fields || [];
@@ -1170,9 +1278,15 @@ export class DynamicFormBuilderComponent {
       if (!start || (start as any).type !== 'section') return;
       const target = descend(start, e.sectionPath);
       target.fields = target.fields || [];
-      const f = make(e.type);
-      target.fields.push(f);
-      this.select(f);
+      if (e.type === 'section' || e.type === 'section_array') {
+        const sec = makeSection(e.type);
+        target.fields.push(sec as any);
+        this.select(sec as any);
+      } else {
+        const f = make(e.type);
+        target.fields.push(f);
+        this.select(f);
+      }
       this.refresh();
       return;
     }
@@ -1271,48 +1385,125 @@ export class DynamicFormBuilderComponent {
 
   // ---------- Helpers ----------
   // Conditions: extraction + simulation
-  get conditionEntries(): Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any }> {
-    const out: Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any }> = [];
-    const pushFieldConds = (f: any) => {
+  get conditionEntries(): Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any; arrayKey?: string; arrayTitle?: string }> {
+    const out: Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any; arrayKey?: string; arrayTitle?: string }> = [];
+    const pushFieldConds = (f: any, ctx?: { arrayKey?: string; arrayTitle?: string }) => {
       if (f.visibleIf) out.push({ targetType: 'field', target: f, targetLabel: f.label || f.key || 'Field', kind: 'visibleIf', rule: f.visibleIf });
       if (f.requiredIf) out.push({ targetType: 'field', target: f, targetLabel: f.label || f.key || 'Field', kind: 'requiredIf', rule: f.requiredIf });
       if (f.disabledIf) out.push({ targetType: 'field', target: f, targetLabel: f.label || f.key || 'Field', kind: 'disabledIf', rule: f.disabledIf });
+      // Append context
+      const last = out.slice(-3);
+      last.forEach(it => { if (ctx?.arrayKey) { (it as any).arrayKey = ctx.arrayKey; (it as any).arrayTitle = ctx.arrayTitle; } });
     };
-    const visit = (fields?: any[]) => {
+    const visit = (fields?: any[], ctx?: { arrayKey?: string; arrayTitle?: string }) => {
       (fields || []).forEach(f => {
-        if (f.type === 'section') {
+        if (f.type === 'section' || f.type === 'section_array') {
           const sec = f as any;
-          if (sec.visibleIf) out.push({ targetType: 'section', target: sec, targetLabel: sec.title || 'Section', kind: 'visibleIf', rule: sec.visibleIf });
-          visit(sec.fields || []);
+          const nextCtx = (sec.type === 'section_array' || sec.mode === 'array') ? { arrayKey: sec.key, arrayTitle: sec.title || ctx?.arrayTitle } : ctx;
+          if (sec.visibleIf) out.push({ targetType: 'section', target: sec, targetLabel: sec.title || 'Section', kind: 'visibleIf', rule: sec.visibleIf, arrayKey: nextCtx?.arrayKey, arrayTitle: nextCtx?.arrayTitle });
+          visit(sec.fields || [], nextCtx);
         } else if (f.type !== 'textblock') {
-          pushFieldConds(f);
+          pushFieldConds(f, ctx);
         }
       });
     };
-    if (this.schema.steps?.length) this.schema.steps.forEach(st => { if (st.visibleIf) out.push({ targetType: 'step', target: st, targetLabel: st.title || 'Step', kind: 'visibleIf', rule: st.visibleIf }); visit(st.fields || []); });
-    else visit(this.schema.fields || []);
+    if (this.schema.steps?.length) this.schema.steps.forEach(st => { if (st.visibleIf) out.push({ targetType: 'step', target: st, targetLabel: st.title || 'Step', kind: 'visibleIf', rule: st.visibleIf }); visit(st.fields || [], undefined); });
+    else visit(this.schema.fields || [], undefined);
     return out;
   }
 
   private ruleToAssignments(rule: any): Record<string, any> { return this.prevSvc.ruleToAssignments(this.schema, rule); }
 
-  activateCondition(entry: { rule: any }): void {
-    // si déjà satisfait → désactiver (retirer ce que cette règle a posé)
-    if (this.isRuleSatisfied(entry.rule, this.simValues)) {
-      const toUnset = this.ruleToAssignments(entry.rule);
-      const copy = { ...this.simValues } as Record<string, any>;
-      for (const k of Object.keys(toUnset)) {
-        if (copy[k] !== undefined && JSON.stringify(copy[k]) === JSON.stringify(toUnset[k])) delete copy[k];
+  describeRuleWithCtx(c: { rule: any; arrayKey?: string; arrayTitle?: string }): string {
+    const base = this.describeRulePretty(c.rule);
+    if (c.arrayKey) return `${c.arrayTitle || c.arrayKey}[0] · ${base}`;
+    return base;
+  }
+  private describeRulePretty(rule: any): string {
+    // Remplace les clés par labels si connus
+    const rep = (r: any): string => {
+      if (!r) return '';
+      if (Array.isArray(r.any)) return '(' + (r.any as any[]).map(rep).join(') OU (') + ')';
+      if (Array.isArray(r.all)) return '(' + (r.all as any[]).map(rep).join(') ET (') + ')';
+      if (r.var) return `${this.labelForKey(r.var) || r.var} est renseigné`;
+      if (r.not && r.not.var) return `${this.labelForKey(r.not.var) || r.not.var} n'est pas renseigné`;
+      const op = Object.keys(r)[0];
+      const args = (r as any)[op] || [];
+      const field = args[0]?.var ?? '';
+      const fieldLabel = this.labelForKey(field) || field;
+      const val = args[1];
+      const valStr = typeof val === 'string' ? `'${val}'` : String(val);
+      switch (op) {
+        case '==': return `${fieldLabel} est égal à ${valStr}`;
+        case '!=': return `${fieldLabel} est différent de ${valStr}`;
+        case '>': return `${fieldLabel} est supérieur à ${valStr}`;
+        case '>=': return `${fieldLabel} est supérieur ou égal à ${valStr}`;
+        case '<': return `${fieldLabel} est inférieur à ${valStr}`;
+        case '<=': return `${fieldLabel} est inférieur ou égal à ${valStr}`;
+        default: return JSON.stringify(r);
       }
-      this.simValues = copy;
+    };
+    return rep(rule);
+  }
+  private labelForKey(k: string): string | undefined {
+    let found: string | undefined;
+    const visit = (fs?: any[]) => {
+      for (const f of (fs || [])) {
+        if (f?.type === 'section' || f?.type === 'section_array') visit(f.fields);
+        else if (f?.key === k) { found = f.label || f.key; return true; }
+      }
+      return false;
+    };
+    if (this.schema.steps?.length) { for (const st of this.schema.steps) if (visit(st.fields)) break; }
+    else visit(this.schema.fields);
+    return found;
+  }
+  isRuleSatisfiedWithCtx(c: { rule: any; arrayKey?: string }): boolean {
+    const val = this.previewUseSim ? this.simValues : {};
+    const ctx = c.arrayKey ? ((val as any)[c.arrayKey]?.[0] || {}) : val;
+    return this.prevSvc.isRuleSatisfied(this.schema, c.rule, ctx);
+  }
+
+  activateCondition(entry: { rule: any; arrayKey?: string }): void {
+    // si déjà satisfait → désactiver (retirer ce que cette règle a posé)
+    if (this.isRuleSatisfiedWithCtx(entry)) {
+      const toUnset = this.ruleToAssignments(entry.rule);
+      const copy = { ...this.simValues } as any;
+      if (entry.arrayKey) {
+        const prevArr = Array.isArray(copy[entry.arrayKey]) ? copy[entry.arrayKey] : [];
+        const arr = [...prevArr];
+        const prevItem = arr[0] || {};
+        const item = { ...prevItem };
+        for (const k of Object.keys(toUnset)) {
+          if (item[k] !== undefined && JSON.stringify(item[k]) === JSON.stringify((toUnset as any)[k])) delete item[k];
+        }
+        arr[0] = item;
+        copy[entry.arrayKey] = arr;
+      } else {
+        for (const k of Object.keys(toUnset)) {
+          if (copy[k] !== undefined && JSON.stringify(copy[k]) === JSON.stringify((toUnset as any)[k])) delete copy[k];
+        }
+      }
+      this.simValues = copy as any;
       if (Object.keys(this.simValues).length === 0) this.previewUseSim = false;
       this.refresh();
       return;
     }
     // Sinon: activer, en gérant les conflits éventuels
-    if (this.openConflictFor(entry)) return;
+    if (this.openConflictFor(entry as any)) return;
     const patch = this.ruleToAssignments(entry.rule);
-    this.simValues = { ...this.simValues, ...patch };
+    if (entry.arrayKey) {
+      const copy = { ...this.simValues } as any;
+      const prevArr = Array.isArray(copy[entry.arrayKey]) ? copy[entry.arrayKey] : [];
+      const arr = [...prevArr];
+      const prevItem = arr[0] || {};
+      const item = { ...prevItem, ...patch };
+      arr[0] = item;
+      copy[entry.arrayKey] = arr;
+      this.simValues = copy as any;
+    } else {
+      this.simValues = { ...this.simValues, ...patch };
+    }
     this.previewUseSim = true;
   }
   resetSimulation(): void {
@@ -1453,6 +1644,14 @@ export class DynamicFormBuilderComponent {
   private updateAutoBp() {
     const w = window?.innerWidth || 0;
     this.autoBp = w < 576 ? 'xs' : w < 768 ? 'sm' : w < 992 ? 'md' : w < 1200 ? 'lg' : 'xl';
+  }
+  onEditModeChange(enabled: boolean) {
+    this.editMode = enabled;
+    if (!enabled) {
+      this.selectedField = null;
+      this.selected = null as any;
+      this.updateTreeSelectedKeys();
+    }
   }
   @HostListener('window:resize') onResize() { this.updateAutoBp(); }
 
@@ -1628,6 +1827,13 @@ export class DynamicFormBuilderComponent {
     if (sec) this.select(sec as any);
     this.refresh();
   }
+  ctxAddSectionArray() {
+    const ctx = this.currentCtxFromDropdown();
+    if (!ctx || ctx.type !== 'step') return;
+    const sec = this.ctxActions.addArraySectionToStep(this.schema, ctx.key);
+    if (sec) this.select(sec as any);
+    this.refresh();
+  }
   ctxAddFieldToStep() {
     const ctx = this.currentCtxFromDropdown();
     if (ctx?.type !== 'step') return;
@@ -1657,6 +1863,11 @@ export class DynamicFormBuilderComponent {
     const ns = this.ctxActions.addSectionInside(this.schema, key);
     if (ns) { this.select(ns as any); this.refresh(); }
   }
+  ctxAddSectionInsideArray() {
+    const key = this.dropdownKey; if (!key) return;
+    const ns = this.ctxActions.addArraySectionInside(this.schema, key);
+    if (ns) { this.select(ns as any); this.refresh(); }
+  }
   ctxAddFieldRootTyped(t: string) {
     if (this.schema.steps?.length) return;
     this.ensureFlatMode();
@@ -1669,6 +1880,13 @@ export class DynamicFormBuilderComponent {
     if (this.schema.steps?.length) return;
     this.ensureFlatMode();
     const sec = this.ctxActions.addSectionToRoot(this.schema);
+    this.select(sec as any);
+    this.refresh();
+  }
+  ctxAddSectionRootArray() {
+    if (this.schema.steps?.length) return;
+    this.ensureFlatMode();
+    const sec = this.ctxActions.addArraySectionToRoot(this.schema);
     this.select(sec as any);
     this.refresh();
   }

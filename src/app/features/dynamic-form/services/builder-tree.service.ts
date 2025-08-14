@@ -13,6 +13,7 @@ import type { FormSchema, SectionConfig, FieldConfig, StepConfig } from '../../.
  */
 @Injectable({ providedIn: 'root' })
 export class BuilderTreeService {
+  private isSection(f: any): boolean { return !!f && (f.type === 'section' || f.type === 'section_array'); }
   /** Renvoie la clé pour un objet du schéma, ou null si non trouvé */
   keyForObject(schema: FormSchema, obj: any): string | null {
     if (obj === schema) return 'root';
@@ -22,7 +23,7 @@ export class BuilderTreeService {
         const isStepBase = base.startsWith('step:');
         const key = isStepBase ? `${base}:field:${i}` : `${base}:${i}`;
         if (f === obj) return key;
-        if (f && f.type === 'section') {
+        if (f && this.isSection(f)) {
           // Under a step, child base stays the section key; at root, descend with ':field'
           const childBase = isStepBase ? key : `${key}:field`;
           const sub = searchFields(childBase, f.fields || []);
@@ -92,7 +93,7 @@ export class BuilderTreeService {
 
     const src = this.ctxFromKey(schema, dragKey);
     if (!src || !src.obj) return null;
-    const isSection = (src.obj as any).type === 'section';
+    const isSection = this.isSection(src.obj as any);
     const isField = (src.obj as any).type && (src.obj as any).type !== 'section';
     if (!isSection && !isField) return null;
 
@@ -126,7 +127,7 @@ export class BuilderTreeService {
         targetArr = schema.fields;
         insertIndex = (targetArr || []).length;
       } else {
-        if ((dst.obj as any).type === 'section') {
+        if (this.isSection(dst.obj as any)) {
           const sec = dst.obj as any; sec.fields = sec.fields || [];
           // Interdire de déposer un élément dans lui-même ou un de ses descendants
           if (this.#containsObj(src.obj, sec)) return null;
@@ -169,7 +170,7 @@ export class BuilderTreeService {
       }
       return false;
     };
-    if ((root as any)?.type === 'section') return visit((root as any).fields);
+    if (this.isSection(root)) return visit((root as any).fields);
     // Steps/root: parcourir à partir de root.fields si présent
     if ((root as StepConfig)?.fields) return visit((root as StepConfig).fields as any);
     return false;
@@ -181,9 +182,9 @@ export class BuilderTreeService {
     const collect = (arr?: any[]) => {
       if (!arr) return;
       arrays.push(arr);
-      for (const f of arr) if (f?.type === 'section') collect(f.fields);
+      for (const f of arr) if (this.isSection(f)) collect(f.fields);
     };
-    if ((root as any)?.type === 'section') collect((root as any).fields);
+    if (this.isSection(root)) collect((root as any).fields);
     else if ((root as StepConfig)?.fields) collect((root as StepConfig).fields as any);
     return arrays.includes(targetArr);
   }
@@ -195,7 +196,7 @@ export class BuilderTreeService {
       (fields || []).forEach((f: any, i: number) => {
         const isStepBase = baseKey.startsWith('step:');
         const key = isStepBase ? `${baseKey}:field:${i}` : `${baseKey}:${i}`;
-        if (f.type === 'section') {
+        if (this.isSection(f)) {
           const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExpanded(key, false), children: [] };
           // Under step, keep child base as section key; at root, use ':field' marker
           const childBase = isStepBase ? key : `${key}:field`;
