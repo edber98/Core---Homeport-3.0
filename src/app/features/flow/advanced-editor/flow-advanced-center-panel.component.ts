@@ -1,52 +1,102 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, DynamicForm],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, DynamicForm],
   template: `
     <div class="card">
-      <div class="toolbar">
-        <button class="icon" (click)="undoForm()" [disabled]="!canUndoForm" title="Annuler"><i class="fa-solid fa-rotate-left"></i></button>
-        <button class="icon" (click)="redoForm()" [disabled]="!canRedoForm" title="Rétablir"><i class="fa-solid fa-rotate-right"></i></button>
-      </div>
-      <div class="body">
-        <app-dynamic-form *ngIf="schema as s"
-          [schema]="s"
-          [value]="model?.context || {}"
-          (valueChange)="onValue($event)"
-          (validChange)="onValid($event)"
-          (submitted)="onSubmitted($event)">
-        </app-dynamic-form>
-        <div *ngIf="!schema" class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+      <div class="tabs">
+      <nz-tabset [nzTabPosition]="'top'">
+        <nz-tab nzTitle="Personnalisation">
+          <div class="tab-header">
+            <div class="title">Personnaliser le nœud</div>
+            <div class="actions">
+              <button class="icon" (click)="undoForm()" [disabled]="!canUndoForm" title="Annuler"><i class="fa-solid fa-rotate-left"></i></button>
+              <button class="icon" (click)="redoForm()" [disabled]="!canRedoForm" title="Rétablir"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+          </div>
+          <div class="body">
+            <app-dynamic-form *ngIf="schema as s"
+              [schema]="s"
+              [value]="model?.context || {}"
+              (valueChange)="onValue($event)"
+              (valueCommitted)="onValueCommitted($event)"
+              (validChange)="onValid($event)"
+              (submitted)="onSubmitted($event)">
+            </app-dynamic-form>
+            <div *ngIf="!schema" class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Paramétrage">
+          <div class="settings-pane">
+            <div class="setting-row" *ngIf="model?.templateObj?.authorize_catch_error">
+              <div class="left">
+                <div class="label">Activer la sortie d’erreur</div>
+                <div class="hint">Ajoute une sortie "Error" au nœud.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.catch_error" (ngModelChange)="onToggleCatchError($event)"></nz-switch>
+              </div>
+            </div>
+            <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error">Aucun paramètre disponible.</div>
+          </div>
+        </nz-tab>
+      </nz-tabset>
       </div>
     </div>
   `,
   styles: [`
     :host { display:block; }
     .card { position:relative; background:#fff; border:1px solid #ececec; border-radius:14px; box-shadow:0 20px 40px rgba(0,0,0,.12); width: var(--dialog-w, 960px); max-width: 100vw; padding: 0 0 16px; height:var(--dialog-h, 68vh); max-height:90vh; display:flex; flex-direction:column; }
-    .toolbar { position:absolute; top:8px; right:12px; display:flex; gap:6px; z-index:2; }
-    .toolbar .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
-    .toolbar .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
-    .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; }
+    .tabs { flex:1 1 auto; min-height:0; display:flex; }
+    .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 12px 0 12px; }
+    .tab-header .title { font-weight:600; font-size:13px; color:#111; }
+    .tab-header .actions { display:flex; gap:6px; }
+    .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
+    .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
+    .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
+    .settings-pane { padding: 12px 16px; height: 100%; display:flex; flex-direction:column; gap:12px; }
+    .setting-row { display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #ececec; border-radius:10px; padding:10px 12px; }
+    .setting-row .label { font-weight:600; font-size:13px; color:#111; }
+    .setting-row .hint { color:#8c8c8c; font-size:12px; }
     .placeholder { color:#8c8c8c; font-size:12px; padding:8px; }
+    /* Make tabs fill available height and allow inner scrolling */
+    :host ::ng-deep .tabs .ant-tabs { display:flex; flex-direction:column; width:100%; height:100%; }
+    :host ::ng-deep .tabs .ant-tabs-content-holder { flex:1 1 auto; min-height:0; }
+    :host ::ng-deep .tabs .ant-tabs-content { height:100%; }
+    :host ::ng-deep .tabs .ant-tabs-tabpane { height:100%; overflow:auto; }
   `]
 })
 export class FlowAdvancedCenterPanelComponent {
   @Input() model: any = {};
   @Output() modelChange = new EventEmitter<any>();
   @Output() submitted = new EventEmitter<any>();
+  @Output() committed = new EventEmitter<any>();
   // Derived schema from template
   get schema() { return this.model?.templateObj?.args || null; }
   private formPast: any[] = [];
   private formFuture: any[] = [];
   private applying = false;
   private lastJson = '';
+  private commitTimer: any = null;
+  private pendingContext: any = null;
 
+  private lastModelId: string | null = null;
+  private lastTemplateSig: string | null = null;
   ngOnChanges() {
-    // reset local form history when model changes (new node or import)
+    // Reset local form history only when switching node/template (not on each context patch)
+    const id = this.model?.id || null;
+    const tmplSig = this.model?.templateObj ? String(this.model.templateObj.id || this.model.templateObj.type || '') : null;
+    const needReset = (this.lastModelId == null) || (id !== this.lastModelId) || (tmplSig !== this.lastTemplateSig);
+    this.lastModelId = id;
+    this.lastTemplateSig = tmplSig;
+    if (!needReset) return;
     try {
       const init = this.model?.context || {};
       this.formPast = [JSON.parse(JSON.stringify(init))];
@@ -56,21 +106,20 @@ export class FlowAdvancedCenterPanelComponent {
   }
 
   onValue(v: Record<string, any>) {
-    const json = JSON.stringify(v || {});
-    if (json === this.lastJson) return;
-    if (!this.applying) {
-      this.formPast.push(JSON.parse(json));
-      this.formFuture = [];
-    }
-    this.lastJson = json;
-    const m = { ...this.model, context: v };
-    this.model = m;
-    this.modelChange.emit(m);
+    // Live preview without recording history; commit happens on valueCommitted/pointerup/submit
+    this.pendingContext = v;
+    if (this.applying) return;
+    try {
+      const m = { ...this.model, context: JSON.parse(JSON.stringify(v || {})) };
+      this.model = m;
+      this.modelChange.emit(m);
+    } catch {}
   }
   onValid(valid: boolean) {
+    // Mettre à jour l'état local d'invalidité sans notifier le parent (évite des reconciliations inutiles)
     const m = { ...this.model, invalid: !valid };
     this.model = m;
-    this.modelChange.emit(m);
+    // Ne pas émettre modelChange ici pour éviter des effets de bord (edges supprimés) à l'ouverture
   }
   get canUndoForm() { return this.formPast.length > 1; }
   get canRedoForm() { return this.formFuture.length > 0; }
@@ -101,14 +150,50 @@ export class FlowAdvancedCenterPanelComponent {
     }
   }
 
-  onSubmitted(v: any) {
-    const json = JSON.stringify(v || {});
-    if (json !== this.lastJson) {
+  // No debounced auto-commit; commit only on valueCommitted/pointerup/submit
+  private commitNow() {
+    if (this.commitTimer) { clearTimeout(this.commitTimer); this.commitTimer = null; }
+    const v = this.pendingContext != null ? this.pendingContext : (this.model?.context || {});
+    this.pendingContext = null;
+    try {
+      const json = JSON.stringify(v || {});
+      if (json === this.lastJson) return;
+      if (!this.applying) {
+        this.formPast.push(JSON.parse(json));
+        this.formFuture = [];
+      }
       this.lastJson = json;
       const m = { ...this.model, context: v };
       this.model = m;
       this.modelChange.emit(m);
-    }
+    } catch {}
+  }
+
+  onValueCommitted(v: any) {
+    // Flush immediately when dynamic-form signals a commit (blur/submit)
+    this.pendingContext = v;
+    this.commitNow();
+    try { this.committed.emit(this.model); } catch {}
+  }
+
+  onSubmitted(v: any) {
+    // Flush pending changes and commit immediately on submit
+    this.pendingContext = v;
+    this.commitNow();
     this.submitted.emit(this.model);
+  }
+
+  // Optional: flush on pointer release to approximate "when user releases input"
+  // Fallback flush: still flush on pointer up if a debounce is pending
+  @HostListener('document:pointerup')
+  onPointerUp() { if (this.commitTimer) this.commitNow(); }
+
+  // Paramétrage actions
+  onToggleCatchError(val: boolean) {
+    try {
+      const m = { ...this.model, catch_error: !!val };
+      this.model = m;
+      this.modelChange.emit(m);
+    } catch {}
   }
 }

@@ -57,6 +57,8 @@ export class DynamicForm implements OnInit, OnChanges {
   @Input({ required: true }) schema!: FormSchema;
   @Input() value?: Record<string, any>;
   @Input() ctx: any = {};
+  // Expression editor preview: show errors in preview panel (passed to ExpressionEditor)
+  @Input() exprPreviewShowErrors = true;
   @Input() editMode = false;
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() selectedField: FieldConfig | null = null;
@@ -83,6 +85,8 @@ export class DynamicForm implements OnInit, OnChanges {
   // Emit live value + validity to host
   @Output() valueChange = new EventEmitter<Record<string, any>>();
   @Output() validChange = new EventEmitter<boolean>();
+  // Nouveau: émis quand l'utilisateur termine une saisie (blur/submit)
+  @Output() valueCommitted = new EventEmitter<Record<string, any>>();
 
   form!: FormGroup;
   current = signal(0);
@@ -90,6 +94,8 @@ export class DynamicForm implements OnInit, OnChanges {
   // Avoid emitting while initializing or when applying external values
   private suppressEmit = false;
   private lastEmittedJson = '';
+  private lastCommittedJson = '';
+  private dirtySinceCommit = false;
 
   constructor(public dfs: DynamicFormService, private dropdown: NzContextMenuService) {}
   // context for floating dropdowns
@@ -131,7 +137,9 @@ export class DynamicForm implements OnInit, OnChanges {
     // Defer first emission to let nested sections (arrays) initialize
     setTimeout(() => {
       this.suppressEmit = false;
-      this.emitNow();
+      // Force a first emission so hosts receive initial value
+      this.emitNow(true);
+      this.lastCommittedJson = this.lastEmittedJson;
     });
   }
 
@@ -142,7 +150,7 @@ export class DynamicForm implements OnInit, OnChanges {
       this.suppressEmit = true;
       this.form = this.dfs.buildForm(this.schema, this.sanitizedValue(this.value));
       this.attachFormStreams();
-      setTimeout(() => { this.suppressEmit = false; this.emitNow(); });
+      setTimeout(() => { this.suppressEmit = false; this.emitNow(true); });
       const max = Math.max(0, this.visibleSteps.length - 1);
       this.current.set(Math.min(prevIndex, max));
     } else if (changes['value'] && this.form) {
@@ -167,6 +175,7 @@ export class DynamicForm implements OnInit, OnChanges {
       this.form.valueChanges.subscribe(() => {
         if (this.suppressEmit) return;
         this.emitNow();
+        this.dirtySinceCommit = true;
       });
       this.form.statusChanges.subscribe(() => {
         if (this.suppressEmit) return;
@@ -175,15 +184,31 @@ export class DynamicForm implements OnInit, OnChanges {
     } catch {}
   }
 
-  private emitNow() {
+  private emitNow(force = false) {
     try {
       const val = this.form.getRawValue();
       const json = JSON.stringify(val);
-      if (json !== this.lastEmittedJson) {
+      if (force || json !== this.lastEmittedJson) {
         this.lastEmittedJson = json;
         this.valueChange.emit(val);
       }
       this.validChange.emit(this.form.valid);
+    } catch {}
+  }
+
+  // ===== Commit helpers (blur / submit)
+  onFormFocusOut(_ev: FocusEvent) {
+    // Small delay to let control update propagate
+    setTimeout(() => this.commitIfNeeded());
+  }
+  private commitIfNeeded() {
+    try {
+      const val = this.form.getRawValue();
+      const json = JSON.stringify(val);
+      if (!this.dirtySinceCommit && json === this.lastCommittedJson) return;
+      this.lastCommittedJson = json;
+      this.dirtySinceCommit = false;
+      this.valueCommitted.emit(val);
     } catch {}
   }
 
@@ -446,7 +471,14 @@ export class DynamicForm implements OnInit, OnChanges {
       this.scrollToFirstInvalid();
       return;
     }
-    this.submitted.emit(this.form.value);
+    const val = this.form.value;
+    this.submitted.emit(val);
+    // Emit a committed value on submit as well
+    try {
+      this.valueCommitted.emit(val);
+      this.lastCommittedJson = JSON.stringify(this.form.getRawValue());
+      this.dirtySinceCommit = false;
+    } catch {}
   }
 
   reset() {

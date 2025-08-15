@@ -28,6 +28,7 @@ import { StyleEditorComponent } from './components/style-editor.component';
 import { CustomizeDialogComponent } from './components/customize-dialog.component';
 import { ContextPanelComponent } from './components/context-panel.component';
 import { MonacoJsonEditorComponent } from './components/monaco-json-editor.component';
+import { JsonSchemaViewerComponent } from '../../modules/json-schema-viewer/json-schema-viewer';
 import { InspectorFormSettingsComponent } from './components/inspector-form-settings.component';
 import { InspectorStepComponent } from './components/inspector-step.component';
 import { InspectorSectionComponent } from './components/inspector-section.component';
@@ -43,6 +44,7 @@ import { BuilderDepsService } from './services/builder-deps.service';
 import { ConditionFormService } from './services/condition-form.service';
 import { BuilderFactoryService } from './services/builder-factory.service';
 import { BuilderGridService } from './services/builder-grid.service';
+import { BuilderHistoryService } from './services/builder-history.service';
 import { BuilderStateService } from './services/builder-state.service';
 import { DynamicFormService } from '../../modules/dynamic-form/dynamic-form.service';
 import type {
@@ -92,6 +94,7 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     OptionsBuilderComponent,
 
     DynamicForm,
+    JsonSchemaViewerComponent,
   ],
   templateUrl: './dynamic-form-builder.component.html',
   styleUrl: './dynamic-form-builder.component.scss',
@@ -141,6 +144,8 @@ export class DynamicFormBuilderComponent {
 
   // Prévisualisation responsive (par défaut AUTO)
   previewWidth: number | null = null;
+  // Preview options: suppress expression errors in preview panel (builder-level convenience)
+  previewSuppressExprErrors = false;
 
   // Référence direct à l'aperçu pour piloter la navigation des steps
   @ViewChild(DynamicForm) private df?: DynamicForm;
@@ -153,6 +158,7 @@ export class DynamicFormBuilderComponent {
   json = '';
 
   private patching = false;
+  private refreshDebounceTimer: any = null;
 
   // Edit mode toggle
   editMode = true;
@@ -173,7 +179,11 @@ export class DynamicFormBuilderComponent {
   // Contrôles / validation
   issues: Issue[] = [];
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService) {
+  // Modal de résultat (preview submit)
+  submitModalVisible = false;
+  submitResult: any = null;
+
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -194,6 +204,7 @@ export class DynamicFormBuilderComponent {
     // init auto breakpoint display
     try { this.updateAutoBp(); } catch {}
     this.recomputeIssues();
+    try { this.hist.reset(this.cloneSchema()); } catch {}
   }
 
   onCtxChange(v: string) {
@@ -397,6 +408,7 @@ export class DynamicFormBuilderComponent {
       key: [''],
       label: [''],
       expression_allow: [false],
+      expression_hideErrors: [false],
       placeholder: [''],
       descriptionField: [''],   // description propre au champ
       default: [''],
@@ -450,11 +462,11 @@ export class DynamicFormBuilderComponent {
       tb_textColor: [''], tb_textFontSize: [null],
     });
 
-    this.inspector.valueChanges.subscribe(v => {
-      if (this.patching || !this.selected) return;
+      this.inspector.valueChanges.subscribe(v => {
+        if (this.patching || !this.selected) return;
 
-      // FORM SETTINGS
-      if (this.selected === this.schema) {
+        // FORM SETTINGS
+        if (this.selected === this.schema) {
         // titre global
         this.schema.title = v.title || undefined;
 
@@ -485,6 +497,8 @@ export class DynamicFormBuilderComponent {
           }
         };
 
+        // No extra toggles persisted in schema; per-field expression preview setting is in field inspector
+
         // Summary
         this.schema.summary = {
           enabled: !!v.summary_enabled,
@@ -493,7 +507,8 @@ export class DynamicFormBuilderComponent {
           dateFormat: v.summary_dateFormat || undefined
         };
 
-        this.refresh();
+        // Coalesce rapid keystrokes in inspector: debounce refresh/history
+        this.refreshDebounced();
         this.recomputeIssues();
         return;
       }
@@ -620,8 +635,12 @@ export class DynamicFormBuilderComponent {
         // Inputs classiques
         (f as any).key = v.key || '';
         f.label = v.label || undefined;
-        // Expression toggle
-        if (v.expression_allow) (f as any).expression = { allow: true }; else (f as any).expression = undefined;
+        // Expression toggle + options
+        if (v.expression_allow) {
+          (f as any).expression = { allow: true, showPreviewErrors: !v.expression_hideErrors };
+        } else {
+          (f as any).expression = undefined;
+        }
         (f as any).placeholder = v.placeholder || undefined;
         (f as any).description = v.descriptionField || undefined;
           (f as any).default = v.default ?? undefined;
@@ -659,7 +678,7 @@ export class DynamicFormBuilderComponent {
         }
       }
 
-      this.refresh();
+      this.refreshDebounced();
       this.recomputeIssues();
     });
 
@@ -999,6 +1018,7 @@ export class DynamicFormBuilderComponent {
         key: (obj as any).key ?? '',
         label: obj.label ?? '',
         expression_allow: !!(obj as any).expression?.allow,
+        expression_hideErrors: ((obj as any).expression?.allow ? ((obj as any).expression?.showPreviewErrors === false) : false),
         placeholder: (obj as any).placeholder ?? '',
         descriptionField: (obj as any).description ?? '',
         default: (obj as any).default ?? '',
@@ -1540,6 +1560,32 @@ export class DynamicFormBuilderComponent {
     this.refresh();
   }
 
+  // ====== Historique (Undo/Redo) ======
+  applyingHistory = false;
+  get canUndo(): boolean { try { return this.hist.canUndo(); } catch { return false; } }
+  get canRedo(): boolean { try { return this.hist.canRedo(); } catch { return false; } }
+  undo(): void { const snap = this.hist.undo(); if (snap) this.applySnapshot(snap); }
+  redo(): void { const snap = this.hist.redo(); if (snap) this.applySnapshot(snap); }
+  private applySnapshot(s: any) {
+    this.applyingHistory = true;
+    try {
+      this.schema = s as any;
+      this.select(this.schema);
+      this.refresh();
+    } finally { setTimeout(() => { this.applyingHistory = false; }); }
+  }
+  private cloneSchema(): any { return JSON.parse(JSON.stringify(this.schema || {})); }
+
+  @HostListener('document:keydown', ['$event'])
+  onKey(e: KeyboardEvent) {
+    const t = e.target as HTMLElement | null;
+    const isEditable = !!t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    if (isEditable) return;
+    const mod = e.metaKey || e.ctrlKey;
+    if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); }
+    else if (mod && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) { e.preventDefault(); this.redo(); }
+  }
+
   private openConflictFor(entry: { rule: any }): boolean {
     const current = this.ruleToAssignments(entry.rule);
     const valueKey = (v: any) => JSON.stringify(v);
@@ -1780,6 +1826,18 @@ export class DynamicFormBuilderComponent {
       (this as any).scenariosAll = this.prevSvc.enumerateFieldVariations(this.schema);
       (this as any).formScenarios = this.prevSvc.enumerateFormScenarios(this.schema);
     } catch {}
+    if (!this.applyingHistory) {
+      try { this.hist.push(this.schema as any); } catch {}
+    }
+  }
+
+  // Debounced refresh for inspector typing to avoid letter-by-letter history
+  private refreshDebounced(delay = 350): void {
+    if (this.refreshDebounceTimer) clearTimeout(this.refreshDebounceTimer);
+    this.refreshDebounceTimer = setTimeout(() => {
+      this.refreshDebounceTimer = null;
+      this.refresh();
+    }, delay);
   }
 
   // ====== Tree ======
@@ -2021,6 +2079,12 @@ export class DynamicFormBuilderComponent {
     const key = this.dropdownKey; if (!key) return;
     const f = this.ctxActions.insertFieldAfter(this.schema, key, 'text');
     if (f) { this.select(f as any); this.refresh(); }
+  }
+
+  // ====== Prévisualisation: réception du submit du DynamicForm
+  onPreviewSubmitted(result: any) {
+    this.submitResult = result;
+    this.submitModalVisible = true;
   }
 
   // ====== Helpers Canvas (Grid/Cols) ======

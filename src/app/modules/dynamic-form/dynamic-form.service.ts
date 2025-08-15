@@ -29,7 +29,8 @@ export interface FieldConfigCommon {
     textHtml?: string; // textblock
     // Expression support: when allowed, UI can switch the field to expression editor
     expression?: {
-        allow?: boolean;   // show toggle to switch to expression editor
+        allow?: boolean;            // show toggle to switch to expression editor
+        showPreviewErrors?: boolean; // controls preview error display (default: true)
     };
 }
 
@@ -234,9 +235,13 @@ export class DynamicFormService {
             if (!shouldDisable && ctrl.disabled) { ctrl.enable({ emitEvent: false }); needsUpdate = true; }
             this.lastDisabled.set(ctrl as FormControl, shouldDisable);
 
-            // required
-            const base = this.mapValidators(f.validators || []);
-            // Un champ non visible ou désactivé ne doit pas être requis
+            // required: si requiredIf est défini, il a priorité et on ignore 'required' statique dans validators
+            const rawValidators = (f.validators || []);
+            const base = this.mapValidators(
+                f.requiredIf ? rawValidators.filter(v => v?.type !== 'required') : rawValidators
+            );
+            // Un champ non visible ou désactivé ne doit pas être requis.
+            // Si requiredIf existe, lui seul décide du required; sinon on se fie au base (qui peut inclure required).
             const needReq = !shouldDisable && (f.requiredIf ? this.evalRule(f.requiredIf, form) === true : false);
             const sig = JSON.stringify({ validators: (f.validators || []).map(v => ({ t: v.type, v: v.value })), req: needReq });
             if (this.lastValidatorsSig.get(ctrl as FormControl) !== sig) {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -30,17 +30,24 @@ import {
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']
 })
-export class Fields {
+export class Fields implements OnInit, OnDestroy {
   @Input({ required: true }) field!: FieldConfig;
   @Input({ required: true }) form!: FormGroup;
   @Input() ui?: FormUI;
   @Input() ctx: any = {};
+  @Input() exprPreviewShowErrors = true;
 
   // exposé si besoin
   isInputField = isInputField;
   // segmented model: 'val' | 'expr'
   exprMode: 'val'|'expr' = 'val';
   get exprEnabled() { return this.exprMode === 'expr'; }
+
+  // Final flag used for ExpressionEditor preview errors: combine global + field-level
+  get showPreviewErrors(): boolean {
+    const fieldPref = (this.field as any)?.expression?.showPreviewErrors;
+    return this.exprPreviewShowErrors && (fieldPref !== false);
+  }
 
   constructor(private dfs: DynamicFormService) {}
 
@@ -49,6 +56,29 @@ export class Fields {
     return isInputField(this.field) ? (this.field as InputFieldConfig).key : undefined;
     // sinon undefined => on ne bind pas formControlName
   }
+
+  private sub: any;
+  ngOnInit(): void {
+    const k = this.fieldKey;
+    // Initial auto-switch: if value looks like an expression and allowed
+    if ((this.field as any).expression?.allow && k) {
+      const cur = this.form.get(k)?.value;
+      if (typeof cur === 'string' && /\{\{[\s\S]*\}\}/.test(cur)) {
+        this.exprMode = 'expr';
+      }
+    }
+    // React to future value injections to auto-enable expression editor
+    if (k) {
+      this.sub = this.form.get(k)?.valueChanges.subscribe(val => {
+        if (this.exprMode === 'expr') return; // do not override once enabled
+        if (!(this.field as any).expression?.allow) return;
+        if (typeof val === 'string' && /\{\{[\s\S]*\}\}/.test(val)) {
+          this.exprMode = 'expr';
+        }
+      });
+    }
+  }
+  ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
 
   /** champ required ? */
   get requiredFlag(): boolean {

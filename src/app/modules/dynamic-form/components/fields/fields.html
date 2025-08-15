@@ -49,6 +49,7 @@
               <app-expression-editor *ngIf="exprEnabled"
                                      [inline]="true"
                                      [context]="ctx"
+                                     [showPreviewErrors]="showPreviewErrors"
                                      [showFormulaAction]="true"
                                      [formControlName]="key">
               </app-expression-editor>

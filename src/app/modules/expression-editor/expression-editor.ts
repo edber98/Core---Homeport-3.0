@@ -28,6 +28,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @Input() inline = true;
   @Input() errorMode = false;
   @Input() showPreview = true;
+  // Controls whether preview shows error details; highlights remain unchanged
+  @Input() showPreviewErrors = true;
   @Input() showFormulaAction = true;
   @Input() formulaTitle = 'Ouvrir l\'éditeur d\'expression';
   @Output() formulaClick = new EventEmitter<void>();
@@ -74,12 +76,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value'] || changes['context']) {
-      try {
-        const r = this.sandbox.evaluateTemplateDetailed(this.value || '', this.context);
-        this.preview = r.text + (r.errors.length ? `\nErrors:\n- ` + r.errors.map(e => e.message).join('\n- ') : '');
-      } catch { this.preview = ''; }
-    }
+    if (changes['value'] || changes['context']) this.updatePreview();
   }
   ngOnDestroy(): void {
     try { this.cmRef?.nativeElement?.removeEventListener('keydown', this.keyCapture, true); } catch {}
@@ -100,6 +97,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         this.suppressChange = false;
       }
     }
+    // Ensure preview is computed when value is set by the parent form
+    this.updatePreview();
   }
   registerOnChange(fn: any): void { this.onChange = fn; }
   registerOnTouched(fn: any): void { this.onTouched = fn; }
@@ -120,6 +119,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
       return;
     }
     this.mount();
+    // After mounting, recompute preview once in case value was set earlier
+    this.updatePreview();
     // Capture key events on the CodeMirror host (capture + non-passive)
     this.cmRef.nativeElement.addEventListener('keydown', this.keyCapture, { capture: true, passive: false });
     // Drag & drop support for external tags
@@ -308,10 +309,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         this.onChange(this.value);
       }
       // live preview
-      try {
-        const r = this.sandbox.evaluateTemplateDetailed(this.value, this.context);
-        this.preview = r.text + (r.errors.length ? `\nErrors:\n- ` + r.errors.map(e => e.message).join('\n- ') : '');
-      } catch { this.preview = ''; }
+      this.updatePreview();
       // Normalize when user types '}}'
       const head = pos;
       const prev2 = head >= 2 ? u.state.doc.sliceString(head - 2, head) : '';
@@ -651,6 +649,13 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   }
 
   preview = '';
+  private updatePreview() {
+    try {
+      const r = this.sandbox.evaluateTemplateDetailed(this.value || '', this.context);
+      const suffix = (this.showPreviewErrors && r.errors.length) ? (`\nErrors:\n- ` + r.errors.map(e => e.message).join('\n- ')) : '';
+      this.preview = r.text + suffix;
+    } catch { this.preview = ''; }
+  }
 
   onFormulaClick(e: MouseEvent) {
     e.preventDefault(); e.stopPropagation();

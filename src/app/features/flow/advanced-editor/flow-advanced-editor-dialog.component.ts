@@ -15,8 +15,8 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
        <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
-      <div class="center">
-        <flow-advanced-center-panel [model]="model" (modelChange)="emitModel($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+      <div class="center" (pointerup)="onFormReleased()">
+        <flow-advanced-center-panel [model]="model" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
@@ -32,9 +32,9 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
     .bundle.center-visible { opacity:1; transform: translate(-50%, -50%); }
     .center { position:relative; z-index:6; }
     .close { position:absolute; top:8px; right:12px; background:#fff; border:1px solid #e5e7eb; border-radius:18px; padding:4px 8px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12); }
-    .wing { height:var(--wing-h); background:#f7f7f8; overflow:auto; opacity:0; }
-    .wing.left { width:var(--wing-w); border:1px solid #e5e7eb; border-right:none; border-radius:12px 0 0 12px; box-shadow:0 12px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.92); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
-    .wing.right { width:var(--wing-w); border:1px solid #e5e7eb; border-left:none; border-radius:0 12px 12px 0; box-shadow:0 12px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.92); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .wing { height:var(--wing-h); background:#f7f7f8; overflow:auto; padding: 9px; opacity:0; }
+    .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #e5e7eb; border-right:none; border-radius:12px 0 0 12px; box-shadow:0 12px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.92); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #e5e7eb; border-left:none; border-radius:0 12px 12px 0; box-shadow:0 12px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.92); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
 
     @media (max-width: 1280px) { .bundle { --dialog-w: 450px; } }
@@ -48,12 +48,20 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
 export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
   @Input() model: any;
   @Output() modelChange = new EventEmitter<any>();
+  // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
+  @Output() modelChangeCommitted = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
   centerVisible = false;
   wingsVisible = false;
+  private latestModel: any = null;
+  private dirty = false;
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
-  emitModel(m: any) { this.modelChange.emit(m); }
+  emitModel(m: any) {
+    this.latestModel = m;
+    this.dirty = true;
+    this.modelChange.emit(m);
+  }
   ngOnInit() {}
   constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
   ngAfterViewInit() {
@@ -88,7 +96,26 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   }
   onFormSubmitted(m: any) {
     try { this.emitModel(m || this.model); } catch {}
+    this.commitIfDirty();
     this.startExit();
+  }
+  onCommittedFromCenter(m: any) {
+    // Reçoit le commit direct depuis dynamic-form (via center-panel) → émet le commit global du dialog
+    try { this.emitModel(m || this.model); } catch {}
+    
+    this.commitIfDirty();
+  }
+
+  // Déclenche un commit lors dun relâchement dans la zone centrale
+  onFormReleased() {
+    this.commitIfDirty();
+  }
+
+  private commitIfDirty() {
+    if (!this.dirty) return;
+    const toEmit = this.latestModel || this.model;
+    try { this.modelChangeCommitted.emit(toEmit); } catch {}
+    this.dirty = false;
   }
 
 }

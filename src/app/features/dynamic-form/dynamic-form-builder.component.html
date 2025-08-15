@@ -60,6 +60,12 @@
         <button nz-button nzSize="small" (click)="setPreviewWidth(1200)">XL</button>
         <button nz-button nzSize="small" (click)="setPreviewWidth(1600)">XXL</button>
       </div>
+      <div style="display:flex; align-items:center; gap:10px; margin:8px 0 0;">
+        <label style="display:flex; align-items:center; gap:6px;">
+          <span>Désactiver erreurs d'expression (preview)</span>
+          <nz-switch [(ngModel)]="previewSuppressExprErrors" [ngModelOptions]="{standalone:true}"></nz-switch>
+        </label>
+      </div>
       <nz-divider nzText="Hypothèses de test"></nz-divider>
       <div style="max-height:180px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
         <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
@@ -110,15 +116,15 @@
       <nz-divider nzText="Contrôles"></nz-divider>
       <div *ngIf="!issues.length" style="color:#64748b; font-size:12px;">Aucun problème détecté.</div>
       <ul *ngIf="issues.length" style="margin:0; padding-left:16px;">
-        <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
-          <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
-          <strong *ngIf="it.level==='error'">[Erreur]</strong>
-          <strong *ngIf="it.level==='warning'">[Attention]</strong>
-          <span> {{ it.message }} </span>
-          <ng-container *ngIf="it.actions?.length">
-            <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
-          </ng-container>
-        </li>
+          <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
+            <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
+            <strong *ngIf="it.level==='error'">[Erreur]</strong>
+            <strong *ngIf="it.level==='warning'">[Attention]</strong>
+            <span> {{ it.message }} </span>
+            <ng-container *ngIf="it.actions?.length">
+              <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
+            </ng-container>
+          </li>
       </ul>
     </nz-card>
 
@@ -136,11 +142,13 @@
         [schema]="schema"
         [value]="previewUseSim ? simValues : undefined"
         [ctx]="ctxObj"
+        [exprPreviewShowErrors]="!previewSuppressExprErrors"
         [forceBp]="forceBp"
         [editMode]="editMode"
         [selectedField]="selectedField"
         [selectedSection]="selectedSectionForPreview"
         [selectedStep]="selectedStepForPreview"
+        (submitted)="onPreviewSubmitted($event)"
         (editMoveField)="onEditMoveField($event)"
         (editDeleteField)="onEditDeleteField($event)"
         (editSelectField)="onEditSelectField($event)"
@@ -153,6 +161,12 @@
         (editAddFieldStepRoot)="onEditAddFieldStepRoot($event)"
         (editAddFieldInSection)="onEditAddFieldInSection($event)"
       ></app-dynamic-form>
+      </div>
+
+      <!-- History controls centered -->
+      <div class="history-bar">
+        <button nz-button nzSize="small" (click)="undo()" [disabled]="!canUndo" title="Annuler">↺</button>
+        <button nz-button nzSize="small" (click)="redo()" [disabled]="!canRedo" title="Rétablir">↻</button>
       </div>
 
       <!-- Choix en cas de conflits de conditions sur un même champ -->
@@ -342,3 +356,10 @@
 
 <!-- Dialogue générique de personnalisation -->
 <app-customize-dialog [title]="custTitle" [group]="custForm" [(visible)]="custVisible" (save)="saveCustomize()" (cancel)="cancelCustomize()"></app-customize-dialog>
+  <!-- Modal résultat (non éditable): JSON Schema Viewer avec onglets Schema/JSON -->
+  <nz-modal [(nzVisible)]="submitModalVisible" nzTitle="Résultat du formulaire" [nzWidth]="960"
+            (nzOnCancel)="submitModalVisible=false" (nzOnOk)="submitModalVisible=false">
+    <ng-container *nzModalContent>
+      <app-json-schema-viewer [data]="submitResult" [editable]="false" [editMode]="false" [initialMode]="'JSON'"></app-json-schema-viewer>
+    </ng-container>
+  </nz-modal>
