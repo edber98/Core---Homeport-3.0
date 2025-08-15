@@ -58,8 +58,8 @@
           </svg:g>
         </ng-template>
         <ng-template let-ctx edgeLabelHtml>
-          <div class="edge-labels" [ngClass]="{ error: ctx.edge?.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) === 'Error' }">
-            <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) as txt" [ngClass]="{ error: ctx.edge?.data?.error || txt === 'Error' }">{{ txt }}</div>
+          <div class="edge-labels" [ngClass]="{ error: ctx.edge.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) === 'Error' }">
+            <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) as txt" [ngClass]="{ error: ctx.edge.data?.error || txt === 'Error' }">{{ txt }}</div>
             <button class="badge delete" title="Supprimer" *ngIf="!isEdgeDeleteDisabled(ctx.edge)" (click)="deleteEdge(ctx.edge)">
               <i class="fa-regular fa-circle-xmark"></i>
             </button>

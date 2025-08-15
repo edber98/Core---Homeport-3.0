@@ -1,4 +1,4 @@
-.flow-builder { display: grid; grid-template-columns: 260px 1fr 320px; gap: 0; height: 100%; }
+.flow-builder { position: relative; display: grid; grid-template-columns: 320px 1fr 320px; gap: 0; height: 100%; }
 .palette, .inspector { border: none; border-radius: 0; padding: 12px; background: #ffffff; overflow: auto; }
 .palette h4, .inspector h4 { margin: 0 0 8px; font-weight: 600; }
 .palette .group-title { font-weight: 600; font-size: 13px; color:#111; margin: 10px 0 8px; }
@@ -62,7 +62,7 @@
 .edge-labels .badge.delete { display:flex; align-items:center; justify-content:center; width:28px; height:22px; padding:0; cursor:pointer; }
 .edge-labels .badge.delete i { font-size:14px; color:#b91c1c; }
 
-.bottom-bar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
+.bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
 .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
 .bottom-bar .actions .spacer { flex: 1 1 auto; }
 .bottom-bar button, .bottom-bar .import-btn { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }

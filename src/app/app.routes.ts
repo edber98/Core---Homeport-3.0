@@ -27,7 +27,12 @@ export const routes: Routes = [
             },
             {
                 path: 'flow-builder',
-                loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent)
+                loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),
+                children: [
+                  { path: '', pathMatch: 'full', redirectTo: 'editor' },
+                  { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent) },
+                  { path: 'executions', loadComponent: () => import('./features/flow/flow-viewer.component').then(m => m.FlowViewerComponent) },
+                ]
             },
         ]
     },
