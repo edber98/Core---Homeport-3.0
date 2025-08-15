@@ -7,8 +7,35 @@
 <p style="margin-bottom: 200px">dashboard-home works!</p>
 <p style="margin-bottom: 200px">dashboard-home works!</p>
 
+ <div style="display:flex; gap:16px; align-items:flex-start;">
+   <div style="flex:1; min-width:0;">
+     <h4 style="margin: 8px 0;">JSON/Schema viewer (drag to editor)</h4>
+     <app-json-schema-viewer [title]="'JSON Input'" [subtitle]="'Editeur de fourme json'" [data]="viewerData"></app-json-schema-viewer>
+   </div>
+   <div style="flex:1; min-width:0;">
+     <h4 style="margin: 8px 0;">Expression editor (drop here)</h4>
+     <app-expression-editor [(ngModel)]="expr" [context]="exprCtx"></app-expression-editor>
+     <pre style="margin-top:8px; padding:8px; background:#fafafa; border:1px solid #f0f0f0; border-radius:6px;">{{ expr }}</pre>
+   </div>
+ </div>
+
  <app-dynamic-form [schema]="schema"></app-dynamic-form>
- <app-dynamic-form [schema]="testing"></app-dynamic-form>
+ <app-dynamic-form [schema]="testing" [value]='{
+    "items": [
+      {
+        "name": "A",
+        "condition": ""
+      },
+      {
+        "name": "B",
+        "condition": ""
+      },
+      {
+        "name": "C",
+        "condition": ""
+      }
+    ]
+  }'></app-dynamic-form>
 <!--
 <app-dynamic-form [schema]="schemaSections"></app-dynamic-form>
 <app-dynamic-form [schema]="schemaFlat"></app-dynamic-form>

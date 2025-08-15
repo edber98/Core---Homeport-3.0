@@ -1,0 +1,45 @@
+.flow-builder { display: grid; grid-template-columns: 240px 1fr 300px; gap: 12px; height: 100%; }
+.palette, .inspector { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; background: #fafafa; overflow: auto; }
+.palette h4, .inspector h4 { margin: 0 0 8px; font-weight: 600; }
+.inspector .tabs { display:flex; gap:6px; margin-bottom:8px; }
+.inspector .tabs button { border:1px solid #e5e7eb; background:#fff; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer; }
+.inspector .tabs button.active { border-color:#1677ff; color:#1677ff; }
+.inspector .hint { color:#8c8c8c; font-size:12px; margin-top:6px; }
+.inspector .json-box { border:1px solid #e5e7eb; border-radius:8px; padding:4px; background:#fff; }
+.inspector .inspector-actions { display:flex; justify-content:flex-end; margin-top:6px; }
+.inspector .inspector-actions .save { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px; }
+.inspector .inspector-actions .open-advanced { background:#111; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
+.inspector .inspector-actions .danger { background:#b91c1c; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; margin-left:6px; }
+/* removed row undo/redo from inspector */
+.palette .item { display: block; padding: 8px 10px; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 8px; cursor: grab; }
+.palette .item:active { cursor: grabbing; }
+.canvas { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+.canvas-host { height: 100%; width: 100%; }
+.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 180px; }
+.node-card.select-node { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.15); }
+.node-card.error-branch { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.15); }
+.node-card .header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.node-card .icon { width: 20px; height: 20px; display:inline-block; }
+.node-card .meta .title { font-weight: 600; }
+.node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
+.node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
+.node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
+.edge-labels { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.edge-labels .badge { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; color:#111; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
+.edge-labels.error .badge.delete i { color:#f759ab; }
+.edge-labels .badge.delete { display:flex; align-items:center; justify-content:center; width:28px; height:22px; padding:0; cursor:pointer; }
+.edge-labels .badge.delete i { font-size:14px; color:#b91c1c; }
+
+.bottom-bar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
+.bottom-bar .actions { pointer-events:auto; display:flex; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+.bottom-bar button, .bottom-bar .import-btn { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
+.bottom-bar .icon-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; }
+.bottom-bar .icon-btn i { font-size:16px; }
+.bottom-bar .icon-btn:disabled { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
+.bottom-bar .toast { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
+
+.import-overlay { position: fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(17,17,17,0.25); z-index: 50; color:#fff; font-weight:600; }
+.spinner { width:28px; height:28px; border:3px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.bottom-bar .import-btn { display:inline-flex; align-items:center; }

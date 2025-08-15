@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -8,6 +9,8 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { ExpressionEditorComponent } from '../../../expression-editor/expression-editor';
 import {
   FieldConfig,
   InputFieldConfig,
@@ -20,8 +23,9 @@ import {
   selector: 'df-field',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule,
-    NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule
+    CommonModule, ReactiveFormsModule, FormsModule,
+    NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule,
+    NzSegmentedModule, ExpressionEditorComponent
   ],
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']
@@ -30,9 +34,13 @@ export class Fields {
   @Input({ required: true }) field!: FieldConfig;
   @Input({ required: true }) form!: FormGroup;
   @Input() ui?: FormUI;
+  @Input() ctx: any = {};
 
   // exposé si besoin
   isInputField = isInputField;
+  // segmented model: 'val' | 'expr'
+  exprMode: 'val'|'expr' = 'val';
+  get exprEnabled() { return this.exprMode === 'expr'; }
 
   constructor(private dfs: DynamicFormService) {}
 

@@ -27,6 +27,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { StyleEditorComponent } from './components/style-editor.component';
 import { CustomizeDialogComponent } from './components/customize-dialog.component';
 import { ContextPanelComponent } from './components/context-panel.component';
+import { MonacoJsonEditorComponent } from './components/monaco-json-editor.component';
 import { InspectorFormSettingsComponent } from './components/inspector-form-settings.component';
 import { InspectorStepComponent } from './components/inspector-step.component';
 import { InspectorSectionComponent } from './components/inspector-section.component';
@@ -82,6 +83,7 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     CustomizeDialogComponent,
     CustomizeDialogComponent,
     ContextPanelComponent,
+    MonacoJsonEditorComponent,
     InspectorFormSettingsComponent,
     InspectorStepComponent,
     InspectorSectionComponent,
@@ -158,6 +160,9 @@ export class DynamicFormBuilderComponent {
   // Simulation des conditions dans l'aperçu
   previewUseSim = false;
   simValues: Record<string, any> = {};
+  // Contexte pour expressions (passé à app-dynamic-form)
+  ctxJson = '{\n  "json": {},\n  "$json": {},\n  "env": {},\n  "$env": {},\n  "node": {},\n  "$node": {},\n  "now": "' + new Date().toISOString() + '"\n}';
+  ctxObj: any = { json: {}, $json: {}, env: {}, $env: {}, node: {}, $node: {}, now: new Date() };
   scenarios: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
   scenariosAll: Array<{ label: string; description: string; patch: Record<string, any>; arrayKey?: string; arrayTitle?: string }> = [];
   formScenarios: Array<{ label: string; description: string; value: Record<string, any> }> = [];
@@ -189,6 +194,20 @@ export class DynamicFormBuilderComponent {
     // init auto breakpoint display
     try { this.updateAutoBp(); } catch {}
     this.recomputeIssues();
+  }
+
+  onCtxChange(v: string) {
+    this.ctxJson = v || '';
+    try {
+      const obj = v && v.trim().length ? JSON.parse(v) : {};
+      // Normalize aliases roughly here as well
+      const o: any = { json: {}, $json: {}, env: {}, $env: {}, node: {}, $node: {}, now: new Date() };
+      Object.assign(o, obj);
+      if (o.json && !o.$json) o.$json = o.json; if (o.$json && !o.json) o.json = o.$json;
+      if (o.env && !o.$env) o.$env = o.env; if (o.$env && !o.env) o.env = o.$env;
+      if (o.node && !o.$node) o.$node = o.node; if (o.$node && !o.node) o.node = o.$node;
+      this.ctxObj = o;
+    } catch { /* invalid JSON; keep last good ctxObj */ }
   }
 
   // Open/save style modals for Section title/description
@@ -377,6 +396,7 @@ export class DynamicFormBuilderComponent {
       type: ['text'],
       key: [''],
       label: [''],
+      expression_allow: [false],
       placeholder: [''],
       descriptionField: [''],   // description propre au champ
       default: [''],
@@ -596,12 +616,14 @@ export class DynamicFormBuilderComponent {
           if (v.tb_textColor) ts.color = v.tb_textColor;
           if (v.tb_textFontSize != null && v.tb_textFontSize !== '') ts.fontSize = `${Number(v.tb_textFontSize)}px`;
           (f as any).textStyle = Object.keys(ts).length ? ts : undefined;
-        } else {
-          // Inputs classiques
-          (f as any).key = v.key || '';
-          f.label = v.label || undefined;
-          (f as any).placeholder = v.placeholder || undefined;
-          (f as any).description = v.descriptionField || undefined;
+      } else {
+        // Inputs classiques
+        (f as any).key = v.key || '';
+        f.label = v.label || undefined;
+        // Expression toggle
+        if (v.expression_allow) (f as any).expression = { allow: true }; else (f as any).expression = undefined;
+        (f as any).placeholder = v.placeholder || undefined;
+        (f as any).description = v.descriptionField || undefined;
           (f as any).default = v.default ?? undefined;
           (f as any).options = this.parseJson(v.options);
           (f as any).validators = this.parseJson(v.validators);
@@ -976,6 +998,7 @@ export class DynamicFormBuilderComponent {
         type: obj.type,
         key: (obj as any).key ?? '',
         label: obj.label ?? '',
+        expression_allow: !!(obj as any).expression?.allow,
         placeholder: (obj as any).placeholder ?? '',
         descriptionField: (obj as any).description ?? '',
         default: (obj as any).default ?? '',
@@ -1830,7 +1853,7 @@ export class DynamicFormBuilderComponent {
       this.refresh();
       this.treeSelectedKeys = [key];
     } catch (err) {
-      console.warn('onTreeDrop error', err);
+      
     }
   }
   onTreeDropdownVisible(vis: boolean, key: string) { this.dropdownKey = vis ? key : null; }

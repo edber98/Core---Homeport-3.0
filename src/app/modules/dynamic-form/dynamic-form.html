@@ -69,7 +69,7 @@
               <ng-template #stepSingleField>
                 <ng-container *ngIf="dfs.isFieldVisible($any(f), form)">
                   <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === f" (click)="editMode && onFieldContainerClickStep($event, i, k, $any(f))">
-                    <df-field [field]="$any(f)" [form]="form" [ui]="ui" (click)="onInnerClick($event)"></df-field>
+                    <df-field [field]="$any(f)" [form]="form" [ui]="ui" [ctx]="ctx" (click)="onInnerClick($event)"></df-field>
                     <div *ngIf="editMode" class="df-edit-actions">
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInStepRoot(k, i, $any(f))">Select</button>
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'up' })">▲</button>
@@ -180,7 +180,7 @@
           [nzLg]="dfs.getFieldSpans($any(schema.fields)[it.ent.i]).lg"
           [nzXl]="dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xl">
           <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === (($any(schema.fields))[it.ent.i])" (click)="editMode && onFieldContainerClickRoot($event, i, ($any(schema.fields))[it.ent.i])">
-            <df-field [field]="$any(schema.fields)[it.ent.i]" [form]="form" [ui]="ui" (click)="onInnerClick($event)"></df-field>
+        <df-field [field]="$any(schema.fields)[it.ent.i]" [form]="form" [ui]="ui" [ctx]="ctx" (click)="onInnerClick($event)"></df-field>
             <div *ngIf="editMode" class="df-edit-actions">
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInFlat(i, (($any(schema.fields))[it.ent.i]))">Select</button>
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'up' })">▲</button>

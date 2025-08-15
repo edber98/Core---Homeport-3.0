@@ -125,9 +125,22 @@ export class Sections implements OnChanges {
     let arr = this.form.get(key) as FormArray | null;
     if (!arr) { this.ensureArray(); arr = this.form.get(key) as FormArray | null; }
     if (!arr) return;
-    // Rebuild array to match provided values
-    while (arr.length > 0) arr.removeAt(0);
-    for (const v of vals) this.addArrayItemWithValue(v);
+    // Check if current array value equals incoming; if so, skip rebuild to avoid loops
+    const currentVals = (arr.controls as FormGroup[]).map(g => g.getRawValue());
+    try {
+      const same = JSON.stringify(currentVals) === JSON.stringify(vals);
+      if (same) return;
+    } catch {}
+    // Build a fresh FormArray and swap it in one shot to limit emissions
+    const fresh = new FormArray([] as FormGroup[]);
+    for (const v of vals) {
+      const g = this.buildItemGroupFrom(v);
+      // Apply rules and subscribe
+      this.applyRulesToItem(g);
+      g.valueChanges.subscribe(() => this.applyRulesToItem(g));
+      fresh.push(g);
+    }
+    this.form.setControl(key, fresh);
   }
   get arrayKey(): string { return (this.section as any).key || 'items'; }
   get arrayForm(): FormArray { return this.ensureArray(); }
@@ -184,6 +197,24 @@ export class Sections implements OnChanges {
     this.applyRulesToItem(g);
     g.valueChanges.subscribe(() => this.applyRulesToItem(g));
     this.arrayForm.push(g);
+  }
+  private buildItemGroupFrom(valObj: any): FormGroup {
+    const group: Record<string, FormControl> = {};
+    const visit = (fields?: any[]) => {
+      for (const f of (fields || [])) {
+        if (!f) continue;
+        if (f.type === 'textblock') continue;
+        if (f.type === 'section' || f.type === 'section_array') {
+          if (f.type === 'section' && (f as any).mode !== 'array') visit(f.fields);
+          continue;
+        }
+        const def = this.dfs.neutralize((f as any).type, (f as any).default);
+        const cur = (valObj && typeof valObj === 'object') ? valObj[(f as any).key] : undefined;
+        group[(f as any).key] = new FormControl(cur !== undefined ? cur : def, this.dfs.mapValidators((f as any).validators || []));
+      }
+    };
+    visit(this.section.fields);
+    return this.fb.group(group);
   }
   removeArrayItem(i: number): void {
     if (!this.canRemoveAt(i)) return;

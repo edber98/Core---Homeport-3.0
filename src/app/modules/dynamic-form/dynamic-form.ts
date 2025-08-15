@@ -56,6 +56,7 @@ import { Sections } from './components/sections/sections';
 export class DynamicForm implements OnInit, OnChanges {
   @Input({ required: true }) schema!: FormSchema;
   @Input() value?: Record<string, any>;
+  @Input() ctx: any = {};
   @Input() editMode = false;
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() selectedField: FieldConfig | null = null;
@@ -78,10 +79,17 @@ export class DynamicForm implements OnInit, OnChanges {
   @Output() editDeleteSection = new EventEmitter<{ stepIndex?: number; sectionIndex: number }>();
   // removed legacy section move event (sections moved via editMoveItem)
   @Output() editAddFieldTyped = new EventEmitter<{ path: 'root'|'stepRoot'|'section'; stepIndex?: number; sectionIndex?: number; type: string; sectionPath?: number[] }>();
+  @Output() submitted = new EventEmitter<Record<string, any>>();
+  // Emit live value + validity to host
+  @Output() valueChange = new EventEmitter<Record<string, any>>();
+  @Output() validChange = new EventEmitter<boolean>();
 
   form!: FormGroup;
   current = signal(0);
   private oneFieldSectionCache = new WeakMap<FieldConfig, SectionConfig>();
+  // Avoid emitting while initializing or when applying external values
+  private suppressEmit = false;
+  private lastEmittedJson = '';
 
   constructor(public dfs: DynamicFormService, private dropdown: NzContextMenuService) {}
   // context for floating dropdowns
@@ -117,14 +125,24 @@ export class DynamicForm implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.suppressEmit = true;
     this.form = this.dfs.buildForm(this.schema, this.sanitizedValue(this.value));
+    this.attachFormStreams();
+    // Defer first emission to let nested sections (arrays) initialize
+    setTimeout(() => {
+      this.suppressEmit = false;
+      this.emitNow();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('CHANGE')
+    
     if (changes['schema'] && this.form) {
       const prevIndex = this.current();
+      this.suppressEmit = true;
       this.form = this.dfs.buildForm(this.schema, this.sanitizedValue(this.value));
+      this.attachFormStreams();
+      setTimeout(() => { this.suppressEmit = false; this.emitNow(); });
       const max = Math.max(0, this.visibleSteps.length - 1);
       this.current.set(Math.min(prevIndex, max));
     } else if (changes['value'] && this.form) {
@@ -135,8 +153,38 @@ export class DynamicForm implements OnInit, OnChanges {
           patch[f.key] = this.dfs.neutralize(f.type, (this.value as any)[f.key]);
         }
       }
-      this.form.patchValue(patch, { emitEvent: true });
+      // External value update: patch without re-emitting to avoid feedback loops
+      this.form.patchValue(patch, { emitEvent: false });
+      // Keep lastEmittedJson in sync to avoid spurious emits on next change
+      this.lastEmittedJson = JSON.stringify(this.form.getRawValue());
     }
+  }
+  private attachFormStreams() {
+    try {
+      // Initialize lastEmittedJson and validity without notifying host immediately
+      this.lastEmittedJson = JSON.stringify(this.form.getRawValue());
+      this.validChange.emit(this.form.valid);
+      this.form.valueChanges.subscribe(() => {
+        if (this.suppressEmit) return;
+        this.emitNow();
+      });
+      this.form.statusChanges.subscribe(() => {
+        if (this.suppressEmit) return;
+        this.validChange.emit(this.form.valid);
+      });
+    } catch {}
+  }
+
+  private emitNow() {
+    try {
+      const val = this.form.getRawValue();
+      const json = JSON.stringify(val);
+      if (json !== this.lastEmittedJson) {
+        this.lastEmittedJson = json;
+        this.valueChange.emit(val);
+      }
+      this.validChange.emit(this.form.valid);
+    } catch {}
   }
 
   // ===== Relais événements édition (up/down/delete/select)
@@ -398,8 +446,7 @@ export class DynamicForm implements OnInit, OnChanges {
       this.scrollToFirstInvalid();
       return;
     }
-    // 👉 ici, fais ton emit/HTTP, etc.
-    console.log('Payload', this.form.value);
+    this.submitted.emit(this.form.value);
   }
 
   reset() {

@@ -159,7 +159,7 @@ tags: ExprTag[] = [];
   ]
 
   selectItem(changes: any) {
-    console.log(changes)
+    
     if (this.selection_item && this.selection_item._id == changes._id) {
       this.selection_item = null
     }

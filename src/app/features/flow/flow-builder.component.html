@@ -1,0 +1,150 @@
+<div class="flow-builder">
+  <aside class="palette" cdkDropList #sourceList="cdkDropList" [cdkDropListData]="[]" [cdkDropListConnectedTo]="[targetList]">
+    <h4>Palette</h4>
+    <div class="item"
+         *ngFor="let it of items"
+         cdkDrag
+         [cdkDragData]="{ label: it.label, template: it.template }">
+      {{ it.label }}
+    </div>
+  </aside>
+
+  <section class="canvas">
+    <div class="canvas-host" #flowHost cdkDropList #targetList="cdkDropList" [cdkDropListConnectedTo]="[sourceList]"
+         (cdkDropListEntered)="onDragEnter($event)"
+         (cdkDropListExited)="onDragLeave($event)"
+         (dragover)="onDragOver($event)"
+         (cdkDropListDropped)="onExternalDrop($event)">
+      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true"
+             [nodes]="nodes" [edges]="edges" [connection]="connectionSettings"
+             (onConnect)="onConnect($event)" (selected)="onSelected($event)"
+             (onNodesChange.position.single)="onNodePositionChange($event)"
+             (onNodesChange.remove.many)="onNodesRemoved($event)"
+             (onEdgesChange.remove)="onEdgesRemoved($event)"
+             (onEdgesChange.detached)="onEdgesDetached($event)"
+             #flow>
+        <ng-template let-ctx edge>
+          <svg:g customTemplateEdge>
+            <svg:path
+              fill="none"
+              [attr.d]="ctx.path()"
+              [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
+              [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
+              [attr.marker-end]="ctx.markerEnd()" />
+          </svg:g>
+        </ng-template>
+        <ng-template let-ctx edgeLabelHtml>
+          <div class="edge-labels" [ngClass]="{ error: ctx.edge?.data?.error || (ctx.label?.data?.text || getEdgeLabel(ctx.edge)) === 'Error' }">
+            <div class="badge label" *ngIf="(ctx.label?.data?.text || getEdgeLabel(ctx.edge)) as txt" [ngClass]="{ error: ctx.edge?.data?.error || txt === 'Error' }">{{ txt }}</div>
+            <button class="badge delete" title="Supprimer" *ngIf="!isEdgeDeleteDisabled(ctx.edge)" (click)="deleteEdge(ctx.edge)">
+              <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+          </div>
+        </ng-template>
+        <ng-template let-ctx nodeHtml>
+          <div class="node-card" [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }" (click)="selectItem(ctx.node)">
+            <div class="header">
+              <i [class]="ctx.node.data.model.templateObj?.icon" class="icon"></i>
+              <div class="meta">
+                <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
+                <div class="subtitle">{{ ctx.node.data.model.templateObj?.subtitle }}</div>
+              </div>
+            </div>
+            <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+              <ng-template #handleInTpl let-hctx>
+                <svg:g>
+                  <svg:circle
+                    [attr.cx]="hctx.point().x"
+                    [attr.cy]="hctx.point().y"
+                    [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
+                    [attr.stroke]="'#ffffff'"
+                    stroke-width="1"
+                  ></svg:circle>
+                </svg:g>
+              </ng-template>
+              <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+            </ng-container>
+            <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
+              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index" [ngClass]="{ error: out === 'err' }">
+                <ng-template #hTpl let-hctx>
+                  <svg:g>
+                    <svg:circle
+                      [attr.cx]="hctx.point().x"
+                      [attr.cy]="hctx.point().y"
+                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                      [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                      [attr.stroke]="'#ffffff'"
+                      stroke-width="1"
+                    ></svg:circle>
+                    <svg:title *ngIf="getOutputName(ctx.node.data.model, out) as tt">{{ tt }}</svg:title>
+                  </svg:g>
+                </ng-template>
+                <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-ctx connectionTemplate>
+          <div class="edge-labels">
+            <div class="badge label" [ngClass]="{ error: (computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) || '') === 'Error' }" *ngIf="computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) as txt">{{ txt }}</div>
+          </div>
+        </ng-template>
+      </vflow>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <h4>Inspector</h4>
+    <ng-container *ngIf="selectedNode; else noSel">
+      <div class="tabs">
+        <button [class.active]="inspectorTab==='settings'" (click)="inspectorTab='settings'">Settings</button>
+        <button [class.active]="inspectorTab==='json'" (click)="inspectorTab='json'">JSON</button>
+      </div>
+      <div *ngIf="inspectorTab==='settings'">
+        <div><strong>ID:</strong> {{ selectedModel?.id }}</div>
+        <div><strong>Name:</strong> {{ selectedModel?.name }}</div>
+        <div><strong>Type:</strong> {{ selectedModel?.templateObj?.type }}</div>
+        <div><strong>Template:</strong> {{ selectedModel?.template }}</div>
+        <div class="hint">Édition avancée disponible via l’onglet JSON.</div>
+        <div class="inspector-actions">
+          <button class="open-advanced" (click)="openAdvancedEditor()">Ouvrir l’éditeur avancé</button>
+          <button class="danger" (click)="deleteSelected()" title="Supprimer">Supprimer</button>
+        </div>
+      </div>
+      <div *ngIf="inspectorTab==='json'" class="json-box">
+        <monaco-json-editor [(value)]="editJson" [height]="240"></monaco-json-editor>
+        <div class="inspector-actions">
+          <button class="save" (click)="saveSelectedJson()">Appliquer</button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noSel>
+      <p>Sélectionnez un nœud.</p>
+    </ng-template>
+  </aside>
+  <div class="import-overlay" *ngIf="isImporting">
+    <div class="spinner"></div>
+    <div>Import du flow…</div>
+  </div>
+  <div class="bottom-bar">
+    <div class="actions">
+      <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+      <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <button (click)="exportFlow()">Exporter le flow</button>
+      <label class="import-btn">
+        Importer un flow
+        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
+      </label>
+      <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
+    </div>
+  </div>
+  <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel"
+    [model]="selectedModel"
+    (modelChange)="onAdvancedModelChange($event)"
+    (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
+</div>

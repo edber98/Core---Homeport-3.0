@@ -21,27 +21,17 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
             },
-                {
+            {
                 path: 'dynamic-form',
                 loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
             },
-        ]
-    },
-        {
-        path: '',
-        component: LayoutBuilder,
-        children: [
-       /*      {
-                path: 'dynamic-form',
-                loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
-            }, */
             {
-                path: 'builder',
-                loadChildren: () =>
-                    import('./features/builder/builder-module').then(m => m.BuilderModule)
-            }
+                path: 'flow-builder',
+                loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent)
+            },
         ]
     },
+    // Removed legacy builder module route (folder deleted)
     { path: 'home', component: Home },
     { path: 'viz', component: Graphviz },
     { path: 'flow', component: Flow },

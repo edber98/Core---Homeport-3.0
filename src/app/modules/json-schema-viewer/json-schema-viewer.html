@@ -1,0 +1,53 @@
+<div class="viewer">
+  <div class="header">
+    <div class="headings-line" *ngIf="title">
+      <span class="title">{{ title }}</span>
+      <span class="subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+    </div>
+    <div class="controls-line" [class.editing]="editMode">
+      <nz-segmented [nzOptions]="['Schema','JSON']" [(ngModel)]="viewMode"></nz-segmented>
+      <span class="badge" *ngIf="viewMode==='JSON' && editMode">Mode édition</span>
+      <div class="spacer"></div>
+      <ng-container *ngIf="viewMode==='JSON'">
+        <ng-container *ngIf="editMode; else notEditing">
+          <button class="icon-btn" title="Formater" (click)="formatEditor()">⤾</button>
+          <button class="icon-btn" title="Minifier" (click)="minifyEditor()">⇣</button>
+          <button class="save" (click)="saveEdit()">Sauvegarder</button>
+          <button class="cancel" (click)="cancelEdit()">Annuler</button>
+          <button class="edit-toggle" (click)="toggleEdit(false)">Quitter l'édition</button>
+        </ng-container>
+        <ng-template #notEditing>
+          <button class="edit-toggle" [disabled]="!editable" (click)="toggleEdit(true)">Éditer</button>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="schema" *ngIf="viewMode === 'Schema'">
+    <ng-container *ngIf="isPlainObject(currentData); else nonObjectRoot">
+      <div class="root-list">
+        <app-json-node
+          *ngFor="let entry of objectEntries(currentData)"
+          [value]="entry.value"
+          [keyName]="entry.key"
+          [path]="'.' + entry.key"
+          [depth]="0"
+          [rootAlias]="rootAlias"
+          [expansion]="expansion"
+        ></app-json-node>
+      </div>
+    </ng-container>
+    <ng-template #nonObjectRoot>
+      <app-json-node [value]="currentData" [keyName]="''" [path]="''" [depth]="0" [rootAlias]="rootAlias" [expansion]="expansion"></app-json-node>
+    </ng-template>
+  </div>
+
+  <div class="json" *ngIf="viewMode === 'JSON'">
+    <div *ngIf="!editMode; else editor">
+      <pre class="pretty" [innerHTML]="jsonHtml"></pre>
+    </div>
+    <ng-template #editor>
+      <monaco-json-editor [(value)]="editValue" [height]="260"></monaco-json-editor>
+    </ng-template>
+  </div>
+</div>

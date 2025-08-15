@@ -234,7 +234,7 @@ export class Flow implements AfterViewInit {
   }
 
   centerView() {
-    console.log(this.flow)
+    
     this.flow.viewportService.fitView({
       duration: 300,       // ms pour une animation fluide
       padding: 0.5,        // entre 0 et 1 (plus c’est haut, moins ça zoom)
@@ -244,7 +244,7 @@ export class Flow implements AfterViewInit {
   }
 
     onExternalDrop(event: any) {
-      console.log("OK",event, this.dropZone)
+      
           // Récupère les coordonnées souris depuis l'événement natif
     const mouseEvent = event.event as MouseEvent;
 
@@ -260,7 +260,7 @@ export class Flow implements AfterViewInit {
 
     // Récupérer le viewport (zoom et offset)
     const viewport = this.flow.viewportService.readableViewport();
-    console.log(viewport)
+    
     const scale = viewport.zoom; // Zoom actuel
     const offsetX = viewport.x;   // Offset horizontal
     const offsetY = viewport.y;   // Offset vertical
@@ -281,7 +281,7 @@ export class Flow implements AfterViewInit {
     };
 //this.nodes = this.nodes.concat(newNode); // méthode alternative safe
 this.nodes = [...this.nodes, newNode];
-    console.log(this.dropZone.element.nativeElement.getBoundingClientRect())
+    
  /*    const position = this.flow.project({ x: event.dropPoint.x, y: event.dropPoint.y });
 
     const newNode = {
@@ -296,12 +296,12 @@ this.nodes = [...this.nodes, newNode];
 
   onDragEnter(event: any) {
   //event.preventDefault();
-  console.log('🔵 Élément entré dans la zone');
+  
 }
 
 onDragLeave(event: any) {
  // event.preventDefault();
-  console.log('🔴 Élément sorti de la zone');
+  
 }
 
 onDragOver(event: any) {
@@ -317,7 +317,7 @@ onDragOver(event: any) {
   }
 
   public createEdge({ source, target, sourceHandle, targetHandle }: Connection) {
-    console.log(target, source, this.edges)
+    
     this.edges = [
       ...this.edges,
       {

@@ -5,6 +5,9 @@
   width: 100%;         // assure la prise de largeur de la colonne, y compris en layout inline
 }
 
+.df-control-wrap { position: relative; }
+.df-expr-toggle { position: absolute; top: 2px; right: 2px; z-index: 3; }
+
 /* si c'est un textblock => pas de marge, pas de padding */
 .df-form-item.df-textblock {
   margin: 0;

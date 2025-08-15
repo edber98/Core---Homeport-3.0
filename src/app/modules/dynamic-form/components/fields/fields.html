@@ -34,35 +34,53 @@
           [nzOffset]="controlOffset"
           [nzErrorTip]="(field.label || 'Champ') + ' invalide'">
 
-          <ng-container *ngIf="fieldKey as key">
-            <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
-            <input *ngIf="field.type==='text'"
-                   nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+          <div class="df-control-wrap">
+            <!-- Toggle expression mode if allowed -->
+            <div class="df-expr-toggle" *ngIf="$any(field).expression?.allow">
+              <nz-segmented
+                [(ngModel)]="exprMode"
+                [ngModelOptions]="{ standalone: true }"
+                [nzOptions]="[{label:'Val', value:'val'}, {label:'Expr', value:'expr'}]"
+                nzSize="small"></nz-segmented>
+            </div>
 
-            <textarea *ngIf="field.type==='textarea'"
-                      nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
+            <ng-container *ngIf="fieldKey as key">
+              <!-- Expression editor mode -->
+              <app-expression-editor *ngIf="exprEnabled"
+                                     [inline]="true"
+                                     [context]="ctx"
+                                     [showFormulaAction]="true"
+                                     [formControlName]="key">
+              </app-expression-editor>
 
-            <input *ngIf="field.type==='number'"
-                   nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+              <!-- Classic inputs -->
+              <ng-container *ngIf="!exprEnabled">
+                <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
+                <input *ngIf="field.type==='text'"
+                      nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
-            <nz-date-picker *ngIf="field.type==='date'"
-                            style="width: 100%;" [formControlName]="key"></nz-date-picker>
+                <textarea *ngIf="field.type==='textarea'"
+                          nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
 
-            <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
-              <nz-option *ngFor="let opt of (field.options || [])"
-                         [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
-            </nz-select>
+                <input *ngIf="field.type==='number'"
+                      nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
-            <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
-              <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">
-                {{ opt.label || '' }}
-              </label>
-            </nz-radio-group>
+                <nz-date-picker *ngIf="field.type==='date'"
+                                style="width: 100%;" [formControlName]="key"></nz-date-picker>
 
-          <!--   <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">
-              {{ field.label || '' }}
-            </label> -->
-          </ng-container>
+                <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
+                  <nz-option *ngFor="let opt of (field.options || [])"
+                            [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
+                </nz-select>
+
+                <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
+                  <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">
+                    {{ opt.label || '' }}
+                  </label>
+                </nz-radio-group>
+              </ng-container>
+            </ng-container>
+          </div>
         </nz-form-control>
       </ng-container>
 

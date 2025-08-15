@@ -121,6 +121,11 @@
         </li>
       </ul>
     </nz-card>
+
+    <nz-card nzTitle="Contexte (ctx) pour expressions" nzSize="small" class="card sticky mt">
+      <monaco-json-editor [value]="ctxJson" (valueChange)="onCtxChange($event)" [height]="180"></monaco-json-editor>
+      <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
+    </nz-card>
   </div>
 
   <!-- CANVAS -->
@@ -130,6 +135,7 @@
       <app-dynamic-form
         [schema]="schema"
         [value]="previewUseSim ? simValues : undefined"
+        [ctx]="ctxObj"
         [forceBp]="forceBp"
         [editMode]="editMode"
         [selectedField]="selectedField"

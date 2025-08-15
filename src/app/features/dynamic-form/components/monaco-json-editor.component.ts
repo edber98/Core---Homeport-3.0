@@ -21,8 +21,8 @@ declare global {
         <span *ngIf="error" class="err" [nz-tooltip]="error">JSON invalide</span>
         <span *ngIf="!error" class="ok">JSON valide</span>
         <span class="spacer"></span>
-        <button nz-button nzSize="small" (click)="format()">Formater</button>
-        <button nz-button nzSize="small" (click)="minify()">Minifier</button>
+        <button nz-button nzSize="small" (click)="format()" nz-tooltip="Formater">⤾</button>
+        <button nz-button nzSize="small" (click)="minify()" nz-tooltip="Minifier">⇣</button>
       </div>
     </div>
   `,

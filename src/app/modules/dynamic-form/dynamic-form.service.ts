@@ -27,6 +27,10 @@ export interface FieldConfigCommon {
     col?: Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', number>>;
     itemStyle?: Record<string, any>; // margins/paddings/styles appliqués au conteneur
     textHtml?: string; // textblock
+    // Expression support: when allowed, UI can switch the field to expression editor
+    expression?: {
+        allow?: boolean;   // show toggle to switch to expression editor
+    };
 }
 
 export interface InputFieldConfig extends FieldConfigCommon {
