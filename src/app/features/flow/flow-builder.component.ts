@@ -8,12 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { FlowHistoryService } from './flow-history.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -301,7 +303,7 @@ export class FlowBuilderComponent {
 
   @ViewChild('flowHost', { static: false }) flowHost?: ElementRef<HTMLElement>;
   @ViewChild('flow', { static: false }) flow?: any;
-  @ViewChild('targetList', { static: false }) dropZone?: any;
+  // Drop zone host is the canvas host element
 
   selection: any = null;
   inspectorTab: 'settings' | 'json' = 'settings';
@@ -337,6 +339,24 @@ export class FlowBuilderComponent {
   /* private applyingHistory = false; */
   constructor(public history: FlowHistoryService, private message: NzMessageService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
   isMobile = false;
+  // Responsive drawers (mobile/tablet)
+  leftDrawer = false;
+  rightDrawer = false;
+  openPanel(where: 'left'|'right') { if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true; }
+  // Header labels
+  headerTitle = 'Flow Builder';
+  headerSubtitle = 'Conception du flow';
+
+  // Long-press detection for mobile context menu
+  private lpTimer: any = null;
+  private lpStartX = 0;
+  private lpStartY = 0;
+  private lpCurX = 0;
+  private lpCurY = 0;
+  private lpTarget: any = null;
+  private lpFired = false;
+  private readonly lpDelay = 520; // ms
+  private readonly lpMoveThresh = 10; // px
 
   ngOnInit() {
     this.updateIsMobile();
@@ -534,7 +554,7 @@ export class FlowBuilderComponent {
     if (this.isMobile) return; // Disable DnD on mobile
     
     // Écran -> coordonnées relatives -> viewport -> monde
-    const dropHost = this.dropZone?.element?.nativeElement as HTMLElement | undefined;
+    const dropHost = this.flowHost?.nativeElement as HTMLElement | undefined;
     if (!dropHost || !this.flow?.viewportService) return;
     // Support multiple CDK versions: prefer dropPoint/pointerPosition; fallback to original event
     const dp = (event && (event.dropPoint || event.pointerPosition)) || null;
@@ -575,7 +595,7 @@ export class FlowBuilderComponent {
   private normalizeTemplate(t: any) { return t && typeof t === 'object' ? t : { id: String(t || ''), type: 'function', title: 'Node', output: [], args: {} }; }
   private computeDropPoint(ev: any) {
     const mouse = ev?.event as MouseEvent;
-    const hostEl = this.dropZone?.element?.nativeElement as HTMLElement | undefined;
+    const hostEl = this.flowHost?.nativeElement as HTMLElement | undefined;
     if (!mouse || !hostEl || !this.flow?.viewportService) return { x: 400, y: 300 };
     const rect = hostEl.getBoundingClientRect();
     const rel = { x: mouse.clientX - rect.left, y: mouse.clientY - rect.top };
@@ -746,14 +766,55 @@ export class FlowBuilderComponent {
 
   // Context menu actions for nodes
   onNodeContextMenu(ev: MouseEvent, node: any) {
-    if (this.isMobile) return;
+    if (this.isMobile) return; // use long-press on mobile
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    this.openCtxMenuAt(ev.clientX, ev.clientY, node);
+  }
+  private openCtxMenuAt(x: number, y: number, node: any) {
     this.ctxMenuVisible = true;
-    this.ctxMenuX = ev.clientX;
-    this.ctxMenuY = ev.clientY;
+    this.ctxMenuX = x;
+    this.ctxMenuY = y;
     this.ctxMenuTarget = node;
-    // Ensure inspector selection matches
     try { this.selectItem(node); } catch {}
+  }
+
+  // Mobile long-press: open context menu
+  onNodeTouchStart(ev: TouchEvent, node: any) {
+    if (!this.isMobile) return;
+    try {
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.lpStartX = this.lpCurX = t.clientX; this.lpStartY = this.lpCurY = t.clientY;
+      this.lpTarget = node; this.lpFired = false;
+      if (this.lpTimer) clearTimeout(this.lpTimer);
+      this.lpTimer = setTimeout(() => {
+        // If moved too much, ignore
+        const dx = Math.abs(this.lpCurX - this.lpStartX);
+        const dy = Math.abs(this.lpCurY - this.lpStartY);
+        if (dx <= this.lpMoveThresh && dy <= this.lpMoveThresh && this.lpTarget) {
+          this.zone.run(() => this.openCtxMenuAt(this.lpCurX, this.lpCurY, this.lpTarget));
+          this.lpFired = true;
+        }
+      }, this.lpDelay);
+    } catch {}
+  }
+  onNodeTouchMove(ev: TouchEvent) {
+    if (!this.isMobile) return;
+    try {
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.lpCurX = t.clientX; this.lpCurY = t.clientY;
+      const dx = Math.abs(this.lpCurX - this.lpStartX);
+      const dy = Math.abs(this.lpCurY - this.lpStartY);
+      if (dx > this.lpMoveThresh || dy > this.lpMoveThresh) {
+        if (this.lpTimer) { clearTimeout(this.lpTimer); this.lpTimer = null; }
+      }
+    } catch {}
+  }
+  onNodeTouchEnd() {
+    if (!this.isMobile) return;
+    try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch {}
+    this.lpTimer = null; this.lpTarget = null; this.lpFired = false;
   }
   closeCtxMenu() { this.ctxMenuVisible = false; this.ctxMenuTarget = null; }
   ctxOpenAdvancedAndInspector() {
@@ -859,8 +920,11 @@ export class FlowBuilderComponent {
     try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
   }
   selectItem(changes: any) {
-    if (this.selection && this.selection.id === changes.id) this.selection = null; else this.selection = changes;
-    try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+    // Do not deselect on repeated click/press; only set when different
+    if (!this.selection || this.selection.id !== changes.id) {
+      this.selection = changes;
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+    }
   }
 
   openAdvancedEditor() { this.advancedOpen = true; }

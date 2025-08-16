@@ -40,6 +40,10 @@
 /* removed row undo/redo from inspector */
 .canvas { border: 1px solid #e5e7eb; border-radius: 0; overflow: hidden; }
 .canvas-host { height: 100%; width: 100%; }
+/* Floating action buttons on small screens */
+.fb-fab-left, .fb-fab-right { position: absolute; top: 8px; z-index: 22; display: none; }
+.fb-fab-left { left: 8px; }
+.fb-fab-right { right: 8px; }
 /* Removed global pointer-events:none to keep header and buttons clickable on mobile */
 /* Tooltip overlay for output handles */
 .flow-tooltip { position: fixed; z-index: 200;
@@ -90,3 +94,24 @@
 .ctx-menu button { appearance:none; background:#fff; color:#111; border:none; text-align:left; padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; gap:8px; align-items:center; }
 .ctx-menu button:hover { background:#f5f5f6; }
 .ctx-menu button.danger { color:#b91c1c; }
+
+/* Drawer header action bar (only appears in drawers on small screens) */
+.drawer-actions { display: inline-flex; align-items: center; gap: 8px; }
+.drawer-actions .apple-btn.icon { padding: 0 8px; }
+.drawer-actions .import-lbl { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+
+/* Left vertical floating actions (responsive only) */
+.left-bar { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 20; display: none; pointer-events: none; }
+.left-bar .actions { pointer-events:auto; display:flex; flex-direction: column; align-items:center; gap:8px; }
+.left-bar .icon-btn, .left-bar .import-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width: 36px; height: 36px; }
+.left-bar .icon-btn i, .left-bar .import-btn i { font-size:16px; }
+
+/* Tablet and below: hide side panels and show header; hide right rail */
+@media (max-width: 1280px) {
+  .flow-builder { grid-template-columns: 1fr; }
+  /* Hide only the desktop side panels, not the same classes inside drawer overlay */
+  .flow-builder > .palette, .flow-builder > .inspector { display: none; }
+  .fb-fab-left, .fb-fab-right { display: inline-flex; }
+  .canvas-host { height: 100%; }
+  .left-bar { display: block; }
+}

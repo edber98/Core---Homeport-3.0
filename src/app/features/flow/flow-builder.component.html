@@ -1,39 +1,49 @@
 <div class="flow-builder" cdkDropListGroup>
-  <aside class="palette" cdkDropList #sourceList="cdkDropList" [cdkDropListData]="items" [cdkDropListConnectedTo]="[targetList]" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="isMobile">
-    <h4>Palette</h4>
-    <div class="items">
-      <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)">
-        <div class="icon"><i [class]="it.template?.icon"></i></div>
-        <div class="meta">
-          <div class="title">{{ it.label }}</div>
-          <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
-        </div>
-        <!-- Drag proxy overlay to keep original item visible while dragging -->
-        <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile" [cdkDragData]="{ label: it.label, template: it.template }"
-             (cdkDragStarted)="onDragStart(it, $event)" (cdkDragEnded)="onDragEnd(it, $event)">
-          <ng-template cdkDragPreview>
-            <div class="item" style="  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:10px 12px;
-  box-shadow:0 10px 24px rgba(0,0,0,.18);
-  display:inline-flex;
-  align-items:center;
-  gap:10px; width: 233px">
-              <div class="icon"><i [class]="it.template?.icon"></i></div>
-              <div class="meta">
-                <div class="title">{{ it.label }}</div>
-                <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+  <!-- Reusable left panel content (desktop + drawer) -->
+  <ng-template #leftPanelContent>
+    <aside class="palette" cdkDropList id="paletteList" [cdkDropListData]="items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="isMobile">
+      <h4>Palette</h4>
+      <div class="items">
+        <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)">
+          <div class="icon"><i [class]="it.template?.icon"></i></div>
+          <div class="meta">
+            <div class="title">{{ it.label }}</div>
+            <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+          </div>
+          <!-- Drag proxy overlay to keep original item visible while dragging -->
+          <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile" [cdkDragData]="{ label: it.label, template: it.template }"
+               (cdkDragStarted)="onDragStart(it, $event)" (cdkDragEnded)="onDragEnd(it, $event)">
+            <ng-template cdkDragPreview>
+              <div class="item" style="  background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
+                <div class="icon"><i [class]="it.template?.icon"></i></div>
+                <div class="meta">
+                  <div class="title">{{ it.label }}</div>
+                  <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+                </div>
               </div>
-            </div>
-          </ng-template>
+            </ng-template>
+          </div>
         </div>
       </div>
-    </div>
-  </aside>
+    </aside>
+  </ng-template>
+
+  <!-- Desktop left panel -->
+  <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
 
   <section class="canvas">
-    <div class="canvas-host" #flowHost cdkDropList #targetList="cdkDropList" [cdkDropListData]="nodes" [cdkDropListConnectedTo]="[sourceList]" [cdkDropListDisabled]="isMobile"
+    <!-- Floating buttons (mobile/tablet) -->
+    <div class="fb-fab-left">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left')" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+    <div class="fb-fab-right">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right')" [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+        <i class="fa-solid fa-sliders"></i>
+      </button>
+    </div>
+    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" [cdkDropListConnectedTo]="['paletteList']" [cdkDropListDisabled]="isMobile"
          (cdkDropListEntered)="onDragEnter($event)"
          (cdkDropListExited)="onDragLeave($event)"
          (dragover)="onDragOver($event)"
@@ -66,7 +76,7 @@
           </div>
         </ng-template>
         <ng-template let-ctx nodeHtml>
-          <div class="node-card" [attr.data-node-id]="ctx.node.id" [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }" (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)">
+          <div class="node-card" [attr.data-node-id]="ctx.node.id" [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }" (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)" (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)" (touchend)="onNodeTouchEnd()">
             <div class="header">
               <i [class]="ctx.node.data.model.templateObj?.icon" class="icon"></i>
               <div class="meta">
@@ -121,40 +131,63 @@
       <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY" [ngClass]="{ error: tipError }">{{ tipText }}</div>
     </div>
   </section>
-
-  <aside class="inspector">
-    <h4>Inspector</h4>
-    <ng-container *ngIf="selectedNode; else noSel">
-      <div class="tabs">
-        <button [class.active]="inspectorTab==='settings'" (click)="inspectorTab='settings'">Settings</button>
-        <button [class.active]="inspectorTab==='json'" (click)="inspectorTab='json'">JSON</button>
-      </div>
-      <div *ngIf="inspectorTab==='settings'">
-        <div><strong>ID:</strong> {{ selectedModel?.id }}</div>
-        <div><strong>Name:</strong> {{ selectedModel?.name }}</div>
-        <div><strong>Type:</strong> {{ selectedModel?.templateObj?.type }}</div>
-        <div><strong>Template:</strong> {{ selectedModel?.template }}</div>
-        <div class="hint">Édition avancée disponible via l’onglet JSON.</div>
-        <div class="inspector-actions">
-          <button class="open-advanced" (click)="openAdvancedEditor()">Ouvrir l’éditeur avancé</button>
-          <button class="danger" (click)="deleteSelected()" title="Supprimer">Supprimer</button>
+  <!-- Reusable right panel content (desktop + drawer) -->
+  <ng-template #rightPanelContent>
+    <aside class="inspector">
+      <h4>Inspector</h4>
+      <ng-container *ngIf="selectedNode; else noSel">
+        <div class="tabs">
+          <button [class.active]="inspectorTab==='settings'" (click)="inspectorTab='settings'">Settings</button>
+          <button [class.active]="inspectorTab==='json'" (click)="inspectorTab='json'">JSON</button>
         </div>
-      </div>
-      <div *ngIf="inspectorTab==='json'" class="json-box">
-        <monaco-json-editor [(value)]="editJson" [height]="240"></monaco-json-editor>
-        <div class="inspector-actions">
-          <button class="save" (click)="saveSelectedJson()">Appliquer</button>
+        <div *ngIf="inspectorTab==='settings'">
+          <div><strong>ID:</strong> {{ selectedModel?.id }}</div>
+          <div><strong>Name:</strong> {{ selectedModel?.name }}</div>
+          <div><strong>Type:</strong> {{ selectedModel?.templateObj?.type }}</div>
+          <div><strong>Template:</strong> {{ selectedModel?.template }}</div>
+          <div class="hint">Édition avancée disponible via l’onglet JSON.</div>
+          <div class="inspector-actions">
+            <button class="open-advanced" (click)="openAdvancedEditor()">Ouvrir l’éditeur avancé</button>
+            <button class="danger" (click)="deleteSelected()" title="Supprimer">Supprimer</button>
+          </div>
         </div>
-      </div>
-    </ng-container>
-    <ng-template #noSel>
-      <p>Sélectionnez un nœud.</p>
-    </ng-template>
-  </aside>
+        <div *ngIf="inspectorTab==='json'" class="json-box">
+          <monaco-json-editor [(value)]="editJson" [height]="240"></monaco-json-editor>
+          <div class="inspector-actions">
+            <button class="save" (click)="saveSelectedJson()">Appliquer</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noSel>
+        <p>Sélectionnez un nœud.</p>
+      </ng-template>
+    </aside>
+  </ng-template>
+  <!-- Desktop right panel -->
+  <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>
     <div>Import du flow…</div>
   </div>
+  <!-- Left vertical floating actions (responsive only) -->
+  <div class="left-bar">
+    <div class="actions">
+      <button class="icon-btn" (click)="saveFlow()" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-regular fa-floppy-disk"></i>
+      </button>
+      <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
+        <i class="fa-regular fa-cloud-arrow-down"></i>
+      </button>
+      <label class="icon-btn import-btn" title="Importer" aria-label="Importer">
+        <i class="fa-regular fa-file-arrow-up"></i>
+        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
+      </label>
+    </div>
+  </div>
+
   <div class="bottom-bar">
     <div class="actions">
       <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
@@ -169,25 +202,15 @@
       <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
-      <button (click)="exportFlow()">Exporter le flow</button>
-      <label class="import-btn">
-        Importer un flow
-        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
-      </label>
-      <div class="zoom-control">
+      <div class="zoom-control" *ngIf="!isMobile">
         <span class="label">Zoom</span>
         <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
         <span class="value">{{ zoomPercent }}%</span>
       </div>
-      <button class="icon-btn" (click)="saveFlow()" title="Sauvegarder">
-        <i class="fa-regular fa-floppy-disk"></i>
-      </button>
-      <button class="icon-btn" (click)="runFlow()" title="Lancer">
-        <i class="fa-solid fa-play"></i>
-      </button>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
     </div>
   </div>
+  
   <!-- Context menu overlay -->
   <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
   <div class="ctx-menu" *ngIf="ctxMenuVisible" [style.left.px]="ctxMenuX" [style.top.px]="ctxMenuY">
@@ -201,4 +224,18 @@
     (modelChange)="onAdvancedModelChange($event)"
     (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
+
 </div>
+
+<!-- Responsive drawers (mobile/tablet) -->
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+  <ng-container *nzDrawerContent>
+    <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+  </ng-container>
+</nz-drawer>
+
+<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="rightDrawer=false" nzPlacement="right" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+  <ng-container *nzDrawerContent>
+    <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+  </ng-container>
+</nz-drawer>

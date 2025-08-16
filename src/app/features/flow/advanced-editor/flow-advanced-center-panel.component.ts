@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, DynamicForm],
   template: `
-    <div class="card">
+    <div class="card" [class.panel-card]="bare">
       <div class="tabs">
       <nz-tabset [nzTabPosition]="'top'">
         <nz-tab nzTitle="Personnalisation">
@@ -54,6 +54,8 @@ import { FormsModule } from '@angular/forms';
   styles: [`
     :host { display:block; }
     .card { position:relative; background:#fff; border:1px solid #ececec; border-radius:14px; box-shadow:0 20px 40px rgba(0,0,0,.12); width: var(--dialog-w, 960px); max-width: 100vw; padding: 0 0 16px; height:var(--dialog-h, 68vh); max-height:90vh; display:flex; flex-direction:column; }
+    /* Panel variant (mobile carousel center) */
+    .card.panel-card { width:100%; height:100%; max-height:none; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.10); }
     .tabs { flex:1 1 auto; min-height:0; display:flex; }
     .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 12px 0 12px; }
     .tab-header .title { font-weight:600; font-size:13px; color:#111; }
@@ -71,10 +73,14 @@ import { FormsModule } from '@angular/forms';
     :host ::ng-deep .tabs .ant-tabs-content-holder { flex:1 1 auto; min-height:0; }
     :host ::ng-deep .tabs .ant-tabs-content { height:100%; }
     :host ::ng-deep .tabs .ant-tabs-tabpane { height:100%; overflow:auto; }
+    @media (max-width: 768px) {
+      .card.panel-card { overflow:auto; }
+    }
   `]
 })
 export class FlowAdvancedCenterPanelComponent {
   @Input() model: any = {};
+  @Input() bare = false;
   @Output() modelChange = new EventEmitter<any>();
   @Output() submitted = new EventEmitter<any>();
   @Output() committed = new EventEmitter<any>();
