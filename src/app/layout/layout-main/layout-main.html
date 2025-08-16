@@ -28,49 +28,183 @@
       </div>
 </div> -->
 
- <nz-layout class="full-height">
-      <nz-sider nzCollapsible [nzTheme]="'light'"  class="border-right-primary"  nzWidth="200px">
-        <div class="logo"></div>
-        <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline">
-          <li nz-menu-item>
-            <nz-icon nzType="pie-chart" />
-            <span>Option 1</span>
-          </li>
-          <li nz-menu-item>
-            <nz-icon nzType="desktop" />
-            <span>Option 2</span>
-          </li>
-          <li nz-submenu nzTitle="User" nzIcon="user">
-            <ul>
-              <li nz-menu-item>Tom</li>
-              <li nz-menu-item>Bill</li>
-              <li nz-menu-item>Alex</li>
-            </ul>
-          </li>
-          <li nz-submenu nzTitle="Team" nzIcon="team">
-            <ul>
-              <li nz-menu-item>Team 1</li>
-              <li nz-menu-item>Team 2</li>
-            </ul>
-          </li>
-          <li nz-menu-item>
-            <nz-icon nzType="file" />
-            <span>File</span>
-          </li>
+<nz-layout class="full-height">
+  <!-- Sider (desktop) -->
+  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
+    <div class="logo" [class.collapsed]="siderCollapsed">
+      <img src="/imgs/logo.png" alt="Kinn" />
+      <span class="brand-text">Kinn</span>
+    </div>
+    <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline">
+      <ng-container *ngFor="let it of menu">
+        <li nz-submenu *ngIf="it.children?.length">
+          <span title>
+            <nz-icon [nzType]="it.icon"></nz-icon>
+            <span>{{ it.label }}</span>
+          </span>
+          <ul>
+            <li nz-menu-item *ngFor="let c of it.children" [routerLink]="c.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{ exact: true }">
+              <nz-icon [nzType]="c.icon"></nz-icon>
+              <span>{{ c.label }}</span>
+            </li>
+          </ul>
+        </li>
+        <li nz-menu-item *ngIf="!it.children?.length" [routerLink]="it.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="getActiveOptions(it.route)">
+          <nz-icon [nzType]="it.icon"></nz-icon>
+          <span>{{ it.label }}</span>
+        </li>
+      </ng-container>
+    </ul>
+  </nz-sider>
+
+  <nz-layout>
+    <!-- Header (also used on mobile) -->
+    <nz-header class="hp-header border-bottom-primary">
+      <div class="hdr-left" *ngIf="showSider || !showLaunch">
+        <button nz-button nzType="default" class="burger" *ngIf="!showSider" (click)="openDrawer()"><i class="fa-solid fa-bars"></i></button>
+        <div *ngIf="!showSider" class="brand">Kinn</div>
+        <button nz-button class="hdr-btn" *ngIf="!showSider && !showLaunch" (click)="openLaunch()" title="Ouvrir la launch bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+      <div class="hdr-center" *ngIf="showSider || showLaunch">
+        <div class="cmd-bar">
+          <button class="cmd-btn pulse" nz-tooltip nzTooltipTitle="Lancer rapidement" (click)="runQuick()">
+            <i class="fa-solid fa-rocket"></i>
+          </button>
+          <input nz-input class="cmd-search" placeholder="Rechercher… (flows, forms)" (keyup.enter)="onSearch($any($event.target).value)" />
+          <button class="cmd-btn" nz-tooltip nzTooltipTitle="Commandes" (click)="openCmd()">
+            <i class="fa-solid fa-sliders"></i>
+          </button>
+          <button class="cmd-btn" *ngIf="!showSider" (click)="closeLaunch()" nz-tooltip nzTooltipTitle="Fermer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="hdr-actions" *ngIf="showSider || !showLaunch">
+        <button nz-button class="hdr-btn" [routerLink]="'/flows'" title="Flows"><i class="fa-solid fa-diagram-project"></i></button>
+        <button nz-button class="hdr-btn" [routerLink]="'/forms'" title="Formulaires"><i class="fa-regular fa-rectangle-list"></i></button>
+        <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
+          <nz-badge nzDot>
+            <i class="fa-regular fa-bell"></i>
+          </nz-badge>
+        </button>
+        <button nz-button class="hdr-avatar" nz-dropdown [nzDropdownMenu]="profileMenu" nzTrigger="click" title="Profil">
+          <nz-avatar nzShape="circle" nzText="EB"></nz-avatar>
+        </button>
+      </div>
+    </nz-header>
+
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+
+  <!-- Mobile drawer menu using the same menu[] source -->
+  <nz-drawer [nzVisible]="drawerVisible" [nzBodyStyle]="{padding: '2px 2px 0 2px'}" (nzOnClose)="closeDrawer()" nzPlacement="left" [nzWidth]="260" [nzClosable]="false">
+
+    <ng-container *nzDrawerContent>
+      <div class="drawer-menu">
+               <div class="logo">
+      <img src="/imgs/logo.png" alt="Kinn" />
+      <span class="brand-text">Kinn</span>
+    </div>
+        <div class="drawer-title">Navigation</div>
+        <ul nz-menu nzTheme="light" nzMode="inline" style="border:0">
+          <ng-container *ngFor="let it of menu">
+            <li nz-submenu *ngIf="it.children?.length">
+              <span title>
+                <nz-icon [nzType]="it.icon"></nz-icon>
+                <span>{{ it.label }}</span>
+              </span>
+              <ul>
+                <li nz-menu-item *ngFor="let c of it.children" (click)="go(c.route)">
+                  <nz-icon [nzType]="c.icon"></nz-icon>
+                  <span>{{ c.label }}</span>
+                </li>
+              </ul>
+            </li>
+            <li nz-menu-item *ngIf="!it.children?.length" (click)="go(it.route)">
+              <nz-icon [nzType]="it.icon"></nz-icon>
+              <span>{{ it.label }}</span>
+            </li>
+          </ng-container>
         </ul>
-      </nz-sider>
-      <nz-layout>
-        <nz-header class="border-bottom-primary"></nz-header>
-        <nz-content>
-     <!--      <nz-breadcrumb>
-            <nz-breadcrumb-item>User</nz-breadcrumb-item>
-            <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
-          </nz-breadcrumb> -->
-          <div class="inner-content">
-            
-             <router-outlet></router-outlet>
-          </div>
-        </nz-content>
-<!--         <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
- -->      </nz-layout>
-    </nz-layout>
+      </div>
+    </ng-container>
+  </nz-drawer>
+</nz-layout>
+
+<!-- Command Center (modal) -->
+<nz-modal [(nzVisible)]="cmdVisible" [nzFooter]="null" nzTitle="Command Center" (nzOnCancel)="closeCmd()">
+  <ng-container *nzModalContent>
+  <div class="cmd-modal">
+    <div class="section">
+      <div class="section-title">Activité récente</div>
+      <div class="activity" *ngFor="let a of activities">
+        <span class="dot" [class.success]="a.state==='success'" [class.running]="a.state==='running'"></span>
+        <div class="label">{{ a.label }}</div>
+        <div class="time">{{ a.time }}</div>
+      </div>
+    </div>
+    <div class="section grid">
+      <div class="quick-card" (click)="runQuick()">
+        <i class="fa-solid fa-rocket"></i>
+        <div class="qc-title">Lancer</div>
+        <div class="qc-desc">Exécution rapide</div>
+      </div>
+      <div class="quick-card" [routerLink]="'/flows'">
+        <i class="fa-solid fa-diagram-project"></i>
+        <div class="qc-title">Flows</div>
+        <div class="qc-desc">Gérer vos scénarios</div>
+      </div>
+      <div class="quick-card" [routerLink]="'/forms'">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <div class="qc-title">Formulaires</div>
+        <div class="qc-desc">Construire / Voir</div>
+      </div>
+    </div>
+    <div class="section two-cols">
+      <div>
+        <div class="section-title">Flows récents</div>
+        <div class="chip" *ngFor="let f of recentFlows" [routerLink]="'/flows'">{{f.name}} <span class="muted">· {{f.updated}}</span></div>
+      </div>
+      <div>
+        <div class="section-title">Formulaires récents</div>
+        <div class="chip" *ngFor="let f of recentForms" [routerLink]="'/forms'">{{f.name}} <span class="muted">· {{f.updated}}</span></div>
+      </div>
+    </div>
+  </div>
+  </ng-container>
+</nz-modal>
+
+<!-- Notifications popover template -->
+<ng-template #notifTpl>
+  <div class="notif-panel">
+    <div class="notif-header">Notifications</div>
+    <div class="notif-list">
+      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="n.unread">
+        <div class="meta">
+          <div class="title">{{ n.title }}</div>
+          <div class="desc">{{ n.desc }}</div>
+        </div>
+        <div class="time">{{ n.time }}</div>
+      </div>
+    </div>
+    <div class="notif-footer"><a [routerLink]="'/flows'">Voir tout</a></div>
+  </div>
+  
+</ng-template>
+
+<!-- Profile dropdown menu -->
+<nz-dropdown-menu #profileMenu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item [routerLink]="'/dashboard'">Profil</li>
+    <li nz-menu-item [routerLink]="'/forms'">Mes formulaires</li>
+    <li nz-menu-item [routerLink]="'/flows'">Mes flows</li>
+    <li nz-menu-divider></li>
+    <li nz-menu-item (click)="logout()">Déconnexion</li>
+  </ul>
+</nz-dropdown-menu>

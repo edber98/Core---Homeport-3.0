@@ -1,45 +1,118 @@
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
-<p style="margin-bottom: 200px">dashboard-home works!</p>
+<div class="dash">
+  <div class="page-header">
+    <div class="card-title left">
+      <span class="t">Tableau de bord</span>
+      <span class="s">Vue d’ensemble</span>
+    </div>
+    <div class="actions">
+      <button nz-button class="apple-btn icon" title="Rafraîchir"><i class="fa-solid fa-rotate-right"></i></button>
+      <button nz-button class="apple-btn icon" title="Exporter"><i class="fa-regular fa-cloud-arrow-down"></i></button>
+      <button nz-button class="apple-btn icon" title="Données de test" (click)="loadDemoData()"><i class="fa-solid fa-flask"></i></button>
+      <button nz-button class="apple-btn icon" title="Vider" (click)="clearData()"><i class="fa-solid fa-eraser"></i></button>
+    </div>
+  </div>
 
- <div style="display:flex; gap:16px; align-items:flex-start;">
-   <div style="flex:1; min-width:0;">
-     <h4 style="margin: 8px 0;">JSON/Schema viewer (drag to editor)</h4>
-     <app-json-schema-viewer [title]="'JSON Input'" [subtitle]="'Editeur de fourme json'" [data]="viewerData"></app-json-schema-viewer>
-   </div>
-   <div style="flex:1; min-width:0;">
-     <h4 style="margin: 8px 0;">Expression editor (drop here)</h4>
-     <app-expression-editor [(ngModel)]="expr" [context]="exprCtx"></app-expression-editor>
-     <pre style="margin-top:8px; padding:8px; background:#fafafa; border:1px solid #f0f0f0; border-radius:6px;">{{ expr }}</pre>
-   </div>
- </div>
+  <div class="grid kpis">
+    <div class="card kpi">
+      <div class="k-head">
+        <div class="k-title">Exécutions</div>
+        <div class="k-value">{{ executions[executions.length - 1] || 0 }}</div>
+      </div>
+      <div class="chart-wrap-sm">
+        <mini-area-chart [data]="executions" [width]="220" [height]="48" stroke="#111"></mini-area-chart>
+        <div class="empty center" *ngIf="(executions?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="k-head">
+        <div class="k-title">Erreurs</div>
+        <div class="k-value">{{ errors[errors.length - 1] || 0 }}</div>
+      </div>
+      <div class="chart-wrap-sm">
+        <mini-area-chart [data]="errors" [width]="220" [height]="48" stroke="#444"></mini-area-chart>
+        <div class="empty center" *ngIf="(errors?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="k-head">
+        <div class="k-title">Latence</div>
+        <div class="k-value">{{ (avgLatencyMs[avgLatencyMs.length - 1] || 0) | number:'1.0-0' }} ms</div>
+      </div>
+      <div class="chart-wrap-sm center">
+        <donut-chart *ngIf="(avgLatencyMs?.length||0)>0" [value]="avgLatencyMs[avgLatencyMs.length - 1] || 0" [total]="latencyTotal" [size]="56" [thickness]="6" color="#111"></donut-chart>
+        <div class="empty center" *ngIf="(avgLatencyMs?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="k-head">
+        <div class="k-title">Nœuds actifs</div>
+        <div class="k-value">{{ activeNodes }}</div>
+      </div>
+      <div class="chart-wrap-sm">
+        <mini-bar-chart [data]="[activeNodes]" [width]="220" [height]="48" color="#222"></mini-bar-chart>
+        <div class="empty center" *ngIf="!activeNodes">Aucune donnée</div>
+      </div>
+    </div>
+  </div>
 
- <app-dynamic-form [schema]="schema"></app-dynamic-form>
- <app-dynamic-form [schema]="testing" [value]='{
-    "items": [
-      {
-        "name": "A",
-        "condition": ""
-      },
-      {
-        "name": "B",
-        "condition": ""
-      },
-      {
-        "name": "C",
-        "condition": ""
-      }
-    ]
-  }'></app-dynamic-form>
-<!--
-<app-dynamic-form [schema]="schemaSections"></app-dynamic-form>
-<app-dynamic-form [schema]="schemaFlat"></app-dynamic-form>
+  <div class="grid main">
+    <div class="card span-2">
+      <div class="card-title left"><span class="t">Exécutions</span><span class="s">Derniers points</span></div>
+      <div class="chart-wrap-lg">
+        <mini-area-chart [data]="executions" [width]="640" [height]="160" stroke="#111" [strokeWidth]="2"></mini-area-chart>
+        <div class="empty center" *ngIf="(executions?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+    <div class="card top-acts">
+      <div class="card-title left"><span class="t">Top activités</span><span class="s">Dernière période</span></div>
+      <div class="channels">
+        <div class="row" *ngFor="let c of channels">
+          <div class="name">{{ c.label }}</div>
+          <div class="val">{{ c.value }}</div>
+          <mini-bar-chart class="mini" [data]="[c.value/8, c.value/5, c.value/10, c.value/7]" [width]="160" [height]="30" color="#111"></mini-bar-chart>
+        </div>
+        <div class="empty fixed" *ngIf="(channels?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+  
+    </div>
 
-<app-dynamic-form [schema]="accounts"></app-dynamic-form> -->
-<!-- <app-dynamic-form [schema]="schemaSections"></app-dynamic-form>
- -->
+  <div style="margin-top: 13px" class="grid bottom">
+    <div class="card">
+      <div class="card-title left"><span class="t">Top fonctions</span><span class="s">ratio err/succ & avg</span></div>
+      <div class="functions">
+        <div class="hdr">
+          <div class="c name">Fonction</div>
+          <div class="c s">Succès</div>
+          <div class="c e">Erreurs</div>
+          <div class="c r" nz-tooltip="Erreurs / Succès">Err/Succ</div>
+          <div class="c a">Avg (ms)</div>
+        </div>
+        <div class="row" *ngFor="let f of functions">
+          <div class="c name">{{ f.name }}</div>
+          <div class="metrics">
+            <div class="c s"><span class="pill succ">{{ f.success }}</span></div>
+            <div class="c e"><span class="pill err">{{ f.error }}</span></div>
+            <div class="c r"><span class="pill ratio">{{ errSuccRatio(f) }}</span></div>
+            <div class="c a"><span class="pill avg">{{ f.avgMs | number:'1.0-0' }}</span></div>
+          </div>
+        </div>
+        <div class="empty" *ngIf="(functions?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title left"><span class="t">Activité récente</span><span class="s">Aujourd’hui</span></div>
+      <div class="activity">
+        <div class="item" *ngFor="let a of activity">
+          <i [class]="a.icon"></i>
+          <div class="meta">
+            <div class="title">{{ a.title }}</div>
+            <div class="time">{{ a.time }}</div>
+          </div>
+          <button nz-button class="apple-btn icon" title="Voir"><i class="fa-regular fa-eye"></i></button>
+        </div>
+        <div class="empty" *ngIf="(activity?.length||0)===0">Aucune donnée</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
@@ -17,6 +18,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzDropDownModule, NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -74,10 +76,12 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     NzFormModule,
     NzCardModule,
     NzDividerModule,
+    NzCollapseModule,
     NzTabsModule,
     NzSwitchModule,
     NzInputNumberModule, NzTagModule,
     NzTreeModule, NzDropDownModule, NzModalModule, NzIconModule,
+    NzDrawerModule,
     NzRadioModule, NzCheckboxModule,
     NzToolTipModule,
     NzColorPickerModule,
@@ -162,6 +166,7 @@ export class DynamicFormBuilderComponent {
 
   // Edit mode toggle
   editMode = true;
+  selectedBp: 'auto'|'xs'|'sm'|'md'|'lg'|'xl'|'xxl' = 'auto';
 
   // Simulation des conditions dans l'aperçu
   previewUseSim = false;
@@ -183,6 +188,18 @@ export class DynamicFormBuilderComponent {
   submitModalVisible = false;
   submitResult: any = null;
 
+  // Responsive drawers (mobile)
+  leftDrawer = false;
+  rightDrawer = false;
+  isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+
+  openPanel(where: 'left'|'right', _ev?: MouseEvent) {
+    if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
+  }
+  mobileAddSection() { this.addSectionFromToolbar(); }
+  mobileAddField() { this.addFieldFromToolbar(); }
+  mobileToggleEdit() { this.toggleEditMode(); }
+
   constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
@@ -203,6 +220,8 @@ export class DynamicFormBuilderComponent {
     this.descStyleForm = mkStyleForm();
     // init auto breakpoint display
     try { this.updateAutoBp(); } catch {}
+    // init BP select from current width (auto)
+    this.selectedBp = 'auto';
     this.recomputeIssues();
     try { this.hist.reset(this.cloneSchema()); } catch {}
   }
@@ -1430,6 +1449,16 @@ export class DynamicFormBuilderComponent {
     }
   }
 
+  // Save current schema (export to JSON area + toast)
+  saveSchema(): void {
+    try {
+      this.export();
+      this.msg.success('Formulaire sauvegardé');
+    } catch (e) {
+      this.msg.error('Échec de la sauvegarde');
+    }
+  }
+
   // ---------- Helpers ----------
   // Conditions: extraction + simulation
   get conditionEntries(): Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any; arrayKey?: string; arrayTitle?: string }> {
@@ -1726,7 +1755,10 @@ export class DynamicFormBuilderComponent {
       this.updateTreeSelectedKeys();
     }
   }
-  @HostListener('window:resize') onResize() { this.updateAutoBp(); }
+  @HostListener('window:resize') onResize() {
+    this.updateAutoBp();
+    this.isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobile;
+  }
 
   // ====== Dépendances: champs impactés par une clé (utilisés dans visibleIf/requiredIf/disabledIf)
   dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }
@@ -2108,5 +2140,13 @@ export class DynamicFormBuilderComponent {
     if (i > -1) step.fields.splice(i, 1);
     if (this.selected === field) this.select(this.schema);
     this.refresh();
+  }
+
+  toggleEditMode() { this.editMode = !this.editMode; this.onEditModeChange(this.editMode); }
+
+  onBpChange(v: 'auto'|'xs'|'sm'|'md'|'lg'|'xl'|'xxl') {
+    const map: any = { auto: null, xs: 360, sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1600 };
+    const w = map[v] ?? null;
+    if (w == null) this.setPreviewWidth(); else this.setPreviewWidth(w);
   }
 }

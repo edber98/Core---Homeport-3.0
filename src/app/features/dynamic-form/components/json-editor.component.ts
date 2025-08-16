@@ -14,7 +14,7 @@ import { CodemirrorModule } from '@ks89/ngx-codemirror6';
       <ngx-codemirror [(ngModel)]="value" (ngModelChange)="onChange($event)" class="cm"></ngx-codemirror>
       <div class="bar">
         <span *ngIf="error" class="err" [nz-tooltip]="error">JSON invalide</span>
-        <span *ngIf="!error" class="ok">JSON valide</span>
+        <span *ngIf="!error" class="ok">JSON - OK</span>
         <span class="spacer"></span>
         <button nz-button nzSize="small" (click)="format()">Formater</button>
         <button nz-button nzSize="small" (click)="minify()">Minifier</button>

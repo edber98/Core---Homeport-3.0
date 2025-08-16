@@ -1,0 +1,30 @@
+.card-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+}
+.card-title .t { font-weight: 600; font-size: 14px; }
+.card-title .s { font-size: 12px; color: #64748b; }
+
+/* Section headers inside this inspector panel, mimic nz-card small header rhythm */
+.ins-section-header {
+  display: flex;
+  justify-content: center;
+  padding: 6px 12px 8px; /* lateral 12px like .ant-card-small head */
+  margin: 8px 0;
+  border-bottom: 1px solid #E2E1E4;
+  box-sizing: border-box;
+}
+.ins-mini-header {
+  display: flex;
+  justify-content: center;
+  padding: 4px 12px 6px;
+  margin: 6px 0;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+}
+.ins-mini-header .card-title .t { font-size: 13px; }
+.ins-mini-header .card-title .s { font-size: 11px; }

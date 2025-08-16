@@ -4,6 +4,7 @@
   [nzLayout]="layout"
   [style.max-width.px]="maxWidth"
   class="df-container"
+  style="padding: 2px;"
   [ngStyle]="containerStyle"
   (focusout)="onFormFocusOut($event)">
 
@@ -126,15 +127,15 @@
   <ng-container *ngFor="let it of rootItems(); let i = index; trackBy: trackByMixedItem">
     <!-- Section -->
     <ng-container *ngIf="it.ent.t==='section'; else rootField">
-      <nz-col
-        [nzSpan]="forceBp ? fieldSpanFor($any(schema.fields)[it.ent.i], forceBp) : null"
-        [nzXs]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xs : null"
-        [nzSm]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).sm : null"
-        [nzMd]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).md : null"
-        [nzLg]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).lg : null"
-        [nzXl]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xl : null"
-        [style.max-width.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null"
-        [style.flex-basis.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null">
+        <nz-col
+          [nzSpan]="forceBp ? fieldSpanFor($any(schema.fields)[it.ent.i], forceBp) : null"
+          [nzXs]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xs : null"
+          [nzSm]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).sm : null"
+          [nzMd]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).md : null"
+          [nzLg]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).lg : null"
+          [nzXl]="!forceBp ? dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xl : null"
+          [style.max-width.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null"
+          [style.flex-basis.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null">
       <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === ($any(schema.fields)[it.ent.i])" (click)="editMode && onSectionContainerClick($event, undefined, it.ent.i, ($any(schema.fields)[it.ent.i]))">
         <df-section [section]="$any(($any(schema.fields))[it.ent.i])" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(($any(schema.fields))[it.ent.i]).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors"
                     [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"

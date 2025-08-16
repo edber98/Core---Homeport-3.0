@@ -10,6 +10,6 @@ import { Connection, ConnectionSettings, Edge, Vflow } from 'ngx-vflow';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('Homeport');
+  protected readonly title = signal('Kinn');
   
 }

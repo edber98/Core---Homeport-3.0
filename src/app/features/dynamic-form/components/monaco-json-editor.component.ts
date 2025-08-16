@@ -19,7 +19,7 @@ declare global {
       <div #host class="editor" [style.height.px]="height"></div>
       <div class="bar">
         <span *ngIf="error" class="err" [nz-tooltip]="error">JSON invalide</span>
-        <span *ngIf="!error" class="ok">JSON valide</span>
+        <span *ngIf="!error" class="ok">JSON - OK</span>
         <span class="spacer"></span>
         <button nz-button nzSize="small" (click)="format()" nz-tooltip="Formater">⤾</button>
         <button nz-button nzSize="small" (click)="minify()" nz-tooltip="Minifier">⇣</button>

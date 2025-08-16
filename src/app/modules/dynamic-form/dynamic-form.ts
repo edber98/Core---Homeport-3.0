@@ -311,6 +311,7 @@ export class DynamicForm implements OnInit, OnChanges {
     return clamped * 100 / 24;
   }
 
+
   // ===== Helpers ordre: parcourt fields uniquement =====
   stepItems(step: StepConfig) {
     const items = (step.fields || []).map((f, i) => ({ t: ((f as any).type === 'section' || (f as any).type === 'section_array' ? 'section' : 'field') as 'section'|'field', i }));
@@ -420,6 +421,21 @@ export class DynamicForm implements OnInit, OnChanges {
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
+
+   // ===== Responsive helper: if only 1 visible item in a container, make it full-width
+private isVisibleItem(obj: any): boolean {
+  if (!obj) return false;
+  if ((obj as any).type === 'section' || (obj as any).type === 'section_array') return this.dfs.isSectionVisible(obj as any, this.form);
+  return this.dfs.isFieldVisible(obj as any, this.form);
+}
+onlyOneVisibleInStep(step: StepConfig): boolean {
+  const items = (step.fields || []).filter(it => this.isVisibleItem(it));
+  return items.length === 1;
+}
+onlyOneVisibleAtRoot(): boolean {
+  const items = (this.schema.fields || []).filter(it => this.isVisibleItem(it));
+  return items.length === 1;
+}
 
   go(i: number, skipGuard = false) {
     // Aller en avant → vérifier l’étape courante

@@ -8,6 +8,9 @@ import fr from '@angular/common/locales/fr';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
+import { TitleStrategy } from '@angular/router';
+import { KinnTitleStrategy } from './title-strategy';
 
 registerLocaleData(fr);
 
@@ -16,6 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes), provideNzI18n(fr_FR), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient(),
+    Title,
+    { provide: TitleStrategy, useClass: KinnTitleStrategy },
     
   ]
   

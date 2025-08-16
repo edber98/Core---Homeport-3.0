@@ -8,21 +8,22 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { SpacingEditorComponent } from './spacing-editor.component';
-import { JsonEditorComponent } from './json-editor.component';
 import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 
 @Component({
   selector: 'inspector-field',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzSwitchModule, NzColorPickerModule, SpacingEditorComponent, JsonEditorComponent, MonacoJsonEditorComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzSwitchModule, NzColorPickerModule, NzToolTipModule, NzIconModule, SpacingEditorComponent, MonacoJsonEditorComponent],
   template: `
     <div [formGroup]="group">
       <nz-form-item>
-        <nz-form-label>Type</nz-form-label>
+        <nz-form-label nzFor="fld_type" nzTooltipTitle="Type de champ (texte, nombre, date…)"><span>Type de champ</span></nz-form-label>
         <nz-form-control>
-          <nz-select formControlName="type">
+          <nz-select id="fld_type" formControlName="type">
             <nz-option nzValue="text" nzLabel="text"></nz-option>
             <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
             <nz-option nzValue="number" nzLabel="number"></nz-option>
@@ -37,51 +38,51 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 
       <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
         <nz-form-item>
-          <nz-form-label>Key</nz-form-label>
-          <nz-form-control><input nz-input formControlName="key"/></nz-form-control>
+          <nz-form-label nzFor="fld_key" nzTooltipTitle="Clé unique pour référencer la valeur"><span>Clé</span></nz-form-label>
+          <nz-form-control><input nz-input id="fld_key" formControlName="key"/></nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Label</nz-form-label>
-          <nz-form-control><input nz-input formControlName="label"/></nz-form-control>
+          <nz-form-label nzFor="fld_label" nzTooltipTitle="Libellé affiché à l’utilisateur"><span>Libellé</span></nz-form-label>
+          <nz-form-control><input nz-input id="fld_label" formControlName="label"/></nz-form-control>
         </nz-form-item>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
           <nz-form-item>
-            <nz-form-label>Label color</nz-form-label>
+            <nz-form-label nzTooltipTitle="Couleur du libellé"><span>Couleur libellé</span></nz-form-label>
             <nz-form-control>
               <nz-color-picker formControlName="fld_labelColor"></nz-color-picker>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>Label fontSize</nz-form-label>
-            <nz-form-control><nz-input-number formControlName="fld_labelFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
+            <nz-form-label nzTooltipTitle="Taille du libellé (px)"><span>Taille libellé</span></nz-form-label>
+            <nz-form-control><nz-input-number style="width: 100%" formControlName="fld_labelFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
           </nz-form-item>
         </div>
         <nz-form-item>
-          <nz-form-label>Expression</nz-form-label>
+          <nz-form-label nzTooltipTitle="Autoriser les expressions (ex: calculs)"><span>Expressions</span></nz-form-label>
           <nz-form-control>
             <nz-switch formControlName="expression_allow"></nz-switch>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item *ngIf="group.get('expression_allow')?.value === true">
-          <nz-form-label>Masquer erreurs d’expression (preview)</nz-form-label>
+          <nz-form-label nzTooltipTitle="Cacher les erreurs d’expression en prévisualisation"><span>Masquer erreurs (preview)</span></nz-form-label>
           <nz-form-control>
             <nz-switch formControlName="expression_hideErrors"></nz-switch>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Placeholder</nz-form-label>
-          <nz-form-control><input nz-input formControlName="placeholder"/></nz-form-control>
+          <nz-form-label nzFor="fld_placeholder" nzTooltipTitle="Texte indicatif dans le champ"><span>Placeholder</span></nz-form-label>
+          <nz-form-control><input nz-input id="fld_placeholder" formControlName="placeholder"/></nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Description</nz-form-label>
-          <nz-form-control><textarea nz-input rows="2" formControlName="description"></textarea></nz-form-control>
+          <nz-form-label nzFor="fld_desc" nzTooltipTitle="Aide sous le champ"><span>Description</span></nz-form-label>
+          <nz-form-control><textarea nz-input rows="2" id="fld_desc" formControlName="description"></textarea></nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Default</nz-form-label>
-          <nz-form-control><input nz-input formControlName="default"/></nz-form-control>
+          <nz-form-label nzFor="fld_default" nzTooltipTitle="Valeur par défaut"><span>Valeur par défaut</span></nz-form-label>
+          <nz-form-control><input nz-input id="fld_default" formControlName="default"/></nz-form-control>
         </nz-form-item>
         <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
-          <nz-form-label>Options (JSON)</nz-form-label>
+          <nz-form-label nzTooltipTitle="Liste des options (JSON)"><span>Options (JSON)</span></nz-form-label>
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
               <monaco-json-editor [value]="$any(group.controls['options'].value)" (valueChange)="group.get('options')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
@@ -89,113 +90,139 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
             </div>
           </nz-form-control>
         </nz-form-item>
-        <nz-divider nzText="Validateurs"></nz-divider>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label style="width:160px; font-weight:600;">Obligatoire</label>
-            <nz-switch [(ngModel)]="v_required" (ngModelChange)="onValidatorsChanged()"></nz-switch>
-          </div>
+        <div class="ins-section-header"><div class="card-title"><span class="t">Validateurs</span><span class="s">Contraintes et règles</span></div></div>
+        <div class="ins-grid">
+          <nz-form-item class="span-2">
+            <nz-form-label nzTooltipTitle="Champ requis pour valider le formulaire"><span>Obligatoire</span></nz-form-label>
+            <nz-form-control>
+              <nz-switch [(ngModel)]="v_required" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+
           <ng-container *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea'">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Min length</label>
-              <nz-input-number [(ngModel)]="v_minLength" (ngModelChange)="onValidatorsChanged()" [nzMin]="0"></nz-input-number>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Max length</label>
-              <nz-input-number [(ngModel)]="v_maxLength" (ngModelChange)="onValidatorsChanged()" [nzMin]="0"></nz-input-number>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Pattern (regex)</label>
-              <input nz-input [(ngModel)]="v_pattern" (ngModelChange)="onValidatorsChanged()" placeholder="^\\d+$" />
-            </div>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Longueur minimale autorisée"><span>Longueur min</span></nz-form-label>
+              <nz-form-control>
+                <nz-input-number style="width: 100%" [(ngModel)]="v_minLength" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" [nzMin]="0"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Longueur maximale autorisée"><span>Longueur max</span></nz-form-label>
+              <nz-form-control>
+                <nz-input-number style="width: 100%" [(ngModel)]="v_maxLength" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" [nzMin]="0"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item class="span-2">
+              <nz-form-label nzTooltipTitle="Expression régulière (regex) à respecter"><span>Motif (regex)</span></nz-form-label>
+              <nz-form-control>
+                <input nz-input [(ngModel)]="v_pattern" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" placeholder="^\\\d+$" />
+              </nz-form-control>
+            </nz-form-item>
           </ng-container>
+
           <ng-container *ngIf="group.get('type')?.value==='number'">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Min</label>
-              <nz-input-number [(ngModel)]="v_min" (ngModelChange)="onValidatorsChanged()" [nzMin]="-999999"></nz-input-number>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Max</label>
-              <nz-input-number [(ngModel)]="v_max" (ngModelChange)="onValidatorsChanged()" [nzMin]="-999999"></nz-input-number>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Entier</label>
-              <nz-switch [(ngModel)]="v_integer" (ngModelChange)="onValidatorsChanged()"></nz-switch>
-            </div>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Valeur minimale"><span>Min</span></nz-form-label>
+              <nz-form-control>
+                <nz-input-number style="width: 100%" [(ngModel)]="v_min" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" [nzMin]="-999999"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Valeur maximale"><span>Max</span></nz-form-label>
+              <nz-form-control>
+                <nz-input-number style="width: 100%" [(ngModel)]="v_max" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" [nzMin]="-999999"></nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item class="span-2">
+              <nz-form-label nzTooltipTitle="Limiter aux nombres entiers"><span>Entier</span></nz-form-label>
+              <nz-form-control>
+                <nz-switch [(ngModel)]="v_integer" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
           </ng-container>
+
           <ng-container *ngIf="group.get('type')?.value==='date'">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Date min</label>
-              <input nz-input [(ngModel)]="v_dateMin" (ngModelChange)="onValidatorsChanged()" placeholder="YYYY-MM-DD" />
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <label style="width:160px;">Date max</label>
-              <input nz-input [(ngModel)]="v_dateMax" (ngModelChange)="onValidatorsChanged()" placeholder="YYYY-MM-DD" />
-            </div>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Date minimale (YYYY-MM-DD)"><span>Date min</span></nz-form-label>
+              <nz-form-control>
+                <input nz-input [(ngModel)]="v_dateMin" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" placeholder="YYYY-MM-DD" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Date maximale (YYYY-MM-DD)"><span>Date max</span></nz-form-label>
+              <nz-form-control>
+                <input nz-input [(ngModel)]="v_dateMax" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" placeholder="YYYY-MM-DD" />
+              </nz-form-control>
+            </nz-form-item>
           </ng-container>
         </div>
 
         <nz-form-item style="margin-top:8px;">
-          <nz-form-label>Validators (JSON avancé)</nz-form-label>
+          <nz-form-label nzTooltipTitle="Validation avancée via JSON"><span>Validators (JSON avancé)</span></nz-form-label>
           <nz-form-control>
             <monaco-json-editor [value]="$any(group.controls['validators'].value)" (valueChange)="group.get('validators')?.setValue($event)" [height]="160"></monaco-json-editor>
           </nz-form-control>
         </nz-form-item>
 
-        <nz-divider nzText="Condition"></nz-divider>
-        <nz-form-item>
-          <nz-form-label>visibleIf (JSON)</nz-form-label>
-          <nz-form-control>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-              <button nz-button nzSize="small" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
+        <div class="ins-section-header"><div class="card-title"><span class="t">Conditions</span><span class="s">Affichage & validation</span></div></div>
+        <div class="ins-grid span-2">
+          <div class="editor-block span-2">
+            <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
+              <div class="title">visibleIf (JSON)</div>
+              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
+                <i nz-icon nzType="build"></i>
+                <span style="margin-left:6px">Builder</span>
+              </button>
             </div>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>requiredIf (JSON)</nz-form-label>
-          <nz-form-control>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <monaco-json-editor [value]="$any(group.controls['requiredIf'].value)" (valueChange)="group.get('requiredIf')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-              <button nz-button nzSize="small" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
+            <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+          </div>
+          <div class="editor-block span-2">
+            <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire (JSON)">
+              <div class="title">requiredIf (JSON)</div>
+              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
+                <i nz-icon nzType="build"></i>
+                <span style="margin-left:6px">Builder</span>
+              </button>
             </div>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>disabledIf (JSON)</nz-form-label>
-          <nz-form-control>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <monaco-json-editor [value]="$any(group.controls['disabledIf'].value)" (valueChange)="group.get('disabledIf')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-              <button nz-button nzSize="small" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">Builder</button>
+            <monaco-json-editor [value]="$any(group.controls['requiredIf'].value)" (valueChange)="group.get('requiredIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+          </div>
+          <div class="editor-block span-2">
+            <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ (JSON)">
+              <div class="title">disabledIf (JSON)</div>
+              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
+                <i nz-icon nzType="build"></i>
+                <span style="margin-left:6px">Builder</span>
+              </button>
             </div>
-          </nz-form-control>
-        </nz-form-item>
+            <monaco-json-editor [value]="$any(group.controls['disabledIf'].value)" (valueChange)="group.get('disabledIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+          </div>
+        </div>
 
-        <nz-divider nzText="Colonnes"></nz-divider>
-        <div style="display:flex; flex-direction:row; gap:8px;">
+        <div class="ins-section-header"><div class="card-title"><span class="t">Colonnes</span><span class="s">Tailles responsives</span></div></div>
+        <div class="ins-grid cols-5">
           <nz-form-item>
-            <nz-form-label>XS</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur XS (mobile) en colonnes"><span>XS</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_xs" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>SM</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur SM (petites tablettes) en colonnes"><span>SM</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_sm" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>MD</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur MD (tablettes) en colonnes"><span>MD</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_md" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>LG</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur LG (desktop) en colonnes"><span>LG</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_lg" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>XL</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur XL (grands écrans) en colonnes"><span>XL</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_xl" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
         </div>
 
-        <nz-divider nzText="Espacement (margin / padding)"></nz-divider>
+        <div class="ins-section-header"><div class="card-title"><span class="t">Espacement</span><span class="s">Margins / Padding</span></div></div>
         <app-spacing-editor [group]="group"></app-spacing-editor>
       </ng-container>
 
@@ -216,32 +243,33 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
             <nz-form-control><nz-input-number formControlName="tb_textFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
           </nz-form-item>
         </div>
-        <nz-divider nzText="Colonnes"></nz-divider>
-        <div style="display:flex; flex-direction:row; gap:8px;">
+        <div class="ins-section-header"><div class="card-title"><span class="t">Colonnes</span><span class="s">Tailles responsives</span></div></div>
+        <div class="ins-grid cols-5">
           <nz-form-item>
-            <nz-form-label>XS</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur XS (mobile) en colonnes"><span>XS</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_xs" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>SM</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur SM (petites tablettes) en colonnes"><span>SM</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_sm" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>MD</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur MD (tablettes) en colonnes"><span>MD</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_md" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>LG</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur LG (desktop) en colonnes"><span>LG</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_lg" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label>XL</nz-form-label>
+            <nz-form-label nzTooltipTitle="Largeur XL (grands écrans) en colonnes"><span>XL</span></nz-form-label>
             <nz-form-control><nz-input-number formControlName="col_xl" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
           </nz-form-item>
         </div>
       </ng-container>
     </div>
-  `
+  `,
+  styleUrls: ['./inspector-field.component.scss']
 })
 export class InspectorFieldComponent implements OnChanges {
   @Input({ required: true }) group!: FormGroup;

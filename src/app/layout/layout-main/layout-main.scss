@@ -4,6 +4,9 @@
     padding: 11px;
     border-radius: 13px;
 }
+:host ::ng-deep .ant-drawer-body {
+    padding: 8px 2px !important;
+}
 
 .item-navbar {
     height: 40px;
@@ -48,15 +51,11 @@ padding: 0 calc(50% - 32px / 2) !important;
 }
 
 
-.logo {
-    height: 32px;
-    margin: 16px;
-    background: rgba(82, 82, 82, 0.3);
-}
+/* remove old grey background */
 
 nz-header {
     background: #fff;
-    padding: 0;
+    padding: 0 12px;
 }
 
 nz-content {
@@ -83,3 +82,85 @@ nz-breadcrumb {
 nz-footer {
     text-align: center;
 }
+
+.hp-header { position: relative; display:flex; align-items:center; justify-content:space-between; }
+.hp-header .hdr-left { display:flex; align-items:center; gap:10px; min-width: 0; }
+.hp-header .hdr-center { position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); display:flex; justify-content:center; align-items:center; }
+.hp-header .hdr-actions { display:flex; align-items:center; gap:8px; }
+.hp-header .brand { font-weight:600; letter-spacing:-0.01em; }
+.hp-header .burger { border-radius: 10px; border:1px solid #e5e7eb; }
+.hp-header .hdr-btn { border-radius: 10px; border:1px solid #e5e7eb; }
+.hp-header .hdr-avatar { border-radius: 999px; border:1px solid #e5e7eb; padding:2px 6px; }
+
+/* Central manager */
+.cmd-bar { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #e5e7eb; border-radius: 12px; padding:6px 8px; box-shadow: 0 8px 20px rgba(0,0,0,.04); }
+.cmd-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; transition: background-color .15s ease, border-color .15s ease, transform .02s ease; }
+.cmd-btn:hover { border-color:#d1d5db; background-image: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+.cmd-btn:active { transform: translateY(0.5px); }
+.cmd-btn.pulse { position:relative; }
+.cmd-btn.pulse::after { content:''; position:absolute; inset:-2px; border-radius:12px; border:1px solid rgba(22,119,255,0.25); animation: pulse 1.8s ease infinite; }
+@keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 70% { opacity: 0; transform: scale(1.2); } 100% { opacity: 0; transform: scale(1); } }
+.cmd-search { width: 160px; transition: width .2s ease; }
+.cmd-search:focus { width: 240px; }
+
+/* Responsive sizing for launch bar (phones) */
+@media (max-width: 768px) {
+  .hp-header .hdr-center { justify-content: center; }
+  .cmd-bar { min-width: 220px; max-width: 360px; }
+  .cmd-btn { width: 30px; height: 30px; }
+  .cmd-search { width: 120px; }
+  .cmd-search:focus { width: 180px; }
+}
+
+/* Command Center modal */
+:host ::ng-deep .ant-modal .ant-modal-content { border-radius: 14px; }
+.cmd-modal { display:flex; flex-direction:column; gap:14px; }
+.cmd-modal .section { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; }
+.cmd-modal .section-title { font-weight:600; color:#6b7280; margin-bottom:8px; }
+.cmd-modal .activity { display:flex; align-items:center; gap:8px; padding:6px 0; }
+.cmd-modal .activity .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; }
+.cmd-modal .activity .dot.success { background:#16a34a; }
+.cmd-modal .activity .dot.running { background:#f59e0b; animation: blink 1s ease infinite; }
+@keyframes blink { 0% { opacity: 0.6 } 50% { opacity: 1 } 100% { opacity: 0.6 } }
+.cmd-modal .activity .label { flex:1; }
+.cmd-modal .activity .time { color:#9ca3af; font-size:12px; white-space:nowrap; }
+.cmd-modal .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+.quick-card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; display:flex; flex-direction:column; align-items:flex-start; gap:6px; cursor:pointer; transition: transform .1s ease, box-shadow .15s ease, border-color .15s ease; }
+.quick-card:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(0,0,0,.08); border-color:#d1d5db; }
+.quick-card i { font-size:18px; }
+.quick-card .qc-title { font-weight:600; }
+.quick-card .qc-desc { color:#6b7280; font-size:12px; }
+.cmd-modal .two-cols { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+.chip { display:inline-flex; align-items:center; gap:6px; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; margin: 4px 6px 0 0; cursor:pointer; }
+.chip .muted { color:#9ca3af; font-size:12px; }
+
+/* Notifications popover panel */
+:host ::ng-deep .hdr-popover .ant-popover-inner { border-radius: 12px; padding: 0; }
+.notif-panel { width: 300px; }
+.notif-header { padding: 10px 12px; font-weight:600; border-bottom:1px solid #f0f0f0; }
+.notif-list { max-height: 300px; overflow: auto; display:flex; flex-direction:column; }
+.notif-item { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:10px 12px; border-bottom:1px solid #f7f7f8; }
+.notif-item.unread { background: #fafafa; }
+.notif-item .meta .title { font-weight:600; font-size:13px; }
+.notif-item .meta .desc { color:#6b7280; font-size:12px; }
+.notif-item .time { color:#9ca3af; font-size:11px; white-space:nowrap; }
+.notif-footer { display:flex; justify-content:center; padding:8px 12px; }
+.notif-footer a { color:#111; text-decoration:none; border:1px solid #e5e7eb; border-radius:10px; padding:6px 10px; }
+.notif-footer a:hover { background-image: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+
+.logo { height: 36px; margin: 16px; display:flex; align-items:center; gap:10px; overflow:hidden; background:#fff; }
+.logo img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
+.logo .brand-text { font-weight:700; letter-spacing:-0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.logo.collapsed { justify-content: center; }
+.logo.collapsed .brand-text { display: none; }
+
+/* Drawer menu */
+.drawer-menu { padding: 0; }
+.drawer-title {  font-weight:600; margin: 8px 8px 14px; color:#6b7280; margin-left: 13px; }
+.drawer-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+.drawer-list > li { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:1px solid #e5e7eb; cursor:pointer; }
+.drawer-list > li:hover { background-image: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+.drawer-list .group-title { display:flex; align-items:center; gap:8px; padding:6px 8px; color:#6b7280; }
+.drawer-list .group-list { list-style:none; margin:0; padding:0 12px; display:flex; flex-direction:column; gap:6px; }
+.drawer-list .group-list li { padding:6px 8px; border-radius:10px; border:1px solid #f0f0f0; cursor:pointer; }
+.drawer-list .group-list li:hover { background-image: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }

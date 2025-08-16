@@ -113,17 +113,15 @@
       <nz-row [nzGutter]="section.grid?.gutter || 16">
         <ng-container *ngFor="let f of section.fields; let i = index">
           <ng-container *ngIf="dfs.isFieldVisible(f, form)">
-            <nz-col
-              [nzSpan]="forceBp ? fieldSpanFor(f, forceBp) : null"
-              [nzXs]="!forceBp ? dfs.getFieldSpans(f).xs : null"
-              [nzSm]="!forceBp ? dfs.getFieldSpans(f).sm : null"
-              [nzMd]="!forceBp ? dfs.getFieldSpans(f).md : null"
-              [nzLg]="!forceBp ? dfs.getFieldSpans(f).lg : null"
-              [nzXl]="!forceBp ? dfs.getFieldSpans(f).xl : null"
-              [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
-              [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
-            >
-               <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
+            <nz-col [nzSpan]="forceBp ? fieldSpanFor(f, forceBp) : null"
+            [nzXs]="!forceBp ? dfs.getFieldSpans(f).xs : null"
+            [nzSm]="!forceBp ? dfs.getFieldSpans(f).sm : null"
+            [nzMd]="!forceBp ? dfs.getFieldSpans(f).md : null"
+            [nzLg]="!forceBp ? dfs.getFieldSpans(f).lg : null"
+            [nzXl]="!forceBp ? dfs.getFieldSpans(f).xl : null"
+            [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
+            [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null">
+              <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
                    (click)="onClickField(i, $event)">
                 <ng-container [ngSwitch]="f.type">
                   <!-- Nested Section: show proper section overlay (Select, arrows, delete, +Add) -->
@@ -203,11 +201,11 @@
                       <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="deleteField.emit({index: i}); $event.stopPropagation()">✕</button>
                     </div>
                   </ng-container>
-                </ng-container>
+                   </ng-container>
               </div>
-            </nz-col>
-          </ng-container>
-        </ng-container>
+                </nz-col>
+              </ng-container>
+            </ng-container>
       </nz-row>
     </div>
     </ng-template>

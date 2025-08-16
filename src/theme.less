@@ -6,9 +6,85 @@
 // Override less variables to here
 // View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
 
-// @primary-color: #1890ff;
-@border-radius-base: 8px;
-@menu-item-padding-horizontal: 12px; // ou la valeur que tu veux
+// Subtle, calm Apple-like look & feel across NG Zorro
+// Cohesive neutral palette + compact radii (6px)
+
+// Brand/palette (assorti)
+@primary-color: #111111; // neutral primary (brandless)
+@info-color: @primary-color;
+@success-color: #16a34a; // calm green 600
+@warning-color: #f59e0b; // amber 500/600
+@error-color:   #ef4444; // red 500
+@link-color: @primary-color;
+
+// Radii (compact, consistent)
+@border-radius-base: 6px;
+@border-radius-sm: 6px;
+@control-border-radius: @border-radius-base;
+@modal-border-radius: @border-radius-base;
+@card-radius: @border-radius-base;
+
+// Typography (prioritize system font stack)
+@font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
+
+// Neutrals & borders
+@component-background: #ffffff;
+@border-color-base: #e5e7eb;
+@border-color-split: #ececec;
+@item-hover-bg: #f7f7f8;
+@background-color-light: #fafafa;
+
+// Shadows (low-contrast, soft)
+@box-shadow-base: 0 8px 24px rgba(0,0,0,0.06);
+@shadow-1-down: 0 8px 24px rgba(0,0,0,0.06);
+@shadow-2: 0 12px 32px rgba(0,0,0,0.08);
+
+// Buttons — match app cards/ghost buttons (subtle, rounded 6px)
+@btn-border-radius-base: 6px;
+@btn-border-radius-sm: 6px;
+@btn-default-border: @border-color-base;
+@btn-default-bg: @component-background;
+@btn-text-hover-bg: rgba(0,0,0,0.03);
+// Primary adopts neutral brand
+@btn-primary-bg: @primary-color;
+@btn-primary-color: #fff;
+@btn-primary-shadow: 0 2px 0 rgba(0,0,0,0.045);
+
+// Cards
+@card-background: @component-background;
+@card-shadow: 0 8px 24px rgba(0,0,0,0.06);
+
+// Modals
+@modal-content-bg: @component-background;
+@modal-header-bg: @component-background;
+@modal-footer-bg: transparent;
+
+// Menus (tighter spacing, no left border highlight)
+@menu-item-padding-horizontal: 12px;
 @menu-item-padding: 0 @menu-item-padding-horizontal;
 @menu-item-active-border-width: 0px;
-//@menu-collapsed-width: 40px;
+
+// Keep brand primary (blue) but feel free to override if you want monochrome UI
+// @primary-color: #1677ff;
+
+// Optional: reduce layout visual noise
+// @layout-sider-background-light: #ffffff;
+// @layout-header-background: #ffffff;
+// @layout-header-color: #111;
+
+// //@menu-collapsed-width: 40px;
+
+// Ensure active/selected text is white for visibility
+@menu-highlight-color: #ffffff; // menu selected text/icon
+@tabs-card-active-color: #ffffff; // tabs (card) active text
+@tabs-active-color: #ffffff; // tabs (line) active text
+@select-item-selected-color: #ffffff; // select & tree-select selected item text
+//@select-item-active-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); // Select option hover bg
+@tree-directory-selected-color: #ffffff; // directory tree selected text
+@tree-node-selected-bg: @primary-2; // keep subtle bg for selected nodes
+@tree-node-selected-color: #ffffff; // ensure selected node text is white (if supported)
+
+// Hover backgrounds (preserve NG-Zorro animations by using theme var)
+//@item-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);

@@ -1,6 +1,6 @@
 <div class="builder">
-  <!-- PALETTE / CONTEXTE -->
-  <div class="left">
+  <!-- Reusable left panel content (desktop + drawer) -->
+  <ng-template #leftPanelContent>
     <df-context-panel
       [treeNodes]="treeNodes"
       [treeSelectedKeys]="treeSelectedKeys"
@@ -45,100 +45,139 @@
       (doExport)="export()"
     ></df-context-panel>
 
-    <nz-card nzTitle="Prévisualisation responsive" nzSize="small" class="card sticky mt">
-      <div class="bp">
-        <label style="display:flex;align-items:center;gap:6px;margin-right:auto">
-          <span>Mode édition</span>
-          <nz-switch [(ngModel)]="editMode" (ngModelChange)="onEditModeChange($event)" [ngModelOptions]="{standalone:true}"></nz-switch>
-        </label>
-        <nz-tag nzColor="blue">BP: {{ forceBp || ('auto: ' + autoBp) }}</nz-tag>
-        <button nz-button nzSize="small" (click)="setPreviewWidth()">Auto</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(360)">XS</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(576)">SM</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(768)">MD</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(992)">LG</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(1200)">XL</button>
-        <button nz-button nzSize="small" (click)="setPreviewWidth(1600)">XXL</button>
+    <ng-template #scenariosTitle>
+      <div class="card-title">
+        <span class="t">Scénarios de test</span>
+        <span class="s">Préremplissage & Simulation</span>
       </div>
-      <div style="display:flex; align-items:center; gap:10px; margin:8px 0 0;">
-        <label style="display:flex; align-items:center; gap:6px;">
-          <span>Désactiver erreurs d'expression (preview)</span>
-          <nz-switch [(ngModel)]="previewSuppressExprErrors" [ngModelOptions]="{standalone:true}"></nz-switch>
-        </label>
-      </div>
-      <nz-divider nzText="Hypothèses de test"></nz-divider>
-      <div style="max-height:180px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
-        <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
-          <span style="font-weight:600;">{{ sc.label }}</span>
-          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-          <span style="flex:1"></span>
-          <button nz-button nzSize="small" (click)="applyScenario(sc)">Appliquer</button>
-        </div>
-      </div>
-      <nz-divider nzText="Cas du formulaire (variations)"></nz-divider>
-      <div style="max-height:220px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
-        <div *ngFor="let sc of scenariosAll" style="display:flex; align-items:center; gap:8px;">
-          <span style="font-weight:600;">{{ sc.label }}</span>
-          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-          <span style="flex:1"></span>
-          <button nz-button nzSize="small" (click)="applyScenarioAll(sc)">Remplir</button>
-        </div>
-      </div>
-      <nz-divider nzText="Formulaire entier"></nz-divider>
-      <div style="max-height:220px; overflow:auto; display:flex; flex-direction:column; gap:6px;">
-        <div *ngFor="let sc of formScenarios" style="display:flex; align-items:center; gap:8px;">
-          <span style="font-weight:600;">{{ sc.label }}</span>
-          <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-          <span style="flex:1"></span>
-          <button nz-button nzSize="small" (click)="applyFormScenario(sc)">Remplir</button>
-        </div>
-      </div>
-    </nz-card>
-
-    <nz-card nzTitle="Conditions & Simulation" nzSize="small" class="card sticky mt">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-        <label style="display:flex; align-items:center; gap:6px;">
-          <span>Activer la simulation</span>
-          <nz-switch [(ngModel)]="previewUseSim" [ngModelOptions]="{standalone:true}"></nz-switch>
-        </label>
-        <button nz-button nzSize="small" (click)="resetSimulation()">Réinitialiser</button>
-      </div>
-      <div style="max-height:220px; overflow:auto; display:flex; flex-direction:row; gap:6px;">
-        <div *ngFor="let c of conditionEntries" style="border:1px solid #f0f0f0; border-radius:6px; padding:6px;">
-          <div style="display:flex; align-items:center; gap:6px;">
-            <nz-tag nzColor="blue">{{ c.kind }}</nz-tag>
-            <strong style="flex:1;">{{ c.targetLabel }}</strong>
-            <span style="color:#64748b; font-size:12px;" nz-tooltip [nzTooltipTitle]="describeRule(c.rule)">{{ describeRuleWithCtx(c) }}</span>
-            <button nz-button nzSize="small" (click)="activateCondition(c)">{{ isRuleSatisfiedWithCtx(c) ? 'Désactiver' : 'Activer' }}</button>
+    </ng-template>
+    <nz-card [nzTitle]="scenariosTitle" nzSize="small" class="card md">
+      <nz-collapse nzGhost>
+        <nz-collapse-panel nzHeader="Hypothèses de test" [nzActive]="true">
+          <ng-container *ngIf="scenarios?.length; else noItems1">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:600;">{{ sc.label }}</span>
+                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+                <span style="flex:1"></span>
+                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Appliquer" (click)="applyScenario(sc)"><i class="fa-solid fa-play"></i></button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #noItems1><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+        </nz-collapse-panel>
+        <nz-collapse-panel nzHeader="Cas du formulaire (variations)" [nzActive]="true">
+          <ng-container *ngIf="scenariosAll?.length; else noItems2">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div *ngFor="let sc of scenariosAll" style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:600;">{{ sc.label }}</span>
+                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+                <span style="flex:1"></span>
+                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyScenarioAll(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #noItems2><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+        </nz-collapse-panel>
+        <nz-collapse-panel nzHeader="Formulaire entier" [nzActive]="true">
+          <ng-container *ngIf="formScenarios?.length; else noItems3">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div *ngFor="let sc of formScenarios" style="display:flex; align-items:center; gap:8px;">
+                <span style="font-weight:600;">{{ sc.label }}</span>
+                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+                <span style="flex:1"></span>
+                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyFormScenario(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #noItems3><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+        </nz-collapse-panel>
+        <nz-collapse-panel nzHeader="Conditions & Simulation" [nzActive]="true">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <label style="display:flex; align-items:center; gap:6px;">
+              <span>Activer la simulation</span>
+              <nz-switch [(ngModel)]="previewUseSim" [ngModelOptions]="{standalone:true}"></nz-switch>
+            </label>
+            <button nz-button nzSize="small" (click)="resetSimulation()">Réinitialiser</button>
           </div>
-        </div>
-      </div>
-      <nz-divider nzText="Contrôles"></nz-divider>
-      <div *ngIf="!issues.length" style="color:#64748b; font-size:12px;">Aucun problème détecté.</div>
-      <ul *ngIf="issues.length" style="margin:0; padding-left:16px;">
-          <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
-            <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
-            <strong *ngIf="it.level==='error'">[Erreur]</strong>
-            <strong *ngIf="it.level==='warning'">[Attention]</strong>
-            <span> {{ it.message }} </span>
-            <ng-container *ngIf="it.actions?.length">
-              <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
-            </ng-container>
-          </li>
-      </ul>
+        </nz-collapse-panel>
+        <nz-collapse-panel nzHeader="Contrôles" [nzActive]="true">
+          <div *ngIf="!issues.length" style="color:#64748b; font-size:12px;">Aucun problème détecté.</div>
+          <ul *ngIf="issues.length" style="margin:0; padding-left:16px;">
+            <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
+              <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
+              <strong *ngIf="it.level==='error'">[Erreur]</strong>
+              <strong *ngIf="it.level==='warning'">[Attention]</strong>
+              <span> {{ it.message }} </span>
+              <ng-container *ngIf="it.actions?.length">
+                <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
+              </ng-container>
+            </li>
+          </ul>
+        </nz-collapse-panel>
+      </nz-collapse>
     </nz-card>
 
-    <nz-card nzTitle="Contexte (ctx) pour expressions" nzSize="small" class="card sticky mt">
+
+    <ng-template #ctxJsonTitle>
+      <div class="card-title">
+        <span class="t">Contexte (ctx)</span>
+        <span class="s">Expressions json/$json, env/$env…</span>
+      </div>
+    </ng-template>
+    <nz-card [nzTitle]="ctxJsonTitle" nzSize="small" class="card mt">
       <monaco-json-editor [value]="ctxJson" (valueChange)="onCtxChange($event)" [height]="180"></monaco-json-editor>
       <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
     </nz-card>
+  </ng-template>
+
+  <!-- PALETTE / CONTEXTE -->
+  <div class="left">
+    <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
   </div>
 
   <!-- CANVAS -->
   <div class="center">
-    <nz-card nzTitle="Aperçu éditable" class="card fill">
+      <div class="preview-extra-mobile">
+        <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left', $event)" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette & Contexte' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <span class="sep"></span>
+        <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddSection()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter une section' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter une section">
+          <i class="fa-solid fa-layer-group"></i>
+        </button>
+        <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddField()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter un champ' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter un champ">
+          <i class="fa-solid fa-square-plus"></i>
+        </button>
+        <span class="sep"></span>
+        <button nz-button nzSize="small" class="apple-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Annuler' : null" [nzTooltipTrigger]="'hover'" aria-label="Annuler">
+          ↺
+        </button>
+        <button nz-button nzSize="small" class="apple-btn" (click)="redo()" [disabled]="!canRedo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Rétablir' : null" [nzTooltipTrigger]="'hover'" aria-label="Rétablir">
+          ↻
+        </button>
+        <button nz-button nzSize="small" [ngClass]="{'apple-btn': !editMode}" [nzType]="editMode ? 'primary' : 'default'" (click)="mobileToggleEdit()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Mode édition' : null" [nzTooltipTrigger]="'hover'" aria-label="Basculer édition">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button nz-button nzSize="small" class="apple-btn" (click)="saveSchema()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Sauvegarder' : null" [nzTooltipTrigger]="'hover'" aria-label="Sauvegarder">
+          <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+        <span class="flex-spacer"></span>
+        <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+      </div>
+      <nz-divider class="mobile-only no-margin" ></nz-divider>
+    <ng-template #previewTitle>
+      <div class="card-title">
+        <span class="t">Aperçu éditable</span>
+        <span class="s">Navigation & Contrôles</span>
+      </div>
+      
+    </ng-template>
+    <nz-card [nzTitle]="previewTitle" nzSize="small" class="card fill no-chrome">
       <div class="preview-frame" [style.width.px]="previewWidth || null">
-      <app-dynamic-form
+        <app-dynamic-form
         [schema]="schema"
         [value]="previewUseSim ? simValues : undefined"
         [ctx]="ctxObj"
@@ -165,8 +204,34 @@
 
       <!-- History controls centered -->
       <div class="history-bar">
-        <button nz-button nzSize="small" (click)="undo()" [disabled]="!canUndo" title="Annuler">↺</button>
-        <button nz-button nzSize="small" (click)="redo()" [disabled]="!canRedo" title="Rétablir">↻</button>
+        <div class="hb-left">
+          <button nz-button nzSize="small" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">↺</button>
+          <button nz-button nzSize="small" (click)="redo()" [disabled]="!canRedo" nz-tooltip nzTooltipTitle="Rétablir" aria-label="Rétablir">↻</button>
+        </div>
+        <div class="hb-mid">
+          <button nz-button nzSize="small" [nzType]="editMode ? 'primary' : 'default'" class="hb-mode-btn"
+                  (click)="toggleEditMode()" nz-tooltip nzTooltipTitle="Mode édition">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span class="label">Édition</span>
+          </button>
+          <span class="hb-bp">
+            <nz-select nzSize="small" class="hb-bp-select" [(ngModel)]="selectedBp" (ngModelChange)="onBpChange($event)" [ngModelOptions]="{standalone:true}" [nzDropdownMatchSelectWidth]="false">
+              <nz-option-group *ngIf="selectedBp==='auto'" [nzLabel]="'Format actuel: ' + autoBp"></nz-option-group>
+              <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
+              <nz-option nzValue="xs" nzLabel="XS (360)"></nz-option>
+              <nz-option nzValue="sm" nzLabel="SM (576)"></nz-option>
+              <nz-option nzValue="md" nzLabel="MD (768)"></nz-option>
+              <nz-option nzValue="lg" nzLabel="LG (992)"></nz-option>
+              <nz-option nzValue="xl" nzLabel="XL (1200)"></nz-option>
+              <nz-option nzValue="xxl" nzLabel="XXL (1600)"></nz-option>
+            </nz-select>
+          </span>
+        </div>
+        <div class="hb-right">
+          <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Sauvegarder" (click)="saveSchema()" aria-label="Sauvegarder">
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Choix en cas de conflits de conditions sur un même champ -->
@@ -277,10 +342,16 @@
     </nz-card>
   </div>
 
-  <!-- INSPECTOR -->
-  <div class="right">
-    <nz-card nzTitle="Inspector" class="card" *ngIf="selected">
-      <nz-tabs nzSize="small">
+  <!-- INSPECTOR template for reuse (desktop + drawer) -->
+  <ng-template #rightPanelContent>
+    <ng-template #inspectorTitle>
+      <div class="card-title">
+        <span class="t">Inspector</span>
+        <span class="s">Propriétés & Styles</span>
+      </div>
+    </ng-template>
+    <nz-card [nzTitle]="inspectorTitle" nzSize="small" class="card no-chrome" *ngIf="selected">
+      <nz-tabs nzSize="small" class="inspector-tabs">
         <!-- PROPS OBJET -->
         <nz-tab nzTitle="Propriétés" *ngIf="selected !== schema">
           <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
@@ -302,16 +373,20 @@
         </nz-tab>
 
         <!-- FORM SETTINGS (UI + SUMMARY) -->
-        <nz-tab nzTitle="Form Settings" *ngIf="selected === schema">
+        <nz-tab nzTitle="Customisations" *ngIf="selected === schema">
           <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
         </nz-tab>
 
         <!-- APERCU JSON -->
-        <nz-tab nzTitle="JSON">
+        <nz-tab nzTitle="Paramètres">
           <pre class="json">{{ schema | json }}</pre>
         </nz-tab>
       </nz-tabs>
     </nz-card>
+  </ng-template>
+
+  <div class="right">
+    <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
   </div>
 
   <!-- PREVIEW du bas supprimé (aperçu central utilisé) -->
@@ -363,3 +438,16 @@
       <app-json-schema-viewer [data]="submitResult" [editable]="false" [editMode]="false" [initialMode]="'JSON'"></app-json-schema-viewer>
     </ng-container>
   </nz-modal>
+
+<!-- Responsive drawers (mobile) -->
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+  <ng-container *nzDrawerContent>
+    <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+  </ng-container>
+  </nz-drawer>
+
+<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="rightDrawer=false" nzPlacement="right" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+  <ng-container *nzDrawerContent>
+    <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+  </ng-container>
+</nz-drawer>

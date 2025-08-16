@@ -6,6 +6,91 @@ body {
     overflow: hidden;
 }
 
+/* Global UI vars */
+:root {
+    --hp-menu-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
+}
+
+/* Ant Design menu hover: keep text dark (not white) */
+.ant-menu-light .ant-menu-item:not(.ant-menu-item-selected):hover,
+.ant-menu-light .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover,
+.ant-menu .ant-menu-item:not(.ant-menu-item-selected):hover,
+.ant-menu .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover {
+    color: #1f2937 !important; /* slate-800 */
+}
+.ant-menu-light .ant-menu-item:not(.ant-menu-item-selected):hover .anticon,
+.ant-menu-light .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover .anticon,
+.ant-menu .ant-menu-item:not(.ant-menu-item-selected):hover .anticon,
+.ant-menu .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover .anticon {
+    color: #1f2937 !important;
+}
+
+/* Keep selected item/submenu white even on hover */
+.ant-menu-light .ant-menu-item.ant-menu-item-selected:hover,
+.ant-menu .ant-menu-item.ant-menu-item-selected:hover,
+.ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title:hover,
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title:hover {
+    color: #ffffff !important;
+}
+.ant-menu-light .ant-menu-item.ant-menu-item-selected:hover .anticon,
+.ant-menu .ant-menu-item.ant-menu-item-selected:hover .anticon,
+.ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title:hover .anticon,
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title:hover .anticon {
+    color: #ffffff !important;
+}
+
+/* Animated gradient hover via pseudo-element (does not break NG Zorro animations) */
+.ant-menu .ant-menu-item,
+.ant-menu .ant-menu-submenu-title {
+    position: relative;
+    z-index: 0; /* create stacking context for safe layering */
+    overflow: hidden;
+    background-color: transparent; /* keep base transparent */
+}
+.ant-menu .ant-menu-item::before,
+.ant-menu .ant-menu-submenu-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: var(--hp-menu-hover-bg);
+    opacity: 0;
+    transition: opacity 160ms ease;
+    pointer-events: none;
+    z-index: -1; /* keep gradient behind text/icons */
+}
+/* Show gradient only for non-selected items on hover */
+.ant-menu .ant-menu-item:not(.ant-menu-item-selected):hover::before,
+.ant-menu .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover::before {
+    opacity: 1;
+}
+
+/* TreeSelect: ensure selected nodes have white text inside dropdown */
+.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected,
+.ant-select-tree .ant-select-tree-treenode-selected > .ant-select-tree-node-content-wrapper {
+    color: #fff;
+    background-color: #111; /* match neutral primary */
+}
+.ant-select-tree .ant-select-tree-node-selected .ant-select-tree-title {
+    color: #fff;
+}
+/* TreeSelect hover (non-selected) with gradient and dark text */
+.ant-select-tree .ant-select-tree-node-content-wrapper:not(.ant-select-tree-node-selected):hover {
+    background-image: var(--hp-menu-hover-bg);
+    background-color: transparent;
+    color: #1f2937;
+}
+
+/* Tree (plain nz-tree): selected node text should be white as well */
+.ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected,
+.ant-tree .ant-tree-treenode-selected .ant-tree-node-content-wrapper,
+.ant-tree .ant-tree-treenode-selected .ant-tree-title,
+.ant-tree .ant-tree-node-selected .ant-tree-title {
+    color: #fff;
+}
+
+/* (Removed complex active overrides; rely on theme variables) */
+
 app-root {
     transform: scale(0.7) !important;
     /* au lieu de zoom:70% */
@@ -155,6 +240,39 @@ app-root {
     padding: 10px;
 }
 
+/* Global thin scrollbar, neutral DA */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent; /* thumb, track */
+}
+/* WebKit */
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1; /* neutral gray */
+    border-radius: 8px;
+    border: 2px solid transparent; /* creates padding */
+    background-clip: padding-box;
+}
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Prevent mobile browsers (iOS Safari, Chrome Android) from auto-zooming inputs */
+@media (max-width: 480px) {
+  html { -webkit-text-size-adjust: 100%; }
+  input, select, textarea,
+  .ant-input,
+  .ant-select-selector,
+  .ant-select-selection-search-input,
+  .ant-input-number-input,
+  .ant-picker-input > input {
+    font-size: 16px !important;
+  }
+}
+
 .margin-top-13 {
     margin-top: 13px;
 }
@@ -202,4 +320,42 @@ body {
   //font-weight: 400;
   //font-style: normal;
   //  font-family: 'Sarine', system-ui, sans-serif;
+}
+
+/* Apple-like compact button, shared */
+.apple-btn {
+  border: 1px solid #e5e7eb !important;
+  background: #fff !important;
+  color: #0f172a !important;
+  height: 30px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  box-shadow: 0 0 transparent;
+}
+.apple-btn:hover {
+  background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%) !important;
+}
+.ant-btn.apple-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%) !important; }
+.apple-btn i.anticon { font-size: 14px; line-height: 1; }
+.apple-btn[disabled] { opacity: .5; cursor: not-allowed; }
+/* Truncation for long labels inside compact buttons */
+.apple-btn { max-width: 100%; flex: 0 1 auto; min-width: 0; }
+.apple-btn .label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Generic row for compact buttons that should not grow parent */
+.btn-row { display: flex; gap: 8px; width: 100%; overflow: hidden; align-items: center; }
+.btn-row > .apple-btn { flex: 1 1 0; min-width: 0; }
+
+/* Drawer (responsive) — remove outer chrome on left-panel cards only, keep header separator */
+.ant-drawer .ant-drawer-body .card.ant-card {
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.ant-drawer .ant-drawer-body .card.ant-card > .ant-card-head {
+  border-bottom: 1px solid #E2E1E4 !important;
 }

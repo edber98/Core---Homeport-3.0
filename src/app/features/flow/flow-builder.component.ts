@@ -336,8 +336,10 @@ export class FlowBuilderComponent {
   ctxMenuTarget: any = null; // node or edge
   /* private applyingHistory = false; */
   constructor(public history: FlowHistoryService, private message: NzMessageService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  isMobile = false;
 
   ngOnInit() {
+    this.updateIsMobile();
     // Initialise un graphe par défaut à partir de this.items (pas this.templates)
     const findByType = (t: string) => (this.items.find(it => it?.template?.type === t)?.template);
     const startT = findByType('start') || { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} };
@@ -407,6 +409,16 @@ export class FlowBuilderComponent {
     this.updateZoomDisplay();
   }
   ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch {} }
+
+  @HostListener('window:resize') onResize() { this.updateIsMobile(); }
+  private updateIsMobile() {
+    try {
+      // Consider coarse pointer or small viewport as mobile
+      const coarse = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
+      const small = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
+      this.isMobile = coarse || small;
+    } catch { this.isMobile = false; }
+  }
 
   private updateZoomDisplay() {
     try {
@@ -519,6 +531,7 @@ export class FlowBuilderComponent {
     } catch { return ''; }
   }
   onExternalDrop(event: any) {
+    if (this.isMobile) return; // Disable DnD on mobile
     
     // Écran -> coordonnées relatives -> viewport -> monde
     const dropHost = this.dropZone?.element?.nativeElement as HTMLElement | undefined;
@@ -590,11 +603,15 @@ export class FlowBuilderComponent {
         markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } }
       }
     ];
+    // Keep error branch propagation consistent after new connection
+    this.recomputeErrorPropagation();
     this.pushState('connect.edge');
   }
 
   deleteEdge(edge: Edge) {
     this.edges = this.edges.filter(e => e !== edge);
+    // After edge deletion, recompute error branch propagation
+    this.recomputeErrorPropagation();
     this.pushState('delete.edge');
   }
 
@@ -641,6 +658,60 @@ export class FlowBuilderComponent {
     } catch { return ''; }
   }
 
+  // Recompute error-branch propagation from current edges.
+  // Seeds are targets of edges whose sourceHandle is 'err'. Propagation follows all outgoing edges.
+  private recomputeErrorPropagation() {
+    try {
+      const adj = new Map<string, string[]>();
+      for (const e of this.edges) {
+        const s = String(e.source);
+        const t = String(e.target);
+        if (!adj.has(s)) adj.set(s, []);
+        adj.get(s)!.push(t);
+      }
+      const next = new Set<string>();
+      const queue: string[] = [];
+      for (const e of this.edges) {
+        if (String(e.sourceHandle) === 'err') {
+          const t = String(e.target);
+          if (!next.has(t)) { next.add(t); queue.push(t); }
+        }
+      }
+      while (queue.length) {
+        const n = queue.shift()!;
+        const outs = adj.get(n) || [];
+        for (const to of outs) {
+          if (!next.has(to)) { next.add(to); queue.push(to); }
+        }
+      }
+      // Replace current set
+      this.errorNodes = next;
+      // Update edge styling in-place to avoid triggering remove/add cycles
+      for (const e of this.edges as any[]) {
+        const isErr = String(e.sourceHandle) === 'err' || next.has(String(e.source));
+        // Preserve base styles once
+        const baseWidth = (e.data && typeof e.data.__baseWidth === 'number') ? e.data.__baseWidth : (e.data?.strokeWidth ?? 2);
+        const baseColor = (e.data && typeof e.data.__baseColor === 'string') ? e.data.__baseColor : (e.data?.color ?? '#b1b1b7');
+        const newData: any = { ...(e.data || {}) };
+        if (typeof newData.__baseWidth !== 'number') newData.__baseWidth = baseWidth;
+        if (typeof newData.__baseColor !== 'string') newData.__baseColor = baseColor;
+        if (isErr) {
+          newData.error = true;
+          newData.strokeWidth = 1; // same as initial error edge
+          newData.color = '#f759ab';
+        } else {
+          newData.error = false;
+          newData.strokeWidth = baseWidth;
+          newData.color = baseColor;
+        }
+        e.data = newData;
+        // Keep existing arrow markers; do not replace to avoid template cache issues
+      }
+      // Trigger Angular change detection without changing edge identities
+      this.edges = [...this.edges];
+    } catch {}
+  }
+
   isNodeInError(id: string): boolean {
     if (this.errorNodes.has(String(id))) return true;
     try {
@@ -662,17 +733,20 @@ export class FlowBuilderComponent {
   // DnD events (debug logging)
   onDragEnter(e: any) {  }
   onDragLeave(e: any) {  }
-  onDragOver(e: any) { try { e.preventDefault(); } catch { } }
+  onDragOver(e: any) { if (this.isMobile) return; try { e.preventDefault(); } catch { } }
   onDragStart(item: any, ev: any) {
+    if (this.isMobile) return;
     try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.add(key); } catch {}
   }
   onDragEnd(item: any, ev: any) {
+    if (this.isMobile) return;
     try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.delete(key); } catch {}
   }
   isDragging(item: any): boolean { try { const key = String(item?.template?.id || item?.label || ''); return key ? this.draggingPalette.has(key) : false; } catch { return false; } }
 
   // Context menu actions for nodes
   onNodeContextMenu(ev: MouseEvent, node: any) {
+    if (this.isMobile) return;
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
     this.ctxMenuVisible = true;
     this.ctxMenuX = ev.clientX;
@@ -763,6 +837,8 @@ export class FlowBuilderComponent {
         this.errorNodes.delete(String(id));
       }
       this.selection = null;
+      // Context deletions may affect error branches
+      this.recomputeErrorPropagation();
       this.history.push(this.snapshot());
     } catch {}
   }
@@ -922,6 +998,9 @@ export class FlowBuilderComponent {
         this.edges = this.edges.filter(e => (e.source !== nodeId) || allowed.has(String(e.sourceHandle ?? '')));
       }
 
+      // Recompute error propagation because edges may have been removed/remapped
+      this.recomputeErrorPropagation();
+
       // Optionally, we could reconcile target handles too, but inputs are stable ('in')
       if (this.edges.length !== before) {
         // Edges changed; selection may reference a removed edge
@@ -1021,6 +1100,8 @@ export class FlowBuilderComponent {
       this.errorNodes.delete(String(id));
     }
     this.selection = null;
+    // Deletion may change error-branch reachability
+    this.recomputeErrorPropagation();
     this.history.push(this.snapshot());
   }
 
@@ -1031,7 +1112,8 @@ export class FlowBuilderComponent {
     if (!prev) return;
     this.nodes = prev.nodes;
     this.edges = prev.edges as any;
-    
+    // Restore derived error branches from the resulting graph
+    this.recomputeErrorPropagation();
   }
   redo() {
     
@@ -1040,7 +1122,8 @@ export class FlowBuilderComponent {
     if (!next) return;
     this.nodes = next.nodes;
     this.edges = next.edges as any;
-    
+    // Restore derived error branches from the resulting graph
+    this.recomputeErrorPropagation();
   }
 
   centerFlow() {
@@ -1252,6 +1335,8 @@ export class FlowBuilderComponent {
       this.nodes = this.nodes.filter(n => !ids.has(n.id));
       this.edges = this.edges.filter(e => !ids.has(String(e.source)) && !ids.has(String(e.target)));
       ids.forEach(id => this.errorNodes.delete(String(id)));
+      // Removal can break error paths: recompute error propagation
+      this.recomputeErrorPropagation();
       this.pushState('nodes.removed');
     } catch {}
   }
@@ -1278,6 +1363,8 @@ export class FlowBuilderComponent {
         // Force re-render to restore edges vflow tried to remove
         this.edges = [...this.edges];
       }
+      // Any change in edges can affect error-branch propagation
+      this.recomputeErrorPropagation();
       this.pushState('edges.removed');
     } catch {}
   }
@@ -1299,6 +1386,8 @@ export class FlowBuilderComponent {
           // Ne supprimer que si la source ou la cible n’existe vraiment plus
           if (!hasSource || !hasTarget) {
             this.edges = this.edges.filter(e => e !== edge);
+            // Edge actually detached, update error propagation
+            this.recomputeErrorPropagation();
             this.pushState('edges.detached.final');
           }
         }, 250);
@@ -1337,7 +1426,8 @@ export class FlowBuilderComponent {
           // After import, reconcile edges for all nodes (in case formats changed)
           try { this.nodes.forEach(n => this.reconcileEdgesForNode(n?.data?.model)); } catch {}
           this.selection = null;
-          this.errorNodes.clear();
+          // Rebuild error-branch state from imported edges
+          this.recomputeErrorPropagation();
           this.history.reset(this.snapshot());
           try { this.message.success('Flow importé'); } catch { this.showToast('Flow importé'); }
         } else {

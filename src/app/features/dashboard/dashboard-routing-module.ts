@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardHome } from './pages/dashboard-home/dashboard-home';
-import { DashboardStats } from './pages/dashboard-stats/dashboard-stats';
 
 const routes: Routes = [
-  {path: '', component: DashboardHome},
-  {path: 'stats', component: DashboardStats}
+  { path: '', loadComponent: () => import('./pages/dashboard-home/dashboard-home').then(m => m.DashboardHome) },
+  { path: 'stats', loadComponent: () => import('./pages/dashboard-stats/dashboard-stats').then(m => m.DashboardStats) }
 ];
 
 @NgModule({

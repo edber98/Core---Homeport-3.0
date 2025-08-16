@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, EventEmitter, Output, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Vflow, Edge, ConnectionSettings } from 'ngx-vflow';
 import { Subscription } from 'rxjs';
@@ -9,21 +9,21 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, Vflow],
   template: `
-  <div class="flow-exec">
-    <aside class="side executions">
-      <h4>Executions</h4>
-      <div class="panel">
-        <p>Aucune exécution récente.</p>
-      </div>
-    </aside>
+  <div class="flow-viewer">
     <section class="canvas ro">
-      <div class="canvas-host" #flowHost (wheel)="onWheel($event)">
+      <div class="canvas-host" #flowHost (wheel)="onWheel($event)" (pointerdown)="onPointerDown($event)">
         <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="allowDrag && move" [minZoom]="0.05" [maxZoom]="3"
-               [nodes]="nodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)">
+               [nodes]="vflowNodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
+               (selected)="selected.emit($event)" (onConnect)="connect.emit($event)">
           <ng-template let-ctx edge>
             <svg:g customTemplateEdge>
               <svg:path fill="none" [attr.d]="ctx.path()" [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)" [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')" [attr.marker-end]="ctx.markerEnd()" />
             </svg:g>
+          </ng-template>
+          <ng-template let-ctx edgeLabelHtml>
+            <div class="edge-labels" [ngClass]="{ error: (computeEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }">
+              <div class="badge label" *ngIf="computeEdgeLabel(ctx.edge) as txt" [ngClass]="{ error: txt === 'Error' }">{{ txt }}</div>
+            </div>
           </ng-template>
           <ng-template let-ctx nodeHtml>
             <div class="node-card ro" [class.locked]="!(allowDrag && move)">
@@ -38,22 +38,52 @@ import { Subscription } from 'rxjs';
                 <handle position="top" type="target" [id]="inId"></handle>
               </ng-container>
               <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
-                <handle position="bottom" type="source" *ngFor="let out of outputIds(ctx.node.data.model)" [id]="out"></handle>
+                <div class="out" *ngFor="let out of outputIds(ctx.node.data.model)">
+                  <ng-template #hTpl let-hctx>
+                    <svg:g>
+                      <svg:circle
+                        [attr.cx]="hctx.point().x"
+                        [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="(out === 'err') ? '#f759ab' : '#000000'"
+                        [attr.stroke]="'#ffffff'"
+                        stroke-width="1"
+                        (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)"
+                        (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"
+                      ></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <handle position="bottom" type="source" [id]="out" [template]="hTpl"></handle>
+                </div>
               </div>
             </div>
           </ng-template>
         </vflow>
+        <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY" [ngClass]="{ error: tipError }">{{ tipText }}</div>
       </div>
     </section>
   </div>
-  <div class="bottom-bar">
+  <div class="bottom-bar" *ngIf="showBottomBar">
     <div class="actions">
-      <span class="zoom-indicator">Zoom: {{ zoomPercent }}%</span>
+      <button class="icon-btn" *ngIf="showCenterFlow" (click)="onCenterFlow()" title="Centrer le flow">
+        <i class="fa-regular fa-object-group"></i>
+      </button>
+      <button class="icon-btn" *ngIf="showCenterSelection" [disabled]="true" title="Centrer sur la sélection">
+        <i class="fa-solid fa-crosshairs"></i>
+      </button>
+      <button class="icon-btn" *ngIf="showSave" (click)="onSave()" title="Sauvegarder">
+        <i class="fa-regular fa-floppy-disk"></i>
+      </button>
+      <button class="icon-btn" *ngIf="showRun" (click)="onRun()" title="Lancer">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <span class="zoom-indicator" *ngIf="showZoomIndicator">Zoom: {{ zoomPercent }}%</span>
     </div>
   </div>
   `,
   styles: [`
-    .flow-exec { position: relative; display:grid; grid-template-columns: 320px 1fr; gap: 0; height:100%; }
+    .flow-viewer { position: relative; height:100%; }
     .canvas.ro { border: 1px solid #e5e7eb; border-radius: 0; overflow: hidden; height:100%; }
     .canvas-host { height: 100%; width: 100%; }
     .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:8px; min-width: 180px; }
@@ -63,12 +93,18 @@ import { Subscription } from 'rxjs';
     .node-card .meta .title { font-weight: 600; }
     .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
     .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
-    .side.executions { border: none; border-radius: 0; padding: 12px; background: #ffffff; overflow: auto; }
-    .side.executions h4 { margin: 0 0 8px; font-weight: 600; }
-    .side.executions .panel { background:#fff; border:1px solid #e5e7eb; border-radius: 10px; padding:10px 12px; }
     .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
-    .bottom-bar .actions { pointer-events:auto; display:flex; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+    .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+    .bottom-bar button { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
+    .bottom-bar .icon-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; }
+    .bottom-bar .icon-btn i { font-size:16px; }
+    .bottom-bar .icon-btn:disabled { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .bottom-bar .zoom-indicator { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
+    .edge-labels { display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .edge-labels .badge { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; color:#111; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+    .edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
+    .flow-tooltip { position: fixed; z-index: 200; background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
+    .flow-tooltip.error { background:#f759ab; color:#fff; }
   `]
 })
 export class FlowViewerComponent implements AfterViewInit, OnDestroy {
@@ -81,13 +117,28 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   @Input() move = false;       // allow position change if true
   @Input() allowDrag = false;  // require true + move to drag nodes
   @Input() allowZoom = true;   // allow zooming if true
+  @Input() showBottomBar = true;
+  @Input() showZoomIndicator = true;
+  @Input() showRun = false;
+  @Input() showSave = false;
+  @Input() showCenterFlow = true;
+  @Input() showCenterSelection = false;
+  @Input() demo = false; // load internal demo flow if true
+
+  @Output() run = new EventEmitter<void>();
+  @Output() save = new EventEmitter<void>();
+  @Output() selected = new EventEmitter<any>();
+  @Output() connect = new EventEmitter<any>();
 
   @ViewChild('flowHost', { static: false }) flowHost?: ElementRef<HTMLElement>;
   @ViewChild('flow', { static: false }) flow?: any;
   private viewportSub?: Subscription;
   zoomPercent = 50;
+  // Tooltip state
+  tipVisible = false; tipText = ''; tipX = 0; tipY = 0; tipError = false;
 
-  constructor(private route: ActivatedRoute) {}
+  private zoomUpdateTimer: any;
+  constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     // Override flags by query params if present
@@ -102,6 +153,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
         if (zoom != null) this.allowZoom = (zoom === 'true' || zoom === '1');
       }
     } catch {}
+
+    // Demo graph if requested
+    if (this.demo) this.loadDemo();
   }
 
   ngAfterViewInit() {
@@ -112,13 +166,23 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
       try {
         const vs: any = this.flow?.viewportService;
         if (vs?.viewportChangeEnd$) {
-          this.viewportSub = vs.viewportChangeEnd$.subscribe(() => { this.updateZoomDisplay(); this.saveViewport(); });
+          this.viewportSub = vs.viewportChangeEnd$.subscribe(() => {
+            this.zone.run(() => { this.updateZoomDisplay(); this.saveViewport(); });
+          });
         }
       } catch {}
       this.updateZoomDisplay();
     }, 20);
   }
   ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch {} }
+
+  // Provide nodes to Vflow with draggable flag according to inputs
+  get vflowNodes(): any[] {
+    try {
+      const canDrag = !!(this.allowDrag && this.move);
+      return (this.nodes || []).map(n => ({ ...n, draggable: canDrag }));
+    } catch { return this.nodes || []; }
+  }
 
   inputId(tmpl: any): string | null { if (!tmpl) return null; return tmpl.type === 'start' ? null : 'in'; }
   outputIds(model: any): string[] {
@@ -198,8 +262,29 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
       const z = this.flow?.viewportService?.readableViewport()?.zoom;
       if (typeof z === 'number' && z > 0) {
         this.zoomPercent = Math.round(z * 100);
+        try { this.cdr.detectChanges(); } catch {}
       }
     } catch {}
+  }
+
+  private loadDemo() {
+    const startT = { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} } as any;
+    const fnT = { id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', authorize_catch_error: true, output: ['Succes'], args: {} } as any;
+    const condT = { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' } as any;
+
+    const startModel = { id: 'demo_start', name: startT.name, template: startT.id, templateObj: startT, context: {} };
+    const fnModel = { id: 'demo_fn', name: fnT.name, template: fnT.id, templateObj: fnT, context: {}, catch_error: true } as any;
+    const condModel = { id: 'demo_cond', name: condT.name, template: condT.id, templateObj: condT, context: { items: [ { _id: 'c-0', name: 'A' }, { _id: 'c-1', name: 'B' } ] } } as any;
+
+    const startVNode = { id: startModel.id, point: { x: 380, y: 140 }, type: 'html-template', data: { model: startModel } } as any;
+    const fnVNode = { id: fnModel.id, point: { x: 380, y: 320 }, type: 'html-template', data: { model: fnModel } } as any;
+    const condVNode = { id: condModel.id, point: { x: 600, y: 320 }, type: 'html-template', data: { model: condModel } } as any;
+
+    this.nodes = [startVNode, fnVNode, condVNode];
+    this.edges = [
+      { type: 'template', id: `${startModel.id}->${fnModel.id}:out:in`, source: startModel.id, target: fnModel.id, sourceHandle: 'out', targetHandle: 'in', data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } } as any,
+      { type: 'template', id: `${fnModel.id}->${condModel.id}:0:in`, source: fnModel.id, target: condModel.id, sourceHandle: '0', targetHandle: 'in', data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } } as any,
+    ];
   }
 
   onNodePositionChange(change: any) {
@@ -214,6 +299,60 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
 
   onWheel(ev: WheelEvent) {
     if (!this.allowZoom) { try { ev.preventDefault(); ev.stopPropagation(); } catch {} }
+    try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch {}
+    this.zoomUpdateTimer = setTimeout(() => this.zone.run(() => this.updateZoomDisplay()), 80);
   }
-}
 
+  onPointerDown(ev: PointerEvent) {
+    if (!(this.allowZoom || (this.allowDrag && this.move))) {
+      try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    }
+  }
+
+  // Bottom bar actions
+  onRun() { this.run.emit(); }
+  onSave() { this.save.emit(); }
+  onCenterFlow() { this.fitAll(); }
+  // Edge labels and tooltips (same mapping as builder)
+  computeEdgeLabel(edge: any): string {
+    try {
+      const model = this.nodes.find(n => n.id === edge.source)?.data?.model;
+      const txt = this.getOutputName(model, edge.sourceHandle);
+      if (txt && txt.trim().length) return txt;
+      const stored = edge?.edgeLabels?.center?.data?.text;
+      return stored || '';
+    } catch { return ''; }
+  }
+  getOutputName(model: any, idxOrId: number | string): string {
+    try {
+      const tmpl = model?.templateObj || {};
+      if (typeof idxOrId === 'string' && idxOrId === 'err') return 'Error';
+      if (tmpl.type === 'start' && String(idxOrId) === 'out') return 'Succes';
+      const idx = (typeof idxOrId === 'string' && /^\d+$/.test(idxOrId)) ? parseInt(idxOrId, 10) : (typeof idxOrId === 'number' ? idxOrId : NaN);
+      if (tmpl.type === 'condition') {
+        const field = tmpl.output_array_field || 'items';
+        const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+        if (Number.isFinite(idx)) {
+          const it = arr[idx as number];
+          if (!it) return '';
+          if (typeof it === 'string') return it;
+          if (typeof it === 'object') return (it.name ?? String(idx));
+          return String(idx);
+        }
+        const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
+        return it ? (it.name ?? '') : '';
+      }
+      const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
+      if (Number.isFinite(idx) && idx >= 0 && idx < outs.length) return outs[idx];
+      if (Array.isArray(outs) && outs.length === 1) return outs[0] || 'Succes';
+      return '';
+    } catch { return ''; }
+  }
+  onHandleEnter(ev: MouseEvent, model: any, out: string) {
+    const txt = this.getOutputName(model, out) || '';
+    this.tipText = txt; this.tipVisible = !!txt; this.tipError = String(out) === 'err';
+    this.onHandleMove(ev);
+  }
+  onHandleMove(ev: MouseEvent) { this.tipX = ev.clientX + 8; this.tipY = ev.clientY + 8; }
+  onHandleLeave() { this.tipVisible = false; }
+}

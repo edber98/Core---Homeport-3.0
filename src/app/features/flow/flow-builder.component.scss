@@ -40,6 +40,7 @@
 /* removed row undo/redo from inspector */
 .canvas { border: 1px solid #e5e7eb; border-radius: 0; overflow: hidden; }
 .canvas-host { height: 100%; width: 100%; }
+/* Removed global pointer-events:none to keep header and buttons clickable on mobile */
 /* Tooltip overlay for output handles */
 .flow-tooltip { position: fixed; z-index: 200;
   background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px;

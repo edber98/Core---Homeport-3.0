@@ -19,19 +19,31 @@ export const routes: Routes = [
             {
                 path: 'dashboard',
                 loadChildren: () =>
-                    import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
+                    import('./features/dashboard/dashboard-module').then(m => m.DashboardModule),
+                title: 'Dashboard'
             },
             {
                 path: 'dynamic-form',
-                loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent)
+                loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent),
+                title: 'Dynamic Form Builder'
             },
+            // Listing routes (standalone, no modules)
+            { path: 'flows', loadComponent: () => import('./features/flow/flow-list.component').then(m => m.FlowListComponent), title: 'Flows' },
+            { path: 'flows/editor', loadComponent: () => import('./features/flow/flow-list.component').then(m => m.FlowListComponent), title: 'Flows' },
+            { path: 'flows/executions', loadComponent: () => import('./features/flow/flow-list.component').then(m => m.FlowListComponent), title: 'Flows — Exécutions' },
+            { path: 'forms', loadComponent: () => import('./features/dynamic-form/form-list.component').then(m => m.FormListComponent), title: 'Formulaires' },
+            { path: 'forms/builder', loadComponent: () => import('./features/dynamic-form/form-list.component').then(m => m.FormListComponent), title: 'Formulaires — Builder' },
+            { path: 'forms/viewer', loadComponent: () => import('./features/dynamic-form/form-list.component').then(m => m.FormListComponent), title: 'Formulaires — Viewer' },
+            { path: 'node-templates', loadComponent: () => import('./features/flow/node-template-list.component').then(m => m.NodeTemplateListComponent), title: 'Templates de nœuds' },
+            { path: 'node-templates/editor', loadComponent: () => import('./features/flow/node-template-editor.component').then(m => m.NodeTemplateEditorComponent), title: 'Template — Éditeur' },
+            { path: 'node-templates/viewer', loadComponent: () => import('./features/flow/node-template-viewer.component').then(m => m.NodeTemplateViewerComponent), title: 'Template — Viewer' },
             {
                 path: 'flow-builder',
                 loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),
                 children: [
                   { path: '', pathMatch: 'full', redirectTo: 'editor' },
-                  { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent) },
-                  { path: 'executions', loadComponent: () => import('./features/flow/flow-viewer.component').then(m => m.FlowViewerComponent) },
+                  { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder' },
+                  { path: 'executions', loadComponent: () => import('./features/flow/flow-execution.component').then(m => m.FlowExecutionComponent), title: 'Exécutions' },
                 ]
             },
         ]

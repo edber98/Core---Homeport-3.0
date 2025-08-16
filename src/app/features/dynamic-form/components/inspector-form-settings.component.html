@@ -1,17 +1,26 @@
 <form nz-form [formGroup]="group" class="inspector-form" nzLayout="vertical">
   <nz-form-item>
-    <nz-form-label>Form Title</nz-form-label>
-    <nz-form-control><input nz-input formControlName="title"/></nz-form-control>
+    <nz-form-label nzFor="form_title" nzTooltipTitle="Titre affiché en haut du formulaire">
+      <span>Titre du formulaire</span>
+    </nz-form-label>
+    <nz-form-control>
+      <input nz-input id="form_title" formControlName="title" />
+    </nz-form-control>
   </nz-form-item>
 
-  <nz-divider nzText="UI"></nz-divider>
+  <div class="ins-section-header">
+    <div class="card-title">
+      <span class="t">UI</span>
+      <span class="s">Disposition & Dimensions</span>
+    </div>
+  </div>
   <nz-form-item>
-    <nz-form-label>
-      layout
+    <nz-form-label nzFor="ui_layout" nzTooltipTitle="Disposition du formulaire">
+      <span>Disposition</span>
       <i *ngIf="hasSections" nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Inline indisponible: des sections sont présentes."></i>
     </nz-form-label>
     <nz-form-control>
-      <nz-select formControlName="ui_layout">
+      <nz-select id="ui_layout" formControlName="ui_layout">
         <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
         <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
         <nz-option nzValue="inline" nzLabel="inline" [nzDisabled]="hasSections"></nz-option>
@@ -20,9 +29,11 @@
   </nz-form-item>
 
   <nz-form-item *ngIf="group.get('ui_layout')?.value !== 'vertical'">
-    <nz-form-label>labelAlign</nz-form-label>
+    <nz-form-label nzFor="ui_labelAlign" nzTooltipTitle="Alignement des libellés">
+      <span>Alignement des libellés</span>
+    </nz-form-label>
     <nz-form-control>
-      <nz-select formControlName="ui_labelAlign">
+      <nz-select id="ui_labelAlign" formControlName="ui_labelAlign">
         <nz-option nzValue="left" nzLabel="left"></nz-option>
         <nz-option nzValue="right" nzLabel="right"></nz-option>
       </nz-select>
@@ -31,72 +42,162 @@
 
   <nz-form-item *ngIf="group.get('ui_layout')?.value === 'horizontal'">
     <nz-form-control>
-      <label nz-checkbox formControlName="ui_labelsOnTop">Labels on top</label>
+      <label nz-checkbox formControlName="ui_labelsOnTop">
+        Libellés au-dessus
+        <span nz-tooltip nzTooltipTitle="Place les libellés au-dessus des champs" style="margin-left:6px; display:inline-flex; align-items:center;">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </label>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label>labelCol.span</nz-form-label>
-    <nz-form-control><nz-input-number formControlName="ui_labelColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
+    <nz-form-label nzFor="ui_labelColSpan" nzTooltipTitle="Colonnes réservées au libellé (0-24)">
+      <span>Colonnes libellé</span>
+    </nz-form-label>
+    <nz-form-control>
+      <nz-input-number id="ui_labelColSpan" formControlName="ui_labelColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label>controlCol.span</nz-form-label>
-    <nz-form-control><nz-input-number formControlName="ui_controlColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number></nz-form-control>
+    <nz-form-label nzFor="ui_controlColSpan" nzTooltipTitle="Colonnes réservées au champ (0-24)">
+      <span>Colonnes champ</span>
+    </nz-form-label>
+    <nz-form-control>
+      <nz-input-number id="ui_controlColSpan" formControlName="ui_controlColSpan" [nzMin]="0" [nzMax]="24" style="width:100%"></nz-input-number>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label>widthPx</nz-form-label>
-    <nz-form-control><nz-input-number formControlName="ui_widthPx" [nzMin]="0" style="width:100%"></nz-input-number></nz-form-control>
+    <nz-form-label nzFor="ui_widthPx" nzTooltipTitle="Largeur maximale du formulaire en pixels">
+      <span>Largeur (px)</span>
+    </nz-form-label>
+    <nz-form-control>
+      <nz-input-number id="ui_widthPx" formControlName="ui_widthPx" [nzMin]="0" style="width:100%"></nz-input-number>
+    </nz-form-control>
   </nz-form-item>
 
 
-  <nz-divider nzText="Form Spacing"></nz-divider>
-  <app-prefixed-spacing-editor [group]="group" prefix="ui_form_"></app-prefixed-spacing-editor>
+  <div class="ins-section-header">
+    <div class="card-title">
+      <span class="t">Espacement du formulaire</span>
+      <span class="s">Marges & Padding</span>
+    </div>
+  </div>
+  <app-spacing-editor [group]="formSpacing"></app-spacing-editor>
 
-  <nz-divider nzText="Actions & Boutons"></nz-divider>
+  <div class="ins-section-header" style="margin-top:16px;">
+    <div class="card-title">
+      <span class="t">Actions & Boutons</span>
+      <span class="s">Libellés & Espacements</span>
+    </div>
+  </div>
   <nz-form-item>
-    <nz-form-control><label nz-checkbox formControlName="ui_showReset">Afficher le bouton Reset</label></nz-form-control>
+    <nz-form-control>
+      <label nz-checkbox formControlName="ui_showReset">
+        Afficher le bouton Reset
+        <span nz-tooltip nzTooltipTitle="Affiche le bouton Reset (réinitialiser)" style="margin-left:6px; display:inline-flex; align-items:center;">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </label>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-control><label nz-checkbox formControlName="ui_showCancel">Afficher le bouton Cancel</label></nz-form-control>
+    <nz-form-control>
+      <label nz-checkbox formControlName="ui_showCancel">
+        Afficher le bouton Cancel
+        <span nz-tooltip nzTooltipTitle="Affiche le bouton Cancel (annuler)" style="margin-left:6px; display:inline-flex; align-items:center;">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </label>
+    </nz-form-control>
   </nz-form-item>
   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
     <nz-form-item>
-      <nz-form-label>submitText</nz-form-label>
-      <nz-form-control><input nz-input formControlName="ui_submitText"/></nz-form-control>
+      <nz-form-label nzFor="ui_submitText" nzTooltipTitle="Texte du bouton Valider">
+        <span>Texte Valider</span>
+      </nz-form-label>
+      <nz-form-control>
+        <input nz-input id="ui_submitText" formControlName="ui_submitText"/>
+      </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label>resetText</nz-form-label>
-      <nz-form-control><input nz-input formControlName="ui_resetText"/></nz-form-control>
+      <nz-form-label nzFor="ui_resetText" nzTooltipTitle="Texte du bouton Reset">
+        <span>Texte Reset</span>
+      </nz-form-label>
+      <nz-form-control>
+        <input nz-input id="ui_resetText" formControlName="ui_resetText"/>
+      </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label>cancelText</nz-form-label>
-      <nz-form-control><input nz-input formControlName="ui_cancelText"/></nz-form-control>
+      <nz-form-label nzFor="ui_cancelText" nzTooltipTitle="Texte du bouton Cancel">
+        <span>Texte Cancel</span>
+      </nz-form-label>
+      <nz-form-control>
+        <input nz-input id="ui_cancelText" formControlName="ui_cancelText"/>
+      </nz-form-control>
     </nz-form-item>
   </div>
   <div style="display:grid; grid-template-columns: 1fr; gap:12px;">
     <div>
-      <div style="font-weight:600; margin:6px 0;">Actions Spacing</div>
-      <app-prefixed-spacing-editor [group]="group" prefix="ui_actions_"></app-prefixed-spacing-editor>
+      <div class="ins-mini-header">
+        <div class="card-title">
+          <span class="t">Espacement des actions</span>
+          <span class="s">Marges & Padding</span>
+        </div>
+      </div>
+      <app-spacing-editor [group]="actionsSpacing"></app-spacing-editor>
     </div>
     <div>
-      <div style="font-weight:600; margin:6px 0;">Button Spacing</div>
-      <app-prefixed-spacing-editor [group]="group" prefix="ui_button_"></app-prefixed-spacing-editor>
+      <div class="ins-mini-header">
+        <div class="card-title">
+          <span class="t">Espacement des boutons</span>
+          <span class="s">Marges & Padding</span>
+        </div>
+      </div>
+      <app-spacing-editor [group]="buttonSpacing"></app-spacing-editor>
     </div>
   </div>
 
-  <nz-divider nzText="Résumé"></nz-divider>
+  <div class="ins-section-header">
+    <div class="card-title">
+      <span class="t">Résumé</span>
+      <span class="s">Affichage synthétique</span>
+    </div>
+  </div>
   <nz-form-item>
-    <nz-form-control><label nz-checkbox formControlName="summary_enabled">Résumé activé</label></nz-form-control>
+    <nz-form-control>
+      <label nz-checkbox formControlName="summary_enabled">
+        Activer le résumé
+        <span nz-tooltip nzTooltipTitle="Active l’écran de résumé après le formulaire" style="margin-left:6px; display:inline-flex; align-items:center;">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </label>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label>title</nz-form-label>
-    <nz-form-control><input nz-input formControlName="summary_title"/></nz-form-control>
+    <nz-form-label nzFor="summary_title" nzTooltipTitle="Titre du résumé">
+      <span>Titre du résumé</span>
+    </nz-form-label>
+    <nz-form-control>
+      <input nz-input id="summary_title" formControlName="summary_title"/>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-control><label nz-checkbox formControlName="summary_includeHidden">Inclure les champs cachés</label></nz-form-control>
+    <nz-form-control>
+      <label nz-checkbox formControlName="summary_includeHidden">
+        Inclure les champs cachés
+        <span nz-tooltip nzTooltipTitle="Inclure les champs masqués dans le résumé" style="margin-left:6px; display:inline-flex; align-items:center;">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+        </span>
+      </label>
+    </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label>dateFormat</nz-form-label>
-    <nz-form-control><input nz-input formControlName="summary_dateFormat" placeholder="dd/MM/yyyy"/></nz-form-control>
+    <nz-form-label nzFor="summary_dateFormat" nzTooltipTitle="Format de date (ex: dd/MM/yyyy)">
+      <span>Format de date</span>
+    </nz-form-label>
+    <nz-form-control>
+      <input nz-input id="summary_dateFormat" formControlName="summary_dateFormat" placeholder="dd/MM/yyyy"/>
+    </nz-form-control>
   </nz-form-item>
 </form>

@@ -1,5 +1,5 @@
 <div class="flow-builder" cdkDropListGroup>
-  <aside class="palette" cdkDropList #sourceList="cdkDropList" [cdkDropListData]="items" [cdkDropListConnectedTo]="[targetList]" [cdkDropListSortingDisabled]="true">
+  <aside class="palette" cdkDropList #sourceList="cdkDropList" [cdkDropListData]="items" [cdkDropListConnectedTo]="[targetList]" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="isMobile">
     <h4>Palette</h4>
     <div class="items">
       <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)">
@@ -9,7 +9,7 @@
           <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
         </div>
         <!-- Drag proxy overlay to keep original item visible while dragging -->
-        <div class="drag-proxy" cdkDrag [cdkDragData]="{ label: it.label, template: it.template }"
+        <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile" [cdkDragData]="{ label: it.label, template: it.template }"
              (cdkDragStarted)="onDragStart(it, $event)" (cdkDragEnded)="onDragEnd(it, $event)">
           <ng-template cdkDragPreview>
             <div class="item" style="  background:#fff;
@@ -33,7 +33,7 @@
   </aside>
 
   <section class="canvas">
-    <div class="canvas-host" #flowHost cdkDropList #targetList="cdkDropList" [cdkDropListData]="nodes" [cdkDropListConnectedTo]="[sourceList]"
+    <div class="canvas-host" #flowHost cdkDropList #targetList="cdkDropList" [cdkDropListData]="nodes" [cdkDropListConnectedTo]="[sourceList]" [cdkDropListDisabled]="isMobile"
          (cdkDropListEntered)="onDragEnter($event)"
          (cdkDropListExited)="onDragLeave($event)"
          (dragover)="onDragOver($event)"

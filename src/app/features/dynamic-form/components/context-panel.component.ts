@@ -9,13 +9,14 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { FormsModule } from '@angular/forms';
 import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'df-context-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzCardModule, NzButtonModule, NzDividerModule, NzTreeModule, NzDropDownModule, NzMenuModule, NzInputModule, MonacoJsonEditorComponent],
+  imports: [CommonModule, FormsModule, NzCardModule, NzButtonModule, NzDividerModule, NzTreeModule, NzDropDownModule, NzMenuModule, NzInputModule, NzToolTipModule, MonacoJsonEditorComponent],
   templateUrl: './context-panel.component.html',
-  styleUrls: []
+  styleUrls: ['./context-panel.component.scss']
 })
 export class ContextPanelComponent {
   @Input() treeNodes: any[] = [];
