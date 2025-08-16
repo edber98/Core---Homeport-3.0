@@ -6,18 +6,23 @@
     </div>
     <div class="controls-line" [class.editing]="editMode">
       <nz-segmented [nzOptions]="['Schema','JSON']" [(ngModel)]="viewMode"></nz-segmented>
-      <span class="badge" *ngIf="viewMode==='JSON' && editMode">Mode édition</span>
       <div class="spacer"></div>
       <ng-container *ngIf="viewMode==='JSON'">
         <ng-container *ngIf="editMode; else notEditing">
           <button class="icon-btn" title="Formater" (click)="formatEditor()">⤾</button>
           <button class="icon-btn" title="Minifier" (click)="minifyEditor()">⇣</button>
-          <button class="save" (click)="saveEdit()">Sauvegarder</button>
-          <button class="cancel" (click)="cancelEdit()">Annuler</button>
-          <button class="edit-toggle" (click)="toggleEdit(false)">Quitter l'édition</button>
+          <!-- Desktop text buttons -->
+          <button class="save only-desktop" (click)="saveEdit()">Sauvegarder</button>
+          <button class="cancel only-desktop" (click)="cancelEdit()">Annuler</button>
+          <button class="edit-toggle only-desktop" (click)="toggleEdit(false)">Quitter l'édition</button>
+          <!-- Mobile icon-only -->
+          <button class="icon-btn only-mobile" title="Sauvegarder" aria-label="Sauvegarder" (click)="saveEdit()">💾</button>
+          <button class="icon-btn only-mobile" title="Annuler" aria-label="Annuler" (click)="cancelEdit()">↺</button>
+          <button class="icon-btn only-mobile" title="Quitter" aria-label="Quitter" (click)="toggleEdit(false)">✕</button>
         </ng-container>
         <ng-template #notEditing>
-          <button class="edit-toggle" [disabled]="!editable" (click)="toggleEdit(true)">Éditer</button>
+          <button class="edit-toggle only-desktop" [disabled]="!editable" (click)="toggleEdit(true)">Éditer</button>
+          <button class="icon-btn only-mobile" [disabled]="!editable" title="Éditer" aria-label="Éditer" (click)="toggleEdit(true)">✎</button>
         </ng-template>
       </ng-container>
     </div>

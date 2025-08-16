@@ -134,6 +134,10 @@
 /* Scroller keeps only overflow behavior, padding handled by host */
 .expr-host.inline .cm-scroller { padding: 0 !important; }
 
+/* iOS mobile: prevent auto-zoom when focusing CodeMirror (contenteditable needs >=16px)
+   Targeted only to expression editor to avoid global side effects */
+/* (no mobile font-size override; use viewport meta to stop iOS auto-zoom) */
+
 
 
 /* Info panel */

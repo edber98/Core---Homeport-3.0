@@ -65,8 +65,26 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
           <nz-form-control><input nz-input formControlName="category" placeholder="Ex: Core, HTTP"/></nz-form-control>
         </nz-form-item>
         <nz-form-item>
+          <nz-form-label>Groupe</nz-form-label>
+          <nz-form-control><input nz-input formControlName="group" placeholder="Ex: Functions"/></nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>App / Logiciel</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="appId" nzAllowClear nzPlaceHolder="Ex: gmail">
+              <nz-option *ngFor="let a of apps" [nzValue]="a.id" [nzLabel]="a.title || a.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
           <nz-form-label>Description</nz-form-label>
           <nz-form-control><input nz-input formControlName="description" placeholder="Brève description"/></nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Tags</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="tags" nzMode="tags" nzPlaceHolder="Mots-clés"></nz-select>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Icône</nz-form-label>
@@ -173,6 +191,7 @@ export class NodeTemplateEditorComponent implements OnInit {
     'fa-solid fa-code-branch', 'fa-solid fa-sync', 'fa-solid fa-sliders', 'fa-solid fa-gear', 'fa-solid fa-message'
   ];
 
+  apps: { id: string; name: string; title?: string }[] = [];
   constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
@@ -181,16 +200,20 @@ export class NodeTemplateEditorComponent implements OnInit {
       name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
       type: new FormControl<NodeTemplate['type']>('function', { nonNullable: true }),
       category: new FormControl<string>(''),
+      group: new FormControl<string>(''),
       description: new FormControl<string>(''),
+      vendors: new FormControl<string[] | null>([], { nonNullable: false }),
+      tags: new FormControl<string[] | null>([], { nonNullable: false }),
       icon: new FormControl<string>(''),
       title: new FormControl<string>(''),
       subtitle: new FormControl<string>(''),
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
       output_array_field: new FormControl<string>('items'),
-      output: this.fb.array<FormGroup<any>>([]),
+      output: this.fb.array<FormGroup<any>>([])
     });
 
     const id = this.route.snapshot.queryParamMap.get('id');
+    this.catalog.listApps().subscribe(list => { this.apps = (list || []).map(a => ({ id: a.id, name: a.name, title: a.title })); });
     if (id) {
       this.catalog.getNodeTemplate(id).subscribe(t => { if (t) this.patchTemplate(t); });
     }
@@ -212,7 +235,8 @@ export class NodeTemplateEditorComponent implements OnInit {
 
   private patchTemplate(t: NodeTemplate) {
     this.form.patchValue({
-      id: t.id, name: t.name || '', type: t.type, category: t.category || '', description: t.description || ''
+      id: t.id, name: t.name || '', type: t.type, category: t.category || '', group: (t as any).group || '', description: t.description || '',
+      appId: (t as any).appId || null, tags: (t as any).tags || []
     }, { emitEvent: false });
     // Optional UI fields
     // @ts-ignore
@@ -248,11 +272,15 @@ export class NodeTemplateEditorComponent implements OnInit {
       type: v.type,
       name: v.name,
       category: v.category || undefined,
+      group: v.group || undefined,
+      appId: v.appId || undefined,
+      tags: (v.tags && v.tags.length) ? v.tags : undefined,
       description: v.description || undefined,
       authorize_catch_error: v.type === 'function' ? !!v.authorize_catch_error : undefined,
       output: v.type === 'function' ? (this.outputs.value || []).map((x:any)=>x.value).filter((s:string)=>!!s && s.trim().length) : undefined,
       args
     } as any;
+    // constraints removed per new model (not used)
     if (v.type === 'condition') (tpl as any).output_array_field = v.output_array_field || 'items';
     // Optional UI hints
     (tpl as any).icon = v.icon || undefined; (tpl as any).title = v.title || undefined; (tpl as any).subtitle = v.subtitle || undefined;

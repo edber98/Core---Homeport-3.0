@@ -54,8 +54,8 @@ import { FormsModule } from '@angular/forms';
   styles: [`
     :host { display:block; }
     .card { position:relative; background:#fff; border:1px solid #ececec; border-radius:14px; box-shadow:0 20px 40px rgba(0,0,0,.12); width: var(--dialog-w, 960px); max-width: 100vw; padding: 0 0 16px; height:var(--dialog-h, 68vh); max-height:90vh; display:flex; flex-direction:column; }
-    /* Panel variant (mobile carousel center) */
-    .card.panel-card { width:100%; height:100%; max-height:none; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.10); }
+    /* Bare variant: no border, radius, or shadow; fills container */
+    .card.panel-card { width:100%; height:100%; max-height:none; border:0; border-radius:0; box-shadow:none; background:transparent; padding:0; }
     .tabs { flex:1 1 auto; min-height:0; display:flex; }
     .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 12px 0 12px; }
     .tab-header .title { font-weight:600; font-size:13px; color:#111; }
@@ -63,6 +63,7 @@ import { FormsModule } from '@angular/forms';
     .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
+    .panel-card .body { padding: 0; }
     .settings-pane { padding: 12px 16px; height: 100%; display:flex; flex-direction:column; gap:12px; }
     .setting-row { display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #ececec; border-radius:10px; padding:10px 12px; }
     .setting-row .label { font-weight:600; font-size:13px; color:#111; }
@@ -74,7 +75,7 @@ import { FormsModule } from '@angular/forms';
     :host ::ng-deep .tabs .ant-tabs-content { height:100%; }
     :host ::ng-deep .tabs .ant-tabs-tabpane { height:100%; overflow:auto; }
     @media (max-width: 768px) {
-      .card.panel-card { overflow:auto; }
+      .card.panel-card { overflow:auto; padding: 0 9px 9px; }
     }
   `]
 })

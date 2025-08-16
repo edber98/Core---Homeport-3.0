@@ -260,18 +260,8 @@ app-root {
     background: transparent;
 }
 
-/* Prevent mobile browsers (iOS Safari, Chrome Android) from auto-zooming inputs */
-@media (max-width: 480px) {
-  html { -webkit-text-size-adjust: 100%; }
-  input, select, textarea,
-  .ant-input,
-  .ant-select-selector,
-  .ant-select-selection-search-input,
-  .ant-input-number-input,
-  .ant-picker-input > input {
-    font-size: 16px !important;
-  }
-}
+/* Removed mobile input font bump (now using viewport meta to prevent zoom).
+   Keeps Ant Design inputs at their default size to match Expression Editor. */
 
 .margin-top-13 {
     margin-top: 13px;

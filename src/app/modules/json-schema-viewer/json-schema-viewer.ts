@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
@@ -14,6 +14,7 @@ type JsonType = 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null' | 
   standalone: true,
   selector: 'app-json-node',
   imports: [CommonModule, NzIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div class="node" [style.paddingLeft.px]="depth * 16">
     <ng-container *ngIf="isExpandable; else spacer">
@@ -22,7 +23,7 @@ type JsonType = 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null' | 
       </span>
     </ng-container>
     <ng-template #spacer><span class="toggle-spacer"></span></ng-template>
-    <span class="pill" draggable="true" (dragstart)="drag($event)" (click)="toggleIfExpandable($event)" [title]="fullPath">
+    <span class="pill" [attr.draggable]="true" (dragstart)="onDragStart($event)" (click)="toggleIfExpandable($event)" [title]="fullPath">
       <span class="type-icon" [ngClass]="type" aria-hidden="true">
         <svg *ngIf="type==='object'" viewBox="0 0 24 24" width="12" height="12">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -87,8 +88,13 @@ export class JsonNodeComponent {
   @Input() depth = 0;
 
   collapsed = false;
+  isCoarse = false;
 
   ngOnInit() {
+    // Detect touch/coarse pointers (iPhone/Android)
+    try {
+      this.isCoarse = typeof window !== 'undefined' && !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    } catch { this.isCoarse = false; }
     // Hydrate collapsed from shared expansion map if provided
     try {
       if (this.expansion) {
@@ -156,6 +162,11 @@ export class JsonNodeComponent {
     ev.dataTransfer.setData('text/plain', this.fullPath);
     ev.dataTransfer.effectAllowed = 'copy';
   }
+  onDragStart(ev: DragEvent) {
+    // Re-enable drag on mobile: allow native drag event to propagate
+    this.drag(ev);
+  }
+  
 }
 
 @Component({
@@ -164,6 +175,7 @@ export class JsonNodeComponent {
   imports: [CommonModule, FormsModule, NzSegmentedModule, NzIconModule, JsonNodeComponent, MonacoJsonEditorComponent],
   templateUrl: './json-schema-viewer.html',
   styleUrl: './json-schema-viewer.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => JsonSchemaViewerComponent), multi: true }
   ]
@@ -191,19 +203,21 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
   editValue = '';
   @ViewChild(MonacoJsonEditorComponent) monaco?: MonacoJsonEditorComponent;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(): void {
     // Sync data into currentData when input changes
     this.currentData = this.data;
-    this.updateJsonHtml();
+    this.updateJsonHtmlAsync();
     // Sync external mode into internalMode if provided
     if (this.mode) this.internalMode = this.mode; else this.internalMode = this.initialMode || 'Schema';
   }
+
+  // (removed mobile drag telemetry)
   ngOnInit(): void {
     this.currentData = this.data;
     this.internalMode = this.mode || this.initialMode || 'Schema';
-    this.updateJsonHtml();
+    this.updateJsonHtmlAsync();
   }
 
   onDragStart(ev: DragEvent, path: string, name?: string) {
@@ -278,7 +292,7 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
     try {
       const parsed = this.editValue ? JSON.parse(this.editValue) : null;
       this.currentData = parsed;
-      this.updateJsonHtml();
+      this.updateJsonHtmlAsync();
       this.dataChange.emit(parsed);
       // ngModel propagate
       this.onChange?.(parsed);
@@ -302,7 +316,28 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
   writeValue(value: any): void {
     this.data = value;
     this.currentData = value;
-    this.updateJsonHtml();
+    this.updateJsonHtmlAsync();
+  }
+  private updateJsonHtmlAsync() {
+    // Offload heavy stringify/coloring out of Angular to avoid blocking taps on iOS
+    this.zone.runOutsideAngular(() => {
+      try {
+        const json = JSON.stringify(this.currentData, null, 2);
+        const escaped = escapeHtml(json);
+        const colored = escaped
+          .replace(/(&quot;)([^&]*?)(&quot;)(\s*:\s*)/g, (_m, q1, key, q2, colon) => `<span class="k">${q1}${key}${q2}</span>${colon}`)
+          .replace(/(&quot;)([^\n]*?)(&quot;)/g, (_m, q1, str, q2) => `<span class="s">${q1}${str}${q2}</span>`)
+          .replace(/\b(-?\d+(?:\.\d+)?)\b/g, '<span class="n">$1</span>')
+          .replace(/\b(true|false)\b/g, '<span class="b">$1</span>')
+          .replace(/\bnull\b/g, '<span class="nl">null</span>');
+        const html = this.sanitizer.bypassSecurityTrustHtml(colored);
+        // Re-enter Angular to update binding and mark for check
+        this.zone.run(() => { this.jsonHtml = html; this.cdr.markForCheck(); });
+      } catch {
+        const html = this.sanitizer.bypassSecurityTrustHtml('<em>Invalid JSON</em>');
+        this.zone.run(() => { this.jsonHtml = html; this.cdr.markForCheck(); });
+      }
+    });
   }
   registerOnChange(fn: any): void { this.onChange = fn; }
   registerOnTouched(fn: any): void { this.onTouched = fn; }

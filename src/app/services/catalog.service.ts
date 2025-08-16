@@ -8,7 +8,29 @@ export type FlowDoc = { id: string; name: string; nodes?: any[]; edges?: any[]; 
 export type FormSummary = { id: string; name: string; description?: string };
 export type FormDoc = { id: string; name: string; schema?: any; description?: string };
 
-export type NodeTemplate = { id: string; type: 'start'|'function'|'condition'|'loop'|'end'; name: string; category?: string; description?: string; args?: any; output?: string[]; authorize_catch_error?: boolean };
+export type NodeTemplate = {
+  id: string;
+  type: 'start'|'function'|'condition'|'loop'|'end';
+  name: string;
+  category?: string;      // fonctionnel (Email, Docs, Calendar...)
+  appId?: string;         // logiciel / intégration (ex: 'gmail')
+  tags?: string[];        // recherche libre
+  group?: string;         // grouping UI facultatif
+  description?: string;
+  args?: any;
+  output?: string[];
+  authorize_catch_error?: boolean;
+};
+
+export type AppProvider = {
+  id: string;             // ex: 'gmail'
+  name: string;           // ex: 'Gmail'
+  title?: string;         // affichage alternatif
+  iconClass?: string;     // ex: 'fa-brands fa-google'
+  iconUrl?: string;       // PNG/SVG
+  color?: string;         // brand color
+  tags?: string[];        // recherche
+};
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
@@ -18,6 +40,7 @@ export class CatalogService {
   private FORM_LIST_KEY = 'catalog.forms';
   private FORM_DOC_KEY = 'catalog.form.'; // + id
   private TPL_LIST_KEY = 'catalog.nodeTemplates';
+  private APP_LIST_KEY = 'catalog.apps';
 
   constructor() { this.ensureSeed(); }
 
@@ -70,6 +93,27 @@ export class CatalogService {
     return of(tpl).pipe(delay(CatalogService.LATENCY));
   }
 
+  // ===== Public API (Apps / Providers)
+  listApps(): Observable<AppProvider[]> { return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  getApp(id: string): Observable<AppProvider | undefined> {
+    const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
+    return of(list.find(x => x.id === id)).pipe(delay(CatalogService.LATENCY));
+  }
+  saveApp(app: AppProvider): Observable<AppProvider> {
+    if (!app?.id) return throwError(() => new Error('Missing id'));
+    const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
+    const idx = list.findIndex(x => x.id === app.id);
+    if (idx >= 0) list[idx] = app; else list.push(app);
+    this.save(this.APP_LIST_KEY, list);
+    return of(app).pipe(delay(CatalogService.LATENCY));
+  }
+  deleteApp(id: string): Observable<boolean> {
+    const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.APP_LIST_KEY, next);
+    return of(true).pipe(delay(CatalogService.LATENCY));
+  }
+
   // ===== Helpers (seed, storage)
   private ensureSeed() {
     try {
@@ -92,12 +136,21 @@ export class CatalogService {
       }
       if (!this.load<any>(this.TPL_LIST_KEY, null)) {
         const tpls: NodeTemplate[] = [
-          { id: 'tmpl_start', type: 'start', name: 'Start', description: 'Début du flow' },
+          { id: 'tmpl_start', type: 'start', name: 'Start', description: 'Début du flow', category: 'Core' },
           { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Succes'] },
-          { id: 'tmpl_condition', type: 'condition', name: 'Condition', description: 'Branches multiples via items' },
-          { id: 'tmpl_loop', type: 'loop', name: 'Loop', description: 'Itération' },
+          { id: 'tmpl_condition', type: 'condition', name: 'Condition', description: 'Branches multiples via items', category: 'Logic' },
+          { id: 'tmpl_loop', type: 'loop', name: 'Loop', description: 'Itération', category: 'Core' },
         ];
         this.save(this.TPL_LIST_KEY, tpls);
+      }
+      if (!this.load<any>(this.APP_LIST_KEY, null)) {
+        const apps: AppProvider[] = [
+          { id: 'gmail', name: 'Gmail', iconClass: 'fa-solid fa-envelope', color: '#EA4335', tags: ['email','google'] },
+          { id: 'slack', name: 'Slack', iconClass: 'fa-brands fa-slack', color: '#611f69', tags: ['chat','team'] },
+          { id: 'pdf', name: 'PDF', iconClass: 'fa-solid fa-file-pdf', color: '#D32F2F', tags: ['document'] },
+          { id: 'word', name: 'Word', iconClass: 'fa-solid fa-file-word', color: '#2B579A', tags: ['document','office'] },
+        ];
+        this.save(this.APP_LIST_KEY, apps);
       }
     } catch {}
   }

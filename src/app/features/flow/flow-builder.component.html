@@ -4,14 +4,14 @@
     <aside class="palette" cdkDropList id="paletteList" [cdkDropListData]="items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="isMobile">
       <h4>Palette</h4>
       <div class="items">
-        <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)">
+        <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)" [class.disabled]="isPaletteItemDisabled(it)" [attr.aria-disabled]="isPaletteItemDisabled(it) ? true : null" (click)="onPaletteClick(it, $event)">
           <div class="icon"><i [class]="it.template?.icon"></i></div>
           <div class="meta">
             <div class="title">{{ it.label }}</div>
             <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
           </div>
           <!-- Drag proxy overlay to keep original item visible while dragging -->
-          <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile" [cdkDragData]="{ label: it.label, template: it.template }"
+          <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isPaletteItemDisabled(it)" [cdkDragData]="{ label: it.label, template: it.template }" (click)="onPaletteClick(it, $event)"
                (cdkDragStarted)="onDragStart(it, $event)" (cdkDragEnded)="onDragEnd(it, $event)">
             <ng-template cdkDragPreview>
               <div class="item" style="  background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">

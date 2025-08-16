@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { CatalogService, NodeTemplate } from '../../services/catalog.service';
+import { CatalogService, NodeTemplate, AppProvider } from '../../services/catalog.service';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
@@ -30,11 +30,20 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
         <div class="card" *ngFor="let it of templates" (click)="view(it)">
-          <div class="leading"><div class="avatar">{{ (it.name || it.id) | slice:0:1 }}</div></div>
+          <div class="leading">
+            <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 }}</div>
+            <ng-template #appIcon>
+              <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
+                <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass"></i>
+                <img *ngIf="!appFor(it)?.iconClass" [src]="simpleIconUrl(appFor(it)?.id || '')" alt="icon"/>
+              </div>
+            </ng-template>
+          </div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div>
               <span class="chip">{{ it.type }}</span>
               <span class="chip" *ngIf="it.category">{{ it.category }}</span>
+              <ng-container *ngIf="appFor(it) as a"><span class="chip">{{ a.title || a.name }}</span></ng-container>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
@@ -42,6 +51,11 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
             <button class="icon-btn" (click)="edit(it); $event.stopPropagation()" title="Éditer">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
+            <ng-container *ngIf="appFor(it) as a">
+            <button class="icon-btn" (click)="viewApp(a); $event.stopPropagation()" title="Voir l'app">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -64,6 +78,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
     .leading .avatar { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-weight:600; color:#111; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; }
+    .leading .app-icon { width:40px; height:40px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
+    .leading .app-icon img { width:24px; height:24px; object-fit:contain; }
     .content { flex:1; min-width:0; }
     .title-row { display:flex; align-items:center; gap:8px; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -83,10 +99,11 @@ export class NodeTemplateListComponent implements OnInit {
   templates: NodeTemplate[] = [];
   loading = true;
   error: string | null = null;
+  appsMap = new Map<string, AppProvider>();
 
   constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() { this.load(); this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); }); }
 
   load() {
     this.loading = true; this.error = null;
@@ -100,4 +117,7 @@ export class NodeTemplateListComponent implements OnInit {
   edit(it: NodeTemplate) { this.router.navigate(['/node-templates/editor'], { queryParams: { id: it.id } }); }
   view(it: NodeTemplate) { this.router.navigate(['/node-templates/viewer'], { queryParams: { id: it.id } }); }
   createNew() { this.router.navigate(['/node-templates/editor']); }
+  appFor(t: NodeTemplate): AppProvider | undefined { const id = (t as any).appId || ''; return id ? this.appsMap.get(id) : undefined; }
+  simpleIconUrl(id: string) { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
+  viewApp(a: AppProvider) { this.router.navigate(['/apps/viewer'], { queryParams: { id: a.id } }); }
 }

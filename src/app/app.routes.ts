@@ -37,6 +37,11 @@ export const routes: Routes = [
             { path: 'node-templates', loadComponent: () => import('./features/flow/node-template-list.component').then(m => m.NodeTemplateListComponent), title: 'Templates de nœuds' },
             { path: 'node-templates/editor', loadComponent: () => import('./features/flow/node-template-editor.component').then(m => m.NodeTemplateEditorComponent), title: 'Template — Éditeur' },
             { path: 'node-templates/viewer', loadComponent: () => import('./features/flow/node-template-viewer.component').then(m => m.NodeTemplateViewerComponent), title: 'Template — Viewer' },
+            { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },
+            { path: 'apps/editor', loadComponent: () => import('./features/catalog/app-provider-editor.component').then(m => m.AppProviderEditorComponent), title: 'App — Éditeur' },
+            { path: 'apps/viewer', loadComponent: () => import('./features/catalog/app-provider-viewer.component').then(m => m.AppProviderViewerComponent), title: 'App — Viewer' },
+            { path: 'flows/viewer-dialog', loadComponent: () => import('./features/flow/flow-viewer-dialog.component').then(m => m.FlowViewerDialogComponent), title: 'Flow — Visualiseur' },
+            { path: 'dev/json-viewer', loadComponent: () => import('./dev/json-viewer-playground.component').then(m => m.JsonViewerPlaygroundComponent), title: 'DEV — JSON Viewer' },
             {
                 path: 'flow-builder',
                 loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),

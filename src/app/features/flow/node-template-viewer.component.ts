@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -23,6 +23,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <i nz-icon nzType="arrow-left"></i>
           <span class="label">Retour</span>
         </button>
+        <button nz-button class="apple-btn" *ngIf="appId" (click)="openApp()">
+          <i nz-icon nzType="api"></i>
+          <span class="label">Voir l'app</span>
+        </button>
       </div>
     </div>
     <div class="grid cols-2">
@@ -33,6 +37,18 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <div><span class="k">Nom</span><span class="v">{{view.name || '—'}}</span></div>
           <div><span class="k">Type</span><span class="v"><nz-tag>{{view.type}}</nz-tag></span></div>
           <div><span class="k">Catégorie</span><span class="v">{{view.category || '—'}}</span></div>
+          <div *ngIf="view.group"><span class="k">Groupe</span><span class="v">{{view.group}}</span></div>
+          <div *ngIf="appLbl"><span class="k">App</span><span class="v app">
+            <span class="icon" [style.background]="appColor">
+              <i *ngIf="appIconClass" [class]="appIconClass"></i>
+              <img *ngIf="!appIconClass && appIconUrl" [src]="appIconUrl" alt="icon"/>
+              <img *ngIf="!appIconClass && !appIconUrl && appId" [src]="simpleIconUrl(appId)" alt="icon"/>
+            </span>
+            <span class="lbl">{{ appLbl }}</span>
+          </span></div>
+          <div *ngIf="tags?.length"><span class="k">Tags</span><span class="v tags">
+            <nz-tag *ngFor="let t of tags">{{ t }}</nz-tag>
+          </span></div>
           <div><span class="k">Description</span><span class="v">{{view.description || '—'}}</span></div>
         </div>
       </div>
@@ -44,6 +60,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <div><span class="k">Sous-titre</span><span class="v">{{ ui.subtitle || '—' }}</span></div>
         </div>
       </div>
+      
       <div class="panel preview-col" *ngIf="true">
         <div class="panel-title">Aperçu (flow-builder)</div>
         <div class="node-card">
@@ -51,7 +68,17 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
             <div class="in" *ngFor="let i of inputArray"><span class="dot" nz-tooltip="Entrée"></span></div>
           </div>
           <div class="header">
-            <i [class]="tplUi?.icon || 'fa-solid fa-circle-dot'" class="icon"></i>
+            <ng-container *ngIf="tplUi?.icon as ic; else appIconTpl">
+              <i [class]="ic" class="icon"></i>
+            </ng-container>
+            <ng-template #appIconTpl>
+              <span class="icon" *ngIf="appId">
+                <i *ngIf="appIconClass" [class]="appIconClass"></i>
+                <img *ngIf="!appIconClass && appIconUrl" [src]="appIconUrl" alt="icon"/>
+                <img *ngIf="!appIconClass && !appIconUrl" [src]="simpleIconUrl(appId)" alt="icon"/>
+              </span>
+              <i *ngIf="!appId" class="icon fa-solid fa-circle-dot"></i>
+            </ng-template>
             <div class="meta">
               <div class="title">{{ tplUi?.title || view.name || 'Sans titre' }}</div>
               <div class="subtitle">{{ tplUi?.subtitle || view.category || view.type }}</div>
@@ -107,6 +134,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .kv { display:flex; flex-direction:column; gap:6px; }
     .kv .k { color:#6b7280; width:180px; display:inline-block; }
     .kv .v { color:#111; }
+    .kv .v.tags { display:inline-flex; gap:6px; flex-wrap: wrap; }
+    .kv .v.app { display:inline-flex; align-items:center; gap:8px; }
+    .kv .v.app .icon { width: 20px; height: 20px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
+    .kv .v.app .icon img { width: 16px; height: 16px; object-fit: contain; }
     .outputs { display:flex; flex-direction:column; gap:4px; }
     .outputs.readonly .row { display:flex; align-items:center; gap:8px; padding:2px 0; }
     .outputs .idx { color:#64748b; font-variant-numeric: tabular-nums; min-width: 16px; text-align:right; }
@@ -144,14 +175,25 @@ export class NodeTemplateViewerComponent implements OnInit {
   outputs: string[] = [];
   previewOutputs: string[] = [];
   inputCount = 0;
+  tags: string[] = [];
+  appId = '';
+  appLbl = '';
+  appIconClass = '';
+  appIconUrl = '';
+  appColor = '';
   get inputArray() { return Array.from({ length: this.inputCount }); }
-  constructor(private catalog: CatalogService, private route: ActivatedRoute) {}
+  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router) {}
   ngOnInit(): void {
     const id = this.id || this.route.snapshot.queryParamMap.get('id') || '';
     if (id) {
       this.catalog.getNodeTemplate(id).subscribe(t => {
         this.tpl = t;
-        if (t) { this.view = { id: t.id, name: t.name, type: t.type, category: t.category, description: t.description, args: t.args || {}, output: t.output || [], authorize_catch_error: t.authorize_catch_error } as any; }
+        if (t) {
+          this.view = { id: t.id, name: t.name, type: t.type, category: t.category, description: t.description, args: t.args || {}, output: t.output || [], authorize_catch_error: t.authorize_catch_error, group: (t as any).group } as any;
+          this.tags = (t as any).tags || [];
+          this.appId = (t as any).appId || '';
+          if (this.appId) this.catalog.getApp(this.appId).subscribe(a => { if (a) { this.appLbl = a.title || a.name; this.appIconClass = a.iconClass || ''; this.appIconUrl = a.iconUrl || ''; this.appColor = a.color || ''; } });
+        }
         const anyt = (t || {}) as any;
         this.tplUi = { icon: anyt?.icon, title: anyt?.title, subtitle: anyt?.subtitle, output_array_field: anyt?.output_array_field };
         this.argsText = JSON.stringify((t && t.args) || {}, null, 2);
@@ -166,7 +208,9 @@ export class NodeTemplateViewerComponent implements OnInit {
       this.computePreviewPorts();
     }
   }
+  simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   back() { history.back(); }
+  openApp() { if (this.appId) this.router.navigate(['/apps/viewer'], { queryParams: { id: this.appId } }); }
   private computePreviewPorts() {
     const type = (this.view?.type || 'function') as string;
     // Input handles: default 1, except 'start' = 0. Keep parity with flow (single top handle), but allow future types.

@@ -48,6 +48,7 @@ export class LayoutMain {
     { label: 'Flows', icon: 'branches', route: '/flows' },
     { label: 'Formulaires', icon: 'form', route: '/forms' },
     { label: 'Templates de nœuds', icon: 'appstore', route: '/node-templates' },
+    { label: 'Apps / Providers', icon: 'api', route: '/apps' },
   ];
   drawerVisible = false;
   innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
@@ -72,6 +73,8 @@ export class LayoutMain {
   getActiveOptions(route?: string): { exact: boolean } {
     // Keep parent menu active for subroutes of /node-templates
     if (route === '/node-templates') return { exact: false };
+    // Keep parent menu active for subroutes of /apps
+    if (route === '/apps') return { exact: false };
     return { exact: true };
   }
 

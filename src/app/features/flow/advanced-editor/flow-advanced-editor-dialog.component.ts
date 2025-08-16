@@ -4,6 +4,9 @@ import { FlowAdvancedInputPanelComponent } from './flow-advanced-input-panel.com
 import { FlowAdvancedOutputPanelComponent } from './flow-advanced-output-panel.component';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
+ 
+//               <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+
 
 @Component({
   selector: 'flow-advanced-editor-dialog',
@@ -11,80 +14,107 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
   imports: [CommonModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent],
   template: `
     <div class="overlay" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
-    <!-- Desktop / tablet layout with wings -->
+    <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
         <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
         <flow-advanced-center-panel [model]="model" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
-        <button class="close" (click)="startExit()" title="Fermer">✕</button>
+        <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
         <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
-      </div>
+ 
+        </div>
     </div>
 
-    <!-- Mobile layout: 3-panel carousel (Input / Center / Output) -->
-    <div class="carousel" *ngIf="isMobile" #carRef>
-      <div class="slides" #slidesRef [style.transform]="slidesTransform" [style.transition]="dragging ? 'none' : 'transform .28s ease'" (touchstart)="onSwipeStart($event)" (touchmove)="onSwipeMove($event)" (touchend)="onSwipeEnd()" (touchcancel)="onSwipeEnd()">
-        <div class="slide" *ngIf="hasInput(model)">
-          <div class="panel-card">
-            <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
+    <!-- Mobile layout: true dialog with carousel and bottom dots -->
+    <div class="m-shell" *ngIf="isMobile">
+      <div class="m-dialog" [class.enter]="centerVisible">
+        <div class="m-header">
+          <div class="title">Configuration</div>
+          <button class="m-close" (click)="startExit()" aria-label="Fermer">✕</button>
+        </div>
+        <div
+          class="m-body"
+          #carRef
+          (touchstart)="onSwipeStart($event)"
+          (touchmove)="onSwipeMove($event)"
+          (touchend)="onSwipeEnd()"
+        >
+          <!-- Edge sensors inside the dialog body -->
+          <div class="edge-sensor left" (touchstart)="onEdgeStart($event, 'left')"></div>
+          <div class="edge-sensor right" (touchstart)="onEdgeStart($event, 'right')"></div>
+          <div class="slides" #slidesRef [style.transform]="slidesTransform" [class.dragging]="dragging">
+          <!-- Input panel -->
+          <div class="slide">
+            <div class="scroll">
+              <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
+            </div>
           </div>
-          <button class="close" (click)="startExit()" title="Fermer">✕</button>
-        </div>
-        <div class="slide center" (pointerup)="onFormReleased()">
-          <flow-advanced-center-panel [model]="model" [bare]="true" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
-          <button class="close" (click)="startExit()" title="Fermer">✕</button>
-        </div>
-        <div class="slide" *ngIf="hasOutput(model)">
-          <div class="panel-card">
-            <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+            <!-- Center panel -->
+            <div class="slide center">
+              <div class="scroll" (pointerup)="onFormReleased()">
+                <flow-advanced-center-panel [model]="model" [bare]="true" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+              </div>
+            </div>
+          <!-- Output panel -->
+          <div class="slide">
+            <div class="scroll">
+              <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+            </div>
           </div>
-          <button class="close" (click)="startExit()" title="Fermer">✕</button>
+          </div>
         </div>
-      </div>
-      <div class="nav">
-        <button class="nav-btn" (click)="prev()" [disabled]="activeIndex===0">‹</button>
-        <div class="dots">
-          <span *ngFor="let _ of panels; let i=index" class="dot" [class.active]="i===activeIndex" (click)="go(i)"></span>
+        <div class="m-footer">
+          <div class="dots" role="tablist" aria-label="Panneaux">
+            <button class="dot" *ngFor="let p of panels; let i = index" [class.active]="activeIndex===i" (click)="go(i)" [attr.aria-selected]="activeIndex===i" [attr.aria-label]="p"></button>
+          </div>
         </div>
-        <button class="nav-btn" (click)="next()" [disabled]="activeIndex===panels.length-1">›</button>
       </div>
     </div>
   `,
   styles: [`
-    :host { position:fixed; inset:0; z-index: 2000; display:block; }
-    .overlay { position:absolute; inset:0; background:rgba(17,17,17,0.28); backdrop-filter: blur(2px); opacity:0; transition: opacity .24s ease; }
-    .overlay.enter { opacity:1; }
-    .bundle { --dialog-h: 90vh; --dialog-w: 450px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, min(var(--dialog-w), calc((100vw - 400px - var(--dialog-w)) / 2))); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:10; opacity:0; transition: opacity .22s ease, transform .26s ease; }
+    :host { position:fixed; inset:0; z-index: 100000; display:block; }
+    .overlay { position:absolute; inset:0; background:rgba(17,17,17,0.32); backdrop-filter: blur(2px); opacity:0; transition: opacity .24s ease; pointer-events: none; }
+    .overlay.enter { opacity:1; pointer-events:auto; }
+    .bundle { --dialog-h: 90vh; --dialog-w: 450px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, min(var(--dialog-w), calc((100vw - 400px - var(--dialog-w)) / 2))); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:100001; opacity:0; transition: opacity .22s ease, transform .26s ease; pointer-events: auto; }
     .bundle.center-visible { opacity:1; transform: translate(-50%, -50%); }
     .center { position:relative; z-index:6; }
     .close { position:absolute; top:8px; right:12px; background:#fff; border:1px solid #e5e7eb; border-radius:18px; padding:4px 8px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12); }
     .wing { height:var(--wing-h); background:#fff; overflow:auto; padding: 9px; opacity:0; }
     /* Style card + rayon selon côté en non-responsive */
-    .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 20px 40px rgba(0,0,0,.12); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
-    .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 20px 40px rgba(0,0,0,.12); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    /* Avoid overlap with center by using safe widths and a flex gap; remove transforms to avoid Safari hit-testing bugs */
+    .wing { position: relative; pointer-events: auto; height:var(--wing-h); overflow:auto; padding: 9px; opacity:0; background:#fff; }
+    .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
 
-    /* Mobile carousel */
-    .carousel { position:fixed; inset:0; width: 100%; height: 100%; background: transparent; border: 0; border-radius: 0; box-shadow: none; overflow: hidden; z-index: 10; touch-action: pan-y; }
-    .slides { width: 300%; height: 100%; display:flex; transform: translateX(calc(-1 * var(--idx, 0) * 33.333%)); position: relative; z-index: 1; will-change: transform; }
-    .carousel .slide { width: 33.3333%; height: calc(100% - var(--pos-bar-h, 44px)); padding: 13px; position: relative; }
-    /* En responsive, donner un fond et un rayon aux "wings" (Input/Output) via une carte interne pour garder du margin */
-    .carousel .slide .panel-card { height: 100%; overflow: auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,.10); }
-    .carousel .slide.center { position: relative; }
-    .carousel .close { position:absolute; top:28px; right:32px; bottom:auto; left:auto; background: transparent; border: 0; box-shadow: none; padding: 0; font-size: 20px; line-height: 1; color: #111; z-index: 3; cursor: pointer; }
-    /* Responsive: add inner margin for JSON viewers in left/right slides */
-    .carousel .slide:not(.center) .panel-card app-json-schema-viewer { display:block; margin: 8px; }
-    .carousel .nav { position:absolute; bottom:8px; left:50%; transform: translateX(-50%); display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius: 12px; padding: 4px 8px; box-shadow: 0 6px 16px rgba(0,0,0,.10); z-index: 2; pointer-events: auto; }
-    /* Assurer que le center panel occupe toute la hauteur du slide */
-    .carousel .slide.center flow-advanced-center-panel { display:flex; flex-direction: column; height: 100%; }
-    .carousel .nav-btn { background:#fff; border:1px solid #e5e7eb; border-radius: 8px; width: 28px; height: 28px; cursor:pointer; }
-    .carousel .dots { display:flex; gap:6px; }
-    .carousel .dot { width: 6px; height: 6px; border-radius: 50%; background:#cbd5e1; cursor:pointer; }
-    .carousel .dot.active { background:#111; }
+    /* Mobile single-panel shell */
+    .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; }
+    .m-dialog { position:relative; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); transform: translateY(8px); opacity:0; transition: opacity .22s ease, transform .26s ease; display:flex; flex-direction: column; overflow:hidden; }
+    .m-dialog.enter { opacity:1; transform: translateY(0); }
+    .m-header { display:flex; align-items:center; justify-content:space-between; padding: calc(8px + env(safe-area-inset-top)) 12px 8px 12px; border-bottom:1px solid #f0f0f0; }
+    .m-header .title { font-weight:600; font-size:14px; color:#111; }
+    .m-close { border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+    .m-body { position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; background:#fff; }
+    .m-footer { display:flex; align-items:center; justify-content:center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) 12px; border-top:0; background:#fff; }
+    .dots { display:flex; gap:8px; }
+    .dot { width:8px; height:8px; border-radius:50%; border:0; background:#d4d4d8; padding:0; cursor:pointer; }
+    .dot.active { background:#111827; }
+    .edge-sensor { position:absolute; top:0; bottom:0; width:24px; z-index:3; }
+    .edge-sensor.left { left:0; }
+    .edge-sensor.right { right:0; }
+    .slides { position:absolute; inset:0; display:flex; width:300%; height:100%; transition: transform .28s ease; will-change: transform; }
+    .slides.dragging { transition: none; }
+    .slide { width:33.3333%; height:100%; overflow:hidden; }
+    .scroll { height:100%; overflow:auto; -webkit-overflow-scrolling: touch; padding: 10px; }
+    .slide.center .scroll { padding: 0; }
+    /* removed global-close; use header close for a single close button */
+    .toast { position: fixed; left:50%; top:16px; transform: translateX(-50%); background:#111; color:#fff; padding:6px 10px; border-radius:8px; z-index: 100003; }
+    
     @media (max-width: 768px) {
       :host { --bottom-bar-h: 52px; --pos-bar-h: 44px; }
     }
@@ -110,10 +140,15 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   private swipeDx = 0;
   private swipeDy = 0;
   private swipeActive = false;
+  private fromInteractive = false;
   dragging = false;
   slidesTransform = 'translateX(-33.3333%)';
   private swipeStartTime = 0;
   private horizLocked = false;
+  private ignoreSwipe = false;
+  private edgeOnly = false;
+  private swipeFromEdge: 'left'|'right'|null = null;
+  // (removed viewer drag auto-pan state)
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
   emitModel(m: any) {
@@ -183,22 +218,54 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   next() { if (this.activeIndex < this.panels.length - 1) { this.activeIndex++; this.updateSlidesTransform(); } }
   go(i: number) { if (i>=0 && i < this.panels.length) { this.activeIndex = i; this.updateSlidesTransform(); } }
 
+  // (removed onViewerMobileDrag)
+
   // Touch swipe handlers (mobile)
+  onEdgeStart(ev: TouchEvent, side: 'left'|'right') { this.swipeFromEdge = side; this.onSwipeStart(ev); }
   onSwipeStart(ev: TouchEvent) {
     if (!this.isMobile) return;
     const t = ev.touches && ev.touches[0];
     if (!t) return;
+    // Do not hijack interactions that start on form controls (inputs, selects, buttons, ant components)
+    const target = (ev.target as HTMLElement) || null;
+    const isInteractive = (el: HTMLElement | null): boolean => {
+      let n: HTMLElement | null = el;
+      let depth = 0;
+      while (n && depth < 8) {
+        const tag = (n.tagName || '').toLowerCase();
+        const editable = (n as any).isContentEditable === true;
+        const tabIndex = (n as any).tabIndex;
+        if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || editable) return true;
+        if (typeof tabIndex === 'number' && tabIndex >= 0) return true;
+        const cls = n.className ? String(n.className) : '';
+        if (/ant-(select|picker|switch|radio|checkbox|btn|input|textarea|form|cascader|tree|mentions)/.test(cls)) return true;
+        if (/(nz-|app-)(select|input|switch|radio|checkbox|button|dynamic-form)/.test(cls)) return true;
+        n = n.parentElement; depth++;
+      }
+      return false;
+    };
+    const car = this.carRef?.nativeElement as HTMLElement | undefined;
+    const W = car?.clientWidth || window.innerWidth || 1;
+    const nearLeft = t.clientX <= 28;
+    const nearRight = (W - t.clientX) <= 28;
+    const startAtEdge = nearLeft || nearRight || !!this.swipeFromEdge;
+    this.fromInteractive = isInteractive(target);
+    // Original conservative guard: ignore swipe on interactive or when not starting at edge (if edgeOnly)
+    this.ignoreSwipe = this.fromInteractive || (this.edgeOnly && !startAtEdge);
+    if (this.ignoreSwipe) { this.dragging = false; this.swipeActive = false; return; }
     this.swipeStartX = t.clientX; this.swipeStartY = t.clientY; this.swipeDx = 0; this.swipeDy = 0; this.swipeActive = true; this.dragging = true; this.horizLocked = false; this.swipeStartTime = Date.now();
   }
   onSwipeMove(ev: TouchEvent) {
-    if (!this.isMobile || !this.swipeActive) return;
+    if (!this.isMobile || !this.swipeActive || this.ignoreSwipe) return;
     const t = ev.touches && ev.touches[0]; if (!t) return;
     this.swipeDx = t.clientX - this.swipeStartX; this.swipeDy = t.clientY - this.swipeStartY;
     const absX = Math.abs(this.swipeDx); const absY = Math.abs(this.swipeDy);
     if (!this.horizLocked) {
-      if (absX > 8 && absX > absY + 6) { this.horizLocked = true; }
+      // Make it slightly easier to lock to horizontal swipes
+      if (absX > 6 && absX > absY + 4) { this.horizLocked = true; }
       else { return; }
     }
+    // If gesture started on an interactive control, only hijack when user clearly swipes horizontally
     try { ev.preventDefault(); } catch {}
     const car = this.carRef?.nativeElement as HTMLElement | undefined;
     const W = car?.clientWidth || window.innerWidth || 1;
@@ -206,12 +273,12 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
     let dragPct = (this.swipeDx / (3 * W)) * 100;
     const atFirst = this.activeIndex === 0 && this.swipeDx > 0;
     const atLast = this.activeIndex === this.panels.length - 1 && this.swipeDx < 0;
-    if (atFirst || atLast) dragPct = dragPct * 0.35;
+    if (atFirst || atLast) dragPct = dragPct * 0.5;
     const pct = basePct - dragPct;
     this.slidesTransform = `translateX(-${pct}%)`;
   }
   onSwipeEnd() {
-    if (!this.isMobile || !this.swipeActive) { this.dragging = false; return; }
+    if (!this.isMobile || !this.swipeActive) { this.dragging = false; this.ignoreSwipe = false; this.fromInteractive = false; return; }
     const absX = Math.abs(this.swipeDx); const absY = Math.abs(this.swipeDy);
     const dt = Math.max(1, Date.now() - this.swipeStartTime);
     const vx = absX / dt; // px per ms
@@ -221,14 +288,20 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
     const goNext = (this.swipeDx < 0);
     const canPrev = this.activeIndex > 0;
     const canNext = this.activeIndex < this.panels.length - 1;
-    const flick = vx > 0.5; // ~500px/s
-    const far = ratio > 0.22; // 22% of width
+    const flick = vx > 0.5;
+    const far = ratio > 0.22;
+    // Close if overscrolling beyond edges with sufficient gesture
+    if ((goNext && !canNext && (flick || far)) || (!goNext && !canPrev && (flick || far))) {
+      this.startExit();
+      this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.fromInteractive = false;
+      return;
+    }
     if (absY < 60 && (flick || far)) {
       if (goNext && canNext) this.activeIndex++;
       else if (!goNext && canPrev) this.activeIndex--;
     }
     this.updateSlidesTransform();
-    this.swipeActive = false; this.dragging = false; this.horizLocked = false;
+    this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.ignoreSwipe = false; this.fromInteractive = false;
   }
 
   private commitIfDirty() {
@@ -238,4 +311,5 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
     this.dirty = false;
   }
 
+  // (test diagnostics removed)
 }

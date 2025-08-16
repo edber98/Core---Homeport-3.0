@@ -580,6 +580,10 @@ export class FlowBuilderComponent {
 
     const t = event?.item?.data?.template || event?.item?.data || event?.item?.data?.data;
     const templateObj = this.normalizeTemplate(t);
+    if (this.isStartLike(templateObj) && this.hasStartLikeNode()) {
+      try { this.message.warning('Un nœud de départ existe déjà'); } catch {}
+      return;
+    }
     
     const nodeModel = {
       id: 'node_' + Date.now(),
@@ -762,6 +766,159 @@ export class FlowBuilderComponent {
     if (this.isMobile) return;
     try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.delete(key); } catch {}
   }
+  // Click-to-add from palette: place near viewport center, auto-connect to best free output above
+  onPaletteClick(it: any, ev?: MouseEvent) {
+    try {
+      if (ev) { ev.stopPropagation(); ev.preventDefault(); }
+    } catch {}
+    if (this.isPaletteItemDisabled(it)) return;
+    const templateObj = this.normalizeTemplate(it?.template || it);
+    // Guard: allow only one start/trigger-like node in the canvas
+    if (this.isStartLike(templateObj) && this.hasStartLikeNode()) {
+      try { this.message.warning('Un nœud de départ existe déjà'); } catch {}
+      return;
+    }
+    // Do not auto-connect a 'start' node; just place it
+    const wantsConnect = templateObj?.type !== 'start';
+    const newId = this.generateNodeId();
+    const worldCenter = this.viewportCenterWorld();
+    // Find best source near center with a free output
+    const source = wantsConnect ? this.findBestSourceNode(worldCenter.x, worldCenter.y) : null;
+    const pos = this.computeNewNodePosition(source, worldCenter);
+    const nodeModel: any = {
+      id: newId,
+      name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
+      template: templateObj?.id || null,
+      templateObj,
+      context: {}
+    };
+    const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
+    this.nodes = [...this.nodes, vNode];
+    // Auto-connect from best output handle if found
+    if (wantsConnect && source) {
+      const handle = this.findFreeOutputHandle(source, true, worldCenter.x);
+      if (handle) {
+        const labelText = this.computeEdgeLabel(source.id, handle);
+        const isErr = (handle === 'err') || this.errorNodes.has(String(source.id));
+        const edge: Edge = {
+          type: 'template',
+          id: `${source.id}->${newId}:${handle}:in`,
+          source: source.id,
+          target: newId,
+          sourceHandle: handle,
+          targetHandle: 'in' as any,
+          edgeLabels: { center: { type: 'html-template', data: { text: labelText } } } as any,
+          data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
+          markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } } as any
+        } as any;
+        this.edges = [...this.edges, edge];
+        this.recomputeErrorPropagation();
+      }
+    }
+    this.pushState('palette.click.add');
+  }
+
+  private viewportCenterWorld(): { x: number; y: number } {
+    try {
+      const vp = this.flow?.viewportService?.readableViewport();
+      const rect = this.flowHost?.nativeElement?.getBoundingClientRect();
+      if (!vp || !rect) return { x: 400, y: 300 };
+      const centerScreenX = rect.width / 2;
+      const centerScreenY = rect.height / 2;
+      const wx = (centerScreenX - (vp.x || 0)) / (vp.zoom || 1);
+      const wy = (centerScreenY - (vp.y || 0)) / (vp.zoom || 1);
+      return { x: wx, y: wy };
+    } catch { return { x: 400, y: 300 }; }
+  }
+  private findBestSourceNode(wx: number, wy: number): any | null {
+    try {
+      // Prefer node whose bbox center is closest to (wx, wy) and has at least one free, non-error output
+      let best: any = null; let bestD = Infinity;
+      for (const n of this.nodes) {
+        const model = n?.data?.model; const tmpl = model?.templateObj || {};
+        const outs = this.outputIds(model) || [];
+        if (outs.length === 0) continue; // cannot source from end nodes
+        const free = this.findFreeOutputHandle(n, true /*onlyNonError*/);
+        if (!free) continue;
+        // Estimate bbox center from DOM (scaled by zoom) or fallback to point + rough size
+        let cx = n.point?.x || 0; let cy = (n.point?.y || 0);
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(n.id)}\"]`) as HTMLElement | null;
+          const vp = this.flow?.viewportService?.readableViewport();
+          if (el && vp) {
+            const r = el.getBoundingClientRect();
+            const w = r.width / (vp.zoom || 1); const h = r.height / (vp.zoom || 1);
+            cx = (n.point?.x || 0) + w / 2; cy = (n.point?.y || 0) + h / 2;
+          } else {
+            cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60;
+          }
+        } catch { cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60; }
+        const dx = cx - wx; const dy = cy - wy; const d2 = dx*dx + dy*dy;
+        if (d2 < bestD) { bestD = d2; best = n; }
+      }
+      return best;
+    } catch { return null; }
+  }
+  private isStartLike(tmpl: any): boolean {
+    try { const ty = String(tmpl?.type || '').toLowerCase(); return ty === 'start' || ty === 'trigger'; } catch { return false; }
+  }
+  private hasStartLikeNode(): boolean {
+    try { return this.nodes.some(n => this.isStartLike(n?.data?.model?.templateObj)); } catch { return false; }
+  }
+  isPaletteItemDisabled(it: any): boolean {
+    try {
+      const tmpl = this.normalizeTemplate(it?.template || it);
+      return this.isStartLike(tmpl) && this.hasStartLikeNode();
+    } catch { return false; }
+  }
+  private findFreeOutputHandle(node: any, onlyNonError = true, targetWorldX?: number): string | null {
+    try {
+      const model = node?.data?.model; const outs = this.outputIds(model) || [];
+      const taken = new Set(this.edges.filter(e => String(e.source) === String(node.id)).map(e => String(e.sourceHandle ?? '')));
+      // Build list of candidate handles (free ones), optionally skip 'err'
+      const candidates: Array<{ handle: string; ix: number; dist: number }> = [];
+      // Approximate handle x position based on node width and output index
+      let w = 180;
+      try {
+        const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(node.id)}\"]`) as HTMLElement | null;
+        const vp = this.flow?.viewportService?.readableViewport();
+        if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width) w = r.width / (vp.zoom || 1); }
+      } catch {}
+      const leftX = (node.point?.x || 0);
+      const m = outs.length || 1;
+      for (let i = 0; i < outs.length; i++) {
+        const h = String(outs[i]);
+        if (onlyNonError && h === 'err') continue;
+        if (taken.has(h)) continue;
+        let dist = 0;
+        if (typeof targetWorldX === 'number' && Number.isFinite(targetWorldX)) {
+          const cx = leftX + (w * ((i + 0.5) / m));
+          dist = Math.abs(cx - targetWorldX);
+        }
+        candidates.push({ handle: h, ix: i, dist });
+      }
+      if (!candidates.length) return null;
+      // If no target provided, keep original ordering; else pick nearest to world center X
+      if (typeof targetWorldX === 'number' && Number.isFinite(targetWorldX)) {
+        candidates.sort((a, b) => a.dist - b.dist || a.ix - b.ix);
+      }
+      return candidates[0].handle;
+    } catch { return null; }
+  }
+  private computeNewNodePosition(source: any | null, center: {x:number;y:number}): { x: number; y: number } {
+    if (!source) return { x: center.x - 90, y: center.y + 80 };
+    try {
+      // Align below source node with a comfortable vertical gap
+      const vp = this.flow?.viewportService?.readableViewport();
+      const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(source.id)}\"]`) as HTMLElement | null;
+      let w = 180, h = 100;
+      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom||1); h = r.height / (vp.zoom||1); } }
+      const gap = 60;
+      const x = (source.point?.x || 0);
+      const y = (source.point?.y || 0) + h + gap;
+      return { x, y };
+    } catch { return { x: center.x - 90, y: center.y + 80 }; }
+  }
   isDragging(item: any): boolean { try { const key = String(item?.template?.id || item?.label || ''); return key ? this.draggingPalette.has(key) : false; } catch { return false; } }
 
   // Context menu actions for nodes
@@ -830,6 +987,11 @@ export class FlowBuilderComponent {
     try {
       const node = this.nodes.find(n => n.id === tgt.id);
       if (!node) return;
+      // Prevent duplicating start/trigger-like nodes
+      if (this.isStartLike(node?.data?.model?.templateObj)) {
+        try { this.message.warning('Le nœud de départ ne peut pas être dupliqué'); } catch {}
+        return;
+      }
       const newId = this.generateNodeId();
       const newPoint = { x: (node.point?.x ?? 0) + 40, y: (node.point?.y ?? 0) + 40 };
       const model = JSON.parse(JSON.stringify(node.data?.model || {}));
