@@ -1,10 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-body {
+html, body {
     margin: 0;
-    //   background-color: #EEF0F4;
     height: 100%;
+}
+body {
     overflow: hidden;
 }
+/* Ensure Angular root fills viewport so grid children can size correctly */
+app-root { display:block; height:100%; }
 /* CDK overlay scroll-block can break iOS input focus; relax when overlays are open */
 body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scrolling: touch; }
 
@@ -106,19 +109,7 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 
 /* (Removed complex active overrides; rely on theme variables) */
 
-app-root {
-    transform: scale(0.7) !important;
-    /* au lieu de zoom:70% */
-    transform-origin: top left;
-    width: 142.857%;
-    /* 100% / 0.7 = 142.857% pour conserver la largeur initiale */
-    height: 142.857%;
-    /* optionnel si nécessaire */
-}
-/* On coarse pointers (mobile), avoid transform scaling which can break input focus/positioning */
-@media (pointer: coarse) {
-  app-root { transform: none !important; width: 100%; height: auto; }
-}
+/* Removed global app-root transform hack to prevent layout/scroll issues in panels */
 
 /* XS responsive override for NG-Zorro Modal: reduce top offset on phones */
 @media (max-width: 575.98px) {

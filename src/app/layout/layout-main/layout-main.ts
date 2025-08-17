@@ -47,6 +47,7 @@ export class LayoutMain {
     { label: 'Dashboard', icon: 'home', route: '/dashboard' },
     { label: 'Flows', icon: 'branches', route: '/flows' },
     { label: 'Formulaires', icon: 'form', route: '/forms' },
+    { label: 'UI Builder', icon: 'layout', route: '/ui-builder' },
     { label: 'Templates de nœuds', icon: 'appstore', route: '/node-templates' },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },

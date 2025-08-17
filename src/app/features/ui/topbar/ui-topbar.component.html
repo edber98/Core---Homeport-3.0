@@ -1,0 +1,32 @@
+<div class="ui-topbar">
+  <div class="left">
+    <div class="logo">UI</div>
+    <div class="name">{{ projectName }}</div>
+  </div>
+  <div class="center">
+    <div class="devices">
+      <button [class.active]="device==='desktop'" (click)="deviceChange.emit('desktop')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+      <button [class.active]="device==='tablet'" (click)="deviceChange.emit('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+      <button [class.active]="device==='mobile-portrait'" (click)="deviceChange.emit('mobile-portrait')" title="Mobile P"><i class="fa-solid fa-mobile-screen-button"></i></button>
+      <button [class.active]="device==='mobile-landscape'" (click)="deviceChange.emit('mobile-landscape')" title="Mobile L"><i class="fa-solid fa-mobile"></i></button>
+    </div>
+    <div class="zoom">
+      <span>{{ zoomPct }}%</span>
+      <input type="range" min="25" max="200" step="5" [ngModel]="zoomPct" (ngModelChange)="onZoom($event)" />
+    </div>
+    <div class="toggles">
+      <label title="Rulers"><input type="checkbox" [checked]="rulers" (change)="rulersChange.emit($event.target.checked)"/> Rulers</label>
+      <label title="Guides"><input type="checkbox" [checked]="guides" (change)="guidesChange.emit($event.target.checked)"/> Guides</label>
+      <label title="Grid"><input type="checkbox" [checked]="grid" (change)="gridChange.emit($event.target.checked)"/> Grid</label>
+    </div>
+  </div>
+  <div class="right">
+    <button (click)="undo.emit()" [disabled]="!canUndo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+    <button (click)="redo.emit()" [disabled]="!canRedo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+    <button (click)="openBreakpoints.emit()" title="Breakpoints"><i class="fa-solid fa-ruler"></i></button>
+    <button (click)="openDesignSystem.emit()" title="Design System"><i class="fa-solid fa-droplet"></i></button>
+    <button (click)="previewChange.emit(!preview)" [class.active]="preview" title="Preview"><i class="fa-regular fa-eye"></i></button>
+    <button (click)="export.emit()" title="Exporter"><i class="fa-solid fa-download"></i></button>
+    <button class="publish" (click)="publish.emit()" title="Publier"><i class="fa-solid fa-cloud-arrow-up"></i> Publier</button>
+  </div>
+</div>

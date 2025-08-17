@@ -10,7 +10,7 @@
 .right-panel.drawer-mode { padding: 0 12px 12px 12px; }
 .right-panel.drawer-mode flow-history-timeline { margin-top: 8px; }
 .palette, .inspector { border: none; border-radius: 0; padding: 12px; padding-right: 9px; background: #ffffff; overflow: auto; padding-top: 0 !important; }
-.palette .panel-heading, .inspector .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; }
+.palette .panel-heading, .inspector .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; }
 /* Remove top margin for palette header as requested */
 .palette .panel-heading { margin-top: 0; }
 .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }

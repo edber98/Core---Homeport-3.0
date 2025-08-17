@@ -39,6 +39,7 @@ export class MonacoJsonEditorComponent implements AfterViewInit, OnDestroy, OnCh
   @Input() value = '';
   @Output() valueChange = new EventEmitter<string>();
   @Input() height = 220;
+  @Input() language: string = 'json';
 
   @ViewChild('host', { static: true }) hostRef!: ElementRef<HTMLDivElement>;
 
@@ -79,7 +80,7 @@ export class MonacoJsonEditorComponent implements AfterViewInit, OnDestroy, OnCh
     const monaco = window.monaco;
     this.editor = monaco.editor.create(this.hostRef.nativeElement, {
       value: this.value || '',
-      language: 'json',
+      language: this.language || 'json',
       automaticLayout: true,
       minimap: { enabled: false },
       formatOnPaste: true,

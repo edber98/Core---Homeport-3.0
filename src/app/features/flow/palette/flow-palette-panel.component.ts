@@ -85,7 +85,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     /* Always size to container and scroll inside when content exceeds */
     .palette { border: none; border-radius: 0; padding: 12px; padding-right: 9px; background: #ffffff; padding-top: 0 !important; height: 100%; overflow: auto; }
     .palette.drawer-mode { height: 100%; overflow: auto; }
-    .palette .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; margin-top:0; }
+    .palette .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin-top:0; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:13px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }

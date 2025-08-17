@@ -1,0 +1,84 @@
+<div class="ui-builder" [class.preview]="previewMode">
+  <ui-topbar class="topbar"
+    [projectName]="'UI Project'"
+    [device]="device"
+    [zoomPct]="zoomPct"
+    [rulers]="showRulers"
+    [guides]="showGuides"
+    [grid]="showGrid"
+    [canUndo]="canUndo" [canRedo]="canRedo"
+    [preview]="previewMode"
+    (deviceChange)="onDeviceChange($event)"
+    (zoomChange)="onZoomChange($event)"
+    (rulersChange)="showRulers=$event"
+    (guidesChange)="showGuides=$event"
+    (gridChange)="showGrid=$event"
+    (undo)="undo()" (redo)="redo()"
+    (export)="doExport()" (publish)="onPublish()"
+    (previewChange)="previewMode=$event"
+    (openBreakpoints)="openBreakpoints()"
+    (openDesignSystem)="openDesignSystem()"
+  ></ui-topbar>
+  <ui-palette-panel class="palette" [elements]="elements" (add)="add($event)"></ui-palette-panel>
+
+  <section class="canvas" (click)="onSelect('root')">
+    <div class="toolbar">
+      <div class="bp">
+        <span class="label">Preview</span>
+        <nz-select [(ngModel)]="bp" (ngModelChange)="onBpChange($event)" nzPlaceHolder="Auto">
+          <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
+          <nz-option nzValue="xs" nzLabel="XS"></nz-option>
+          <nz-option nzValue="sm" nzLabel="SM"></nz-option>
+          <nz-option nzValue="md" nzLabel="MD"></nz-option>
+          <nz-option nzValue="lg" nzLabel="LG"></nz-option>
+          <nz-option nzValue="xl" nzLabel="XL"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="canvas-inner" [style.maxWidth.px]="canvasWidth || null" [style.transform]="'scale(' + (zoomPct/100) + ')'
+      " [style.transformOrigin]="'top center'">
+      <ui-preview-host [root]="model.root" [selectedId]="model.selectedId" [bp]="bp" [state]="previewState" [version]="model.version + previewVersion" (select)="onSelect($event)"></ui-preview-host>
+    </div>
+  </section>
+
+  <div class="right-panel">
+    <ui-class-manager [bp]="bp" [selectionClasses]="model.selected?.classes || []"
+      (selectionAddClass)="addClassToSelection($event)" (selectionRemoveClass)="removeClassFromSelection($event)" (stylesChange)="refreshPreview()"></ui-class-manager>
+    <ui-styles-panel [node]="model.selected" [bp]="bp" (patch)="onPatch($event)"></ui-styles-panel>
+    <ui-tree-nz-panel [root]="model.root" [selectedId]="model.selectedId" [version]="model.version" (select)="onSelect($event)" (move)="onMoveNode($event)"></ui-tree-nz-panel>
+    <ui-inspector-panel [node]="model.selected" [bp]="bp"
+      (patch)="onPatch($event)"
+      (moveUp)="moveUp()" (moveDown)="moveDown()" (remove)="remove()"></ui-inspector-panel>
+  </div>
+
+  <div class="bottom-bar" *ngIf="!previewMode">
+    <div class="actions">
+      <nz-select [(ngModel)]="previewState" title=":state" nzPlaceHolder="Normal">
+        <nz-option nzValue="base" nzLabel="Normal"></nz-option>
+        <nz-option nzValue="hover" nzLabel="Hover"></nz-option>
+        <nz-option nzValue="active" nzLabel="Active"></nz-option>
+        <nz-option nzValue="focus" nzLabel="Focus"></nz-option>
+      </nz-select>
+      <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler"><i class="fa-solid fa-rotate-left"></i></button>
+      <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir"><i class="fa-solid fa-rotate-right"></i></button>
+      <label class="icon-btn import-btn" title="Importer HTML">
+        <i class="fa-solid fa-file-import"></i>
+        <input type="file" accept="text/html,.html,.htm" (change)="onImportHtml($event)" hidden>
+      </label>
+      <button class="icon-btn" (click)="exportHtml()" title="Exporter HTML"><i class="fa-solid fa-file-export"></i></button>
+      <button class="icon-btn" (click)="openImport()" title="Importer" aria-label="Importer"><i class="fa-solid fa-file-arrow-up"></i></button>
+      <button class="icon-btn" (click)="doExport()" title="Exporter" aria-label="Exporter"><i class="fa-solid fa-cloud-arrow-down"></i></button>
+    </div>
+  </div>
+
+  <div class="import-overlay" *ngIf="importing">
+    <div class="dialog">
+      <div class="title">Importer / Éditer JSON</div>
+      <textarea [(ngModel)]="json"></textarea>
+      <div class="row">
+        <button (click)="doImport()">Appliquer</button>
+        <button (click)="cancelImport()">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
