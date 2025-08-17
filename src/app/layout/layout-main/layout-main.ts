@@ -54,13 +54,14 @@ export class LayoutMain {
   drawerVisible = false;
   innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
   siderCollapsed = false;
-  showLaunch = false;
+  showLaunch = false; // desktop center bar visibility (legacy)
+  mobileSearchOpen = false; // responsive: shows center search bar
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   get showSider(): boolean { return this.innerWidth >= 992; }
 
-  @HostListener('window:resize') onResize() { try { this.innerWidth = window.innerWidth; } catch {} }
+  @HostListener('window:resize') onResize() { try { this.innerWidth = window.innerWidth; } catch { } }
 
   openDrawer() { this.drawerVisible = true; }
   closeDrawer() { this.drawerVisible = false; }
@@ -119,6 +120,8 @@ export class LayoutMain {
   }
 
   // Launch bar (mobile)
+  // Desktop/mobile toggles for the center bar
   openLaunch() { if (!this.showSider) this.showLaunch = true; }
   closeLaunch() { this.showLaunch = false; }
+  toggleMobileSearch() { if (!this.showSider) this.mobileSearchOpen = !this.mobileSearchOpen; }
 }

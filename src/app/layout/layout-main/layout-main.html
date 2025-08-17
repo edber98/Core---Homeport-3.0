@@ -63,9 +63,6 @@
       <div class="hdr-left" *ngIf="showSider || !showLaunch">
         <button nz-button nzType="default" class="burger" *ngIf="!showSider" (click)="openDrawer()"><i class="fa-solid fa-bars"></i></button>
         <div *ngIf="!showSider" class="brand">Kinn</div>
-        <button nz-button class="hdr-btn" *ngIf="!showSider && !showLaunch" (click)="openLaunch()" title="Ouvrir la launch bar">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
       </div>
       <div class="hdr-center" *ngIf="showSider || showLaunch">
         <div class="cmd-bar">
@@ -82,6 +79,9 @@
         </div>
       </div>
       <div class="hdr-actions" *ngIf="showSider || !showLaunch">
+           <button nz-button class="hdr-btn" *ngIf="!showSider && !showLaunch" (click)="openLaunch()" title="Ouvrir la launch bar">
+          <i class="fa-solid fa-rocket"></i>
+        </button>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
           <nz-badge nzDot>
             <i class="fa-regular fa-bell"></i>

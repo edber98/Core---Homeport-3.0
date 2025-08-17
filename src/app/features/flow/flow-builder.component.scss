@@ -116,6 +116,11 @@
 .bottom-bar .zoom-control .label { font-size:12px; color:#111; }
 .bottom-bar .zoom-control input[type=range] { width: 120px; }
 .bottom-bar .zoom-control .value { font-size:12px; color:#111; min-width: 44px; text-align:right; }
+/* Desktop-only visibility helper (hide on tablet/mobile) */
+.desktop-only { display: inline-flex; }
+@media (max-width: 1280px) {
+  .desktop-only { display: none !important; }
+}
 
 .import-overlay { position: fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(17,17,17,0.25); z-index: 50; color:#fff; font-weight:600; }
 .spinner { width:28px; height:28px; border:3px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation: spin 0.8s linear infinite; }
@@ -143,7 +148,7 @@ nz-drawer { display: contents; }
 .drawer-actions .import-lbl { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 
 /* Left vertical floating actions (responsive only) */
-.left-bar { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 20; display: none; pointer-events: none; }
+.left-bar { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); z-index: 20; display: block; pointer-events: none; }
 .left-bar .actions { pointer-events:auto; display:flex; flex-direction: column; align-items:center; gap:8px; }
 .left-bar .icon-btn, .left-bar .import-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width: 36px; height: 36px; }
 .left-bar .icon-btn i, .left-bar .import-btn i { font-size:16px; }

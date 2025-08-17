@@ -1,0 +1,61 @@
+README — src/app/features/flow
+
+Contenu du dossier:
+
+- README.md
+- flow-builder-utils.service.ts
+  - Injectable: true
+  - Classes: FlowBuilderUtilsService
+  - Méthodes: normalizeTemplate, generateNodeId, screenToWorld, computeDropPointFromMouse, viewportCenterWorld, centerViewportOnWorldPoint, computeNewNodePosition, findBestSourceNode, findFreeOutputHandle, getConditionItems, getConditionItemsFull, ensureStableConditionIds, reconcileEdgesForNode, recomputeErrorPropagation, buildDefaultGraphFromPalette
+- flow-builder.component.html
+- flow-builder.component.scss
+- flow-builder.component.ts
+  - Component: selector='flow-builder', standalone=True
+  - Classes: FlowBuilderComponent
+  - Méthodes: openPanel, openMobilePanel, setTimeout, enableGlobalBlockers, disableGlobalBlockers, updateGlobalBlockers, onLeftDrawerClose, onRightDrawerClose, ngOnInit, miniIconClass, simpleIconUrl, appLabelOf, ngAfterViewInit, ngOnDestroy, updateIsMobile, updateZoomDisplay, onZoomSlider, applyZoomPercent, onPaletteQueryChange, rebuildPaletteGroups, inputId, outputIds, getOutputName, onExternalDrop, normalizeTemplate, computeDropPoint, onConnect, deleteEdge, onDeleteEdgeClick, getEdgeLabel, computeEdgeLabel, updateTimelineCaches, mapMetaToItem, formatTime, describeReason, recomputeErrorPropagation, isNodeInError, isEdgeDeleteDisabled, onDragEnter, onDragLeave, onDragOver, onDragStart, onDragEnd, onPaletteClick, viewportCenterWorld, findBestSourceNode, isStartLike, hasStartLikeNode, isPaletteItemDisabled, findFreeOutputHandle, computeNewNodePosition, isDragging, onNodeContextMenu, openCtxMenuAt, onNodeTouchStart, onNodeTouchMove, onNodeTouchEnd, closeCtxMenu, ctxOpenAdvancedAndInspector, ctxDuplicateTarget, collectAllConditionHandleIds, generateNodeId, ctxDeleteTarget, ctxCenterTarget, onSelected, selectItem, openAdvancedEditor, closeAdvancedEditor, onAdvancedModelChange, onAdvancedModelCommitted, saveSelectedJson, deleteSelected, undo, redo, centerFlow, centerOnSelection, centerOnNodeId, centerViewportOnWorldPoint, exportFlow, saveFlow, runFlow, showToast, onKeydown, snapshot, now, isIgnoring, beginApplyingHistory, pushState, onHandleEnter, onHandleMove, onHandleLeave, onNodePositionChange, onWheel, onPointerUp, onNodesRemoved, onEdgesRemoved, log, onEdgesDetached, onHistoryHoverPast, onHistoryHoverFuture, onHistoryHoverLeave, previewSnapshot, revertPreview, onHistoryClickPast, onHistoryClickFuture, importFlow
+- flow-execution.component.ts
+  - Component: selector='flow-execution', standalone=True
+  - Classes: FlowExecutionComponent
+- flow-graph.service.ts
+  - Injectable: true
+  - Classes: FlowGraphService
+  - Méthodes: outputIds, getOutputName, computeEdgeLabel
+- flow-history.service.ts
+  - Injectable: true
+  - Classes: FlowHistoryService
+  - Méthodes: reset, push, canUndo, canRedo, undo, redo, clone, pastCount, futureCount, getPastMeta, getFutureMeta, getPastAt, getFutureAt
+  - Types/Interfaces/Enums exportés: FlowHistoryMeta, FlowState
+- flow-list.component.ts
+  - Component: selector='flow-list', standalone=True
+  - Classes: FlowListComponent
+  - Méthodes: doSearch, ngOnInit, load, getIcon, openEditor, openExecutions, openCreate, closeCreate, canCreate, makeIdFromName, createFlow, setTimeout
+- flow-palette.service.ts
+  - Injectable: true
+  - Classes: FlowPaletteService
+  - Méthodes: toPaletteItems, buildGroups, ensure
+  - Types/Interfaces/Enums exportés: PaletteGroup
+- flow-viewer-dialog.component.ts
+  - Component: selector='flow-viewer-dialog', standalone=True
+  - Classes: FlowViewerDialogComponent
+  - Méthodes: toggleMenu, centerFlow, snapshot, close
+- flow-viewer.component.ts
+  - Component: selector='flow-viewer', standalone=True
+  - Classes: FlowViewerComponent
+  - Méthodes: ngOnInit, ngAfterViewInit, setTimeout, ngOnDestroy, inputId, outputIds, fitAll, setZoomAndCenter, saveViewport, restoreViewport, updateZoomDisplay, loadDemo, onNodePositionChange, onWheel, onPointerDown, onRun, onSave, onCenterFlow, computeEdgeLabel, getOutputName, onHandleEnter, onHandleMove, onHandleLeave
+- flow-workbench.component.html
+- flow-workbench.component.scss
+- flow-workbench.component.ts
+  - Component: selector='flow-workbench', standalone=True
+  - Classes: FlowWorkbenchComponent
+- node-template-editor.component.ts
+  - Component: selector='node-template-editor', standalone=True
+  - Classes: NodeTemplateEditorComponent
+  - Méthodes: ngOnInit, addOutput, removeOutput, dropOutput, onArgsChange, patchTemplate, makeIdFromName, cancel, save
+- node-template-list.component.ts
+  - Component: selector='node-template-list', standalone=True
+  - Classes: NodeTemplateListComponent
+  - Méthodes: doSearch, ngOnInit, load, edit, view, createNew, appFor, simpleIconUrl, viewApp
+- node-template-viewer.component.ts
+  - Component: selector='node-template-viewer', standalone=True
+  - Classes: NodeTemplateViewerComponent
+  - Méthodes: ngOnInit, simpleIconUrl, back, openApp, computePreviewPorts

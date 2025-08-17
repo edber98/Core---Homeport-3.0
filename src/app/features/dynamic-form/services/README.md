@@ -1,0 +1,55 @@
+README — src/app/features/dynamic-form/services
+
+Contenu du dossier:
+
+- README.md
+- builder-ctx-actions.service.ts
+  - Injectable: true
+  - Classes: BuilderCtxActionsService
+  - Méthodes: resolveCtx, addFieldToSection, addSectionInside, addArraySectionInside, deleteSection, deleteField, duplicateAtKey, insertSectionBefore, insertSectionAfter, insertFieldBefore, insertFieldAfter, addStep, addSectionToStep, addArraySectionToStep, addFieldToStep, addSectionToRoot, addArraySectionToRoot, addFieldToRoot, moveMixed, moveField, move, deleteFieldByPosition, del
+- builder-customize.service.ts
+  - Injectable: true
+  - Classes: BuilderCustomizeService
+  - Méthodes: px, unpx, addSpacing, patchStyle, styleFromForm, m, build, addStd, add, apply
+- builder-deps.service.ts
+  - Injectable: true
+  - Classes: BuilderDepsService
+  - Méthodes: nodeUsesKey, dependentsForKey, visit, formatDependents
+- builder-factory.service.ts
+  - Injectable: true
+  - Classes: BuilderFactoryService
+  - Méthodes: newStep, newSection, newArraySection, newField
+  - Types/Interfaces/Enums exportés: FieldType
+- builder-grid.service.ts
+  - Injectable: true
+  - Classes: BuilderGridService
+  - Méthodes: spanForBp, getSpan, setSpan, computeSpanFromPointer, startResize, onUpdate, _onMouseMove, _onMouseUp
+- builder-history.service.ts
+  - Injectable: true
+  - Classes: BuilderHistoryService
+  - Méthodes: reset, canUndo, canRedo, last, push, undo, redo, serialize, deserialize
+- builder-issues.service.spec.ts
+  - Méthodes: describe, beforeEach, it, expect
+- builder-issues.service.ts
+  - Injectable: true
+  - Classes: BuilderIssuesService
+  - Méthodes: allFieldKeys, collectRuleVars, forEachEntity, cb, findDuplicates, findInvalidConditionRefs
+  - Types/Interfaces/Enums exportés: DuplicateIssueItem, InvalidRefIssueItem
+- builder-preview.service.ts
+  - Injectable: true
+  - Classes: BuilderPreviewService
+  - Méthodes: describeRule, isRuleSatisfied, displayChoiceLabel, measureState, ruleToAssignments, fieldByKey, truthySampleForField, falseySampleForField, evalRuleLocal, enumerateScenarios, visit, enumerateFormScenarios, apply, buildValidBaseline, enumerateFieldVariations
+- builder-state.service.ts
+  - Injectable: true
+  - Classes: BuilderStateService
+  - Méthodes: clear, setSelected, toggle
+- builder-tree.service.spec.ts
+  - Méthodes: describe, beforeEach, it, expect
+- builder-tree.service.ts
+  - Injectable: true
+  - Classes: BuilderTreeService
+  - Méthodes: isSection, keyForObject, ctxFromKey, handleDrop, buildTreeNodes, pushFieldNodes, parseKey
+- condition-form.service.ts
+  - Injectable: true
+  - Classes: ConditionFormService
+  - Méthodes: newRow, fromNode, changeKind, addSubRule, addSubGroup, removeAt, removeSubAt, rootItems, addRootRule, addRootGroup, removeRootAt, changeRootKind, addSubRuleAt, addSubGroupAt, removeSubAtRoot, buildNodeFromForm, buildConditionObject, parseMaybeNumber, seedFormFromJson, buildJsonString

@@ -104,6 +104,8 @@ nz-footer {
 @keyframes pulse { 0% { opacity: 0.6; transform: scale(1); } 70% { opacity: 0; transform: scale(1.2); } 100% { opacity: 0; transform: scale(1); } }
 .cmd-search { width: 160px; transition: width .2s ease; }
 .cmd-search:focus { width: 240px; }
+/* Narrow mobile search form */
+.cmd-bar.mobile .cmd-search { width: 60vw; }
 
 /* Responsive sizing for launch bar (phones) */
 @media (max-width: 768px) {

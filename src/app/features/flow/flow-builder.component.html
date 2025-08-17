@@ -147,16 +147,16 @@
   <div class="left-bar">
     <div class="actions">
       <button class="icon-btn" (click)="saveFlow()" title="Sauvegarder" aria-label="Sauvegarder">
-        <i class="fa-regular fa-floppy-disk"></i>
+        <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
       </button>
       <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
-        <i class="fa-regular fa-cloud-arrow-down"></i>
+        <i class="fa-solid fa-cloud-arrow-down"></i>
       </button>
       <label class="icon-btn import-btn" title="Importer" aria-label="Importer">
-        <i class="fa-regular fa-file-arrow-up"></i>
+        <i class="fa-solid fa-file-arrow-up"></i>
         <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
       </label>
     </div>
@@ -164,6 +164,7 @@
 
   <div class="bottom-bar">
     <div class="actions">
+      <!-- Left side actions are now shown in the vertical left bar on all sizes -->
       <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
         <i class="fa-solid fa-rotate-left"></i>
       </button>
