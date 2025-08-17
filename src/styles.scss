@@ -21,6 +21,7 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     touch-action: auto;
+    padding: 0 6px !important;
 }
 .ios-safe-drawer .ant-drawer-mask {
     touch-action: none;

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiModelService, UiNode, UiTag } from './ui-model.service';
 import { UiRulesService } from './ui-rules.service';
@@ -12,6 +12,8 @@ import { UiPreviewHostComponent } from './preview/ui-preview-host.component';
 import { UiTopbarComponent } from './topbar/ui-topbar.component';
 import { UiClassManagerComponent } from './classes/ui-class-manager.component';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { UiBreakpointsService } from './services/ui-breakpoints.service';
 import { UiTokensService } from './services/ui-tokens.service';
 import { UiClassStyleService } from './services/ui-class-style.service';
@@ -20,7 +22,7 @@ import { UiHtmlIoService } from './services/ui-html-io.service';
 @Component({
   selector: 'ui-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, UiTopbarComponent, UiPalettePanelComponent, UiInspectorPanelComponent, UiStylesPanelComponent, UiTreeNzPanelComponent, UiClassManagerComponent, UiPreviewHostComponent],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzDrawerModule, NzButtonModule, UiTopbarComponent, UiPalettePanelComponent, UiInspectorPanelComponent, UiStylesPanelComponent, UiTreeNzPanelComponent, UiClassManagerComponent, UiPreviewHostComponent],
   templateUrl: './ui-builder.component.html',
   styleUrl: './ui-builder.component.scss'
 })
@@ -139,6 +141,26 @@ export class UiBuilderComponent {
     a.href = url; a.download = 'page.html'; a.click(); URL.revokeObjectURL(url);
   }
   refreshPreview() { this.previewVersion++; }
+  onCssEdited() {
+    // Remove inline styles duplicated by effective class styles on selection
+    const sel = this.model.selected;
+    if (!sel) return;
+    const eff = this.clsSvc.effectiveForClasses(sel.classes || [], 'base', this.bp);
+    const st = { ...(this.bp !== 'auto' ? (sel.styleBp?.[this.bp] || {}) : (sel.style || {})) } as Record<string,string>;
+    let changed = false;
+    for (const k of Object.keys(st)) {
+      if (eff[k] != null && eff[k] === st[k]) { delete st[k]; changed = true; }
+    }
+    if (changed) {
+      if (this.bp !== 'auto') {
+        const styleBp = { ...(sel.styleBp || {}) } as any; styleBp[this.bp] = st; this.onPatch({ styleBp });
+      } else {
+        this.onPatch({ style: st });
+      }
+    } else {
+      this.refreshPreview();
+    }
+  }
 
   // Preview breakpoints
   bp: 'auto'|'xs'|'sm'|'md'|'lg'|'xl' = 'auto';
@@ -198,5 +220,17 @@ export class UiBuilderComponent {
   onMoveNode(e: { id: string; newParentId: string; index: number }) {
     this.model.moveToParent(e.id, e.newParentId, e.index);
     this.push();
+  }
+
+  // Responsive drawers
+  isResponsive = false;
+  showPaletteDrawer = false;
+  showRightDrawer = false;
+  ngOnInit() { this.onResize(); }
+  @HostListener('window:resize') onWindowResize() { this.onResize(); }
+  onResize() {
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    this.isResponsive = w < 1280;
+    if (this.isResponsive) { this.onBpChange('auto'); this.previewMode = false; }
   }
 }

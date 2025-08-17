@@ -3,6 +3,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-json-editor.component';
 import { UiTokensService } from '../services/ui-tokens.service';
 import { UiBreakpoint } from '../services/ui-breakpoints.service';
 import { UiClassStyleService, UiState } from '../services/ui-class-style.service';
@@ -10,13 +13,14 @@ import { UiClassStyleService, UiState } from '../services/ui-class-style.service
 @Component({
   selector: 'ui-class-manager',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzSelectModule],
+  imports: [CommonModule, FormsModule, NzInputModule, NzSelectModule, NzModalModule, NzButtonModule, MonacoJsonEditorComponent],
   template: `
   <div class="cls">
     <div class="panel-heading"><div class="card-title"><div class="t">Classes</div><div class="s">Manager</div></div></div>
     <div class="row new-row">
       <input nz-input class="inp" placeholder=".class ou combo .btn.primary" [(ngModel)]="newName" />
       <button class="btn" (click)="create()" title="Ajouter"><i class="fa-solid fa-plus"></i></button>
+      <button class="btn" (click)="openCssEditor()" title="Éditer CSS"><i class="fa-solid fa-code"></i></button>
     </div>
     <div class="classes">
       <button class="chip" *ngFor="let c of classes" (click)="select(c.name)" [class.sel]="c.name===selected" title="{{c.name}}">{{c.name}}</button>
@@ -69,6 +73,11 @@ import { UiClassStyleService, UiState } from '../services/ui-class-style.service
       <div class="hint">Sélectionnez une classe pour l’éditer.</div>
     </ng-template>
   </div>
+  
+  <nz-modal [(nzVisible)]="showCssModal" nzTitle="Édition CSS des classes" (nzOnCancel)="cancelCssEditor()" (nzOnOk)="saveCssEditor()" [nzOkText]="'Sauvegarder'" [nzCancelText]="'Annuler'">
+    <monaco-json-editor [(value)]="cssText" [language]="'css'" [height]="360"></monaco-json-editor>
+    <div style="margin-top:8px; font-size:12px; color:#64748b;">Note: éditeur CSS simple, états/media non pris en charge ici.</div>
+  </nz-modal>
   `,
   styles: [`
   .cls {  }
@@ -77,6 +86,8 @@ import { UiClassStyleService, UiState } from '../services/ui-class-style.service
   .new-row { background: #fff; padding-bottom: 6px; }
   .inp { flex:1; border:1px solid #e5e7eb; border-radius:6px; padding:6px 8px; font-size:12px; }
   .sel { border:1px solid #e5e7eb; border-radius:6px; padding:6px 8px; font-size:12px; }
+  :host ::ng-deep .sel.ant-select.ant-select-focused .ant-select-selector,
+  :host ::ng-deep .sel.ant-select.ant-select-open .ant-select-selector { border-top: 2px solid #e5e7eb !important; }
   .btn { border:1px solid #e5e7eb; background:#fff; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
   .danger { color:#b91c1c; }
   .classes { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
@@ -105,6 +116,9 @@ export class UiClassManagerComponent {
   styleList: Array<{k:string; v:string; u?: string}> = [];
   applyName = '';
   collapsed = false;
+  showCssModal = false;
+  cssText = '';
+  @Output() cssEdited = new EventEmitter<void>();
 
   get classes() { return this.cls.list(); }
   create() { const name = (this.newName || '').trim().replace(/^\./,''); if (!name) return; this.cls.ensure(name); this.newName=''; }
@@ -118,6 +132,37 @@ export class UiClassManagerComponent {
   remove() { if (!this.selected) return; this.cls.remove(this.selected); this.selected=''; this.styleList=[]; }
   addStyle() { this.styleList.push({ k:'', v:'' }); }
   removeStyle(i: number) { this.styleList.splice(i,1); this.reEmit(); }
+  openCssEditor() { this.cssText = this.exportClassesAsCss(); this.showCssModal = true; }
+  saveCssEditor() { this.importCss(this.cssText); this.showCssModal = false; this.stylesChange.emit(); this.cssEdited.emit(); }
+  cancelCssEditor() { this.showCssModal = false; }
+  private exportClassesAsCss(): string {
+    const lines: string[] = [];
+    for (const c of this.cls.list()) {
+      const base = this.cls.getStyles(c.name, 'base', 'auto');
+      const keys = Object.keys(base);
+      if (!keys.length) continue;
+      lines.push(`.${c.parts.join('.') } {`);
+      for (const k of keys) lines.push(`  ${k}: ${base[k]};`);
+      lines.push('');
+      lines.push('}');
+    }
+    return lines.join('\n');
+  }
+  private importCss(css: string) {
+    const re = /\.([\w\-.]+)\s*\{([^}]+)\}/g; let m: RegExpExecArray | null;
+    while ((m = re.exec(css))) {
+      const clsName = m[1].trim().replace(/\./g, '.');
+      const body = m[2];
+      const styles: Record<string,string> = {};
+      body.split(';').forEach(rule => {
+        const [k, v] = rule.split(':');
+        if (!k || !v) return;
+        const key = k.trim(); const val = v.trim();
+        if (key) styles[key] = val;
+      });
+      if (Object.keys(styles).length) this.cls.setStyles(clsName, 'base', 'auto', styles);
+    }
+  }
   reloadStyles() {
     const styles = this.cls.getStyles(this.selected, this.state, this.bp);
     this.styleList = Object.keys(styles).map(k => ({ k, v: styles[k] }));

@@ -1,5 +1,5 @@
 <div class="ui-builder" [class.preview]="previewMode">
-  <ui-topbar class="topbar"
+  <ui-topbar class="topbar" [responsive]="isResponsive"
     [projectName]="'UI Project'"
     [device]="device"
     [zoomPct]="zoomPct"
@@ -14,18 +14,37 @@
     (guidesChange)="showGuides=$event"
     (gridChange)="showGrid=$event"
     (undo)="undo()" (redo)="redo()"
-    (export)="doExport()" (publish)="onPublish()"
+    (export)="doExport()" (publish)="onPublish()" (importHtml)="onImportHtml($event)" (exportHtml)="exportHtml()"
     (previewChange)="previewMode=$event"
     (openBreakpoints)="openBreakpoints()"
     (openDesignSystem)="openDesignSystem()"
   ></ui-topbar>
-  <ui-palette-panel class="palette" [elements]="elements" (add)="add($event)"></ui-palette-panel>
+  <!-- Left panel template -->
+  <ng-template #leftPanelTpl>
+    <ui-palette-panel [elements]="elements" (add)="add($event)"></ui-palette-panel>
+  </ng-template>
+  <!-- Right panel template -->
+  <ng-template #rightPanelTpl>
+    <ui-class-manager [bp]="bp" [selectionClasses]="model.selected?.classes || []"
+      (selectionAddClass)="addClassToSelection($event)" (selectionRemoveClass)="removeClassFromSelection($event)" (stylesChange)="refreshPreview()" (cssEdited)="onCssEdited()"></ui-class-manager>
+    <ui-styles-panel [node]="model.selected" [bp]="bp" (patch)="onPatch($event)"></ui-styles-panel>
+    <ui-tree-nz-panel [root]="model.root" [selectedId]="model.selectedId" [version]="model.version" (select)="onSelect($event)" (move)="onMoveNode($event)"></ui-tree-nz-panel>
+    <ui-inspector-panel [node]="model.selected" [bp]="bp"
+      (patch)="onPatch($event)"
+      (moveUp)="moveUp()" (moveDown)="moveDown()" (remove)="remove()"></ui-inspector-panel>
+  </ng-template>
+
+  <div class="palette">
+    <ng-container [ngTemplateOutlet]="leftPanelTpl"></ng-container>
+  </div>
+
 
   <section class="canvas" (click)="onSelect('root')">
     <div class="toolbar">
-      <div class="bp">
+      <button class="icon-btn left-btn" *ngIf="isResponsive" (click)="showPaletteDrawer=true" title="Palette"><i class="fa-regular fa-square"></i></button>
+      <div class="bp" *ngIf="!isResponsive">
         <span class="label">Preview</span>
-        <nz-select [(ngModel)]="bp" (ngModelChange)="onBpChange($event)" nzPlaceHolder="Auto">
+        <nz-select [(ngModel)]="bp" (ngModelChange)="onBpChange($event)" nzPlaceHolder="Auto" [nzDisabled]="isResponsive">
           <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
           <nz-option nzValue="xs" nzLabel="XS"></nz-option>
           <nz-option nzValue="sm" nzLabel="SM"></nz-option>
@@ -34,6 +53,7 @@
           <nz-option nzValue="xl" nzLabel="XL"></nz-option>
         </nz-select>
       </div>
+      <button class="icon-btn right-btn" *ngIf="isResponsive" (click)="showRightDrawer=true" title="Panneaux"><i class="fa-solid fa-sliders"></i></button>
     </div>
     <div class="canvas-inner" [style.maxWidth.px]="canvasWidth || null" [style.transform]="'scale(' + (zoomPct/100) + ')'
       " [style.transformOrigin]="'top center'">
@@ -42,17 +62,11 @@
   </section>
 
   <div class="right-panel">
-    <ui-class-manager [bp]="bp" [selectionClasses]="model.selected?.classes || []"
-      (selectionAddClass)="addClassToSelection($event)" (selectionRemoveClass)="removeClassFromSelection($event)" (stylesChange)="refreshPreview()"></ui-class-manager>
-    <ui-styles-panel [node]="model.selected" [bp]="bp" (patch)="onPatch($event)"></ui-styles-panel>
-    <ui-tree-nz-panel [root]="model.root" [selectedId]="model.selectedId" [version]="model.version" (select)="onSelect($event)" (move)="onMoveNode($event)"></ui-tree-nz-panel>
-    <ui-inspector-panel [node]="model.selected" [bp]="bp"
-      (patch)="onPatch($event)"
-      (moveUp)="moveUp()" (moveDown)="moveDown()" (remove)="remove()"></ui-inspector-panel>
+    <ng-container [ngTemplateOutlet]="rightPanelTpl"></ng-container>
   </div>
 
   <div class="bottom-bar" *ngIf="!previewMode">
-    <div class="actions">
+    <div class="actions" *ngIf="!isResponsive">
       <nz-select [(ngModel)]="previewState" title=":state" nzPlaceHolder="Normal">
         <nz-option nzValue="base" nzLabel="Normal"></nz-option>
         <nz-option nzValue="hover" nzLabel="Hover"></nz-option>
@@ -69,6 +83,10 @@
       <button class="icon-btn" (click)="openImport()" title="Importer" aria-label="Importer"><i class="fa-solid fa-file-arrow-up"></i></button>
       <button class="icon-btn" (click)="doExport()" title="Exporter" aria-label="Exporter"><i class="fa-solid fa-cloud-arrow-down"></i></button>
     </div>
+    <div class="actions" *ngIf="isResponsive">
+      <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler"><i class="fa-solid fa-rotate-left"></i></button>
+      <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
   </div>
 
   <div class="import-overlay" *ngIf="importing">
@@ -81,4 +99,16 @@
       </div>
     </div>
   </div>
+
+  <!-- Drawers for responsive -->
+  <nz-drawer [nzVisible]="showPaletteDrawer" nzPlacement="left" nzTitle="" [nzClosable]="false" [nzBodyStyle]="{ padding: '0 11px' }" (nzOnClose)="showPaletteDrawer=false" class="ios-safe-drawer">
+    <ng-container *nzDrawerContent>
+      <ng-container [ngTemplateOutlet]="leftPanelTpl"></ng-container>
+    </ng-container>
+  </nz-drawer>
+  <nz-drawer [nzVisible]="showRightDrawer" nzPlacement="right" nzTitle="" [nzClosable]="false" [nzBodyStyle]="{ padding: '0 11px' }" (nzOnClose)="showRightDrawer=false" class="ios-safe-drawer">
+    <ng-container *nzDrawerContent>
+      <ng-container [ngTemplateOutlet]="rightPanelTpl"></ng-container>
+    </ng-container>
+  </nz-drawer>
 </div>

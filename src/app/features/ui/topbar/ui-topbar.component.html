@@ -1,9 +1,8 @@
 <div class="ui-topbar">
   <div class="left">
     <div class="logo">UI</div>
-    <div class="name">{{ projectName }}</div>
   </div>
-  <div class="center">
+  <div class="center" *ngIf="!responsive">
     <div class="devices">
       <button [class.active]="device==='desktop'" (click)="deviceChange.emit('desktop')" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
       <button [class.active]="device==='tablet'" (click)="deviceChange.emit('tablet')" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
@@ -21,12 +20,18 @@
     </div>
   </div>
   <div class="right">
-    <button (click)="undo.emit()" [disabled]="!canUndo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
-    <button (click)="redo.emit()" [disabled]="!canRedo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
-    <button (click)="openBreakpoints.emit()" title="Breakpoints"><i class="fa-solid fa-ruler"></i></button>
-    <button (click)="openDesignSystem.emit()" title="Design System"><i class="fa-solid fa-droplet"></i></button>
+    <button *ngIf="!responsive" (click)="undo.emit()" [disabled]="!canUndo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+    <button *ngIf="!responsive" (click)="redo.emit()" [disabled]="!canRedo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+    <button *ngIf="!responsive" (click)="openBreakpoints.emit()" title="Breakpoints"><i class="fa-solid fa-ruler"></i></button>
+    <button *ngIf="!responsive" (click)="openDesignSystem.emit()" title="Design System"><i class="fa-solid fa-droplet"></i></button>
     <button (click)="previewChange.emit(!preview)" [class.active]="preview" title="Preview"><i class="fa-regular fa-eye"></i></button>
-    <button (click)="export.emit()" title="Exporter"><i class="fa-solid fa-download"></i></button>
-    <button class="publish" (click)="publish.emit()" title="Publier"><i class="fa-solid fa-cloud-arrow-up"></i> Publier</button>
+    <!-- HTML import/export in responsive -->
+    <label *ngIf="responsive" class="icon-btn" title="Importer HTML">
+      <i class="fa-solid fa-file-import"></i>
+      <input type="file" accept="text/html,.html,.htm" (change)="importHtml.emit($event)" hidden>
+    </label>
+    <button *ngIf="responsive" class="icon-btn" (click)="exportHtml.emit()" title="Exporter HTML"><i class="fa-solid fa-file-export"></i></button>
+    <button *ngIf="!responsive" (click)="export.emit()" title="Exporter"><i class="fa-solid fa-download"></i></button>
+    <button class="publish" (click)="publish.emit()" title="Publier"><i class="fa-solid fa-cloud-arrow-up"></i></button>
   </div>
 </div>

@@ -10,7 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './ui-topbar.component.scss'
 })
 export class UiTopbarComponent {
-  @Input() projectName = 'UI Project';
+  @Input() projectName = '';
   @Input() device: 'desktop'|'tablet'|'mobile-portrait'|'mobile-landscape' = 'desktop';
   @Input() zoomPct = 100;
   @Input() rulers = false;
@@ -19,6 +19,7 @@ export class UiTopbarComponent {
   @Input() canUndo = false;
   @Input() canRedo = false;
   @Input() preview = false;
+  @Input() responsive = false;
 
   @Output() deviceChange = new EventEmitter<'desktop'|'tablet'|'mobile-portrait'|'mobile-landscape'>();
   @Output() zoomChange = new EventEmitter<number>();
@@ -29,6 +30,8 @@ export class UiTopbarComponent {
   @Output() redo = new EventEmitter<void>();
   @Output() publish = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();
+  @Output() importHtml = new EventEmitter<Event>();
+  @Output() exportHtml = new EventEmitter<void>();
   @Output() previewChange = new EventEmitter<boolean>();
   @Output() openBreakpoints = new EventEmitter<void>();
   @Output() openDesignSystem = new EventEmitter<void>();
