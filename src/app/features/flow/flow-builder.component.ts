@@ -13,11 +13,17 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { FlowPaletteService } from './flow-palette.service';
+import { FlowGraphService } from './flow-graph.service';
+import { FlowBuilderUtilsService } from './flow-builder-utils.service';
+import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
+import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.component';
+import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -360,7 +366,16 @@ export class FlowBuilderComponent {
   ctxMenuY = 0;
   ctxMenuTarget: any = null; // node or edge
   /* private applyingHistory = false; */
-  constructor(public history: FlowHistoryService, private message: NzMessageService, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) { }
+  constructor(
+    public history: FlowHistoryService,
+    private message: NzMessageService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private catalog: CatalogService,
+    private paletteSvc: FlowPaletteService,
+    private graph: FlowGraphService,
+    private fbUtils: FlowBuilderUtilsService,
+  ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
   private appsMap = new Map<string, AppProvider>();
@@ -415,6 +430,7 @@ export class FlowBuilderComponent {
   // Removed event interceptors to align with working dev playground
 
   ngOnInit() {
+    // Debug helpers removed
     this.updateIsMobile();
     try {
       this.catalog.listApps().subscribe(list => this.zone.run(() => {
@@ -424,71 +440,18 @@ export class FlowBuilderComponent {
       // Load palette from Node Templates list (dynamic source)
       this.catalog.listNodeTemplates().subscribe(tpls => this.zone.run(() => {
         try {
-          this.items = this.toPaletteItems(tpls || []);
+          this.items = this.paletteSvc.toPaletteItems(tpls || []);
           this.rebuildPaletteGroups();
           this.cdr.detectChanges();
         } catch { }
       }));
     } catch { }
-    // Initialise un graphe par défaut à partir de this.items (pas this.templates)
-    const findByType = (t: string) => (this.items.find(it => it?.template?.type === t)?.template);
-    const startT = findByType('start') || { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} };
-    const condT = findByType('condition') || { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' };
-    // Choisir deux templates de type function depuis la palette (ex: Action, Mail)
-    const functionItems = this.items.filter(it => it?.template?.type === 'function').map(it => it.template);
-    const fnT1 = functionItems[0] || { id: 'tmpl_fn1', name: 'Function', type: 'function', icon: 'fa-solid fa-cog', title: 'Function', subtitle: 'Step', output: [], args: {} };
-    const fnT2 = functionItems[1] || { id: 'tmpl_fn2', name: 'Function 2', type: 'function', icon: 'fa-solid fa-bolt', title: 'Function 2', subtitle: 'Step', output: [], args: {} };
-
-    const startModel = { id: 'node_start', name: startT.name || 'Start', template: startT.id, templateObj: startT, context: {} };
-    const fn1Model = { id: 'node_fn1', name: fnT1.name || 'Function', template: fnT1.id, templateObj: fnT1, context: {} };
-    const fn2Model: any = { id: 'node_fn2', name: fnT2.name || 'Function', template: fnT2.id, templateObj: fnT2, context: {} };
-    // Activer catch_error par défaut pour SendMail
-    try {
-      if (fnT2?.id === 'tmpl_sendmail' || /send\s*mail/i.test(String(fnT2?.name || fnT2?.title || ''))) {
-        if (fnT2?.authorize_catch_error) fn2Model.catch_error = true;
-      }
-    } catch { }
-    const condModel = {
-      id: 'node_cond', name: condT.name || 'Condition', template: condT.id, templateObj: condT, context: {
-        items: [
-          { name: 'A', condition: '' },
-          { name: 'B', condition: '' },
-          { name: 'C', condition: '' }
-        ]
-      }
-    };
-
-    const startVNode = { id: startModel.id, point: { x: 380, y: 140 }, type: 'html-template', data: { model: startModel } };
-    const fn1VNode = { id: fn1Model.id, point: { x: 180, y: 320 }, type: 'html-template', data: { model: fn1Model } };
-    const fn2VNode = { id: fn2Model.id, point: { x: 380, y: 320 }, type: 'html-template', data: { model: fn2Model } };
-    const condVNode = { id: condModel.id, point: { x: 600, y: 320 }, type: 'html-template', data: { model: condModel } };
-
-    this.nodes = [startVNode, fn1VNode, fn2VNode, condVNode];
-    this.edges = [
-      {
-        type: 'template',
-        id: `${startModel.id}->${fn2Model.id}:out:in`,
-        source: startModel.id,
-        target: fn2Model.id,
-        sourceHandle: 'out',
-        targetHandle: 'in',
-        edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(startModel.id, 'out') } } },
-        data: { strokeWidth: 2, color: '#b1b1b7' },
-        markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
-      },
-      {
-        type: 'template',
-        id: `${startModel.id}->${fn1Model.id}:out:in`,
-        source: startModel.id,
-        target: fn1Model.id,
-        sourceHandle: 'out',
-        targetHandle: 'in',
-        edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(startModel.id, 'out') } } },
-        data: { strokeWidth: 2, color: '#b1b1b7' },
-        markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
-      },
-    ];
+    // Initialise un graphe par défaut à partir de la palette
+    const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
+    this.nodes = seed.nodes;
+    this.edges = seed.edges as any;
     this.history.reset(this.snapshot());
+    this.updateTimelineCaches();
   }
 
   // Resolve mini icon for palette: use only template.icon if it is a class (no app logo fallback)
@@ -512,22 +475,7 @@ export class FlowBuilderComponent {
   }
 
   // Map NodeTemplate list to palette display items
-  private toPaletteItems(tpls: any[]): any[] {
-    const out: any[] = [];
-    for (const t of (tpls || [])) {
-      try {
-        const label = (t && (t.title || t.name)) ? (t.title || t.name) : (t?.id || 'Node');
-        const template: any = { ...t };
-        // Normalize optional UI/compat fields
-        if (t?.app && t.app._id && !template.appId) template.appId = t.app._id;
-        if (t?.icon) template.icon = t.icon;
-        if (t?.subtitle) template.subtitle = t.subtitle;
-        if ((t as any).output_array_field) template.output_array_field = (t as any).output_array_field;
-        out.push({ label, template });
-      } catch { }
-    }
-    return out;
-  }
+  
 
   ngAfterViewInit() {
     // Subscribe to viewport change end events to update zoom indicator
@@ -597,31 +545,7 @@ export class FlowBuilderComponent {
   // No grouped palette; simple flat list used by template
   onPaletteQueryChange(v: string) { this.paletteQuery = (v || ''); this.rebuildPaletteGroups(); }
   rebuildPaletteGroups() {
-    try {
-      const q = (this.paletteQuery || '').trim().toLowerCase();
-      const out: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
-      const byApp = new Map<string, any[]>();
-      const ensure = (key: string) => { if (!byApp.has(key)) byApp.set(key, []); return byApp.get(key)!; };
-      for (const it of (this.items || [])) {
-        const tpl = it?.template || {};
-        const appId = String(((tpl as any)?.appId || (tpl as any)?.app?._id || '')).trim();
-        const app = appId ? this.appsMap.get(appId) : undefined;
-        if (q) {
-          const tags = ((tpl as any)?.tags || []).join(' ');
-          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''} ${app?.name || ''} ${app?.title || ''} ${appId} ${tags}`.toLowerCase();
-          if (!hay.includes(q)) continue;
-        }
-        const key = appId || '';
-        ensure(key).push(it);
-      }
-      const appKeys = Array.from(byApp.keys()).sort((a, b) => a.localeCompare(b));
-      for (const key of appKeys) {
-        const app = key ? this.appsMap.get(key) : undefined;
-        const title = app ? (app.title || app.name || app.id) : 'Sans App';
-        out.push({ title, items: byApp.get(key)!, appId: key || undefined, appColor: app?.color, appIconClass: app?.iconClass, appIconUrl: app?.iconUrl });
-      }
-      this.paletteGroups = out;
-    } catch { this.paletteGroups = []; }
+    this.paletteGroups = this.paletteSvc.buildGroups(this.items, this.paletteQuery, this.appsMap);
   }
 
   trackGroup = (_: number, g: any) => (g && (g.appId || g.title)) || _;
@@ -630,72 +554,11 @@ export class FlowBuilderComponent {
   // No-op; change tracking handled via vflow outputs
 
   inputId(tmpl: any): string | null { if (!tmpl) return null; return tmpl.type === 'start' ? null : 'in'; }
-  outputIds(model: any): string[] {
-    const tmpl = model?.templateObj || {};
-    switch (tmpl.type) {
-      case 'end': return [];
-      case 'start': return ['out'];
-      case 'loop': return ['loop_start', 'loop_end', 'end'];
-      case 'condition': {
-        const field = tmpl.output_array_field || 'items';
-        const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-        // IDs from current model items
-        const ids = arr.map((it: any, i: number) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
-        // Also include any currently connected handles so edges are preserved during edits
-        try {
-          const connected = this.edges
-            .filter(e => String(e.source) === String(model.id))
-            .map(e => String(e.sourceHandle ?? ''))
-            .filter(h => !!h);
-          const all = Array.from(new Set([...ids, ...connected]));
-          return all;
-        } catch {
-          return ids;
-        }
-      }
-      case 'function':
-      default: {
-        const outs: string[] | undefined = Array.isArray(tmpl.output) ? tmpl.output : undefined;
-        const n = (outs && outs.length) ? outs.length : 1; // défaut 1
-        const base = Array.from({ length: n }, (_, i) => String(i));
-        // catch error en première position si autorisé et activé dans le node
-        const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
-        return enableCatch ? ['err', ...base] : base;
-      }
-    }
-  }
+  outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
-  getOutputName(model: any, idxOrId: number | string): string {
-    try {
-      const tmpl = model?.templateObj || {};
-      const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
-      // Support id 'err'
-      if (typeof idxOrId === 'string' && idxOrId === 'err') return 'Error';
-      // Start node: single handle 'out' → label 'Succes'
-      if (tmpl.type === 'start' && String(idxOrId) === 'out') return 'Succes';
-      // Index mapping when 'err' inserted at first position
-      const idx = (typeof idxOrId === 'string' && /^\d+$/.test(idxOrId)) ? parseInt(idxOrId, 10) : (typeof idxOrId === 'number' ? idxOrId : NaN);
-      // Special case: condition node → name from context items
-      if (tmpl.type === 'condition') {
-        const field = tmpl.output_array_field || 'items';
-        const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-        if (Number.isFinite(idx)) {
-          const it = arr[idx as number];
-          if (it == null) return '';
-          if (typeof it === 'string') return it;
-          if (typeof it === 'object') return (it.name ?? String(idx));
-          return String(idx);
-        }
-        // Non numérique: tenter par _id
-        const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
-        if (!it) return '';
-        return (typeof it === 'object') ? (it.name ?? '') : String(it);
-      }
-      if (Number.isFinite(idx) && idx >= 0 && idx < outs.length) return outs[idx];
-      return '';
-    } catch { return ''; }
-  }
+  getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
   onExternalDrop(event: any) {
+    // logs disabled
     if (this.isMobile) return; // Disable DnD on mobile
 
     // Écran -> coordonnées relatives -> viewport -> monde
@@ -742,20 +605,17 @@ export class FlowBuilderComponent {
     this.nodes = [...this.nodes, vNode];
     this.pushState('drop.node');
   }
-  private normalizeTemplate(t: any) { return t && typeof t === 'object' ? t : { id: String(t || ''), type: 'function', title: 'Node', output: [], args: {} }; }
+  private normalizeTemplate(t: any) { return this.fbUtils.normalizeTemplate(t); }
   private computeDropPoint(ev: any) {
     const mouse = ev?.event as MouseEvent;
     const hostEl = this.flowHost?.nativeElement as HTMLElement | undefined;
-    if (!mouse || !hostEl || !this.flow?.viewportService) return { x: 400, y: 300 };
+    const vp = this.flow?.viewportService?.readableViewport();
+    if (!mouse || !hostEl || !vp) return { x: 400, y: 300 };
     const rect = hostEl.getBoundingClientRect();
-    const rel = { x: mouse.clientX - rect.left, y: mouse.clientY - rect.top };
-    const viewport = this.flow.viewportService.readableViewport();
-    const scale = viewport.zoom;
-    const offsetX = viewport.x;
-    const offsetY = viewport.y;
-    return { x: ((rel.x - offsetX) / scale) - 90, y: ((rel.y - offsetY) / scale) - 60 };
+    return this.fbUtils.computeDropPointFromMouse(mouse, rect, vp);
   }
   onConnect(c: Connection) {
+    // logs disabled
     const labelText = this.computeEdgeLabel(c.source, c.sourceHandle);
     const isErr = (c.sourceHandle === 'err') || this.errorNodes.has(String(c.source));
     if (isErr) this.errorNodes.add(String(c.target));
@@ -776,13 +636,31 @@ export class FlowBuilderComponent {
     // Keep error branch propagation consistent after new connection
     this.recomputeErrorPropagation();
     this.pushState('connect.edge');
+    try { this.suppressRemoveUntil = Date.now() + 300; } catch {}
   }
 
   deleteEdge(edge: Edge) {
-    this.edges = this.edges.filter(e => e !== edge);
+    const id = String((edge as any)?.id || '');
+    if (!id) return;
+    this.edges = this.edges.filter(e => String((e as any)?.id || '') !== id);
     // After edge deletion, recompute error branch propagation
     this.recomputeErrorPropagation();
     this.pushState('delete.edge');
+  }
+  onDeleteEdgeClick(ev: MouseEvent, edge: Edge) {
+    try { ev.preventDefault(); ev.stopPropagation(); } catch { }
+    // Allow subsequent onEdgesRemoved events for this edge id without restoration
+    try {
+      const id = String((edge as any)?.id || '');
+      if (id) {
+        this.allowedRemovedEdgeIds.add(id);
+        setTimeout(() => this.allowedRemovedEdgeIds.delete(id), 800);
+        // In case ctx.edge is not the same ref, resolve by id from current edges
+        const real = this.edges.find(e => String((e as any)?.id || '') === id) as Edge | undefined;
+        this.deleteEdge(real || edge);
+      }
+    } catch { this.deleteEdge(edge); }
+    try { this.cdr.detectChanges(); } catch { }
   }
 
   getEdgeLabel(edge: Edge): string {
@@ -794,92 +672,53 @@ export class FlowBuilderComponent {
       return '';
     } catch { return ''; }
   }
-  computeEdgeLabel(sourceId: string, sourceHandle: any): string {
+  computeEdgeLabel(sourceId: string, sourceHandle: any): string { return this.graph.computeEdgeLabel(sourceId, sourceHandle, this.nodes); }
+  // Timeline items mapping for nz-timeline (cached)
+  timelinePastItemsCache: Array<{ key: string; time: string; type: string; message: string; color: string }> = [];
+  timelineFutureItemsCache: Array<{ key: string; time: string; type: string; message: string; color: string }> = [];
+  private updateTimelineCaches() {
     try {
-      const src = this.nodes.find(n => n.id === sourceId);
-      const model = src?.data?.model;
-      // Pour function, utiliser template.output (sinon défaut ['Succes'])
-      const tmpl = model?.templateObj || {};
-      const outs = this.outputIds(model);
-      const names: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
-      // handle spécial 'err' et 'start' out
-      if (sourceHandle === 'err') return 'Error';
-      if (tmpl.type === 'start') return 'Succes';
-      const idx = sourceHandle != null && /^\d+$/.test(String(sourceHandle)) ? parseInt(String(sourceHandle), 10) : NaN;
-      if (tmpl.type === 'condition') {
-        const field = tmpl.output_array_field || 'items';
-        const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-        if (Number.isFinite(idx)) {
-          const it = arr[idx];
-          if (it == null) return '';
-          if (typeof it === 'string') return it;
-          if (typeof it === 'object') return (it.name ?? '');
-          return '';
-        }
-        // Handle may be a stable id (string)
-        const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
-        if (!it) return '';
-        return (typeof it === 'object') ? (it.name ?? '') : '';
-      }
-      if (Array.isArray(names) && Number.isFinite(idx) && idx >= 0 && idx < names.length) return names[idx];
-      // Single-output nodes: prefer 'Succes'
-      if (Array.isArray(names) && names.length === 1) return names[0] || 'Succes';
-      return '';
-    } catch { return ''; }
+      const pastMeta = (this.history as any).getPastMeta?.() || [];
+      const futureMeta = (this.history as any).getFutureMeta?.() || [];
+      const past = pastMeta.map((m: any, i: number) => this.mapMetaToItem(m, 'past', i));
+      const future = futureMeta.map((m: any, i: number) => this.mapMetaToItem(m, 'future', i));
+      this.timelinePastItemsCache = past.reverse();
+      this.timelineFutureItemsCache = future;
+    } catch {
+      this.timelinePastItemsCache = [];
+      this.timelineFutureItemsCache = [];
+    }
+  }
+  private mapMetaToItem(m: { ts: number; reason: string }, section: 'past' | 'future' = 'past', idx = 0) {
+    const time = this.formatTime(m?.ts || Date.now());
+    const { type, color, message } = this.describeReason(m?.reason || '');
+    const key = `${section}:${m?.ts || ''}:${m?.reason || ''}:${idx}`;
+    return { key, time, type, color, message };
+  }
+  private formatTime(ts: number) { try { const d = new Date(ts); const hh = String(d.getHours()).padStart(2,'0'); const mm = String(d.getMinutes()).padStart(2,'0'); const ss = String(d.getSeconds()).padStart(2,'0'); return `${hh}:${mm}:${ss}`; } catch { return ''; } }
+  private describeReason(r: string): { type: string; color: string; message: string } {
+    const map: Record<string, { type: string; color: string }> = {
+      'init': { type: 'Init', color: '#64748b' },
+      'restore': { type: 'Restore', color: '#0ea5e9' },
+      'palette.click.add': { type: 'Add', color: '#10b981' },
+      'drop.node': { type: 'Add', color: '#10b981' },
+      'connect.edge': { type: 'Connect', color: '#1677ff' },
+      'delete.edge': { type: 'Delete', color: '#b91c1c' },
+      'edges.removed': { type: 'Cleanup', color: '#9ca3af' },
+      'edges.detached.final': { type: 'Detach', color: '#f59e0b' },
+      'node.position.final': { type: 'Move', color: '#f59e0b' },
+      'inspector.saveJson': { type: 'Edit', color: '#8b5cf6' },
+      'dialog.modelCommit.final': { type: 'Edit', color: '#8b5cf6' },
+    };
+    const base = map[r] || { type: r || 'State', color: '#64748b' };
+    return { type: base.type, color: base.color, message: r };
   }
 
-  // Recompute error-branch propagation from current edges.
-  // Seeds are targets of edges whose sourceHandle is 'err'. Propagation follows all outgoing edges.
+  // Recompute error-branch propagation from current edges and update styles
   private recomputeErrorPropagation() {
-    try {
-      const adj = new Map<string, string[]>();
-      for (const e of this.edges) {
-        const s = String(e.source);
-        const t = String(e.target);
-        if (!adj.has(s)) adj.set(s, []);
-        adj.get(s)!.push(t);
-      }
-      const next = new Set<string>();
-      const queue: string[] = [];
-      for (const e of this.edges) {
-        if (String(e.sourceHandle) === 'err') {
-          const t = String(e.target);
-          if (!next.has(t)) { next.add(t); queue.push(t); }
-        }
-      }
-      while (queue.length) {
-        const n = queue.shift()!;
-        const outs = adj.get(n) || [];
-        for (const to of outs) {
-          if (!next.has(to)) { next.add(to); queue.push(to); }
-        }
-      }
-      // Replace current set
-      this.errorNodes = next;
-      // Update edge styling in-place to avoid triggering remove/add cycles
-      for (const e of this.edges as any[]) {
-        const isErr = String(e.sourceHandle) === 'err' || next.has(String(e.source));
-        // Preserve base styles once
-        const baseWidth = (e.data && typeof e.data.__baseWidth === 'number') ? e.data.__baseWidth : (e.data?.strokeWidth ?? 2);
-        const baseColor = (e.data && typeof e.data.__baseColor === 'string') ? e.data.__baseColor : (e.data?.color ?? '#b1b1b7');
-        const newData: any = { ...(e.data || {}) };
-        if (typeof newData.__baseWidth !== 'number') newData.__baseWidth = baseWidth;
-        if (typeof newData.__baseColor !== 'string') newData.__baseColor = baseColor;
-        if (isErr) {
-          newData.error = true;
-          newData.strokeWidth = 1; // same as initial error edge
-          newData.color = '#f759ab';
-        } else {
-          newData.error = false;
-          newData.strokeWidth = baseWidth;
-          newData.color = baseColor;
-        }
-        e.data = newData;
-        // Keep existing arrow markers; do not replace to avoid template cache issues
-      }
-      // Trigger Angular change detection without changing edge identities
-      this.edges = [...this.edges];
-    } catch { }
+    const { edges, errorNodes } = this.fbUtils.recomputeErrorPropagation(this.edges);
+    this.edges = edges as any;
+    this.errorNodes = errorNodes;
   }
 
   isNodeInError(id: string): boolean {
@@ -914,6 +753,7 @@ export class FlowBuilderComponent {
   }
   // Click-to-add from palette: place near viewport center, auto-connect to best free output above
   onPaletteClick(it: any, ev?: MouseEvent) {
+    // logs disabled
     // Do not prevent default or stop propagation to avoid blocking input focus in overlays (iOS/desktop)
     if (this.isPaletteItemDisabled(it)) return;
     const templateObj = this.normalizeTemplate(it?.template || it);
@@ -957,6 +797,7 @@ export class FlowBuilderComponent {
         } as any;
         this.edges = [...this.edges, edge];
         this.recomputeErrorPropagation();
+        try { this.suppressRemoveUntil = Date.now() + 300; } catch {}
       }
     }
     this.pushState('palette.click.add');
@@ -969,11 +810,7 @@ export class FlowBuilderComponent {
       const vp = this.flow?.viewportService?.readableViewport();
       const rect = this.flowHost?.nativeElement?.getBoundingClientRect();
       if (!vp || !rect) return { x: 400, y: 300 };
-      const centerScreenX = rect.width / 2;
-      const centerScreenY = rect.height / 2;
-      const wx = (centerScreenX - (vp.x || 0)) / (vp.zoom || 1);
-      const wy = (centerScreenY - (vp.y || 0)) / (vp.zoom || 1);
-      return { x: wx, y: wy };
+      return this.fbUtils.viewportCenterWorld(vp, rect);
     } catch { return { x: 400, y: 300 }; }
   }
   private findBestSourceNode(wx: number, wy: number): any | null {
@@ -1187,22 +1024,7 @@ export class FlowBuilderComponent {
 
   private generateNodeId(tpl?: any, fallbackName?: string): string {
     const used = new Set(this.nodes.map(n => String(n.id)));
-    const type = String((tpl?.type || 'node')).toLowerCase();
-    const rawName = String((tpl?.name || tpl?.title || fallbackName || '') || '').trim();
-    const nameSlug = rawName
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[^\p{Letter}\p{Number}\s-]/gu, ' ')
-      .replace(/[\s-]+/g, '_')
-      .replace(/_+/g, '_')
-      .replace(/^_+|_+$/g, '') || 'node';
-    let id = '';
-    do {
-      const s1 = Date.now().toString(36).slice(-4);
-      const s2 = Math.random().toString(36).slice(2, 6);
-      id = `${type}_${nameSlug}_${s1}_${s2}`;
-    } while (used.has(id));
-    return id;
+    return this.fbUtils.generateNodeId(tpl, fallbackName || '', used);
   }
   ctxDeleteTarget() {
     const tgt = this.ctxMenuTarget;
@@ -1257,14 +1079,22 @@ export class FlowBuilderComponent {
     const oldModel = (this.nodes.find(n => n.id === this.selection?.id)?.data?.model) || this.selectedModel;
     this.nodes = this.nodes.map(n => n.id === this.selection?.id ? ({ ...n, data: { ...n.data, model: m } }) : n);
     this.selection = this.nodes.find(n => n.id === m.id) || this.selection;
-    // Reconcile edges whose source handles may have changed (e.g., condition item deleted or re-ordered)
-    this.reconcileEdgesForNode(m, oldModel);
+    // Stabilize condition ids then reconcile edges
+    const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
+    this.edges = res.edges as any;
     // Ne pas pousser dans lhistorique ici; on attend lévénement "committed"
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
-    this.reconcileEdgesForNode(m, oldModel);
+    const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
+    if (res.deletedEdgeIds?.length) {
+      res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
+      setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
+    }
+    this.edges = res.edges as any;
 
     this.pushState('dialog.modelCommit.final');
   }
@@ -1276,200 +1106,21 @@ export class FlowBuilderComponent {
       if (!parsed || !parsed.id) return;
       // Remplace le model du nœud dans la liste pour déclencher le re-render
       const oldModel = (this.nodes.find(n => n.id === this.selection!.id)?.data?.model) || this.selectedModel;
-      this.nodes = this.nodes.map(n => n.id === this.selection!.id ? ({ ...n, data: { ...n.data, model: parsed } }) : n);
+      const stable = this.fbUtils.ensureStableConditionIds(oldModel, parsed);
+      this.nodes = this.nodes.map(n => n.id === this.selection!.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
       // Met à jour la sélection en mémoire
-      this.selection = this.nodes.find(n => n.id === parsed.id) || null;
+      this.selection = this.nodes.find(n => n.id === stable.id) || null;
       // Reconcile edges for this node after model update
-      this.reconcileEdgesForNode(parsed, oldModel);
+      const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
+      if (res.deletedEdgeIds?.length) {
+        res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
+        setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
+      }
+      this.edges = res.edges as any;
       this.pushState('inspector.saveJson');
     } catch { }
   }
 
-  // Remove or remap edges that reference changed/removed handles after a node's outputs change
-  private reconcileEdgesForNode(model: any, oldModel?: any) {
-    try {
-      const nodeId = model?.id;
-      if (!nodeId) return;
-      // Stabiliser les _id pour les items condition AVANT comparaisons
-      this.ensureStableConditionIds(oldModel, model);
-      const before = this.edges.length;
-
-      // Special handling for condition nodes: remap/update labels precisely
-      const type = model?.templateObj?.type;
-      if (type === 'condition') {
-        const oldItems = this.getConditionItems(oldModel);
-        const newItems = this.getConditionItems(model);
-        // Guard: if new items are empty but old had items (likely early init), do nothing
-        if (oldItems.length > 0 && newItems.length === 0) return;
-        // Build full maps with stable ids
-        const oldFull = this.getConditionItemsFull(oldModel); // {id,name}
-        const full = this.getConditionItemsFull(model);
-        const idSet = new Set(full.map(it => it.id));
-        const nameToId = new Map<string, string>();
-        full.forEach(it => { if (it.name && !nameToId.has(it.name)) nameToId.set(it.name, it.id); });
-        const oldIdToName = new Map<string, string>();
-        oldFull.forEach(it => oldIdToName.set(it.id, it.name));
-        const oldIdSet = new Set(oldFull.map(it => it.id));
-        const deletedIds = new Set<string>([...oldIdSet].filter(id => !idSet.has(id)));
-
-        const deletedEdgeIds: string[] = [];
-        this.edges = this.edges.reduce((acc: Edge[], e) => {
-          if (e.source !== nodeId) { acc.push(e); return acc; }
-          const handle = String(e.sourceHandle ?? '');
-          let newHandle: string | null = null;
-          // Case 1: handle already an id and still exists
-          if (handle && !/^\d+$/.test(handle)) {
-            // If this handle was deleted, drop the edge
-            if (deletedIds.has(handle)) {
-              deletedEdgeIds.push(e.id as any);
-              return acc;
-            }
-            if (idSet.has(handle)) newHandle = handle;
-            else {
-              // Try remap by old name
-              const oldName = oldIdToName.get(handle) || '';
-              if (oldName && nameToId.has(oldName)) newHandle = nameToId.get(oldName)!;
-            }
-          } else {
-            // Case 2: legacy numeric index
-            const oldIdx = /^\d+$/.test(handle) ? parseInt(handle, 10) : -1;
-            if (oldIdx >= 0) {
-              // Try remap by old name → new id
-              const oldName = (oldFull[oldIdx]?.name) || (oldItems[oldIdx] || '');
-              if (oldName && nameToId.has(oldName)) newHandle = nameToId.get(oldName)!;
-              // Fallback: same index within bounds
-              if (!newHandle && oldIdx < full.length) newHandle = full[oldIdx].id;
-              // If still no remap, and the original old id at this index was deleted, drop
-              if (!newHandle) {
-                const oldIdAtIdx = oldFull[oldIdx]?.id;
-                if (oldIdAtIdx && deletedIds.has(String(oldIdAtIdx))) {
-                  deletedEdgeIds.push(e.id as any);
-                  return acc;
-                }
-              }
-            }
-          }
-          if (!newHandle) {
-            // Keep the edge unchanged to preserve connections; label fallback will display stored text
-            acc.push(e);
-            return acc;
-          }
-          // Update edge with new stable handle and label
-          const txt = this.computeEdgeLabel(nodeId, newHandle);
-          const center = { type: 'html-template', data: { text: txt } } as any;
-          const edgeLabels = { ...(e as any).edgeLabels, center } as any;
-          const ne: Edge = { ...(e as any), sourceHandle: newHandle, id: `${e.source}->${e.target}:${newHandle}:${e.targetHandle}`, edgeLabels } as any;
-          acc.push(ne);
-          return acc;
-        }, [] as Edge[]);
-
-        // Prevent onEdgesRemoved from restoring edges we intentionally removed
-        if (deletedEdgeIds.length) {
-          deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
-          setTimeout(() => { deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
-        }
-      }
-
-      // Generic guard: for condition nodes, we keep all edges on modification.
-      // For other node types, still remove edges to non-existent handles.
-      const newOut = (this.outputIds(model) || []).map((x: any) => String(x));
-      if (type !== 'condition') {
-        const allowed = new Set(newOut);
-        // Guard: if nothing allowed but previously there were outputs, skip (early init)
-        if (!newOut.length && oldModel) {
-          const oldOut = (this.outputIds(oldModel) || []).map((x: any) => String(x));
-          if (oldOut.length) return;
-        }
-        // Remove only edges from this node that reference a non-existent handle
-        this.edges = this.edges.filter(e => (e.source !== nodeId) || allowed.has(String(e.sourceHandle ?? '')));
-      }
-
-      // Recompute error propagation because edges may have been removed/remapped
-      this.recomputeErrorPropagation();
-
-      // Optionally, we could reconcile target handles too, but inputs are stable ('in')
-      if (this.edges.length !== before) {
-        // Edges changed; selection may reference a removed edge
-        if (this.selection && (this.selection as any).source && (this.selection as any).target) {
-          const exists = this.edges.some(e => (e as any).id === (this.selection as any).id);
-          if (!exists) this.selection = null;
-        }
-      }
-    } catch { }
-  }
-
-  private getConditionItems(model: any): string[] {
-    try {
-      const field = model?.templateObj?.output_array_field || 'items';
-      const arr: any[] = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-      return arr.map((it, i) => (typeof it === 'object' && it && typeof it.name === 'string') ? it.name : (typeof it === 'string' ? it : String(i)));
-    } catch { return []; }
-  }
-  private getConditionItemsFull(model: any): Array<{ id: string; name: string }> {
-    try {
-      const field = model?.templateObj?.output_array_field || 'items';
-      const arr: any[] = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-      return arr.map((it, i) => {
-        if (it && typeof it === 'object') {
-          const id = String((it as any)._id || i);
-          const name = typeof it.name === 'string' ? it.name : String(i);
-          return { id, name };
-        }
-        return { id: String(i), name: typeof it === 'string' ? it : String(i) };
-      });
-    } catch { return []; }
-  }
-
-  // Stabilise les _id en préservant ceux de l'ancien modèle (par index puis par name);
-  // génère un _id uniquement pour les nouveaux items sans id.
-  private ensureStableConditionIds(oldModel: any | undefined | null, model: any | undefined | null) {
-    try {
-      const tmpl = model?.templateObj;
-      if (!tmpl || tmpl.type !== 'condition') return;
-      const field = tmpl.output_array_field || 'items';
-      const newArr: any[] = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-      const oldArr: any[] = (oldModel?.context && Array.isArray(oldModel.context?.[field])) ? oldModel.context[field] : [];
-      // Collect already present ids in new
-      const used = new Set<string>(newArr.map(it => (it && typeof it === 'object' && it._id) ? String(it._id) : '').filter(Boolean));
-      // 1) Preserve id by same index when id missing (even if name changed)
-      for (let i = 0; i < Math.min(oldArr.length, newArr.length); i++) {
-        const oldIt = oldArr[i];
-        const newIt = newArr[i];
-        if (!newIt || typeof newIt !== 'object') continue;
-        if (newIt._id) continue;
-        const oldId = oldIt && typeof oldIt === 'object' ? String(oldIt._id || '') : '';
-        if (oldId && !used.has(oldId)) { newIt._id = oldId; used.add(oldId); }
-      }
-      // 2) Try to copy by name (first unused match) for remaining items
-      const nameToIds = new Map<string, string[]>();
-      for (let i = 0; i < oldArr.length; i++) {
-        const it = oldArr[i];
-        if (!(it && typeof it === 'object' && it._id)) continue;
-        const name = it.name || (typeof it === 'string' ? it : '');
-        const id = String(it._id);
-        if (!nameToIds.has(name)) nameToIds.set(name, []);
-        nameToIds.get(name)!.push(id);
-      }
-      for (const it of newArr) {
-        if (!(it && typeof it === 'object') || it._id) continue;
-        const name = it.name || '';
-        const list = nameToIds.get(name) || [];
-        while (list.length) {
-          const candidate = list.shift()!;
-          if (!used.has(candidate)) { it._id = candidate; used.add(candidate); break; }
-        }
-      }
-      // 3) Generate for any remaining without _id
-      for (const it of newArr) {
-        if (!(it && typeof it === 'object')) continue;
-        if (!it._id) {
-          let id = '';
-          do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id));
-          it._id = id; used.add(id);
-        }
-      }
-    } catch { }
-  }
 
   // Inspector actions
   deleteSelected() {
@@ -1571,13 +1222,8 @@ export class FlowBuilderComponent {
       if (!vs || !this.flowHost?.nativeElement) return;
       const vp = this.flow.viewportService.readableViewport();
       const rect = this.flowHost.nativeElement.getBoundingClientRect();
-      const centerScreenX = rect.width / 2;
-      const centerScreenY = rect.height / 2;
-      const x = centerScreenX - (wx * vp.zoom);
-      const y = centerScreenY - (wy * vp.zoom);
-      // Use internal API to set viewport without changing zoom
-      (vs as any).writableViewport.set({ changeType: 'absolute', state: { zoom: vp.zoom, x, y }, duration });
-      // Ensure change event is emitted so UI (zoom display) updates
+      const state = this.fbUtils.centerViewportOnWorldPoint(vp, rect, wx, wy);
+      (vs as any).writableViewport.set({ changeType: 'absolute', state, duration });
       try { vs.triggerViewportChangeEvent?.('end'); } catch { }
     } catch { }
   }
@@ -1648,12 +1294,30 @@ export class FlowBuilderComponent {
       this.pushPending = true;
       setTimeout(() => {
         this.pushPending = false;
-
-        this.history.push(this.snapshot());
+        try {
+          this.zone.run(() => {
+            this.history.push(this.snapshot(), reason);
+            this.updateTimelineCaches();
+            try { this.cdr.detectChanges(); } catch { }
+          });
+        } catch {
+          this.history.push(this.snapshot(), reason);
+          this.updateTimelineCaches();
+          try { this.cdr.detectChanges(); } catch { }
+        }
       }, 60);
     } else {
-
-      this.history.push(this.snapshot());
+      try {
+        this.zone.run(() => {
+          this.history.push(this.snapshot(), reason);
+          this.updateTimelineCaches();
+          try { this.cdr.detectChanges(); } catch { }
+        });
+      } catch {
+        this.history.push(this.snapshot(), reason);
+        this.updateTimelineCaches();
+        try { this.cdr.detectChanges(); } catch { }
+      }
     }
   }
 
@@ -1682,7 +1346,7 @@ export class FlowBuilderComponent {
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
   onNodePositionChange(change: any) {
-
+    // logs disabled
     if (this.isIgnoring()) { return; }
     const id = change?.id;
     const pt = change?.to?.point || change?.point || change?.to;
@@ -1706,56 +1370,71 @@ export class FlowBuilderComponent {
     if (this.isIgnoring()) return;
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
+    // logs disabled
     const posMap = this.pendingPositions;
     this.nodes = this.nodes.map(n => (posMap[n.id] ? ({ ...n, point: { x: posMap[n.id].x, y: posMap[n.id].y } }) : n));
     this.draggingNodes.clear();
     this.pendingPositions = {} as any;
     this.pushState('node.position.final');
+    // Suppress spurious nodes.removed events that may follow a move
+    this.suppressNodesRemovedUntil = Date.now() + 400;
   }
 
   onNodesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {
+      if (Date.now() < (this.suppressGraphEventsUntil || 0)) return;
       const ids = new Set((changes || []).map(c => c?.id).filter(Boolean));
+      if (Date.now() < this.suppressNodesRemovedUntil) return;
       if (!ids.size) return;
+      const beforeNodes = this.nodes.length;
+      const beforeEdges = this.edges.length;
       this.nodes = this.nodes.filter(n => !ids.has(n.id));
       this.edges = this.edges.filter(e => !ids.has(String(e.source)) && !ids.has(String(e.target)));
+      const changed = (this.nodes.length !== beforeNodes) || (this.edges.length !== beforeEdges);
       ids.forEach(id => this.errorNodes.delete(String(id)));
-      // Removal can break error paths: recompute error propagation
-      this.recomputeErrorPropagation();
-      this.pushState('nodes.removed');
+      if (changed) {
+        // Removal can break error paths: recompute error propagation
+        this.recomputeErrorPropagation();
+        this.pushState('nodes.removed');
+      }
     } catch { }
   }
   onEdgesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {
+      if (Date.now() < (this.suppressGraphEventsUntil || 0)) return;
       const removedIds = new Set((changes || []).map(c => c?.id).filter(Boolean));
+      if (Date.now() < this.suppressRemoveUntil) return;
       if (!removedIds.size) return;
-      // Keep edges whose source is a condition node; allow others to be removed
-      const toKeep = new Set<string>();
-      const toRemove = new Set<string>();
+      const nextEdges: Edge[] = [];
+      let changed = false;
       for (const e of this.edges) {
-        if (!removedIds.has(e.id as any)) continue;
-        const src = this.nodes.find(n => n.id === e.source);
-        const isCond = !!src?.data?.model?.templateObj && src.data.model.templateObj.type === 'condition';
+        if (!removedIds.has(e.id as any)) { nextEdges.push(e); continue; }
         const isAllowedDeletion = this.allowedRemovedEdgeIds.has(e.id as any);
-        if (isCond && !isAllowedDeletion) toKeep.add(e.id as any); else toRemove.add(e.id as any);
-        this.cdr.markForCheck();
+        if (isAllowedDeletion) { changed = true; continue; }
+        // Only remove if one of the endpoints no longer exists; otherwise ignore (likely a transient detach while reattaching)
+        const hasSource = this.nodes.some(n => n.id === e.source);
+        const hasTarget = this.nodes.some(n => n.id === e.target);
+        if (!hasSource || !hasTarget) { changed = true; continue; }
+        // Keep the edge; will be restored visually
+        nextEdges.push(e);
       }
-      if (toRemove.size) {
-        this.edges = this.edges.filter(e => !toRemove.has(e.id as any));
+      if (changed) {
+        this.edges = nextEdges as any;
+        // Any change in edges can affect error-branch propagation
+        this.recomputeErrorPropagation();
+        this.pushState('edges.removed');
       }
-      if (toKeep.size) {
-        // Force re-render to restore edges vflow tried to remove
-        this.edges = [...this.edges];
-      }
-      // Any change in edges can affect error-branch propagation
-      this.recomputeErrorPropagation();
-      this.pushState('edges.removed');
     } catch { }
   }
 
   private pendingDetachTimers: Record<string, any> = {};
+  private suppressRemoveUntil = 0;
+  private suppressNodesRemovedUntil = 0;
+  private suppressGraphEventsUntil = 0;
+  private previewBaseline: { nodes: any[]; edges: any[] } | null = null;
+  private log(_evt: string, _data?: any) { /* logs disabled */ }
   onEdgesDetached(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {
@@ -1782,6 +1461,111 @@ export class FlowBuilderComponent {
   }
 
   // Import with loading feedback
+  // History timeline interactions
+  onHistoryHoverPast(index: number) {
+    // UI shows newest first; map UI index to original past index
+    const uiIndex = Math.max(0, Number(index) || 0);
+    const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
+    const snap = this.history.getPastAt(origIndex);
+    if (!snap) return;
+    this.previewSnapshot(snap);
+  }
+  onHistoryHoverFuture(index: number) {
+    const snap = this.history.getFutureAt(index);
+    if (!snap) return;
+    this.previewSnapshot(snap);
+  }
+  onHistoryHoverLeave() {
+    this.revertPreview();
+  }
+  private previewSnapshot(s: { nodes: any[]; edges: any[] }) {
+    try {
+      if (!this.previewBaseline) this.previewBaseline = this.snapshot();
+      this.beginApplyingHistory(400);
+      this.suppressGraphEventsUntil = Date.now() + 800;
+      this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
+      this.edges = JSON.parse(JSON.stringify(s.edges || []));
+      this.recomputeErrorPropagation();
+      try { this.cdr.detectChanges(); } catch { }
+    } catch { }
+  }
+  private revertPreview() {
+    if (!this.previewBaseline) return;
+    try {
+      const s = this.previewBaseline; this.previewBaseline = null;
+      this.beginApplyingHistory(200);
+      this.suppressGraphEventsUntil = Date.now() + 600;
+      this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
+      this.edges = JSON.parse(JSON.stringify(s.edges || []));
+      this.recomputeErrorPropagation();
+      try { this.cdr.detectChanges(); } catch { }
+    } catch { this.previewBaseline = null; }
+  }
+  onHistoryClickPast(index: number) {
+    // UI shows newest first; steps equal UI index (0 = current, 1 = one undo, etc.)
+    try {
+      this.previewBaseline = null; // finalize any preview
+      this.beginApplyingHistory(600);
+      this.suppressGraphEventsUntil = Date.now() + 1000;
+      // Build message content from meta
+      let loadedMsg: string | null = null;
+      try {
+        const uiIndex = Math.max(0, Number(index) || 0);
+        const metas = (this.history as any).getPastMeta?.() || [];
+        const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
+        const meta = metas[origIndex];
+        if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
+      } catch {}
+      let cur = this.snapshot();
+      const steps = Math.max(0, Number(index) || 0);
+      for (let i = 0; i < steps; i++) {
+        const next = this.history.undo(cur);
+        if (!next) break;
+        cur = next;
+      }
+      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      this.recomputeErrorPropagation();
+      try { this.cdr.detectChanges(); } catch { }
+      try { this.history.push(this.snapshot(), 'restore', true); } catch {}
+      try { this.updateTimelineCaches(); } catch {}
+      try {
+        if (!loadedMsg) loadedMsg = steps > 0 ? `Snapshot chargé (undo ×${steps})` : 'Snapshot courant';
+        this.message.success(loadedMsg);
+      } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
+    } catch { }
+  }
+  onHistoryClickFuture(index: number) {
+    try {
+      this.previewBaseline = null;
+      this.beginApplyingHistory(600);
+      this.suppressGraphEventsUntil = Date.now() + 1000;
+      // Build message content from meta
+      let loadedMsg: string | null = null;
+      try {
+        const uiIndex = Math.max(0, Number(index) || 0);
+        const metas = (this.history as any).getFutureMeta?.() || [];
+        const meta = metas[uiIndex];
+        if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
+      } catch {}
+      let cur = this.snapshot();
+      const steps = Math.max(0, index + 1); // index 0 = next redo
+      for (let i = 0; i < steps; i++) {
+        const next = this.history.redo(cur);
+        if (!next) break;
+        cur = next;
+      }
+      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      this.recomputeErrorPropagation();
+      try { this.cdr.detectChanges(); } catch { }
+      try { this.history.push(this.snapshot(), 'restore', true); } catch {}
+      try { this.updateTimelineCaches(); } catch {}
+      try {
+        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${steps})`;
+        this.message.success(loadedMsg);
+      } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
+    } catch { }
+  }
+
   importFlow(ev: Event) {
     const input = ev.target as HTMLInputElement | null;
     const files = input?.files;
@@ -1810,7 +1594,17 @@ export class FlowBuilderComponent {
           });
           this.edges = parsed.edges;
           // After import, reconcile edges for all nodes (in case formats changed)
-          try { this.nodes.forEach(n => this.reconcileEdgesForNode(n?.data?.model)); } catch { }
+          try {
+            this.nodes.forEach(n => {
+              const m = n?.data?.model;
+              const res = this.fbUtils.reconcileEdgesForNode(m, null, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
+              if (res.deletedEdgeIds?.length) {
+                res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
+                setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
+              }
+              this.edges = res.edges as any;
+            });
+          } catch { }
           this.selection = null;
           // Rebuild error-branch state from imported edges
           this.recomputeErrorPropagation();

@@ -1,4 +1,14 @@
 .flow-builder { position: relative; display: grid; grid-template-columns: 320px 1fr 320px; gap: 0; height: 100%; }
+.flow-builder > flow-palette-panel { min-height: 0; }
+.flow-builder > flow-inspector-panel { min-height: 0; }
+.flow-builder > .canvas { min-height: 0; }
+.flow-builder > .inspector { min-height: 0; }
+.flow-builder > .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: auto; }
+.flow-builder > .right-panel flow-history-timeline { flex: 0 0 auto; margin-bottom: 8px; }
+.flow-builder > .right-panel flow-inspector-panel { flex: 1 1 auto; min-height: 0; }
+/* Padding for Snapshots in drawer to match panel spacing */
+.right-panel.drawer-mode { padding: 0 12px 12px 12px; }
+.right-panel.drawer-mode flow-history-timeline { margin-top: 8px; }
 .palette, .inspector { border: none; border-radius: 0; padding: 12px; padding-right: 9px; background: #ffffff; overflow: auto; padding-top: 0 !important; }
 .palette .panel-heading, .inspector .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; }
 /* Remove top margin for palette header as requested */

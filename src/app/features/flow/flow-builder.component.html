@@ -1,76 +1,13 @@
 <div class="flow-builder" cdkDropListGroup>
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
-    <aside class="palette">
-      <div class="panel-heading">
-        <div class="card-title left">
-          <span class="t">Node</span>
-          <span class="s">Palette & Contexte</span>
-        </div>
-      </div>
-      <div class="palette-search"><input nz-input [ngModel]="paletteQuery" (ngModelChange)="onPaletteQueryChange($event)"
-          placeholder="Rechercher un nœud (nom, catégorie)" /></div>
-      <div class="groups">
-        <div class="group" *ngFor="let g of paletteGroups; let gi = index; trackBy: trackGroup">
-          <div class="group-title">
-            <div class="card-title left">
-              <span class="t">
-                <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
-                  <i *ngIf="g.appIconClass" [class]="g.appIconClass"></i>
-                  <img *ngIf="!g.appIconClass && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
-                  <img *ngIf="!g.appIconClass && !g.appIconUrl" [src]="simpleIconUrl(g.appId)" alt="icon" />
-                </span>
-                {{ g.title }}
-              </span>
-            </div>
-          </div>
-          <div class="items" cdkDropList [id]="(mode === 'drawer' ? 'drawer_group_' : 'outside_group_') + gi"
-            [cdkDropListData]="g.items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
-            [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
-            (cdkDropListDropped)="null">
-            <div class="item" *ngFor="let it of g.items; trackBy: trackItem" [class.dragging]="isDragging(it)"
-              [class.disabled]="isPaletteItemDisabled(it)"
-              [attr.aria-disabled]="isPaletteItemDisabled(it) ? true : null" (click)="onPaletteClick(it)">
-              <div class="meta">
-                <div class="title">
-                  <span class="mini-icon" *ngIf="miniIconClass(it)">
-                    <i class="mini" [class]="miniIconClass(it)"></i>
-                  </span>
-                  {{ it.label }}
-                </div>
-                <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
-                <div class="desc" *ngIf="it.template?.description as d">{{ d }}</div>
-              </div>
-              <!-- Drag proxy overlay to keep original item visible while dragging -->
-              <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isPaletteItemDisabled(it)"
-                [cdkDragData]="{ label: it.label, template: it.template }"
-                [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
-                [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                (cdkDragStarted)="onDragStart(it, $event)"
-                (cdkDragEnded)="onDragEnd(it, $event)">
-                <ng-template cdkDragPreview>
-                  <div class="item"
-                    style="  background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
-                     <div class="meta">
-                <div class="title" style=" font-weight:600 !important; font-size: 12px !important;">
-                  <span class="mini-icon" *ngIf="miniIconClass(it)">
-                    <i class="mini" [class]="miniIconClass(it)"></i>
-                  </span>
-                  {{ it.label }}
-                </div>
-                <div class="subtitle" style="color:#8c8c8c !important; font-size: 12px !important;" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
-                <div class="desc" style="color:#6b7280 !important; font-size: 12px !important; margin-top: 2px !important; overflow: hidden !important; text-overflow: ellipsis !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important;" *ngIf="it.template?.description as d">{{ d }}</div>
-              </div>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    </aside>
+    <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
+      [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
+      [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)"
+      [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
+      (queryChange)="onPaletteQueryChange($event)" (itemClick)="onPaletteClick($event)"
+      (dragStart)="onDragStart($event.item, $event.$event)"
+      (dragEnd)="onDragEnd($event.item, $event.$event)"></flow-palette-panel>
   </ng-template>
 
   <!-- Desktop left panel -->
@@ -117,8 +54,9 @@
             [ngClass]="{ error: ctx.edge.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }">
             <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) as txt"
               [ngClass]="{ error: ctx.edge.data?.error || txt === 'Error' }">{{ txt }}</div>
-            <button class="badge delete" title="Supprimer" *ngIf="!isEdgeDeleteDisabled(ctx.edge)"
-              (click)="deleteEdge(ctx.edge)">
+            <button class="badge delete" title="Supprimer" type="button" *ngIf="!isEdgeDeleteDisabled(ctx.edge)"
+              (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()" (click)="onDeleteEdgeClick($event, ctx.edge)">
               <i class="fa-regular fa-circle-xmark"></i>
             </button>
           </div>
@@ -185,46 +123,22 @@
     </div>
   </section>
 
- 
+
   <!-- Reusable right panel content (desktop + drawer) -->
-  <ng-template #rightPanelContent let-mode="mode">
-    <aside class="inspector">
-      <div class="panel-heading">
-        <div class="card-title left">
-          <span class="t">Navigation & Contrôles</span>
-          <span class="s">Inspecteur</span>
-        </div>
-      </div>
-      <ng-container *ngIf="selectedNode; else noSel">
-        <div class="tabs">
-          <button [class.active]="inspectorTab==='settings'" (click)="inspectorTab='settings'">Settings</button>
-          <button [class.active]="inspectorTab==='json'" (click)="inspectorTab='json'">JSON</button>
-        </div>
-        <div *ngIf="inspectorTab==='settings'">
-          <div><strong>ID:</strong> {{ selectedModel?.id }}</div>
-          <div><strong>Name:</strong> {{ selectedModel?.name }}</div>
-          <div><strong>Type:</strong> {{ selectedModel?.templateObj?.type }}</div>
-          <div><strong>Template:</strong> {{ selectedModel?.template }}</div>
-          <div class="hint">Édition avancée disponible via l’onglet JSON.</div>
-          <div class="inspector-actions">
-            <button class="open-advanced" (click)="openAdvancedEditor()">Ouvrir l’éditeur avancé</button>
-            <button class="danger" (click)="deleteSelected()" title="Supprimer">Supprimer</button>
-          </div>
-        </div>
-        <div *ngIf="inspectorTab==='json'" class="json-box">
-          <monaco-json-editor [(value)]="editJson" [height]="240"></monaco-json-editor>
-          <div class="inspector-actions">
-            <button class="save" (click)="saveSelectedJson()">Appliquer</button>
-          </div>
-        </div>
-      </ng-container>
-      <ng-template #noSel>
-        <p>Sélectionnez un nœud.</p>
-      </ng-template>
-    </aside>
-  </ng-template>
-  <!-- Desktop right panel -->
-  <ng-container [ngTemplateOutlet]="rightPanelContent" [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+  <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
+  <div class="right-panel" *ngIf="!isMobile">
+    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedModel]="selectedModel"
+      [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+      (saveJson)="saveSelectedJson()"></flow-inspector-panel>
+    <div style="padding: 8px; overflow: auto;">
+
+      <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
+        (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
+        (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
+        (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
+    </div>
+  </div>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>
     <div>Import du flow…</div>
@@ -298,6 +212,18 @@
 <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="rightPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
+    <div class="right-panel drawer-mode">
+      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedModel]="selectedModel"
+        [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+        (saveJson)="saveSelectedJson()"></flow-inspector-panel>
+      <div style="padding: 8px; overflow: auto;">
+
+        <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
+          (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
+          (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
+          (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
+      </div>
+    </div>
   </ng-container>
 </nz-drawer>
