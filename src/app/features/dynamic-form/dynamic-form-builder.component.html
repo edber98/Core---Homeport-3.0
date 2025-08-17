@@ -235,7 +235,7 @@
       </div>
 
       <!-- Choix en cas de conflits de conditions sur un même champ -->
-      <nz-modal [(nzVisible)]="conflictModalVisible" nzTitle="Choix de valeurs pour champs en conflit"
+      <nz-modal [(nzVisible)]="conflictModalVisible" nzTitle="Choix de valeurs pour champs en conflit" [nzWrapClassName]="'xs-top-modal'"
                 (nzOnCancel)="cancelConflict()" (nzOnOk)="confirmConflict()">
         <ng-container *nzModalContent>
           <p>Plusieurs conditions proposent des valeurs différentes pour le même champ. Choisis la valeur à utiliser:</p>
@@ -393,14 +393,14 @@
 </div>
 
 <!-- Modals -->
-<nz-modal [(nzVisible)]="optionsModalVisible" nzTitle="Options" [nzWidth]="840" (nzOnCancel)="cancelOptions()" (nzOnOk)="saveOptions()">
+<nz-modal [(nzVisible)]="optionsModalVisible" nzTitle="Options" [nzWidth]="840" [nzWrapClassName]="'xs-top-modal'" (nzOnCancel)="cancelOptions()" (nzOnOk)="saveOptions()">
   <ng-container *nzModalContent>
     <options-builder [group]="optionsForm" (add)="addOptionRow()" (remove)="removeOptionRow($event)"></options-builder>
   </ng-container>
 </nz-modal>
 
 <!-- Modals de style Titre/Description pour Section -->
-<nz-modal [(nzVisible)]="titleStyleModalVisible" nzTitle="Style du Titre" [nzWidth]="720" (nzOnCancel)="cancelTitleStyle()" (nzOnOk)="saveTitleStyle()">
+<nz-modal [(nzVisible)]="titleStyleModalVisible" nzTitle="Style du Titre" [nzWidth]="720" [nzWrapClassName]="'xs-top-modal'" (nzOnCancel)="cancelTitleStyle()" (nzOnOk)="saveTitleStyle()">
   <ng-container *nzModalContent>
     <form [formGroup]="titleStyleForm">
       <app-style-editor [group]="titleStyleForm"></app-style-editor>
@@ -408,7 +408,7 @@
   </ng-container>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="descStyleModalVisible" nzTitle="Style de la Description" [nzWidth]="720" (nzOnCancel)="cancelDescStyle()" (nzOnOk)="saveDescStyle()">
+<nz-modal [(nzVisible)]="descStyleModalVisible" nzTitle="Style de la Description" [nzWidth]="720" [nzWrapClassName]="'xs-top-modal'" (nzOnCancel)="cancelDescStyle()" (nzOnOk)="saveDescStyle()">
   <ng-container *nzModalContent>
     <form [formGroup]="descStyleForm">
       <app-style-editor [group]="descStyleForm"></app-style-editor>

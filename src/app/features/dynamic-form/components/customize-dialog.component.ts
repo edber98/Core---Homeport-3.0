@@ -24,7 +24,7 @@ import { SpacingEditorComponent } from './spacing-editor.component';
     SpacingEditorComponent
   ],
   template: `
-  <nz-modal [nzTitle]="title" [(nzVisible)]="visible" (nzVisibleChange)="visibleChange.emit($event)" [nzWidth]="960" (nzOnCancel)="cancel.emit()" (nzOnOk)="save.emit()">
+  <nz-modal [nzTitle]="title" [(nzVisible)]="visible" (nzVisibleChange)="visibleChange.emit($event)" [nzWidth]="960" [nzWrapClassName]="'xs-top-modal'" (nzOnCancel)="cancel.emit()" (nzOnOk)="save.emit()">
     <ng-container *nzModalContent>
       <form [formGroup]="group" class="cust-form">
         <!-- Texte principal (si présent) -->

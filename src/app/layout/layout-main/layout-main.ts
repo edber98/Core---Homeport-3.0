@@ -60,6 +60,7 @@ export class LayoutMain {
   constructor(private router: Router) { }
 
   get showSider(): boolean { return this.innerWidth >= 992; }
+  get isXs(): boolean { return this.innerWidth <= 576; }
 
   @HostListener('window:resize') onResize() { try { this.innerWidth = window.innerWidth; } catch { } }
 

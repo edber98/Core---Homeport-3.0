@@ -136,6 +136,14 @@ app-root {
     top: 2px !important;
     transform: none !important;
   }
+  /* Prefer wrapper-scoped override when provided */
+  .xs-top-modal .ant-modal {
+    top: 2px !important;
+    margin: 8px auto !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    transform: none !important;
+  }
 }
 
 /* styles.scss */

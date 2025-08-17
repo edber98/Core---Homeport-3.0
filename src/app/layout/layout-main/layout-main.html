@@ -136,7 +136,7 @@
 </nz-layout>
 
 <!-- Command Center (modal) -->
-<nz-modal  [(nzVisible)]="cmdVisible" [nzFooter]="null" nzTitle="Command Center" (nzOnCancel)="closeCmd()">
+<nz-modal  [(nzVisible)]="cmdVisible" [nzFooter]="null" nzTitle="Command Center" (nzOnCancel)="closeCmd()" [nzStyle]="isXs ? { top: '2px' } : undefined">
   <ng-container *nzModalContent>
   <div class="cmd-modal">
     <div class="section">

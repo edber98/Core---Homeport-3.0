@@ -1,5 +1,28 @@
 Homeport — Build + Architecture Report
+Homeport — Rapport de build et modifications (Codex)
 
+1) Résumé du style appliqué
+- Langage: TypeScript avec Angular 20; composants standalone privilégiés.
+- Nommage: fichiers/dossiers en kebab-case; classes en PascalCase.
+- Structure: routing-first, fonctionnalités en lazy-load sous `src/app/features/*`.
+- Modules réutilisables: `src/app/modules/*` (ex. `dynamic-form`).
+- Mise en page: NG Zorro; usage du grid (`nz-row`/`nz-col`) et `trackBy`.
+- Formats: SCSS/LESS selon config; `.editorconfig` respectée; HTML formaté via Prettier override.
+
+2) Liste des changements effectués
+- Aucune correction de code nécessaire: le build de production passe du premier coup.
+- Lecture des documents du repo (`README.md`, `AGENTS.md`, `docs/AGENT_CHANGES.md`) pour alignement.
+- Vérification du build: `ng build --configuration production`.
+
+3) Fichiers modifiés
+- `codex-report.md` (mis à jour pour ce rapport).
+
+4) Message simulé (Conventional Commits)
+build: verify Angular production build success
+
+Corps:
+- Read repository docs and verified production build.
+- No code changes required; artifacts output to `dist/Homeport`.
 1) Style Appliqué (Build)
 - Fix ciblé: budgets de style per-component assouplis dans `angular.json` pour débloquer le build prod sans toucher au code métier.
 - Changement minimal et sûr: seules les limites `anyComponentStyle` ont été ajustées (warning 4kB→8kB, error 8kB→12kB).

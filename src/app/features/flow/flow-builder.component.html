@@ -184,6 +184,18 @@
         <span class="value">{{ zoomPercent }}%</span>
       </div>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
+
+      <!-- Desktop: show Import/Export and Save as icon-only on the right of the group -->
+      <label class="icon-btn import-btn desktop-only" title="Importer" aria-label="Importer">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
+      </label>
+      <button class="icon-btn desktop-only" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </button>
+      <button class="icon-btn desktop-only" (click)="saveFlow()" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
     </div>
   </div>
 
