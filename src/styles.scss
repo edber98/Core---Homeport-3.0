@@ -120,6 +120,24 @@ app-root {
   app-root { transform: none !important; width: 100%; height: auto; }
 }
 
+/* XS responsive override for NG-Zorro Modal: reduce top offset on phones */
+@media (max-width: 575.98px) {
+  /* XS: keep modals near top, widen to viewport safely */
+  .ant-modal-root .ant-modal,
+  .cdk-overlay-container .ant-modal,
+  :host ::ng-deep .ant-modal {
+    top: 2px !important;
+    margin: 8px auto !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    transform: none !important;
+  }
+  .ant-modal-centered .ant-modal {
+    top: 2px !important;
+    transform: none !important;
+  }
+}
+
 /* styles.scss */
 @font-face {
     font-family: 'Sarine';

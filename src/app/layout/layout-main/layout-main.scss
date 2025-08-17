@@ -94,6 +94,11 @@ nz-footer {
 :host ::ng-deep .hp-header .hdr-avatar .ant-avatar { width: 32px; height: 32px; line-height: 32px; }
 .hp-header .hdr-avatar:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
 
+ :host ::ng-deep .custom-dialog.ant-modal {
+    top: 2px !important;
+   
+  }
+
 /* Central manager */
 .cmd-bar { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #e5e7eb; border-radius: 12px; padding:6px 8px; box-shadow: 0 8px 20px rgba(0,0,0,.04); }
 .cmd-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; transition: background-color .15s ease, border-color .15s ease, transform .02s ease; }
