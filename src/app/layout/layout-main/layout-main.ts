@@ -47,9 +47,10 @@ export class LayoutMain {
     { label: 'Dashboard', icon: 'home', route: '/dashboard' },
     { label: 'Flows', icon: 'branches', route: '/flows' },
     { label: 'Formulaires', icon: 'form', route: '/forms' },
-    { label: 'UI Builder', icon: 'layout', route: '/ui-builder' },
+    { label: 'Sites web', icon: 'global', route: '/websites' },
     { label: 'Templates de nœuds', icon: 'appstore', route: '/node-templates' },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
+    { label: 'Debugging', icon: 'tool', route: '/debug' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },
   ];
   drawerVisible = false;
@@ -79,6 +80,9 @@ export class LayoutMain {
     if (route === '/node-templates') return { exact: false };
     // Keep parent menu active for subroutes of /apps
     if (route === '/apps') return { exact: false };
+    // Keep menu active for children under websites and debugging
+    if (route === '/websites') return { exact: false };
+    if (route === '/debug') return { exact: false };
     return { exact: true };
   }
 

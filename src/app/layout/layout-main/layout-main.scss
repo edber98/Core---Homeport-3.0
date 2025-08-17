@@ -61,6 +61,7 @@ nz-header {
 nz-content {
     //margin: 0 16px;
     height: 100%;
+    min-height: 0; /* allow inner scroll areas to size correctly */
 }
 
 nz-breadcrumb {
@@ -71,6 +72,7 @@ nz-breadcrumb {
   //  padding: 24px;
     background: #fff;
     height: 100%;
+    min-height: 0; /* critical for nested scroll containers on iOS */
     overflow: auto;
 }
 
@@ -124,7 +126,7 @@ nz-footer {
 /* Command Center modal */
 :host ::ng-deep .ant-modal .ant-modal-content { border-radius: 14px; }
 .cmd-modal { display:flex; flex-direction:column; gap:14px; }
-.cmd-modal .section { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; }
+.cmd-modal .section { background:#fff; border:0px solid #e5e7eb; border-radius:12px; padding:10px 12px; }
 .cmd-modal .section-title { font-weight:600; color:#6b7280; margin-bottom:8px; }
 .cmd-modal .activity { display:flex; align-items:center; gap:8px; padding:6px 0; }
 .cmd-modal .activity .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; }
@@ -140,7 +142,7 @@ nz-footer {
 .quick-card .qc-title { font-weight:600; }
 .quick-card .qc-desc { color:#6b7280; font-size:12px; }
 .cmd-modal .two-cols { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-.chip { display:inline-flex; align-items:center; gap:6px; border:1px solid #e5e7eb; border-radius:999px; padding:6px 10px; margin: 4px 6px 0 0; cursor:pointer; }
+.chip { display:inline-flex; align-items:center; gap:6px; border:1px solid #e5e7eb; border-radius:12px; padding:6px 10px; margin: 4px 6px 0 0; cursor:pointer; }
 .chip .muted { color:#9ca3af; font-size:12px; }
 
 /* Notifications popover panel */

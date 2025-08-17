@@ -37,7 +37,12 @@ export const routes: Routes = [
             { path: 'node-templates', loadComponent: () => import('./features/flow/node-template-list.component').then(m => m.NodeTemplateListComponent), title: 'Templates de nœuds' },
             { path: 'node-templates/editor', loadComponent: () => import('./features/flow/node-template-editor.component').then(m => m.NodeTemplateEditorComponent), title: 'Template — Éditeur' },
             { path: 'node-templates/viewer', loadComponent: () => import('./features/flow/node-template-viewer.component').then(m => m.NodeTemplateViewerComponent), title: 'Template — Viewer' },
+            // Websites (list/editor/viewer)
+            { path: 'websites', loadComponent: () => import('./features/website/website-list.component').then(m => m.WebsiteListComponent), title: 'Sites web' },
+            { path: 'websites/editor', loadComponent: () => import('./features/website/website-editor.component').then(m => m.WebsiteEditorComponent), title: 'Site — Éditeur' },
+            { path: 'websites/viewer', loadComponent: () => import('./features/website/website-viewer.component').then(m => m.WebsiteViewerComponent), title: 'Site — Viewer' },
             { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },
+            { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
             { path: 'apps/editor', loadComponent: () => import('./features/catalog/app-provider-editor.component').then(m => m.AppProviderEditorComponent), title: 'App — Éditeur' },
             { path: 'apps/viewer', loadComponent: () => import('./features/catalog/app-provider-viewer.component').then(m => m.AppProviderViewerComponent), title: 'App — Viewer' },
             { path: 'settings', loadComponent: () => import('./features/settings/app-settings.component').then(m => m.AppSettingsComponent), title: 'Paramètres' },
