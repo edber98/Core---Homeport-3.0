@@ -22,8 +22,15 @@ type FormItem = { id: string; name: string; description?: string };
           <p>Ouvrez un formulaire en Builder ou Viewer, ou créez-en un nouveau.</p>
         </div>
         <div class="actions">
-          <button nz-button nzType="primary" class="primary" (click)="openCreate()">
+          <input [(ngModel)]="q" placeholder="Rechercher un formulaire (nom, desc)" class="search"/>
+          <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
+            <i class="fa-solid fa-search"></i>
+          </button>
+          <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()">
             <i class="fa-solid fa-plus"></i> Nouveau formulaire
+          </button>
+          <button nz-button nzType="primary" class="primary icon-only" (click)="openCreate()" aria-label="Nouveau formulaire">
+            <i class="fa-solid fa-plus"></i>
           </button>
         </div>
       </div>
@@ -34,7 +41,7 @@ type FormItem = { id: string; name: string; description?: string };
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of forms">
+        <div class="card" *ngFor="let it of filtered">
           <div class="leading"><div class="icon-badge"><i class="fa-regular fa-rectangle-list"></i></div></div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div></div>
@@ -70,10 +77,23 @@ type FormItem = { id: string; name: string; description?: string };
   styles: [`
     .list-page { padding: 20px; }
     .container { max-width: 1080px; margin: 0 auto; }
-    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
+    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
+    .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .page-header .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
+    .page-header .actions .search:focus { border-color:#d1d5db; }
     .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding:6px 10px; }
+    .page-header .actions .icon-only.search-action { display:inline-flex; }
+    .page-header .actions .icon-only i { font-size:14px; line-height:1; }
+    @media (max-width: 640px) {
+      .page-header { flex-direction: column; align-items: stretch; }
+      .page-header .actions { width:100%; flex-wrap: nowrap; }
+      .page-header .actions .search { flex:1 1 auto; width:auto; }
+      .page-header .actions .with-text { display:none; }
+      .page-header .actions .primary.icon-only { display:inline-flex; }
+    }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
@@ -104,6 +124,12 @@ export class FormListComponent implements OnInit {
   forms: FormSummary[] = [];
   loading = true;
   error: string | null = null;
+  q = '';
+  get filtered() {
+    const s = (this.q || '').trim().toLowerCase();
+    if (!s) return this.forms;
+    return this.forms.filter(f => (f.name || '').toLowerCase().includes(s) || (f.description || '').toLowerCase().includes(s));
+  }
   // create modal state
   createVisible = false;
   creating = false;
@@ -148,4 +174,5 @@ export class FormListComponent implements OnInit {
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; }); }
     });
   }
+  doSearch() { this.q = (this.q || '').trim(); }
 }

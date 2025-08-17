@@ -5,10 +5,25 @@ body {
     height: 100%;
     overflow: hidden;
 }
+/* CDK overlay scroll-block can break iOS input focus; relax when overlays are open */
+body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scrolling: touch; }
 
 /* Global UI vars */
 :root {
     --hp-menu-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
+}
+
+/* iOS-safe drawer: ensure touch/scroll are contained within the drawer and do not leak to background DnD/canvas */
+.ios-safe-drawer .ant-drawer-body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: auto;
+}
+.ios-safe-drawer .ant-drawer-mask {
+    touch-action: none;
+}
+.ios-safe-drawer .ant-drawer-content {
+    touch-action: auto;
 }
 
 /* Ant Design menu hover: keep text dark (not white) */
@@ -99,6 +114,10 @@ app-root {
     /* 100% / 0.7 = 142.857% pour conserver la largeur initiale */
     height: 142.857%;
     /* optionnel si nécessaire */
+}
+/* On coarse pointers (mobile), avoid transform scaling which can break input focus/positioning */
+@media (pointer: coarse) {
+  app-root { transform: none !important; width: 100%; height: auto; }
 }
 
 /* styles.scss */
@@ -348,4 +367,9 @@ body {
 }
 .ant-drawer .ant-drawer-body .card.ant-card > .ant-card-head {
   border-bottom: 1px solid #E2E1E4 !important;
+}
+
+/* Lock body scroll while custom hp-drawer open */
+body.hp-drawer-open {
+  overflow: hidden !important;
 }

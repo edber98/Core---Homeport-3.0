@@ -154,6 +154,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   styles: [`
     .tpl-editor { padding: 12px; max-width: 1080px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; }
+    .header .actions { display:flex; gap:8px; }
     .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .card-title.left { align-items:flex-start; }
     .card-title .t { font-weight:600; font-size:14px; }
@@ -201,6 +202,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       type: new FormControl<NodeTemplate['type']>('function', { nonNullable: true }),
       category: new FormControl<string>(''),
       group: new FormControl<string>(''),
+      appId: new FormControl<string | null>(null),
       description: new FormControl<string>(''),
       vendors: new FormControl<string[] | null>([], { nonNullable: false }),
       tags: new FormControl<string[] | null>([], { nonNullable: false }),
@@ -236,7 +238,7 @@ export class NodeTemplateEditorComponent implements OnInit {
   private patchTemplate(t: NodeTemplate) {
     this.form.patchValue({
       id: t.id, name: t.name || '', type: t.type, category: t.category || '', group: (t as any).group || '', description: t.description || '',
-      appId: (t as any).appId || null, tags: (t as any).tags || []
+      appId: ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || null), tags: (t as any).tags || []
     }, { emitEvent: false });
     // Optional UI fields
     // @ts-ignore
@@ -267,8 +269,11 @@ export class NodeTemplateEditorComponent implements OnInit {
     const v = this.form.value as any;
     let args: any = {};
     try { args = this.argsJson && this.argsJson.trim().length ? JSON.parse(this.argsJson) : {}; } catch { args = {}; }
+    const generated = v.id || this.makeIdFromName(v.name);
     const tpl: NodeTemplate = {
-      id: v.id || this.makeIdFromName(v.name),
+      id: generated,
+      // also store _id for external systems expecting it
+      ...( { _id: generated } as any ),
       type: v.type,
       name: v.name,
       category: v.category || undefined,
@@ -280,6 +285,8 @@ export class NodeTemplateEditorComponent implements OnInit {
       output: v.type === 'function' ? (this.outputs.value || []).map((x:any)=>x.value).filter((s:string)=>!!s && s.trim().length) : undefined,
       args
     } as any;
+    // also store app object with _id for compatibility
+    if (v.appId) (tpl as any).app = { _id: v.appId };
     // constraints removed per new model (not used)
     if (v.type === 'condition') (tpl as any).output_array_field = v.output_array_field || 'items';
     // Optional UI hints

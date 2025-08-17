@@ -18,8 +18,15 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           <p>Gestion des templates (start, function, condition, loop…). À connecter à la base de données.</p>
         </div>
         <div class="actions">
-          <button nz-button nzType="primary" class="primary" (click)="createNew()">
+          <input [(ngModel)]="q" placeholder="Rechercher (nom, catégorie, app, tags)" class="search"/>
+          <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
+            <i class="fa-solid fa-search"></i>
+          </button>
+          <button nz-button nzType="primary" class="primary with-text" (click)="createNew()">
             <i class="fa-solid fa-plus"></i> Nouveau template
+          </button>
+          <button nz-button nzType="primary" class="primary icon-only" (click)="createNew()" aria-label="Nouveau template">
+            <i class="fa-solid fa-plus"></i>
           </button>
         </div>
       </div>
@@ -29,13 +36,14 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     </div>
     <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of templates" (click)="view(it)">
+        <div class="card" *ngFor="let it of filtered" (click)="view(it)">
           <div class="leading">
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
                 <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass"></i>
-                <img *ngIf="!appFor(it)?.iconClass" [src]="simpleIconUrl(appFor(it)?.id || '')" alt="icon"/>
+                <img *ngIf="!appFor(it)?.iconClass && appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
+                <img *ngIf="!appFor(it)?.iconClass && !appFor(it)?.iconUrl" [src]="simpleIconUrl(appFor(it)?.id || '')" alt="icon"/>
               </div>
             </ng-template>
           </div>
@@ -51,11 +59,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
             <button class="icon-btn" (click)="edit(it); $event.stopPropagation()" title="Éditer">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
-            <ng-container *ngIf="appFor(it) as a">
-            <button class="icon-btn" (click)="viewApp(a); $event.stopPropagation()" title="Voir l'app">
-              <i class="fa-regular fa-eye"></i>
-            </button>
-            </ng-container>
           </div>
         </div>
       </div>
@@ -66,10 +69,24 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   styles: [`
     .list-page { padding: 20px; }
     .container { max-width: 1080px; margin: 0 auto; }
-    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
+    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px; outline: none; }
+    .actions .search:focus { border-color:#d1d5db; }
+    .actions .primary { background:#111; border-color:#111; }
+    /* Icon-only buttons: hide by default except search-action */
+    .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
+    .actions .icon-only.search-action { display:inline-flex; }
+    .actions .icon-only i { font-size: 14px; line-height: 1; }
+    @media (max-width: 640px) {
+      .page-header { flex-direction: column; align-items: stretch; }
+      .actions { width:100%; flex-wrap: nowrap; }
+      .actions .search { flex:1 1 auto; width:auto; }
+      .actions .with-text { display:none; }
+      .actions .primary.icon-only { display:inline-flex; }
+    }
     .loading { display:flex; align-items:center; gap:10px; color:#666; margin: 12px 0; }
     .spinner { width:16px; height:16px; border:2px solid #e5e7eb; border-top-color:#1677ff; border-radius:50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -100,6 +117,22 @@ export class NodeTemplateListComponent implements OnInit {
   loading = true;
   error: string | null = null;
   appsMap = new Map<string, AppProvider>();
+  q = '';
+  doSearch() { this.q = (this.q || '').trim(); }
+  get filtered() {
+    const s = (this.q || '').trim().toLowerCase();
+    if (!s) return this.templates;
+    return this.templates.filter(t => {
+      const name = (t.name || '').toLowerCase();
+      const title = ((t as any).title || '').toLowerCase();
+      const cat = (t.category || '').toLowerCase();
+      const tags = ((t as any).tags || []).join(' ').toLowerCase();
+      const appId = ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || '');
+      const app = appId ? (this.appsMap.get(appId) || null) : null;
+      const appText = app ? `${(app.title || app.name || app.id)}`.toLowerCase() : '';
+      return name.includes(s) || title.includes(s) || cat.includes(s) || tags.includes(s) || appText.includes(s);
+    });
+  }
 
   constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
@@ -117,7 +150,10 @@ export class NodeTemplateListComponent implements OnInit {
   edit(it: NodeTemplate) { this.router.navigate(['/node-templates/editor'], { queryParams: { id: it.id } }); }
   view(it: NodeTemplate) { this.router.navigate(['/node-templates/viewer'], { queryParams: { id: it.id } }); }
   createNew() { this.router.navigate(['/node-templates/editor']); }
-  appFor(t: NodeTemplate): AppProvider | undefined { const id = (t as any).appId || ''; return id ? this.appsMap.get(id) : undefined; }
+  appFor(t: NodeTemplate): AppProvider | undefined {
+    const id = ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || '');
+    return id ? this.appsMap.get(id) : undefined;
+  }
   simpleIconUrl(id: string) { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
   viewApp(a: AppProvider) { this.router.navigate(['/apps/viewer'], { queryParams: { id: a.id } }); }
 }

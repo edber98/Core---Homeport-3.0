@@ -6,12 +6,13 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
 
 @Component({
   selector: 'app-provider-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzButtonModule, NzIconModule],
+  imports: [CommonModule, NzInputModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzButtonModule, NzIconModule, NzColorPickerModule],
   template: `
   <div class="editor">
     <div class="header">
@@ -37,7 +38,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Couleur</nz-form-label>
-          <nz-form-control><input nz-input formControlName="color" placeholder="#EA4335"/></nz-form-control>
+          <nz-form-control>
+            <nz-color-picker formControlName="color" [nzFormat]="'hex'" [nzShowText]="true" [nzAllowClear]="false"></nz-color-picker>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item class="span-2">
           <nz-form-label>Icône (classe FA)</nz-form-label>
@@ -65,6 +68,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   styles: [`
     .editor { padding: 12px; max-width: 920px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
+    .header .actions { display:flex; gap:8px; }
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }

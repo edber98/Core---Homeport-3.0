@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -50,12 +50,11 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
 })
 export class AppProviderViewerComponent implements OnInit {
   app?: AppProvider;
-  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id') || '';
-    if (id) this.catalog.getApp(id).subscribe(a => this.app = a);
+    if (id) this.catalog.getApp(id).subscribe(a => this.zone.run(() => { this.app = a; try { this.cdr.detectChanges(); } catch {} }));
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   back() { history.back(); }
 }
-

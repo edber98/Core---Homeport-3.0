@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -39,7 +39,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <div><span class="k">Catégorie</span><span class="v">{{view.category || '—'}}</span></div>
           <div *ngIf="view.group"><span class="k">Groupe</span><span class="v">{{view.group}}</span></div>
           <div *ngIf="appLbl"><span class="k">App</span><span class="v app">
-            <span class="icon" [style.background]="appColor">
+            <span class="icon" [style.background]="appIconClass ? appColor : 'transparent'">
               <i *ngIf="appIconClass" [class]="appIconClass"></i>
               <img *ngIf="!appIconClass && appIconUrl" [src]="appIconUrl" alt="icon"/>
               <img *ngIf="!appIconClass && !appIconUrl && appId" [src]="simpleIconUrl(appId)" alt="icon"/>
@@ -68,20 +68,15 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
             <div class="in" *ngFor="let i of inputArray"><span class="dot" nz-tooltip="Entrée"></span></div>
           </div>
           <div class="header">
-            <ng-container *ngIf="tplUi?.icon as ic; else appIconTpl">
+            <ng-container *ngIf="tplUi?.icon as ic">
               <i [class]="ic" class="icon"></i>
             </ng-container>
-            <ng-template #appIconTpl>
-              <span class="icon" *ngIf="appId">
-                <i *ngIf="appIconClass" [class]="appIconClass"></i>
-                <img *ngIf="!appIconClass && appIconUrl" [src]="appIconUrl" alt="icon"/>
-                <img *ngIf="!appIconClass && !appIconUrl" [src]="simpleIconUrl(appId)" alt="icon"/>
-              </span>
-              <i *ngIf="!appId" class="icon fa-solid fa-circle-dot"></i>
-            </ng-template>
             <div class="meta">
               <div class="title">{{ tplUi?.title || view.name || 'Sans titre' }}</div>
-              <div class="subtitle">{{ tplUi?.subtitle || view.category || view.type }}</div>
+              <div class="subtitle">
+                {{ tplUi?.subtitle || view.category || view.type }}
+                <span *ngIf="appLbl" style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
+              </div>
             </div>
           </div>
           <div class="outputs" *ngIf="previewOutputs?.length">
@@ -151,7 +146,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     /* no preview toolbar in viewer */
     .node-card { position: relative; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; width: 240px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
     .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom: 0; }
-    .node-card .icon { width: 20px; height: 20px; display:inline-block; }
+    /* Preview icon sizing: slightly larger and centered */
+    .node-card .icon { width: 24px; height: 24px; display:inline-flex; align-items:center; justify-content:center; }
+    .node-card i.icon { font-size: 16px; line-height: 1; }
+    .node-card .icon img { width: 20px; height: 20px; object-fit: contain; display:block; }
     .node-card .meta .title { font-weight: 600; }
     .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
     .node-card .inputs { position:absolute; left: 8px; right: 8px; top: 0; display:flex; justify-content: center; align-items:center; height: 0; transform: translateY(-50%); gap: 10px; }
@@ -182,24 +180,33 @@ export class NodeTemplateViewerComponent implements OnInit {
   appIconUrl = '';
   appColor = '';
   get inputArray() { return Array.from({ length: this.inputCount }); }
-  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
   ngOnInit(): void {
     const id = this.id || this.route.snapshot.queryParamMap.get('id') || '';
     if (id) {
-      this.catalog.getNodeTemplate(id).subscribe(t => {
+      this.catalog.getNodeTemplate(id).subscribe(t => this.zone.run(() => {
         this.tpl = t;
         if (t) {
           this.view = { id: t.id, name: t.name, type: t.type, category: t.category, description: t.description, args: t.args || {}, output: t.output || [], authorize_catch_error: t.authorize_catch_error, group: (t as any).group } as any;
           this.tags = (t as any).tags || [];
-          this.appId = (t as any).appId || '';
-          if (this.appId) this.catalog.getApp(this.appId).subscribe(a => { if (a) { this.appLbl = a.title || a.name; this.appIconClass = a.iconClass || ''; this.appIconUrl = a.iconUrl || ''; this.appColor = a.color || ''; } });
+          this.appId = ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || '');
+          if (this.appId) this.catalog.getApp(this.appId).subscribe(a => this.zone.run(() => {
+            if (a) {
+              this.appLbl = a.title || a.name;
+              this.appIconClass = a.iconClass || '';
+              this.appIconUrl = a.iconUrl || '';
+              this.appColor = a.color || '';
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          }));
         }
         const anyt = (t || {}) as any;
         this.tplUi = { icon: anyt?.icon, title: anyt?.title, subtitle: anyt?.subtitle, output_array_field: anyt?.output_array_field };
         this.argsText = JSON.stringify((t && t.args) || {}, null, 2);
         this.outputs = [...(this.view.output || [])];
         this.computePreviewPorts();
-      });
+        try { this.cdr.detectChanges(); } catch {}
+      }));
     } else {
       // Show empty viewer with default values
       this.tplUi = { icon: '', title: '', subtitle: '', output_array_field: '' };

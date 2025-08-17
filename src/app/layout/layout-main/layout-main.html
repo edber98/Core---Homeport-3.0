@@ -82,9 +82,6 @@
         </div>
       </div>
       <div class="hdr-actions" *ngIf="showSider || !showLaunch">
-        <button nz-button class="hdr-btn" [routerLink]="'/flows'" title="Flows"><i class="fa-solid fa-diagram-project"></i></button>
-        <button nz-button class="hdr-btn" [routerLink]="'/forms'" title="Formulaires"><i class="fa-regular fa-rectangle-list"></i></button>
-        <button nz-button class="hdr-btn" [routerLink]="'/apps'" title="Apps / Providers"><i class="fa-solid fa-plug"></i></button>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
           <nz-badge nzDot>
             <i class="fa-regular fa-bell"></i>

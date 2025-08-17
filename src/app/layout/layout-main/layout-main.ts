@@ -49,6 +49,7 @@ export class LayoutMain {
     { label: 'Formulaires', icon: 'form', route: '/forms' },
     { label: 'Templates de nœuds', icon: 'appstore', route: '/node-templates' },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
+    { label: 'Paramètres', icon: 'setting', route: '/settings' },
   ];
   drawerVisible = false;
   innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;

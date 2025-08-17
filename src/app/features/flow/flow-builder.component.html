@@ -1,119 +1,169 @@
 <div class="flow-builder" cdkDropListGroup>
   <!-- Reusable left panel content (desktop + drawer) -->
-  <ng-template #leftPanelContent>
-    <aside class="palette" cdkDropList id="paletteList" [cdkDropListData]="items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="isMobile">
-      <h4>Palette</h4>
-      <div class="items">
-        <div class="item" *ngFor="let it of items" [class.dragging]="isDragging(it)" [class.disabled]="isPaletteItemDisabled(it)" [attr.aria-disabled]="isPaletteItemDisabled(it) ? true : null" (click)="onPaletteClick(it, $event)">
-          <div class="icon"><i [class]="it.template?.icon"></i></div>
-          <div class="meta">
-            <div class="title">{{ it.label }}</div>
-            <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+  <ng-template #leftPanelContent let-mode="mode">
+    <aside class="palette">
+      <div class="panel-heading">
+        <div class="card-title left">
+          <span class="t">Node</span>
+          <span class="s">Palette & Contexte</span>
+        </div>
+      </div>
+      <div class="palette-search"><input nz-input [ngModel]="paletteQuery" (ngModelChange)="onPaletteQueryChange($event)"
+          placeholder="Rechercher un nœud (nom, catégorie)" /></div>
+      <div class="groups">
+        <div class="group" *ngFor="let g of paletteGroups; let gi = index; trackBy: trackGroup">
+          <div class="group-title">
+            <div class="card-title left">
+              <span class="t">
+                <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
+                  <i *ngIf="g.appIconClass" [class]="g.appIconClass"></i>
+                  <img *ngIf="!g.appIconClass && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+                  <img *ngIf="!g.appIconClass && !g.appIconUrl" [src]="simpleIconUrl(g.appId)" alt="icon" />
+                </span>
+                {{ g.title }}
+              </span>
+            </div>
           </div>
-          <!-- Drag proxy overlay to keep original item visible while dragging -->
-          <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isPaletteItemDisabled(it)" [cdkDragData]="{ label: it.label, template: it.template }" (click)="onPaletteClick(it, $event)"
-               (cdkDragStarted)="onDragStart(it, $event)" (cdkDragEnded)="onDragEnd(it, $event)">
-            <ng-template cdkDragPreview>
-              <div class="item" style="  background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
-                <div class="icon"><i [class]="it.template?.icon"></i></div>
-                <div class="meta">
-                  <div class="title">{{ it.label }}</div>
-                  <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+          <div class="items" cdkDropList [id]="(mode === 'drawer' ? 'drawer_group_' : 'outside_group_') + gi"
+            [cdkDropListData]="g.items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
+            [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
+            (cdkDropListDropped)="null">
+            <div class="item" *ngFor="let it of g.items; trackBy: trackItem" [class.dragging]="isDragging(it)"
+              [class.disabled]="isPaletteItemDisabled(it)"
+              [attr.aria-disabled]="isPaletteItemDisabled(it) ? true : null" (click)="onPaletteClick(it)">
+              <div class="meta">
+                <div class="title">
+                  <span class="mini-icon" *ngIf="miniIconClass(it)">
+                    <i class="mini" [class]="miniIconClass(it)"></i>
+                  </span>
+                  {{ it.label }}
                 </div>
+                <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+                <div class="desc" *ngIf="it.template?.description as d">{{ d }}</div>
               </div>
-            </ng-template>
+              <!-- Drag proxy overlay to keep original item visible while dragging -->
+              <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isPaletteItemDisabled(it)"
+                [cdkDragData]="{ label: it.label, template: it.template }"
+                [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
+                [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                (cdkDragStarted)="onDragStart(it, $event)"
+                (cdkDragEnded)="onDragEnd(it, $event)">
+                <ng-template cdkDragPreview>
+                  <div class="item"
+                    style="  background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
+                     <div class="meta">
+                <div class="title" style=" font-weight:600 !important; font-size: 12px !important;">
+                  <span class="mini-icon" *ngIf="miniIconClass(it)">
+                    <i class="mini" [class]="miniIconClass(it)"></i>
+                  </span>
+                  {{ it.label }}
+                </div>
+                <div class="subtitle" style="color:#8c8c8c !important; font-size: 12px !important;" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
+                <div class="desc" style="color:#6b7280 !important; font-size: 12px !important; margin-top: 2px !important; overflow: hidden !important; text-overflow: ellipsis !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important;" *ngIf="it.template?.description as d">{{ d }}</div>
+              </div>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      
     </aside>
   </ng-template>
 
   <!-- Desktop left panel -->
-  <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+  <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="leftPanelContent"
+    [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
 
   <section class="canvas">
+    <!-- Removed canvas-shield interceptors to avoid event conflicts on mobile -->
     <!-- Floating buttons (mobile/tablet) -->
     <div class="fb-fab-left">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left')" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('left')"
+        (touchstart)="openMobilePanel('left'); $event.preventDefault(); $event.stopPropagation()" nz-tooltip
+        [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
         <i class="fa-solid fa-bars"></i>
       </button>
     </div>
     <div class="fb-fab-right">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right')" [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('right')"
+        (touchstart)="openMobilePanel('right'); $event.preventDefault(); $event.stopPropagation()"
+        [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null"
+        [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
         <i class="fa-solid fa-sliders"></i>
       </button>
     </div>
-    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" [cdkDropListConnectedTo]="['paletteList']" [cdkDropListDisabled]="isMobile"
-         (cdkDropListEntered)="onDragEnter($event)"
-         (cdkDropListExited)="onDragLeave($event)"
-         (dragover)="onDragOver($event)"
-         (wheel)="onWheel($event)"
-         (cdkDropListDropped)="onExternalDrop($event)">
-      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3"
-             [nodes]="nodes" [edges]="edges" [connection]="connectionSettings"
-             (onConnect)="onConnect($event)" (selected)="onSelected($event)"
-             (onNodesChange.position.single)="onNodePositionChange($event)"
-             (onNodesChange.remove.many)="onNodesRemoved($event)"
-             (onEdgesChange.remove)="onEdgesRemoved($event)"
-             (onEdgesChange.detached)="onEdgesDetached($event)"
-             #flow>
+    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes"
+      [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
+      (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
+      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
+      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodes"
+        [edges]="edges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
+        (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
+        (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
+        (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
         <ng-template let-ctx edge>
           <svg:g customTemplateEdge>
-            <svg:path
-              fill="none"
-              [attr.d]="ctx.path()"
+            <svg:path fill="none" [attr.d]="ctx.path()"
               [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
               [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
               [attr.marker-end]="ctx.markerEnd()" />
           </svg:g>
         </ng-template>
         <ng-template let-ctx edgeLabelHtml>
-          <div class="edge-labels" [ngClass]="{ error: ctx.edge.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) === 'Error' }">
-            <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label?.data?.text || '')) as txt" [ngClass]="{ error: ctx.edge.data?.error || txt === 'Error' }">{{ txt }}</div>
-            <button class="badge delete" title="Supprimer" *ngIf="!isEdgeDeleteDisabled(ctx.edge)" (click)="deleteEdge(ctx.edge)">
+          <div class="edge-labels"
+            [ngClass]="{ error: ctx.edge.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }">
+            <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) as txt"
+              [ngClass]="{ error: ctx.edge.data?.error || txt === 'Error' }">{{ txt }}</div>
+            <button class="badge delete" title="Supprimer" *ngIf="!isEdgeDeleteDisabled(ctx.edge)"
+              (click)="deleteEdge(ctx.edge)">
               <i class="fa-regular fa-circle-xmark"></i>
             </button>
           </div>
         </ng-template>
         <ng-template let-ctx nodeHtml>
-          <div class="node-card" [attr.data-node-id]="ctx.node.id" [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }" (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)" (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)" (touchend)="onNodeTouchEnd()">
+          <div class="node-card" [attr.data-node-id]="ctx.node.id"
+            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }"
+            (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+            (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
+            (touchend)="onNodeTouchEnd()">
             <div class="header">
-              <i [class]="ctx.node.data.model.templateObj?.icon" class="icon"></i>
+              <i *ngIf="ctx.node.data.model.templateObj?.icon" [class]="ctx.node.data.model.templateObj?.icon"
+                class="icon"></i>
               <div class="meta">
                 <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
-                <div class="subtitle">{{ ctx.node.data.model.templateObj?.subtitle }}</div>
+                <div class="subtitle">
+                  {{ ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category ||
+                  ctx.node.data.model.templateObj?.type }}
+                  <span *ngIf="appLabelOf(ctx.node.data.model.templateObj) as appLbl"
+                    style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
+                </div>
               </div>
             </div>
             <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
               <ng-template #handleInTpl let-hctx>
                 <svg:g>
-                  <svg:circle
-                    [attr.cx]="hctx.point().x"
-                    [attr.cy]="hctx.point().y"
+                  <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                     [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
-                    [attr.stroke]="'#ffffff'"
-                    stroke-width="1"
-                  ></svg:circle>
+                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
+                    stroke-width="1"></svg:circle>
                 </svg:g>
               </ng-template>
               <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
             </ng-container>
             <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
-              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index" [ngClass]="{ error: out === 'err' }">
+              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
+                [ngClass]="{ error: out === 'err' }">
                 <ng-template #hTpl let-hctx>
                   <svg:g>
-                    <svg:circle
-                      [attr.cx]="hctx.point().x"
-                      [attr.cy]="hctx.point().y"
+                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                       [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                       [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
-                      [attr.stroke]="'#ffffff'"
-                      stroke-width="1"
-                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)"
-                      (mousemove)="onHandleMove($event)"
-                      (mouseleave)="onHandleLeave()"
-                    ></svg:circle>
+                      [attr.stroke]="'#ffffff'" stroke-width="1"
+                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onHandleLeave()"></svg:circle>
                   </svg:g>
                 </ng-template>
                 <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
@@ -123,18 +173,28 @@
         </ng-template>
         <ng-template let-ctx connectionTemplate>
           <div class="edge-labels">
-            <div class="badge label" [ngClass]="{ error: (computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) || '') === 'Error' }" *ngIf="computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) as txt">{{ txt }}</div>
+            <div class="badge label"
+              [ngClass]="{ error: (computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) || '') === 'Error' }"
+              *ngIf="computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) as txt">{{ txt }}</div>
           </div>
         </ng-template>
       </vflow>
       <!-- lightweight tooltip overlay -->
-      <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY" [ngClass]="{ error: tipError }">{{ tipText }}</div>
+      <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY"
+        [ngClass]="{ error: tipError }">{{ tipText }}</div>
     </div>
   </section>
+
+ 
   <!-- Reusable right panel content (desktop + drawer) -->
-  <ng-template #rightPanelContent>
+  <ng-template #rightPanelContent let-mode="mode">
     <aside class="inspector">
-      <h4>Inspector</h4>
+      <div class="panel-heading">
+        <div class="card-title left">
+          <span class="t">Navigation & Contrôles</span>
+          <span class="s">Inspecteur</span>
+        </div>
+      </div>
       <ng-container *ngIf="selectedNode; else noSel">
         <div class="tabs">
           <button [class.active]="inspectorTab==='settings'" (click)="inspectorTab='settings'">Settings</button>
@@ -164,7 +224,7 @@
     </aside>
   </ng-template>
   <!-- Desktop right panel -->
-  <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+  <ng-container [ngTemplateOutlet]="rightPanelContent" [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>
     <div>Import du flow…</div>
@@ -199,7 +259,8 @@
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
-      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
+      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode"
+        title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
       <div class="zoom-control" *ngIf="!isMobile">
@@ -210,32 +271,33 @@
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
     </div>
   </div>
-  
+
   <!-- Context menu overlay -->
   <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
   <div class="ctx-menu" *ngIf="ctxMenuVisible" [style.left.px]="ctxMenuX" [style.top.px]="ctxMenuY">
     <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
     <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
-    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Ouvrir l’éditeur + Inspector</button>
+    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Ouvrir l’éditeur +
+      Inspector</button>
     <button class="danger" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
-  <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel"
-    [model]="selectedModel"
-    (modelChange)="onAdvancedModelChange($event)"
-    (modelChangeCommitted)="onAdvancedModelCommitted($event)"
+  <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel"
+    (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
 
 </div>
 
 <!-- Responsive drawers (mobile/tablet) -->
-<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+    <ng-container [ngTemplateOutlet]="leftPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
   </ng-container>
 </nz-drawer>
 
-<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="rightDrawer=false" nzPlacement="right" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+    <ng-container [ngTemplateOutlet]="rightPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
   </ng-container>
 </nz-drawer>

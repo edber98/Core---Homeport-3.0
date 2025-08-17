@@ -21,9 +21,15 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
           <p>Catalogue des apps / providers (icônes, couleurs, tags).</p>
         </div>
         <div class="actions">
-          <input nz-input [(ngModel)]="q" placeholder="Rechercher (nom, tags)" style="width:240px"/>
-          <button nz-button nzType="primary" class="primary" (click)="create()">
+          <input [(ngModel)]="q" placeholder="Rechercher (nom, tags)" class="search"/>
+          <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
+            <i class="fa-solid fa-search"></i>
+          </button>
+          <button nz-button nzType="primary" class="primary with-text" (click)="create()">
             <i class="fa-solid fa-plus"></i> Nouvelle app
+          </button>
+          <button nz-button nzType="primary" class="primary icon-only" (click)="create()" aria-label="Nouvelle app">
+            <i class="fa-solid fa-plus"></i>
           </button>
         </div>
       </div>
@@ -65,10 +71,24 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   styles: [`
     .list-page { padding: 20px; }
     .container { max-width: 1080px; margin: 0 auto; }
-    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
+    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
-    .page-header .actions { display:flex; align-items:center; gap:16px; }
+    .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .page-header .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
+    .page-header .actions .primary { background:#111; border-color:#111; }
+    /* Icon-only buttons: hide by default, except explicit search-action */
+    .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
+    .page-header .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .page-header .actions .icon-only.search-action { display:inline-flex; }
+    @media (max-width: 640px) {
+      /* Stack header blocks; place actions on the next line as a single row */
+      .page-header { flex-direction: column; align-items: stretch; }
+      .page-header .actions { width: 100%; display:flex; flex-wrap: nowrap; }
+      .page-header .actions .search { flex: 1 1 auto; width: auto; }
+      .page-header .actions .with-text { display:none; }
+      .page-header .actions .primary.icon-only { display:inline-flex; }
+    }
     .page-header .actions .primary { background:#111; border-color:#111; }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
@@ -131,4 +151,5 @@ export class AppProviderListComponent implements OnInit {
     if (!confirm(`Supprimer ${a.name || a.id} ?`)) return;
     this.catalog.deleteApp(a.id).subscribe(() => this.catalog.listApps().subscribe(list => this.zone.run(() => { this.apps = list || []; try { this.cdr.detectChanges(); } catch {} })));
   }
+  doSearch() { this.q = (this.q || '').trim(); }
 }

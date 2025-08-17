@@ -8,14 +8,16 @@ import { FormsModule } from '@angular/forms';
 import { FlowHistoryService } from './flow-history.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
+import { CatalogService, AppProvider } from '../../services/catalog.service';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -23,7 +25,7 @@ export class FlowBuilderComponent {
   // Palette configurable (peut évoluer vers un service)
   items = [
     { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} } },
-    { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {"title":"Nouveau formulaire","fields":[{"type":"section","title":"Les conditions","mode":"array","key":"items","array":{"initialItems":1,"minItems":0,"controls":{"add":{"kind":"text","text":"Ajouter"},"remove":{"kind":"text","text":"Supprimer"}}},"fields":[{"type":"text","key":"name","label":"Name","col":{"xs":24,"sm":24,"md":12,"lg":12,"xl":12},"default":"","expression":{"allow":true}},{"type":"text","key":"condtion","label":"Condtion","col":{"xs":24,"sm":24,"md":12,"lg":12,"xl":12},"default":"","expression":{"allow":true}},{"type":"text","key":"_id","label":"Id invisible","col":{"xs":24,"sm":24,"md":12,"lg":12,"xl":12},"default":"","visibleIf":{"==":[{"var":"name"},"admin_id_viewer"]}}],"col":{"xs":24,"sm":24,"md":24,"lg":24,"xl":24},"description":"Choisir les conditions","grid":{"gutter":16},"ui":{"layout":"vertical"}}]}, output_array_field: 'items' } },
+    { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] }, output_array_field: 'items' } },
     { group: 'Logic', label: 'Loop', template: { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} } },
     { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, output: [], args: {} } },
     {
@@ -253,38 +255,58 @@ export class FlowBuilderComponent {
         }
       }
     },
-    { group: 'Functions', label: 'HTTP Request', template: { id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, output: [], args: {
-      "title": "HTTP Request",
-      "fields": [
-        { "type": "text", "key": "url", "label": "URL", "col": {"xs":24}, "default": "https://api.example.com", "expression": {"allow": true} },
-        { "type": "select", "key": "method", "label": "Method", "options": ["GET","POST","PUT","DELETE"], "col": {"xs":24}, "default": "GET" },
-        { "type": "textarea", "key": "body", "label": "Body", "col": {"xs":24}, "default": "", "expression": {"allow": true} }
-      ],
-      "ui": {"layout": "vertical"}
-    } } },
-    { group: 'Functions', label: 'Slack: Post Message', template: { id: 'tmpl_slack_post', name: 'Slack Post', type: 'function', icon: 'fa-brands fa-slack', title: 'Slack', subtitle: 'Post message', category: 'Slack', authorize_catch_error: true, output: [], args: {
-      "title": "Slack Message",
-      "fields": [
-        { "type": "text", "key": "channel", "label": "Channel", "col": {"xs":24}, "default": "#general" },
-        { "type": "text", "key": "text", "label": "Text", "col": {"xs":24}, "default": "Hello", "expression": {"allow": true} }
-      ],
-      "ui": {"layout": "vertical"}
-    } } },
-    { group: 'Functions', label: 'Delay', template: { id: 'tmpl_delay', name: 'Delay', type: 'function', icon: 'fa-regular fa-clock', title: 'Delay', subtitle: 'Wait', category: 'Core', authorize_catch_error: true, output: [], args: {
-      "title": "Delay",
-      "fields": [ { "type": "number", "key": "ms", "label": "Milliseconds", "default": 1000, "col": {"xs":24} } ],
-      "ui": {"layout": "vertical"}
-    } } },
-    { group: 'Functions', label: 'Math: Add', template: { id: 'tmpl_math_add', name: 'Math Add', type: 'function', icon: 'fa-solid fa-plus', title: 'Math', subtitle: 'Add numbers', category: 'Math', authorize_catch_error: true, output: [], args: {
-      "title": "Add",
-      "fields": [ { "type": "number", "key": "a", "label": "A", "default": 0 }, { "type": "number", "key": "b", "label": "B", "default": 0 } ],
-      "ui": {"layout": "vertical"}
-    } } },
-    { group: 'Functions', label: 'Text: Uppercase', template: { id: 'tmpl_text_upper', name: 'Text Uppercase', type: 'function', icon: 'fa-solid fa-font', title: 'Text', subtitle: 'Uppercase', category: 'Text', authorize_catch_error: true, output: [], args: {
-      "title": "Uppercase",
-      "fields": [ { "type": "text", "key": "input", "label": "Input", "default": "" } ],
-      "ui": {"layout": "vertical"}
-    } } },
+    {
+      group: 'Functions', label: 'HTTP Request', template: {
+        id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, output: [], args: {
+          "title": "HTTP Request",
+          "fields": [
+            { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "default": "https://api.example.com", "expression": { "allow": true } },
+            { "type": "select", "key": "method", "label": "Method", "options": ["GET", "POST", "PUT", "DELETE"], "col": { "xs": 24 }, "default": "GET" },
+            { "type": "textarea", "key": "body", "label": "Body", "col": { "xs": 24 }, "default": "", "expression": { "allow": true } }
+          ],
+          "ui": { "layout": "vertical" }
+        }
+      }
+    },
+    {
+      group: 'Functions', label: 'Slack: Post Message', template: {
+        id: 'tmpl_slack_post', name: 'Slack Post', type: 'function', icon: 'fa-brands fa-slack', title: 'Slack', subtitle: 'Post message', category: 'Slack', authorize_catch_error: true, output: [], args: {
+          "title": "Slack Message",
+          "fields": [
+            { "type": "text", "key": "channel", "label": "Channel", "col": { "xs": 24 }, "default": "#general" },
+            { "type": "text", "key": "text", "label": "Text", "col": { "xs": 24 }, "default": "Hello", "expression": { "allow": true } }
+          ],
+          "ui": { "layout": "vertical" }
+        }
+      }
+    },
+    {
+      group: 'Functions', label: 'Delay', template: {
+        id: 'tmpl_delay', name: 'Delay', type: 'function', icon: 'fa-regular fa-clock', title: 'Delay', subtitle: 'Wait', category: 'Core', authorize_catch_error: true, output: [], args: {
+          "title": "Delay",
+          "fields": [{ "type": "number", "key": "ms", "label": "Milliseconds", "default": 1000, "col": { "xs": 24 } }],
+          "ui": { "layout": "vertical" }
+        }
+      }
+    },
+    {
+      group: 'Functions', label: 'Math: Add', template: {
+        id: 'tmpl_math_add', name: 'Math Add', type: 'function', icon: 'fa-solid fa-plus', title: 'Math', subtitle: 'Add numbers', category: 'Math', authorize_catch_error: true, output: [], args: {
+          "title": "Add",
+          "fields": [{ "type": "number", "key": "a", "label": "A", "default": 0 }, { "type": "number", "key": "b", "label": "B", "default": 0 }],
+          "ui": { "layout": "vertical" }
+        }
+      }
+    },
+    {
+      group: 'Functions', label: 'Text: Uppercase', template: {
+        id: 'tmpl_text_upper', name: 'Text Uppercase', type: 'function', icon: 'fa-solid fa-font', title: 'Text', subtitle: 'Uppercase', category: 'Text', authorize_catch_error: true, output: [], args: {
+          "title": "Uppercase",
+          "fields": [{ "type": "text", "key": "input", "label": "Input", "default": "" }],
+          "ui": { "layout": "vertical" }
+        }
+      }
+    },
     { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, output: [], args: {} } },
   ];
 
@@ -331,18 +353,50 @@ export class FlowBuilderComponent {
   private viewportSub?: Subscription;
   zoomPercent = 100;
 
+
   // Context menu state
   ctxMenuVisible = false;
   ctxMenuX = 0;
   ctxMenuY = 0;
   ctxMenuTarget: any = null; // node or edge
   /* private applyingHistory = false; */
-  constructor(public history: FlowHistoryService, private message: NzMessageService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(public history: FlowHistoryService, private message: NzMessageService, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) { }
   isMobile = false;
+  // Apps map for provider grouping/logo
+  private appsMap = new Map<string, AppProvider>();
   // Responsive drawers (mobile/tablet)
   leftDrawer = false;
   rightDrawer = false;
-  openPanel(where: 'left'|'right') { if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true; }
+  // When opening on mobile, hide vflow first, then open the drawer
+  prepOpenDrawer = false;
+  openPanel(where: 'left' | 'right') { if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true; }
+  openMobilePanel(where: 'left' | 'right') {
+    if (!this.isMobile) { this.openPanel(where); this.updateGlobalBlockers(); return; }
+    this.prepOpenDrawer = true;
+    try { this.cdr.detectChanges(); } catch { }
+    setTimeout(() => {
+      if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
+      this.updateGlobalBlockers();
+      this.prepOpenDrawer = false;
+      try { this.cdr.detectChanges(); } catch { }
+    }, 0);
+  }
+  get dndDisabled(): boolean { return !!(this.isMobile || this.leftDrawer || this.rightDrawer); }
+  // Mobile drawer DnD helpers
+  
+
+  // Global blockers to prevent vflow/CDK from handling events when a drawer is open (iOS fix)
+  private blockersActive = false;
+  private teardownBlockers: Array<() => void> = [];
+  // Neutralize global blockers (dev page works without them). Keep API but no-op.
+  private enableGlobalBlockers() { /* no-op */ }
+  private disableGlobalBlockers() { /* no-op */ }
+  updateGlobalBlockers() { /* no-op */ }
+  onLeftDrawerClose() { this.leftDrawer = false; this.prepOpenDrawer = false; this.updateGlobalBlockers(); }
+  onRightDrawerClose() { this.rightDrawer = false; this.prepOpenDrawer = false; this.updateGlobalBlockers(); }
+  // Palette search and groups (materialized to avoid re-creating arrays each CD cycle)
+  paletteQuery = '';
+  paletteGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
   // Header labels
   headerTitle = 'Flow Builder';
   headerSubtitle = 'Conception du flow';
@@ -358,8 +412,24 @@ export class FlowBuilderComponent {
   private readonly lpDelay = 520; // ms
   private readonly lpMoveThresh = 10; // px
 
+  // Removed event interceptors to align with working dev playground
+
   ngOnInit() {
     this.updateIsMobile();
+    try {
+      this.catalog.listApps().subscribe(list => this.zone.run(() => {
+        (list || []).forEach(a => this.appsMap.set(a.id, a));
+        try { this.cdr.detectChanges(); } catch { }
+      }));
+      // Load palette from Node Templates list (dynamic source)
+      this.catalog.listNodeTemplates().subscribe(tpls => this.zone.run(() => {
+        try {
+          this.items = this.toPaletteItems(tpls || []);
+          this.rebuildPaletteGroups();
+          this.cdr.detectChanges();
+        } catch { }
+      }));
+    } catch { }
     // Initialise un graphe par défaut à partir de this.items (pas this.templates)
     const findByType = (t: string) => (this.items.find(it => it?.template?.type === t)?.template);
     const startT = findByType('start') || { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} };
@@ -377,12 +447,16 @@ export class FlowBuilderComponent {
       if (fnT2?.id === 'tmpl_sendmail' || /send\s*mail/i.test(String(fnT2?.name || fnT2?.title || ''))) {
         if (fnT2?.authorize_catch_error) fn2Model.catch_error = true;
       }
-    } catch {}
-    const condModel = { id: 'node_cond', name: condT.name || 'Condition', template: condT.id, templateObj: condT, context: { items: [
-      { name: 'A', condition: '' },
-      { name: 'B', condition: '' },
-      { name: 'C', condition: '' }
-    ] } };
+    } catch { }
+    const condModel = {
+      id: 'node_cond', name: condT.name || 'Condition', template: condT.id, templateObj: condT, context: {
+        items: [
+          { name: 'A', condition: '' },
+          { name: 'B', condition: '' },
+          { name: 'C', condition: '' }
+        ]
+      }
+    };
 
     const startVNode = { id: startModel.id, point: { x: 380, y: 140 }, type: 'html-template', data: { model: startModel } };
     const fn1VNode = { id: fn1Model.id, point: { x: 180, y: 320 }, type: 'html-template', data: { model: fn1Model } };
@@ -417,6 +491,44 @@ export class FlowBuilderComponent {
     this.history.reset(this.snapshot());
   }
 
+  // Resolve mini icon for palette: use only template.icon if it is a class (no app logo fallback)
+  miniIconClass(it: any): string {
+    try {
+      const tpl = it?.template || {};
+      const ic = tpl?.icon;
+      if (ic && typeof ic === 'string' && !/^https?:\/\//i.test(ic)) return ic;
+      return '';
+    } catch { return ''; }
+  }
+  simpleIconUrl(id: string): string { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
+
+  appLabelOf(tpl: any): string {
+    try {
+      const appId = String((tpl?.appId || (tpl?.app && tpl.app._id) || '')).trim();
+      if (!appId) return '';
+      const app = this.appsMap.get(appId);
+      return app ? (app.title || app.name || '') : '';
+    } catch { return ''; }
+  }
+
+  // Map NodeTemplate list to palette display items
+  private toPaletteItems(tpls: any[]): any[] {
+    const out: any[] = [];
+    for (const t of (tpls || [])) {
+      try {
+        const label = (t && (t.title || t.name)) ? (t.title || t.name) : (t?.id || 'Node');
+        const template: any = { ...t };
+        // Normalize optional UI/compat fields
+        if (t?.app && t.app._id && !template.appId) template.appId = t.app._id;
+        if (t?.icon) template.icon = t.icon;
+        if (t?.subtitle) template.subtitle = t.subtitle;
+        if ((t as any).output_array_field) template.output_array_field = (t as any).output_array_field;
+        out.push({ label, template });
+      } catch { }
+    }
+    return out;
+  }
+
   ngAfterViewInit() {
     // Subscribe to viewport change end events to update zoom indicator
     try {
@@ -424,11 +536,11 @@ export class FlowBuilderComponent {
       if (vs?.viewportChangeEnd$) {
         this.viewportSub = vs.viewportChangeEnd$.subscribe(() => this.zone.run(() => this.updateZoomDisplay()));
       }
-    } catch {}
+    } catch { }
     // Initial update
     this.updateZoomDisplay();
   }
-  ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch {} }
+  ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch { } }
 
   @HostListener('window:resize') onResize() { this.updateIsMobile(); }
   private updateIsMobile() {
@@ -440,18 +552,20 @@ export class FlowBuilderComponent {
     } catch { this.isMobile = false; }
   }
 
+  
+
   private updateZoomDisplay() {
     try {
       const z = this.flow?.viewportService?.readableViewport()?.zoom;
       if (typeof z === 'number' && z > 0) {
         this.zoomDisplay = z;
         this.zoomPercent = Math.max(5, Math.min(300, Math.round(z * 100)));
-        try { localStorage.setItem('flow.zoom', String(z)); } catch {}
-        
+        try { localStorage.setItem('flow.zoom', String(z)); } catch { }
+
         // Force immediate change detection even si hors zone ou sans interaction
-        try { this.cdr.detectChanges(); } catch {}
+        try { this.cdr.detectChanges(); } catch { }
       }
-    } catch {}
+    } catch { }
   }
 
   onZoomSlider(val: number | string) {
@@ -475,12 +589,43 @@ export class FlowBuilderComponent {
       const x = centerScreenX - (wx * newZoom);
       const y = centerScreenY - (wy * newZoom);
       vs.writableViewport.set({ changeType: 'absolute', state: { zoom: newZoom, x, y }, duration: 80 });
-      try { vs.triggerViewportChangeEvent?.('end'); } catch {}
+      try { vs.triggerViewportChangeEvent?.('end'); } catch { }
       this.updateZoomDisplay();
-    } catch {}
+    } catch { }
   }
 
   // No grouped palette; simple flat list used by template
+  onPaletteQueryChange(v: string) { this.paletteQuery = (v || ''); this.rebuildPaletteGroups(); }
+  rebuildPaletteGroups() {
+    try {
+      const q = (this.paletteQuery || '').trim().toLowerCase();
+      const out: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
+      const byApp = new Map<string, any[]>();
+      const ensure = (key: string) => { if (!byApp.has(key)) byApp.set(key, []); return byApp.get(key)!; };
+      for (const it of (this.items || [])) {
+        const tpl = it?.template || {};
+        const appId = String(((tpl as any)?.appId || (tpl as any)?.app?._id || '')).trim();
+        const app = appId ? this.appsMap.get(appId) : undefined;
+        if (q) {
+          const tags = ((tpl as any)?.tags || []).join(' ');
+          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''} ${app?.name || ''} ${app?.title || ''} ${appId} ${tags}`.toLowerCase();
+          if (!hay.includes(q)) continue;
+        }
+        const key = appId || '';
+        ensure(key).push(it);
+      }
+      const appKeys = Array.from(byApp.keys()).sort((a, b) => a.localeCompare(b));
+      for (const key of appKeys) {
+        const app = key ? this.appsMap.get(key) : undefined;
+        const title = app ? (app.title || app.name || app.id) : 'Sans App';
+        out.push({ title, items: byApp.get(key)!, appId: key || undefined, appColor: app?.color, appIconClass: app?.iconClass, appIconUrl: app?.iconUrl });
+      }
+      this.paletteGroups = out;
+    } catch { this.paletteGroups = []; }
+  }
+
+  trackGroup = (_: number, g: any) => (g && (g.appId || g.title)) || _;
+  trackItem = (_: number, it: any) => (it && (it.template?.id || it.label)) || _;
 
   // No-op; change tracking handled via vflow outputs
 
@@ -502,7 +647,7 @@ export class FlowBuilderComponent {
             .filter(e => String(e.source) === String(model.id))
             .map(e => String(e.sourceHandle ?? ''))
             .filter(h => !!h);
-          const all = Array.from(new Set([ ...ids, ...connected ]));
+          const all = Array.from(new Set([...ids, ...connected]));
           return all;
         } catch {
           return ids;
@@ -552,7 +697,7 @@ export class FlowBuilderComponent {
   }
   onExternalDrop(event: any) {
     if (this.isMobile) return; // Disable DnD on mobile
-    
+
     // Écran -> coordonnées relatives -> viewport -> monde
     const dropHost = this.flowHost?.nativeElement as HTMLElement | undefined;
     if (!dropHost || !this.flow?.viewportService) return;
@@ -569,30 +714,31 @@ export class FlowBuilderComponent {
       relX = mouseEvent.clientX - rect.left;
       relY = mouseEvent.clientY - rect.top;
     }
-    if (relX == null || relY == null) {  return; }
+    if (relX == null || relY == null) { return; }
     const relative = { x: relX, y: relY };
     const viewport = this.flow.viewportService.readableViewport();
     const scale = viewport.zoom;
     const offsetX = viewport.x;
     const offsetY = viewport.y;
     const positionInFlow = { x: ((relative.x - offsetX) / scale) - (250 / 2), y: ((relative.y - offsetY) / scale) - 50 };
-    
+
 
     const t = event?.item?.data?.template || event?.item?.data || event?.item?.data?.data;
     const templateObj = this.normalizeTemplate(t);
     if (this.isStartLike(templateObj) && this.hasStartLikeNode()) {
-      try { this.message.warning('Un nœud de départ existe déjà'); } catch {}
+      try { this.message.warning('Un nœud de départ existe déjà'); } catch { }
       return;
     }
-    
+
+    const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
     const nodeModel = {
-      id: 'node_' + Date.now(),
+      id: newId,
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
       context: {}
     };
-    const vNode = { id: nodeModel.id, point: positionInFlow, type: 'html-template', data: { model: nodeModel } };
+    const vNode = { id: newId, point: positionInFlow, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
     this.pushState('drop.node');
   }
@@ -733,7 +879,7 @@ export class FlowBuilderComponent {
       }
       // Trigger Angular change detection without changing edge identities
       this.edges = [...this.edges];
-    } catch {}
+    } catch { }
   }
 
   isNodeInError(id: string): boolean {
@@ -755,32 +901,30 @@ export class FlowBuilderComponent {
   }
 
   // DnD events (debug logging)
-  onDragEnter(e: any) {  }
-  onDragLeave(e: any) {  }
+  onDragEnter(e: any) { }
+  onDragLeave(e: any) { }
   onDragOver(e: any) { if (this.isMobile) return; try { e.preventDefault(); } catch { } }
   onDragStart(item: any, ev: any) {
     if (this.isMobile) return;
-    try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.add(key); } catch {}
+    try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.add(key); } catch { }
   }
   onDragEnd(item: any, ev: any) {
     if (this.isMobile) return;
-    try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.delete(key); } catch {}
+    try { const key = String(item?.template?.id || item?.label || ''); if (key) this.draggingPalette.delete(key); } catch { }
   }
   // Click-to-add from palette: place near viewport center, auto-connect to best free output above
   onPaletteClick(it: any, ev?: MouseEvent) {
-    try {
-      if (ev) { ev.stopPropagation(); ev.preventDefault(); }
-    } catch {}
+    // Do not prevent default or stop propagation to avoid blocking input focus in overlays (iOS/desktop)
     if (this.isPaletteItemDisabled(it)) return;
     const templateObj = this.normalizeTemplate(it?.template || it);
     // Guard: allow only one start/trigger-like node in the canvas
     if (this.isStartLike(templateObj) && this.hasStartLikeNode()) {
-      try { this.message.warning('Un nœud de départ existe déjà'); } catch {}
+      try { this.message.warning('Un nœud de départ existe déjà'); } catch { }
       return;
     }
     // Do not auto-connect a 'start' node; just place it
     const wantsConnect = templateObj?.type !== 'start';
-    const newId = this.generateNodeId();
+    const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
     const worldCenter = this.viewportCenterWorld();
     // Find best source near center with a free output
     const source = wantsConnect ? this.findBestSourceNode(worldCenter.x, worldCenter.y) : null;
@@ -818,6 +962,8 @@ export class FlowBuilderComponent {
     this.pushState('palette.click.add');
   }
 
+  // (removed) delegation handler
+
   private viewportCenterWorld(): { x: number; y: number } {
     try {
       const vp = this.flow?.viewportService?.readableViewport();
@@ -853,7 +999,7 @@ export class FlowBuilderComponent {
             cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60;
           }
         } catch { cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60; }
-        const dx = cx - wx; const dy = cy - wy; const d2 = dx*dx + dy*dy;
+        const dx = cx - wx; const dy = cy - wy; const d2 = dx * dx + dy * dy;
         if (d2 < bestD) { bestD = d2; best = n; }
       }
       return best;
@@ -883,7 +1029,7 @@ export class FlowBuilderComponent {
         const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(node.id)}\"]`) as HTMLElement | null;
         const vp = this.flow?.viewportService?.readableViewport();
         if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width) w = r.width / (vp.zoom || 1); }
-      } catch {}
+      } catch { }
       const leftX = (node.point?.x || 0);
       const m = outs.length || 1;
       for (let i = 0; i < outs.length; i++) {
@@ -905,14 +1051,14 @@ export class FlowBuilderComponent {
       return candidates[0].handle;
     } catch { return null; }
   }
-  private computeNewNodePosition(source: any | null, center: {x:number;y:number}): { x: number; y: number } {
+  private computeNewNodePosition(source: any | null, center: { x: number; y: number }): { x: number; y: number } {
     if (!source) return { x: center.x - 90, y: center.y + 80 };
     try {
       // Align below source node with a comfortable vertical gap
       const vp = this.flow?.viewportService?.readableViewport();
       const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(source.id)}\"]`) as HTMLElement | null;
       let w = 180, h = 100;
-      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom||1); h = r.height / (vp.zoom||1); } }
+      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
       const gap = 60;
       const x = (source.point?.x || 0);
       const y = (source.point?.y || 0) + h + gap;
@@ -924,7 +1070,7 @@ export class FlowBuilderComponent {
   // Context menu actions for nodes
   onNodeContextMenu(ev: MouseEvent, node: any) {
     if (this.isMobile) return; // use long-press on mobile
-    try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    try { ev.preventDefault(); ev.stopPropagation(); } catch { }
     this.openCtxMenuAt(ev.clientX, ev.clientY, node);
   }
   private openCtxMenuAt(x: number, y: number, node: any) {
@@ -932,7 +1078,7 @@ export class FlowBuilderComponent {
     this.ctxMenuX = x;
     this.ctxMenuY = y;
     this.ctxMenuTarget = node;
-    try { this.selectItem(node); } catch {}
+    try { this.selectItem(node); } catch { }
   }
 
   // Mobile long-press: open context menu
@@ -953,7 +1099,7 @@ export class FlowBuilderComponent {
           this.lpFired = true;
         }
       }, this.lpDelay);
-    } catch {}
+    } catch { }
   }
   onNodeTouchMove(ev: TouchEvent) {
     if (!this.isMobile) return;
@@ -966,17 +1112,17 @@ export class FlowBuilderComponent {
       if (dx > this.lpMoveThresh || dy > this.lpMoveThresh) {
         if (this.lpTimer) { clearTimeout(this.lpTimer); this.lpTimer = null; }
       }
-    } catch {}
+    } catch { }
   }
   onNodeTouchEnd() {
     if (!this.isMobile) return;
-    try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch {}
+    try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch { }
     this.lpTimer = null; this.lpTarget = null; this.lpFired = false;
   }
   closeCtxMenu() { this.ctxMenuVisible = false; this.ctxMenuTarget = null; }
   ctxOpenAdvancedAndInspector() {
     if (!this.ctxMenuTarget) return;
-    try { this.selectItem(this.ctxMenuTarget); } catch {}
+    try { this.selectItem(this.ctxMenuTarget); } catch { }
     this.openAdvancedEditor();
     this.closeCtxMenu();
   }
@@ -989,15 +1135,15 @@ export class FlowBuilderComponent {
       if (!node) return;
       // Prevent duplicating start/trigger-like nodes
       if (this.isStartLike(node?.data?.model?.templateObj)) {
-        try { this.message.warning('Le nœud de départ ne peut pas être dupliqué'); } catch {}
+        try { this.message.warning('Le nœud de départ ne peut pas être dupliqué'); } catch { }
         return;
       }
-      const newId = this.generateNodeId();
+      const newId = this.generateNodeId(node?.data?.model?.templateObj, node?.data?.model?.name || node?.data?.model?.templateObj?.name || node?.data?.model?.templateObj?.title);
       const newPoint = { x: (node.point?.x ?? 0) + 40, y: (node.point?.y ?? 0) + 40 };
       const model = JSON.parse(JSON.stringify(node.data?.model || {}));
       model.id = newId;
       // Adjust name to indicate duplication (non-bloquant)
-      try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch {}
+      try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch { }
       // For condition nodes: regenerate stable _id for items to avoid handle collisions
       try {
         const tmpl = model?.templateObj || {};
@@ -1013,12 +1159,12 @@ export class FlowBuilderComponent {
             }
           }
         }
-      } catch {}
+      } catch { }
       const vNode = { id: newId, point: newPoint, type: node.type, data: { ...node.data, model } };
       this.nodes = [...this.nodes, vNode];
       this.selection = vNode as any;
       this.history.push(this.snapshot());
-    } catch {}
+    } catch { }
   }
 
   private collectAllConditionHandleIds(): Set<string> {
@@ -1035,14 +1181,27 @@ export class FlowBuilderComponent {
           if (id) s.add(id);
         }
       }
-    } catch {}
+    } catch { }
     return s;
   }
 
-  private generateNodeId(): string {
-    let id = '';
+  private generateNodeId(tpl?: any, fallbackName?: string): string {
     const used = new Set(this.nodes.map(n => String(n.id)));
-    do { id = 'node_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6); } while (used.has(id));
+    const type = String((tpl?.type || 'node')).toLowerCase();
+    const rawName = String((tpl?.name || tpl?.title || fallbackName || '') || '').trim();
+    const nameSlug = rawName
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[^\p{Letter}\p{Number}\s-]/gu, ' ')
+      .replace(/[\s-]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'node';
+    let id = '';
+    do {
+      const s1 = Date.now().toString(36).slice(-4);
+      const s2 = Math.random().toString(36).slice(2, 6);
+      id = `${type}_${nameSlug}_${s1}_${s2}`;
+    } while (used.has(id));
     return id;
   }
   ctxDeleteTarget() {
@@ -1063,7 +1222,7 @@ export class FlowBuilderComponent {
       // Context deletions may affect error branches
       this.recomputeErrorPropagation();
       this.history.push(this.snapshot());
-    } catch {}
+    } catch { }
   }
   ctxCenterTarget() {
     const tgt = this.ctxMenuTarget;
@@ -1072,7 +1231,7 @@ export class FlowBuilderComponent {
       const nodeId = (tgt && (tgt as any).id) ? String((tgt as any).id) : '';
       if (!nodeId) return;
       this.centerOnNodeId(nodeId);
-    } catch {}
+    } catch { }
   }
 
   onSelected(ev: any) {
@@ -1081,6 +1240,7 @@ export class FlowBuilderComponent {
     this.selection = item || null;
     try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
   }
+
   selectItem(changes: any) {
     // Do not deselect on repeated click/press; only set when different
     if (!this.selection || this.selection.id !== changes.id) {
@@ -1105,7 +1265,7 @@ export class FlowBuilderComponent {
     if (!m?.id) return;
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
     this.reconcileEdgesForNode(m, oldModel);
-    
+
     this.pushState('dialog.modelCommit.final');
   }
 
@@ -1235,7 +1395,7 @@ export class FlowBuilderComponent {
           if (!exists) this.selection = null;
         }
       }
-    } catch {}
+    } catch { }
   }
 
   private getConditionItems(model: any): string[] {
@@ -1308,7 +1468,7 @@ export class FlowBuilderComponent {
           it._id = id; used.add(id);
         }
       }
-    } catch {}
+    } catch { }
   }
 
   // Inspector actions
@@ -1332,7 +1492,7 @@ export class FlowBuilderComponent {
   }
 
   undo() {
-    
+
     this.beginApplyingHistory(500);
     const prev = this.history.undo(this.snapshot());
     if (!prev) return;
@@ -1342,7 +1502,7 @@ export class FlowBuilderComponent {
     this.recomputeErrorPropagation();
   }
   redo() {
-    
+
     this.beginApplyingHistory(500);
     const next = this.history.redo(this.snapshot());
     if (!next) return;
@@ -1367,7 +1527,7 @@ export class FlowBuilderComponent {
             const r = el.getBoundingClientRect();
             if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); }
           }
-        } catch {}
+        } catch { }
         const x1 = p.x, y1 = p.y, x2 = p.x + w, y2 = p.y + h;
         if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
         if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
@@ -1376,7 +1536,7 @@ export class FlowBuilderComponent {
       const cx = (minX + maxX) / 2;
       const cy = (minY + maxY) / 2;
       this.centerViewportOnWorldPoint(cx, cy, 250);
-    } catch {}
+    } catch { }
   }
   centerOnSelection() {
     try {
@@ -1384,7 +1544,7 @@ export class FlowBuilderComponent {
       const nodeId = (sel && !(sel as any).source && (sel as any).id) ? String((sel as any).id) : '';
       if (!nodeId) return; // only nodes supported
       this.centerOnNodeId(nodeId);
-    } catch {}
+    } catch { }
   }
 
   private centerOnNodeId(nodeId: string) {
@@ -1399,7 +1559,7 @@ export class FlowBuilderComponent {
         const r = el.getBoundingClientRect();
         if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); }
       }
-    } catch {}
+    } catch { }
     const wx = p.x + (w / 2);
     const wy = p.y + (h / 2);
     this.centerViewportOnWorldPoint(wx, wy, 250);
@@ -1418,8 +1578,8 @@ export class FlowBuilderComponent {
       // Use internal API to set viewport without changing zoom
       (vs as any).writableViewport.set({ changeType: 'absolute', state: { zoom: vp.zoom, x, y }, duration });
       // Ensure change event is emitted so UI (zoom display) updates
-      try { vs.triggerViewportChangeEvent?.('end'); } catch {}
-    } catch {}
+      try { vs.triggerViewportChangeEvent?.('end'); } catch { }
+    } catch { }
   }
 
   get canUndo() { return this.history.canUndo(); }
@@ -1488,11 +1648,11 @@ export class FlowBuilderComponent {
       this.pushPending = true;
       setTimeout(() => {
         this.pushPending = false;
-        
+
         this.history.push(this.snapshot());
       }, 60);
     } else {
-      
+
       this.history.push(this.snapshot());
     }
   }
@@ -1512,7 +1672,7 @@ export class FlowBuilderComponent {
       // Offset a bit from cursor
       this.tipX = ev.clientX + 8;
       this.tipY = ev.clientY + 8;
-    } catch {}
+    } catch { }
   }
   onHandleLeave() { this.tipVisible = false; }
 
@@ -1522,13 +1682,13 @@ export class FlowBuilderComponent {
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
   onNodePositionChange(change: any) {
-    
+
     if (this.isIgnoring()) { return; }
     const id = change?.id;
     const pt = change?.to?.point || change?.point || change?.to;
     if (!id || !pt) { return; }
     const before = this.nodes.find(n => n.id === id);
-    
+
     // Cache the last known point; do not mutate nodes during drag
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
@@ -1536,13 +1696,13 @@ export class FlowBuilderComponent {
   }
 
   onWheel(_ev: WheelEvent) {
-    try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch {}
+    try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch { }
     this.zoomUpdateTimer = setTimeout(() => this.zone.run(() => this.updateZoomDisplay()), 80);
   }
 
   @HostListener('document:pointerup')
   @HostListener('document:pointercancel')
-   onPointerUp() {
+  onPointerUp() {
     if (this.isIgnoring()) return;
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
@@ -1564,7 +1724,7 @@ export class FlowBuilderComponent {
       // Removal can break error paths: recompute error propagation
       this.recomputeErrorPropagation();
       this.pushState('nodes.removed');
-    } catch {}
+    } catch { }
   }
   onEdgesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
@@ -1592,7 +1752,7 @@ export class FlowBuilderComponent {
       // Any change in edges can affect error-branch propagation
       this.recomputeErrorPropagation();
       this.pushState('edges.removed');
-    } catch {}
+    } catch { }
   }
 
   private pendingDetachTimers: Record<string, any> = {};
@@ -1618,7 +1778,7 @@ export class FlowBuilderComponent {
           }
         }, 250);
       }
-    } catch {}
+    } catch { }
   }
 
   // Import with loading feedback
@@ -1628,7 +1788,7 @@ export class FlowBuilderComponent {
     if (!files || !files.length) return;
     const file = files[0];
     let loadingId: string | null = null;
-    try { const m = this.message.loading('Import du flow…', { nzDuration: 0 }); loadingId = (m as any)?.messageId || null; } catch {}
+    try { const m = this.message.loading('Import du flow…', { nzDuration: 0 }); loadingId = (m as any)?.messageId || null; } catch { }
     const reader = new FileReader();
     reader.onload = () => {
       try {
@@ -1645,12 +1805,12 @@ export class FlowBuilderComponent {
                 const t = mapTemplate(m.template);
                 if (t) return { ...n, data: { ...n.data, model: { ...m, templateObj: t } } };
               }
-            } catch {}
+            } catch { }
             return n;
           });
           this.edges = parsed.edges;
           // After import, reconcile edges for all nodes (in case formats changed)
-          try { this.nodes.forEach(n => this.reconcileEdgesForNode(n?.data?.model)); } catch {}
+          try { this.nodes.forEach(n => this.reconcileEdgesForNode(n?.data?.model)); } catch { }
           this.selection = null;
           // Rebuild error-branch state from imported edges
           this.recomputeErrorPropagation();
@@ -1662,11 +1822,11 @@ export class FlowBuilderComponent {
       } catch {
         try { this.message.error('Erreur lors de l\'import'); } catch { this.showToast('Erreur lors de l\'import'); }
       }
-      try { if (loadingId) this.message.remove(loadingId); } catch {}
+      try { if (loadingId) this.message.remove(loadingId); } catch { }
       if (input) input.value = '';
     };
     reader.onerror = () => {
-      try { if (loadingId) this.message.remove(loadingId); } catch {}
+      try { if (loadingId) this.message.remove(loadingId); } catch { }
       try { this.message.error('Erreur de lecture du fichier'); } catch { this.showToast('Erreur de lecture du fichier'); }
       if (input) input.value = '';
     };
