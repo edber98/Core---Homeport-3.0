@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule } from '@angular/forms';
 import { EditorState, RangeSetBuilder, Compartment } from '@codemirror/state';
@@ -14,7 +15,7 @@ type Context = Record<string, any>;
 @Component({
   standalone: true,
   selector: 'app-expression-editor',
-  imports: [CommonModule, FormsModule, NzPopoverModule, NzInputModule],
+  imports: [CommonModule, FormsModule, NzPopoverModule, NzInputModule, NzModalModule],
   templateUrl: './expression-editor.html',
   styleUrl: './expression-editor.scss',
   providers: [
@@ -26,11 +27,24 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @Output() valueChange = new EventEmitter<string>();
   @Input() context: Context = { $json: {}, $env: {}, $node: {}, $now: new Date() };
   @Input() inline = true;
+  // When true, increase the editor height to a textarea-like area
+  @Input() large = false;
   @Input() errorMode = false;
   @Input() showPreview = true;
   // Controls whether preview shows error details; highlights remain unchanged
   @Input() showPreviewErrors = true;
+  // Show the grouped addon-before button (formula action)
   @Input() showFormulaAction = true;
+  // Control whether the addon-before is rendered; when false, no left button is shown
+  @Input() groupBefore = true;
+  // Show an addon-after action to open a large dialog editor (textarea)
+  @Input() showDialogAction = false;
+  // Dialog title and mode
+  @Input() dialogTitle = "Éditeur d'expression";
+  // Future: 'editor' could mount a second CM instance; currently 'textarea'
+  @Input() dialogMode: 'textarea' | 'editor' = 'textarea';
+  dialogVisible = false;
+  dialogText = '';
   @Input() formulaTitle = 'Ouvrir l\'éditeur d\'expression';
   @Output() formulaClick = new EventEmitter<void>();
 
@@ -39,9 +53,12 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @ViewChild('menu', { static: false }) menuRef?: ElementRef<HTMLDivElement>;
   @ViewChild('list', { static: false }) listRef?: ElementRef<HTMLUListElement>;
   @ViewChild('originEl', { static: false }) originRef?: ElementRef<HTMLElement>;
+  @ViewChild('dialogCm', { static: false }) dialogCmRef?: ElementRef<HTMLDivElement>;
 
   view!: EditorView;
+  dialogView?: EditorView;
   private editableCompartment = new Compartment();
+  private dialogEditableCompartment = new Compartment();
   private suppressChange = false;
   private _disabled = false;
   // drag preview caret
@@ -81,6 +98,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   ngOnDestroy(): void {
     try { this.cmRef?.nativeElement?.removeEventListener('keydown', this.keyCapture, true); } catch {}
     this.view?.destroy();
+    try { this.dialogView?.destroy(); } catch {}
   }
 
   // ControlValueAccessor
@@ -99,6 +117,47 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     }
     // Ensure preview is computed when value is set by the parent form
     this.updatePreview();
+  }
+  commitValue(next: string) {
+    this.writeValue(next);
+    this.valueChange.emit(next);
+    this.onChange(next);
+  }
+
+  openDialog() {
+    this.dialogText = this.value || '';
+    this.dialogVisible = true;
+    // Defer mount to next tick so modal content exists
+    setTimeout(() => {
+      if (this.dialogMode === 'editor') this.mountDialogEditor();
+    }, 0);
+  }
+  private mountDialogEditor() {
+    try { this.dialogView?.destroy(); } catch {}
+    if (!this.dialogCmRef?.nativeElement) return;
+    const keymapLocal = keymap.of([
+      ...historyKeymap,
+      { key: 'Mod-Enter', preventDefault: true, run: () => { this.commitValue(this.dialogView!.state.doc.toString()); this.dialogVisible = false; return true; } },
+      { key: 'Escape', preventDefault: true, run: () => { this.dialogVisible = false; return true; } },
+    ]);
+    this.dialogView = new EditorView({
+      parent: this.dialogCmRef.nativeElement,
+      state: EditorState.create({
+        doc: this.value || '',
+        extensions: [
+          history(),
+          keymapLocal,
+          this.dialogEditableCompartment.of(EditorView.editable.of(true)),
+        ]
+      })
+    });
+  }
+
+  getDialogValue(): string {
+    try {
+      if (this.dialogMode === 'editor' && this.dialogView) return this.dialogView.state.doc.toString();
+      return this.dialogText || '';
+    } catch { return this.dialogText || ''; }
   }
   registerOnChange(fn: any): void { this.onChange = fn; }
   registerOnTouched(fn: any): void { this.onTouched = fn; }

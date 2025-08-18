@@ -29,6 +29,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           <div class="leading"><div class="avatar">DF</div></div>
           <div class="content"><div class="title-row"><div class="name">Dynamic Form Builder</div><span class="chip">/dynamic-form</span></div><div class="desc">Éditeur de formulaires</div></div>
         </div>
+        <div class="card" (click)="go('/debug/expr-json')">
+          <div class="leading"><div class="avatar">EX</div></div>
+          <div class="content"><div class="title-row"><div class="name">Expr + JSON</div><span class="chip">/debug/expr-json</span></div><div class="desc">Tester JSON Viewer + Expression Editor</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -54,4 +58,3 @@ export class DebuggingListComponent {
   constructor(private router: Router) {}
   go(url: string) { this.router.navigateByUrl(url); }
 }
-

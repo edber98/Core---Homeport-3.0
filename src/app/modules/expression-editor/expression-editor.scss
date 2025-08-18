@@ -5,6 +5,8 @@
 .expr-host.inline::-webkit-scrollbar { display: none !important;  }
 .expr-host.inline .cm-editor { min-height: 32px; max-height: 32px; width: 100%; }
 .cm-host { position: relative; flex:1; min-height: 30px; max-height: 200px; overflow: hidden; border:1px solid #d9d9d9; border-radius:6px; background:#fff; }
+.cm-host.large { min-height: 160px; max-height: 360px; }
+.cm-host.fullscreen { min-height: 70vh; max-height: 72vh; }
 /* Remove default outlines from inner CM nodes */
 .cm-host, .cm-host * { outline: none !important; }
 .expr-host *:focus, .expr-host *:focus-visible { outline: none !important; }
@@ -30,7 +32,7 @@
   border-right-width: 1px;
   outline: 0;
 }
-.expr-host.inline .cm-host { max-height: 32px;  }
+.expr-host.inline .cm-host {    height: 32px;  }
 /* When inside nz-input-group (prepend), blend borders */
 .expr-group { max-width: 100%; width: 100%; display: inline-flex; }
 /* In input-group, let host follow container and shrink */
@@ -45,6 +47,12 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left: 0;
+}
+/* If no before addon, restore rounded left corners and border */
+.expr-group.no-before .expr-host.in-group .cm-host {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-left: 1px solid #d9d9d9;
 }
 
 /* Drag preview caret */

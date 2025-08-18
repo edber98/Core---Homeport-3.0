@@ -44,6 +44,7 @@ export const routes: Routes = [
             { path: 'websites/page', loadComponent: () => import('./features/website/website-page-viewer.component').then(m => m.WebsitePageViewerComponent), title: 'Site — Page Viewer' },
             { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },
             { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
+            { path: 'debug/expr-json', loadComponent: () => import('./features/debug/debug-expr-json-playground.component').then(m => m.DebugExprJsonPlaygroundComponent), title: 'Debug — JSON + Expression' },
             { path: 'apps/editor', loadComponent: () => import('./features/catalog/app-provider-editor.component').then(m => m.AppProviderEditorComponent), title: 'App — Éditeur' },
             { path: 'apps/viewer', loadComponent: () => import('./features/catalog/app-provider-viewer.component').then(m => m.AppProviderViewerComponent), title: 'App — Viewer' },
             { path: 'settings', loadComponent: () => import('./features/settings/app-settings.component').then(m => m.AppSettingsComponent), title: 'Paramètres' },
