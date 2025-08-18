@@ -19,7 +19,8 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
           <p>/{{site!.slug}} · {{site!.status}} · {{ (site!.routes || []).length }} routes</p>
         </div>
         <div class="actions">
-          <button nz-button (click)="edit()"><i class="fa-regular fa-pen-to-square"></i> Éditer</button>
+          <button nz-button class="apple-btn" (click)="edit()"><i class="fa-regular fa-pen-to-square"></i><span class="label"> Éditer</span></button>
+          <button nz-button class="apple-btn" (click)="duplicate()"><i class="fa-regular fa-copy"></i><span class="label"> Dupliquer</span></button>
         </div>
       </div>
 
@@ -65,6 +66,7 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
+    .page-header .actions { display:flex; gap:8px; }
     .page-header .actions button i { margin-right: 6px; }
     .routes { display:flex; flex-direction:column; gap:8px; }
     .routes .row { display:grid; grid-template-columns: minmax(220px, 1.2fr) minmax(200px, 1fr) 100px 120px; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; border:1px solid #ececec; background:#fff; transition: background 160ms ease; }
@@ -89,6 +91,7 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
       .routes .row { padding:8px 10px; }
       .title.hide-sm { display:none; }
       .actions { justify-content:flex-end; }
+      .apple-btn .label { display:none; }
     }
   `]
 })
@@ -119,4 +122,5 @@ export class WebsiteViewerComponent implements OnInit {
   openBuilder(r: WebsiteRoute) { this.router.navigate(['/ui-builder'], { queryParams: { route: r.path, site: this.site?.id } }); }
   openPage(r: WebsiteRoute) { this.router.navigate(['/websites/page'], { queryParams: { site: this.site?.id, route: r.path } }); }
   edit() { if (this.site) this.router.navigate(['/websites/editor'], { queryParams: { id: this.site.id } }); }
+  duplicate() { if (this.site) this.router.navigate(['/websites/editor'], { queryParams: { duplicateFrom: this.site.id } }); }
 }

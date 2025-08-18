@@ -33,7 +33,7 @@
               <!-- Section dans step -->
               <ng-container *ngIf="f.type==='section' || f.type==='section_array'; else stepSingleField">
             <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === f" (click)="editMode && onSectionContainerClick($event, i, k, $any(f))">
-              <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors"
+              <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [ctx]="ctx"
                           [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                           [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
                           (moveField)="onMoveInSection($event.index, $event.dir, i, k)"
@@ -137,7 +137,7 @@
           [style.max-width.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null"
           [style.flex-basis.%]="forceBp ? fieldPercentFor($any(schema.fields)[it.ent.i], forceBp) : null">
       <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === ($any(schema.fields)[it.ent.i])" (click)="editMode && onSectionContainerClick($event, undefined, it.ent.i, ($any(schema.fields)[it.ent.i]))">
-        <df-section [section]="$any(($any(schema.fields))[it.ent.i])" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(($any(schema.fields))[it.ent.i]).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors"
+        <df-section [section]="$any(($any(schema.fields))[it.ent.i])" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(($any(schema.fields))[it.ent.i]).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [ctx]="ctx"
                     [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                     [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
                     (moveField)="onMoveInSection($event.index, $event.dir, undefined, it.ent.i)"

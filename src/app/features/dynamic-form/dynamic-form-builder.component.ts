@@ -1370,13 +1370,9 @@ export class DynamicFormBuilderComponent {
     }
   }
   onEditSelectStep(e: { stepIndex: number; step: StepConfig; fromStepper?: boolean }) {
-    if (!e.fromStepper && this.selected === e.step) {
-      this.selectedField = null;
-      this.selected = null;
-    } else {
-      this.selectedField = null;
-      this.select(e.step);
-    }
+    // Do not toggle off on repeated clicks; always keep the step selected
+    this.selectedField = null;
+    this.select(e.step);
   }
 
   // Ajouts depuis l'aperçu

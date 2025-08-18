@@ -76,8 +76,15 @@ nz-breadcrumb {
     overflow: auto;
     -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
     overscroll-behavior: contain; /* avoid scroll chaining */
-    /* Ensure bottom is reachable on iPhone (URL bar/fixed UI) */
+    /* Ensure bottom is reachable on iPhone (URL bar/fixed UI)
+       Apply only on XS screens to limit to responsive context */
+}
+
+/* XS only: enable safe-area bottom padding for inner content */
+@media (max-width: 575.98px) {
+  .inner-content {
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
 }
 
 ::ng-deep  .ant-layout-sider-light .ant-layout-sider-trigger{

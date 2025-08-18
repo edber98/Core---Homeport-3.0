@@ -95,7 +95,18 @@ export class AppProviderEditorComponent implements OnInit {
       tags: new FormControl<string>('')
     });
     const id = this.route.snapshot.queryParamMap.get('id');
-    if (id) this.catalog.getApp(id).subscribe(a => a && this.patch(a));
+    const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
+    if (dup) {
+      this.catalog.getApp(dup).subscribe(a => {
+        if (a) {
+          this.patch(a);
+          // Clear id and tweak name/title for duplication
+          this.form.patchValue({ id: null, name: (a.name || '') + ' (copie)' });
+        }
+      });
+    } else if (id) {
+      this.catalog.getApp(id).subscribe(a => a && this.patch(a));
+    }
   }
   simpleIconUrl(id: string, color?: string) {
     const hex = (color || '#111').replace('#','');

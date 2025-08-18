@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiNode } from '../ui-model.service';
 import { UiTokensService } from '../services/ui-tokens.service';
+import { UiValidationService } from '../services/ui-validation.service';
 import { UiLenComponent } from './ui-len.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -23,7 +24,7 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
       <summary>Layout</summary>
       <div class="sec-body">
       <div class="grid2">
-        <div>
+        <div [class.conflict]="hasConflict('display')" [attr.data-tip]="conflictTip('display')">
           <label class="lbl">Display</label>
           <nz-select [ngModel]="style.display" (ngModelChange)="set('display', $event)" nzAllowClear nzPlaceHolder="default">
             <nz-option nzValue="none" nzLabel="none"></nz-option>
@@ -34,7 +35,7 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
             <nz-option nzValue="grid" nzLabel="grid"></nz-option>
           </nz-select>
         </div>
-        <div>
+        <div [class.conflict]="hasConflict('position')" [attr.data-tip]="conflictTip('position')">
           <label class="lbl">Position</label>
           <nz-select [ngModel]="style.position" (ngModelChange)="set('position', $event)" nzAllowClear nzPlaceHolder="static">
             <nz-option nzValue="relative" nzLabel="relative"></nz-option>
@@ -47,15 +48,15 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
       <details class="subsec">
         <summary>Offsets</summary>
         <div class="grid4">
-          <div><label class="lbl">Top</label><ui-len [value]="style.top" (valueChange)="set('top', $event)"></ui-len></div>
-          <div><label class="lbl">Right</label><ui-len [value]="style.right" (valueChange)="set('right', $event)"></ui-len></div>
-          <div><label class="lbl">Bottom</label><ui-len [value]="style.bottom" (valueChange)="set('bottom', $event)"></ui-len></div>
-          <div><label class="lbl">Left</label><ui-len [value]="style.left" (valueChange)="set('left', $event)"></ui-len></div>
+          <div [class.conflict]="hasConflict('top')" [attr.data-tip]="conflictTip('top')"><label class="lbl">Top</label><ui-len [value]="style.top" (valueChange)="set('top', $event)"></ui-len></div>
+          <div [class.conflict]="hasConflict('right')" [attr.data-tip]="conflictTip('right')"><label class="lbl">Right</label><ui-len [value]="style.right" (valueChange)="set('right', $event)"></ui-len></div>
+          <div [class.conflict]="hasConflict('bottom')" [attr.data-tip]="conflictTip('bottom')"><label class="lbl">Bottom</label><ui-len [value]="style.bottom" (valueChange)="set('bottom', $event)"></ui-len></div>
+          <div [class.conflict]="hasConflict('left')" [attr.data-tip]="conflictTip('left')"><label class="lbl">Left</label><ui-len [value]="style.left" (valueChange)="set('left', $event)"></ui-len></div>
         </div>
       </details>
       <div class="grid3">
-        <div><label class="lbl">Z-index</label><input nz-input type="number" [ngModel]="style['zIndex']" (ngModelChange)="set('zIndex', numOrUndefined($event))"></div>
-        <div>
+        <div [class.conflict]="hasConflict('zIndex')" [attr.data-tip]="conflictTip('zIndex')"><label class="lbl">Z-index</label><input nz-input type="number" [ngModel]="style['zIndex']" (ngModelChange)="set('zIndex', numOrUndefined($event))"></div>
+        <div [class.conflict]="hasConflict('overflow')" [attr.data-tip]="conflictTip('overflow')">
           <label class="lbl">Overflow</label>
           <nz-select [ngModel]="style.overflow" (ngModelChange)="set('overflow', $event)" nzAllowClear nzPlaceHolder="visible">
             <nz-option nzValue="hidden" nzLabel="hidden"></nz-option>
@@ -63,7 +64,7 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
             <nz-option nzValue="scroll" nzLabel="scroll"></nz-option>
           </nz-select>
         </div>
-        <div>
+        <div [class.conflict]="hasConflict('cursor')" [attr.data-tip]="conflictTip('cursor')">
           <label class="lbl">Cursor</label>
           <nz-select [ngModel]="style.cursor" (ngModelChange)="set('cursor', $event)" nzAllowClear nzPlaceHolder="default">
             <nz-option nzValue="pointer" nzLabel="pointer"></nz-option>
@@ -161,12 +162,12 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
       <summary>Size & Spacing</summary>
       <div class="sec-body">
       <div class="grid3">
-        <div><label class="lbl">Width</label><ui-len [value]="style.width" (valueChange)="set('width', $event)"></ui-len></div>
+        <div [class.conflict]="hasConflict('width')" [attr.data-tip]="conflictTip('width')"><label class="lbl">Width</label><ui-len [value]="style.width" (valueChange)="set('width', $event)"></ui-len></div>
         <div><label class="lbl">Min-W</label><ui-len [value]="style.minWidth" (valueChange)="set('minWidth', $event)"></ui-len></div>
         <div><label class="lbl">Max-W</label><ui-len [value]="style.maxWidth" (valueChange)="set('maxWidth', $event)"></ui-len></div>
       </div>
       <div class="grid3">
-        <div><label class="lbl">Height</label><ui-len [value]="style.height" (valueChange)="set('height', $event)"></ui-len></div>
+        <div [class.conflict]="hasConflict('height')" [attr.data-tip]="conflictTip('height')"><label class="lbl">Height</label><ui-len [value]="style.height" (valueChange)="set('height', $event)"></ui-len></div>
         <div><label class="lbl">Min-H</label><ui-len [value]="style.minHeight" (valueChange)="set('minHeight', $event)"></ui-len></div>
         <div><label class="lbl">Max-H</label><ui-len [value]="style.maxHeight" (valueChange)="set('maxHeight', $event)"></ui-len></div>
       </div>
@@ -176,7 +177,7 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
           <label class="link"><input type="checkbox" [(ngModel)]="link.margin"> Link all</label>
         </summary>
         <div class="grid4">
-          <div><label class="lbl">Top</label><ui-len [value]="style.marginTop" (valueChange)="set4('marginTop', $event, 'margin')"></ui-len></div>
+          <div [class.conflict]="hasConflict('marginTop')" [attr.data-tip]="conflictTip('marginTop')"><label class="lbl">Top</label><ui-len [value]="style.marginTop" (valueChange)="set4('marginTop', $event, 'margin')"></ui-len></div>
           <div><label class="lbl">Right</label><ui-len [value]="style.marginRight" (valueChange)="set('marginRight', $event)"></ui-len></div>
           <div><label class="lbl">Bottom</label><ui-len [value]="style.marginBottom" (valueChange)="set('marginBottom', $event)"></ui-len></div>
           <div><label class="lbl">Left</label><ui-len [value]="style.marginLeft" (valueChange)="set('marginLeft', $event)"></ui-len></div>
@@ -188,7 +189,7 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
           <label class="link"><input type="checkbox" [(ngModel)]="link.padding"> Link all</label>
         </summary>
         <div class="grid4">
-          <div><label class="lbl">Top</label><ui-len [value]="style.paddingTop" (valueChange)="set4('paddingTop', $event, 'padding')"></ui-len></div>
+          <div [class.conflict]="hasConflict('paddingTop')" [attr.data-tip]="conflictTip('paddingTop')"><label class="lbl">Top</label><ui-len [value]="style.paddingTop" (valueChange)="set4('paddingTop', $event, 'padding')"></ui-len></div>
           <div><label class="lbl">Right</label><ui-len [value]="style.paddingRight" (valueChange)="set('paddingRight', $event)"></ui-len></div>
           <div><label class="lbl">Bottom</label><ui-len [value]="style.paddingBottom" (valueChange)="set('paddingBottom', $event)"></ui-len></div>
           <div><label class="lbl">Left</label><ui-len [value]="style.paddingLeft" (valueChange)="set('paddingLeft', $event)"></ui-len></div>
@@ -472,6 +473,10 @@ type Bp = 'auto'|'xs'|'sm'|'md'|'lg'|'xl';
   :host ::ng-deep .ant-select { width:100%; }
   .linkrow { align-items:center; margin-top:8px; }
   .link { font-size:12px; color:#64748b; }
+  /* Conflict marker */
+  .conflict input[nz-input], .conflict :host ::ng-deep .ant-select-selector { border-color: #ec4899 !important; box-shadow: 0 0 0 2px rgba(236,72,153,.15); }
+  .conflict { position: relative; }
+  .conflict:hover::after { content: attr(data-tip); position:absolute; left: 0; top: -28px; white-space: pre-wrap; max-width: 420px; background: #fce7f3; color:#9d174d; border:1px solid #f9a8d4; padding:6px 8px; border-radius:8px; font-size:12px; z-index: 20; }
   `]
 })
 export class UiStylesPanelComponent {
@@ -479,7 +484,7 @@ export class UiStylesPanelComponent {
   @Input() bp: Bp = 'auto';
   @Output() patch = new EventEmitter<Partial<UiNode>>();
 
-  constructor(public tokens: UiTokensService) {}
+  constructor(public tokens: UiTokensService, private validation: UiValidationService) {}
 
   // Sections are now native <details>; no manual open state tracking
   link = { margin: false, padding: false, radius: false };
@@ -529,6 +534,21 @@ export class UiStylesPanelComponent {
   }
   toggleHideBp(hide: boolean) {
     this.set('display', hide ? 'none' : undefined);
+  }
+
+  // Validation & collisions
+  hasConflict(prop: string): boolean {
+    if (!this.node) return false;
+    const inline = (this.bp && this.bp !== 'auto') ? (this.node.styleBp?.[this.bp] || {}) : (this.node.style || {});
+    if (!inline || !Object.prototype.hasOwnProperty.call(inline, prop)) return false;
+    const list = this.validation.collisionClassesFor(this.node, prop, 'base', this.bp as any);
+    return list.length > 0;
+  }
+  conflictTip(prop: string): string {
+    if (!this.node) return '';
+    const list = this.validation.collisionClassesFor(this.node, prop, 'base', this.bp as any);
+    if (!list.length) return '';
+    return `Propriété aussi définie par:\n` + list.join(', ');
   }
 
   // Helpers

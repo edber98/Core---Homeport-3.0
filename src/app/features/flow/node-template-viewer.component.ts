@@ -14,18 +14,21 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   template: `
   <div class="tpl-viewer">
     <div class="page-header">
-      <div class="card-title left">
-        <span class="t">Template</span>
-        <span class="s">Informations détaillées</span>
+      <div class="left">
+        <button class="icon-btn back" (click)="back()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="card-title left">
+          <span class="t">Template</span>
+          <span class="s">Informations détaillées</span>
+        </div>
       </div>
       <div class="actions">
-        <button nz-button class="apple-btn" (click)="back()">
-          <i nz-icon nzType="arrow-left"></i>
-          <span class="label">Retour</span>
+        <button nz-button class="apple-btn" *ngIf="view?.id" (click)="openEditor()" nz-tooltip="Modifier ce template">
+          <i class="fa-regular fa-pen-to-square"></i>
+          <span class="label">Édition</span>
         </button>
-        <button nz-button class="apple-btn" *ngIf="appId" (click)="openApp()">
-          <i nz-icon nzType="api"></i>
-          <span class="label">Voir l'app</span>
+        <button nz-button class="apple-btn" *ngIf="view?.id" (click)="duplicate()" nz-tooltip="Dupliquer ce template">
+          <i class="fa-regular fa-copy"></i>
+          <span class="label">Dupliquer</span>
         </button>
       </div>
     </div>
@@ -116,6 +119,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   styles: [`
     .tpl-viewer { padding: 12px; max-width: 1080px; margin: 0 auto; }
     .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
+    .page-header .left { display:flex; align-items:left; gap:0px; }
+    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
+    .actions { display:flex; gap:8px; }
+    @media (max-width: 640px) { .apple-btn .label { display:none; } }
     .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
     .card-title.left { align-items:flex-start; text-align:left; }
     .card-title .t { font-weight:600; font-size:14px; }
@@ -180,6 +187,15 @@ export class NodeTemplateViewerComponent implements OnInit {
   appIconUrl = '';
   appColor = '';
   get inputArray() { return Array.from({ length: this.inputCount }); }
+  duplicate() {
+    const id = this.view?.id || this.id; if (!id) return;
+    this.router.navigate(['/node-templates/editor'], { queryParams: { duplicateFrom: id } });
+  }
+  openEditor() {
+    const id = this.view?.id || this.id;
+    if (!id) return;
+    this.router.navigate(['/node-templates/editor'], { queryParams: { id } });
+  }
   constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
   ngOnInit(): void {
     const id = this.id || this.route.snapshot.queryParamMap.get('id') || '';

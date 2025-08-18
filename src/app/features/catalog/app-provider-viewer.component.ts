@@ -13,9 +13,13 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   template: `
   <div class="viewer" *ngIf="app as a">
     <div class="header">
-      <div class="card-title left"><span class="t">App</span><span class="s">{{ a.name }}</span></div>
+      <div class="left">
+        <button class="icon-btn back" (click)="back()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="card-title left"><span class="t">App</span><span class="s">{{ a.name }}</span></div>
+      </div>
       <div class="actions">
-        <button nz-button class="apple-btn" (click)="back()"><i nz-icon nzType="arrow-left"></i><span class="label">Retour</span></button>
+        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="edit()"><i class="fa-regular fa-pen-to-square"></i><span class="label">Édition</span></button>
+        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="duplicate()"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
       </div>
     </div>
     <div class="content">
@@ -36,6 +40,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   styles: [`
     .viewer { padding: 12px; max-width: 720px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
+    .header .left { display:flex; align-items:left; gap:0px; }
+    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
+    .actions { display:flex; gap:8px; }
+    @media (max-width: 640px) { .apple-btn .label { display:none; } }
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
@@ -57,4 +65,6 @@ export class AppProviderViewerComponent implements OnInit {
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   back() { history.back(); }
+  edit() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { id: this.app.id } }); }
+  duplicate() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { duplicateFrom: this.app.id } }); }
 }

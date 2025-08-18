@@ -102,7 +102,14 @@ export class WebsiteEditorComponent implements OnInit {
   constructor(private fb: FormBuilder, private svc: WebsiteService, private router: Router, private route: ActivatedRoute) {}
   ngOnInit() {
     const id = this.route.snapshot.queryParamMap.get('id');
-    if (id) {
+    const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
+    if (dup) {
+      this.svc.getById(dup).subscribe(s => {
+        const base = s || this.newSite();
+        const copy: Website = { ...base, id: 'site_' + Math.random().toString(36).slice(2,9), name: (base.name || '') + ' (copie)', slug: (base.slug || '') + '-copy', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), routes: (base.routes || []).map(r => ({ ...r })) };
+        this.buildForm(copy);
+      });
+    } else if (id) {
       this.svc.getById(id).subscribe(s => {
         const site = s || this.newSite();
         this.buildForm(site);

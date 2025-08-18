@@ -215,8 +215,17 @@ export class NodeTemplateEditorComponent implements OnInit {
     });
 
     const id = this.route.snapshot.queryParamMap.get('id');
+    const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
     this.catalog.listApps().subscribe(list => { this.apps = (list || []).map(a => ({ id: a.id, name: a.name, title: a.title })); });
-    if (id) {
+    if (dup) {
+      this.catalog.getNodeTemplate(dup).subscribe(t => {
+        if (t) {
+          this.patchTemplate(t);
+          // reset id and tweak name for duplication
+          this.form.patchValue({ id: null, name: (t.name || '') + ' (copie)' }, { emitEvent: false });
+        }
+      });
+    } else if (id) {
       this.catalog.getNodeTemplate(id).subscribe(t => { if (t) this.patchTemplate(t); });
     }
   }

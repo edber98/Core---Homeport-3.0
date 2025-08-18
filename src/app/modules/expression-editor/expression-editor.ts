@@ -340,9 +340,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     if (!token) {
       this.zone.run(() => {
         const fields = ctxRoots.map(k => ({ label: k, insert: `${k}`, kind: 'field' } as SuggestItem));
-        const opts = [...fields, ...suggestMethods(), ...otherMethods()];
         this.sections = [{ title: 'Fields', items: fields }];
-        this.setOptions(opts, !this.showMenu);
+        this.setOptions(fields, !this.showMenu);
       });
       this.openAtCaret(view);
       return;
@@ -697,11 +696,5 @@ function findIsland(doc: string, pos: number): { open: number; close?: number; i
 type SuggestItem = { label: string; detail?: string; insert: string; kind: 'field'|'method' };
 type MenuEntry = { kind: 'header'; title: string } | { kind: 'item'; item: SuggestItem; itemIndex: number };
 
-function suggestMethods(): SuggestItem[] {
-  const names = ['keys', 'values', 'isEmpty', 'hasField'];
-  return names.map(n => ({ label: `${n}()`, insert: `${n}()`, kind: 'method' }));
-}
-function otherMethods(): SuggestItem[] {
-  const names = ['compact', 'isNotEmpty', 'keepFieldsContaining', 'removeField', 'removeFieldsContaining', 'toJsonString', 'urlEncode'];
-  return names.map(n => ({ label: `${n}()`, insert: `${n}()`, kind: 'method' }));
-}
+function suggestMethods(): SuggestItem[] { return []; }
+function otherMethods(): SuggestItem[] { return []; }
