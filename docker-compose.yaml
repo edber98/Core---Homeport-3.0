@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  kinn-homeport:
+    build: .
+    container_name: kinn_homeport
+    restart: always
+    labels:
+      - "traefik.enable=true"  # Activer le service dans Traefik
+      - "traefik.docker.network=traeffik-web"
+      - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)"
+      - "traefik.http.routers.kinn-homeport.entrypoints=websecure,web"
+      - "traefik.http.routers.kinn-homeport.tls=true"
+      - "traefik.http.routers.kinn-homeport.tls.certresolver=myresolver"
+      - "traefik.http.services.kinn-homeport.loadbalancer.server.port=80"
+    networks:
+      - traeffik_web
+
+networks:
+  traeffik_web:
+    driver: bridge
+    external: true

@@ -1,0 +1,35 @@
+stages:
+  - build
+  - deploy
+
+
+variables:
+  IMAGE_NAME: homeport_kinn
+  IMAGE_FILE: homeport_kinn.tar
+build:
+  stage: build
+  tags: 
+    - c4rbon_runner
+  before_script:
+    - sh ./scripts/docker-delete.sh homeport_kinn homeport_kinn
+  script:
+    - echo "Construction de l'image Docker"
+    - docker build -t $IMAGE_NAME .
+    - docker save $IMAGE_NAME -o $IMAGE_FILE
+  artifacts:
+    paths:
+      - $IMAGE_FILE
+  only:
+    - production
+
+deploy:
+  stage: deploy
+  tags: 
+    - c4rbon_runner
+  script:
+    - echo "Chargement de l'image Docker pour le déploiement"
+    - docker load -i $IMAGE_FILE
+    - echo "Déploiement de l'APP avec Docker Compose"
+    - docker compose up -d 
+  only:
+    - production
