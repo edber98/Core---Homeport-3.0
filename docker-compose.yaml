@@ -14,9 +14,9 @@ services:
       - "traefik.http.routers.kinn-homeport.tls.certresolver=myresolver"
       - "traefik.http.services.kinn-homeport.loadbalancer.server.port=80"
     networks:
-      - traeffik-web
+      - traefik-web
 
 networks:
-  traeffik-web:
+  traefik-web:
     driver: bridge
     external: true
