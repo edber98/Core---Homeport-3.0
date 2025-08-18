@@ -68,6 +68,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   `,
   styles: [`
     .list-page { padding: 20px; }
+    /* iPhone/iOS: ensure bottom content is reachable despite dynamic browser UI */
+    @media (max-width: 768px) {
+      .list-page { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+    }
     .container { max-width: 1080px; margin: 0 auto; }
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }

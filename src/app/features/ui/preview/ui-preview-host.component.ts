@@ -11,6 +11,7 @@ import { UiTokensService } from '../services/ui-tokens.service';
   standalone: true,
   encapsulation: ViewEncapsulation.ShadowDom,
   imports: [CommonModule, UiNodeViewComponent],
+  host: { '[class.no-editing]': '!editing' },
   template: `
   <style>
     :host { display:block; }
@@ -22,9 +23,13 @@ import { UiTokensService } from '../services/ui-tokens.service';
     a { color: inherit; text-decoration: underline; }
     img { max-width: 100%; height: auto; display: inline-block; }
     button, input, textarea, select { font: inherit; }
+    /* When not editing, ensure any hover controls never show */
+    :host(.no-editing) .hover-actions { display: none !important; }
+    :host(.no-editing) .selected { outline: none !important; }
   </style>
   <style [innerHTML]="classCss"></style>
-  <ui-node-view [node]="root" [selectedId]="selectedId" [bp]="bp" [state]="state" (select)="select.emit($event)"></ui-node-view>
+  <ui-node-view [node]="root" [selectedId]="selectedId" [bp]="bp" [state]="state" [editing]="editing"
+    (select)="select.emit($event)" (dblselect)="dblselect.emit($event)" (ctxmenu)="context.emit($event)"></ui-node-view>
   `
 })
 export class UiPreviewHostComponent implements OnChanges {
@@ -32,8 +37,11 @@ export class UiPreviewHostComponent implements OnChanges {
   @Input() selectedId: string | null = null;
   @Input() bp: 'auto'|'xs'|'sm'|'md'|'lg'|'xl' = 'auto';
   @Input() state: UiState = 'base';
+  @Input() editing: boolean = true;
   @Input() version: number | null = null; // trigger change detection on external bumps
   @Output() select = new EventEmitter<string>();
+  @Output() dblselect = new EventEmitter<string>();
+  @Output() context = new EventEmitter<{ id: string; x: number; y: number }>();
 
   classCss = '';
   constructor(private tokens: UiTokensService, private el: ElementRef<HTMLElement>, private cls: UiClassStyleService, private bpSvc: UiBreakpointsService) {}

@@ -213,17 +213,22 @@ export class UiHtmlIoService {
   }
 
   private applyRule(selectorList: string, decl: string, bp: UiBreakpoint | 'auto') {
-    const selectors = selectorList.split(',').map(s => s.trim()).filter(Boolean);
+    const rawSelectors = selectorList.split(',').map(s => s.trim()).filter(Boolean);
     const styles = this.parseDeclarations(decl);
     if (!Object.keys(styles).length) return;
-    for (const sel of selectors) {
+    for (const originalSel of rawSelectors) {
+      // Normalize pseudo-elements ::before/::after to base selector and drop unsupported 'content'
+      const hadPseudo = /::(before|after)\b/i.test(originalSel);
+      const sel = originalSel.replace(/::(before|after)\b/gi, '');
+      const effStyles = { ...styles } as Record<string,string>;
+      if (hadPseudo) { delete effStyles['content']; }
       if (sel === ':root') {
         // Promote CSS variables to tokens
-        Object.keys(styles).forEach(k => { if (k.startsWith('--')) this.tokens.set(k, styles[k]); });
+        Object.keys(effStyles).forEach(k => { if (k.startsWith('--')) this.tokens.set(k, effStyles[k]); });
         continue;
       }
       if (/^body\b/i.test(sel)) {
-        this.lastBodyStyle = { ...(this.lastBodyStyle || {}), ...styles };
+        this.lastBodyStyle = { ...(this.lastBodyStyle || {}), ...effStyles };
         continue;
       }
       // Accept .class, .class1.class2, optionally with :hover/:active/:focus
@@ -231,7 +236,7 @@ export class UiHtmlIoService {
       if (m && m.groups) {
         const name = m.groups['names'];
         const state = (m.groups['state'] as UiState | undefined) || 'base';
-        this.cls.setStyles(name, state, bp, styles);
+        this.cls.setStyles(name, state, bp, effStyles);
         continue;
       }
       // Other selectors: inline or synthetic class applied to matched elements
@@ -247,17 +252,17 @@ export class UiHtmlIoService {
           const uid = el.getAttribute('data-ui-uid') || '';
           if (!uid) return;
           if (bp === 'auto') {
-            const map = this.inlineBase.get(uid) || {}; Object.assign(map, styles); this.inlineBase.set(uid, map);
+            const map = this.inlineBase.get(uid) || {}; Object.assign(map, effStyles); this.inlineBase.set(uid, map);
           } else {
             let m2 = this.inlineBp.get(uid); if (!m2) { m2 = new Map(); this.inlineBp.set(uid, m2); }
-            const cur = m2.get(String(bp)) || {}; Object.assign(cur, styles); m2.set(String(bp), cur);
+            const cur = m2.get(String(bp)) || {}; Object.assign(cur, effStyles); m2.set(String(bp), cur);
           }
         });
       } else {
         const sig = `${baseSel}|${state}|${bp}`;
         let cname = this.selectorClass.get(sig);
         if (!cname) { cname = `imp-${this.hash(sig)}`; this.selectorClass.set(sig, cname); }
-        this.cls.setStyles(cname!, state, bp, styles);
+        this.cls.setStyles(cname!, state, bp, effStyles);
         els.forEach(el => {
           const uid = el.getAttribute('data-ui-uid') || '';
           if (!uid) return;
@@ -290,18 +295,60 @@ export class UiHtmlIoService {
   }
 
   private mapMediaToBreakpoint(cond: string): UiBreakpoint | 'auto' {
-    // Parses @media (min-width: Npx)
-    const m = cond.match(/min-width\s*:\s*(\d+)px/i);
-    if (!m) return 'auto';
-    const px = Number(m[1]);
-    // choose bp with min <= px and with highest min
+    // Parse @media conditions and map to a defined breakpoint id
+    // Supports: (min-width: Npx), (max-width: Npx), combinations with 'and'
+    const minM = cond.match(/min-width\s*:\s*(\d+)px/i);
+    const maxM = cond.match(/max-width\s*:\s*(\d+)px/i);
+    const minPx = minM ? Number(minM[1]) : undefined;
+    const maxPx = maxM ? Number(maxM[1]) : undefined;
     const list = this.bpSvc.list;
-    let best: UiBreakpoint | 'auto' = 'auto'; let bestMin = -Infinity;
-    for (const bp of list) {
-      const min = bp.min ?? -Infinity;
-      if (min <= px && min >= bestMin) { best = bp.id as UiBreakpoint; bestMin = min; }
+
+    if (minPx == null && maxPx == null) return 'auto';
+
+    // Helper to check overlap between media range and bp range
+    const inRange = (bp: any) => {
+      const bpMin = bp.min ?? -Infinity;
+      const bpMax = bp.max ?? +Infinity;
+      const rMin = minPx ?? -Infinity;
+      const rMax = maxPx ?? +Infinity;
+      return bpMax >= rMin && bpMin <= rMax;
+    };
+
+    // If both min/max provided, pick the BP whose min is closest to minPx while overlapping
+    if (minPx != null && maxPx != null) {
+      const candidates = list.filter(inRange);
+      if (candidates.length) {
+        let best = candidates[0];
+        for (const bp of candidates) {
+          const bestMin = best.min ?? -Infinity;
+          const bpMin = bp.min ?? -Infinity;
+          if (bpMin <= minPx && bpMin >= bestMin) best = bp as any;
+        }
+        return best.id as UiBreakpoint;
+      }
     }
-    return best;
+
+    // Only min-width: choose highest bp with min <= minPx
+    if (minPx != null) {
+      let best: any = null; let bestMin = -Infinity;
+      for (const bp of list) {
+        const bpMin = bp.min ?? -Infinity;
+        if (bpMin <= minPx && bpMin >= bestMin) { best = bp as any; bestMin = bpMin; }
+      }
+      return (best?.id as UiBreakpoint) || 'auto';
+    }
+
+    // Only max-width: choose lowest bp with max >= maxPx
+    if (maxPx != null) {
+      let best: any = null; let bestMax = +Infinity;
+      for (const bp of list) {
+        const bpMax = bp.max ?? +Infinity;
+        if (bpMax >= maxPx && bpMax <= bestMax) { best = bp as any; bestMax = bpMax; }
+      }
+      return (best?.id as UiBreakpoint) || 'auto';
+    }
+
+    return 'auto';
   }
 
   private annotateDom(root: Element) {

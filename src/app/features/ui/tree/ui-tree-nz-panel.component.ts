@@ -25,10 +25,23 @@ export class UiTreeNzPanelComponent implements OnChanges {
   @Input() version: number | null = null;
   @Output() select = new EventEmitter<string>();
   @Output() move = new EventEmitter<{ id: string; newParentId: string; index: number }>();
+  @Input() revealSelected: boolean = false;
 
   _root!: UiNode;
   treeData: NzTreeNodeOptions[] = [];
   expandedKeys: string[] = [];
+
+  private findPath(root: UiNode, id: string, acc: string[] = []): string[] {
+    if (!root) return [];
+    if (root.id === id) return acc;
+    const children = root.children || [];
+    for (const ch of children as UiNode[]) {
+      const r = this.findPath(ch, id, [...acc, root.id]);
+      if (r.length) return r;
+      if (ch.id === id) return [...acc, root.id];
+    }
+    return [];
+  }
 
   private toNode(n: UiNode): NzTreeNodeOptions {
     return {
@@ -42,6 +55,16 @@ export class UiTreeNzPanelComponent implements OnChanges {
   private labelOf(n: UiNode): string { const id = n.attrs && n.attrs['id'] ? `#${n.attrs['id']}` : ''; return `${n.tag}${id ? ' ' + id : ''}`; }
   ngOnChanges(ch: SimpleChanges) {
     if (ch['version']) { this.treeData = [this.toNode(this._root)]; }
+    if (ch['revealSelected'] && this.revealSelected && this.selectedId) {
+      // Expand parents to reveal the selected node
+      const path = this.findPath(this._root, this.selectedId);
+      if (path.length) {
+        const set = new Set(this.expandedKeys);
+        path.forEach(id => set.add(id));
+        this.expandedKeys = Array.from(set);
+        this.treeData = [this.toNode(this._root)];
+      }
+    }
   }
 
   onExpand(ev: NzFormatEmitEvent) {

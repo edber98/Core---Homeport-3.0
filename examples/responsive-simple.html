@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Boîtes responsive — XS / SM / MD / LG / XL</title>
+  <style>
+    /* ====== Variables & Reset ====== */
+    :root{
+      --gap:12px;
+      --radius:12px;
+      --fg:#111; --bg:#f6f7fb;
+      --border:#d0d4dc;
+
+      /* palette simple et lisible */
+      --red:#ef4444; --green:#22c55e; --blue:#3b82f6; --amber:#f59e0b; --purple:#8b5cf6; --teal:#14b8a6; --gray:#e5e7eb;
+      --red-ink:#7f1d1d; --green-ink:#064e3b; --blue-ink:#1e3a8a; --amber-ink:#78350f; --purple-ink:#3b0764; --teal-ink:#042f2e; --ink:#111;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0; font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--fg); background:var(--bg);
+      padding:16px;
+    }
+    .container{ max-width:1200px; margin:auto; }
+
+    /* ====== Bandeau "breakpoint actuel" (pur CSS) ====== */
+    .bp{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px 0; font-weight:600;}
+    .bp span{ padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:#fff; }
+    .show-xs,.show-sm,.show-md,.show-lg,.show-xl{ display:none; }
+    /* XS: <480px */
+    @media (max-width: 479.98px){ .show-xs{display:inline-flex;} }
+    /* SM: ≥480 */
+    @media (min-width: 480px){ .show-sm{display:inline-flex;} }
+    /* MD: ≥768 */
+    @media (min-width: 768px){ .show-md{display:inline-flex;} }
+    /* LG: ≥1024 */
+    @media (min-width:1024px){ .show-lg{display:inline-flex;} }
+    /* XL: ≥1280 */
+    @media (min-width:1280px){ .show-xl{display:inline-flex;} }
+
+    /* ====== Grille & Ligne ====== */
+    .grid{ display:grid; gap:var(--gap); }
+    .cols-1{ grid-template-columns:repeat(1,minmax(0,1fr)); }
+    @media (min-width:480px){ .sm-cols-2{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (min-width:768px){ .md-cols-3{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+    @media (min-width:1024px){ .lg-cols-4{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+    @media (min-width:1280px){ .xl-cols-6{ grid-template-columns:repeat(6,minmax(0,1fr)); } }
+
+    .row{ display:flex; flex-wrap:wrap; gap:var(--gap); }
+
+    /* ====== Largeurs responsives (utilitaires) ====== */
+    /* Base = pleine largeur */
+    .full{ flex:1 1 100%; }
+
+    /* Fractures à SM (≥480px) */
+    @media (min-width:480px){
+      .sm-full{ flex:1 1 100%; }
+      .sm-half{ flex:1 1 calc(50% - var(--gap)); }
+      .sm-third{ flex:1 1 calc(33.333% - var(--gap)); }
+      .sm-quarter{ flex:1 1 calc(25% - var(--gap)); }
+    }
+    /* Fractures à MD (≥768px) */
+    @media (min-width:768px){
+      .md-full{ flex:1 1 100%; }
+      .md-half{ flex:1 1 calc(50% - var(--gap)); }
+      .md-third{ flex:1 1 calc(33.333% - var(--gap)); }
+      .md-quarter{ flex:1 1 calc(25% - var(--gap)); }
+    }
+    /* Fractures à LG (≥1024px) */
+    @media (min-width:1024px){
+      .lg-full{ flex:1 1 100%; }
+      .lg-half{ flex:1 1 calc(50% - var(--gap)); }
+      .lg-third{ flex:1 1 calc(33.333% - var(--gap)); }
+      .lg-quarter{ flex:1 1 calc(25% - var(--gap)); }
+    }
+    /* Fractures à XL (≥1280px) */
+    @media (min-width:1280px){
+      .xl-full{ flex:1 1 100%; }
+      .xl-sixth{ flex:1 1 calc(16.666% - var(--gap)); }
+    }
+
+    /* ====== Boîte de test ====== */
+    .box{
+      background:#fff; border:2px solid var(--border);
+      border-radius:var(--radius); padding:16px;
+      min-height:72px; display:flex; align-items:center; justify-content:center;
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .box small{ opacity:.75; display:block; font-size:.8rem; margin-top:6px; }
+
+    /* Bordures utilitaires */
+    .b-1{ border-width:1px; } .b-2{ border-width:2px; } .b-4{ border-width:4px; }
+    .rounded-none{ border-radius:0; } .rounded{ border-radius:var(--radius); } .rounded-xl{ border-radius:20px; }
+
+    /* Couleurs de fond */
+    .bg-red{ background:color-mix(in oklab, white 70%, var(--red)); }
+    .bg-green{ background:color-mix(in oklab, white 70%, var(--green)); }
+    .bg-blue{ background:color-mix(in oklab, white 70%, var(--blue)); }
+    .bg-amber{ background:color-mix(in oklab, white 70%, var(--amber)); }
+    .bg-purple{ background:color-mix(in oklab, white 70%, var(--purple)); }
+    .bg-teal{ background:color-mix(in oklab, white 70%, var(--teal)); }
+    .bg-gray{ background:var(--gray); }
+
+    /* Couleurs de bordure */
+    .border-red{ border-color:var(--red); }
+    .border-green{ border-color:var(--green); }
+    .border-blue{ border-color:var(--blue); }
+    .border-amber{ border-color:var(--amber); }
+    .border-purple{ border-color:var(--purple); }
+    .border-teal{ border-color:var(--teal); }
+
+    /* Couleurs de texte */
+    .ink-red{ color:var(--red-ink); } .ink-green{ color:var(--green-ink); }
+    .ink-blue{ color:var(--blue-ink); } .ink-amber{ color:var(--amber-ink); }
+    .ink-purple{ color:var(--purple-ink); } .ink-teal{ color:var(--teal-ink); }
+
+    /* Espacements utilitaires (m-*, p-*) */
+    .p-1{padding:4px;} .p-2{padding:8px;} .p-3{padding:12px;} .p-4{padding:16px;} .p-6{padding:24px;}
+    .m-0{margin:0;} .mt-2{margin-top:8px;} .mb-2{margin-bottom:8px;} .mt-4{margin-top:16px;} .mb-4{margin-bottom:16px;}
+
+    /* Visibilité par breakpoint */
+    .only-xs{ display:block; }
+    .only-sm,.only-md,.only-lg,.only-xl{ display:none; }
+    @media (min-width:480px){ .only-xs{display:none;} .only-sm{display:block;} }
+    @media (min-width:768px){ .only-sm{display:none;} .only-md{display:block;} }
+    @media (min-width:1024px){ .only-md{display:none;} .only-lg{display:block;} }
+    @media (min-width:1280px){ .only-lg{display:none;} .only-xl{display:block;} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Indicateur du breakpoint courant -->
+    <div class="bp">
+      <span class="show-xs">Breakpoint: XS (&lt;480px)</span>
+      <span class="show-sm">Breakpoint: SM (≥480px)</span>
+      <span class="show-md">Breakpoint: MD (≥768px)</span>
+      <span class="show-lg">Breakpoint: LG (≥1024px)</span>
+      <span class="show-xl">Breakpoint: XL (≥1280px)</span>
+    </div>
+
+    <h2 class="m-0 mb-2">Grille auto (classes parent): <code>.grid .cols-1 .sm-cols-2 .md-cols-3 .lg-cols-4</code></h2>
+    <div class="grid cols-1 sm-cols-2 md-cols-3 lg-cols-4 mb-4">
+      <div class="box bg-blue border-blue b-2">
+        .grid item 1<small>.bg-blue .border-blue</small>
+      </div>
+      <div class="box bg-green border-green b-2">
+        .grid item 2<small>.bg-green .border-green</small>
+      </div>
+      <div class="box bg-amber border-amber b-2">
+        .grid item 3<small>.bg-amber .border-amber</small>
+      </div>
+      <div class="box bg-purple border-purple b-2">
+        .grid item 4<small>.bg-purple .border-purple</small>
+      </div>
+      <div class="box bg-teal border-teal b-2">
+        .grid item 5<small>.bg-teal .border-teal</small>
+      </div>
+      <div class="box bg-gray b-2">
+        .grid item 6<small>.bg-gray</small>
+      </div>
+    </div>
+
+    <h2 class="m-0 mb-2">Ligne flex (classes par boîte): <code>.full .sm-half .md-third .lg-quarter</code></h2>
+    <div class="row mb-4">
+      <div class="box bg-blue border-blue b-2 full sm-half md-third lg-quarter">
+        .full → .sm-half → .md-third → .lg-quarter
+        <small>Test largeur par breakpoint</small>
+      </div>
+      <div class="box bg-green border-green b-2 full sm-half md-third lg-quarter">
+        idem
+      </div>
+      <div class="box bg-amber border-amber b-2 full sm-half md-third lg-quarter">
+        idem
+      </div>
+      <div class="box bg-purple border-purple b-2 full sm-half md-third lg-quarter">
+        idem
+      </div>
+    </div>
+
+    <h2 class="m-0 mb-2">Visibilité conditionnelle</h2>
+    <div class="row">
+      <div class="box bg-red border-red b-2 only-xs">Visible uniquement en <strong>XS</strong></div>
+      <div class="box bg-teal border-teal b-2 only-sm">Visible uniquement en <strong>SM</strong></div>
+      <div class="box bg-blue border-blue b-2 only-md">Visible uniquement en <strong>MD</strong></div>
+      <div class="box bg-green border-green b-2 only-lg">Visible uniquement en <strong>LG</strong></div>
+      <div class="box bg-amber border-amber b-2 only-xl">Visible uniquement en <strong>XL</strong></div>
+    </div>
+  </div>
+</body>
+</html>

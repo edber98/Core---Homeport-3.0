@@ -161,6 +161,8 @@ nz-drawer { display: contents; }
   .fb-fab-left, .fb-fab-right { display: inline-flex; }
   .canvas-host { height: 100%; }
   .left-bar { display: block; }
+  /* Keep bottom bar visible above iOS browser UI */
+  .bottom-bar { position: fixed; left: 6px; right: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); z-index: 90; }
 }
 
 /* Bottom bar buttons: consistent square size and centered icons */

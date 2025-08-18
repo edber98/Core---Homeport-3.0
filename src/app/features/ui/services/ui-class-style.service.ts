@@ -47,11 +47,16 @@ export class UiClassStyleService {
 
   effectiveForClasses(classList: string[] | undefined, state: UiState, bp: UiBreakpoint | 'auto'): Record<string,string> {
     const out: Record<string,string> = {};
-    (classList || []).forEach(name => {
-      const style = this.getStyles(name, state, bp);
-      Object.assign(out, style);
-    });
+    const list = classList || [];
+    // 1) Apply single class styles in order
+    list.forEach(name => { Object.assign(out, this.getStyles(name, state, bp)); });
+    // 2) Apply combo class styles when all parts are present (e.g., 'btn.primary')
+    for (const def of this.classes) {
+      if (!def.parts || def.parts.length <= 1) continue;
+      const hasAll = def.parts.every(p => list.includes(p));
+      if (!hasAll) continue;
+      Object.assign(out, this.getStyles(def.name, state, bp));
+    }
     return out;
   }
 }
-

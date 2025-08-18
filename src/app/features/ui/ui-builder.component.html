@@ -28,7 +28,7 @@
     <ui-class-manager [bp]="bp" [selectionClasses]="model.selected?.classes || []"
       (selectionAddClass)="addClassToSelection($event)" (selectionRemoveClass)="removeClassFromSelection($event)" (stylesChange)="refreshPreview()" (cssEdited)="onCssEdited()"></ui-class-manager>
     <ui-styles-panel [node]="model.selected" [bp]="bp" (patch)="onPatch($event)"></ui-styles-panel>
-    <ui-tree-nz-panel [root]="model.root" [selectedId]="model.selectedId" [version]="model.version" (select)="onSelect($event)" (move)="onMoveNode($event)"></ui-tree-nz-panel>
+    <ui-tree-nz-panel [root]="model.root" [selectedId]="model.selectedId" [version]="model.version" [revealSelected]="treeReveal" (select)="onSelect($event)" (move)="onMoveNode($event)" (contextmenu)="openContext({ id: model.selectedId || 'root', x: $event.clientX, y: $event.clientY}, 'tree')"></ui-tree-nz-panel>
     <ui-inspector-panel [node]="model.selected" [bp]="bp"
       (patch)="onPatch($event)"
       (moveUp)="moveUp()" (moveDown)="moveDown()" (remove)="remove()"></ui-inspector-panel>
@@ -57,7 +57,8 @@
     </div>
     <div class="canvas-inner" [style.maxWidth.px]="canvasWidth || null" [style.transform]="'scale(' + (zoomPct/100) + ')'
       " [style.transformOrigin]="'top center'">
-      <ui-preview-host [root]="model.root" [selectedId]="model.selectedId" [bp]="bp" [state]="previewState" [version]="model.version + previewVersion" (select)="onSelect($event)"></ui-preview-host>
+      <ui-preview-host [root]="model.root" [selectedId]="model.selectedId" [bp]="bp" [state]="previewState" [editing]="previewEditing"
+        [version]="model.version + previewVersion" (select)="onSelect($event)" (dblselect)="onDblSelect($event)" (context)="openContext($event,'preview')"></ui-preview-host>
     </div>
   </section>
 
@@ -67,6 +68,7 @@
 
   <div class="bottom-bar" *ngIf="!previewMode">
     <div class="actions" *ngIf="!isResponsive">
+      <button class="icon-btn" [class.active]="previewEditing" (click)="previewEditing=!previewEditing" title="Édition"><i class="fa-regular fa-pen-to-square"></i></button>
       <nz-select [(ngModel)]="previewState" title=":state" nzPlaceHolder="Normal">
         <nz-option nzValue="base" nzLabel="Normal"></nz-option>
         <nz-option nzValue="hover" nzLabel="Hover"></nz-option>
@@ -79,14 +81,27 @@
         <i class="fa-solid fa-file-import"></i>
         <input type="file" accept="text/html,.html,.htm" (change)="onImportHtml($event)" hidden>
       </label>
+      <label class="icon-btn import-btn" title="Importer JSON (fichier)">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <input type="file" accept="application/json,.json" (change)="onImportProjectFile($event)" hidden>
+      </label>
       <button class="icon-btn" (click)="exportHtml()" title="Exporter HTML"><i class="fa-solid fa-file-export"></i></button>
       <button class="icon-btn" (click)="openImport()" title="Importer" aria-label="Importer"><i class="fa-solid fa-file-arrow-up"></i></button>
       <button class="icon-btn" (click)="doExport()" title="Exporter" aria-label="Exporter"><i class="fa-solid fa-cloud-arrow-down"></i></button>
     </div>
     <div class="actions" *ngIf="isResponsive">
+      <button class="icon-btn" [class.active]="previewEditing" (click)="previewEditing=!previewEditing" title="Édition"><i class="fa-regular fa-pen-to-square"></i></button>
       <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler"><i class="fa-solid fa-rotate-left"></i></button>
       <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
+  </div>
+
+  <!-- Simple context menu overlay -->
+  <div class="context-menu" *ngIf="contextVisible" [style.left.px]="contextX" [style.top.px]="contextY" (click)="$event.stopPropagation()" (contextmenu)="$event.preventDefault()">
+    <button (click)="ctxSelectReveal()">Sélectionner et ouvrir l’arbre</button>
+    <button (click)="ctxMoveUp()">Monter</button>
+    <button (click)="ctxMoveDown()">Descendre</button>
+    <button (click)="ctxRemove()">Supprimer</button>
   </div>
 
   <div class="import-overlay" *ngIf="importing">

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef, NgZone, HostListener } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiModelService, UiNode, UiTag } from './ui-model.service';
 import { UiRulesService } from './ui-rules.service';
@@ -18,6 +18,8 @@ import { UiBreakpointsService } from './services/ui-breakpoints.service';
 import { UiTokensService } from './services/ui-tokens.service';
 import { UiClassStyleService } from './services/ui-class-style.service';
 import { UiHtmlIoService } from './services/ui-html-io.service';
+import { ActivatedRoute } from '@angular/router';
+import { WebsiteService } from '../website/website.service';
 
 @Component({
   selector: 'ui-builder',
@@ -26,10 +28,55 @@ import { UiHtmlIoService } from './services/ui-html-io.service';
   templateUrl: './ui-builder.component.html',
   styleUrl: './ui-builder.component.scss'
 })
-export class UiBuilderComponent {
-  constructor(public model: UiModelService, private rules: UiRulesService, public history: UiHistoryService, private bpSvc: UiBreakpointsService, private tokens: UiTokensService, private clsSvc: UiClassStyleService, private htmlIo: UiHtmlIoService, private zone: NgZone, private cdr: ChangeDetectorRef) {
+export class UiBuilderComponent implements OnInit {
+  constructor(
+    public model: UiModelService,
+    private rules: UiRulesService,
+    public history: UiHistoryService,
+    private bpSvc: UiBreakpointsService,
+    private tokens: UiTokensService,
+    private clsSvc: UiClassStyleService,
+    private htmlIo: UiHtmlIoService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private website: WebsiteService,
+  ) {
     this.history.reset(this.snapshot());
     try { this.tokens.applyToDocument(); } catch {}
+  }
+
+  private loadFromQuery() {
+    try {
+      const q = this.route.snapshot.queryParamMap;
+      // Support loading by site+route or by id
+      const site = q.get('site') || '';
+      const path = q.get('route') || '';
+      const id = q.get('id') || '';
+      if (site && path) {
+        this.website.getRouteProject(site, path).subscribe(proj => {
+          const p: any = proj || {};
+          if (p.tokens) { this.tokens.tokens = p.tokens; try { this.tokens.applyToDocument(); } catch {} }
+          if (p.classes) { (this.clsSvc as any).classes = p.classes; }
+          if (p.breakpoints) { (this.bpSvc as any).list = p.breakpoints; }
+          if (p.model) { this.model.root = p.model; this.model.version++; }
+          this.history.reset(this.snapshot());
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      }
+      // Fallback: load a single route by id if provided (assumes id is a path or unique route key)
+      else if (id) {
+        this.website.getRouteProject(site || 'site_demo', id).subscribe(proj => {
+          const p: any = proj || {};
+          if (p.tokens) { this.tokens.tokens = p.tokens; try { this.tokens.applyToDocument(); } catch {} }
+          if (p.classes) { (this.clsSvc as any).classes = p.classes; }
+          if (p.breakpoints) { (this.bpSvc as any).list = p.breakpoints; }
+          if (p.model) { this.model.root = p.model; this.model.version++; }
+          this.history.reset(this.snapshot());
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      }
+    } catch {}
   }
 
   elements = [
@@ -68,6 +115,12 @@ export class UiBuilderComponent {
 
   onPatch(p: Partial<UiNode>) { if (!this.model.selected) return; this.model.update(this.model.selected.id, p); this.push(); }
   onSelect(id: string) { this.model.select(id); }
+  onDblSelect(id: string) {
+    if (this.previewMode) return; // only in edit mode
+    this.model.select(id);
+    // Ensure the structure panel is visible; open drawer on small screens
+    if (this.isResponsive) this.showRightDrawer = true;
+  }
   moveUp() { if (!this.model.selected) return; this.model.moveUp(this.model.selected.id); this.push(); }
   moveDown() { if (!this.model.selected) return; this.model.moveDown(this.model.selected.id); this.push(); }
   remove() { if (!this.model.selected) return; this.model.remove(this.model.selected.id); this.push(); }
@@ -140,6 +193,35 @@ export class UiBuilderComponent {
     const url = URL.createObjectURL(blob); const a = document.createElement('a');
     a.href = url; a.download = 'page.html'; a.click(); URL.revokeObjectURL(url);
   }
+  // Import UI project JSON from a file
+  onImportProjectFile(ev: Event) {
+    const input = ev.target as HTMLInputElement; const file = input?.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const txt = String(reader.result || '');
+        const obj = JSON.parse(txt || '{}');
+        this.zone.run(() => {
+          if (obj && obj.id && obj.tag) {
+            // Backward compat: model-only JSON
+            this.model.import(JSON.stringify(obj));
+          } else {
+            const proj: any = obj || {};
+            if (proj.model) { this.model.root = proj.model; }
+            if (proj.classes) { (this.clsSvc as any).classes = proj.classes; }
+            if (proj.tokens) { this.tokens.tokens = proj.tokens; try { this.tokens.applyToDocument(); } catch {} }
+            if (proj.breakpoints) { (this.bpSvc as any).list = proj.breakpoints; }
+            this.model.version++;
+          }
+          this.previewVersion++;
+          try { this.cdr.detectChanges(); } catch {}
+          this.push();
+        });
+      } catch { /* ignore */ }
+    };
+    reader.readAsText(file);
+    input.value = '';
+  }
   refreshPreview() { this.previewVersion++; }
   onCssEdited() {
     // Remove inline styles duplicated by effective class styles on selection
@@ -161,6 +243,30 @@ export class UiBuilderComponent {
       this.refreshPreview();
     }
   }
+  // Context menu state
+  contextVisible = false;
+  contextX = 0; contextY = 0;
+  contextSource: 'preview'|'tree' = 'preview';
+  contextId: string | null = null;
+  openContext(ev: { id: string; x: number; y: number }, source: 'preview'|'tree' = 'preview') {
+    if (this.previewMode) return; // only in edit mode
+    this.contextId = ev.id; this.model.select(ev.id);
+    this.contextX = ev.x; this.contextY = ev.y; this.contextSource = source; this.contextVisible = true;
+  }
+  closeContext() { this.contextVisible = false; }
+  // Context menu actions
+  ctxAddInside() { if (!this.contextId) return; this.addInside(this.contextId); this.closeContext(); }
+  ctxMoveUp() { this.moveUp(); this.closeContext(); }
+  ctxMoveDown() { this.moveDown(); this.closeContext(); }
+  ctxRemove() { this.remove(); this.closeContext(); }
+  ctxSelectReveal() {
+    if (!this.contextId) return;
+    this.model.select(this.contextId);
+    this.revealInTree();
+  }
+  // Reveal in tree
+  treeReveal = false;
+  revealInTree() { this.treeReveal = true; if (this.isResponsive) this.showRightDrawer = true; setTimeout(() => this.treeReveal = false, 0); this.closeContext(); }
 
   // Preview breakpoints
   bp: 'auto'|'xs'|'sm'|'md'|'lg'|'xl' = 'auto';
@@ -226,7 +332,13 @@ export class UiBuilderComponent {
   isResponsive = false;
   showPaletteDrawer = false;
   showRightDrawer = false;
-  ngOnInit() { this.onResize(); }
+  previewEditing = true; // edition on by default
+  ngOnInit() {
+    this.onResize(); this.loadFromQuery();
+    // Close context menu on any click outside
+    document.addEventListener('click', () => { this.contextVisible = false; }, true);
+    document.addEventListener('contextmenu', () => { this.contextVisible = false; }, true);
+  }
   @HostListener('window:resize') onWindowResize() { this.onResize(); }
   onResize() {
     const w = typeof window !== 'undefined' ? window.innerWidth : 1920;

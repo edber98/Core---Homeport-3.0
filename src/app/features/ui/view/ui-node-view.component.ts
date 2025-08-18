@@ -16,8 +16,8 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
   template: `
   <ng-container [ngSwitch]="node.tag">
     <span *ngSwitchCase="'#text'">{{ node.text }}</span>
-    <div *ngSwitchCase="'div'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <div *ngSwitchCase="'div'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)">
           <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
         </button>
@@ -28,53 +28,53 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
         </button>
       </div>
       <ng-container *ngFor="let c of node.children">
-        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)"></ui-node-view>
+        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
       </ng-container>
     </div>
-    <section *ngSwitchCase="'section'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <section *ngSwitchCase="'section'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
         <button title="Monter" (click)="$event.stopPropagation()"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 5l6 6H6l6-6z" fill="currentColor"/></svg></button>
         <button title="Descendre" (click)="$event.stopPropagation()"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 19l-6-6h12l-6 6z" fill="currentColor"/></svg></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M6 7h12M9 7V5h6v2m-8 3v9m4-9v9m4-9v9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
       </div>
       <ng-container *ngFor="let c of node.children">
-        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)"></ui-node-view>
+        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
       </ng-container>
     </section>
-    <main *ngSwitchCase="'main'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <main *ngSwitchCase="'main'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
         <button title="Monter" (click)="$event.stopPropagation()"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 5l6 6H6l6-6z" fill="currentColor"/></svg></button>
         <button title="Descendre" (click)="$event.stopPropagation()"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 19l-6-6h12l-6 6z" fill="currentColor"/></svg></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M6 7h12M9 7V5h6v2m-8 3v9m4-9v9m4-9v9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
       </div>
       <ng-container *ngFor="let c of node.children">
-        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)"></ui-node-view>
+        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
       </ng-container>
     </main>
-    <header *ngSwitchCase="'header'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <header *ngSwitchCase="'header'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><i class="fa-solid fa-plus"></i></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><i class="fa-regular fa-trash-can"></i></button>
       </div>
       <ng-container *ngFor="let c of node.children">
-        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)"></ui-node-view>
+        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
       </ng-container>
     </header>
-    <footer *ngSwitchCase="'footer'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <footer *ngSwitchCase="'footer'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><i class="fa-solid fa-plus"></i></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><i class="fa-regular fa-trash-can"></i></button>
       </div>
       <ng-container *ngFor="let c of node.children">
-        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)"></ui-node-view>
+        <ui-node-view [node]="c" [selectedId]="selectedId" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
       </ng-container>
     </footer>
     <h1 *ngSwitchCase="'h1'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <ng-container *ngIf="(node.children?.length||0) > 0; else h1Txt">
         <ng-container *ngFor="let c of node.children">
-          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
         </ng-container>
       </ng-container>
       <ng-template #h1Txt>{{ node.text }}</ng-template>
@@ -82,7 +82,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <h2 *ngSwitchCase="'h2'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <ng-container *ngIf="(node.children?.length||0) > 0; else h2Txt">
         <ng-container *ngFor="let c of node.children">
-          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
         </ng-container>
       </ng-container>
       <ng-template #h2Txt>{{ node.text }}</ng-template>
@@ -90,7 +90,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <h3 *ngSwitchCase="'h3'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <ng-container *ngIf="(node.children?.length||0) > 0; else h3Txt">
         <ng-container *ngFor="let c of node.children">
-          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
         </ng-container>
       </ng-container>
       <ng-template #h3Txt>{{ node.text }}</ng-template>
@@ -98,7 +98,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <h4 *ngSwitchCase="'h4'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <ng-container *ngIf="(node.children?.length||0) > 0; else h4Txt">
         <ng-container *ngFor="let c of node.children">
-          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
         </ng-container>
       </ng-container>
       <ng-template #h4Txt>{{ node.text }}</ng-template>
@@ -106,7 +106,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <h5 *ngSwitchCase="'h5'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <ng-container *ngIf="(node.children?.length||0) > 0; else h5Txt">
         <ng-container *ngFor="let c of node.children">
-          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)" (ctxmenu)="ctxmenu.emit($event)"></ui-node-view>
         </ng-container>
       </ng-container>
       <ng-template #h5Txt>{{ node.text }}</ng-template>
@@ -183,32 +183,39 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
       </ng-container>
       <ng-template #uTxt>{{ node.text }}</ng-template>
     </u>
-    <button *ngSwitchCase="'button'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)">{{ node.text || 'Button' }}</button>
+    <button *ngSwitchCase="'button'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
+      <ng-container *ngIf="(node.children?.length||0) > 0; else btnTxt">
+        <ng-container *ngFor="let c of node.children">
+          <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
+        </ng-container>
+      </ng-container>
+      <ng-template #btnTxt>{{ node.text || 'Button' }}</ng-template>
+    </button>
     <input *ngSwitchCase="'input'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)"
       [attr.type]="node.attrs?.['type'] || 'text'" [attr.value]="node.attrs?.['value']" [attr.placeholder]="node.attrs?.['placeholder']"
       [attr.name]="node.attrs?.['name']" [attr.disabled]="node.attrs?.['disabled'] ? true : null" [attr.required]="node.attrs?.['required'] ? true : null" />
     <img *ngSwitchCase="'img'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" [attr.src]="node.attrs?.['src']" [attr.alt]="node.attrs?.['alt']" />
-    <a *ngSwitchCase="'a'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" [attr.href]="node.attrs?.['href']" (click)="$event.preventDefault(); onClick($event)" class="ui-node">
+    <a *ngSwitchCase="'a'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" [attr.href]="node.attrs?.['href']" (click)="$event.preventDefault(); onClick($event)" (dblclick)="$event.preventDefault(); onDblClick($event)" (contextmenu)="$event.preventDefault(); onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </a>
-    <aside *ngSwitchCase="'aside'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <aside *ngSwitchCase="'aside'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </aside>
-    <nav *ngSwitchCase="'nav'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" class="ui-node" [attr.aria-label]="node.attrs?.['aria-label']">
+    <nav *ngSwitchCase="'nav'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id" [attr.aria-label]="node.attrs?.['aria-label']">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </nav>
-    <article *ngSwitchCase="'article'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <article *ngSwitchCase="'article'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </article>
-    <figure *ngSwitchCase="'figure'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <figure *ngSwitchCase="'figure'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
@@ -222,12 +229,12 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
       </ng-container>
     </blockquote>
     <hr *ngSwitchCase="'hr'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)"/>
-    <ol *ngSwitchCase="'ol'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <ol *ngSwitchCase="'ol'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </ol>
-    <dl *ngSwitchCase="'dl'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <dl *ngSwitchCase="'dl'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
@@ -248,19 +255,19 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <select *ngSwitchCase="'select'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)">
       <option *ngFor="let c of node.children" [selected]="c.attrs?.['selected'] ? true : null">{{ c.text }}</option>
     </select>
-    <table *ngSwitchCase="'table'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <table *ngSwitchCase="'table'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </ng-container>
     </table>
     <caption *ngSwitchCase="'caption'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">{{ node.text }}</caption>
-    <thead *ngSwitchCase="'thead'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <thead *ngSwitchCase="'thead'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children"><ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view></ng-container>
     </thead>
-    <tbody *ngSwitchCase="'tbody'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <tbody *ngSwitchCase="'tbody'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children"><ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view></ng-container>
     </tbody>
-    <tfoot *ngSwitchCase="'tfoot'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <tfoot *ngSwitchCase="'tfoot'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <ng-container *ngFor="let c of node.children"><ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view></ng-container>
     </tfoot>
     <colgroup *ngSwitchCase="'colgroup'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
@@ -303,7 +310,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
       </ng-container>
     </svg>
     <textarea *ngSwitchCase="'textarea'" [class.selected]="selected" [ngClass]="classList" [ngStyle]="effectiveStyle" (click)="onClick($event)" [disabled]="true">{{ node.text }}</textarea>
-    <ul *ngSwitchCase="'ul'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <ul *ngSwitchCase="'ul'" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <div class="hover-actions" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><i class="fa-solid fa-plus"></i></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><i class="fa-regular fa-trash-can"></i></button>
@@ -320,7 +327,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     </li>
 
     <!-- NG Zorro wrappers (basic demo) -->
-    <nz-tabset *ngSwitchCase="'tabs'" [class.selected]="selected" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <nz-tabset *ngSwitchCase="'tabs'" [class.selected]="selected" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <div class="hover-actions" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><i class="fa-solid fa-plus"></i></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><i class="fa-regular fa-trash-can"></i></button>
@@ -329,7 +336,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </nz-tab>
     </nz-tabset>
-    <nz-collapse *ngSwitchCase="'collapse'" [class.selected]="selected" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
+    <nz-collapse *ngSwitchCase="'collapse'" [class.selected]="selected" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
       <nz-collapse-panel *ngFor="let c of node.children" [nzHeader]="c.attrs?.['title'] || c.text || 'Panel'">
         <ui-node-view [node]="c" [selectedId]="selectedId" [bp]="bp" (select)="select.emit($event)"></ui-node-view>
       </nz-collapse-panel>
@@ -337,8 +344,8 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
     <nz-steps *ngSwitchCase="'steps'" [class.selected]="selected" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)">
       <nz-step *ngFor="let c of node.children" [nzTitle]="c.attrs?.['title'] || c.text || 'Step'"></nz-step>
     </nz-steps>
-    <div *ngSwitchDefault [attr.data-tag]="node.tag" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" class="ui-node">
-      <div class="hover-actions" (click)="$event.stopPropagation()">
+    <div *ngSwitchDefault [attr.data-tag]="node.tag" [class.selected]="selected" [ngClass]="classList" [uiApplyStyles]="effectiveStyle" (click)="onClick($event)" (dblclick)="onDblClick($event)" (contextmenu)="onContextMenu($event)" class="ui-node" [attr.data-node-id]="node.id">
+      <div class="hover-actions" *ngIf="editing" (click)="$event.stopPropagation()">
         <button title="Ajouter dedans" (click)="addInside.emit(node.id)"><i class="fa-solid fa-plus"></i></button>
         <button title="Supprimer" (click)="remove.emit(node.id)"><i class="fa-regular fa-trash-can"></i></button>
       </div>
@@ -362,9 +369,12 @@ export class UiNodeViewComponent {
   @Input() selectedId: string | null = null;
   @Input() bp: 'auto'|'xs'|'sm'|'md'|'lg'|'xl' = 'auto';
   @Input() state: UiState = 'base';
+  @Input() editing: boolean = true;
   @Output() select = new EventEmitter<string>();
+  @Output() dblselect = new EventEmitter<string>();
   @Output() addInside = new EventEmitter<string>();
   @Output() remove = new EventEmitter<string>();
+  @Output() ctxmenu = new EventEmitter<{ id: string; x: number; y: number }>();
 
   constructor(private cls: UiClassStyleService) {}
   get selected() { return this.node?.id === this.selectedId; }
@@ -382,5 +392,8 @@ export class UiNodeViewComponent {
     return s;
   }
   get classList(): any { const c = this.node?.classes || []; const map: any = {}; c.forEach(x => map[x] = true); return map; }
-  onClick(ev: MouseEvent) { ev.stopPropagation(); this.select.emit(this.node.id); }
+  onClick(ev: MouseEvent) { ev.stopPropagation(); if (!this.editing) return; this.select.emit(this.node.id); }
+  onDblClick(ev: MouseEvent) { ev.stopPropagation(); if (!this.editing) return; this.dblselect.emit(this.node.id); }
+  // Right click
+  onContextMenu(ev: MouseEvent) { ev.preventDefault(); ev.stopPropagation(); if (!this.editing) return; this.ctxmenu.emit({ id: this.node.id, x: ev.clientX, y: ev.clientY }); }
 }

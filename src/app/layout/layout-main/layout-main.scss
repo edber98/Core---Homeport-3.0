@@ -74,6 +74,10 @@ nz-breadcrumb {
     height: 100%;
     min-height: 0; /* critical for nested scroll containers on iOS */
     overflow: auto;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+    overscroll-behavior: contain; /* avoid scroll chaining */
+    /* Ensure bottom is reachable on iPhone (URL bar/fixed UI) */
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
 ::ng-deep  .ant-layout-sider-light .ant-layout-sider-trigger{
