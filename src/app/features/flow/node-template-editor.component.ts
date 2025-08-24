@@ -58,6 +58,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <nz-option nzValue="function" nzLabel="function"></nz-option>
               <nz-option nzValue="condition" nzLabel="condition"></nz-option>
               <nz-option nzValue="start" nzLabel="start"></nz-option>
+              <nz-option nzValue="event" nzLabel="event"></nz-option>
+              <nz-option nzValue="endpoint" nzLabel="endpoint"></nz-option>
               <nz-option nzValue="loop" nzLabel="loop"></nz-option>
               <nz-option nzValue="end" nzLabel="end"></nz-option>
               <nz-option nzValue="flow" nzLabel="flow"></nz-option>
@@ -113,7 +115,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="grid cols-2" *ngIf="form.get('type')?.value==='function'">
         <div>
           <div class="sub-header">
-            <div class="card-title left"><span class="t">Options (function)</span><span class="s">Sorties & erreurs</span></div>
+            <div class="card-title left"><span class="t">Options (function)</span><span class="s">Sorties, erreurs, identifiants</span></div>
           </div>
           <nz-form-item>
             <nz-form-control>
@@ -123,6 +125,12 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
           <nz-form-item>
             <nz-form-control>
               <label nz-checkbox formControlName="authorize_skip_error" nz-tooltip="Autoriser l'option de saut d'erreur (skip)">Autoriser skip error</label>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <label nz-checkbox formControlName="allow_without_credentials"
+                nz-tooltip="Si le Provider a des identifiants mais qu'ils peuvent être facultatifs, cocher pour autoriser l'exécution sans credentials.">Autoriser sans credentials</label>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -274,6 +282,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       subtitle: new FormControl<string>(''),
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
       authorize_skip_error: new FormControl<boolean>(false, { nonNullable: true }),
+      allow_without_credentials: new FormControl<boolean>(false, { nonNullable: true }),
       output_array_field: new FormControl<string>('items'),
       output: this.fb.array<FormGroup<any>>([]),
       fb_preset_tpl: new FormControl<boolean>(true, { nonNullable: true }),
@@ -370,6 +379,9 @@ export class NodeTemplateEditorComponent implements OnInit {
       // skip support visibility flag
       // @ts-ignore
       this.form.get('authorize_skip_error')?.setValue(!!(t as any).authorize_skip_error, { emitEvent: false });
+      // allow without credentials
+      // @ts-ignore
+      this.form.get('allow_without_credentials')?.setValue(!!(t as any).allowWithoutCredentials, { emitEvent: false });
       this.outputs.clear();
       (t.output || []).forEach(o => this.addOutput(o));
     }
@@ -408,6 +420,15 @@ export class NodeTemplateEditorComponent implements OnInit {
     if (this.form.invalid) return;
     this.saving = true;
     const v = this.form.value as any;
+    // sanitize technical name: letters/numbers/underscore only; no spaces
+    const safeName = String(v.name || '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[^\p{Letter}\p{Number}\s_-]/gu, '')
+      .replace(/[\s-]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_+|_+$/g, '');
+    v.name = safeName || 'node';
     let args: any = {};
     try { args = this.argsJson && this.argsJson.trim().length ? JSON.parse(this.argsJson) : {}; } catch { args = {}; }
     const generated = v.id || this.makeIdFromName(v.name);
@@ -417,6 +438,9 @@ export class NodeTemplateEditorComponent implements OnInit {
       ...( { _id: generated } as any ),
       type: v.type,
       name: v.name,
+      title: v.title || undefined,
+      subtitle: v.subtitle || undefined,
+      icon: v.icon || undefined,
       category: v.category || undefined,
       group: v.group || undefined,
       appId: v.appId || undefined,
@@ -424,15 +448,14 @@ export class NodeTemplateEditorComponent implements OnInit {
       description: v.description || undefined,
       authorize_catch_error: v.type === 'function' ? !!v.authorize_catch_error : undefined,
       authorize_skip_error: v.type === 'function' ? !!v.authorize_skip_error : undefined,
+      allowWithoutCredentials: v.type === 'function' ? !!v.allow_without_credentials : undefined,
       output: v.type === 'function' ? (this.outputs.value || []).map((x:any)=>x.value).filter((s:string)=>!!s && s.trim().length) : undefined,
+      output_array_field: v.type === 'condition' ? (v.output_array_field || 'items') : undefined,
       args
     } as any;
     // also store app object with _id for compatibility
     if (v.appId) (tpl as any).app = { _id: v.appId };
     // constraints removed per new model (not used)
-    if (v.type === 'condition') (tpl as any).output_array_field = v.output_array_field || 'items';
-    // Optional UI hints
-    (tpl as any).icon = v.icon || undefined; (tpl as any).title = v.title || undefined; (tpl as any).subtitle = v.subtitle || undefined;
     this.catalog.saveNodeTemplate(tpl).subscribe({
       next: () => { this.saving = false; this.router.navigate(['/node-templates']); },
       error: () => { this.saving = false; }

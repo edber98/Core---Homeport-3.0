@@ -3,11 +3,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 @Component({
   selector: 'flow-palette-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzInputModule],
+  imports: [CommonModule, FormsModule, DragDropModule, NzInputModule, NzToolTipModule],
   template: `
     <aside class="palette" [class.drawer-mode]="mode==='drawer'">
       <div class="panel-heading">
@@ -52,6 +53,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
                     <span class="mini-icon" *ngIf="typeIconClassFn?.(it.template) as tic"><i class="mini" [class]="tic"></i></span>
                   </ng-template>
                   {{ it.label }}
+                  <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
                 </div>
                 <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
                 <div class="desc" *ngIf="it.template?.description as d">{{ d }}</div>
@@ -107,6 +109,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     .palette .item .drag-proxy { position:absolute; inset:0; }
     .palette .mini-icon { width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; margin-right:6px; }
     .palette .mini-icon .mini { font-size: 14px; line-height: 1; color:#64748b; }
+    .palette .item .title .start-dot { width:8px; height:8px; border-radius:50%; background:#10b981; display:inline-block; margin-left:6px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); vertical-align: middle; }
     .palette .item .meta .title { font-weight:600; font-size: 12px; }
     .palette .item .meta .subtitle { color:#8c8c8c; font-size: 12px; }
     .palette .item .meta .desc { color:#6b7280; font-size: 12px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
@@ -137,4 +140,17 @@ export class FlowPalettePanelComponent {
   @Output() itemClick = new EventEmitter<any>();
   @Output() dragStart = new EventEmitter<any>();
   @Output() dragEnd = new EventEmitter<any>();
+
+  isStartLikeTpl(t: any): boolean {
+    try { const ty = String(t?.type || '').toLowerCase(); return ty === 'start' || ty === 'event' || ty === 'endpoint'; } catch { return false; }
+  }
+  startLikeTooltip(t: any): string {
+    try {
+      const ty = String(t?.type || '').toLowerCase();
+      if (ty === 'start') return 'Début de flow (manuel)';
+      if (ty === 'event') return 'Déclencheur (événement externe)';
+      if (ty === 'endpoint') return 'Déclencheur (HTTP endpoint)';
+      return 'Déclencheur';
+    } catch { return 'Déclencheur'; }
+  }
 }

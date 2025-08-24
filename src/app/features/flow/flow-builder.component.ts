@@ -36,6 +36,8 @@ export class FlowBuilderComponent {
   // Palette configurable (peut évoluer vers un service)
   items = [
     { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} } },
+    { group: 'Core', label: 'Event', template: { id: 'tmpl_event', name: 'Event', type: 'event', icon: 'fa-solid fa-bell', title: 'Event', subtitle: 'Trigger', args: {} } },
+    { group: 'HTTP', label: 'Endpoint', template: { id: 'tmpl_endpoint', name: 'Endpoint', type: 'endpoint', icon: 'fa-solid fa-link', title: 'Endpoint', subtitle: 'HTTP Trigger', category: 'HTTP', args: { title: 'Endpoint', ui: { layout: 'vertical' }, fields: [ { type: 'select', key: 'method', label: 'Method', options: [ { label: 'GET', value: 'GET' }, { label: 'POST', value: 'POST' } ], col: { xs: 24 }, default: 'GET' }, { type: 'text', key: 'path', label: 'Path', col: { xs: 24 }, default: '/hook', expression: { allow: true } } ] } } },
     { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] }, output_array_field: 'items' } },
     { group: 'Logic', label: 'Loop', template: { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} } },
     { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
@@ -532,6 +534,8 @@ export class FlowBuilderComponent {
     const type = String(tpl?.type || '').toLowerCase();
     switch (type) {
       case 'start': return 'fa-solid fa-play';
+      case 'event': return 'fa-solid fa-bell';
+      case 'endpoint': return 'fa-solid fa-link';
       case 'function': return 'fa-solid fa-cog';
       case 'condition': return 'fa-solid fa-code-branch';
       case 'loop': return 'fa-solid fa-sync';
@@ -649,7 +653,11 @@ export class FlowBuilderComponent {
 
   // No-op; change tracking handled via vflow outputs
 
-  inputId(tmpl: any): string | null { if (!tmpl) return null; return tmpl.type === 'start' ? null : 'in'; }
+  inputId(tmpl: any): string | null {
+    if (!tmpl) return null;
+    const ty = String(tmpl.type || '').toLowerCase();
+    return (ty === 'start' || ty === 'event' || ty === 'endpoint') ? null : 'in';
+  }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
@@ -949,7 +957,10 @@ export class FlowBuilderComponent {
     } catch { return null; }
   }
   private isStartLike(tmpl: any): boolean {
-    try { const ty = String(tmpl?.type || '').toLowerCase(); return ty === 'start' || ty === 'trigger'; } catch { return false; }
+    try {
+      const ty = String(tmpl?.type || '').toLowerCase();
+      return ty === 'start' || ty === 'trigger' || ty === 'event' || ty === 'endpoint';
+    } catch { return false; }
   }
   private hasStartLikeNode(): boolean {
     try { return this.nodes.some(n => this.isStartLike(n?.data?.model?.templateObj)); } catch { return false; }

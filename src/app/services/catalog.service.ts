@@ -10,19 +10,28 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 
 export type NodeTemplate = {
   id: string;
-  type: 'start' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
-  name: string;
+  type: 'start' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
+  name: string;           // technical identifier (no spaces)
+  // UI/metadata
+  title?: string;         // display title on node
+  subtitle?: string;      // display subtitle (category/app)
+  icon?: string;          // optional icon class for node card
   category?: string;      // fonctionnel (Email, Docs, Calendar...)
   appId?: string;         // logiciel / intégration (ex: 'gmail')
   tags?: string[];        // recherche libre
   group?: string;         // grouping UI facultatif
   description?: string;
+  // Behavior and configuration
   args?: any;
   output?: string[];
   authorize_catch_error?: boolean;
   // New: allows a node to expose a "skip error" behavior (runtime will ignore errors)
   // When true, builders/viewers show a toggle on instances (disabled if catch is enabled)
   authorize_skip_error?: boolean;
+  // Credentials option (for type=function); allows running without credentials when provider supports it
+  allowWithoutCredentials?: boolean;
+  // Condition-specific
+  output_array_field?: string;
 };
 
 export type AppProvider = {
@@ -596,6 +605,52 @@ export class CatalogService {
           { id: 'tmpl_text_upper', type: 'function', name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', output: ['Success'], tags: ['text'], group: 'Functions' },
           { id: 'tmpl_pdf', type: 'function', name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', output: ['Success'], tags: ['pdf', 'document'], group: 'Functions' },
         ];
+        // Add Gmail event trigger (Recevoir un mail)
+        try {
+          (tpls as any).push({
+            id: 'tmpl_gmail_event_mail',
+            type: 'event',
+            name: 'Gmail_OnEmailReceived',
+            title: 'Recevoir un mail',
+            subtitle: 'Gmail',
+            icon: 'fa-solid fa-envelope',
+            category: 'Google',
+            appId: 'gmail',
+            description: 'Déclencheur quand un email est reçu (Gmail)',
+            args: {
+              title: 'Recevoir un mail (Gmail)',
+              ui: { layout: 'vertical', labelsOnTop: true },
+              fields: [
+                { type: 'text', key: 'label', label: 'Label (facultatif)', col: { xs: 24 }, default: 'INBOX' },
+                { type: 'text', key: 'query', label: 'Filtre (facultatif)', col: { xs: 24 }, default: '' }
+              ]
+            }
+          } as any);
+        } catch {}
+
+        // Add Telegram event trigger (Message reçu)
+        try {
+          (tpls as any).push({
+            id: 'tmpl_telegram_event_message',
+            type: 'event',
+            name: 'Telegram_OnMessage',
+            title: 'Message reçu',
+            subtitle: 'Telegram',
+            icon: 'fa-brands fa-telegram',
+            category: 'Telegram',
+            appId: 'telegram',
+            description: 'Déclencheur quand un message est reçu (Telegram Bot)',
+            args: {
+              title: 'Message reçu (Telegram)',
+              ui: { layout: 'vertical', labelsOnTop: true },
+              fields: [
+                { type: 'text', key: 'chatId', label: 'Chat ID (facultatif)', col: { xs: 24 }, default: '' },
+                { type: 'text', key: 'filter', label: 'Filtre texte (facultatif)', col: { xs: 24 }, default: '' }
+              ]
+            }
+          } as any);
+        } catch {}
+
         // Add workflow (subflow) template at seed time
         try {
           (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
@@ -604,12 +659,60 @@ export class CatalogService {
       }
       if (force || !this.load<any>(this.APP_LIST_KEY, null)) {
         const apps: AppProvider[] = [
-          { id: 'gmail', name: 'Gmail', iconClass: 'fa-solid fa-envelope', color: '#EA4335', tags: ['email', 'google'] },
+          {
+            id: 'gmail', name: 'Gmail', iconClass: 'fa-solid fa-envelope', color: '#EA4335', tags: ['email', 'google'],
+            hasCredentials: true, allowWithoutCredentials: false,
+            credentialsForm: {
+              title: 'Google (Gmail) — Identifiants', ui: { layout: 'vertical', labelsOnTop: true },
+              fields: [
+                { type: 'text', key: 'accountEmail', label: 'Email du compte', col: { xs: 24 }, validators: [{ type: 'required' }] },
+                { type: 'text', key: 'clientId', label: 'Client ID', col: { xs: 24 }, secret: true, validators: [{ type: 'required' }] },
+                { type: 'text', key: 'clientSecret', label: 'Client Secret', col: { xs: 24 }, secret: true, validators: [{ type: 'required' }] },
+                { type: 'text', key: 'refreshToken', label: 'Refresh Token', col: { xs: 24 }, secret: true, validators: [{ type: 'required' }] },
+                { type: 'text', key: 'redirectUri', label: 'Redirect URI', col: { xs: 24 }, default: 'https://localhost/oauth2/callback' }
+              ]
+            }
+          },
+          {
+            id: 'telegram', name: 'Telegram', iconClass: 'fa-brands fa-telegram', color: '#229ED9', tags: ['chat', 'bot'],
+            hasCredentials: true, allowWithoutCredentials: false,
+            credentialsForm: {
+              title: 'Telegram — Identifiants', ui: { layout: 'vertical', labelsOnTop: true },
+              fields: [
+                { type: 'text', key: 'botToken', label: 'Bot Token', col: { xs: 24 }, secret: true, validators: [{ type: 'required' }] }
+              ]
+            }
+          },
           { id: 'slack', name: 'Slack', iconClass: 'fa-brands fa-slack', color: '#611f69', tags: ['chat', 'team'] },
           { id: 'pdf', name: 'PDF', iconClass: 'fa-solid fa-file-pdf', color: '#D32F2F', tags: ['document'] },
           { id: 'word', name: 'Word', iconClass: 'fa-solid fa-file-word', color: '#2B579A', tags: ['document', 'office'] },
         ];
         this.save(this.APP_LIST_KEY, apps);
+      }
+
+      // Seed example Gmail credentials in default workspace if none exist
+      if (force || !this.load<any>(this.CRED_LIST_KEY, null)) {
+        const credList: CredentialSummary[] = [
+          { id: 'cred_gmail_demo', name: 'Compte Gmail Demo', providerId: 'gmail', workspaceId: 'default' },
+          { id: 'cred_telegram_demo', name: 'Bot Telegram Demo', providerId: 'telegram', workspaceId: 'default' }
+        ];
+        const credGmail: CredentialDoc = {
+          id: 'cred_gmail_demo', name: 'Compte Gmail Demo', providerId: 'gmail', workspaceId: 'default',
+          values: {
+            accountEmail: 'demo@example.com',
+            clientId: 'demo-client-id',
+            clientSecret: 'demo-client-secret',
+            refreshToken: 'demo-refresh-token',
+            redirectUri: 'https://localhost/oauth2/callback'
+          }
+        };
+        const credTg: CredentialDoc = {
+          id: 'cred_telegram_demo', name: 'Bot Telegram Demo', providerId: 'telegram', workspaceId: 'default',
+          values: { botToken: 'demo-bot-token' }
+        };
+        this.save(this.CRED_LIST_KEY, credList);
+        this.save(this.CRED_DOC_KEY + credGmail.id, credGmail);
+        this.save(this.CRED_DOC_KEY + credTg.id, credTg);
       }
     } catch { }
   }

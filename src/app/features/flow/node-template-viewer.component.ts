@@ -56,6 +56,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
             <nz-tag *ngFor="let t of tags">{{ t }}</nz-tag>
           </span></div>
           <div><span class="k">Description</span><span class="v">{{view.description || '—'}}</span></div>
+          <div *ngIf="credInfo.visible"><span class="k">Identifiants</span><span class="v">{{ credInfo.text }}</span></div>
         </div>
       </div>
       <div class="panel" *ngIf="tplUi as ui">
@@ -198,6 +199,7 @@ export class NodeTemplateViewerComponent implements OnInit {
   tplUi: { icon?: string; title?: string; subtitle?: string; output_array_field?: string } | null = null;
   argsText = '{}';
   showJson = false;
+  credInfo = { visible: false, text: '' };
   isFormSchema(obj: any): boolean {
     try {
       if (!obj || typeof obj !== 'object') return false;
@@ -251,6 +253,7 @@ export class NodeTemplateViewerComponent implements OnInit {
         this.argsText = JSON.stringify((t && t.args) || {}, null, 2);
         this.outputs = [...(this.view.output || [])];
         this.computePreviewPorts();
+        this.computeCredentialsInfo();
         try { this.cdr.detectChanges(); } catch {}
       }));
     } else {
@@ -267,7 +270,7 @@ export class NodeTemplateViewerComponent implements OnInit {
   private computePreviewPorts() {
     const type = (this.view?.type || 'function') as string;
     // Input handles: default 1, except 'start' = 0. Keep parity with flow (single top handle), but allow future types.
-    this.inputCount = type === 'start' ? 0 : 1;
+    this.inputCount = (type === 'start' || type === 'event' || type === 'endpoint') ? 0 : 1;
     const outs: string[] = [];
     if (type === 'function' || type === 'flow') {
       const core = (this.outputs || []).filter(o => (String(o || '').toLowerCase() !== 'err'));
@@ -283,6 +286,8 @@ export class NodeTemplateViewerComponent implements OnInit {
         });
         if (outs.length === 0) outs.push('True', 'False');
       }
+    } else if (type === 'start' || type === 'event' || type === 'endpoint') {
+      outs.push('next');
     } else if (type === 'end') {
       // no outputs
     } else if (type === 'loop') {
@@ -295,5 +300,21 @@ export class NodeTemplateViewerComponent implements OnInit {
       else outs.push('next');
     }
     this.previewOutputs = outs;
+  }
+
+  private computeCredentialsInfo() {
+    try {
+      const appId = this.appId;
+      if (!appId) { this.credInfo = { visible: false, text: '' }; return; }
+      this.catalog.getApp(appId).subscribe(a => this.zone.run(() => {
+        const providerHas = !!a?.hasCredentials;
+        const providerAllows = !!a?.allowWithoutCredentials;
+        const tplAllows = !!(this.tpl as any)?.allowWithoutCredentials;
+        if (!providerHas) { this.credInfo = { visible: true, text: 'Non requis' }; }
+        else if (providerAllows || tplAllows) { this.credInfo = { visible: true, text: 'Optionnel (autorisé sans identifiants)' }; }
+        else { this.credInfo = { visible: true, text: 'Requis' }; }
+        try { this.cdr.detectChanges(); } catch {}
+      }));
+    } catch { this.credInfo = { visible: false, text: '' }; }
   }
 }
