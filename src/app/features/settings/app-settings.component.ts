@@ -6,6 +6,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { CatalogService } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { Company, CompanyService, LicensePlan } from '../../services/company.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -25,19 +27,19 @@ import { Company, CompanyService, LicensePlan } from '../../services/company.ser
       </div>
       <div class="cards">
         <div class="card">
-          <div class="title">Company</div>
+          <div class="title">Entreprise</div>
           <div class="row"><label>Nom</label><input [(ngModel)]="company.name" /></div>
           <div class="row">
             <label>Plan</label>
             <nz-select [(ngModel)]="company.license.plan" (ngModelChange)="onPlanChange($event)" style="width: 160px;">
               <nz-option nzValue="free" nzLabel="Free"></nz-option>
               <nz-option nzValue="pro" nzLabel="Pro"></nz-option>
-              <nz-option nzValue="enterprise" nzLabel="Enterprise"></nz-option>
+              <nz-option nzValue="enterprise" nzLabel="Entreprise"></nz-option>
             </nz-select>
           </div>
           <div class="kv">
-            <div><span class="k">Max users</span><span class="v">{{ company.license.maxUsers }}</span></div>
-            <div><span class="k">Max workspaces</span><span class="v">{{ company.license.maxWorkspaces }}</span></div>
+            <div><span class="k">Utilisateurs max</span><span class="v">{{ company.license.maxUsers }}</span></div>
+            <div><span class="k">Workspaces max</span><span class="v">{{ company.license.maxWorkspaces }}</span></div>
           </div>
           <div class="actions">
             <button nz-button nzType="default" (click)="saveCompany()">Enregistrer</button>
@@ -97,14 +99,27 @@ import { Company, CompanyService, LicensePlan } from '../../services/company.ser
 export class AppSettingsComponent {
   msg = '';
   company: Company = { id: 'acme', name: 'Demo Company', adminUserId: 'admin', license: { plan: 'pro', maxUsers: 50, maxWorkspaces: 10 } } as any;
-  constructor(private catalog: CatalogService, private acl: AccessControlService, private companySvc: CompanyService) {
-    this.companySvc.getCompany().subscribe(c => this.company = c);
+  constructor(private catalog: CatalogService, private acl: AccessControlService, private companySvc: CompanyService, private auth: AuthService, private router: Router) {
+    const reload = () => {
+      const cid = this.acl.currentUser()?.companyId || 'acme';
+      this.companySvc.getCompany(cid).subscribe(c => this.company = c);
+    };
+    reload();
+    try { this.acl.changes$.pipe().subscribe(() => reload()); } catch {}
   }
   resetAll() {
+    this.msg = 'Réinitialisation en cours…';
     this.catalog.resetAll().subscribe(ok1 => {
       this.acl.resetAll().subscribe(ok2 => {
-        this.msg = (ok1 && ok2) ? 'Données réinitialisées (catalogue + ACL).' : 'Échec de la réinitialisation.';
-        setTimeout(() => this.msg = '', 2500);
+        this.companySvc.resetAll().subscribe(ok3 => {
+          this.auth.resetAll().subscribe(ok4 => {
+            const ok = !!(ok1 && ok2 && ok3 && ok4);
+            this.msg = ok ? 'Données réinitialisées.' : 'Échec de la réinitialisation.';
+            // Rediriger vers login pour sélectionner un compte/entreprise
+            try { this.router.navigateByUrl('/login'); } catch {}
+            setTimeout(() => this.msg = '', 2000);
+          });
+        });
       });
     });
   }
@@ -191,10 +206,12 @@ export class AppSettingsComponent {
   }
 
   onPlanChange(plan: LicensePlan) {
-    this.companySvc.setPlan(plan).subscribe(c => this.company = c);
+    const cid = this.acl.currentUser()?.companyId || 'acme';
+    this.companySvc.setPlan(plan, cid).subscribe(c => this.company = c);
   }
   saveCompany() {
-    this.companySvc.updateCompany(this.company).subscribe(c => {
+    const cid = this.acl.currentUser()?.companyId || 'acme';
+    this.companySvc.updateCompany(this.company, cid).subscribe(c => {
       this.company = c; this.msg = 'Company mise à jour.'; setTimeout(() => this.msg = '', 2500);
     });
   }

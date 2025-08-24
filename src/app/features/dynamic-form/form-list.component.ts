@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
@@ -15,7 +16,7 @@ type FormItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'form-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -63,17 +64,27 @@ type FormItem = { id: string; name: string; description?: string };
     </div>
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" (nzOnCancel)="closeCreate()" [nzFooter]="null">
-      <div class="form">
-        <label>Titre</label>
-        <input nz-input placeholder="Titre du formulaire" [(ngModel)]="draft.name" />
-        <label>Description (optionnel)</label>
-        <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" />
-        <div class="modal-actions">
-          <button nz-button (click)="closeCreate()">Annuler</button>
-          <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createForm()">Créer</button>
-        </div>
-        <div class="error" *ngIf="createError">{{ createError }}</div>
-      </div>
+      <ng-container *nzModalContent>
+        <form nz-form nzLayout="vertical">
+          <nz-form-item>
+            <nz-form-label>Titre</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="Titre du formulaire" [(ngModel)]="draft.name" name="form_name" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Description (optionnel)</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" name="form_desc" />
+            </nz-form-control>
+          </nz-form-item>
+          <div class="modal-actions">
+            <button nz-button (click)="closeCreate()">Annuler</button>
+            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createForm()">Créer</button>
+          </div>
+          <div class="error" *ngIf="createError">{{ createError }}</div>
+        </form>
+      </ng-container>
     </nz-modal>
   </div>
   `,
@@ -142,7 +153,25 @@ export class FormListComponent implements OnInit, OnDestroy {
   private changesSub?: Subscription;
   constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
 
-  ngOnInit() { this.load(); this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); }
+  private autoOpened = false;
+  ngOnInit() {
+    this.load();
+    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load());
+    // Auto-open create dialog when on forms/builder, optionally prefill via query
+    try {
+      const path = this.route.routeConfig?.path || '';
+      if (path === 'forms/builder' && !this.autoOpened) {
+        const pm = this.route.snapshot.queryParamMap;
+        const name = (pm.get('name') || '').trim();
+        const description = (pm.get('description') || '').trim();
+        this.draft = { name, description } as any;
+        this.createError = null;
+        this.createVisible = true;
+        this.autoOpened = true;
+        setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+      }
+    } catch {}
+  }
   ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
 
   load() {

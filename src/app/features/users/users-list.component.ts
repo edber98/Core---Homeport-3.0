@@ -3,12 +3,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AuthService } from '../../services/auth.service';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { AccessControlService, Role, User, Workspace } from '../../services/access-control.service';
 
 @Component({
   selector: 'users-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzSelectModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzSelectModule, NzInputModule, NzToolTipModule, NzPopconfirmModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -22,6 +27,7 @@ import { AccessControlService, Role, User, Workspace } from '../../services/acce
       <div class="editor">
         <div class="row">
           <input [(ngModel)]="draftName" placeholder="Nom de l'utilisateur" class="text"/>
+          <input [(ngModel)]="draftPassword" placeholder="Mot de passe (optionnel)" class="text"/>
           <nz-select [(ngModel)]="draftRole" class="select" nzPlaceHolder="Role">
             <nz-option nzLabel="Admin" nzValue="admin"></nz-option>
             <nz-option nzLabel="Member" nzValue="member"></nz-option>
@@ -47,9 +53,22 @@ import { AccessControlService, Role, User, Workspace } from '../../services/acce
               <nz-option nzLabel="admin" nzValue="admin"></nz-option>
               <nz-option nzLabel="member" nzValue="member"></nz-option>
             </nz-select>
-            <nz-select [(ngModel)]="u.workspaces" (ngModelChange)="save(u)" class="select small" nzMode="multiple" [nzDisabled]="u.role==='admin'" [nzMaxTagCount]="2">
+            <nz-select [(ngModel)]="u.workspaces" (ngModelChange)="save(u)" class="select small" nzMode="multiple" [nzDisabled]="u.role==='admin'" [nzMaxTagCount]="1">
               <nz-option *ngFor="let w of workspaces" [nzLabel]="w.name" [nzValue]="w.id"></nz-option>
             </nz-select>
+            <button
+              nz-button
+              nzType="default"
+              class="icon-btn"
+              nz-tooltip
+              nzTooltipTitle="Envoyer un lien de réinitialisation"
+              nz-popconfirm
+              [nzPopconfirmTitle]="'Envoyer un mail de reset à ' + u.name + ' ?'"
+              nzPopconfirmPlacement="bottomRight"
+              (nzOnConfirm)="reset(u)"
+            >
+              <i class="fa-regular fa-envelope"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -84,8 +103,9 @@ export class UsersListComponent implements OnInit {
   draftName = '';
   draftRole: Role = 'member';
   draftWorkspaces: string[] = [];
+  draftPassword = '';
 
-  constructor(private acl: AccessControlService) {}
+  constructor(private acl: AccessControlService, private auth: AuthService, private msg: NzMessageService) {}
   ngOnInit(): void {
     this.acl.listUsers().subscribe(u => this.users = u || []);
     this.acl.listWorkspaces().subscribe(ws => this.workspaces = ws || []);
@@ -96,9 +116,13 @@ export class UsersListComponent implements OnInit {
     const name = (this.draftName || '').trim();
     this.acl.addUser({ name, role: this.draftRole, workspaces: this.draftRole === 'admin' ? [] : this.draftWorkspaces }).subscribe(u => {
       this.users = [...this.users, u];
+      if ((this.draftPassword || '').trim()) {
+        this.auth.setPasswordAdmin(u.id, this.draftPassword.trim()).subscribe(() => this.msg.success('Mot de passe défini'));
+      }
       this.draftName = '';
       this.draftRole = 'member';
       this.draftWorkspaces = [];
+      this.draftPassword = '';
     });
   }
   save(u: User) {
@@ -116,5 +140,11 @@ export class UsersListComponent implements OnInit {
   initials(name: string): string {
     const parts = (name || '').trim().split(/\s+/).filter(Boolean);
     return (parts.length >= 2 ? parts[0][0] + parts[1][0] : (parts[0]?.slice(0,2) || 'U')).toUpperCase();
+  }
+  reset(u: User) {
+    this.auth.requestPasswordReset(u.id).subscribe({
+      next: (token) => this.msg.info(`Lien de reset (demo): /reset-password?token=${token}`),
+      error: (e) => this.msg.error(e?.message || 'Échec')
+    });
   }
 }

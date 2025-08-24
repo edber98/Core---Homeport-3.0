@@ -79,40 +79,76 @@ Notes:
 - Limitations: rate limiting IP sur `/webhooks/*`, auth sur `/api/*` (JWT/OAuth2).
 
 
-## Ordre de création des modules (proposition NestJS)
-1) Core
-   - Config, Logger, Crypto (chiffrement), Database (ORM + migrations).
-2) Workspaces
+## Ordre de création des modules (proposition Express)
+1) AuthN/AuthZ (priorité)
+   - Authentification (JWT/OAuth2) + stockage des utilisateurs et mots de passe (hashés, p.ex. bcrypt).
+   - Password reset par lien signé + expiration; change password.
+   - Multi-tenant: chaque utilisateur est lié à une `company` et charge ses workspaces/ressources au login.
+   - Company & tenancy:
+     - Tables:
+       - `companies` { _id, name, plan, createdAt }
+       - `users` { _id, email, name, passwordHash, companyId, role, createdAt }
+       - `workspaces` { _id, companyId, name, createdAt }
+     - Règle: toutes les ressources (flows/forms/websites/credentials/runs) sont scoppées par `workspaceId` qui lui-même appartient à une `companyId`.
+     - Au login: charger `company`, la liste des `workspaces` accessibles, et injecter `companyId` dans le contexte de requête.
+     - Accès: un user n’accède qu’aux workspaces de sa company; RBAC (admin/member) restreint l’édition globale.
+     - Reset/changement de mot de passe: endpoints `/auth/forgot` (email token), `/auth/reset`, `/auth/change`.
+   - RBAC simple (admin/member) et guards.
+2) Core
+   - Config, Logger, Crypto (chiffrement), Database (ODM/ORM + migrations) — Express.
+3) Workspaces
    - CRUD minimal + guard pour scoper l’accès.
-3) Providers (catalogue des intégrations)
+   - API doit retourner uniquement les workspaces de l’entreprise de l’utilisateur authentifié (scoping server-side, pas côté client).
+   - Rappels:
+     - `workspaces.companyId` doit égaler `token.companyId`.
+     - Un membre non-admin ne voit/édite que les workspaces explicitement autorisés (rôle/ACL).
+4) Providers (catalogue des intégrations)
    - Entité + seed: `gmail`, `telegram` avec `has_credentials=true`, `allow_without_credentials=false`.
    - `credentials_schema_json` (JSON Schema) par provider.
-4) Credentials
+5) Credentials
    - CRUD sécurisé: validation JSON Schema côté serveur; chiffrement des `data`.
    - Résolution d’un credential par `id` et `workspace_id`.
-5) NodeTemplates (catalogue des nœuds)
+6) NodeTemplates (catalogue des nœuds)
    - Entité + seed: `start`, `http_request`, `gmail.receive_email` (type `event`), `telegram.message_received` (type `event`), `endpoint.http` (type `endpoint`).
    - Champs: `type`, `provider_id?`, `allow_without_credentials?`, `args_schema_json`.
-6) Flows
+7) Flows
    - CRUD + validation serveur du `graph_json` (cohérence des templates, noms sûrs, références credentials existantes/du workspace).
-7) Webhooks
+8) Webhooks
    - Table `webhook_endpoints` + endpoint public `/webhooks/:workspace/:path`.
    - Mécanisme de mapping provider/template -> `path` (ex: `telegram/<token_hash>` ou id opaque).
-8) Event Ingestion
+9) Event Ingestion
    - Contrat: transforme une requête (webhook) ou une itération de poller en `events_queue`.
    - Déduplication par `correlation_key`.
-9) Orchestrateur (Runs)
+10) Orchestrateur (Runs)
    - Service de planification: consomme `events_queue` et crée un `run` d’un flow cible (lié au template `event`).
    - Exécution DAG: topological run, gestion des sorties/erreurs, retries exposants.
-10) Adapters Providers
+11) Adapters Providers
    - `gmail`: polling minimal (list unread with query/label) + mapping payload standard.
    - `telegram`: long polling `getUpdates` ou webhook + mapping payload.
-11) Endpoint Nodes
+12) Endpoint Nodes
    - Exposition d’un endpoint HTTP (type `endpoint`) qui démarre un run avec un payload signé/validé.
-12) Observabilité
+13) Observabilité
    - Logs structurés, métriques (p95 latence par template), traces si dispo.
-13) Admin & Outils
-   - Rotation clés, purge runs, réindexation.
+14) Admin & Outils
+- Rotation clés, purge runs, réindexation.
+\
+Réinitialisation (Reset) — Multi-tenant
+- But: repartir d’un état propre (démo) et forcer la reconnexion pour choisir l’entreprise et l’utilisateur.
+- Côté backend, prévoir une commande/endpoint d’admin (protégé) qui:
+  - Purge les collections métiers: flows/forms/websites/templates/apps/credentials/runs/events.
+  - Purge les ACL: users (facultatif), workspaces; conserve les entreprises (ou recharge un seed ACME/BETA selon environnement).
+  - Invalide les sessions (tokens JWT blacklistés ou rotation de la clé de signature si acceptable).
+- Côté frontend (simulation):
+  - Efface localStorage des modules: catalogue, ACL (utilisateurs/workspaces/mapping), entreprises, authentification (mots de passe/tokens/reset), session.
+  - Redirige vers `/login`.
+  - Au login: l’entreprise est déduite de l’utilisateur; l’UI charge l’“Entreprise” correspondante dans Paramètres.
+
+Schéma multi-entreprises (récap)
+- `companies` (ACME, BETA)
+- `workspaces` portent `companyId`.
+- `users` portent `companyId`.
+- Toute ressource est scoppée par `workspaceId` → `companyId`.
+- Au login: charger l’entreprise et les workspaces accessibles; chaque requête /api utilise un guard (token.companyId == resource.companyId).
 
 
 ## Contrats internes (types) — exemple TypeScript
@@ -148,6 +184,7 @@ Règles de nommage & mapping fonction
   - `start`: injecte `input_json` dans le premier nœud; si `allowParentInput=true` en sous-flow, fusionne `parent.input` -> `run.input`.
     - Par défaut (UX), le payload Start côté UI est initialisé à `{ payload: null }` si absent; il est éditable et persistant par flow, puis envoyé comme `initialInput` au backend lors du POST /runs.
   - `event`: créé par ingestion d’événement; `payload` = `run.input` initial.
+  - Statut d’un flow: ajoutez `status: 'draft'|'test'|'production'` et `enabled: boolean` sur le document flow. En production, les déclencheurs ne s’activent que si `enabled=true`.
 - Résolution credentials: pour un nœud, choisir dans l’ordre: `node.credentialId` -> défaut de template (si défini) -> erreur si requis.
 - Isolation: chaque nœud reçoit `{input, context, credentials}` et retourne `{output, next}`.
 - Gestion erreurs: stratégie retry (p.ex. 3 tentatives, backoff), marquage `run_nodes.error_json`.

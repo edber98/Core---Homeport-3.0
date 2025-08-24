@@ -8,6 +8,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AccessControlService, Workspace } from '../../services/access-control.service';
 import { CatalogService, NodeTemplate, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { WebsiteService, Website } from '../website/website.service';
@@ -17,7 +18,7 @@ import { auditTime } from 'rxjs/operators';
 @Component({
   selector: 'workspace-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzCheckboxModule, NzModalModule, NzSelectModule, NzDropDownModule, NzMenuModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzCheckboxModule, NzModalModule, NzSelectModule, NzDropDownModule, NzMenuModule, NzToolTipModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -51,11 +52,9 @@ import { auditTime } from 'rxjs/operators';
           </div>
         </div>
         <div class="tpl-grid">
-          <label class="tpl-item" *ngFor="let t of templates">
+          <label class="tpl-item" *ngFor="let t of templates" nz-tooltip [nzTooltipTitle]="tplLabel(t)">
             <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.id==='default'"/>
-            <span class="tpl-name">{{ t.name }}</span>
-            <span class="tpl-id">{{ t.id }}</span>
-            <span class="tpl-cat" *ngIf="t.category">· {{ t.category }}</span>
+            <span class="tpl-line">{{ tplLabel(t) }}</span>
           </label>
           <div class="muted" *ngIf="ws.id==='default'">Le workspace “Default” autorise tous les templates (édition désactivée).</div>
         </div>
@@ -201,10 +200,8 @@ import { auditTime } from 'rxjs/operators';
     .editor-header .actions { display:flex; align-items:center; gap:8px; }
     .editor .btn { border-radius: 10px; }
     .tpl-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:10px; }
-    .tpl-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #f0f0f0; border-radius:10px; }
-    .tpl-name { font-weight:500; }
-    .tpl-id { color:#9ca3af; font-size:12px; }
-    .tpl-cat { color:#6b7280; font-size:12px; }
+    .tpl-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #f0f0f0; border-radius:10px; min-width: 0; }
+    .tpl-line { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .muted { grid-column: 1 / -1; color:#9ca3af; font-size:12px; padding:4px 2px; }
     .transfer-block { margin-top: 16px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
     .transfer-block .section-title { font-weight:600; color:#6b7280; margin-bottom: 8px; }
@@ -232,7 +229,8 @@ export class WorkspaceListComponent implements OnInit {
 
   constructor(private acl: AccessControlService, private catalog: CatalogService, private websites: WebsiteService, private cdr: ChangeDetectorRef) {}
   ngOnInit(): void {
-    this.acl.listWorkspaces().subscribe(ws => this.workspaces = ws || []);
+    // N'afficher que les workspaces de l'entreprise de l'utilisateur courant
+    this.acl.listCompanyWorkspaces().subscribe(ws => this.workspaces = ws || []);
     this.catalog.listNodeTemplates().subscribe(list => this.templates = list || []);
     // Refresh lists when ACL changes (mapping/allowlists/users/workspaces)
     try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.reloadAll()); } catch {}
@@ -278,6 +276,12 @@ export class WorkspaceListComponent implements OnInit {
   missingVisible = false;
   private pendingIds: string[] = [];
   credsAvail: Array<{ id: string; name?: string }> = [];
+
+  tplLabel(t: NodeTemplate): string {
+    const parts = [t.name, t.id];
+    if ((t as any).category) parts.push((t as any).category);
+    return parts.filter(Boolean).join(' · ');
+  }
 
   // Initialize defaults when a workspace is selected
   private initMoveDefaults() {

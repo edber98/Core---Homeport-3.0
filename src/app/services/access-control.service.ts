@@ -60,10 +60,13 @@ export class AccessControlService {
     const storedWs = this.load<Workspace[]>(this.WORKSPACES_KEY, []);
     let curr = this.load<string | null>(this.CURRENT_USER_KEY, null);
     if (!storedWs.length) {
-      const compId = 'acme';
+      const acme = 'acme';
+      const beta = 'beta';
       const ws: Workspace[] = [
-        { id: 'default', name: 'Default', companyId: compId },
-        { id: 'marketing', name: 'Marketing', companyId: compId }
+        { id: 'default', name: 'Default', companyId: acme },
+        { id: 'marketing', name: 'Marketing', companyId: acme },
+        { id: 'beta-default', name: 'Beta — Default', companyId: beta },
+        { id: 'beta-ops', name: 'Beta — Ops', companyId: beta },
       ];
       this.save(this.WORKSPACES_KEY, ws);
       this._workspaces.set(ws);
@@ -76,6 +79,7 @@ export class AccessControlService {
       const users: User[] = [
         { id: 'admin', name: 'Admin', role: 'admin', workspaces: [], companyId: 'acme' },
         { id: 'alice', name: 'Alice', role: 'member', workspaces: ['default'], companyId: 'acme' },
+        { id: 'demo', name: 'Demo', role: 'member', workspaces: ['beta-default'], companyId: 'beta' },
       ];
       this.save(this.USERS_KEY, users);
       this._users.set(users);
@@ -99,21 +103,24 @@ export class AccessControlService {
     if (!exists) return;
     this._currentUserId.set(userId);
     this.save(this.CURRENT_USER_KEY, userId);
-    // Adjust current workspace if not accessible anymore
-    const wsId = this.currentWorkspaceId();
-    if (!this.canAccessWorkspace(wsId)) {
-      this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
-    }
+    // Always switch to a workspace belonging to the user's company and accessible
+    this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
     this._changes.next(Date.now());
   }
 
   listUsers(): Observable<User[]> { return of(this._users()); }
   listWorkspaces(): Observable<Workspace[]> { return of(this._workspaces()); }
+  listCompanyWorkspaces(): Observable<Workspace[]> {
+    const cid = this.currentUser()?.companyId || null;
+    const all = this._workspaces();
+    const filtered = cid ? all.filter(w => (w.companyId || null) === cid) : all;
+    return of(filtered);
+  }
 
   addWorkspace(name: string): Observable<Workspace> {
     // License enforcement: respect maxWorkspaces
     const currCount = this._workspaces().length;
-    if (!this.company.canAddWorkspace(currCount)) {
+    if (!this.company.canAddWorkspace(currCount, this.currentUser()?.companyId || undefined)) {
       return of({ id: '', name: 'Limit reached', companyId: 'acme' } as any);
     }
     const id = this.slug(name);
@@ -136,7 +143,7 @@ export class AccessControlService {
   addUser(user: Omit<User, 'id'> & { id?: string }): Observable<User> {
     // License enforcement: respect maxUsers
     const currCount = this._users().length;
-    if (!this.company.canAddUser(currCount)) {
+    if (!this.company.canAddUser(currCount, this.currentUser()?.companyId || undefined)) {
       return of({ id: '', name: 'Limit reached', role: 'member', workspaces: [], companyId: 'acme' } as any);
     }
     const id = user.id || this.slug(user.name || 'user');
@@ -238,8 +245,10 @@ export class AccessControlService {
   private pickDefaultWorkspaceId(): string {
     const u = this.currentUser();
     if (!u) return 'default';
-    if (u.role === 'admin') return this._workspaces()[0]?.id || 'default';
-    return (u.workspaces || [])[0] || 'default';
+    const companyWs = this._workspaces().filter(w => !u.companyId || w.companyId === u.companyId);
+    if (u.role === 'admin') return companyWs[0]?.id || this._workspaces()[0]?.id || 'default';
+    const allowed = (u.workspaces || []).filter(id => companyWs.some(w => w.id === id));
+    return allowed[0] || companyWs[0]?.id || 'default';
   }
 
   // Seed mapping of existing resources if none assigned yet: distribute by hash across workspaces

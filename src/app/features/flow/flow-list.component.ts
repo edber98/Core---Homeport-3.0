@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
@@ -15,7 +18,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -53,6 +56,8 @@ type FlowItem = { id: string; name: string; description?: string };
           <div class="content">
             <div class="title-row">
               <div class="name">{{ it.name }}</div>
+              <span class="chip" *ngIf="it.status">{{ it.status }}</span>
+              <span class="chip ok" *ngIf="it.enabled">en service</span>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
@@ -70,17 +75,45 @@ type FlowItem = { id: string; name: string; description?: string };
 
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
-      <div class="form">
-        <label>Titre</label>
-        <input nz-input placeholder="Titre du flow" [(ngModel)]="draft.name" />
-        <label>Description (optionnel)</label>
-        <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" />
-        <div class="modal-actions">
-          <button nz-button (click)="closeCreate()">Annuler</button>
-          <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createFlow()">Créer</button>
-        </div>
-        <div class="error" *ngIf="createError">{{ createError }}</div>
-      </div>
+      <ng-container *nzModalContent>
+        <form nz-form nzLayout="vertical">
+          <nz-form-item>
+            <nz-form-label>Titre</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="Titre du flow" [(ngModel)]="draft.name" name="flow_name" />
+            </nz-form-control>
+          </nz-form-item>
+          <div class="grid2">
+            <nz-form-item>
+              <nz-form-label>Statut</nz-form-label>
+              <nz-form-control>
+                <nz-select [(ngModel)]="draft.status" name="flow_status" nzPlaceHolder="Choisir">
+                  <nz-option nzValue="draft" nzLabel="Brouillon"></nz-option>
+                  <nz-option nzValue="test" nzLabel="Test"></nz-option>
+                  <nz-option nzValue="production" nzLabel="Production"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>En service</nz-form-label>
+              <nz-form-control>
+                <nz-switch [(ngModel)]="draft.enabled" name="flow_enabled"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <nz-form-item>
+            <nz-form-label>Description (optionnel)</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" name="flow_desc" />
+            </nz-form-control>
+          </nz-form-item>
+          <div class="modal-actions">
+            <button nz-button (click)="closeCreate()">Annuler</button>
+            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createFlow()">Créer</button>
+          </div>
+          <div class="error" *ngIf="createError">{{ createError }}</div>
+        </form>
+      </ng-container>
     </nz-modal>
   </div>
   `,
@@ -127,6 +160,8 @@ type FlowItem = { id: string; name: string; description?: string };
     .content { flex:1; min-width:0; }
     .title-row { display:flex; align-items:center; gap:8px; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
+    .chip.ok { background:#eefcef; border-color:#dcfce7; color:#166534; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
@@ -134,8 +169,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
     .icon-btn:active { transform: translateY(0.5px); }
 
-    nz-modal .form { display:flex; flex-direction:column; gap:10px; }
-    nz-modal .form label { font-size:12px; color:#6b7280; }
+    .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
   `]
 })
@@ -155,13 +189,32 @@ export class FlowListComponent implements OnInit, OnDestroy {
   createVisible = false;
   creating = false;
   createError: string | null = null;
-  draft: { name: string; description?: string } = { name: '', description: '' };
+  draft: { name: string; description?: string; status?: 'draft'|'test'|'production'; enabled?: boolean } = { name: '', description: '', status: 'draft', enabled: false };
   doSearch() { this.q = (this.q || '').trim(); }
 
   private changesSub?: Subscription;
   constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) { }
 
-  ngOnInit() { this.load(); this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); }
+  private autoOpened = false;
+  ngOnInit() {
+    this.load();
+    // React to workspace changes
+    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load());
+    // Auto-open create dialog when on flows/editor, optionally prefill via query
+    try {
+      const path = this.route.routeConfig?.path || '';
+      if (path === 'flows/editor' && !this.autoOpened) {
+        const pm = this.route.snapshot.queryParamMap;
+        const name = (pm.get('name') || '').trim();
+        const description = (pm.get('description') || '').trim();
+        this.draft = { name, description } as any;
+        this.createError = null;
+        this.createVisible = true;
+        this.autoOpened = true;
+        setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+      }
+    } catch {}
+  }
   ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
 
   load() {
@@ -199,7 +252,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
   openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
 
-  openCreate() { this.createVisible = true; this.createError = null; this.draft = { name: '', description: '' }; }
+  openCreate() { this.createVisible = true; this.createError = null; this.draft = { name: '', description: '', status: 'draft', enabled: false }; }
   closeCreate() { if (!this.creating) this.createVisible = false; }
   canCreate() { return !!(this.draft.name && this.draft.name.trim().length >= 2); }
   private makeIdFromName(name: string): string {
@@ -211,7 +264,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
     if (!this.canCreate()) return;
     this.creating = true; this.createError = null;
     const id = this.makeIdFromName(this.draft.name);
-    const doc = { id, name: this.draft.name.trim(), description: (this.draft.description || '').trim(), nodes: [], edges: [], meta: {} };
+    const doc = { id, name: this.draft.name.trim(), description: (this.draft.description || '').trim(), status: this.draft.status || 'draft', enabled: !!this.draft.enabled, nodes: [], edges: [], meta: {} };
     this.catalog.saveFlow(doc).subscribe({
       next: () => {
         this.zone.run(() => {

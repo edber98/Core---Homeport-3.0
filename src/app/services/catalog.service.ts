@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-export type FlowSummary = { id: string; name: string; description?: string };
-export type FlowDoc = { id: string; name: string; nodes?: any[]; edges?: any[]; meta?: any; description?: string };
+export type FlowStatus = 'draft' | 'test' | 'production';
+export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean };
+export type FlowDoc = { id: string; name: string; nodes?: any[]; edges?: any[]; meta?: any; description?: string; status?: FlowStatus; enabled?: boolean };
 
 export type FormSummary = { id: string; name: string; description?: string };
 export type FormDoc = { id: string; name: string; schema?: any; description?: string };
@@ -77,7 +78,7 @@ export class CatalogService {
     this.save(this.FLOW_DOC_KEY + doc.id, doc);
     const list = this.load<FlowSummary[]>(this.FLOW_LIST_KEY, []);
     const idx = list.findIndex(x => x.id === doc.id);
-    const summary: FlowSummary = { id: doc.id, name: doc.name || doc.id, description: doc.description };
+    const summary: FlowSummary = { id: doc.id, name: doc.name || doc.id, description: doc.description, status: (doc as any).status || 'draft', enabled: (doc as any).enabled ?? false };
     if (idx >= 0) list[idx] = summary; else list.push(summary);
     this.save(this.FLOW_LIST_KEY, list);
     return of(doc).pipe(delay(CatalogService.LATENCY));

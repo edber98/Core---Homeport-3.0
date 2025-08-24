@@ -17,6 +17,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { AccessControlService, User } from '../../services/access-control.service';
+import { AuthService } from '../../services/auth.service';
 type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean };
 
 @Component({
@@ -70,7 +71,7 @@ export class LayoutMain implements OnInit {
   selectedUserId: string | null = null;
   selectedWorkspaceId: string | null = null;
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
@@ -118,10 +119,7 @@ export class LayoutMain implements OnInit {
     { title: 'Formulaire', desc: 'Nouveau brouillon “Onboarding”', time: 'hier', unread: false },
   ];
 
-  logout() {
-    // Simulation de déconnexion
-    this.router.navigateByUrl('/dashboard');
-  }
+  logout() { this.auth.logout(); }
 
   // Permissions helpers
   get isAdmin(): boolean { return (this.acl.currentUser()?.role || 'member') === 'admin'; }

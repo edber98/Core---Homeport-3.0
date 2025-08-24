@@ -940,14 +940,15 @@ export class FlowBuilderComponent {
       return;
     }
     const isStartLike = this.isStartLike(templateObj);
-    // Do not auto-connect a classic 'start' from above logic; we handle start-like separately below
-    const wantsConnect = templateObj?.type !== 'start';
+    // Auto-connect uniquement pour les nœuds de type 'function'
+    const wantsConnect = String(templateObj?.type || '').toLowerCase() === 'function';
     const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
     const vpTmp = this.flow?.viewportService?.readableViewport();
     const hostRect = this.flowHost?.nativeElement?.getBoundingClientRect();
     const worldCenter = (vpTmp && hostRect) ? this.fbUtils.viewportCenterWorld(vpTmp, hostRect) : { x: 400, y: 300 };
     // For start-like nodes: find best target and place new node above it
     let pos = worldCenter as any;
+    let sourceForConnect: any = null;
     if (isStartLike) {
       const target = this.findBestTargetNodeForStart(worldCenter.x, worldCenter.y);
       if (target) {
@@ -958,8 +959,8 @@ export class FlowBuilderComponent {
       }
     } else {
       // Find best source near center with a free output and place node below it
-      const source = wantsConnect ? this.fbUtils.findBestSourceNode(this.nodes, worldCenter.x, worldCenter.y) : null;
-      pos = this.computeNewNodePosition(source, worldCenter);
+      sourceForConnect = wantsConnect ? this.fbUtils.findBestSourceNode(this.nodes, worldCenter.x, worldCenter.y) : null;
+      pos = this.computeNewNodePosition(sourceForConnect, worldCenter);
     }
     const preCtx = (templateObj as any)?.__preContext || null;
     const nodeModel: any = {
@@ -991,11 +992,16 @@ export class FlowBuilderComponent {
         this.edges = [...this.edges, edge];
       }
     } else if (wantsConnect) {
-      const source = this.fbUtils.findBestSourceNode(this.nodes, worldCenter.x, worldCenter.y);
+      // Utiliser la source calculée avant l'ajout pour éviter l'auto-liaison vers soi-même
+      const source = sourceForConnect || this.fbUtils.findBestSourceNode(this.nodes.filter(n => n.id !== newId), worldCenter.x, worldCenter.y);
+      if (source && String(source.id) === String(newId)) {
+        // Sécurité anti-boucle
+        return;
+      }
       // Auto-connect from best output handle if found
       if (source) {
         const handle = this.findFreeOutputHandle(source, true, worldCenter.x);
-        if (handle) {
+        if (handle && source && String(source.id) !== String(newId)) {
           const labelText = this.computeEdgeLabel(source.id, handle);
           const isErr = (handle === 'err') || this.errorNodes.has(String(source.id));
           const edge: Edge = {

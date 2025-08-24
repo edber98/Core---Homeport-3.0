@@ -4,6 +4,8 @@ import { Home } from './pages/home/home';
 import { Graphviz } from './pages/graphviz/graphviz';
 import { Flow } from './pages/flow/flow';
 import { LayoutMain } from './layout/layout-main/layout-main';
+import { LayoutAuth } from './layout/layout-auth/layout-auth';
+import { authGuard } from './services/route-guards';
 import { LayoutBuilder } from './layout/layout-builder/layout-builder';
 
 export const routes: Routes = [
@@ -13,9 +15,21 @@ export const routes: Routes = [
     redirectTo: 'dashboard'  // ou 'builder' si tu veux rediriger ailleurs
   },
 
+    // Auth-only layout (no navbar)
+    {
+        path: '',
+        component: LayoutAuth,
+        children: [
+            { path: 'login', loadComponent: () => import('./features/users/login.component').then(m => m.LoginComponent), title: 'Connexion' },
+            { path: 'forgot', loadComponent: () => import('./features/users/forgot-password.component').then(m => m.ForgotPasswordComponent), title: 'Mot de passe oublié' },
+            { path: 'reset-password', loadComponent: () => import('./features/users/reset-password.component').then(m => m.ResetPasswordComponent), title: 'Réinitialiser le mot de passe' },
+        ]
+    },
+
     {
         path: '',
         component: LayoutMain,
+        canActivate: [authGuard],
         children: [
             {
                 path: 'dashboard',
@@ -40,6 +54,7 @@ export const routes: Routes = [
             { path: 'node-templates/viewer', loadComponent: () => import('./features/flow/node-template-viewer.component').then(m => m.NodeTemplateViewerComponent), title: 'Template — Viewer' },
             { path: 'workspaces', canActivate: [adminGuard], loadComponent: () => import('./features/workspace/workspace-list.component').then(m => m.WorkspaceListComponent), title: 'Workspaces' },
             { path: 'users', canActivate: [adminGuard], loadComponent: () => import('./features/users/users-list.component').then(m => m.UsersListComponent), title: 'Users' },
+            { path: 'change-password', loadComponent: () => import('./features/users/change-password.component').then(m => m.ChangePasswordComponent), title: 'Changer le mot de passe' },
             // Websites (list/editor/viewer)
             { path: 'websites', loadComponent: () => import('./features/website/website-list.component').then(m => m.WebsiteListComponent), title: 'Sites web' },
             { path: 'websites/editor', loadComponent: () => import('./features/website/website-editor.component').then(m => m.WebsiteEditorComponent), title: 'Site — Éditeur' },

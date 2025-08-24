@@ -18,49 +18,75 @@ export interface Company {
 
 @Injectable({ providedIn: 'root' })
 export class CompanyService {
-  private KEY = 'company.data';
-  private ID = 'acme';
+  private KEY = 'company.map'; // stores Record<companyId, Company>
+  private LEGACY_KEY = 'company.data';
 
   constructor() {
     this.ensureSeed();
   }
 
-  getCompany(): Observable<Company> { return of(this.load()); }
-  updateCompany(patch: Partial<Company>): Observable<Company> {
-    const curr = this.load();
-    const next = { ...curr, ...patch, license: { ...curr.license, ...(patch.license || {}) } };
-    this.save(next);
+  getCompany(companyId?: string): Observable<Company> {
+    const id = companyId || 'acme';
+    const map = this.loadMap();
+    return of(map[id] || this.defaultCompany(id));
+  }
+  updateCompany(patch: Partial<Company>, companyId?: string): Observable<Company> {
+    const id = companyId || 'acme';
+    const map = this.loadMap();
+    const curr = map[id] || this.defaultCompany(id);
+    const next = { ...curr, ...patch, license: { ...curr.license, ...(patch.license || {}) } } as Company;
+    map[id] = next;
+    this.saveMap(map);
     return of(next);
   }
 
-  canAddUser(currentCount: number): boolean {
-    const c = this.load();
+  canAddUser(currentCount: number, companyId?: string): boolean {
+    const id = companyId || 'acme';
+    const map = this.loadMap();
+    const c = map[id] || this.defaultCompany(id);
     return currentCount < c.license.maxUsers;
   }
-  canAddWorkspace(currentCount: number): boolean {
-    const c = this.load();
+  canAddWorkspace(currentCount: number, companyId?: string): boolean {
+    const id = companyId || 'acme';
+    const map = this.loadMap();
+    const c = map[id] || this.defaultCompany(id);
     return currentCount < c.license.maxWorkspaces;
   }
 
-  setPlan(plan: LicensePlan): Observable<Company> {
+  setPlan(plan: LicensePlan, companyId?: string): Observable<Company> {
+    const id = companyId || 'acme';
     const license = this.planDefaults(plan);
-    const curr = this.load();
-    const next = { ...curr, license };
-    this.save(next);
+    const map = this.loadMap();
+    const curr = map[id] || this.defaultCompany(id);
+    const next = { ...curr, license } as Company;
+    map[id] = next;
+    this.saveMap(map);
     return of(next);
   }
 
   private ensureSeed() {
+    // Migrate legacy single-company storage if present
+    try {
+      const legacy = localStorage.getItem(this.LEGACY_KEY);
+      if (legacy && !localStorage.getItem(this.KEY)) {
+        const c = JSON.parse(legacy) as Company;
+        const map: Record<string, Company> = {};
+        map[c.id || 'acme'] = c;
+        // add a Beta company if missing
+        if (!map['beta']) map['beta'] = this.defaultCompany('beta', 'Company BETA');
+        this.saveMap(map);
+        localStorage.removeItem(this.LEGACY_KEY);
+        return;
+      }
+    } catch {}
+    // Seed multi-company map if missing
     try {
       const exists = localStorage.getItem(this.KEY);
       if (exists) return;
-      const seed: Company = {
-        id: this.ID,
-        name: 'Demo Company',
-        adminUserId: 'admin',
-        license: this.planDefaults('pro'),
-      };
-      this.save(seed);
+      const map: Record<string, Company> = {};
+      map['acme'] = this.defaultCompany('acme', 'Entreprise ACME');
+      map['beta'] = this.defaultCompany('beta', 'Entreprise BETA');
+      this.saveMap(map);
     } catch {}
   }
 
@@ -73,10 +99,23 @@ export class CompanyService {
     }
   }
 
-  private load(): Company {
-    try { const raw = localStorage.getItem(this.KEY); if (raw) return JSON.parse(raw); } catch {}
-    return { id: this.ID, name: 'Demo Company', adminUserId: 'admin', license: this.planDefaults('pro') };
+  private defaultCompany(id: string, name?: string): Company {
+    return { id, name: name || `Entreprise ${id.toUpperCase()}`, adminUserId: id === 'acme' ? 'admin' : 'demo', license: this.planDefaults('pro') };
   }
-  private save(c: Company) { try { localStorage.setItem(this.KEY, JSON.stringify(c)); } catch {} }
-}
+  private loadMap(): Record<string, Company> {
+    try { const raw = localStorage.getItem(this.KEY); if (raw) return JSON.parse(raw); } catch {}
+    return { acme: this.defaultCompany('acme', 'Entreprise ACME'), beta: this.defaultCompany('beta', 'Entreprise BETA') };
+  }
+  private saveMap(map: Record<string, Company>) { try { localStorage.setItem(this.KEY, JSON.stringify(map)); } catch {} }
 
+  resetAll(): Observable<boolean> {
+    try {
+      localStorage.removeItem(this.KEY);
+      localStorage.removeItem(this.LEGACY_KEY);
+      this.ensureSeed();
+      return of(true);
+    } catch {
+      return of(false);
+    }
+  }
+}

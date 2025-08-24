@@ -1,0 +1,383 @@
+openapi: 3.0.3
+info:
+  title: Homeport Backend API
+  version: 0.1.0
+  description: |
+    OpenAPI initiale (Express) couvrant Auth, Company/Workspaces, Providers, Node Templates, Credentials,
+    Flows, Runs, et Webhooks. JWT Bearer obligatoire sur /api/*.
+servers:
+  - url: https://api.example.com
+security:
+  - BearerAuth: []
+tags:
+  - name: Auth
+  - name: Company
+  - name: Workspaces
+  - name: Users
+  - name: Providers
+  - name: Apps
+  - name: NodeTemplates
+  - name: Credentials
+  - name: Flows
+  - name: Runs
+  - name: Webhooks
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and issue JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { email: { type: string, format: email }, password: { type: string } }
+              required: [ email, password ]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/JWTResponse' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/forgot:
+    post:
+      tags: [Auth]
+      summary: Request password reset
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { email: { type: string, format: email } }, required: [ email ] } } }
+      responses:
+        '200': { description: Token sent }
+  /auth/reset:
+    post:
+      tags: [Auth]
+      summary: Reset password using token
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { token: { type: string }, password: { type: string } }, required: [ token, password ] } } }
+      responses:
+        '200': { description: Password changed }
+  /auth/change:
+    post:
+      tags: [Auth]
+      security: [ { BearerAuth: [] } ]
+      summary: Change password (authenticated)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, properties: { current: { type: string }, next: { type: string } }, required: [ current, next ] } } }
+      responses:
+        '200': { description: Password changed }
+
+  /api/company:
+    get:
+      tags: [Company]
+      security: [ { BearerAuth: [] } ]
+      summary: Get current company (from token)
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Company' } } } }
+    put:
+      tags: [Company]
+      security: [ { BearerAuth: [] } ]
+      summary: Update current company
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CompanyPatch' } } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Company' } } } }
+
+  /api/workspaces:
+    get:
+      tags: [Workspaces]
+      security: [ { BearerAuth: [] } ]
+      summary: List workspaces (scoped by company)
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Workspace' } } } } }
+    post:
+      tags: [Workspaces]
+      security: [ { BearerAuth: [] } ]
+      summary: Create workspace (company-scoped)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/WorkspaceCreate' } } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Workspace' } } } }
+
+  /api/workspaces/{wsId}/templates-allowed:
+    parameters: [ { name: wsId, in: path, required: true, schema: { type: string } } ]
+    get:
+      tags: [Workspaces]
+      security: [ { BearerAuth: [] } ]
+      summary: List allowed node template ids in a workspace
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { type: string } } } } }
+    put:
+      tags: [Workspaces]
+      security: [ { BearerAuth: [] } ]
+      summary: Set allowed node template ids in a workspace
+      requestBody: { required: true, content: { application/json: { schema: { type: array, items: { type: string } } } } }
+      responses: { '200': { description: OK } }
+
+  /api/providers:
+    get:
+      tags: [Providers]
+      security: [ { BearerAuth: [] } ]
+      summary: List providers
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Provider' } } } } }
+
+  /api/apps:
+    get:
+      tags: [Apps]
+      security: [ { BearerAuth: [] } ]
+      summary: List apps/providers UI metadata (optional)
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/App' } } } } }
+    post:
+      tags: [Apps]
+      security: [ { BearerAuth: [] } ]
+      summary: Create/update app (admin)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/App' } } } }
+      responses: { '200': { description: OK } }
+
+  /api/node-templates:
+    get:
+      tags: [NodeTemplates]
+      security: [ { BearerAuth: [] } ]
+      summary: List node templates
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/NodeTemplate' } } } } }
+    post:
+      tags: [NodeTemplates]
+      security: [ { BearerAuth: [] } ]
+      summary: Create/update node template (admin)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/NodeTemplate' } } } }
+      responses: { '200': { description: OK } }
+
+  /api/workspaces/{wsId}/credentials:
+    parameters: [ { name: wsId, in: path, required: true, schema: { type: string } } ]
+    get:
+      tags: [Credentials]
+      security: [ { BearerAuth: [] } ]
+      summary: List credentials in workspace
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/CredentialSummary' } } } } }
+    post:
+      tags: [Credentials]
+      security: [ { BearerAuth: [] } ]
+      summary: Create credential (validated & encrypted server-side)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CredentialCreate' } } } }
+      responses: { '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Credential' } } } } }
+  /api/workspaces/{wsId}/credentials/{credId}:
+    parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: credId, in: path, required: true, schema: { type: string } } ]
+    get:
+      tags: [Credentials]
+      security: [ { BearerAuth: [] } ]
+      summary: Get credential (metadata only; never returns decrypted values)
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Credential' } } } }
+
+  /api/workspaces/{wsId}/flows:
+    parameters: [ { name: wsId, in: path, required: true, schema: { type: string } } ]
+    get:
+      tags: [Flows]
+      security: [ { BearerAuth: [] } ]
+      summary: List flows in a workspace
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/FlowSummary' } } } } }
+    post:
+      tags: [Flows]
+      security: [ { BearerAuth: [] } ]
+      summary: Create flow
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/FlowCreate' } } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Flow' } } } }
+  /api/workspaces/{wsId}/flows/{flowId}:
+    parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: flowId, in: path, required: true, schema: { type: string } } ]
+    get:
+      tags: [Flows]
+      security: [ { BearerAuth: [] } ]
+      summary: Get flow by id
+      responses: { '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Flow' } } } } }
+    put:
+      tags: [Flows]
+      security: [ { BearerAuth: [] } ]
+      summary: Update flow graph/metadata
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/Flow' } } } }
+      responses: { '200': { description: OK } }
+
+  /api/workspaces/{wsId}/flows/{flowId}/runs:
+    post:
+      tags: [Runs]
+      security: [ { BearerAuth: [] } ]
+      summary: Start a run (test/prod)
+      parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: flowId, in: path, required: true, schema: { type: string } } ]
+      requestBody: { required: false, content: { application/json: { schema: { $ref: '#/components/schemas/RunStart' } } } }
+      responses: { '201': { description: Started, content: { application/json: { schema: { $ref: '#/components/schemas/Run' } } } } }
+    get:
+      tags: [Runs]
+      security: [ { BearerAuth: [] } ]
+      summary: List runs for a flow
+      parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: flowId, in: path, required: true, schema: { type: string } } ]
+      responses: { '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Run' } } } } } }
+  /api/workspaces/{wsId}/runs/{runId}:
+    get:
+      tags: [Runs]
+      security: [ { BearerAuth: [] } ]
+      summary: Get run status/details
+      parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: runId, in: path, required: true, schema: { type: string } } ]
+      responses: { '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Run' } } } } }
+  /api/workspaces/{wsId}/runs/{runId}/cancel:
+    post:
+      tags: [Runs]
+      security: [ { BearerAuth: [] } ]
+      summary: Cancel a run
+      parameters: [ { name: wsId, in: path, required: true, schema: { type: string } }, { name: runId, in: path, required: true, schema: { type: string } } ]
+      responses: { '200': { description: Cancelled } }
+
+  /webhooks/{workspace}/{path}:
+    post:
+      tags: [Webhooks]
+      summary: Public webhook endpoint (may require HMAC)
+      parameters: [ { name: workspace, in: path, required: true, schema: { type: string } }, { name: path, in: path, required: true, schema: { type: string } } ]
+      requestBody: { required: false, content: { application/json: { schema: { type: object } } } }
+      responses: { '202': { description: Accepted } }
+
+  /api/users:
+    get:
+      tags: [Users]
+      security: [ { BearerAuth: [] } ]
+      summary: List users for current company (admin only or filtered view)
+      responses: { '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/User' } } } } } }
+    post:
+      tags: [Users]
+      security: [ { BearerAuth: [] } ]
+      summary: Create user
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/UserCreate' } } } }
+      responses: { '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } } }
+  /api/users/{userId}:
+    parameters: [ { name: userId, in: path, required: true, schema: { type: string } } ]
+    put:
+      tags: [Users]
+      security: [ { BearerAuth: [] } ]
+      summary: Update user (role/workspace membership)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/UserPatch' } } } }
+      responses: { '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/User' } } } } }
+
+  /api/admin/reset:
+    post:
+      tags: [Company]
+      security: [ { BearerAuth: [] } ]
+      summary: Reset demo data (admin)
+      responses: { '202': { description: Reset started } }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Unauthorized:
+      description: Unauthorized
+  schemas:
+    JWTResponse:
+      type: object
+      properties:
+        token: { type: string }
+        user: { $ref: '#/components/schemas/User' }
+    Company:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, plan: { type: string } }
+    CompanyPatch:
+      type: object
+      properties: { name: { type: string }, plan: { type: string } }
+    Workspace:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, companyId: { type: string } }
+    WorkspaceCreate:
+      type: object
+      required: [ name ]
+      properties: { name: { type: string } }
+    Provider:
+      type: object
+      properties: { id: { type: string }, key: { type: string }, name: { type: string }, hasCredentials: { type: boolean }, allowWithoutCredentials: { type: boolean } }
+    NodeTemplate:
+      type: object
+      properties:
+        id: { type: string }
+        key: { type: string }
+        type: { type: string, enum: [ start, action, event, endpoint, function, condition, loop, end ] }
+        name: { type: string }
+        providerId: { type: string }
+        allowWithoutCredentials: { type: boolean }
+        args: { type: object }
+        output: { type: array, items: { type: string } }
+        output_array_field: { type: string }
+        authorize_catch_error: { type: boolean }
+    App:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, title: { type: string }, iconClass: { type: string }, iconUrl: { type: string }, color: { type: string }, tags: { type: array, items: { type: string } } }
+    CredentialSummary:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, providerId: { type: string }, workspaceId: { type: string } }
+    Credential:
+      allOf: [ { $ref: '#/components/schemas/CredentialSummary' }, { type: object, properties: { valid: { type: boolean } } } ]
+    CredentialCreate:
+      type: object
+      required: [ name, providerId, values ]
+      properties: { name: { type: string }, providerId: { type: string }, values: { type: object } }
+    FlowSummary:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, description: { type: string }, status: { type: string }, enabled: { type: boolean } }
+    Flow:
+      allOf: [ { $ref: '#/components/schemas/FlowSummary' }, { type: object, properties: { workspaceId: { type: string }, graph: { type: object } } } ]
+    FlowCreate:
+      type: object
+      required: [ name ]
+      properties: { name: { type: string }, description: { type: string }, status: { type: string, enum: [ draft, test, production ] }, enabled: { type: boolean } }
+    Run:
+      type: object
+      properties:
+        id: { type: string }
+        runId: { type: string }
+        flowId: { type: string }
+        workspaceId: { type: string }
+        mode: { type: string, enum: [ test, prod ] }
+        status: { type: string, enum: [ queued, running, success, error, cancelled, timed_out, partial_success ] }
+        startedAt: { type: string, format: date-time }
+        finishedAt: { type: string, format: date-time }
+        attempts: { type: array, items: { $ref: '#/components/schemas/RunAttempt' } }
+        initialInput: { type: object }
+        finalPayload: { type: object }
+        errors: { type: array, items: { $ref: '#/components/schemas/ErrorInfo' } }
+    RunAttempt:
+      type: object
+      properties:
+        runId: { type: string }
+        nodeId: { type: string }
+        attempt: { type: integer }
+        kind: { type: string, enum: [ trigger, function, condition, merge, delay, wait ] }
+        templateKey: { type: string }
+        templateRaw: { type: string }
+        status: { type: string, enum: [ pending, running, success, error, skipped, blocked, timed_out ] }
+        startedAt: { type: string, format: date-time }
+        finishedAt: { type: string, format: date-time }
+        argsPre: { type: object }
+        argsPost: { type: object }
+        input: { type: object }
+        result: { type: object }
+        errors: { type: array, items: { $ref: '#/components/schemas/ErrorInfo' } }
+    ErrorInfo:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }
+        severity: { type: string, enum: [ error, warn, info ] }
+        retriable: { type: boolean }
+        data: { type: object }
+        at: { type: string, enum: [ render, execute, merge, condition, transport ] }
+        ts: { type: string, format: date-time }
+    User:
+      type: object
+      properties: { id: { type: string }, email: { type: string, format: email }, name: { type: string }, companyId: { type: string }, role: { type: string, enum: [ admin, member ] } }
+    UserCreate:
+      type: object
+      required: [ email, name, role ]
+      properties: { email: { type: string, format: email }, name: { type: string }, role: { type: string, enum: [ admin, member ] }, workspaces: { type: array, items: { type: string } } }
+    UserPatch:
+      type: object
+      properties: { name: { type: string }, role: { type: string, enum: [ admin, member ] }, workspaces: { type: array, items: { type: string } } }
