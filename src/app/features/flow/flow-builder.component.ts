@@ -35,9 +35,9 @@ import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.co
 export class FlowBuilderComponent {
   // Palette configurable (peut évoluer vers un service)
   items = [
-    { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} } },
+    { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [{ type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false }] } } },
     { group: 'Core', label: 'Event', template: { id: 'tmpl_event', name: 'Event', type: 'event', icon: 'fa-solid fa-bell', title: 'Event', subtitle: 'Trigger', args: {} } },
-    { group: 'HTTP', label: 'Endpoint', template: { id: 'tmpl_endpoint', name: 'Endpoint', type: 'endpoint', icon: 'fa-solid fa-link', title: 'Endpoint', subtitle: 'HTTP Trigger', category: 'HTTP', args: { title: 'Endpoint', ui: { layout: 'vertical' }, fields: [ { type: 'select', key: 'method', label: 'Method', options: [ { label: 'GET', value: 'GET' }, { label: 'POST', value: 'POST' } ], col: { xs: 24 }, default: 'GET' }, { type: 'text', key: 'path', label: 'Path', col: { xs: 24 }, default: '/hook', expression: { allow: true } } ] } } },
+    { group: 'HTTP', label: 'Endpoint', template: { id: 'tmpl_endpoint', name: 'Endpoint', type: 'endpoint', icon: 'fa-solid fa-link', title: 'Endpoint', subtitle: 'HTTP Trigger', category: 'HTTP', args: { title: 'Endpoint', ui: { layout: 'vertical' }, fields: [{ type: 'select', key: 'method', label: 'Method', options: [{ label: 'GET', value: 'GET' }, { label: 'POST', value: 'POST' }], col: { xs: 24 }, default: 'GET' }, { type: 'text', key: 'path', label: 'Path', col: { xs: 24 }, default: '/hook', expression: { allow: true } }] } } },
     { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] }, output_array_field: 'items' } },
     { group: 'Logic', label: 'Loop', template: { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} } },
     { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
@@ -273,8 +273,8 @@ export class FlowBuilderComponent {
         id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "HTTP Request",
           "fields": [
-            { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "default": "https://api.example.com", "expression": { "allow": true } },
-            { "type": "select", "key": "method", "label": "Method", "options": ["GET", "POST", "PUT", "DELETE"], "col": { "xs": 24 }, "default": "GET" },
+            { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+            { "type": "select", "key": "method", "label": "Method", "options": ["GET", "POST", "PUT", "DELETE"], "col": { "xs": 24 }, "default": "", "validators": [{ "type": "required" }] },
             { "type": "textarea", "key": "body", "label": "Body", "col": { "xs": 24 }, "default": "", "expression": { "allow": true } }
           ],
           "ui": { "layout": "vertical" }
@@ -321,7 +321,7 @@ export class FlowBuilderComponent {
       }
     },
     { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
-    { group: 'Workflow', label: 'Call Flow', template: { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical' }, fields: [ { type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, default: 'demo-2' } ] } } },
+    { group: 'Workflow', label: 'Call Flow', template: { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical' }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, default: 'demo-2' }] } } },
   ];
 
   templates: any[] = [
@@ -410,7 +410,7 @@ export class FlowBuilderComponent {
   }
   get dndDisabled(): boolean { return !!(this.isMobile || this.leftDrawer || this.rightDrawer); }
   // Mobile drawer DnD helpers
-  
+
 
   // Global blockers to prevent vflow/CDK from handling events when a drawer is open (iOS fix)
   private blockersActive = false;
@@ -444,7 +444,7 @@ export class FlowBuilderComponent {
   private allTemplates: any[] = [];
   private allowedTplIds = new Set<string>();
   private allFlows: { id: string; name: string; description?: string }[] = [];
-  validationIssues: Array<{ kind: 'node'|'flow'; nodeId?: string; message: string }> = [];
+  validationIssues: Array<{ kind: 'node' | 'flow'; nodeId?: string; message: string }> = [];
   private openedNodeConfig = new Set<string>();
 
   // Removed event interceptors to align with working dev playground
@@ -472,7 +472,7 @@ export class FlowBuilderComponent {
       // Recompute palette when workspace changes
       try {
         this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => this.applyWorkspaceTemplateFilter()));
-      } catch {}
+      } catch { }
     } catch { }
     // Load flow by id if provided
     try {
@@ -486,12 +486,12 @@ export class FlowBuilderComponent {
             this.nodes = (doc.nodes || []) as any[];
             this.edges = (doc.edges || []) as any;
             this.history.reset(this.snapshot());
-            try { this.cdr.detectChanges(); } catch {}
+            try { this.cdr.detectChanges(); } catch { }
             return;
           }
         }));
       }
-    } catch {}
+    } catch { }
     if (!this.nodes || this.nodes.length === 0) {
       // Initialise un graphe par défaut à partir de la palette
       const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
@@ -503,7 +503,7 @@ export class FlowBuilderComponent {
     this.recomputeValidation();
   }
 
-  
+
 
   private applyWorkspaceTemplateFilter() {
     try {
@@ -514,7 +514,7 @@ export class FlowBuilderComponent {
         const filtered = allow.length === 0 ? [] : (this.allTemplates || []).filter(t => allow.includes((t as any).id));
         this.items = this.paletteSvc.toPaletteItems(filtered);
         this.rebuildPaletteGroups();
-        try { this.cdr.detectChanges(); } catch {}
+        try { this.cdr.detectChanges(); } catch { }
         this.recomputeValidation();
       });
     } catch { }
@@ -555,7 +555,7 @@ export class FlowBuilderComponent {
   }
 
   // Map NodeTemplate list to palette display items
-  
+
 
   ngAfterViewInit() {
     // Subscribe to viewport change end events to update zoom indicator
@@ -580,7 +580,7 @@ export class FlowBuilderComponent {
     } catch { this.isMobile = false; }
   }
 
-  
+
 
   private updateZoomDisplay() {
     try {
@@ -636,7 +636,7 @@ export class FlowBuilderComponent {
     const canonical = (this.allTemplates || []).find(t => String((t as any)?.id) === 'tmpl_call_flow');
     const makeTplForFlow = (f: any) => {
       const t = canonical ? JSON.parse(JSON.stringify(canonical)) : {
-        id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', title: 'Call Flow', subtitle: 'Workflow', icon: 'fa-solid fa-diagram-project', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true } ] }
+        id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', title: 'Call Flow', subtitle: 'Workflow', icon: 'fa-solid fa-diagram-project', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] }
       };
       (t as any).__preContext = { flowId: f.id };
       t.title = f.name || t.title;
@@ -696,9 +696,15 @@ export class FlowBuilderComponent {
       try { this.message.warning('Un nœud de départ existe déjà'); } catch { }
       return;
     }
-
     const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
     const preCtx = (templateObj as any)?.__preContext || null;
+    // If start-like, snap position above best target
+    const isStartLike = this.isStartLike(templateObj);
+    let point = positionInFlow;
+    if (isStartLike) {
+      const target = this.findBestTargetNodeForStart(positionInFlow.x, positionInFlow.y);
+      if (target) point = this.computePositionAboveTarget(target);
+    }
     const nodeModel = {
       id: newId,
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
@@ -708,10 +714,27 @@ export class FlowBuilderComponent {
       templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
       templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
-    const vNode = { id: newId, point: positionInFlow, type: 'html-template', data: { model: nodeModel } };
+    const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    // If start-like, auto-connect to best target
+    if (isStartLike) {
+      const target = this.findBestTargetNodeForStart(point.x, point.y + 200) || this.findBestTargetNodeForStart(point.x + 1, point.y + 200);
+      if (target) {
+        const edge: Edge = {
+          type: 'template',
+          id: `${newId}->${target.id}:out:`,
+          source: newId,
+          target: target.id as any,
+          sourceHandle: 'out',
+          targetHandle: null,
+          edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
+          data: { strokeWidth: 2, color: '#b1b1b7' },
+          markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
+        } as any;
+        this.edges = [...this.edges, edge];
+      }
+    }
     this.pushState('drop.node');
-    // Immediately reflect required-field issues for the new node
     this.recomputeValidation();
   }
   private normalizeTemplate(t: any) { return this.fbUtils.normalizeTemplate(t); }
@@ -745,7 +768,7 @@ export class FlowBuilderComponent {
     // Keep error branch propagation consistent after new connection
     this.recomputeErrorPropagation();
     this.pushState('connect.edge');
-    try { this.suppressRemoveUntil = Date.now() + 300; } catch {}
+    try { this.suppressRemoveUntil = Date.now() + 300; } catch { }
   }
 
   deleteEdge(edge: Edge) {
@@ -804,7 +827,7 @@ export class FlowBuilderComponent {
     const key = `${section}:${m?.ts || ''}:${m?.reason || ''}:${idx}`;
     return { key, time, type, color, message };
   }
-  private formatTime(ts: number) { try { const d = new Date(ts); const hh = String(d.getHours()).padStart(2,'0'); const mm = String(d.getMinutes()).padStart(2,'0'); const ss = String(d.getSeconds()).padStart(2,'0'); return `${hh}:${mm}:${ss}`; } catch { return ''; } }
+  private formatTime(ts: number) { try { const d = new Date(ts); const hh = String(d.getHours()).padStart(2, '0'); const mm = String(d.getMinutes()).padStart(2, '0'); const ss = String(d.getSeconds()).padStart(2, '0'); return `${hh}:${mm}:${ss}`; } catch { return ''; } }
   private describeReason(r: string): { type: string; color: string; message: string } {
     const map: Record<string, { type: string; color: string }> = {
       'init': { type: 'Init', color: '#64748b' },
@@ -871,13 +894,28 @@ export class FlowBuilderComponent {
       try { this.message.warning('Un nœud de départ existe déjà'); } catch { }
       return;
     }
-    // Do not auto-connect a 'start' node; just place it
+    const isStartLike = this.isStartLike(templateObj);
+    // Do not auto-connect a classic 'start' from above logic; we handle start-like separately below
     const wantsConnect = templateObj?.type !== 'start';
     const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
-    const worldCenter = this.viewportCenterWorld();
-    // Find best source near center with a free output
-    const source = wantsConnect ? this.findBestSourceNode(worldCenter.x, worldCenter.y) : null;
-    const pos = this.computeNewNodePosition(source, worldCenter);
+    const vpTmp = this.flow?.viewportService?.readableViewport();
+    const hostRect = this.flowHost?.nativeElement?.getBoundingClientRect();
+    const worldCenter = (vpTmp && hostRect) ? this.fbUtils.viewportCenterWorld(vpTmp, hostRect) : { x: 400, y: 300 };
+    // For start-like nodes: find best target and place new node above it
+    let pos = worldCenter as any;
+    if (isStartLike) {
+      const target = this.findBestTargetNodeForStart(worldCenter.x, worldCenter.y);
+      if (target) {
+        pos = this.computePositionAboveTarget(target);
+      } else {
+        // fallback: near top-left area
+        pos = { x: worldCenter.x - 90, y: worldCenter.y - 160 };
+      }
+    } else {
+      // Find best source near center with a free output and place node below it
+      const source = wantsConnect ? this.fbUtils.findBestSourceNode(this.nodes, worldCenter.x, worldCenter.y) : null;
+      pos = this.computeNewNodePosition(source, worldCenter);
+    }
     const preCtx = (templateObj as any)?.__preContext || null;
     const nodeModel: any = {
       id: newId,
@@ -890,73 +928,55 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
-    // Auto-connect from best output handle if found
-    if (wantsConnect && source) {
-      const handle = this.findFreeOutputHandle(source, true, worldCenter.x);
-      if (handle) {
-        const labelText = this.computeEdgeLabel(source.id, handle);
-        const isErr = (handle === 'err') || this.errorNodes.has(String(source.id));
+    // Auto-connect logic
+    if (isStartLike) {
+      const target = this.findBestTargetNodeForStart(pos.x, pos.y + 200) || this.findBestTargetNodeForStart(worldCenter.x, worldCenter.y);
+      if (target) {
         const edge: Edge = {
           type: 'template',
-          id: `${source.id}->${newId}:${handle}:in`,
-          source: source.id,
-          target: newId,
-          sourceHandle: handle,
-          targetHandle: 'in' as any,
-          edgeLabels: { center: { type: 'html-template', data: { text: labelText } } } as any,
-          data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
-          markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } } as any
+          id: `${newId}->${target.id}:out:`,
+          source: newId,
+          target: target.id as any,
+          sourceHandle: 'out',
+          targetHandle: null,
+          edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
+          data: { strokeWidth: 2, color: '#b1b1b7' },
+          markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
         } as any;
         this.edges = [...this.edges, edge];
-        this.recomputeErrorPropagation();
-        try { this.suppressRemoveUntil = Date.now() + 300; } catch {}
       }
+    } else if (wantsConnect) {
+      const source = this.fbUtils.findBestSourceNode(this.nodes, worldCenter.x, worldCenter.y);
+      // Auto-connect from best output handle if found
+      if (source) {
+        const handle = this.findFreeOutputHandle(source, true, worldCenter.x);
+        if (handle) {
+          const labelText = this.computeEdgeLabel(source.id, handle);
+          const isErr = (handle === 'err') || this.errorNodes.has(String(source.id));
+          const edge: Edge = {
+            type: 'template',
+            id: `${source.id}->${newId}:${handle}:in`,
+            source: source.id,
+            target: newId,
+            sourceHandle: handle,
+            targetHandle: 'in' as any,
+            edgeLabels: { center: { type: 'html-template', data: { text: labelText } } } as any,
+            data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
+            markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } } as any
+          } as any;
+          this.edges = [...this.edges, edge];
+          this.recomputeErrorPropagation();
+          try { this.suppressRemoveUntil = Date.now() + 300; } catch { }
+        }
+      }
+      this.pushState('palette.click.add');
+      // Immediately reflect required-field issues for the new node
+      this.recomputeValidation();
     }
-    this.pushState('palette.click.add');
-    // Immediately reflect required-field issues for the new node
-    this.recomputeValidation();
   }
-
   // (removed) delegation handler
-
-  private viewportCenterWorld(): { x: number; y: number } {
-    try {
-      const vp = this.flow?.viewportService?.readableViewport();
-      const rect = this.flowHost?.nativeElement?.getBoundingClientRect();
-      if (!vp || !rect) return { x: 400, y: 300 };
-      return this.fbUtils.viewportCenterWorld(vp, rect);
-    } catch { return { x: 400, y: 300 }; }
-  }
-  private findBestSourceNode(wx: number, wy: number): any | null {
-    try {
-      // Prefer node whose bbox center is closest to (wx, wy) and has at least one free, non-error output
-      let best: any = null; let bestD = Infinity;
-      for (const n of this.nodes) {
-        const model = n?.data?.model; const tmpl = model?.templateObj || {};
-        const outs = this.outputIds(model) || [];
-        if (outs.length === 0) continue; // cannot source from end nodes
-        const free = this.findFreeOutputHandle(n, true /*onlyNonError*/);
-        if (!free) continue;
-        // Estimate bbox center from DOM (scaled by zoom) or fallback to point + rough size
-        let cx = n.point?.x || 0; let cy = (n.point?.y || 0);
-        try {
-          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(n.id)}\"]`) as HTMLElement | null;
-          const vp = this.flow?.viewportService?.readableViewport();
-          if (el && vp) {
-            const r = el.getBoundingClientRect();
-            const w = r.width / (vp.zoom || 1); const h = r.height / (vp.zoom || 1);
-            cx = (n.point?.x || 0) + w / 2; cy = (n.point?.y || 0) + h / 2;
-          } else {
-            cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60;
-          }
-        } catch { cx = (n.point?.x || 0) + 90; cy = (n.point?.y || 0) + 60; }
-        const dx = cx - wx; const dy = cy - wy; const d2 = dx * dx + dy * dy;
-        if (d2 < bestD) { bestD = d2; best = n; }
-      }
-      return best;
-    } catch { return null; }
-  }
-  private isStartLike(tmpl: any): boolean {
+  // findBestSourceNode now provided by FlowBuilderUtilsService
+  isStartLike(tmpl: any): boolean {
     try {
       const ty = String(tmpl?.type || '').toLowerCase();
       return ty === 'start' || ty === 'trigger' || ty === 'event' || ty === 'endpoint';
@@ -1190,7 +1210,7 @@ export class FlowBuilderComponent {
       // Keep the same context; dynamic-form will handle missing/extra fields
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
-    } catch {}
+    } catch { }
   }
   isNodeHardError(id: string): boolean {
     try {
@@ -1209,7 +1229,22 @@ export class FlowBuilderComponent {
         const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
         const currentFeat = this.fbUtils.featureChecksum(currentTpl);
         if (storedFeat && currentFeat && storedFeat !== currentFeat) return true;
-      } catch {}
+      } catch { }
+      // Credentials requirement
+      try {
+        const m: any = n?.data?.model || {};
+        const appId = String(m?.templateObj?.appId || m?.templateObj?.app?._id || '') || '';
+        if (appId) {
+          const app = this.appsMap.get(appId);
+          const providerHas = !!app?.hasCredentials;
+          const providerAllows = !!app?.allowWithoutCredentials;
+          const tplAllows = !!m?.templateObj?.allowWithoutCredentials;
+          const allow = providerAllows || tplAllows;
+          if (providerHas && !allow) {
+            if (!m?.credentialId) return true;
+          }
+        }
+      } catch { }
       // Missing required fields based on schema
       try {
         const m: any = n?.data?.model || {};
@@ -1220,7 +1255,7 @@ export class FlowBuilderComponent {
           if (m?.catch_error && !t?.authorize_catch_error) return true;
           if (m?.skip_error && !t?.authorize_skip_error) return true;
           if (m?.catch_error && m?.skip_error) return true; // mutually exclusive
-        } catch {}
+        } catch { }
         if (schema) {
           const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
           const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
@@ -1230,12 +1265,12 @@ export class FlowBuilderComponent {
             });
           if (missing.length) return true;
         }
-      } catch {}
+      } catch { }
       return false;
     } catch { return false; }
   }
   private recomputeValidation() {
-    const issues: Array<{ kind: 'node'|'flow'; nodeId?: string; message: string }> = [];
+    const issues: Array<{ kind: 'node' | 'flow'; nodeId?: string; message: string }> = [];
     try {
       for (const n of this.nodes) {
         const id = String(n.id);
@@ -1253,12 +1288,24 @@ export class FlowBuilderComponent {
           const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
           const currentFeat = this.fbUtils.featureChecksum(currentTpl);
           if (storedFeat && currentFeat && storedFeat !== currentFeat) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (options). Vérifier ce nœud.` });
-        } catch {}
-        // Form invalid or missing required fields
+        } catch { }
+        // Credentials and form validation
         try {
           const model: any = n?.data?.model || {};
           if (model?.invalid === true) {
             issues.push({ kind: 'node', nodeId: id, message: `Formulaire du nœud invalide.` });
+          }
+          // Credentials requirement
+          const appId = String(model?.templateObj?.appId || model?.templateObj?.app?._id || '') || '';
+          if (appId) {
+            const app = this.appsMap.get(appId);
+            const providerHas = !!app?.hasCredentials;
+            const providerAllows = !!app?.allowWithoutCredentials;
+            const tplAllows = !!model?.templateObj?.allowWithoutCredentials;
+            const allow = providerAllows || tplAllows;
+            if (providerHas && !allow && !model?.credentialId) {
+              issues.push({ kind: 'node', nodeId: id, message: `Credentials requis pour ce nœud (${app?.title || app?.name || appId}).` });
+            }
           }
           // Feature misuse
           const t: any = model?.templateObj || {};
@@ -1276,13 +1323,13 @@ export class FlowBuilderComponent {
               .map((f: any) => f.label || f.key || 'Champ requis');
             if (missing.length) issues.push({ kind: 'node', nodeId: id, message: `Champs requis manquants: ${missing.join(', ')}` });
           }
-        } catch {}
+        } catch { }
         // TODO: required-fields validation, only after node dialog opened at least once
         // if (this.openedNodeConfig.has(id)) { ... }
       }
     } catch { }
     this.validationIssues = issues;
-    try { this.cdr.detectChanges(); } catch {}
+    try { this.cdr.detectChanges(); } catch { }
   }
   nodeErrorTooltip(nodeId: string): string {
     try {
@@ -1352,7 +1399,7 @@ export class FlowBuilderComponent {
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
-    try { this.openedNodeConfig.add(String(m.id)); } catch {}
+    try { this.openedNodeConfig.add(String(m.id)); } catch { }
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
@@ -1409,6 +1456,37 @@ export class FlowBuilderComponent {
     this.recomputeErrorPropagation();
     this.history.push(this.snapshot());
     this.recomputeValidation();
+  }
+
+  private findBestTargetNodeForStart(wx: number, wy: number): any | null {
+    try {
+      let best: any = null; let bestD = Infinity;
+      for (const n of this.nodes) {
+        const tmpl = n?.data?.model?.templateObj || {};
+        const ty = String(tmpl?.type || '').toLowerCase();
+        // target must accept an input (not start-like/end)
+        if (ty === 'start' || ty === 'event' || ty === 'endpoint' || ty === 'end') continue;
+        const p = n?.point || { x: 0, y: 0 };
+        const dx = (p.x - wx);
+        const dy = (p.y - wy);
+        const d2 = dx * dx + dy * dy;
+        if (d2 < bestD) { best = n; bestD = d2; }
+      }
+      return best;
+    } catch { return null; }
+  }
+
+  private computePositionAboveTarget(target: any): { x: number; y: number } {
+    try {
+      const vp = this.flow?.viewportService?.readableViewport();
+      const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(target.id)}\"]`) as HTMLElement | null;
+      let w = 180, h = 100;
+      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
+      const gap = 60;
+      const x = (target.point?.x || 0);
+      const y = (target.point?.y || 0) - h - gap;
+      return { x, y };
+    } catch { return { x: (target?.point?.x || 0), y: (target?.point?.y || 0) - 160 }; }
   }
 
   undo() {
@@ -1485,7 +1563,7 @@ export class FlowBuilderComponent {
     this.centerViewportOnWorldPoint(wx, wy, 250);
   }
 
-  onIssueClick(it: { kind: 'node'|'flow'; nodeId?: string; message: string }) {
+  onIssueClick(it: { kind: 'node' | 'flow'; nodeId?: string; message: string }) {
     try {
       if (it && it.nodeId) {
         const node = this.nodes.find(n => String(n.id) === String(it.nodeId));
@@ -1494,7 +1572,7 @@ export class FlowBuilderComponent {
           this.centerOnNodeId(String(it.nodeId));
         }
       }
-    } catch {}
+    } catch { }
   }
 
   private centerViewportOnWorldPoint(wx: number, wy: number, duration = 0) {
@@ -1805,7 +1883,7 @@ export class FlowBuilderComponent {
         const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
         const meta = metas[origIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
-      } catch {}
+      } catch { }
       let cur = this.snapshot();
       const steps = Math.max(0, Number(index) || 0);
       for (let i = 0; i < steps; i++) {
@@ -1816,8 +1894,8 @@ export class FlowBuilderComponent {
       this.nodes = cur.nodes; this.edges = cur.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch {}
-      try { this.updateTimelineCaches(); } catch {}
+      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.updateTimelineCaches(); } catch { }
       try {
         if (!loadedMsg) loadedMsg = steps > 0 ? `Snapshot chargé (undo ×${steps})` : 'Snapshot courant';
         this.message.success(loadedMsg);
@@ -1836,7 +1914,7 @@ export class FlowBuilderComponent {
         const metas = (this.history as any).getFutureMeta?.() || [];
         const meta = metas[uiIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
-      } catch {}
+      } catch { }
       let cur = this.snapshot();
       const steps = Math.max(0, index + 1); // index 0 = next redo
       for (let i = 0; i < steps; i++) {
@@ -1847,8 +1925,8 @@ export class FlowBuilderComponent {
       this.nodes = cur.nodes; this.edges = cur.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch {}
-      try { this.updateTimelineCaches(); } catch {}
+      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.updateTimelineCaches(); } catch { }
       try {
         if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${steps})`;
         this.message.success(loadedMsg);

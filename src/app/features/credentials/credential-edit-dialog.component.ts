@@ -13,7 +13,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NzModalModule, NzFormModule, NzInputModule, NzButtonModule, DynamicForm],
   template: `
-    <nz-modal [nzVisible]="visible" [nzFooter]="null" (nzOnCancel)="cancel()" [nzWidth]="880">
+    <nz-modal [nzVisible]="visible" [nzFooter]="null" (nzOnCancel)="cancel()" [nzWidth]="880" [nzWrapClassName]="'in-flow-editor-modal'">
       <ng-container *nzModalTitle>{{ titleText }}</ng-container>
       <div *nzModalContent>
         <form [formGroup]="form" nz-form nzLayout="vertical">
@@ -81,4 +81,3 @@ export class CredentialEditDialogComponent implements OnChanges {
     this.catalog.saveCredential(out).subscribe(() => this.saved.emit(out));
   }
 }
-

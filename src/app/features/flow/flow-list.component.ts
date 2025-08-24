@@ -71,8 +71,8 @@ type FlowItem = { id: string; name: string; description?: string };
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <div class="form">
-        <label>Nom du flow</label>
-        <input nz-input placeholder="Ex: Notification client" [(ngModel)]="draft.name" />
+        <label>Titre</label>
+        <input nz-input placeholder="Titre du flow" [(ngModel)]="draft.name" />
         <label>Description (optionnel)</label>
         <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" />
         <div class="modal-actions">

@@ -3,12 +3,18 @@ import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
+import { AccessControlService } from '../../../services/access-control.service';
+import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, DynamicForm],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzIconModule, DynamicForm, CredentialEditDialogComponent],
   template: `
     <div class="card" [class.panel-card]="bare">
       <div class="tabs">
@@ -28,6 +34,25 @@ import { FormsModule } from '@angular/forms';
               <button class="update" (click)="updateArgs.emit()">Mettre à jour</button>
             </div>
             <div [class.dimmed]="disabled">
+              <!-- Credentials selection (above form) -->
+              <div class="cred-box" *ngIf="credVisible">
+                <div class="title-row">
+                  <div class="title">Identifiants</div>
+                </div>
+                <div class="subtitle-row" *ngIf="!allowWithout">Requis pour ce nœud</div>
+                <div class="subtitle-row" *ngIf="allowWithout">Optionnel (peut s'exécuter sans)</div>
+                <div class="control-row">
+                  <nz-select class="cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
+                    [(ngModel)]="selectedCredId" [nzAllowClear]="allowWithout"
+                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)">
+                    <nz-option *ngFor="let c of credentials" [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+                  </nz-select>
+                  <button nz-button class="apple-btn icon-only cred-add-btn" (click)="openCreateCred()" [disabled]="!currentProvider" nz-tooltip nzTooltipTitle="Nouveau">
+                    <i nz-icon nzType="plus"></i>
+                  </button>
+                </div>
+              </div>
+              <credential-edit-dialog *ngIf="createVisible" [visible]="createVisible" [provider]="currentProvider" [workspaceId]="workspaceId" (closed)="createVisible=false" (saved)="onCredCreated($event)"></credential-edit-dialog>
               <ng-container *ngIf="schema as s; else noSchema">
                 <app-dynamic-form *ngIf="dfVisible"
                   [schema]="s"
@@ -96,6 +121,16 @@ import { FormsModule } from '@angular/forms';
     .setting-row .label { font-weight:600; font-size:13px; color:#111; }
     .setting-row .hint { color:#8c8c8c; font-size:12px; }
     .placeholder { color:#8c8c8c; font-size:12px; padding:8px; }
+    .cred-box { border:0; border-radius:0; padding:6px 0 10px; margin: 4px 0 8px; background:transparent; }
+    .cred-box .title-row { display:flex; align-items:baseline; gap:8px; margin-bottom:0; }
+    .cred-box .title-row .title { font-weight:600; font-size:13px; color:#111; }
+    .cred-box .subtitle-row { color:#8c8c8c; font-size:12px; margin: 2px 0 6px; }
+    .cred-box .control-row { display:flex; align-items:center; gap:8px; }
+    .cred-box .control-row .cred-select { flex: 1 1 auto; min-width: 0; }
+    .cred-add-btn { display:inline-flex; align-items:center; justify-content:center; height: 32px; padding: 0 12px; border-radius: 6px; }
+    .apple-btn.icon-only .label { display: none; }
+    /* Error style when credentials required but missing */
+    :host ::ng-deep .cred-select.error .ant-select-selector { border-color: #ff4d4f !important; box-shadow: 0 0 0 2px rgba(255,77,79,0.12) !important; }
     /* Make tabs fill available height and allow inner scrolling */
     :host ::ng-deep .tabs .ant-tabs { display:flex; flex-direction:column; width:100%; height:100%; }
     :host ::ng-deep .tabs .ant-tabs-content-holder { flex:1 1 auto; min-height:0; }
@@ -127,7 +162,17 @@ export class FlowAdvancedCenterPanelComponent {
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService) {}
+
+  // Credentials state
+  credVisible = false;
+  allowWithout = false;
+  credRequired = false;
+  currentProvider: AppProvider | null = null;
+  credentials: CredentialSummary[] = [];
+  selectedCredId: string | null = null;
+  createVisible = false;
+  workspaceId: string | null = null;
 
   ngOnChanges() {
     // Reset local form history only when switching node/template (not on each context patch)
@@ -157,6 +202,63 @@ export class FlowAdvancedCenterPanelComponent {
           try { this.cdr.detectChanges(); } catch {}
         });
       }, 0);
+    } catch {}
+    // Refresh credentials UI based on provider
+    this.refreshCredentialsState();
+  }
+
+  private refreshCredentialsState() {
+    try {
+      const tpl: any = this.model?.templateObj || {};
+      const appId = String(tpl?.appId || tpl?.app?._id || '').trim();
+      if (!appId) { this.credVisible = false; this.currentProvider = null; this.credentials = []; this.selectedCredId = null; return; }
+      this.catalog.getApp(appId).subscribe(p => {
+        this.currentProvider = p || null;
+        const has = !!p?.hasCredentials;
+        const provAllow = !!p?.allowWithoutCredentials;
+        const tplAllow = !!tpl?.allowWithoutCredentials;
+        this.allowWithout = provAllow || tplAllow;
+        this.credRequired = has && !this.allowWithout;
+        this.credVisible = has;
+        if (!has) { this.credentials = []; this.selectedCredId = null; this.onCredChange(null); this.cdr.detectChanges(); return; }
+        const ws = this.acl.currentWorkspaceId();
+        this.workspaceId = ws || null;
+        this.catalog.listCredentials(ws || undefined, appId).subscribe(list => {
+          this.credentials = list || [];
+          // Initialize from model if present
+          const curr = String(this.model?.credentialId || '') || null;
+          this.selectedCredId = curr && this.credentials.some(c => c.id === curr) ? curr : null;
+          // Commit selection into model immediately (to reflect required state in validation)
+          this.onCredChange(this.selectedCredId);
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      });
+    } catch { this.credVisible = false; this.currentProvider = null; this.credentials = []; this.selectedCredId = null; }
+  }
+
+  onCredChange(id: string | null) {
+    try {
+      const m = { ...this.model, credentialId: id || null };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
+  openCreateCred() { if (this.currentProvider && this.workspaceId) this.createVisible = true; }
+  onCredCreated(doc: CredentialDoc) {
+    this.createVisible = false;
+    // Refresh list and select the new one
+    try {
+      const appId = this.currentProvider?.id || '';
+      if (!appId) return;
+      const ws = this.workspaceId || undefined;
+      this.catalog.listCredentials(ws, appId).subscribe(list => {
+        this.credentials = list || [];
+        this.selectedCredId = doc.id;
+        this.onCredChange(doc.id);
+        try { this.cdr.detectChanges(); } catch {}
+      });
     } catch {}
   }
 

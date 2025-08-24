@@ -124,3 +124,23 @@ POST /webhooks/google/gmail
 - Quotas Gmail: prévoir backoff et surveillance des erreurs 429/5xx.
 
 Cette page décrit le contrat et les flux attendus. Le front embarque le seed (providers + forms + templates + credentials) pour prototyper l’expérience; la connexion réelle nécessite la mise en place des routes et de l’abonnement côté serveur. Gmail et Telegram sont fournis comme exemples, mais n’importe quel provider d’événements peut suivre ces patrons.
+
+## UX côté builder — sélection des credentials
+
+- Dans la boîte de dialogue de configuration du nœud (Center Panel), une section “Identifiants” apparaît au-dessus du formulaire si le template référence un `appId` dont le provider a `hasCredentials = true`.
+- Règles:
+  - Si `provider.allowWithoutCredentials = true` ou `template.allowWithoutCredentials = true`: le champ est optionnel (aucune erreur si vide).
+  - Sinon: le champ est requis; l’absence de sélection déclenche une erreur de validation du nœud et l’input s’affiche en rouge.
+  - Un bouton “Nouveau” (icône +) permet de créer des credentials à la volée (même workspace), puis sélection automatique du nouvel identifiant.
+- Les validations de formulaire (required) des `args` continuent de s’appliquer en parallèle.
+
+### À l’exécution
+
+- La valeur de `credentialId` du nœud est utilisée par le runtime pour charger les secrets côté serveur et signer les appels (HTTP, SDK, webhooks…).
+- Le frontend n’expose jamais les secrets; il référence uniquement l’`id`. Le backend résout l’`id` → credentials chiffrés.
+- Si un nœud n’a pas de credentials alors qu’ils sont requis, l’exécution doit échouer proprement (erreur claire), ou être empêchée par une validation pré-run.
+
+## Éditeur de template — “Autoriser sans credentials”
+
+- Dans l’éditeur de template de nœud, l’option “Autoriser sans credentials” est visible pour les `function`.
+- Si l’application choisie (App/Provider) a `hasCredentials = true` et `allowWithoutCredentials = false`, l’option est désactivée et forcée à `false` (cohérence avec la stratégie globale du provider).

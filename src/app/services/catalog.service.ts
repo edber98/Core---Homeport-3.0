@@ -285,7 +285,10 @@ export class CatalogService {
         ];
         this.save(this.FLOW_LIST_KEY, flows);
         // Seed demo graphs (with minimal template objects for preview/labels)
-        const startTpl: any = { id: 'tmpl_start', type: 'start', name: 'Start', title: 'Start', subtitle: 'Trigger', category: 'Core' };
+        const startTpl: any = {
+          id: 'tmpl_start', type: 'start', name: 'Start', title: 'Start', subtitle: 'Trigger', category: 'Core',
+          args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] }
+        };
         const sendTpl: any = {
           id: 'tmpl_sendmail', type: 'function', name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
           args: {
@@ -300,8 +303,8 @@ export class CatalogService {
         const httpTpl: any = {
           id: 'tmpl_http', type: 'function', name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
           args: { title: 'HTTP Request', ui: { layout: 'vertical' }, fields: [
-            { type: 'text', key: 'url', label: 'URL', col: { xs: 24 }, default: 'https://api.example.com', expression: { allow: true } },
-            { type: 'select', key: 'method', label: 'Method', options: [{label:'GET',value:'GET'},{label:'POST',value:'POST'},{label:'PUT',value:'PUT'},{label:'DELETE',value:'DELETE'}], col: { xs: 24 }, default: 'GET' },
+            { type: 'text', key: 'url', label: 'URL', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
+            { type: 'select', key: 'method', label: 'Method', options: [{label:'GET',value:'GET'},{label:'POST',value:'POST'},{label:'PUT',value:'PUT'},{label:'DELETE',value:'DELETE'}], col: { xs: 24 }, default: '', validators: [{ type: 'required' }] },
             { type: 'textarea', key: 'body', label: 'Body', col: { xs: 24 }, default: '', expression: { allow: true } }
           ] }
         };
@@ -369,7 +372,7 @@ export class CatalogService {
       if (force || !this.load<any>(this.TPL_LIST_KEY, null)) {
         // Seed derived from Flow Builder palette
         const tpls: NodeTemplate[] = [
-          { id: 'tmpl_start', type: 'start', name: 'Start', category: 'Core', description: 'Début du flow' },
+          { id: 'tmpl_start', type: 'start', name: 'Start', category: 'Core', description: 'Début du flow', args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] } },
           { id: 'tmpl_condition', type: 'condition', name: 'Condition', category: 'Logic', description: 'Branches multiples via items', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] } },
           { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération' },
           { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true },

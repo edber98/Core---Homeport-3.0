@@ -64,8 +64,8 @@ type FormItem = { id: string; name: string; description?: string };
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <div class="form">
-        <label>Nom du formulaire</label>
-        <input nz-input placeholder="Ex: Demande" [(ngModel)]="draft.name" />
+        <label>Titre</label>
+        <input nz-input placeholder="Titre du formulaire" [(ngModel)]="draft.name" />
         <label>Description (optionnel)</label>
         <input nz-input placeholder="Brève description" [(ngModel)]="draft.description" />
         <div class="modal-actions">
@@ -183,7 +183,9 @@ export class FormListComponent implements OnInit, OnDestroy {
     if (!this.canCreate()) return;
     this.creating = true; this.createError = null;
     const id = this.makeIdFromName(this.draft.name);
-    const doc = { id, name: this.draft.name.trim(), description: (this.draft.description || '').trim(), schema: { title: this.draft.name.trim(), fields: [] } };
+    const title = (this.draft.name || '').trim();
+    const uiDescription = (this.draft.description || '').trim();
+    const doc = { id, name: title, description: uiDescription, schema: { title, description: uiDescription || undefined, fields: [] } };
     this.catalog.saveForm(doc).subscribe({
       next: () => {
         this.zone.run(() => {

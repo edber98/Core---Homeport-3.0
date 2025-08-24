@@ -313,7 +313,15 @@ export class NodeTemplateEditorComponent implements OnInit {
     tryLoad(this.route.snapshot.queryParamMap.get('fbSession'));
     try { this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'))); } catch {}
     const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
-    this.catalog.listApps().subscribe(list => { this.apps = (list || []).map(a => ({ id: a.id, name: a.name, title: a.title })); });
+    this.catalog.listApps().subscribe(list => {
+      const all = (list || []);
+      this.apps = all.map(a => ({ id: a.id, name: a.name, title: a.title }));
+      // @ts-ignore
+      this._appsFull = new Map(all.map(a => [a.id, a]));
+      this.updateAllowWithoutStatus();
+    });
+    // React to appId changes to enforce allow_without_credentials state
+    try { this.form.get('appId')?.valueChanges.subscribe(() => this.updateAllowWithoutStatus()); } catch {}
     if (dup) {
       this.catalog.getNodeTemplate(dup).subscribe(t => {
         if (t) {
@@ -385,6 +393,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       this.outputs.clear();
       (t.output || []).forEach(o => this.addOutput(o));
     }
+    this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
       // @ts-ignore
       this.form.get('output_array_field')?.setValue((t as any).output_array_field || 'items', { emitEvent: false });
@@ -406,6 +415,19 @@ export class NodeTemplateEditorComponent implements OnInit {
     } catch {
       this.argsJson = JSON.stringify(t.args || {}, null, 2);
     }
+  }
+
+  private updateAllowWithoutStatus() {
+    try {
+      const appId = this.form.get('appId')?.value || null;
+      // @ts-ignore
+      const app = appId ? (this._appsFull?.get?.(appId) as any) : null;
+      const forbid = !!(app && app.hasCredentials && app.allowWithoutCredentials === false);
+      const ctrl = this.form.get('allow_without_credentials');
+      if (!ctrl) return;
+      if (forbid) { ctrl.setValue(false, { emitEvent: false }); ctrl.disable({ emitEvent: false }); }
+      else { ctrl.enable({ emitEvent: false }); }
+    } catch {}
   }
 
   private makeIdFromName(name: string): string {

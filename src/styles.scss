@@ -158,6 +158,11 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
   }
 }
 
+/* Ensure overlays (select dropdowns, modals) render above custom flow dialog */
+.cdk-overlay-container { z-index: 100010; }
+.cdk-overlay-container .ant-select-dropdown, .cdk-overlay-container .ant-modal { z-index: 100011; }
+.in-flow-editor-modal .ant-modal, .in-flow-editor-modal .ant-modal-mask { z-index: 100012 !important; }
+
 /* styles.scss */
 @font-face {
     font-family: 'Sarine';
