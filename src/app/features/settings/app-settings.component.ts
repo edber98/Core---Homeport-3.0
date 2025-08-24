@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { CatalogService } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
+import { Company, CompanyService, LicensePlan } from '../../services/company.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, NzButtonModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzSelectModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -21,6 +24,25 @@ import { AccessControlService } from '../../services/access-control.service';
         </div>
       </div>
       <div class="cards">
+        <div class="card">
+          <div class="title">Company</div>
+          <div class="row"><label>Nom</label><input [(ngModel)]="company.name" /></div>
+          <div class="row">
+            <label>Plan</label>
+            <nz-select [(ngModel)]="company.license.plan" (ngModelChange)="onPlanChange($event)" style="width: 160px;">
+              <nz-option nzValue="free" nzLabel="Free"></nz-option>
+              <nz-option nzValue="pro" nzLabel="Pro"></nz-option>
+              <nz-option nzValue="enterprise" nzLabel="Enterprise"></nz-option>
+            </nz-select>
+          </div>
+          <div class="kv">
+            <div><span class="k">Max users</span><span class="v">{{ company.license.maxUsers }}</span></div>
+            <div><span class="k">Max workspaces</span><span class="v">{{ company.license.maxWorkspaces }}</span></div>
+          </div>
+          <div class="actions">
+            <button nz-button nzType="default" (click)="saveCompany()">Enregistrer</button>
+          </div>
+        </div>
         <div class="card">
           <div class="title">Réinitialiser</div>
           <p>Efface les données locales (flows, formulaires, templates, apps) et recharge les valeurs par défaut.</p>
@@ -60,6 +82,12 @@ import { AccessControlService } from '../../services/access-control.service';
     .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .card { border:1px solid #ececec; border-radius:12px; padding:12px; background:#fff; box-shadow: 0 8px 24px rgba(0,0,0,.04); }
     .card .title { font-weight:600; margin-bottom: 6px; }
+    .card .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
+    .card .row label { width: 120px; color:#6b7280; }
+    .card .row input { flex:1 1 auto; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; }
+    .kv { display:flex; flex-direction:column; gap:6px; margin-top: 8px; }
+    .kv .k { width: 160px; color:#6b7280; display:inline-block; }
+    .kv .v { color:#111; }
     .card .actions { margin-top: 8px; display:flex; gap:8px; align-items:center; }
     .card .actions .import-btn { display:inline-flex; align-items:center; gap:8px; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; cursor:pointer; }
     .card .actions .import-btn input[type=file] { display:none; }
@@ -68,7 +96,10 @@ import { AccessControlService } from '../../services/access-control.service';
 })
 export class AppSettingsComponent {
   msg = '';
-  constructor(private catalog: CatalogService, private acl: AccessControlService) {}
+  company: Company = { id: 'acme', name: 'Demo Company', adminUserId: 'admin', license: { plan: 'pro', maxUsers: 50, maxWorkspaces: 10 } } as any;
+  constructor(private catalog: CatalogService, private acl: AccessControlService, private companySvc: CompanyService) {
+    this.companySvc.getCompany().subscribe(c => this.company = c);
+  }
   resetAll() {
     this.catalog.resetAll().subscribe(ok1 => {
       this.acl.resetAll().subscribe(ok2 => {
@@ -157,5 +188,14 @@ export class AppSettingsComponent {
     try { fr.readAsText(file); } catch {}
     // reset input value to allow re-select same file
     try { (input as any).value = ''; } catch {}
+  }
+
+  onPlanChange(plan: LicensePlan) {
+    this.companySvc.setPlan(plan).subscribe(c => this.company = c);
+  }
+  saveCompany() {
+    this.companySvc.updateCompany(this.company).subscribe(c => {
+      this.company = c; this.msg = 'Company mise à jour.'; setTimeout(() => this.msg = '', 2500);
+    });
   }
 }

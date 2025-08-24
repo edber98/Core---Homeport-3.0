@@ -335,4 +335,14 @@ export class FlowBuilderUtilsService {
     for (let i = 0; i < str.length; i++) { h = (((h << 5) + h) + str.charCodeAt(i)) >>> 0; }
     return ('00000000' + h.toString(16)).slice(-8);
   }
+
+  // Compute a short signature for template feature flags that affect node behavior
+  featureChecksum(tpl: any): string {
+    try {
+      const a = !!(tpl && tpl.authorize_catch_error);
+      const s = !!(tpl && (tpl as any).authorize_skip_error);
+      // pack two booleans into a short string
+      return (a ? '1' : '0') + (s ? '1' : '0');
+    } catch { return '00'; }
+  }
 }

@@ -119,6 +119,11 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <label nz-checkbox formControlName="authorize_catch_error" nz-tooltip="Autoriser le catch d'erreur (branche err)">Autoriser catch error</label>
             </nz-form-control>
           </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <label nz-checkbox formControlName="authorize_skip_error" nz-tooltip="Autoriser l'option de saut d'erreur (skip)">Autoriser skip error</label>
+            </nz-form-control>
+          </nz-form-item>
         </div>
         <div>
           <div class="sub-header">
@@ -267,6 +272,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       title: new FormControl<string>(''),
       subtitle: new FormControl<string>(''),
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
+      authorize_skip_error: new FormControl<boolean>(false, { nonNullable: true }),
       output_array_field: new FormControl<string>('items'),
       output: this.fb.array<FormGroup<any>>([]),
       fb_preset_tpl: new FormControl<boolean>(true, { nonNullable: true }),
@@ -360,6 +366,9 @@ export class NodeTemplateEditorComponent implements OnInit {
     this.form.patchValue({ icon: (t as any).icon || '', title: (t as any).title || '', subtitle: (t as any).subtitle || '' }, { emitEvent: false });
     if (t.type === 'function') {
       this.form.get('authorize_catch_error')?.setValue(!!t.authorize_catch_error, { emitEvent: false });
+      // skip support visibility flag
+      // @ts-ignore
+      this.form.get('authorize_skip_error')?.setValue(!!(t as any).authorize_skip_error, { emitEvent: false });
       this.outputs.clear();
       (t.output || []).forEach(o => this.addOutput(o));
     }
@@ -413,6 +422,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       tags: (v.tags && v.tags.length) ? v.tags : undefined,
       description: v.description || undefined,
       authorize_catch_error: v.type === 'function' ? !!v.authorize_catch_error : undefined,
+      authorize_skip_error: v.type === 'function' ? !!v.authorize_skip_error : undefined,
       output: v.type === 'function' ? (this.outputs.value || []).map((x:any)=>x.value).filter((s:string)=>!!s && s.trim().length) : undefined,
       args
     } as any;

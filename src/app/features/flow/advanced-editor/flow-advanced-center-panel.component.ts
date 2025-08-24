@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef, NgZone } from '@angular/core';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -28,15 +28,19 @@ import { FormsModule } from '@angular/forms';
               <button class="update" (click)="updateArgs.emit()">Mettre à jour</button>
             </div>
             <div [class.dimmed]="disabled">
-              <app-dynamic-form *ngIf="schema as s"
-                [schema]="s"
-                [value]="model?.context || {}"
-                (valueChange)="onValue($event)"
-                (valueCommitted)="onValueCommitted($event)"
-                (validChange)="onValid($event)"
-                (submitted)="onSubmitted($event)">
-              </app-dynamic-form>
-              <div *ngIf="!schema" class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+              <ng-container *ngIf="schema as s; else noSchema">
+                <app-dynamic-form *ngIf="dfVisible"
+                  [schema]="s"
+                  [value]="model?.context || {}"
+                  (valueChange)="onValue($event)"
+                  (valueCommitted)="onValueCommitted($event)"
+                  (validChange)="onValid($event)"
+                  (submitted)="onSubmitted($event)">
+                </app-dynamic-form>
+              </ng-container>
+              <ng-template #noSchema>
+                <div class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+              </ng-template>
             </div>
           </div>
         </nz-tab>
@@ -51,7 +55,18 @@ import { FormsModule } from '@angular/forms';
                 <nz-switch [(ngModel)]="model.catch_error" (ngModelChange)="onToggleCatchError($event)"></nz-switch>
               </div>
             </div>
-            <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error">Aucun paramètre disponible.</div>
+            <div class="setting-row" *ngIf="model?.templateObj?.authorize_skip_error">
+              <div class="left">
+                <div class="label">Ignorer les erreurs (skip)</div>
+                <div class="hint">N’exécute pas la branche erreur; continue si erreur.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.skip_error"
+                  [nzDisabled]="!!model?.catch_error"
+                  (ngModelChange)="onToggleSkipError($event)"></nz-switch>
+              </div>
+            </div>
+            <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
           </div>
         </nz-tab>
       </nz-tabset>
@@ -111,10 +126,17 @@ export class FlowAdvancedCenterPanelComponent {
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
+  dfVisible = true;
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
+
   ngOnChanges() {
     // Reset local form history only when switching node/template (not on each context patch)
     const id = this.model?.id || null;
-    const tmplSig = this.model?.templateObj ? String(this.model.templateObj.id || this.model.templateObj.type || '') : null;
+    // Include checksum/featureSig to properly reset after template update
+    const t = this.model?.templateObj;
+    const checksum = (this.model as any)?.templateChecksum || '';
+    const feat = (this.model as any)?.templateFeatureSig || '';
+    const tmplSig = t ? `${String(t.id || t.type || '')}:${checksum}:${feat}` : null;
     const needReset = (this.lastModelId == null) || (id !== this.lastModelId) || (tmplSig !== this.lastTemplateSig);
     this.lastModelId = id;
     this.lastTemplateSig = tmplSig;
@@ -125,6 +147,17 @@ export class FlowAdvancedCenterPanelComponent {
       this.formFuture = [];
       this.lastJson = JSON.stringify(init);
     } catch { this.formPast = [{}]; this.formFuture = []; this.lastJson = '{}'; }
+    // Force destroy/recreate of DynamicForm to reset validators + status
+    try {
+      this.dfVisible = false;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.zone.run(() => {
+          this.dfVisible = true;
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      }, 0);
+    } catch {}
   }
 
   onValue(v: Record<string, any>) {
@@ -213,7 +246,18 @@ export class FlowAdvancedCenterPanelComponent {
   // Paramétrage actions
   onToggleCatchError(val: boolean) {
     try {
-      const m = { ...this.model, catch_error: !!val };
+      // Enabling catch disables skip to respect mutual exclusivity
+      const m = { ...this.model, catch_error: !!val, skip_error: !!val ? false : (this.model?.skip_error || false) };
+      this.model = m;
+      this.modelChange.emit(m);
+    } catch {}
+  }
+
+  onToggleSkipError(val: boolean) {
+    try {
+      // Skip can only be enabled if catch is off; ensure it stays off
+      const canEnable = !this.model?.catch_error;
+      const m = { ...this.model, skip_error: canEnable ? !!val : false };
       this.model = m;
       this.modelChange.emit(m);
     } catch {}

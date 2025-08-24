@@ -20,6 +20,9 @@ export type NodeTemplate = {
   args?: any;
   output?: string[];
   authorize_catch_error?: boolean;
+  // New: allows a node to expose a "skip error" behavior (runtime will ignore errors)
+  // When true, builders/viewers show a toggle on instances (disabled if catch is enabled)
+  authorize_skip_error?: boolean;
 };
 
 export type AppProvider = {
@@ -218,7 +221,7 @@ export class CatalogService {
         // Seed demo graphs (with minimal template objects for preview/labels)
         const startTpl: any = { id: 'tmpl_start', type: 'start', name: 'Start', title: 'Start', subtitle: 'Trigger', category: 'Core' };
         const sendTpl: any = {
-          id: 'tmpl_sendmail', type: 'function', name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email', output: ['Success'], authorize_catch_error: true,
+          id: 'tmpl_sendmail', type: 'function', name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
           args: {
             title: 'Send mail', ui: { layout: 'vertical' }, fields: [
               { type: 'text', key: 'dest', label: 'Destinataire', col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
@@ -229,7 +232,7 @@ export class CatalogService {
           }
         };
         const httpTpl: any = {
-          id: 'tmpl_http', type: 'function', name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', output: ['Success'], authorize_catch_error: true,
+          id: 'tmpl_http', type: 'function', name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
           args: { title: 'HTTP Request', ui: { layout: 'vertical' }, fields: [
             { type: 'text', key: 'url', label: 'URL', col: { xs: 24 }, default: 'https://api.example.com', expression: { allow: true } },
             { type: 'select', key: 'method', label: 'Method', options: [{label:'GET',value:'GET'},{label:'POST',value:'POST'},{label:'PUT',value:'PUT'},{label:'DELETE',value:'DELETE'}], col: { xs: 24 }, default: 'GET' },
@@ -303,7 +306,7 @@ export class CatalogService {
           { id: 'tmpl_start', type: 'start', name: 'Start', category: 'Core', description: 'Début du flow' },
           { id: 'tmpl_condition', type: 'condition', name: 'Condition', category: 'Logic', description: 'Branches multiples via items', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] } },
           { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération' },
-          { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Success'], authorize_catch_error: true },
+          { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true },
           {
             id: 'tmpl_sendmail', type: 'function', name: 'SendMail', category: 'Email', appId: 'gmail', description: 'Envoyer un email via Gmail', args: {
               "title": "Nouveau formulaire",
@@ -529,9 +532,9 @@ export class CatalogService {
               }
             }, output: ['Success'], authorize_catch_error: true, tags: ['email', 'gmail'], group: 'Functions'
           },
-          { id: 'tmpl_http', type: 'function', name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', output: ['Success'], authorize_catch_error: true, tags: ['http', 'api'], group: 'Functions' },
-          { id: 'tmpl_slack_post', type: 'function', name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', output: ['Success'], authorize_catch_error: true, tags: ['slack', 'chat'], group: 'Functions' },
-          { id: 'tmpl_delay', type: 'function', name: 'Delay', category: 'Core', description: 'Attendre un délai', output: ['Success'], authorize_catch_error: true, tags: ['time', 'delay'], group: 'Functions' },
+          { id: 'tmpl_http', type: 'function', name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['http', 'api'], group: 'Functions' },
+          { id: 'tmpl_slack_post', type: 'function', name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['slack', 'chat'], group: 'Functions' },
+          { id: 'tmpl_delay', type: 'function', name: 'Delay', category: 'Core', description: 'Attendre un délai', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['time', 'delay'], group: 'Functions' },
           { id: 'tmpl_math_add', type: 'function', name: 'Math Add', category: 'Math', description: 'Additionner', output: ['Success'], tags: ['math'], group: 'Functions' },
           { id: 'tmpl_text_upper', type: 'function', name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', output: ['Success'], tags: ['text'], group: 'Functions' },
           { id: 'tmpl_pdf', type: 'function', name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', output: ['Success'], tags: ['pdf', 'document'], group: 'Functions' },

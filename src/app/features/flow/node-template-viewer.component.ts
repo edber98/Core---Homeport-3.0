@@ -96,6 +96,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         <div class="panel-title">Function</div>
         <div class="kv">
           <div><span class="k">authorize_catch_error</span><span class="v">{{ !!view.authorize_catch_error }}</span></div>
+          <div><span class="k">authorize_skip_error</span><span class="v">{{ !!view.authorize_skip_error }}</span></div>
         </div>
         <div class="panel-title" style="margin-top:8px;">Sorties</div>
         <div class="outputs readonly">
@@ -232,7 +233,7 @@ export class NodeTemplateViewerComponent implements OnInit {
       this.catalog.getNodeTemplate(id).subscribe(t => this.zone.run(() => {
         this.tpl = t;
         if (t) {
-          this.view = { id: t.id, name: t.name, type: t.type, category: t.category, description: t.description, args: t.args || {}, output: t.output || [], authorize_catch_error: t.authorize_catch_error, group: (t as any).group } as any;
+          this.view = { id: t.id, name: t.name, type: t.type, category: t.category, description: t.description, args: t.args || {}, output: t.output || [], authorize_catch_error: t.authorize_catch_error, authorize_skip_error: (t as any).authorize_skip_error, group: (t as any).group } as any;
           this.tags = (t as any).tags || [];
           this.appId = ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || '');
           if (this.appId) this.catalog.getApp(this.appId).subscribe(a => this.zone.run(() => {

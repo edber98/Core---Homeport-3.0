@@ -229,7 +229,7 @@
     <button class="danger" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
   <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel"
-    [disableForChecksum]="hasArgsChecksumMismatch(selectedModel)"
+    [disableForChecksum]="hasTemplateMismatch(selectedModel)"
     (requestUpdateArgs)="onRequestUpdateArgs()"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>

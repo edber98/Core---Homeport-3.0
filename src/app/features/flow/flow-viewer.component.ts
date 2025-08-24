@@ -269,7 +269,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
 
   private loadDemo() {
     const startT = { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} } as any;
-    const fnT = { id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', authorize_catch_error: true, output: ['Succes'], args: {} } as any;
+    const fnT = { id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', authorize_catch_error: true, authorize_skip_error: true, output: ['Succes'], args: {} } as any;
     const condT = { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' } as any;
 
     const startModel = { id: 'demo_start', name: startT.name, template: startT.id, templateObj: startT, context: {} };

@@ -2,12 +2,14 @@ import { Injectable, computed, signal } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CatalogService, NodeTemplate } from './catalog.service';
+import { CompanyService } from './company.service';
 
 export type Role = 'admin' | 'member';
 
 export interface Workspace {
   id: string;      // slug-like id
   name: string;    // display name
+  companyId?: string; // optional company scope
 }
 
 export interface User {
@@ -15,6 +17,7 @@ export interface User {
   name: string;    // display name
   role: Role;
   workspaces: string[]; // workspace ids the user can access (ignored for admin)
+  companyId?: string;   // optional company scope
 }
 
 type ResourceKind = 'flow' | 'form' | 'website';
@@ -47,7 +50,7 @@ export class AccessControlService {
   private _changes = new BehaviorSubject<number>(0);
   readonly changes$ = this._changes.asObservable();
 
-  constructor(private catalog: CatalogService) {
+  constructor(private catalog: CatalogService, private company: CompanyService) {
     this.ensureSeed();
   }
 
@@ -57,9 +60,10 @@ export class AccessControlService {
     const storedWs = this.load<Workspace[]>(this.WORKSPACES_KEY, []);
     let curr = this.load<string | null>(this.CURRENT_USER_KEY, null);
     if (!storedWs.length) {
+      const compId = 'acme';
       const ws: Workspace[] = [
-        { id: 'default', name: 'Default' },
-        { id: 'marketing', name: 'Marketing' }
+        { id: 'default', name: 'Default', companyId: compId },
+        { id: 'marketing', name: 'Marketing', companyId: compId }
       ];
       this.save(this.WORKSPACES_KEY, ws);
       this._workspaces.set(ws);
@@ -70,8 +74,8 @@ export class AccessControlService {
     }
     if (!storedUsers.length) {
       const users: User[] = [
-        { id: 'admin', name: 'Admin', role: 'admin', workspaces: [] },
-        { id: 'alice', name: 'Alice', role: 'member', workspaces: ['default'] },
+        { id: 'admin', name: 'Admin', role: 'admin', workspaces: [], companyId: 'acme' },
+        { id: 'alice', name: 'Alice', role: 'member', workspaces: ['default'], companyId: 'acme' },
       ];
       this.save(this.USERS_KEY, users);
       this._users.set(users);
@@ -107,8 +111,13 @@ export class AccessControlService {
   listWorkspaces(): Observable<Workspace[]> { return of(this._workspaces()); }
 
   addWorkspace(name: string): Observable<Workspace> {
+    // License enforcement: respect maxWorkspaces
+    const currCount = this._workspaces().length;
+    if (!this.company.canAddWorkspace(currCount)) {
+      return of({ id: '', name: 'Limit reached', companyId: 'acme' } as any);
+    }
     const id = this.slug(name);
-    const ws: Workspace = { id, name: name.trim() || id };
+    const ws: Workspace = { id, name: name.trim() || id, companyId: 'acme' };
     const list = [...this._workspaces(), ws];
     this._workspaces.set(list);
     this.save(this.WORKSPACES_KEY, list);
@@ -125,8 +134,13 @@ export class AccessControlService {
   }
 
   addUser(user: Omit<User, 'id'> & { id?: string }): Observable<User> {
+    // License enforcement: respect maxUsers
+    const currCount = this._users().length;
+    if (!this.company.canAddUser(currCount)) {
+      return of({ id: '', name: 'Limit reached', role: 'member', workspaces: [], companyId: 'acme' } as any);
+    }
     const id = user.id || this.slug(user.name || 'user');
-    const u: User = { id, name: user.name, role: user.role, workspaces: user.role === 'admin' ? [] : Array.from(new Set(user.workspaces || [])) };
+    const u: User = { id, name: user.name, role: user.role, workspaces: user.role === 'admin' ? [] : Array.from(new Set(user.workspaces || [])), companyId: 'acme' };
     const list = [...this._users(), u];
     this._users.set(list);
     this.save(this.USERS_KEY, list);

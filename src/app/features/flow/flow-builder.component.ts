@@ -38,10 +38,10 @@ export class FlowBuilderComponent {
     { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} } },
     { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] }, output_array_field: 'items' } },
     { group: 'Logic', label: 'Loop', template: { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} } },
-    { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, output: [], args: {} } },
+    { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
     {
       group: 'Functions', label: 'Send Mail', template: {
-        id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', category: 'Gmail', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', category: 'Gmail', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "Nouveau formulaire",
           "fields": [
             {
@@ -268,7 +268,7 @@ export class FlowBuilderComponent {
     },
     {
       group: 'Functions', label: 'HTTP Request', template: {
-        id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "HTTP Request",
           "fields": [
             { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "default": "https://api.example.com", "expression": { "allow": true } },
@@ -281,7 +281,7 @@ export class FlowBuilderComponent {
     },
     {
       group: 'Functions', label: 'Slack: Post Message', template: {
-        id: 'tmpl_slack_post', name: 'Slack Post', type: 'function', icon: 'fa-brands fa-slack', title: 'Slack', subtitle: 'Post message', category: 'Slack', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_slack_post', name: 'Slack Post', type: 'function', icon: 'fa-brands fa-slack', title: 'Slack', subtitle: 'Post message', category: 'Slack', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "Slack Message",
           "fields": [
             { "type": "text", "key": "channel", "label": "Channel", "col": { "xs": 24 }, "default": "#general" },
@@ -293,7 +293,7 @@ export class FlowBuilderComponent {
     },
     {
       group: 'Functions', label: 'Delay', template: {
-        id: 'tmpl_delay', name: 'Delay', type: 'function', icon: 'fa-regular fa-clock', title: 'Delay', subtitle: 'Wait', category: 'Core', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_delay', name: 'Delay', type: 'function', icon: 'fa-regular fa-clock', title: 'Delay', subtitle: 'Wait', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "Delay",
           "fields": [{ "type": "number", "key": "ms", "label": "Milliseconds", "default": 1000, "col": { "xs": 24 } }],
           "ui": { "layout": "vertical" }
@@ -302,7 +302,7 @@ export class FlowBuilderComponent {
     },
     {
       group: 'Functions', label: 'Math: Add', template: {
-        id: 'tmpl_math_add', name: 'Math Add', type: 'function', icon: 'fa-solid fa-plus', title: 'Math', subtitle: 'Add numbers', category: 'Math', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_math_add', name: 'Math Add', type: 'function', icon: 'fa-solid fa-plus', title: 'Math', subtitle: 'Add numbers', category: 'Math', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "Add",
           "fields": [{ "type": "number", "key": "a", "label": "A", "default": 0 }, { "type": "number", "key": "b", "label": "B", "default": 0 }],
           "ui": { "layout": "vertical" }
@@ -311,19 +311,19 @@ export class FlowBuilderComponent {
     },
     {
       group: 'Functions', label: 'Text: Uppercase', template: {
-        id: 'tmpl_text_upper', name: 'Text Uppercase', type: 'function', icon: 'fa-solid fa-font', title: 'Text', subtitle: 'Uppercase', category: 'Text', authorize_catch_error: true, output: [], args: {
+        id: 'tmpl_text_upper', name: 'Text Uppercase', type: 'function', icon: 'fa-solid fa-font', title: 'Text', subtitle: 'Uppercase', category: 'Text', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
           "title": "Uppercase",
           "fields": [{ "type": "text", "key": "input", "label": "Input", "default": "" }],
           "ui": { "layout": "vertical" }
         }
       }
     },
-    { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, output: [], args: {} } },
+    { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
   ];
 
   templates: any[] = [
     { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} },
-    { id: 'tmpl_fn', name: 'Function', type: 'function', icon: 'fa-solid fa-cog', title: 'Function', subtitle: 'Generic step', authorize_catch_error: true, output: [], args: {} },
+    { id: 'tmpl_fn', name: 'Function', type: 'function', icon: 'fa-solid fa-cog', title: 'Function', subtitle: 'Generic step', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} },
     { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' },
     { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} },
     { id: 'tmpl_end', name: 'End', type: 'end', icon: 'fa-solid fa-stop', title: 'End', subtitle: 'Terminate', args: {} },
@@ -656,7 +656,8 @@ export class FlowBuilderComponent {
       template: templateObj?.id || null,
       templateObj,
       context: {},
-      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {})
+      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+      templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
     const vNode = { id: newId, point: positionInFlow, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
@@ -1103,14 +1104,20 @@ export class FlowBuilderComponent {
       return this.fbUtils.argsChecksum(currentTpl?.args || {});
     } catch { return ''; }
   }
-  hasArgsChecksumMismatch(model: any): boolean {
+  hasTemplateMismatch(model: any): boolean {
     try {
       if (!model) return false;
       const tplId = String(model?.template || model?.templateObj?.id || '');
       if (!tplId) return false;
       const stored = String(model?.templateChecksum || '');
       const current = this.computeTemplateChecksumForId(tplId);
-      return !!(stored && current && stored !== current);
+      const argsMismatch = !!(stored && current && stored !== current);
+      const list = this.allTemplates || [];
+      const tpl = list.find((t: any) => String(t?.id) === String(tplId));
+      const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+      const currentFeat = this.fbUtils.featureChecksum(tpl);
+      const featMismatch = !!(storedFeat && currentFeat && storedFeat !== currentFeat);
+      return argsMismatch || featMismatch;
     } catch { return false; }
   }
   onRequestUpdateArgs() {
@@ -1122,7 +1129,10 @@ export class FlowBuilderComponent {
       if (!curTpl) return;
       const newArgs = JSON.parse(JSON.stringify((curTpl as any).args || {}));
       const newChecksum = this.fbUtils.argsChecksum(newArgs);
-      const newModel = { ...m, templateObj: { ...(m.templateObj || {}), args: newArgs }, templateChecksum: newChecksum };
+      const newFeatureSig = this.fbUtils.featureChecksum(curTpl);
+      // Merge latest template flags (authorize_catch_error, authorize_skip_error, outputs, etc.)
+      const updatedTplObj = { ...(m.templateObj || {}), ...(curTpl as any), args: newArgs };
+      const newModel = { ...m, templateObj: updatedTplObj, templateChecksum: newChecksum, templateFeatureSig: newFeatureSig };
       // Keep the same context; dynamic-form will handle missing/extra fields
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
@@ -1142,11 +1152,21 @@ export class FlowBuilderComponent {
         const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
         const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
         if (stored && current && stored !== current) return true;
+        const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+        const currentFeat = this.fbUtils.featureChecksum(currentTpl);
+        if (storedFeat && currentFeat && storedFeat !== currentFeat) return true;
       } catch {}
       // Missing required fields based on schema
       try {
         const m: any = n?.data?.model || {};
         const schema: any = m?.templateObj?.args || null;
+        // Feature misuse: catch/skip activated while not authorized by template
+        try {
+          const t: any = m?.templateObj || {};
+          if (m?.catch_error && !t?.authorize_catch_error) return true;
+          if (m?.skip_error && !t?.authorize_skip_error) return true;
+          if (m?.catch_error && m?.skip_error) return true; // mutually exclusive
+        } catch {}
         if (schema) {
           const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
           const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
@@ -1169,15 +1189,16 @@ export class FlowBuilderComponent {
         if (tpl && !this.allowedTplIds.has(tpl)) {
           issues.push({ kind: 'node', nodeId: id, message: `Template ${tpl} non autorisé dans ce workspace` });
         }
-        // Args checksum mismatch
+        // Template changes: args checksum or feature flags
         try {
           const model: any = n?.data?.model || {};
-          const stored = String(model?.templateChecksum || '');
           const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tpl));
+          const stored = String(model?.templateChecksum || '');
           const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
-          if (stored && current && stored !== current) {
-            issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (arguments). Vérifier ce nœud.` });
-          }
+          if (stored && current && stored !== current) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (arguments). Vérifier ce nœud.` });
+          const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+          const currentFeat = this.fbUtils.featureChecksum(currentTpl);
+          if (storedFeat && currentFeat && storedFeat !== currentFeat) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (options). Vérifier ce nœud.` });
         } catch {}
         // Form invalid or missing required fields
         try {
@@ -1185,6 +1206,11 @@ export class FlowBuilderComponent {
           if (model?.invalid === true) {
             issues.push({ kind: 'node', nodeId: id, message: `Formulaire du nœud invalide.` });
           }
+          // Feature misuse
+          const t: any = model?.templateObj || {};
+          if (model?.catch_error && !t?.authorize_catch_error) issues.push({ kind: 'node', nodeId: id, message: `Option catch_error non autorisée par le template.` });
+          if (model?.skip_error && !t?.authorize_skip_error) issues.push({ kind: 'node', nodeId: id, message: `Option skip_error non autorisée par le template.` });
+          if (model?.catch_error && model?.skip_error) issues.push({ kind: 'node', nodeId: id, message: `Options catch et skip ne peuvent pas être activées ensemble.` });
           const schema: any = model?.templateObj?.args || null;
           if (schema) {
             const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
