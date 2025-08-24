@@ -43,7 +43,7 @@ Schémas principaux (clés essentielles):
 - users: { _id, email:unique, name, passwordHash, companyId:ref(companies), role:'admin'|'member', createdAt }
 - workspaces: { _id, name, companyId:ref(companies), createdAt }
 - providers: { _id, key, name, hasCredentials, allowWithoutCredentials, credentialsSchema, createdAt }
-- node_templates: { _id, key, type:'start'|'action'|'event'|'endpoint', name, providerId?:ref(providers), allowWithoutCredentials?, argsSchema, uiSchema?, createdAt }
+- node_templates: { _id, key, type:'start'|'action'|'event'|'endpoint', name, providerId?:ref(providers), allowWithoutCredentials?, args (form), createdAt }
 - credentials: { _id, workspaceId:ref(workspaces), providerId:ref(providers), name, dataCiphertext, createdAt, updatedAt, valid?:bool }
 - flows: { _id, workspaceId:ref(workspaces), title, description, graph, status:'draft'|'test'|'production', enabled:bool, createdAt, updatedAt }
 - runs: { _id, runId:string, workspaceId:ref(workspaces), flowId:ref(flows), flowVersionId?, mode:'prod'|'test', status:'queued'|'running'|'success'|'error'|'cancelled'|'timed_out'|'partial_success', startedAt, finishedAt?, durationMs?, initialInput?, finalPayload?, finalMsg?, errors?:[ErrorInfo], metadata?:any, parentRunId? }
@@ -251,4 +251,3 @@ Arrêt gracieux:
 ---
 
 Ce document, combiné avec `backend-plan.md` et `backend-implementation.md`, constitue la base de référence pour implémenter le backend en garantissant la parité fonctionnelle et la sécurité multi‑tenant requise par l’interface.
-

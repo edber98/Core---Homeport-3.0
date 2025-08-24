@@ -3,7 +3,7 @@
 Objectif: détacher l’implémentation des fonctions (nœuds `action`/`endpoint`/`event`) dans des plugins chargeables dynamiquement. Les templates (métadonnées) décrivent l’UI/contrats; les plugins fournissent les handlers d’exécution.
 
 ## Concepts
-- Template de nœud: définition statique (key, type, argsSchema/UI, contraintes credentials, sorties). Stockée en DB (collection `node_templates`).
+- Template de nœud: définition statique (key, type, args [form UI], contraintes credentials, sorties). Stockée en DB (collection `node_templates`).
 - Plugin de fonction: module JavaScript/TypeScript exportant des handlers (`execute`, éventuellement `validate`, `onEvent`, etc.). Stocké localement (`plugins/local`) ou téléchargé dans `plugins/registry` (via git/URL).
 - Mapping: `template.key` ↔ `plugin.handlerKey` (normalisé). Exemple: `gmail.sendEmail` → handler `sendEmail` dans plugin `gmail`.
 
@@ -40,7 +40,7 @@ plugins/
 
 ## Contrats & validations
 - Credentials: le handler lit `credentials` (déjà résolus par le moteur selon le flow); jamais via `msg.payload`.
-- Args: conformes à `argsSchema` du template; validation Ajv avant exécution.
+- Args: conformes au schéma de formulaire `args` du template; la validation fine côté backend est optionnelle (le builder front assure la cohérence UI).
 - Sorties: définies par `template.output`; `err` disponible si `authorize_catch_error` et `nodeInstance.catch_error==true`.
 
 ## Sécurité & Observabilité

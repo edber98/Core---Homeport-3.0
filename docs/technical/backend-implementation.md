@@ -31,7 +31,7 @@ Le guide est agnostique de framework, avec exemples en Node.js/NestJS. Adaptez l
 - `workspaces` { _id, name, createdAt }
 - `providers` { _id, key, name, hasCredentials, allowWithoutCredentials, credentialsSchema, createdAt }
 - `credentials` { _id, workspaceId, providerId, name, dataCiphertext, createdAt, updatedAt, valid?: boolean }
-- `node_templates` { _id, key, providerId?, type: 'action'|'event'|'endpoint'|'start', name, allowWithoutCredentials?, version, argsSchema, uiSchema, createdAt, deprecated?: boolean }
+- `node_templates` { _id, key, providerId?, type: 'action'|'event'|'endpoint'|'start', name, allowWithoutCredentials?, version, args (form), createdAt, deprecated?: boolean }
 - `flows` { _id, workspaceId, title, description, graph, versions?: [{ v, graph }], createdAt, updatedAt, valid?: boolean }
 - `runs` { _id, runId, flowId, flowVersionId, mode: 'prod'|'test', status: 'queued'|'running'|'success'|'error'|'cancelled'|'timed_out'|'partial_success', startedAt, finishedAt?, durationMs?, initialInput?, initialCtx?, finalPayload?, finalMsg?, errors?: [ErrorInfo], metadata?: any, parentRunId? }
 - `run_attempts` { _id, runId, nodeId, attempt, kind: 'trigger'|'function'|'condition'|'merge'|'delay'|'wait', templateKey?, templateRaw?, status: 'pending'|'running'|'success'|'error'|'skipped'|'blocked'|'timed_out', startedAt, finishedAt?, durationMs?, argsPre?, argsPost?, input?, result?, errors?: [ErrorInfo] }
@@ -162,7 +162,7 @@ type Provider = {
 type NodeTemplate = {
   id: string; key: string; type: 'start'|'action'|'event'|'endpoint'; name: string;
   providerId?: string; allowWithoutCredentials?: boolean;
-  argsSchema: JSONSchema7; uiSchema?: any;
+  args: any; // form-builder schema (UI)
 };
 
 type FlowGraph = {
@@ -504,7 +504,7 @@ function validateFlow(flow: FlowGraph, ctx: Ctx): ValidationResult {
   for (const n of flow.nodes) {
     const tmpl = ctx.templates.get(n.templateId, n.version);
     if (!tmpl) errors.push(err(n, 'template.not_found'));
-    else validateArgs(n.args, tmpl.argsSchema, errors, n);
+    // form-level validation handled in frontend builder; backend may apply basic checks if needed.
     // 3) Credentials
     const prov = tmpl.providerId ? ctx.providers.get(tmpl.providerId) : null;
     const needsCred = prov?.hasCredentials && !(prov.allowWithoutCredentials || tmpl.allowWithoutCredentials);

@@ -1,0 +1,29 @@
+{
+  "name": "homeport-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Express-based backend for Homeport (multi-tenant, flows engine, SSE)",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "test": "CI_NO_DB=1 node --test",
+    "test:db": "NODE_ENV=test MONGO_DB_NAME=homeport_test node --test",
+    "cli": "node scripts/cli.js"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "mongoose": "^8.7.0"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.4"
+  }
+}

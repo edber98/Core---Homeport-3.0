@@ -60,7 +60,7 @@ Related spec: see `docs/technical/backend-implementation.md` for deep dives (sch
 
 ## Phase 3 — Node Templates (Catalog)
 - Tasks
-  - Entities: node_templates { _id, key, providerId?, type, name, argsSchema, uiSchema?, allowWithoutCredentials?, createdAt }
+  - Entities: node_templates { _id, key, providerId?, type, name, args (form), allowWithoutCredentials?, createdAt }
   - Endpoints
     - GET /api/node-templates
     - POST /api/node-templates (admin only)
