@@ -7,11 +7,12 @@ import { AccessControlService } from '../../services/access-control.service';
 import { CatalogService, CredentialDoc, AppProvider } from '../../services/catalog.service';
 import { FormTableViewerComponent } from '../../modules/dynamic-form/components/table-viewer/table-viewer';
 import { CredentialEditDialogComponent } from './credential-edit-dialog.component';
+import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 
 @Component({
   selector: 'credential-viewer',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzTagModule, FormTableViewerComponent, CredentialEditDialogComponent],
+  imports: [CommonModule, NzButtonModule, NzTagModule, FormTableViewerComponent, CredentialEditDialogComponent, DynamicForm],
   template: `
     <div class="viewer" *ngIf="doc as d">
       <div class="header">
@@ -25,11 +26,20 @@ import { CredentialEditDialogComponent } from './credential-edit-dialog.componen
           <button nz-button class="apple-btn" (click)="duplicate()" [disabled]="!canEdit"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
         </div>
       </div>
-      <div class="kv">
-        <div><span class="k">ID</span><span class="v">{{ d.id }}</span></div>
-        <div><span class="k">Nom</span><span class="v">{{ d.name }}</span></div>
-        <div><span class="k">Provider</span><span class="v">{{ d.providerId }}</span></div>
-        <div><span class="k">Workspace</span><span class="v">{{ d.workspaceId }}</span></div>
+      <div class="content" *ngIf="provider as p">
+        <div class="left-pane">
+          <div class="icon" [style.background]="p.color || '#f3f4f6'">
+            <i *ngIf="p.iconClass" [class]="p.iconClass"></i>
+            <img *ngIf="!p.iconClass && p.iconUrl" [src]="p.iconUrl" alt="icon"/>
+            <img *ngIf="!p.iconClass && !p.iconUrl" [src]="simpleIconUrl(p.id)" alt="icon"/>
+          </div>
+          <div class="kv">
+            <div><span class="k">ID</span><span class="v">{{ d.id }}</span></div>
+            <div><span class="k">Nom</span><span class="v">{{ d.name }}</span></div>
+            <div><span class="k">Provider</span><span class="v">{{ p.title || p.name }} <span class="chip">{{ p.id }}</span></span></div>
+            <div><span class="k">Workspace</span><span class="v">{{ d.workspaceId }}</span></div>
+          </div>
+        </div>
       </div>
       <div class="schema" *ngIf="provider?.credentialsForm as schema">
         <df-table-viewer [schema]="schema" [value]="d.values || {}"></df-table-viewer>
@@ -38,7 +48,7 @@ import { CredentialEditDialogComponent } from './credential-edit-dialog.componen
     </div>
   `,
   styles: [`
-    .viewer { padding: 12px; max-width: 820px; margin: 0 auto; }
+    .viewer { padding: 12px; max-width: 980px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
     .header .left { display:flex; align-items:left; gap:0px; }
     .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
@@ -48,9 +58,18 @@ import { CredentialEditDialogComponent } from './credential-edit-dialog.componen
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
-    .kv { display:flex; flex-direction:column; gap:8px; margin-bottom: 8px; }
+    .content { display:flex; gap:14px; align-items:flex-start; }
+    .left-pane { display:flex; gap:12px; align-items:flex-start; }
+    .icon { width:48px; height:48px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; align-self:flex-start; }
+    .icon img { width: 28px; height: 28px; object-fit: contain; display:block; }
+    .icon i { font-size: 22px; line-height: 1; color: #111; display:block; }
+    .kv { display:flex; flex-direction:column; gap:8px; }
     .kv .k { color:#6b7280; width:140px; display:inline-block; }
     .kv .v { color:#111; }
+    .kv .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; margin-left:6px; }
+    .pane-title { font-weight:600; margin: 4px 0 6px; color:#374151; }
+    .right-pane { flex:1; min-width: 360px; }
+    .form-preview { pointer-events: none; user-select: none; }
   `]
 })
 export class CredentialViewerComponent implements OnInit {
@@ -79,4 +98,5 @@ export class CredentialViewerComponent implements OnInit {
   edit() { if (!this.canEdit) return; this.editDoc = this.doc || null; this.editVisible = true; }
   duplicate() { if (!this.canEdit || !this.doc) return; this.editDoc = { ...this.doc, id: '', name: (this.doc.name || '') + ' (copie)' }; this.editVisible = true; }
   onSaved(out: CredentialDoc) { this.editVisible = false; this.doc = out; try { this.cdr.detectChanges(); } catch {} }
+  simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
 }

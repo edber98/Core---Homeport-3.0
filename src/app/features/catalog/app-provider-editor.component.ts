@@ -99,7 +99,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
               <div class="dialog-box">
                 <ng-container *ngIf="credsReady; else loadingTpl">
                   <ng-container *ngIf="isFormSchema(credsObj); else invalidSchema">
-                    <app-dynamic-form [schema]="credsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+                    <app-dynamic-form [schema]="credsObj" [value]="{}" [forceBp]="'xs'" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
                   </ng-container>
                   <ng-template #invalidSchema>
                     <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
