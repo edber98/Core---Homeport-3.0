@@ -1,0 +1,68 @@
+const express = require('express');
+const { authMiddleware, requireCompanyScope, requireAdmin } = require('../../auth/jwt');
+const NodeTemplate = require('../../db/models/node-template.model');
+const Workspace = require('../../db/models/workspace.model');
+const Flow = require('../../db/models/flow.model');
+const Notification = require('../../db/models/notification.model');
+const { validateFlowGraph } = require('../../utils/validate');
+
+module.exports = function(){
+  const r = express.Router();
+  r.use(authMiddleware());
+  r.use(requireCompanyScope());
+
+  r.get('/node-templates', async (req, res) => {
+    const { category } = req.query;
+    const q = category ? { category } : {};
+    const list = await NodeTemplate.find(q).lean();
+    res.apiOk(list);
+  });
+
+  r.post('/node-templates', requireAdmin(), async (req, res) => {
+    const body = req.body || {};
+    const t = await NodeTemplate.create(body);
+    res.status(201).json({ success: true, data: t, requestId: req.requestId, ts: Date.now() });
+  });
+
+  r.put('/node-templates/:key', requireAdmin(), async (req, res) => {
+    const { key } = req.params; const patch = req.body || {}; const force = !!patch.force;
+    const tpl = await NodeTemplate.findOne({ key });
+    if (!tpl) return res.apiError(404, 'template_not_found', 'Node template not found');
+    const old = tpl.toObject();
+    Object.assign(tpl, patch); await tpl.save();
+
+    // If argsSchema changed, validate flows using this template
+    const schemaChanged = JSON.stringify(old.argsSchema || {}) !== JSON.stringify(tpl.argsSchema || {});
+    if (schemaChanged){
+      // get all flows in company scope? templates are global, validate all flows
+      const flows = await Flow.find();
+      const impacted = [];
+      const loaders = {
+        getTemplateByKey: async (k) => NodeTemplate.findOne({ key: k }).lean(),
+        isTemplateAllowed: async () => true,
+      };
+      for (const f of flows){
+        const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
+        if (!v.ok){
+          // restrict to errors about this template key
+          const has = v.errors.some(e => (e.details && e.details.nodeId) || e.code === 'args_invalid');
+          if (has) impacted.push({ flowId: String(f._id), name: f.name, errors: v.errors });
+        }
+      }
+      if (impacted.length && !force){
+        return res.apiError(400, 'template_update_breaks_flows', 'Template update invalidates flows', { impacted });
+      }
+      if (impacted.length && force){
+        for (const it of impacted){
+          const f = await Flow.findById(it.flowId);
+          f.enabled = false; await f.save();
+          const ws = await Workspace.findById(f.workspaceId);
+          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+        }
+      }
+      return res.apiOk({ template: tpl, impacted });
+    }
+    res.apiOk({ template: tpl, impacted: [] });
+  });
+  return r;
+}
