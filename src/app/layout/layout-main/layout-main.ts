@@ -54,6 +54,7 @@ export class LayoutMain implements OnInit {
     { label: 'Formulaires', icon: 'form', route: '/forms' },
     { label: 'Sites web', icon: 'global', route: '/websites' },
     { label: 'Templates de nœuds', icon: 'appstore', route: '/node-templates' },
+    { label: 'Credentials', icon: 'key', route: '/credentials' },
     { label: 'Workspaces', icon: 'cluster', route: '/workspaces', adminOnly: true },
     { label: 'Users', icon: 'user', route: '/users', adminOnly: true },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },

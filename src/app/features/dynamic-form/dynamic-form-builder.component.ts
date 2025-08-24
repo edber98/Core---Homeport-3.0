@@ -445,6 +445,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       type: ['text'],
       key: [''],
       label: [''],
+      secret: [false],
       expression_allow: [false],
       expression_hideErrors: [false],
       placeholder: [''],
@@ -675,6 +676,12 @@ export class DynamicFormBuilderComponent implements OnChanges {
         // Inputs classiques
         (f as any).key = v.key || '';
         f.label = v.label || undefined;
+        // Secret flag (only meaningful for inputs, ignored for textblock)
+        if (f.type === 'text' || f.type === 'textarea' || f.type === 'number' || f.type === 'date' || f.type === 'select' || f.type === 'radio' || f.type === 'checkbox') {
+          (f as any).secret = !!v.secret;
+        } else {
+          delete (f as any).secret;
+        }
         // Expression toggle + options
         if (v.expression_allow) {
           (f as any).expression = { allow: true, showPreviewErrors: !v.expression_hideErrors };
@@ -1058,6 +1065,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         type: obj.type,
         key: (obj as any).key ?? '',
         label: obj.label ?? '',
+        secret: !!(obj as any).secret,
         expression_allow: !!(obj as any).expression?.allow,
         expression_hideErrors: ((obj as any).expression?.allow ? ((obj as any).expression?.showPreviewErrors === false) : false),
         placeholder: (obj as any).placeholder ?? '',

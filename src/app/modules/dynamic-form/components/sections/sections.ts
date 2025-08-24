@@ -21,6 +21,7 @@ export class Sections implements OnChanges {
   @Input() ui?: FormUI;
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() exprPreviewShowErrors = true;
+  @Input() disableExpressions = false;
   @Input() ctx: any = {};
   // Initial values for array items, if section is array
   @Input() initialArrayValue?: any[] | null = null;

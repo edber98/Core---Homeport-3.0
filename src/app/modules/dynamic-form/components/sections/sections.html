@@ -32,7 +32,7 @@
                       <ng-container *ngSwitchCase="'section'">
                         <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
                              (click)="onClickSection(j, $event)">
-                      <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [ctx]="ctx"
+                      <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" [ctx]="ctx"
                                   [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                                       [allowMove]="allowMove" [allowDelete]="allowDelete"
                                       (moveField)="moveField.emit($event)"
@@ -68,7 +68,7 @@
                       <ng-container *ngSwitchCase="'section_array'">
                         <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="isSelected(f)"
                              (click)="onClickSection(j, $event)">
-                        <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [ctx]="ctx"
+                        <df-section [section]="$any(f)" [form]="g" [ui]="sectionUi" [forceBp]="forceBp" [initialArrayValue]="g.value ? g.value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" [ctx]="ctx"
                                       [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                                       [allowMove]="allowMove" [allowDelete]="allowDelete"
                                       (moveField)="moveField.emit($event)"
@@ -86,7 +86,7 @@
                         </div>
                       </ng-container>
                       <ng-container *ngSwitchDefault>
-                        <df-field [field]="f" [form]="g" [ui]="sectionUi" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" (click)="onInnerFieldClick($event)"></df-field>
+                        <df-field [field]="f" [form]="g" [ui]="sectionUi" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerFieldClick($event)"></df-field>
                         <div class="df-edit-actions" *ngIf="editMode">
                           <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectField.emit({ index: j, field: f, section: section })">Select</button>
                           <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: j, dir: 'up'}); $event.stopPropagation()">▲</button>

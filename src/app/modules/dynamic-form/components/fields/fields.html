@@ -36,7 +36,7 @@
 
           <div class="df-control-wrap">
             <!-- Toggle expression mode if allowed -->
-            <div class="df-expr-toggle" *ngIf="$any(field).expression?.allow">
+            <div class="df-expr-toggle" *ngIf="!disableExpressions && $any(field).expression?.allow">
               <nz-segmented
                 [(ngModel)]="exprMode"
                 [ngModelOptions]="{ standalone: true }"
@@ -46,7 +46,7 @@
 
             <ng-container *ngIf="fieldKey as key">
               <!-- Expression editor mode -->
-              <app-expression-editor *ngIf="exprEnabled"
+              <app-expression-editor *ngIf="!disableExpressions && exprEnabled"
                                      [inline]="true"
                                      [context]="ctx"
                                      [showPreviewErrors]="showPreviewErrors"
@@ -58,7 +58,7 @@
               <ng-container *ngIf="!exprEnabled">
                 <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
                 <input *ngIf="field.type==='text'"
-                      nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+                      nz-input [id]="key" [type]="$any(field).secret ? 'password' : 'text'" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
                 <textarea *ngIf="field.type==='textarea'"
                           nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>

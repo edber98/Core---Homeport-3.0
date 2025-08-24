@@ -33,6 +33,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           <div class="leading"><div class="avatar">EX</div></div>
           <div class="content"><div class="title-row"><div class="name">Expr + JSON</div><span class="chip">/debug/expr-json</span></div><div class="desc">Tester JSON Viewer + Expression Editor</div></div>
         </div>
+        <div class="card" (click)="go('/debug/form-viewers')">
+          <div class="leading"><div class="avatar">FV</div></div>
+          <div class="content"><div class="title-row"><div class="name">Form Viewers</div><span class="chip">/debug/form-viewers</span></div><div class="desc">Tester df-table-viewer et df-records-table</div></div>
+        </div>
       </div>
     </div>
   </div>

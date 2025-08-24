@@ -9,7 +9,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { AccessControlService, Workspace } from '../../services/access-control.service';
-import { CatalogService, NodeTemplate } from '../../services/catalog.service';
+import { CatalogService, NodeTemplate, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { WebsiteService, Website } from '../website/website.service';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
@@ -128,6 +128,28 @@ import { auditTime } from 'rxjs/operators';
                 </div>
               </div>
               <ng-template #emptySites><div class="empty">Aucun site.</div></ng-template>
+            </div>
+            <!-- Credentials -->
+            <div class="row">
+              <label class="field-label">Credentials</label>
+              <div class="items" *ngIf="(credsAvail?.length || 0) > 0; else emptyCreds">
+                <div class="muted" style="margin-bottom:4px">{{ credsAvail.length }} élément(s)</div>
+                <div class="item" *ngFor="let it of credsAvail">
+                  <span class="name">{{ it.name || it.id }}</span>
+                  <span class="id">{{ it.id }}</span>
+                  <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuCreds" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
+                  <nz-dropdown-menu #menuCreds="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item nzDisabled="true">Transférer vers</li>
+                      <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('credential', it.id, w.id)">{{ w.name }}</li>
+                      <li nz-menu-divider></li>
+                      <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
+                      <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('credential', it.id, w.id)">{{ w.name }}</li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </div>
+              <ng-template #emptyCreds><div class="empty">Aucun credential.</div></ng-template>
             </div>
           </div>
         </div>
@@ -255,6 +277,7 @@ export class WorkspaceListComponent implements OnInit {
   missingTemplates: string[] = [];
   missingVisible = false;
   private pendingIds: string[] = [];
+  credsAvail: Array<{ id: string; name?: string }> = [];
 
   // Initialize defaults when a workspace is selected
   private initMoveDefaults() {
@@ -265,7 +288,7 @@ export class WorkspaceListComponent implements OnInit {
   }
   private reloadAll() {
     const src = this.selected?.id || '';
-    if (!src) { this.flowsAvail = []; this.formsAvail = []; this.sitesAvail = []; return; }
+    if (!src) { this.flowsAvail = []; this.formsAvail = []; this.sitesAvail = []; this.credsAvail = []; return; }
     // Flows
     this.catalog.listFlows().subscribe(list => {
       const items = (list || []).filter(f => this.acl.ensureResourceWorkspace('flow', f.id) === src);
@@ -284,8 +307,14 @@ export class WorkspaceListComponent implements OnInit {
       this.sitesAvail = items.map(s => ({ id: s.id, name: s.name }));
       try { this.cdr.detectChanges(); } catch {}
     });
+    // Credentials
+    this.catalog.listCredentials(src).subscribe(list => {
+      const items = (list || []).map(c => ({ id: c.id, name: c.name }));
+      this.credsAvail = items;
+      try { this.cdr.detectChanges(); } catch {}
+    });
   }
-  transferOne(kind: 'flow'|'form'|'website', id: string, dest: string) {
+  transferOne(kind: 'flow'|'form'|'website'|'credential', id: string, dest: string) {
     this.moveDestWs = dest; this.moveMode = 'transfer';
     if (kind === 'flow') {
       this.checkMissingTemplatesForFlows(dest, [id], (missing) => {
@@ -294,11 +323,17 @@ export class WorkspaceListComponent implements OnInit {
       });
     } else if (kind === 'form') {
       this.acl.setResourceWorkspace('form', id, dest); this.afterMoveCleanup();
-    } else {
+    } else if (kind === 'website') {
       this.acl.setResourceWorkspace('website', id, dest); this.afterMoveCleanup();
+    } else {
+      // credential: update workspaceId on the doc
+      this.catalog.getCredential(id).subscribe(doc => {
+        const updated: CredentialDoc = { ...doc, workspaceId: dest };
+        this.catalog.saveCredential(updated).subscribe(() => this.afterMoveCleanup());
+      });
     }
   }
-  duplicateOne(kind: 'flow'|'form'|'website', id: string, dest: string) {
+  duplicateOne(kind: 'flow'|'form'|'website'|'credential', id: string, dest: string) {
     this.moveDestWs = dest; this.moveMode = 'duplicate';
     if (kind === 'flow') {
       this.catalog.getFlow(id).subscribe(doc => {
@@ -314,13 +349,20 @@ export class WorkspaceListComponent implements OnInit {
         this.catalog.saveForm(copy).subscribe(() => this.acl.setResourceWorkspace('form', nid, dest));
         this.afterMoveCleanup();
       });
-    } else {
+    } else if (kind === 'website') {
       this.websites.getById(id).subscribe(site => {
         if (!site) return;
         const nid = site.id + '-copy-' + Date.now().toString(36);
         const copy: Website = { ...site, id: nid, name: (site.name || site.id) + ' (copie)', slug: (site.slug || site.id) + '-copy' };
         this.websites.upsert(copy).subscribe(() => this.acl.setResourceWorkspace('website', nid, dest));
         this.afterMoveCleanup();
+      });
+    } else {
+      // credential
+      this.catalog.getCredential(id).subscribe(doc => {
+        const nid = id + '-copy-' + Date.now().toString(36);
+        const copy: CredentialDoc = { ...doc, id: nid, name: (doc.name || id) + ' (copie)', workspaceId: dest };
+        this.catalog.saveCredential(copy).subscribe(() => this.afterMoveCleanup());
       });
     }
   }

@@ -37,6 +37,8 @@ export interface FieldConfigCommon {
 export interface InputFieldConfig extends FieldConfigCommon {
     type: FieldTypeInput;
     key: string;
+    // When true, UI should mask input and viewers should hide value
+    secret?: boolean;
 }
 
 export interface TextBlockFieldConfig extends FieldConfigCommon {
@@ -283,6 +285,10 @@ export class DynamicFormService {
 
     /** Map value → affichage (labels options, booléen, date, vide par type) */
     displayValue(field: FieldConfig, raw: any, schema: FormSchema): string {
+        // Secret fields: never display raw values
+        if ((field as any)?.secret === true) {
+            return '••••••';
+        }
         // valeurs “par défaut d’affichage” si vide/undefined
         const emptyByType: Record<string, string> = {
             text: '—',

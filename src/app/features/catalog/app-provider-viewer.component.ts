@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
+import { Subscription } from 'rxjs';
+import { FormTableViewerComponent } from '../../modules/dynamic-form/components/table-viewer/table-viewer';
+import { RecordsTableComponent } from '../../modules/dynamic-form/components/records-table/records-table';
 
 @Component({
   selector: 'app-provider-viewer',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, FormTableViewerComponent, RecordsTableComponent],
   template: `
   <div class="viewer" *ngIf="app as a">
     <div class="header">
@@ -34,6 +37,18 @@ import { AccessControlService } from '../../services/access-control.service';
         <div><span class="k">Nom</span><span class="v">{{ a.name }}</span></div>
         <div *ngIf="a.title"><span class="k">Titre</span><span class="v">{{ a.title }}</span></div>
         <div *ngIf="a.tags?.length"><span class="k">Tags</span><span class="v tags"><nz-tag *ngFor="let t of a.tags">{{ t }}</nz-tag></span></div>
+        <div><span class="k">Credentials</span>
+          <span class="v">{{ a.hasCredentials ? 'Oui' : 'Non' }}</span>
+        </div>
+        <div *ngIf="a.hasCredentials"><span class="k">Sans credentials</span>
+          <span class="v">{{ a.allowWithoutCredentials ? 'Autorisé' : 'Interdit' }}</span>
+        </div>
+        <div *ngIf="a.credentialsForm && showCreds">
+          <span class="k">Identifiants</span>
+          <span class="v wide" style="display:block; overflow-x:auto;">
+            <df-records-table [schema]="$any(a.credentialsForm)" [records]="credentialRecords"></df-records-table>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -49,22 +64,57 @@ import { AccessControlService } from '../../services/access-control.service';
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
-    .content { display:flex; gap:12px; align-items:center; }
-    .icon { width:64px; height:64px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
+    .content { display:flex; gap:12px; align-items:flex-start; }
+    .icon { width:64px; height:64px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; align-self:flex-start; }
     .icon img { width: 36px; height: 36px; object-fit: contain; }
-    .kv { display:flex; flex-direction:column; gap:6px; }
+    .icon i { font-size: 28px; line-height: 1; color: #111; }
+    .kv { display:flex; flex-direction:column; gap:10px; }
     .kv .k { color:#6b7280; width:120px; display:inline-block; }
     .kv .v { color:#111; }
+    .kv .v.wide { width: 100%; margin: 10px 0; }
     .kv .v.tags { display:inline-flex; gap:6px; flex-wrap:wrap; }
   `]
 })
-export class AppProviderViewerComponent implements OnInit {
+export class AppProviderViewerComponent implements OnInit, OnDestroy {
   app?: AppProvider;
+  credentialRecords: Array<Record<string, any>> = [];
+  private aclSub?: Subscription;
   constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
   get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
+  get showCreds(): boolean { return !!this.isAdmin || this.acl.canAccessWorkspace(this.acl.currentWorkspaceId()); }
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id') || '';
-    if (id) this.catalog.getApp(id).subscribe(a => this.zone.run(() => { this.app = a; try { this.cdr.detectChanges(); } catch {} }));
+    if (id) this.catalog.getApp(id).subscribe(a => this.zone.run(() => {
+      this.app = a;
+      try { this.cdr.detectChanges(); } catch {}
+      this.loadCredentials();
+    }));
+    try { this.aclSub = this.acl.changes$.subscribe(() => this.zone.run(() => { this.loadCredentials(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
+  }
+  ngOnDestroy(): void { try { this.aclSub?.unsubscribe(); } catch {} }
+  private loadCredentials() {
+    try {
+      const providerId = this.app?.id || '';
+      if (!providerId) return;
+      const ws = this.acl.currentWorkspaceId();
+      this.catalog.listCredentials(ws, providerId).subscribe((list: CredentialSummary[]) => {
+        const recs: Array<Record<string, any>> = [];
+        let remaining = (list || []).length;
+        if (!remaining) { this.zone.run(() => { this.credentialRecords = []; try { this.cdr.detectChanges(); } catch {} }); return; }
+        (list || []).forEach(s => {
+          this.catalog.getCredential(s.id).subscribe(doc => {
+            const merged: Record<string, any> = { __name: doc?.name || s.name };
+            Object.assign(merged, (doc?.values || {}));
+            recs.push(merged);
+            remaining--;
+            if (remaining <= 0) this.zone.run(() => { this.credentialRecords = recs; try { this.cdr.detectChanges(); } catch {} });
+          }, () => {
+            remaining--;
+            if (remaining <= 0) this.zone.run(() => { this.credentialRecords = recs; try { this.cdr.detectChanges(); } catch {} });
+          });
+        });
+      });
+    } catch {}
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   back() { history.back(); }

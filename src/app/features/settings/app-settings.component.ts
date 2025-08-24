@@ -45,14 +45,14 @@ import { Company, CompanyService, LicensePlan } from '../../services/company.ser
         </div>
         <div class="card">
           <div class="title">Réinitialiser</div>
-          <p>Efface les données locales (flows, formulaires, templates, apps) et recharge les valeurs par défaut.</p>
+          <p>Efface les données locales (flows, formulaires, templates, apps, credentials) et recharge les valeurs par défaut.</p>
           <div class="actions">
             <button nz-button nzType="default" (click)="resetAll()">Reset tout</button>
           </div>
         </div>
         <div class="card">
           <div class="title">Exporter</div>
-          <p>Télécharge toutes les données locales (flows, formulaires, templates, apps) en JSON.</p>
+          <p>Télécharge toutes les données locales (flows, formulaires, templates, apps, credentials) en JSON.</p>
           <div class="actions">
             <button nz-button nzType="default" (click)="exportAll()">Exporter (JSON)</button>
           </div>

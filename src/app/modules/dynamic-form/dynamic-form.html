@@ -33,7 +33,7 @@
               <!-- Section dans step -->
               <ng-container *ngIf="f.type==='section' || f.type==='section_array'; else stepSingleField">
             <div class="df-edit-section-wrap" [class.df-edit]="editMode" [class.df-edit-selected]="selectedSection === f" (click)="editMode && onSectionContainerClick($event, i, k, $any(f))">
-              <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [ctx]="ctx"
+              <df-section [section]="$any(f)" [form]="form" [ui]="ui" [forceBp]="forceBp" [initialArrayValue]="value ? value[$any(f).key] : null" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" [ctx]="ctx"
                           [editMode]="editMode" [selectedField]="selectedField" [selectedSection]="selectedSection"
                           [allowMove]="editAllowMove" [allowDelete]="editAllowDelete"
                           (moveField)="onMoveInSection($event.index, $event.dir, i, k)"
@@ -71,7 +71,7 @@
               <ng-template #stepSingleField>
                 <ng-container *ngIf="dfs.isFieldVisible($any(f), form)">
                   <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === f" (click)="editMode && onFieldContainerClickStep($event, i, k, $any(f))">
-                    <df-field [field]="$any(f)" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" (click)="onInnerClick($event)"></df-field>
+                    <df-field [field]="$any(f)" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerClick($event)"></df-field>
                     <div *ngIf="editMode" class="df-edit-actions">
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInStepRoot(k, i, $any(f))">Select</button>
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'up' })">▲</button>
@@ -85,7 +85,7 @@
           </ng-container>
         </nz-row>
 
-        <div class="df-actions" [ngStyle]="actionsStyle">
+        <div class="df-actions" [ngStyle]="actionsStyle" *ngIf="!hideActions">
           <button nz-button (click)="prev()" *ngIf="i > 0" [ngStyle]="stepBtnStyle(i,'prev')">{{ stepPrevTextAt(i) }}</button>
           <button nz-button nzType="primary" (click)="next()" *ngIf="i < realStepsCount - 1" [disabled]="isNextDisabled(i)" [ngStyle]="stepBtnStyle(i,'next')">{{ stepNextTextAt(i) }}</button>
           <button nz-button nzType="primary" (click)="go(summaryIndex)" *ngIf="i === realStepsCount - 1 && summaryEnabled" [disabled]="!isCurrentStepValid() || form.pending" [ngStyle]="buttonStyle">Voir le résumé</button>
@@ -112,7 +112,7 @@
           </table>
         </ng-container>
       </ng-container>
-      <div class="df-actions" [ngStyle]="actionsStyle">
+      <div class="df-actions" [ngStyle]="actionsStyle" *ngIf="!hideActions">
         <button nz-button *ngIf="showCancel" (click)="go(realStepsCount - 1)" [ngStyle]="cancelBtnStyle()">{{ cancelText }}</button>
         <button nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
         <button nz-button nzType="primary" (click)="submit()" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
@@ -182,7 +182,7 @@
           [nzLg]="dfs.getFieldSpans($any(schema.fields)[it.ent.i]).lg"
           [nzXl]="dfs.getFieldSpans($any(schema.fields)[it.ent.i]).xl">
           <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === (($any(schema.fields))[it.ent.i])" (click)="editMode && onFieldContainerClickRoot($event, i, ($any(schema.fields))[it.ent.i])">
-        <df-field [field]="$any(schema.fields)[it.ent.i]" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" (click)="onInnerClick($event)"></df-field>
+        <df-field [field]="$any(schema.fields)[it.ent.i]" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerClick($event)"></df-field>
             <div *ngIf="editMode" class="df-edit-actions">
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInFlat(i, (($any(schema.fields))[it.ent.i]))">Select</button>
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'up' })">▲</button>
@@ -196,7 +196,7 @@
   </ng-container>
   </nz-row>
 
-  <div class="df-actions" [ngStyle]="actionsStyle">
+  <div class="df-actions" [ngStyle]="actionsStyle" *ngIf="!hideActions">
     <button nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
     <button nz-button nzType="primary" (click)="form.valid ? submit() : form.markAllAsTouched()" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
   </div>

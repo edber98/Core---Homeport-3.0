@@ -63,6 +63,12 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
             <nz-switch formControlName="expression_allow"></nz-switch>
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea'">
+          <nz-form-label nzTooltipTitle="Masquer la saisie et l'affichage (secret)"><span>Secret</span></nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="secret"></nz-switch>
+          </nz-form-control>
+        </nz-form-item>
         <nz-form-item *ngIf="group.get('expression_allow')?.value === true">
           <nz-form-label nzTooltipTitle="Cacher les erreurs d’expression en prévisualisation"><span>Masquer erreurs (preview)</span></nz-form-label>
           <nz-form-control>

@@ -33,7 +33,15 @@ export type AppProvider = {
   iconUrl?: string;       // PNG/SVG
   color?: string;         // brand color
   tags?: string[];        // recherche
+  // Credentials support (per provider)
+  hasCredentials?: boolean;              // if true, this provider expects credentials
+  allowWithoutCredentials?: boolean;     // if true, nodes may run without credentials
+  credentialsForm?: any;                 // FormSchema for credentials (built via form-builder)
 };
+
+// Credentials storage
+export type CredentialSummary = { id: string; name: string; providerId: string; workspaceId: string };
+export type CredentialDoc = { id: string; name: string; providerId: string; workspaceId: string; values: any };
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
@@ -44,6 +52,8 @@ export class CatalogService {
   private FORM_DOC_KEY = 'catalog.form.'; // + id
   private TPL_LIST_KEY = 'catalog.nodeTemplates';
   private APP_LIST_KEY = 'catalog.apps';
+  private CRED_LIST_KEY = 'catalog.credentials'; // stores array of CredentialSummary
+  private CRED_DOC_KEY = 'catalog.credential.';  // + id
 
   constructor() { this.ensureSeed(); }
 
@@ -117,6 +127,34 @@ export class CatalogService {
     return of(true).pipe(delay(CatalogService.LATENCY));
   }
 
+  // ===== Public API (Credentials)
+  listCredentials(workspaceId?: string, providerId?: string): Observable<CredentialSummary[]> {
+    const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
+    const filtered = list.filter(c => (!workspaceId || c.workspaceId === workspaceId) && (!providerId || c.providerId === providerId));
+    return of(filtered).pipe(delay(CatalogService.LATENCY));
+  }
+  getCredential(id: string): Observable<CredentialDoc> {
+    const doc = this.load<CredentialDoc | null>(this.CRED_DOC_KEY + id, null);
+    return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Credential not found'));
+  }
+  saveCredential(doc: CredentialDoc): Observable<CredentialDoc> {
+    if (!doc?.id) return throwError(() => new Error('Missing id'));
+    const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
+    const summary: CredentialSummary = { id: doc.id, name: doc.name || doc.id, providerId: doc.providerId, workspaceId: doc.workspaceId };
+    const idx = list.findIndex(x => x.id === doc.id);
+    if (idx >= 0) list[idx] = summary; else list.push(summary);
+    this.save(this.CRED_LIST_KEY, list);
+    this.save(this.CRED_DOC_KEY + doc.id, doc);
+    return of(doc).pipe(delay(CatalogService.LATENCY));
+  }
+  deleteCredential(id: string): Observable<boolean> {
+    const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.CRED_LIST_KEY, next);
+    try { localStorage.removeItem(this.CRED_DOC_KEY + id); } catch {}
+    return of(true).pipe(delay(CatalogService.LATENCY));
+  }
+
   // ===== Admin / Settings
   resetAll(): Observable<boolean> {
     try {
@@ -124,9 +162,11 @@ export class CatalogService {
       localStorage.removeItem(this.FORM_LIST_KEY);
       localStorage.removeItem(this.TPL_LIST_KEY);
       localStorage.removeItem(this.APP_LIST_KEY);
+      // Clear credentials keys
+      try { localStorage.removeItem(this.CRED_LIST_KEY); } catch {}
       // Also clear individual docs we may have stored during sessions
       Object.keys(localStorage).forEach(k => {
-        if (k.startsWith(this.FLOW_DOC_KEY) || k.startsWith(this.FORM_DOC_KEY)) localStorage.removeItem(k);
+        if (k.startsWith(this.FLOW_DOC_KEY) || k.startsWith(this.FORM_DOC_KEY) || k.startsWith(this.CRED_DOC_KEY)) localStorage.removeItem(k);
       });
       this.ensureSeed(true);
       return of(true).pipe(delay(CatalogService.LATENCY));
@@ -157,6 +197,17 @@ export class CatalogService {
           if (doc && id) formDocs[id] = doc;
         }
       });
+      // Credentials
+      const credList = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
+      const credDocs: Record<string, CredentialDoc> = {};
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith(this.CRED_DOC_KEY)) {
+          const id = k.slice(this.CRED_DOC_KEY.length);
+          const doc = this.load<CredentialDoc | null>(k, null);
+          if (doc && id) credDocs[id] = doc;
+        }
+      });
+
       const payload = {
         kind: 'homeport-catalog',
         version: 1,
@@ -167,6 +218,8 @@ export class CatalogService {
         formDocs,
         templates,
         apps,
+        credentials: credList,
+        credentialDocs: credDocs,
       } as const;
       return of(JSON.stringify(payload, null, 2)).pipe(delay(CatalogService.LATENCY));
     } catch {
@@ -182,8 +235,10 @@ export class CatalogService {
       const forms = Array.isArray(payload.forms) ? payload.forms as FormSummary[] : [];
       const templates = Array.isArray(payload.templates) ? payload.templates as NodeTemplate[] : [];
       const apps = Array.isArray(payload.apps) ? payload.apps as AppProvider[] : [];
+      const credList = Array.isArray(payload.credentials) ? payload.credentials as CredentialSummary[] : [];
       const flowDocs = (payload.flowDocs && typeof payload.flowDocs === 'object') ? payload.flowDocs as Record<string, FlowDoc> : {};
       const formDocs = (payload.formDocs && typeof payload.formDocs === 'object') ? payload.formDocs as Record<string, FormDoc> : {};
+      const credDocs = (payload.credentialDocs && typeof payload.credentialDocs === 'object') ? payload.credentialDocs as Record<string, CredentialDoc> : {};
 
       if (mode === 'replace') {
         // Clear all known keys
@@ -200,9 +255,11 @@ export class CatalogService {
       this.save(this.FORM_LIST_KEY, forms);
       this.save(this.TPL_LIST_KEY, templates);
       this.save(this.APP_LIST_KEY, apps);
+      this.save(this.CRED_LIST_KEY, credList);
       // Save docs
       Object.keys(flowDocs || {}).forEach(id => this.save(this.FLOW_DOC_KEY + id, flowDocs[id]));
       Object.keys(formDocs || {}).forEach(id => this.save(this.FORM_DOC_KEY + id, formDocs[id]));
+      Object.keys(credDocs || {}).forEach(id => this.save(this.CRED_DOC_KEY + id, credDocs[id]));
       return of(true).pipe(delay(CatalogService.LATENCY));
     } catch (e) {
       return throwError(() => new Error('Import failed'));

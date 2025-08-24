@@ -59,6 +59,10 @@ export class DynamicForm implements OnInit, OnChanges {
   @Input() ctx: any = {};
   // Expression editor preview: show errors in preview panel (passed to ExpressionEditor)
   @Input() exprPreviewShowErrors = true;
+  // Hide action bar (submit/reset) for host dialogs
+  @Input() hideActions = false;
+  // Force-disable expression editor UI
+  @Input() disableExpressions = false;
   @Input() editMode = false;
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() selectedField: FieldConfig | null = null;

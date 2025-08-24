@@ -36,6 +36,7 @@ export class Fields implements OnInit, OnDestroy {
   @Input() ui?: FormUI;
   @Input() ctx: any = {};
   @Input() exprPreviewShowErrors = true;
+  @Input() disableExpressions = false;
 
   // exposé si besoin
   isInputField = isInputField;
