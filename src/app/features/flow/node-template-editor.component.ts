@@ -60,6 +60,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <nz-option nzValue="start" nzLabel="start"></nz-option>
               <nz-option nzValue="loop" nzLabel="loop"></nz-option>
               <nz-option nzValue="end" nzLabel="end"></nz-option>
+              <nz-option nzValue="flow" nzLabel="flow"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

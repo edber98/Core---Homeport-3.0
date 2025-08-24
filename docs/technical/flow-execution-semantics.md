@@ -5,14 +5,15 @@ Ce document décrit le comportement attendu du moteur d’exécution côté back
 
 ## 1) Modèle de graphe (rappel)
 
-- Nœuds: `start | function | condition | loop | end`.
+- Nœuds: `start | function | condition | loop | end | flow`.
 - Arêtes: portent un `sourceHandle` (id de sortie) et optionnellement un label d’affichage.
 - Sorties:
   - `start`: une seule sortie logique `out`.
   - `function`: sorties indexées `0..N-1`; si `catch_error == true` alors sortie spéciale `err` en plus.
   - `condition`: sorties dynamiques depuis `context[template.output_array_field || 'items']`. Chaque item idéalement a un `_id` stable (préservé par le frontend).
   - `loop`: recommandations ci-dessous.
-  - `end`: pas de sortie.
+- `flow`: sorties comme `function` (indexées), `err` optionnel si catch activé; exécute un sous-flow dans le même workspace. Le champ `flowId` est défini par l’item de la palette “Workflows” (prérempli et désactivé).
+- `end`: pas de sortie.
 
 Le frontend stocke, sur chaque nœud:
 - `templateChecksum`: checksum des `template.args` au moment de la création/mise à jour du nœud.
@@ -45,6 +46,10 @@ function executeNode(node: NodeModel, runtimeCtx: any): Promise<ExecResultOK | E
   - la chaîne `'err'` si et seulement si `catch_error == true` et `authorize_catch_error == true` (branche d’erreur),
   - pour `condition`: un identifiant stable (`_id` de l’item si présent) ou un index.
 - Si `next` est omis pour `function`, on utilise par défaut l’index `0`.
+
+Palette “Workflows” (UX):
+- Fournit la liste des flows du workspace courant en bas de la palette et du contexte.
+- Le dépôt/ajout crée un nœud `flow` avec `context.flowId` prérempli; `template.args` reste canonique pour que le checksum soit stable; le champ de formulaire `flowId` est désactivé.
 
 
 ## 3) Gestion des erreurs: try/catch et skip
@@ -138,7 +143,7 @@ function runFlow(flow) {
       continue;
     }
 
-    // start/function/loop
+    // start/function/loop/flow
     const r = await executeNode(node, payload);
     if (!r.ok) {
       if (node.skip_error === true) {
@@ -176,4 +181,3 @@ function runFlow(flow) {
 - Start/End/Loop: handles stables; valider les arêtes.
 - Arêtes: handle inexistant → bloquant; handle non connecté → warning.
 - Drift (args/options) → bloquant tant que non mis à jour (synchronisation du nœud au template courant).
-

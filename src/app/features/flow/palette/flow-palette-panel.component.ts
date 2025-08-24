@@ -44,9 +44,13 @@ import { NzInputModule } from 'ng-zorro-antd/input';
                  (click)="itemClick.emit(it)">
               <div class="meta">
                 <div class="title">
-                  <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
-                    <i class="mini" [class]="miniIconClassFn?.(it)"></i>
-                  </span>
+                  <!-- Show template icon if provided, else fallback to type icon -->
+                  <ng-container *ngIf="miniIconClassFn?.(it) as mic; else noTplIcon">
+                    <span class="mini-icon"><i class="mini" [class]="mic"></i></span>
+                  </ng-container>
+                  <ng-template #noTplIcon>
+                    <span class="mini-icon" *ngIf="typeIconClassFn?.(it.template) as tic"><i class="mini" [class]="tic"></i></span>
+                  </ng-template>
                   {{ it.label }}
                 </div>
                 <div class="subtitle" *ngIf="it.template?.subtitle">{{ it.template?.subtitle }}</div>
@@ -127,6 +131,7 @@ export class FlowPalettePanelComponent {
   @Input() simpleIconUrlFn?: (id: string) => string;
   @Input() isItemDisabledFn?: (it: any) => boolean;
   @Input() isDraggingFn?: (it: any) => boolean;
+  @Input() typeIconClassFn?: (tpl: any) => string;
 
   @Output() queryChange = new EventEmitter<string>();
   @Output() itemClick = new EventEmitter<any>();

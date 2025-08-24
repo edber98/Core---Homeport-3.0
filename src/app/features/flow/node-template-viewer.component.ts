@@ -269,7 +269,7 @@ export class NodeTemplateViewerComponent implements OnInit {
     // Input handles: default 1, except 'start' = 0. Keep parity with flow (single top handle), but allow future types.
     this.inputCount = type === 'start' ? 0 : 1;
     const outs: string[] = [];
-    if (type === 'function') {
+    if (type === 'function' || type === 'flow') {
       const core = (this.outputs || []).filter(o => (String(o || '').toLowerCase() !== 'err'));
       if (this.view?.authorize_catch_error) outs.push('err');
       outs.push(...core);

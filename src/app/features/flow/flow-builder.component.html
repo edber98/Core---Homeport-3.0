@@ -3,7 +3,7 @@
   <ng-template #leftPanelContent let-mode="mode">
     <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
       [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
-      [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)"
+      [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
       [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
       (queryChange)="onPaletteQueryChange($event)" (itemClick)="onPaletteClick($event)"
       (dragStart)="onDragStart($event.item, $event.$event)"
@@ -78,6 +78,8 @@
                 <div class="subtitle">
                   {{ ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category ||
                   ctx.node.data.model.templateObj?.type }}
+                  <i class="type-badge" [class]="typeIconClass(ctx.node.data.model.templateObj)" nz-tooltip
+                    [nzTooltipTitle]="ctx.node.data.model.templateObj?.type" style="margin-left:6px"></i>
                   <span *ngIf="appLabelOf(ctx.node.data.model.templateObj) as appLbl"
                     style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
                 </div>
@@ -135,6 +137,20 @@
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
       (saveJson)="saveSelectedJson()"></flow-inspector-panel>
     <div style="padding: 8px; overflow: auto;">
+      <!-- Flow meta quick edit -->
+      <div class="flow-meta">
+        <div class="row">
+          <label>Nom</label>
+          <input nz-input [(ngModel)]="currentFlowName" placeholder="Nom du flow" />
+        </div>
+        <div class="row">
+          <label>Description</label>
+          <input nz-input [(ngModel)]="currentFlowDesc" placeholder="Description" />
+        </div>
+        <div class="row actions">
+          <button nz-button nzSize="small" (click)="saveFlow()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+        </div>
+      </div>
 
       <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
         (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"

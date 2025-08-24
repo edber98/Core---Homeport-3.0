@@ -12,7 +12,7 @@ Terminologie:
 
 ## 1) Intégrité du template
 
-- Existence du template (par id) et type valide (`start` | `function` | `condition` | `loop` | `end`).
+- Existence du template (par id) et type valide (`start` | `function` | `condition` | `loop` | `end` | `flow`).
   - Bloquant à l’exécution: OUI (un nœud sans template est inévaluable)
 
 - Alignement des checksums (drift de schéma d’arguments):
@@ -42,6 +42,11 @@ Terminologie:
 
 - Mutuelle exclusivité: `catch_error` et `skip_error` ne peuvent pas être actifs simultanément.
   - Bloquant à l’exécution: OUI (config invalide).
+
+- Nœud `flow` (appel de sous-flow):
+  - Vérifier que le `flowId` ciblé existe, appartient au même workspace, et passe les validations bloquantes.
+  - Bloquant à l’exécution: OUI si `flowId` absent/inexistant/hors workspace.
+  - UI: le champ `flowId` est fourni par la palette (groupe “Workflows”), prérempli et désactivé (non modifiable). Le backend ne doit pas compter sur une saisie utilisateur ici.
 
 - Manque de branche “err” connectée quand `catch_error == true`:
   - Bloquant à l’exécution: NON (exécutable; la branche err non connectée sera simplement ignorée si une erreur survient).
@@ -135,4 +140,3 @@ Non bloquant (exécutable, mais warning recommandé):
 - Pour `skip_error`, définir clairement le handle de continuation en cas d’erreur (par convention: la première sortie non-err, i.e. index `0`).
 - Pour `condition`, privilégier des handles stables basés sur `_id` si présents.
 - Prévoir une API d’“auto-fix” (mise à jour de template) retournant le nœud corrigé pour que le client réconcilie l’affichage.
-

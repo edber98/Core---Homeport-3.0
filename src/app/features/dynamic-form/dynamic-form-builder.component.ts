@@ -122,8 +122,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
   private applyTplPreset = false;
   // Persisted form context when opened from /forms
   private currentFormId: string | null = null;
-  private currentFormName: string = '';
-  private currentFormDesc: string = '';
+  currentFormName: string = '';
+  currentFormDesc: string = '';
 
   // Sélection (centralisée via service)
   get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
@@ -416,6 +416,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.inspector = this.fb.group({
       // commun / titre
       title: [''],
+      form_description: [''],
 
       // STEP
       visibleIf: [''],
@@ -506,6 +507,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
         if (this.selected === this.schema) {
         // titre global
         this.schema.title = v.title || undefined;
+        // description doc (métadonnée)
+        this.currentFormDesc = v.form_description || '';
 
         // UI
         const mkStyle = (prefix: string) => {
@@ -934,6 +937,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       // Onglet "Form Settings"
       this.inspector.patchValue({
         title: this.schema.title ?? '',
+        form_description: this.currentFormDesc ?? '',
         ui_layout: this.schema.ui?.layout ?? 'horizontal',
         ui_labelAlign: this.schema.ui?.labelAlign ?? 'left',
         ui_labelsOnTop: !!this.schema.ui?.labelsOnTop,

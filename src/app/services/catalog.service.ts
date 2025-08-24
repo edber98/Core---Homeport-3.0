@@ -10,7 +10,7 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 
 export type NodeTemplate = {
   id: string;
-  type: 'start' | 'function' | 'condition' | 'loop' | 'end';
+  type: 'start' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
   name: string;
   category?: string;      // fonctionnel (Email, Docs, Calendar...)
   appId?: string;         // logiciel / intégration (ex: 'gmail')
@@ -539,6 +539,10 @@ export class CatalogService {
           { id: 'tmpl_text_upper', type: 'function', name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', output: ['Success'], tags: ['text'], group: 'Functions' },
           { id: 'tmpl_pdf', type: 'function', name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', output: ['Success'], tags: ['pdf', 'document'], group: 'Functions' },
         ];
+        // Add workflow (subflow) template at seed time
+        try {
+          (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
+        } catch {}
         this.save(this.TPL_LIST_KEY, tpls);
       }
       if (force || !this.load<any>(this.APP_LIST_KEY, null)) {

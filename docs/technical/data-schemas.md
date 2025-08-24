@@ -223,4 +223,4 @@ When migrating to a real backend, the following endpoints are recommended. The f
 Notes:
 - All upserts should be idempotent.
 - Backend can validate references (e.g., `FormSchema` shape, allowed template IDs, provider IDs).
-
+Builder UI: name/description can be edited directly in the Flow Builder (panel above history) and saved with nodes/edges.

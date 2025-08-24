@@ -252,7 +252,10 @@ export class AccessControlService {
     this.catalog.listFlows().subscribe(list => {
       (list || []).forEach(f => {
         const k = this.MAP_KEY + 'flow.' + f.id;
-        if (localStorage.getItem(k) == null) this.setResourceWorkspace('flow', f.id, dist(f.id));
+        if (localStorage.getItem(k) == null) {
+          const ws = String(f.id || '').startsWith('demo-') ? 'default' : dist(f.id);
+          this.setResourceWorkspace('flow', f.id, ws);
+        }
       });
     });
     // Forms

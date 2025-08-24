@@ -319,6 +319,7 @@ export class FlowBuilderComponent {
       }
     },
     { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
+    { group: 'Workflow', label: 'Call Flow', template: { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical' }, fields: [ { type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, default: 'demo-2' } ] } } },
   ];
 
   templates: any[] = [
@@ -327,6 +328,7 @@ export class FlowBuilderComponent {
     { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' },
     { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} },
     { id: 'tmpl_end', name: 'End', type: 'end', icon: 'fa-solid fa-stop', title: 'End', subtitle: 'Terminate', args: {} },
+    { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', args: { title: 'Call Flow', fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 } }] } },
   ];
 
   nodes: any[] = [];
@@ -424,8 +426,8 @@ export class FlowBuilderComponent {
   headerTitle = 'Flow Builder';
   headerSubtitle = 'Conception du flow';
   private currentFlowId: string | null = null;
-  private currentFlowName: string = '';
-  private currentFlowDesc: string = '';
+  currentFlowName: string = '';
+  currentFlowDesc: string = '';
 
   // Long-press detection for mobile context menu
   private lpTimer: any = null;
@@ -439,6 +441,7 @@ export class FlowBuilderComponent {
   private readonly lpMoveThresh = 10; // px
   private allTemplates: any[] = [];
   private allowedTplIds = new Set<string>();
+  private allFlows: { id: string; name: string; description?: string }[] = [];
   validationIssues: Array<{ kind: 'node'|'flow'; nodeId?: string; message: string }> = [];
   private openedNodeConfig = new Set<string>();
 
@@ -458,6 +461,11 @@ export class FlowBuilderComponent {
           this.allTemplates = tpls || [];
           this.applyWorkspaceTemplateFilter();
         } catch { }
+      }));
+      // Load flows to expose in "Workflows" palette group
+      this.catalog.listFlows().subscribe(list => this.zone.run(() => {
+        this.allFlows = list || [];
+        this.rebuildPaletteGroups();
       }));
       // Recompute palette when workspace changes
       try {
@@ -520,6 +528,18 @@ export class FlowBuilderComponent {
     } catch { return ''; }
   }
   simpleIconUrl(id: string): string { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
+  typeIconClass(tpl: any): string {
+    const type = String(tpl?.type || '').toLowerCase();
+    switch (type) {
+      case 'start': return 'fa-solid fa-play';
+      case 'function': return 'fa-solid fa-cog';
+      case 'condition': return 'fa-solid fa-code-branch';
+      case 'loop': return 'fa-solid fa-sync';
+      case 'end': return 'fa-solid fa-stop';
+      case 'flow': return 'fa-solid fa-diagram-project';
+      default: return 'fa-regular fa-square';
+    }
+  }
 
   appLabelOf(tpl: any): string {
     try {
@@ -601,7 +621,27 @@ export class FlowBuilderComponent {
   // No grouped palette; simple flat list used by template
   onPaletteQueryChange(v: string) { this.paletteQuery = (v || ''); this.rebuildPaletteGroups(); }
   rebuildPaletteGroups() {
-    this.paletteGroups = this.paletteSvc.buildGroups(this.items, this.paletteQuery, this.appsMap);
+    const base = this.paletteSvc.buildGroups(this.items, this.paletteQuery, this.appsMap) || [];
+    // Build bottom group: Workflows (flows available in current workspace)
+    const ws = this.acl.currentWorkspaceId();
+    const q = (this.paletteQuery || '').trim().toLowerCase();
+    const flowsInWs = (this.allFlows || []).filter(f => (this.acl.getResourceWorkspace('flow', f.id) || 'default') === ws);
+    const sorted = flowsInWs.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    const filtered = q ? sorted.filter(f => `${f.name} ${f.id} ${f.description || ''}`.toLowerCase().includes(q)) : sorted;
+    // Use canonical template from catalog to keep checksum stable; pass selected flowId via __preContext
+    const canonical = (this.allTemplates || []).find(t => String((t as any)?.id) === 'tmpl_call_flow');
+    const makeTplForFlow = (f: any) => {
+      const t = canonical ? JSON.parse(JSON.stringify(canonical)) : {
+        id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', title: 'Call Flow', subtitle: 'Workflow', icon: 'fa-solid fa-diagram-project', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true } ] }
+      };
+      (t as any).__preContext = { flowId: f.id };
+      t.title = f.name || t.title;
+      return t;
+    };
+    const wfItems = filtered.map(f => ({ label: f.name || f.id, template: makeTplForFlow(f) }));
+    const groups = [...base];
+    groups.push({ title: 'Workflows', items: wfItems });
+    this.paletteGroups = groups;
   }
 
   trackGroup = (_: number, g: any) => (g && (g.appId || g.title)) || _;
@@ -650,12 +690,13 @@ export class FlowBuilderComponent {
     }
 
     const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
+    const preCtx = (templateObj as any)?.__preContext || null;
     const nodeModel = {
       id: newId,
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: {},
+      context: preCtx ? { ...preCtx } : {},
       templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
       templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
@@ -829,13 +870,15 @@ export class FlowBuilderComponent {
     // Find best source near center with a free output
     const source = wantsConnect ? this.findBestSourceNode(worldCenter.x, worldCenter.y) : null;
     const pos = this.computeNewNodePosition(source, worldCenter);
+    const preCtx = (templateObj as any)?.__preContext || null;
     const nodeModel: any = {
       id: newId,
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: {},
-      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {})
+      context: preCtx ? { ...preCtx } : {},
+      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+      templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
