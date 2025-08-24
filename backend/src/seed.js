@@ -57,8 +57,8 @@ async function seedMongoIfEmpty(){
   await Provider.create({ key: 'mail', name: 'Mail', categories: ['communication'], enabled: true });
 
   // Node templates (website + form examples)
-  await NodeTemplate.create({ key: 'website_open', name: 'Open Website', type: 'function', category: 'website', argsSchema: { properties: { url: { type: 'string' } }, required: ['url'] }, output: ['Success'], authorize_catch_error: true, authorize_skip_error: true });
-  await NodeTemplate.create({ key: 'form_submit', name: 'Submit Form', type: 'function', category: 'form', argsSchema: { properties: { formId: { type: 'string' }, data: { type: 'object' } }, required: ['formId'] }, output: ['Success','Retry'], authorize_catch_error: true, authorize_skip_error: false });
+  await NodeTemplate.create({ key: 'website_open', name: 'Open Website', type: 'function', category: 'website', args: { title: 'Open Website', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'url', label: 'URL', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true } } ] }, output: ['Success'], authorize_catch_error: true, authorize_skip_error: true });
+  await NodeTemplate.create({ key: 'form_submit', name: 'Submit Form', type: 'function', category: 'form', args: { title: 'Form Submit', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'formId', label: 'Form ID', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true } }, { type: 'object', key: 'data', label: 'Data', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true } } ] }, output: ['Success','Retry'], authorize_catch_error: true, authorize_skip_error: false });
 
   // Workspace memberships: add all users to their company default ws
   const users = await User.find();

@@ -55,6 +55,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/runs')());
     app.use('/api', require('./modules/db/admin')());
     app.use('/api', require('./modules/db/plugins')());
+    app.use('/api', require('./modules/db/plugin-repos')());
     app.use('/api', require('./modules/db/notifications')());
   }
 

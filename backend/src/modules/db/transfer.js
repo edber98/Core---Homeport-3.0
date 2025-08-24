@@ -31,7 +31,8 @@ module.exports = function(){
           };
           const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
           if (!v.ok && !force) throw Object.assign(new Error('flow_invalid'), { details: v });
-          const copy = await Flow.create({ name: f.name + ' (Copy)', workspaceId: target._id, status: 'draft', enabled: v.ok ? f.enabled : false, graph: f.graph });
+          const graphCopy = remapGraphIds(f.graph || f);
+          const copy = await Flow.create({ name: f.name + ' (Copy)', workspaceId: target._id, status: 'draft', enabled: v.ok ? f.enabled : false, graph: graphCopy });
           if (!v.ok){
             await Notification.create({ companyId: target.companyId, workspaceId: target._id, entityType: 'flow', entityId: String(copy._id), severity: 'critical', code: 'flow_invalid', message: 'Flow copied but disabled in target workspace', details: v, link: `/flows/${copy._id}/editor` });
           }
@@ -57,3 +58,18 @@ module.exports = function(){
   return r;
 }
 
+function remapGraphIds(graph){
+  const g = JSON.parse(JSON.stringify(graph || { nodes: [], edges: [] }));
+  const map = new Map();
+  for (const n of (g.nodes || [])){
+    const nn = n.id + '_' + Math.random().toString(36).slice(2,6);
+    map.set(n.id, nn);
+    n.id = nn;
+  }
+  for (const e of (g.edges || [])){
+    if (map.has(e.source)) e.source = map.get(e.source);
+    if (map.has(e.target)) e.target = map.get(e.target);
+    if (e.id) e.id = e.id + '_' + Math.random().toString(36).slice(2,4);
+  }
+  return g;
+}

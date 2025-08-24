@@ -31,8 +31,8 @@ module.exports = function(){
     const old = tpl.toObject();
     Object.assign(tpl, patch); await tpl.save();
 
-    // If argsSchema changed, validate flows using this template
-    const schemaChanged = JSON.stringify(old.argsSchema || {}) !== JSON.stringify(tpl.argsSchema || {});
+    // If args (form) changed, flag impacted flows (optional)
+    const schemaChanged = JSON.stringify(old.args || {}) !== JSON.stringify(tpl.args || {});
     if (schemaChanged){
       // get all flows in company scope? templates are global, validate all flows
       const flows = await Flow.find();
