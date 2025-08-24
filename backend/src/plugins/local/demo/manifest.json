@@ -1,0 +1,411 @@
+{
+  "providers": [
+    {
+      "key": "gmail",
+      "name": "Gmail",
+      "title": "Gmail",
+      "iconClass": "fa-solid fa-envelope",
+      "color": "#EA4335",
+      "tags": [
+        "email",
+        "google"
+      ],
+      "hasCredentials": true,
+      "allowWithoutCredentials": false,
+      "credentialsForm": {
+        "title": "Google (Gmail) — Identifiants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountEmail",
+            "label": "Email du compte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client Secret",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh Token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "redirectUri",
+            "label": "Redirect URI",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://localhost/oauth2/callback"
+          }
+        ]
+      }
+    },
+    {
+      "key": "telegram",
+      "name": "Telegram",
+      "title": "Telegram",
+      "iconClass": "fa-brands fa-telegram",
+      "color": "#229ED9",
+      "tags": [
+        "chat",
+        "bot"
+      ],
+      "hasCredentials": true,
+      "allowWithoutCredentials": false,
+      "credentialsForm": {
+        "title": "Telegram — Identifiants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "botToken",
+            "label": "Bot Token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack",
+      "name": "Slack",
+      "title": "Slack",
+      "iconClass": "fa-brands fa-slack",
+      "color": "#611f69",
+      "tags": [
+        "chat",
+        "team"
+      ]
+    },
+    {
+      "key": "pdf",
+      "name": "PDF",
+      "title": "PDF",
+      "iconClass": "fa-solid fa-file-pdf",
+      "color": "#D32F2F",
+      "tags": [
+        "document"
+      ]
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "start",
+      "name": "Start",
+      "title": "Start",
+      "subtitle": "Trigger",
+      "type": "start",
+      "category": "Core",
+      "output": []
+    },
+    {
+      "key": "condition",
+      "name": "Condition",
+      "title": "Condition",
+      "subtitle": "Multi-branch",
+      "type": "condition",
+      "category": "Logic",
+      "output_array_field": "items"
+    },
+    {
+      "key": "sendmail",
+      "name": "SendMail",
+      "title": "Send mail",
+      "subtitle": "Gmail",
+      "type": "function",
+      "category": "Email",
+      "providerKey": "gmail",
+      "output": [
+        "Success"
+      ],
+      "authorize_catch_error": true,
+      "authorize_skip_error": true
+    },
+    {
+      "key": "http",
+      "name": "HTTP Request",
+      "title": "HTTP Request",
+      "subtitle": "Call API",
+      "type": "function",
+      "category": "HTTP",
+      "output": [
+        "Success"
+      ],
+      "authorize_catch_error": true,
+      "authorize_skip_error": true
+    },
+    {
+      "key": "slack_post",
+      "name": "Slack Post",
+      "title": "Slack Post",
+      "subtitle": "Slack",
+      "type": "function",
+      "category": "Chat",
+      "providerKey": "slack",
+      "output": [
+        "Success"
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Slack Post",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Channel",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Text",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "delay",
+      "name": "Delay",
+      "title": "Delay",
+      "subtitle": "Core",
+      "type": "function",
+      "category": "Core",
+      "output": [
+        "Success"
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Delay",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ms",
+            "label": "Milliseconds",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "default": 100,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "math_add",
+      "name": "Math Add",
+      "title": "Math Add",
+      "type": "function",
+      "category": "Math",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Addition",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "a",
+            "label": "A",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "b",
+            "label": "B",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "text_upper",
+      "name": "Text Uppercase",
+      "title": "Text Uppercase",
+      "type": "function",
+      "category": "Text",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Uppercase",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Text",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pdf",
+      "name": "PDF",
+      "title": "PDF",
+      "type": "function",
+      "category": "Docs",
+      "providerKey": "pdf",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "PDF",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

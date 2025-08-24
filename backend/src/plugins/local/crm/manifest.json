@@ -1,0 +1,150 @@
+{
+  "providers": [
+    {
+      "key": "crm",
+      "name": "Simple CRM",
+      "title": "Simple CRM",
+      "iconClass": "fa-solid fa-address-card",
+      "color": "#0A84FF",
+      "tags": [
+        "crm"
+      ],
+      "hasCredentials": false,
+      "allowWithoutCredentials": true
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "crm_contact_create",
+      "name": "CRM Create Contact",
+      "title": "Create Contact",
+      "subtitle": "CRM",
+      "type": "function",
+      "category": "CRM",
+      "providerKey": "crm",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Create Contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "First name",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Last name",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "crm_contact_update",
+      "name": "CRM Update Contact",
+      "title": "Update Contact",
+      "subtitle": "CRM",
+      "type": "function",
+      "category": "CRM",
+      "providerKey": "crm",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Update Contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Contact ID",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

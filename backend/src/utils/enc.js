@@ -1,7 +1,17 @@
 const crypto = require('crypto');
+const { HMAC_SECRET } = require('../config/env');
 
-const ENC_KEY = Buffer.from((process.env.ENC_KEY || '').padEnd(32, '0').slice(0,32));
-if (ENC_KEY.length !== 32) throw new Error('ENC_KEY must resolve to 32 bytes');
+function deriveKey(){
+  const envKey = process.env.ENC_KEY;
+  if (envKey && envKey.length >= 16){
+    const b = Buffer.from(envKey.padEnd(32, '0').slice(0,32));
+    if (b.length === 32) return b;
+  }
+  // Fallback: derive from HMAC_SECRET via scrypt
+  return crypto.scryptSync(HMAC_SECRET || 'dev-secret', 'homeport-salt', 32);
+}
+
+const ENC_KEY = deriveKey();
 
 function encrypt(obj){
   const iv = crypto.randomBytes(12);
@@ -23,4 +33,3 @@ function decrypt(payload){
 }
 
 module.exports = { encrypt, decrypt };
-

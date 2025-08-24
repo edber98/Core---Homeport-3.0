@@ -5,7 +5,7 @@ class PluginRegistry {
   constructor(){
     this.handlers = new Map(); // key -> async (node,msg,inputs)
     this.meta = new Map();     // key -> { source, mtime }
-    this.baseDirs = [ path.resolve(__dirname, 'local') ];
+    this.baseDirs = [ path.resolve(__dirname, 'local'), path.resolve(__dirname, 'repos') ];
   }
 
   normalizeKey(k){
@@ -32,18 +32,44 @@ class PluginRegistry {
   loadFromDir(dir){
     const loaded = [];
     if (!fs.existsSync(dir)) return loaded;
-    const files = fs.readdirSync(dir).filter(f => f.endsWith('.js'));
-    for (const f of files){
-      const full = path.join(dir, f);
-      try {
-        delete require.cache[require.resolve(full)];
-        const mod = require(full);
-        const exports = mod && (mod.default || mod) || {};
-        const key = exports.key || path.basename(f, '.js');
-        const fn = exports.run || exports.handler || exports.execute || exports;
-        if (this.register(key, fn, full)) loaded.push(key);
-      } catch (e) {
-        // skip broken plugin
+    // Each subdir is a plugin repo with manifest.json and functions/*.js
+    const entries = fs.readdirSync(dir, { withFileTypes: true }).filter(d => d.isDirectory());
+    for (const ent of entries){
+      const plugDir = path.join(dir, ent.name);
+      const manifestPath = path.join(plugDir, 'manifest.json');
+      if (fs.existsSync(manifestPath)){
+        try {
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+          // Import providers/nodeTemplates into DB
+          try { const { importManifest } = require('./importer'); importManifest(manifest).catch(()=>{}); } catch {}
+        } catch {}
+      }
+      const fnDir = path.join(plugDir, 'functions');
+      if (fs.existsSync(fnDir)){
+        const files = fs.readdirSync(fnDir).filter(f => f.endsWith('.js'));
+        for (const f of files){
+          const full = path.join(fnDir, f);
+          try {
+            delete require.cache[require.resolve(full)];
+            const mod = require(full);
+            const exp = (mod && (mod.default || mod)) || mod || {};
+            // Support several formats:
+            // 1) Single: { key, run }
+            if (exp && typeof exp === 'object' && typeof exp.run === 'function' && typeof exp.key === 'string'){
+              const key = exp.key; const fn = exp.run; if (this.register(key, fn, full)) loaded.push(key); continue;
+            }
+            // 2) Handlers map: { handlers: { key: fn, ... } }
+            if (exp && typeof exp.handlers === 'object'){
+              for (const [k, fn] of Object.entries(exp.handlers)) if (typeof fn === 'function') { if (this.register(k, fn, full)) loaded.push(k); }
+              continue;
+            }
+            // 3) Plain object of functions: { http(){}, sendmail(){} }
+            if (exp && typeof exp === 'object'){
+              for (const [k, fn] of Object.entries(exp)) if (typeof fn === 'function') { if (this.register(k, fn, full)) loaded.push(k); }
+              continue;
+            }
+          } catch {}
+        }
       }
     }
     return loaded;
@@ -61,4 +87,3 @@ const registry = new PluginRegistry();
 registry.reload();
 
 module.exports = { registry, PluginRegistry };
-

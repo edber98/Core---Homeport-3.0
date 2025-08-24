@@ -1,0 +1,239 @@
+{
+  "providers": [
+    {
+      "key": "github",
+      "name": "GitHub",
+      "title": "GitHub",
+      "iconClass": "fa-brands fa-github",
+      "color": "#181717",
+      "tags": [
+        "code",
+        "repo"
+      ],
+      "hasCredentials": true,
+      "allowWithoutCredentials": false,
+      "credentialsForm": {
+        "title": "GitHub — Identifiants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Personal Access Token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "github_issue_create",
+      "name": "GitHub Create Issue",
+      "title": "Create Issue",
+      "subtitle": "GitHub",
+      "type": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Create Issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Owner",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Repo",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "github_comment",
+      "name": "GitHub Comment",
+      "title": "Add Comment",
+      "subtitle": "GitHub",
+      "type": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "output": [
+        "Success"
+      ],
+      "args": {
+        "title": "Add Comment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Owner",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Repo",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "issue",
+            "label": "Issue #",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "comment",
+            "label": "Comment",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
