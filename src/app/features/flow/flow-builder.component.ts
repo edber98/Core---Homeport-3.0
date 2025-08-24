@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
 import { MonacoJsonEditorComponent } from '../dynamic-form/components/monaco-json-editor.component';
@@ -15,6 +16,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { DynamicFormService, FieldConfig } from '../../modules/dynamic-form/dynamic-form.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { FlowPaletteService } from './flow-palette.service';
 import { FlowGraphService } from './flow-graph.service';
@@ -379,6 +381,8 @@ export class FlowBuilderComponent {
     private graph: FlowGraphService,
     private fbUtils: FlowBuilderUtilsService,
     private acl: AccessControlService,
+    private dfs: DynamicFormService,
+    private route: ActivatedRoute,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -419,6 +423,9 @@ export class FlowBuilderComponent {
   // Header labels
   headerTitle = 'Flow Builder';
   headerSubtitle = 'Conception du flow';
+  private currentFlowId: string | null = null;
+  private currentFlowName: string = '';
+  private currentFlowDesc: string = '';
 
   // Long-press detection for mobile context menu
   private lpTimer: any = null;
@@ -457,11 +464,31 @@ export class FlowBuilderComponent {
         this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => this.applyWorkspaceTemplateFilter()));
       } catch {}
     } catch { }
-    // Initialise un graphe par défaut à partir de la palette
-    const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
-    this.nodes = seed.nodes;
-    this.edges = seed.edges as any;
-    this.history.reset(this.snapshot());
+    // Load flow by id if provided
+    try {
+      const flowId = this.route.snapshot.queryParamMap.get('flow');
+      if (flowId) {
+        this.currentFlowId = flowId;
+        this.catalog.getFlow(flowId).subscribe(doc => this.zone.run(() => {
+          if (doc) {
+            this.currentFlowName = doc.name || '';
+            this.currentFlowDesc = doc.description || '';
+            this.nodes = (doc.nodes || []) as any[];
+            this.edges = (doc.edges || []) as any;
+            this.history.reset(this.snapshot());
+            try { this.cdr.detectChanges(); } catch {}
+            return;
+          }
+        }));
+      }
+    } catch {}
+    if (!this.nodes || this.nodes.length === 0) {
+      // Initialise un graphe par défaut à partir de la palette
+      const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
+      this.nodes = seed.nodes;
+      this.edges = seed.edges as any;
+      this.history.reset(this.snapshot());
+    }
     this.updateTimelineCaches();
     this.recomputeValidation();
   }
@@ -628,11 +655,14 @@ export class FlowBuilderComponent {
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: {}
+      context: {},
+      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {})
     };
     const vNode = { id: newId, point: positionInFlow, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
     this.pushState('drop.node');
+    // Immediately reflect required-field issues for the new node
+    this.recomputeValidation();
   }
   private normalizeTemplate(t: any) { return this.fbUtils.normalizeTemplate(t); }
   private computeDropPoint(ev: any) {
@@ -803,7 +833,8 @@ export class FlowBuilderComponent {
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: {}
+      context: {},
+      templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {})
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
@@ -830,6 +861,8 @@ export class FlowBuilderComponent {
       }
     }
     this.pushState('palette.click.add');
+    // Immediately reflect required-field issues for the new node
+    this.recomputeValidation();
   }
 
   // (removed) delegation handler
@@ -1064,12 +1097,67 @@ export class FlowBuilderComponent {
       return String(m?.templateObj?.id || m?.template?.id || m?.template || '').trim();
     } catch { return ''; }
   }
+  private computeTemplateChecksumForId(tplId: string): string {
+    try {
+      const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
+      return this.fbUtils.argsChecksum(currentTpl?.args || {});
+    } catch { return ''; }
+  }
+  hasArgsChecksumMismatch(model: any): boolean {
+    try {
+      if (!model) return false;
+      const tplId = String(model?.template || model?.templateObj?.id || '');
+      if (!tplId) return false;
+      const stored = String(model?.templateChecksum || '');
+      const current = this.computeTemplateChecksumForId(tplId);
+      return !!(stored && current && stored !== current);
+    } catch { return false; }
+  }
+  onRequestUpdateArgs() {
+    try {
+      const m = this.selectedModel;
+      if (!m) return;
+      const tplId = String(m?.template || m?.templateObj?.id || '');
+      const curTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
+      if (!curTpl) return;
+      const newArgs = JSON.parse(JSON.stringify((curTpl as any).args || {}));
+      const newChecksum = this.fbUtils.argsChecksum(newArgs);
+      const newModel = { ...m, templateObj: { ...(m.templateObj || {}), args: newArgs }, templateChecksum: newChecksum };
+      // Keep the same context; dynamic-form will handle missing/extra fields
+      this.onAdvancedModelChange(newModel);
+      this.onAdvancedModelCommitted(newModel);
+    } catch {}
+  }
   isNodeHardError(id: string): boolean {
     try {
       const n = this.nodes.find(nn => nn.id === id);
       const tplId = this.getNodeTemplateId(n);
       if (!tplId) return false;
-      return !this.allowedTplIds.has(tplId);
+      if (!this.allowedTplIds.has(tplId)) return true;
+      // Checksum mismatch: template args changed since node was created
+      try {
+        const model: any = n?.data?.model || {};
+        if (model?.invalid === true) return true;
+        const stored = String(model?.templateChecksum || '');
+        const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
+        const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
+        if (stored && current && stored !== current) return true;
+      } catch {}
+      // Missing required fields based on schema
+      try {
+        const m: any = n?.data?.model || {};
+        const schema: any = m?.templateObj?.args || null;
+        if (schema) {
+          const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
+          const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+            .filter((f: any) => {
+              const v = (m?.context || {})[f.key];
+              return v == null || v === '';
+            });
+          if (missing.length) return true;
+        }
+      } catch {}
+      return false;
     } catch { return false; }
   }
   private recomputeValidation() {
@@ -1081,12 +1169,46 @@ export class FlowBuilderComponent {
         if (tpl && !this.allowedTplIds.has(tpl)) {
           issues.push({ kind: 'node', nodeId: id, message: `Template ${tpl} non autorisé dans ce workspace` });
         }
+        // Args checksum mismatch
+        try {
+          const model: any = n?.data?.model || {};
+          const stored = String(model?.templateChecksum || '');
+          const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tpl));
+          const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
+          if (stored && current && stored !== current) {
+            issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (arguments). Vérifier ce nœud.` });
+          }
+        } catch {}
+        // Form invalid or missing required fields
+        try {
+          const model: any = n?.data?.model || {};
+          if (model?.invalid === true) {
+            issues.push({ kind: 'node', nodeId: id, message: `Formulaire du nœud invalide.` });
+          }
+          const schema: any = model?.templateObj?.args || null;
+          if (schema) {
+            const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
+            const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+              .filter((f: any) => {
+                const v = (model?.context || {})[f.key];
+                return v == null || v === '';
+              })
+              .map((f: any) => f.label || f.key || 'Champ requis');
+            if (missing.length) issues.push({ kind: 'node', nodeId: id, message: `Champs requis manquants: ${missing.join(', ')}` });
+          }
+        } catch {}
         // TODO: required-fields validation, only after node dialog opened at least once
         // if (this.openedNodeConfig.has(id)) { ... }
       }
     } catch { }
     this.validationIssues = issues;
     try { this.cdr.detectChanges(); } catch {}
+  }
+  nodeErrorTooltip(nodeId: string): string {
+    try {
+      const msgs = (this.validationIssues || []).filter(it => it.nodeId === nodeId).map(it => it.message);
+      return msgs.length ? msgs.join('\n') : 'Problème sur ce nœud';
+    } catch { return 'Problème sur ce nœud'; }
   }
   ctxDeleteTarget() {
     const tgt = this.ctxMenuTarget;
@@ -1145,7 +1267,8 @@ export class FlowBuilderComponent {
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     this.edges = res.edges as any;
-    // Ne pas pousser dans lhistorique ici; on attend lévénement "committed"
+    // Ne pas pousser dans l’historique ici; on attend l’événement "committed"
+    this.recomputeValidation();
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
@@ -1282,6 +1405,18 @@ export class FlowBuilderComponent {
     this.centerViewportOnWorldPoint(wx, wy, 250);
   }
 
+  onIssueClick(it: { kind: 'node'|'flow'; nodeId?: string; message: string }) {
+    try {
+      if (it && it.nodeId) {
+        const node = this.nodes.find(n => String(n.id) === String(it.nodeId));
+        if (node) {
+          this.selectItem(node);
+          this.centerOnNodeId(String(it.nodeId));
+        }
+      }
+    } catch {}
+  }
+
   private centerViewportOnWorldPoint(wx: number, wy: number, duration = 0) {
     try {
       const vs: any = this.flow?.viewportService;
@@ -1313,7 +1448,16 @@ export class FlowBuilderComponent {
 
   // Placeholder actions for save and run
   saveFlow() {
-    try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
+    try {
+      if (this.currentFlowId) {
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
+          next: () => { try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); } },
+          error: () => { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } },
+        });
+      } else {
+        try { this.message.warning('Aucun flow associé'); } catch { this.showToast('Aucun flow associé'); }
+      }
+    } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
   runFlow() {
     try { this.message.info('Lancement du flow…'); } catch { this.showToast('Lancement du flow…'); }

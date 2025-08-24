@@ -160,7 +160,17 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         <div class="preview-col">
           <div class="dialog-preview">
             <div class="dialog-box">
-              <app-dynamic-form [schema]="argsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+              <ng-container *ngIf="argsReady; else argsLoadingTpl">
+                <ng-container *ngIf="isFormSchema(argsObj); else invalidSchema">
+                  <app-dynamic-form [schema]="argsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+                </ng-container>
+                <ng-template #invalidSchema>
+                  <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
+                </ng-template>
+              </ng-container>
+              <ng-template #argsLoadingTpl>
+                <div class="schema-loading">Chargement…</div>
+              </ng-template>
             </div>
           </div>
         </div>
@@ -213,6 +223,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     /* Simulated dialog like flow-builder */
     .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
     .dialog-box { max-width: 400px; width: 100%; background:#fff; border-right:1px solid #e5e7eb; border-left:1px solid #e5e7eb; padding:12px; }
+    .schema-loading { color:#6b7280; font-size: 12px; padding: 8px 0; }
+    .schema-hint { color:#6b7280; font-size: 12px; padding: 8px 0; }
     .json-visible .dialog-box { max-width: 100%; }
     @media (max-width: 1024px) {
       .args-row { grid-template-columns: 1fr; }
@@ -227,6 +239,9 @@ export class NodeTemplateEditorComponent implements OnInit {
   argsJson = '{\n  \n}';
   fbVisible = false;
   fbSchema: any = { title: 'Arguments', fields: [] };
+  argsReady = false;
+  private _parsedArgsCache: any = null;
+  private _parsedArgsSig = '';
   // Embed form builder state
   // duplicate declarations removed
   iconOptions: string[] = [
@@ -290,9 +305,10 @@ export class NodeTemplateEditorComponent implements OnInit {
           // reset id and tweak name for duplication
           this.form.patchValue({ id: null, name: (t.name || '') + ' (copie)' }, { emitEvent: false });
         }
+        this.argsReady = true;
       });
     } else if (id) {
-      this.catalog.getNodeTemplate(id).subscribe(t => { if (t) this.patchTemplate(t); });
+      this.catalog.getNodeTemplate(id).subscribe(t => { if (t) this.patchTemplate(t); this.argsReady = true; });
     }
   }
 
@@ -313,13 +329,25 @@ export class NodeTemplateEditorComponent implements OnInit {
   get argsObj(): any {
     try {
       const raw = this.argsJson || '';
-      if (!raw.trim()) return { title: 'Arguments', fields: [] };
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object') return parsed;
-      return { title: 'Arguments', fields: [] };
+      const sig = raw.trim();
+      if (this._parsedArgsSig === sig && this._parsedArgsCache) return this._parsedArgsCache;
+      if (!sig) { this._parsedArgsSig = sig; this._parsedArgsCache = { title: 'Arguments', fields: [] }; return this._parsedArgsCache; }
+      const parsed = JSON.parse(sig);
+      this._parsedArgsSig = sig; this._parsedArgsCache = (parsed && typeof parsed === 'object') ? parsed : { title: 'Arguments', fields: [] };
+      return this._parsedArgsCache;
     } catch {
-      return { title: 'Arguments', fields: [] };
+      this._parsedArgsSig = this.argsJson || '';
+      this._parsedArgsCache = { title: 'Arguments', fields: [] };
+      return this._parsedArgsCache;
     }
+  }
+
+  isFormSchema(obj: any): boolean {
+    try {
+      if (!obj || typeof obj !== 'object') return false;
+      if (Array.isArray((obj as any).fields) || Array.isArray((obj as any).steps)) return true;
+      return !!(obj as any).title;
+    } catch { return false; }
   }
 
   private patchTemplate(t: NodeTemplate) {

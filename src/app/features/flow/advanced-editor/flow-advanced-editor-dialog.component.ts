@@ -20,7 +20,7 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
         <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
-        <flow-advanced-center-panel [model]="model" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+        <flow-advanced-center-panel [model]="model" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
@@ -56,7 +56,7 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
             <!-- Center panel -->
             <div class="slide center">
               <div class="scroll" (pointerup)="onFormReleased()">
-                <flow-advanced-center-panel [model]="model" [bare]="true" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+                <flow-advanced-center-panel [model]="model" [bare]="true" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
               </div>
             </div>
           <!-- Output panel -->
@@ -122,6 +122,8 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
 })
 export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
   @Input() model: any;
+  @Input() disableForChecksum = false;
+  @Output() requestUpdateArgs = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
   // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
   @Output() modelChangeCommitted = new EventEmitter<any>();

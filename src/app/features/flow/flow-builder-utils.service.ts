@@ -313,4 +313,26 @@ export class FlowBuilderUtilsService {
       return { nodes, edges: [edge1, edge2] };
     } catch { return { nodes: [], edges: [] } }
   }
+
+  // ===== Checksums (stable stringify + 32-bit hash) =====
+  private stableStringify(obj: any): string {
+    const seen = new WeakSet();
+    const sort = (x: any): any => {
+      if (x === null || typeof x !== 'object') return x;
+      if (seen.has(x)) return undefined; // drop cycles
+      seen.add(x);
+      if (Array.isArray(x)) return x.map(sort);
+      const out: any = {};
+      Object.keys(x).sort().forEach(k => { out[k] = sort(x[k]); });
+      return out;
+    };
+    try { return JSON.stringify(sort(obj)); } catch { return JSON.stringify(obj || {}); }
+  }
+  argsChecksum(args: any): string {
+    const str = this.stableStringify(args || {});
+    // DJB2 32-bit
+    let h = 5381 >>> 0;
+    for (let i = 0; i < str.length; i++) { h = (((h << 5) + h) + str.charCodeAt(i)) >>> 0; }
+    return ('00000000' + h.toString(16)).slice(-8);
+  }
 }

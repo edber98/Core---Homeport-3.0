@@ -25,6 +25,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { CatalogService } from '../../services/catalog.service';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { StyleEditorComponent } from './components/style-editor.component';
@@ -119,6 +120,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
   private bootstrappedFromLocation = false;
   // Preset defaults for templates (vertical layout, cols=24, expressions allowed)
   private applyTplPreset = false;
+  // Persisted form context when opened from /forms
+  private currentFormId: string | null = null;
+  private currentFormName: string = '';
+  private currentFormDesc: string = '';
 
   // Sélection (centralisée via service)
   get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
@@ -213,7 +218,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   mobileAddField() { this.addFieldFromToolbar(); }
   mobileToggleEdit() { this.toggleEditMode(); }
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router, private catalog: CatalogService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -1467,6 +1472,18 @@ export class DynamicFormBuilderComponent implements OnChanges {
         try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
         try { this.router.navigateByUrl(this.returnTo); return; } catch { location.href = this.returnTo!; return; }
       }
+      // If opened from /forms with an id, persist to CatalogService
+      if (this.currentFormId) {
+        try {
+          this.catalog.saveForm({ id: this.currentFormId, name: this.currentFormName || (this.schema.title || 'Formulaire'), description: this.currentFormDesc, schema: this.schema } as any).subscribe({
+            next: () => this.msg.success('Formulaire sauvegardé'),
+            error: () => this.msg.error('Échec de la sauvegarde')
+          });
+        } catch {
+          this.msg.error('Échec de la sauvegarde');
+        }
+        return;
+      }
       this.msg.success('Formulaire sauvegardé');
     } catch (e) {
       this.msg.error('Échec de la sauvegarde');
@@ -1940,6 +1957,22 @@ export class DynamicFormBuilderComponent implements OnChanges {
       const schemaParam = qp.get('schema') || (search ? new URLSearchParams(search).get('schema') : null);
       const tplPresetParam = qp.get('tplPreset') || (search ? new URLSearchParams(search).get('tplPreset') : null);
       this.applyTplPreset = !!tplPresetParam && (tplPresetParam === '1' || tplPresetParam === 'true' || tplPresetParam === 'yes');
+      // Load by form id if provided (from /forms)
+      const formId = qp.get('form') || qp.get('id');
+      if (formId) {
+        this.currentFormId = formId;
+        try {
+          this.catalog.getForm(formId).subscribe(doc => {
+            if (!doc) return;
+            this.currentFormName = doc.name || '';
+            this.currentFormDesc = doc.description || '';
+            const s: any = (doc as any).schema || { title: doc.name || 'Formulaire', fields: [] };
+            this.model = s; this.schema = JSON.parse(JSON.stringify(s)); this.select(this.schema);
+            if (this.applyTplPreset) this.applyTemplateDefaults();
+            this.refresh();
+          });
+        } catch {}
+      }
       if (schemaParam) {
         try {
           const parsed = JSON.parse(schemaParam);
@@ -1958,7 +1991,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         this.bootstrappedFromLocation = true;
         const sp = new URLSearchParams(search);
         const q: any = {};
-        ['session','return','schema','locks','lockTitle','tplPreset'].forEach(k => { const v = sp.get(k); if (v != null) q[k] = v; });
+        ['session','return','schema','locks','lockTitle','tplPreset','form','id'].forEach(k => { const v = sp.get(k); if (v != null) q[k] = v; });
         try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
       }
       // Initial emit/persist

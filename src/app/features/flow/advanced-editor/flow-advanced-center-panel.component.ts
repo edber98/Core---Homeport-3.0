@@ -22,15 +22,22 @@ import { FormsModule } from '@angular/forms';
             </div>
           </div>
           <div class="body">
-            <app-dynamic-form *ngIf="schema as s"
-              [schema]="s"
-              [value]="model?.context || {}"
-              (valueChange)="onValue($event)"
-              (valueCommitted)="onValueCommitted($event)"
-              (validChange)="onValid($event)"
-              (submitted)="onSubmitted($event)">
-            </app-dynamic-form>
-            <div *ngIf="!schema" class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+            <div class="disabled-overlay" *ngIf="disabled"></div>
+            <div class="disabled-banner" *ngIf="disabled">
+              <div class="msg">{{ disableReason || 'Mise à jour du format requise' }}</div>
+              <button class="update" (click)="updateArgs.emit()">Mettre à jour</button>
+            </div>
+            <div [class.dimmed]="disabled">
+              <app-dynamic-form *ngIf="schema as s"
+                [schema]="s"
+                [value]="model?.context || {}"
+                (valueChange)="onValue($event)"
+                (valueCommitted)="onValueCommitted($event)"
+                (validChange)="onValid($event)"
+                (submitted)="onSubmitted($event)">
+              </app-dynamic-form>
+              <div *ngIf="!schema" class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
+            </div>
           </div>
         </nz-tab>
         <nz-tab nzTitle="Paramétrage">
@@ -63,6 +70,11 @@ import { FormsModule } from '@angular/forms';
     .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
+    .body { position: relative; }
+    .dimmed { opacity: .6; pointer-events: none; }
+    .disabled-overlay { position:absolute; inset:0; background:transparent; z-index: 2; }
+    .disabled-banner { position:absolute; right:12px; top:8px; z-index:3; display:flex; align-items:center; gap:8px; background:#fff7ed; color:#b45309; border:1px solid #fdba74; padding:6px 8px; border-radius: 8px; }
+    .disabled-banner .update { background:#111; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
     .panel-card .body { padding: 0; }
     .settings-pane { padding: 12px 16px; height: 100%; display:flex; flex-direction:column; gap:12px; }
     .setting-row { display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #ececec; border-radius:10px; padding:10px 12px; }
@@ -82,6 +94,9 @@ import { FormsModule } from '@angular/forms';
 export class FlowAdvancedCenterPanelComponent {
   @Input() model: any = {};
   @Input() bare = false;
+  @Input() disabled = false;
+  @Input() disableReason: string | null = null;
+  @Output() updateArgs = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
   @Output() submitted = new EventEmitter<any>();
   @Output() committed = new EventEmitter<any>();
