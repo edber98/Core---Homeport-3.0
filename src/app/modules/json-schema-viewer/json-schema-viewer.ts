@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
@@ -205,12 +205,22 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
 
   constructor(private sanitizer: DomSanitizer, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     // Sync data into currentData when input changes
     this.currentData = this.data;
     this.updateJsonHtmlAsync();
     // Sync external mode into internalMode if provided
     if (this.mode) this.internalMode = this.mode; else this.internalMode = this.initialMode || 'Schema';
+    // If we arrive with edit mode already true in JSON view, ensure editor buffer is initialized
+    try {
+      const modeChanged = !!changes['mode'] || !!changes['initialMode'];
+      const editChanged = !!changes['editMode'];
+      const dataChanged = !!changes['data'];
+      if ((modeChanged || editChanged || dataChanged) && this.viewMode === 'JSON' && this.editMode) {
+        this.editValue = JSON.stringify(this.currentData ?? null, null, 2);
+        this.cdr.markForCheck();
+      }
+    } catch {}
   }
 
   // (removed mobile drag telemetry)
@@ -218,6 +228,12 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
     this.currentData = this.data;
     this.internalMode = this.mode || this.initialMode || 'Schema';
     this.updateJsonHtmlAsync();
+    // Initialize editor buffer if starting directly in JSON edit mode
+    try {
+      if (this.viewMode === 'JSON' && this.editMode) {
+        this.editValue = JSON.stringify(this.currentData ?? null, null, 2);
+      }
+    } catch {}
   }
 
   onDragStart(ev: DragEvent, path: string, name?: string) {
@@ -285,6 +301,28 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
     if (this.editMode) {
       // Initialize editor with pretty JSON of current data
       try { this.editValue = JSON.stringify(this.currentData, null, 2); } catch { this.editValue = ''; }
+    }
+  }
+
+  onEditValueChange(v: string) {
+    // Live-apply when JSON becomes valid to propagate immediately (useful for Start payload)
+    this.editValue = v;
+    try {
+      if (v && v.trim().length) {
+        const parsed = JSON.parse(v);
+        this.currentData = parsed;
+        this.updateJsonHtmlAsync();
+        this.dataChange.emit(parsed);
+        // propagate to ngModel
+        this.onChange?.(parsed);
+      } else {
+        this.currentData = null;
+        this.updateJsonHtmlAsync();
+        this.dataChange.emit(null);
+        this.onChange?.(null);
+      }
+    } catch {
+      // ignore invalid JSON while typing
     }
   }
 

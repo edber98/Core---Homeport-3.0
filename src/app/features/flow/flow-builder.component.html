@@ -112,6 +112,10 @@
                 <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
               </div>
             </div>
+            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
+              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')" title="Etat dernière exécution"></i>
+              <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
+            </div>
           </div>
         </ng-template>
         <ng-template let-ctx connectionTemplate>
@@ -138,7 +142,7 @@
       (saveJson)="saveSelectedJson()"></flow-inspector-panel>
     <div style="padding: 8px; overflow: auto;">
       <!-- Flow meta quick edit -->
-      <div class="flow-meta">
+      <div class="flow-meta apple">
         <div class="row">
           <label>Nom</label>
           <input nz-input [(ngModel)]="currentFlowName" placeholder="Nom du flow" />
@@ -147,8 +151,29 @@
           <label>Description</label>
           <input nz-input [(ngModel)]="currentFlowDesc" placeholder="Description" />
         </div>
+        <div class="row exec">
+          <label>Exécution</label>
+          <div class="exec-controls">
+            <select class="mode-select" [(ngModel)]="builderMode">
+              <option value="test">test</option>
+              <option value="prod">prod</option>
+            </select>
+            <button class="icon-btn ghost" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button class="icon-btn ghost" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+              <i class="fa-solid fa-stop"></i>
+            </button>
+            <div class="status mono" title="Dernier / En cours">
+              <div>Dernier: {{ lastRun?.status || '—' }}</div>
+              <div>En cours: {{ currentRun?.status || '—' }}</div>
+            </div>
+          </div>
+        </div>
         <div class="row actions">
-          <button nz-button nzSize="small" (click)="saveFlow()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+          <button class="btn primary" (click)="saveFlow()" title="Enregistrer" aria-label="Enregistrer">
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
         </div>
       </div>
 
@@ -170,6 +195,9 @@
       </button>
       <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
+      </button>
+      <button class="icon-btn" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
+        <i class="fa-solid fa-flask"></i>
       </button>
       <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
         <i class="fa-solid fa-cloud-arrow-down"></i>
@@ -246,7 +274,8 @@
   </div>
   <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel"
     [disableForChecksum]="hasTemplateMismatch(selectedModel)"
-    (requestUpdateArgs)="onRequestUpdateArgs()"
+    [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
+    (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
 

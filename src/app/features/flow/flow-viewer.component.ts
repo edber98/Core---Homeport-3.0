@@ -57,6 +57,9 @@ import { Subscription } from 'rxjs';
                   <handle position="bottom" type="source" [id]="out" [template]="hTpl"></handle>
                 </div>
               </div>
+              <div class="exec-badge" *ngIf="ctx.node.data.execStatus as st">
+                <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')"></i>
+              </div>
             </div>
           </ng-template>
         </vflow>
@@ -93,6 +96,10 @@ import { Subscription } from 'rxjs';
     .node-card .meta .title { font-weight: 600; }
     .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
     .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
+    .node-card .exec-badge { position:absolute; right:8px; bottom:6px; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+    .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
+    .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
+    .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
     .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
     .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
     .bottom-bar button { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }

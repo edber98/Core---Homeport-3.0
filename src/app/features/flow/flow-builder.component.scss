@@ -103,10 +103,19 @@
 .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
 .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
 .node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
-.right-panel .flow-meta { border:1px solid #e5e7eb; border-radius:10px; padding:8px; background:#fff; margin-bottom:8px; }
-.right-panel .flow-meta .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
-.right-panel .flow-meta .row label { width:90px; color:#64748b; font-size:12px; }
-.right-panel .flow-meta .row.actions { justify-content:flex-end; }
+.right-panel .flow-meta { border:0; border-radius:0; padding: 6px 2px; background:transparent; margin-bottom:8px; }
+.right-panel .flow-meta.apple .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
+.right-panel .flow-meta.apple .row.exec { align-items: flex-start; }
+.right-panel .flow-meta.apple .row.exec label { margin-top: 2px; }
+.right-panel .flow-meta.apple .row label { width:90px; color:#64748b; font-size:12px; }
+.right-panel .flow-meta.apple .row.actions { justify-content:flex-end; }
+.right-panel .flow-meta .exec-controls { display:flex; align-items:center; gap:6px; width:100%; flex-wrap: wrap; }
+.right-panel .flow-meta .exec-controls .mode-select { flex:0 0 76px; padding:3px 6px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; font-size:12px; }
+.right-panel .flow-meta .exec-controls .icon-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; }
+.right-panel .flow-meta .exec-controls .icon-btn.ghost { background:#fff; border-color:#e5e7eb; }
+.right-panel .flow-meta .exec-controls .status { margin-left:0; color:#64748b; font-size:12px; flex: 1 0 100%; text-align: right; line-height: 1.4; }
+.right-panel .flow-meta .exec-controls .status.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+.right-panel .flow-meta .btn.primary { background:#1677ff; color:#fff; border:1px solid #1677ff; border-radius:10px; padding:6px 10px; }
 .edge-labels { display:flex; flex-direction:column; align-items:center; gap:4px; }
 .edge-labels .badge { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; color:#111; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
 .edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
@@ -178,3 +187,9 @@ nz-drawer { display: contents; }
 /* Bottom bar buttons: consistent square size and centered icons */
 .bottom-bar .icon-btn, .bottom-bar .import-btn { width: 36px; height: 36px; padding: 0; display:inline-flex; align-items:center; justify-content:center; }
 .bottom-bar .import-btn input[type=file] { display: none; }
+
+.node-card .exec-badge { position:absolute; right:8px; bottom:6px; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
+.node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
+.node-card .exec-badge .fa-clock.pending { color:#6b7280; }
+.node-card .exec-badge .cnt { font-size:11px; color:#374151; }

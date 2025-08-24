@@ -52,7 +52,7 @@
       <pre class="pretty" [innerHTML]="jsonHtml"></pre>
     </div>
     <ng-template #editor>
-      <monaco-json-editor [(value)]="editValue" [height]="260"></monaco-json-editor>
+      <monaco-json-editor [(value)]="editValue" (valueChange)="onEditValueChange($event)" [height]="260"></monaco-json-editor>
     </ng-template>
   </div>
 </div>

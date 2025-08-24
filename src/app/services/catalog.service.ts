@@ -319,10 +319,33 @@ export class CatalogService {
             }
           ] }
         };
+        // small helpers to stamp checksum/signatures on models (must match builder utils logic)
+        const stableStringify = (obj: any): string => {
+          const seen = new WeakSet();
+          const sort = (x: any): any => {
+            if (x === null || typeof x !== 'object') return x;
+            if (seen.has(x)) return undefined;
+            seen.add(x);
+            if (Array.isArray(x)) return x.map(sort);
+            const out: any = {};
+            Object.keys(x).sort().forEach(k => { out[k] = sort(x[k]); });
+            return out;
+          };
+          try { return JSON.stringify(sort(obj)); } catch { return JSON.stringify(obj || {}); }
+        };
+        const argsChecksum = (args: any): string => {
+          const str = stableStringify(args || {});
+          let h = 5381 >>> 0; for (let i = 0; i < str.length; i++) { h = (((h << 5) + h) + str.charCodeAt(i)) >>> 0; }
+          return ('00000000' + h.toString(16)).slice(-8);
+        };
+        const featureChecksum = (tpl: any): string => {
+          try { return (tpl?.authorize_catch_error ? '1' : '0') + (tpl?.authorize_skip_error ? '1' : '0'); } catch { return '00'; }
+        };
+
         // demo-1: Start -> SendMail
         const d1Nodes: any[] = [
-          { id: 'n_start', type: 'html-template', point: { x: 120, y: 100 }, data: { model: { id: 'n_start', name: 'Start', template: startTpl.id, templateObj: startTpl, context: {} } } },
-          { id: 'n_send', type: 'html-template', point: { x: 120, y: 260 }, data: { model: { id: 'n_send', name: 'SendMail', template: sendTpl.id, templateObj: sendTpl, context: {} } } },
+          { id: 'n_start', type: 'html-template', point: { x: 120, y: 100 }, data: { model: { id: 'n_start', name: 'Start', template: startTpl.id, templateObj: startTpl, context: {}, templateChecksum: argsChecksum(startTpl.args), templateFeatureSig: featureChecksum(startTpl) } } },
+          { id: 'n_send', type: 'html-template', point: { x: 120, y: 260 }, data: { model: { id: 'n_send', name: 'SendMail', template: sendTpl.id, templateObj: sendTpl, context: {}, templateChecksum: argsChecksum(sendTpl.args), templateFeatureSig: featureChecksum(sendTpl) } } },
         ];
         const d1Edges: any[] = [
           { id: 'n_start->n_send:out:', type: 'template', source: 'n_start', target: 'n_send', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } }
@@ -331,9 +354,9 @@ export class CatalogService {
 
         // demo-2: Start -> HTTP -> Condition (2 branches)
         const d2Nodes: any[] = [
-          { id: 'n_start', type: 'html-template', point: { x: 100, y: 80 }, data: { model: { id: 'n_start', name: 'Start', template: startTpl.id, templateObj: startTpl, context: {} } } },
-          { id: 'n_http', type: 'html-template', point: { x: 100, y: 250 }, data: { model: { id: 'n_http', name: 'HTTP Request', template: httpTpl.id, templateObj: httpTpl, context: {} } } },
-          { id: 'n_cond', type: 'html-template', point: { x: 100, y: 430 }, data: { model: { id: 'n_cond', name: 'Condition', template: condTpl.id, templateObj: condTpl, context: { items: [{ _id: 'ok', name: 'OK' }, { _id: 'ko', name: 'KO' }] } } } },
+          { id: 'n_start', type: 'html-template', point: { x: 100, y: 80 }, data: { model: { id: 'n_start', name: 'Start', template: startTpl.id, templateObj: startTpl, context: {}, templateChecksum: argsChecksum(startTpl.args), templateFeatureSig: featureChecksum(startTpl) } } },
+          { id: 'n_http', type: 'html-template', point: { x: 100, y: 250 }, data: { model: { id: 'n_http', name: 'HTTP Request', template: httpTpl.id, templateObj: httpTpl, context: {}, templateChecksum: argsChecksum(httpTpl.args), templateFeatureSig: featureChecksum(httpTpl) } } },
+          { id: 'n_cond', type: 'html-template', point: { x: 100, y: 430 }, data: { model: { id: 'n_cond', name: 'Condition', template: condTpl.id, templateObj: condTpl, context: { items: [{ _id: 'ok', name: 'OK' }, { _id: 'ko', name: 'KO' }] }, templateChecksum: argsChecksum(condTpl.args), templateFeatureSig: featureChecksum(condTpl) } } },
         ];
         const d2Edges: any[] = [
           { id: 'n_start->n_http:out:', type: 'template', source: 'n_start', target: 'n_http', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },

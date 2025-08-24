@@ -23,6 +23,8 @@ import { FlowGraphService } from './flow-graph.service';
 import { FlowBuilderUtilsService } from './flow-builder-utils.service';
 import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
 import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.component';
+import { FlowRunService } from '../../services/flow-run.service';
+import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
 
 @Component({
@@ -350,6 +352,30 @@ export class FlowBuilderComponent {
   advancedOpen = false;
   isImporting = false;
   toastMsg = '';
+  // Advanced dialog injected contexts for test mode
+  advancedCtx: any = {};
+  advancedInjectedInput: any = null;
+  advancedInjectedOutput: any = null;
+  builderMode: 'test'|'prod' = 'test';
+  lastRun: any = null;
+  currentRun: any = null;
+  private startPayloadKey(): string {
+    const fid = this.currentFlowId || 'adhoc';
+    return `flow.startPayload.${fid}`;
+  }
+  private getStartPayload(): any {
+    try {
+      const key = this.startPayloadKey();
+      const raw = localStorage.getItem(key);
+      if (raw) return JSON.parse(raw);
+      const def = { payload: null };
+      try { localStorage.setItem(key, JSON.stringify(def)); } catch {}
+      return def;
+    } catch { return { payload: null }; }
+  }
+  private setStartPayload(v: any) {
+    try { localStorage.setItem(this.startPayloadKey(), JSON.stringify(v ?? {})); } catch {}
+  }
   private toastTimer: any;
   private applyingHistory = false;
   private ignoreEventsUntil = 0;
@@ -387,6 +413,8 @@ export class FlowBuilderComponent {
     private acl: AccessControlService,
     private dfs: DynamicFormService,
     private route: ActivatedRoute,
+    private runner: FlowRunService,
+    private shared: FlowSharedStateService,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -451,6 +479,13 @@ export class FlowBuilderComponent {
 
   ngOnInit() {
     // Debug helpers removed
+    // Subscribe run streams (builder live panel)
+    try {
+      (this.runner as any).runs$?.subscribe((rs: any[]) => {
+        this.lastRun = rs && rs.length ? rs[0] : null;
+        this.currentRun = rs.find(r => r.status === 'running') || null;
+      });
+    } catch {}
     this.updateIsMobile();
     try {
       this.catalog.listApps().subscribe(list => this.zone.run(() => {
@@ -594,6 +629,16 @@ export class FlowBuilderComponent {
         try { this.cdr.detectChanges(); } catch { }
       }
     } catch { }
+  }
+
+  // Execution stats: expose last status/count for badges
+  nodeExecStatus(id: string): { count: number; lastStatus?: string } | null {
+    try {
+      const map = (this.runner as any).nodeStats$?.value as Map<string, any>;
+      if (!map) return null;
+      const v = map.get(String(id));
+      return v || null;
+    } catch { return null; }
   }
 
   onZoomSlider(val: number | string) {
@@ -1054,6 +1099,72 @@ export class FlowBuilderComponent {
     this.ctxMenuTarget = node;
     try { this.selectItem(node); } catch { }
   }
+  // Run selected node in test mode and show I/O in dialog wings
+  onTestSelectedNode() {
+    try {
+      const m = this.selectedModel;
+      if (!m) return;
+      const isStart = String(m?.templateObj?.type || '').toLowerCase() === 'start';
+      const input = isStart ? (this.getStartPayload() || {}) : (this.computePrevPayload(m?.id) || {});
+      const run = this.runner.runNode(m?.templateObj || {}, m?.id, 'test', input);
+      const last = run.attempts[run.attempts.length - 1];
+      this.advancedInjectedInput = last?.input ?? input;
+      if (isStart) {
+        this.advancedInjectedOutput = this.getStartPayload() || {};
+      } else {
+        const flowOut = (this.lastRun && this.lastRun.finalPayload) ? this.lastRun.finalPayload : null;
+        const nodeOut = last?.result;
+        this.advancedInjectedOutput = flowOut ?? nodeOut ?? null;
+      }
+      // ctx à plat
+      this.advancedCtx = this.advancedInjectedInput || {};
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  onRunPrevNodes() {
+    try {
+      const nodeId = this.selectedModel?.id;
+      if (!nodeId) return;
+      const injected = this.runPredecessorsAndGetResult(nodeId);
+      this.advancedInjectedInput = injected;
+      this.advancedCtx = { input: this.advancedInjectedInput, output: this.advancedInjectedOutput };
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  private runPredecessorsAndGetResult(nodeId: string): any {
+    // Depth-first: compute input for predecessors first
+    const preds = (this.edges || []).filter(e => String(e.target) === String(nodeId)).map(e => String(e.source));
+    if (!preds.length) return {};
+    let lastResult: any = {};
+    for (const pid of preds) {
+      const before = this.runPredecessorsAndGetResult(pid);
+      const pn = (this.nodes || []).find(n => String(n.id) === pid);
+      const pmodel = pn?.data?.model || {};
+      const run = this.runner.runNode(pmodel?.templateObj || {}, pmodel?.id || pid, 'test', before);
+      const att = run.attempts[run.attempts.length - 1];
+      lastResult = att?.result ?? before;
+    }
+    return lastResult;
+  }
+
+  private computePrevPayload(nodeId: string | null | undefined): any {
+    if (!nodeId) return null;
+    try {
+      // Find any predecessor in edges
+      const pred = (this.edges || []).filter(e => String(e.target) === String(nodeId)).map(e => String(e.source));
+      if (!pred.length) return null;
+      // Use last known run to pick the last attempt for the first predecessor
+      const runs = (this.runner as any).runs$?.value || [];
+      for (let i = 0; i < runs.length; i++) {
+        const r = runs[i];
+        const att = (r?.attempts || []).slice().reverse().find((a: any) => pred.includes(String(a.nodeId)));
+        if (att && att.result != null) return att.result;
+      }
+    } catch {}
+    return null;
+  }
 
   // Mobile long-press: open context menu
   onNodeTouchStart(ev: TouchEvent, node: any) {
@@ -1382,7 +1493,24 @@ export class FlowBuilderComponent {
     }
   }
 
-  openAdvancedEditor() { this.advancedOpen = true; }
+  openAdvancedEditor() {
+    // Prefill input wing from previous node last result
+    try {
+      const nodeId = this.selectedModel?.id;
+      const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
+      this.advancedInjectedInput = isStart ? (this.getStartPayload() || {}) : this.computePrevPayload(nodeId);
+      if (isStart) this.advancedInjectedOutput = this.getStartPayload() || {};
+      this.advancedCtx = this.advancedInjectedInput || {};
+    } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
+    this.advancedOpen = true;
+  }
+  onStartPayloadChange(v: any) {
+    this.setStartPayload(v);
+    this.advancedInjectedInput = v || {};
+    this.advancedInjectedOutput = v || {};
+    this.advancedCtx = this.advancedInjectedInput || {};
+    try { this.cdr.detectChanges(); } catch {}
+  }
   closeAdvancedEditor() { this.advancedOpen = false; }
   onAdvancedModelChange(m: any) {
     // Apply the model to the selected node and refresh
@@ -1618,8 +1746,12 @@ export class FlowBuilderComponent {
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
   runFlow() {
-    try { this.message.info('Lancement du flow…'); } catch { this.showToast('Lancement du flow…'); }
+    try { this.message.info(`Lancement du flow (${this.builderMode})…`); } catch { this.showToast(`Lancement du flow (${this.builderMode})…`); }
+    const snap = this.snapshot();
+    this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });
+    try { this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
   }
+  stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
 
 
   private showToast(msg: string) {
@@ -1665,11 +1797,13 @@ export class FlowBuilderComponent {
         try {
           this.zone.run(() => {
             this.history.push(this.snapshot(), reason);
+            try { this.shared.setGraph(this.snapshot() as any); } catch {}
             this.updateTimelineCaches();
             try { this.cdr.detectChanges(); } catch { }
           });
         } catch {
           this.history.push(this.snapshot(), reason);
+          try { this.shared.setGraph(this.snapshot() as any); } catch {}
           this.updateTimelineCaches();
           try { this.cdr.detectChanges(); } catch { }
         }
@@ -1678,11 +1812,13 @@ export class FlowBuilderComponent {
       try {
         this.zone.run(() => {
           this.history.push(this.snapshot(), reason);
+          try { this.shared.setGraph(this.snapshot() as any); } catch {}
           this.updateTimelineCaches();
           try { this.cdr.detectChanges(); } catch { }
         });
       } catch {
         this.history.push(this.snapshot(), reason);
+        try { this.shared.setGraph(this.snapshot() as any); } catch {}
         this.updateTimelineCaches();
         try { this.cdr.detectChanges(); } catch { }
       }

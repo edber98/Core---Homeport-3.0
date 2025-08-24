@@ -17,15 +17,24 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
     <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
-        <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
+        <div *ngIf="injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+          Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
+          <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
+        </div>
+        <!-- Pour Start, on privilégie l'édition dans l'onglet Output; ne rien afficher ici -->
+        <app-json-schema-viewer *ngIf="injectedInput != null && !isStart(model)" [data]="injectedInput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
-        <flow-advanced-center-panel [model]="model" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+        <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
-        <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
- 
+        <!-- Start: output = payload initial du flow (éditable et persisté) -->
+        <app-json-schema-viewer *ngIf="isStart(model)" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'
+          " (dataChange)="startPayloadChange.emit($event)"></app-json-schema-viewer>
+        <!-- Autres: output en lecture -->
+        <app-json-schema-viewer *ngIf="!isStart(model) && injectedOutput != null" [data]="injectedOutput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+
         </div>
     </div>
 
@@ -50,19 +59,23 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
           <!-- Input panel -->
           <div class="slide">
             <div class="scroll">
-              <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
+              <div *ngIf="injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+                Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
+                <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
+              </div>
+              <app-json-schema-viewer *ngIf="injectedInput != null" [data]="injectedInput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
             </div>
           </div>
             <!-- Center panel -->
             <div class="slide center">
               <div class="scroll" (pointerup)="onFormReleased()">
-                <flow-advanced-center-panel [model]="model" [bare]="true" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+                <flow-advanced-center-panel [model]="model" [ctx]="ctx" [bare]="true" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
               </div>
             </div>
           <!-- Output panel -->
           <div class="slide">
             <div class="scroll">
-              <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+              <app-json-schema-viewer *ngIf="injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
             </div>
           </div>
           </div>
@@ -123,8 +136,15 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
 export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
   @Input() model: any;
   @Input() disableForChecksum = false;
+  // Injected context and I/O for test mode previews
+  @Input() ctx: any = {};
+  @Input() injectedInput: any = null;
+  @Input() injectedOutput: any = null;
   @Output() requestUpdateArgs = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
+  @Output() test = new EventEmitter<void>();
+  @Output() runPrev = new EventEmitter<void>();
+  @Output() startPayloadChange = new EventEmitter<any>();
   // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
   @Output() modelChangeCommitted = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
@@ -314,4 +334,5 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   }
 
   // (test diagnostics removed)
+  isStart(m: any): boolean { try { return String(m?.templateObj?.type || '').toLowerCase() === 'start'; } catch { return false; } }
 }
