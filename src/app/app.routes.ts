@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './services/route-guards';
 import { Home } from './pages/home/home';
 import { Graphviz } from './pages/graphviz/graphviz';
 import { Flow } from './pages/flow/flow';
@@ -35,8 +36,10 @@ export const routes: Routes = [
             { path: 'forms/builder', loadComponent: () => import('./features/dynamic-form/form-list.component').then(m => m.FormListComponent), title: 'Formulaires — Builder' },
             { path: 'forms/viewer', loadComponent: () => import('./features/dynamic-form/form-list.component').then(m => m.FormListComponent), title: 'Formulaires — Viewer' },
             { path: 'node-templates', loadComponent: () => import('./features/flow/node-template-list.component').then(m => m.NodeTemplateListComponent), title: 'Templates de nœuds' },
-            { path: 'node-templates/editor', loadComponent: () => import('./features/flow/node-template-editor.component').then(m => m.NodeTemplateEditorComponent), title: 'Template — Éditeur' },
+            { path: 'node-templates/editor', canActivate: [adminGuard], loadComponent: () => import('./features/flow/node-template-editor.component').then(m => m.NodeTemplateEditorComponent), title: 'Template — Éditeur' },
             { path: 'node-templates/viewer', loadComponent: () => import('./features/flow/node-template-viewer.component').then(m => m.NodeTemplateViewerComponent), title: 'Template — Viewer' },
+            { path: 'workspaces', canActivate: [adminGuard], loadComponent: () => import('./features/workspace/workspace-list.component').then(m => m.WorkspaceListComponent), title: 'Workspaces' },
+            { path: 'users', canActivate: [adminGuard], loadComponent: () => import('./features/users/users-list.component').then(m => m.UsersListComponent), title: 'Users' },
             // Websites (list/editor/viewer)
             { path: 'websites', loadComponent: () => import('./features/website/website-list.component').then(m => m.WebsiteListComponent), title: 'Sites web' },
             { path: 'websites/editor', loadComponent: () => import('./features/website/website-editor.component').then(m => m.WebsiteEditorComponent), title: 'Site — Éditeur' },
@@ -45,7 +48,8 @@ export const routes: Routes = [
             { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },
             { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
             { path: 'debug/expr-json', loadComponent: () => import('./features/debug/debug-expr-json-playground.component').then(m => m.DebugExprJsonPlaygroundComponent), title: 'Debug — JSON + Expression' },
-            { path: 'apps/editor', loadComponent: () => import('./features/catalog/app-provider-editor.component').then(m => m.AppProviderEditorComponent), title: 'App — Éditeur' },
+            { path: 'debug/form-loader', loadComponent: () => import('./features/debug/form-loader-debug.component').then(m => m.FormLoaderDebugComponent), title: 'Debug — Form Loader' },
+            { path: 'apps/editor', canActivate: [adminGuard], loadComponent: () => import('./features/catalog/app-provider-editor.component').then(m => m.AppProviderEditorComponent), title: 'App — Éditeur' },
             { path: 'apps/viewer', loadComponent: () => import('./features/catalog/app-provider-viewer.component').then(m => m.AppProviderViewerComponent), title: 'App — Viewer' },
             { path: 'settings', loadComponent: () => import('./features/settings/app-settings.component').then(m => m.AppSettingsComponent), title: 'Paramètres' },
             { path: 'ui-builder', loadComponent: () => import('./features/ui/ui-builder.component').then(m => m.UiBuilderComponent), title: 'UI Builder' },
@@ -67,5 +71,6 @@ export const routes: Routes = [
     { path: 'home', component: Home },
     { path: 'viz', component: Graphviz },
     { path: 'flow', component: Flow },
+    { path: 'not-authorized', loadComponent: () => import('./pages/not-authorized/not-authorized').then(m => m.NotAuthorizedPage), title: 'Non autorisé' },
     { path: '**', redirectTo: '' } // redirection pour les chemins inconnus
 ];

@@ -15,7 +15,7 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
     <div class="container" *ngIf="site">
       <div class="page-header">
         <div>
-          <h1>{{site?.name}}</h1>
+          <h1>{{site!.name}}</h1>
           <p>/{{site!.slug}} · {{site!.status}} · {{ (site!.routes || []).length }} routes</p>
         </div>
         <div class="actions">

@@ -7,6 +7,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 
 @Component({
   selector: 'app-provider-list',
@@ -25,10 +26,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
           <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
             <i class="fa-solid fa-search"></i>
           </button>
-          <button nz-button nzType="primary" class="primary with-text" (click)="create()">
+          <button nz-button nzType="primary" class="primary with-text" (click)="create()" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i> Nouvelle app
           </button>
-          <button nz-button nzType="primary" class="primary icon-only" (click)="create()" aria-label="Nouvelle app">
+          <button nz-button nzType="primary" class="primary icon-only" (click)="create()" aria-label="Nouvelle app" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
@@ -56,10 +57,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
             <button class="icon-btn" (click)="view(a); $event.stopPropagation()" title="Voir">
               <i class="fa-regular fa-eye"></i>
             </button>
-            <button class="icon-btn" (click)="edit(a); $event.stopPropagation()" title="Éditer">
+            <button class="icon-btn" (click)="edit(a); $event.stopPropagation()" title="Éditer" [disabled]="!isAdmin">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
-            <button class="icon-btn" (click)="remove(a); $event.stopPropagation()" title="Supprimer">
+            <button class="icon-btn" (click)="remove(a); $event.stopPropagation()" title="Supprimer" [disabled]="!isAdmin">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
@@ -77,6 +78,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .page-header .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
     /* Icon-only buttons: hide by default, except explicit search-action */
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .page-header .actions .icon-only i { font-size: 14px; line-height: 1; }
@@ -105,6 +107,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .icon-btn i { font-size:16px; }
     .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
     .icon-btn:active { transform: translateY(0.5px); }
+    .icon-btn[disabled] { opacity: .55; cursor: not-allowed; filter: grayscale(1); background:#f5f5f5; color:#9ca3af; border-color:#e5e7eb; }
   `]
 })
 export class AppProviderListComponent implements OnInit {
@@ -113,12 +116,13 @@ export class AppProviderListComponent implements OnInit {
   defaultColor = '#1677ff';
   loading = true;
   error: string | null = null;
+  get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
   get filtered() {
     const s = (this.q || '').trim().toLowerCase();
     if (!s) return this.apps;
     return this.apps.filter(a => (a.name || '').toLowerCase().includes(s) || (a.title || '').toLowerCase().includes(s) || ((a.tags || []).some(t => (t || '').toLowerCase().includes(s))));
   }
-  constructor(private catalog: CatalogService, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private catalog: CatalogService, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
   ngOnInit(): void {
     this.loading = true; this.error = null;
     this.catalog.listApps().subscribe({

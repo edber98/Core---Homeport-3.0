@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService, FlowSummary } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 type FlowItem = { id: string; name: string; description?: string };
 
@@ -136,7 +139,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
   `]
 })
-export class FlowListComponent implements OnInit {
+export class FlowListComponent implements OnInit, OnDestroy {
   title = 'Flows';
 
   flows: FlowSummary[] = [];
@@ -155,21 +158,36 @@ export class FlowListComponent implements OnInit {
   draft: { name: string; description?: string } = { name: '', description: '' };
   doSearch() { this.q = (this.q || '').trim(); }
 
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef) { }
+  private changesSub?: Subscription;
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) { }
 
-  ngOnInit() { this.load(); }
+  ngOnInit() { this.load(); this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); }
+  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
 
   load() {
     this.loading = true; this.error = null;
     this.catalog.listFlows().subscribe({
       next: items => {
-        this.zone.run(() => { this.flows = items || []; });
+        this.zone.run(() => {
+          const list = items || [];
+          try {
+            const counts: any = {};
+            (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('flow', f.id); counts[w] = (counts[w]||0)+1; });
+            console.debug('[FlowList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
+          } catch {}
+          const filtered = list.filter(f => {
+            const ws = this.acl.ensureResourceWorkspace('flow', f.id);
+            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+          });
+          try { console.debug('[FlowList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
+          this.flows = filtered;
+        });
       },
       error: () => {
-        this.zone.run(() => { this.error = 'Impossible de charger les flows.'; });
+        this.zone.run(() => { this.error = 'Impossible de charger les flows.'; try { console.debug('[FlowList] error loading'); } catch {} });
       },
       complete: () => {
-        this.zone.run(() => { this.loading = false; setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); });
+        this.zone.run(() => { this.loading = false; try { console.debug('[FlowList] complete'); } catch {} setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); });
       }
     });
   }
@@ -197,6 +215,9 @@ export class FlowListComponent implements OnInit {
     this.catalog.saveFlow(doc).subscribe({
       next: () => {
         this.zone.run(() => {
+          // Attach to currently selected workspace
+          const ws = this.acl.currentWorkspaceId();
+          this.acl.setResourceWorkspace('flow', id, ws);
           this.creating = false; this.createVisible = false; this.load(); this.openEditor({ id, name: doc.name, description: doc.description });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
@@ -204,4 +225,5 @@ export class FlowListComponent implements OnInit {
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; }); }
     });
   }
+  // Change handling moved to ngOnInit with throttle and cleanup
 }

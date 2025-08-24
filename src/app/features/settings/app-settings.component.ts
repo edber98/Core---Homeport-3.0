@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { CatalogService } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 
 @Component({
   selector: 'app-settings',
@@ -67,31 +68,47 @@ import { CatalogService } from '../../services/catalog.service';
 })
 export class AppSettingsComponent {
   msg = '';
-  constructor(private catalog: CatalogService) {}
+  constructor(private catalog: CatalogService, private acl: AccessControlService) {}
   resetAll() {
-    this.catalog.resetAll().subscribe(ok => {
-      this.msg = ok ? 'Données réinitialisées.' : 'Échec de la réinitialisation.';
-      setTimeout(() => this.msg = '', 2500);
+    this.catalog.resetAll().subscribe(ok1 => {
+      this.acl.resetAll().subscribe(ok2 => {
+        this.msg = (ok1 && ok2) ? 'Données réinitialisées (catalogue + ACL).' : 'Échec de la réinitialisation.';
+        setTimeout(() => this.msg = '', 2500);
+      });
     });
   }
 
   exportAll() {
+    // Combine catalog + ACL into one export payload
     this.catalog.exportData().subscribe({
-      next: (json) => {
-        try {
-          const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          const ts = new Date().toISOString().replace(/[:.]/g, '-');
-          a.href = url;
-          a.download = `homeport-catalog-${ts}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          this.msg = 'Export: terminé.';
-          setTimeout(() => this.msg = '', 2500);
-        } catch {}
+      next: (catalogJson) => {
+        let catalog: any = null;
+        try { catalog = JSON.parse(catalogJson); } catch { catalog = { kind: 'homeport-catalog' }; }
+        this.acl.exportData().subscribe(acl => {
+          try {
+            const payload = {
+              kind: 'homeport-export',
+              version: 1,
+              exportedAt: new Date().toISOString(),
+              catalog,
+              acl,
+            } as const;
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const ts = new Date().toISOString().replace(/[:.]/g, '-');
+            a.href = url;
+            a.download = `homeport-export-${ts}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            this.msg = 'Export: terminé (catalogue + ACL).';
+            setTimeout(() => this.msg = '', 2500);
+          } catch {
+            this.msg = 'Export: échec.'; setTimeout(() => this.msg = '', 2500);
+          }
+        });
       },
       error: () => { this.msg = 'Export: échec.'; setTimeout(() => this.msg = '', 2500); }
     });
@@ -105,10 +122,35 @@ export class AppSettingsComponent {
     fr.onload = () => {
       try {
         const text = String(fr.result || '');
-        this.catalog.importData(text, 'replace').subscribe({
-          next: () => { this.msg = 'Import: terminé.'; setTimeout(() => this.msg = '', 2500); },
-          error: () => { this.msg = 'Import: échec.'; setTimeout(() => this.msg = '', 2500); }
-        });
+        const payload = JSON.parse(text);
+        // Support legacy catalog-only payloads
+        if (payload && payload.kind === 'homeport-export') {
+          const doCatalog = () => this.catalog.importData(payload.catalog, 'replace');
+          const doAcl = () => this.acl.importData(payload.acl, 'replace');
+          doCatalog().subscribe({
+            next: () => doAcl().subscribe({
+              next: () => { this.msg = 'Import: terminé (catalogue + ACL).'; setTimeout(() => this.msg = '', 2500); },
+              error: () => { this.msg = 'Import ACL: échec.'; setTimeout(() => this.msg = '', 2500); }
+            }),
+            error: () => { this.msg = 'Import catalogue: échec.'; setTimeout(() => this.msg = '', 2500); }
+          });
+        } else if (payload && payload.kind === 'homeport-catalog') {
+          this.catalog.importData(payload, 'replace').subscribe({
+            next: () => { this.msg = 'Import: terminé (catalogue).'; setTimeout(() => this.msg = '', 2500); },
+            error: () => { this.msg = 'Import: échec.'; setTimeout(() => this.msg = '', 2500); }
+          });
+        } else if (payload && payload.kind === 'homeport-acl') {
+          this.acl.importData(payload, 'replace').subscribe({
+            next: () => { this.msg = 'Import: terminé (ACL).'; setTimeout(() => this.msg = '', 2500); },
+            error: () => { this.msg = 'Import ACL: échec.'; setTimeout(() => this.msg = '', 2500); }
+          });
+        } else {
+          // Try to pass raw to catalog as fallback
+          this.catalog.importData(payload, 'replace').subscribe({
+            next: () => { this.msg = 'Import: terminé.'; setTimeout(() => this.msg = '', 2500); },
+            error: () => { this.msg = 'Import: échec.'; setTimeout(() => this.msg = '', 2500); }
+          });
+        }
       } catch { this.msg = 'Import: échec.'; setTimeout(() => this.msg = '', 2500); }
     };
     fr.onerror = () => { this.msg = 'Import: échec.'; setTimeout(() => this.msg = '', 2500); };

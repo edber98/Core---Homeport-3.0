@@ -1,7 +1,8 @@
 // dynamic-form-builder.component.ts
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -103,9 +104,21 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
   templateUrl: './dynamic-form-builder.component.html',
   styleUrl: './dynamic-form-builder.component.scss',
 })
-export class DynamicFormBuilderComponent {
+export class DynamicFormBuilderComponent implements OnChanges {
   // Schéma en cours d’édition
   schema: FormSchema = { title: 'Nouveau formulaire' };
+  // Embedding API
+  @Input() model: FormSchema | null | undefined;
+  @Output() modelChange = new EventEmitter<FormSchema>();
+  // Optional locks for Inspector controls (e.g., { title: { disabled: true, value: '...' } })
+  @Input() inspectorLocks: Record<string, { disabled?: boolean; value?: any }> | undefined;
+  // Route-driven session to save-and-return
+  private sessionKey: string | null = null;
+  private returnTo: string | null = null;
+  showRouteSave = false;
+  private bootstrappedFromLocation = false;
+  // Preset defaults for templates (vertical layout, cols=24, expressions allowed)
+  private applyTplPreset = false;
 
   // Sélection (centralisée via service)
   get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
@@ -200,7 +213,7 @@ export class DynamicFormBuilderComponent {
   mobileAddField() { this.addFieldFromToolbar(); }
   mobileToggleEdit() { this.toggleEditMode(); }
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService) {
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -1449,6 +1462,11 @@ export class DynamicFormBuilderComponent {
   saveSchema(): void {
     try {
       this.export();
+      // If orchestrated via route: persist and return using the builder's own Save button
+      if (this.returnTo) {
+        try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+        try { this.router.navigateByUrl(this.returnTo); return; } catch { location.href = this.returnTo!; return; }
+      }
       this.msg.success('Formulaire sauvegardé');
     } catch (e) {
       this.msg.error('Échec de la sauvegarde');
@@ -1798,7 +1816,21 @@ export class DynamicFormBuilderComponent {
     this.refresh();
   }
 
-  private newField(type: FieldType): FieldConfig { return this.factory.newField(type); }
+  private newField(type: FieldType): FieldConfig {
+    const f = this.factory.newField(type);
+    try {
+      if (this.applyTplPreset) {
+        // Force cols à 24 pour tous les breakpoints
+        (f as any).col = (f as any).col || {};
+        const col = (f as any).col as any;
+        col.xs = 24; col.sm = 24; col.md = 24; col.lg = 24; col.xl = 24;
+        // Expression activée par défaut
+        (f as any).expression = (f as any).expression || {};
+        (f as any).expression.allow = true;
+      }
+    } catch {}
+    return f;
+  }
 
   private ensureStepperMode(): void {
     if (!this.schema.steps) {
@@ -1846,6 +1878,19 @@ export class DynamicFormBuilderComponent {
       }, { emitEvent: false });
       this.patching = false;
     }
+    // Apply Inspector locks (disable or force values)
+    try {
+      const locks = this.inspectorLocks;
+      if (locks && this.inspector) {
+        Object.keys(locks).forEach(k => {
+          const cfg = locks[k] || {};
+          const ctrl = this.inspector.get(k as any);
+          if (!ctrl) return;
+          if (cfg.value !== undefined) try { ctrl.setValue(cfg.value, { emitEvent: false }); } catch {}
+          if (cfg.disabled) try { ctrl.disable({ emitEvent: false }); } catch {}
+        });
+      }
+    } catch {}
     this.rebuildTree();
     // Recalculer les contrôles à chaque refresh
     try { this.recomputeIssues(); } catch {}
@@ -1857,6 +1902,94 @@ export class DynamicFormBuilderComponent {
     if (!this.applyingHistory) {
       try { this.hist.push(this.schema as any); } catch {}
     }
+    // Emit outward for embeddings
+    try { this.modelChange.emit(this.schema); } catch {}
+    // If in session mode, persist current schema so caller can pick it up
+    try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('model' in changes) {
+      const v = this.model;
+      if (v && typeof v === 'object') {
+        try { this.schema = JSON.parse(JSON.stringify(v)); } catch { this.schema = { ...(v as any) }; }
+        try { this.select(this.schema); } catch {}
+        try { this.refresh(); } catch {}
+      }
+    }
+  }
+
+  ngOnInit(): void {
+    // Accept route orchestration: session/save-return, initial schema, inspector locks
+    try {
+      const qp = this.route.snapshot.queryParamMap;
+      this.sessionKey = qp.get('session');
+      this.returnTo = qp.get('return');
+      this.showRouteSave = !!this.returnTo;
+      // Fallback: also parse window.location.search to avoid early param loss
+      const search = (typeof window !== 'undefined') ? window.location.search : '';
+      if (search && (!this.sessionKey || !this.returnTo)) {
+        try {
+          const sp = new URLSearchParams(search);
+          this.sessionKey = this.sessionKey || sp.get('session');
+          this.returnTo = this.returnTo || sp.get('return');
+          this.showRouteSave = !!this.returnTo;
+        } catch {}
+      }
+      // Load schema and locks from either router or location
+      const schemaParam = qp.get('schema') || (search ? new URLSearchParams(search).get('schema') : null);
+      const tplPresetParam = qp.get('tplPreset') || (search ? new URLSearchParams(search).get('tplPreset') : null);
+      this.applyTplPreset = !!tplPresetParam && (tplPresetParam === '1' || tplPresetParam === 'true' || tplPresetParam === 'yes');
+      if (schemaParam) {
+        try {
+          const parsed = JSON.parse(schemaParam);
+          this.model = parsed; this.schema = parsed; this.select(this.schema);
+          if (this.applyTplPreset) this.applyTemplateDefaults();
+        } catch { }
+      }
+      const lockTitle = qp.get('lockTitle') || (search ? new URLSearchParams(search).get('lockTitle') : null);
+      const locksParam = qp.get('locks') || (search ? new URLSearchParams(search).get('locks') : null);
+      let locks: any = {};
+      if (locksParam) { try { locks = JSON.parse(locksParam); } catch { locks = {}; } }
+      if (lockTitle) locks.title = { disabled: true, value: lockTitle };
+      this.inspectorLocks = locks;
+      // If Router URL lost the query but location still has it, reapply once
+      if (!this.bootstrappedFromLocation && search && this.router && (this.router.url || '').indexOf('session=') < 0 && search.indexOf('session=') >= 0) {
+        this.bootstrappedFromLocation = true;
+        const sp = new URLSearchParams(search);
+        const q: any = {};
+        ['session','return','schema','locks','lockTitle','tplPreset'].forEach(k => { const v = sp.get(k); if (v != null) q[k] = v; });
+        try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
+      }
+      // Initial emit/persist
+      if (!schemaParam && this.applyTplPreset) this.applyTemplateDefaults();
+      this.refresh();
+    } catch {}
+  }
+
+  private applyTemplateDefaults() {
+    try {
+      // Layout par défaut: vertical (ne pas écraser si déjà défini)
+      this.schema.ui = this.schema.ui || {};
+      if (!this.schema.ui.layout) this.schema.ui.layout = 'vertical';
+      // Parcourir tous les champs input (hors textblock/sections) et appliquer cols=24 et expression.allow=true par défaut
+      const fields = this.dfs.flattenAllInputFields(this.schema) || [];
+      for (const f of fields as any[]) {
+        f.col = f.col || {};
+        // Forcer toutes les tailles à 24 quand preset actif
+        f.col.xs = 24; f.col.sm = 24; f.col.md = 24; f.col.lg = 24; f.col.xl = 24;
+        // Activer systématiquement l'éditeur d'expression
+        f.expression = f.expression || {};
+        f.expression.allow = true;
+      }
+    } catch {}
+  }
+
+  saveAndReturn() {
+    try {
+      if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema));
+      if (this.returnTo) this.router.navigateByUrl(this.returnTo);
+    } catch { if (this.returnTo) location.href = this.returnTo; }
   }
 
   // Debounced refresh for inspector typing to avoid letter-by-letter history

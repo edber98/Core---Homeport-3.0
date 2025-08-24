@@ -12,6 +12,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { MonacoJsonEditorComponent } from '../../features/dynamic-form/components/monaco-json-editor.component';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { DynamicFormBuilderComponent } from '../dynamic-form/dynamic-form-builder.component';
+import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { CatalogService, NodeTemplate } from '../../services/catalog.service';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
@@ -21,7 +24,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule, ReactiveFormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzSwitchModule, NzCheckboxModule, NzButtonModule, NzIconModule, NzToolTipModule, NzAutocompleteModule,
-    MonacoJsonEditorComponent, DragDropModule
+    MonacoJsonEditorComponent, DragDropModule, NzDrawerModule, DynamicFormBuilderComponent, DynamicForm
   ],
   template: `
   <div class="tpl-editor">
@@ -145,10 +148,28 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
       <!-- Arguments (JSON) -->
       <div class="ins-section-header args">
-        <div class="card-title"><span class="t">Arguments (JSON)</span><span class="s">Configuration spécifique</span></div>
+        <div class="card-title"><span class="t">Arguments</span><span class="s">Configuration spécifique</span></div>
       </div>
-      <monaco-json-editor [value]="argsJson" (valueChange)="onArgsChange($event)" [height]="220"></monaco-json-editor>
+      <div class="args-controls">
+        <label nz-checkbox formControlName="fb_preset_tpl" nz-tooltip="Vertical + colonnes 24 + expressions activées par défaut">Appliquer preset (Form Builder)</label>
+        <label nz-checkbox formControlName="show_args_json" nz-tooltip="Afficher/masquer l’éditeur JSON">Afficher JSON (Monaco)</label>
+        <span class="spacer"></span>
+        <button nz-button type="button" class="apple-btn" (click)="openFormBuilderRoute(); $event.preventDefault(); $event.stopPropagation();"><i nz-icon nzType="form"></i><span class="label">Form Builder…</span></button>
+      </div>
+      <div class="args-row" [class.json-visible]="form.get('show_args_json')?.value === true">
+        <div class="preview-col">
+          <div class="dialog-preview">
+            <div class="dialog-box">
+              <app-dynamic-form [schema]="argsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+            </div>
+          </div>
+        </div>
+        <div class="json-col" *ngIf="form.get('show_args_json')?.value">
+          <monaco-json-editor class="json" [value]="argsJson" (valueChange)="onArgsChange($event)" [height]="220"></monaco-json-editor>
+        </div>
+      </div>
     </form>
+    <!-- Full-screen builder route preferred over drawer for space; kept route button above -->
   </div>
   `,
   styles: [`
@@ -181,12 +202,33 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     /* Apply gradient to all NZ buttons in this view */
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
     :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    .args-controls { display:flex; align-items:center; gap:12px; margin: 8px 0 10px; flex-wrap: wrap; }
+    .args-controls .spacer { flex: 1 1 auto; }
+    .args-row { display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:flex-start; }
+    .args-row.json-visible { grid-template-columns: 1fr 1fr; }
+    .args-row .preview-col { min-width: 0; }
+    .args-row .json-col { min-width: 0; }
+    .args-row .json { width: 100%; max-width: 100%; }
+    .args-row .actions { display:flex; flex-direction:column; gap:8px; min-width: 220px; }
+    /* Simulated dialog like flow-builder */
+    .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
+    .dialog-box { max-width: 400px; width: 100%; background:#fff; border-right:1px solid #e5e7eb; border-left:1px solid #e5e7eb; padding:12px; }
+    .json-visible .dialog-box { max-width: 100%; }
+    @media (max-width: 1024px) {
+      .args-row { grid-template-columns: 1fr; }
+    }
+    .fb-drawer { display:flex; flex-direction:column; height:100%; }
+    .fb-header { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid #ececec; }
   `]
 })
 export class NodeTemplateEditorComponent implements OnInit {
   form!: FormGroup;
   saving = false;
   argsJson = '{\n  \n}';
+  fbVisible = false;
+  fbSchema: any = { title: 'Arguments', fields: [] };
+  // Embed form builder state
+  // duplicate declarations removed
   iconOptions: string[] = [
     'fa-solid fa-bolt', 'fa-solid fa-play', 'fa-solid fa-envelope', 'fa-solid fa-cloud', 'fa-solid fa-database',
     'fa-solid fa-code-branch', 'fa-solid fa-sync', 'fa-solid fa-sliders', 'fa-solid fa-gear', 'fa-solid fa-message'
@@ -211,10 +253,34 @@ export class NodeTemplateEditorComponent implements OnInit {
       subtitle: new FormControl<string>(''),
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
       output_array_field: new FormControl<string>('items'),
-      output: this.fb.array<FormGroup<any>>([])
+      output: this.fb.array<FormGroup<any>>([]),
+      fb_preset_tpl: new FormControl<boolean>(true, { nonNullable: true }),
+      show_args_json: new FormControl<boolean>(false, { nonNullable: true })
     });
 
     const id = this.route.snapshot.queryParamMap.get('id');
+    // Also react to fbSession changes when navigating back to the same route
+    let lastSession: string | null = null;
+    // When coming back from Form Builder, we must prefer the returned args
+    // over any later template patch coming from the catalog fetch.
+    let preferArgsFromSession = false;
+    const tryLoad = (sess: string | null) => {
+      if (!sess || sess === lastSession) return;
+      lastSession = sess;
+      try {
+        const raw = localStorage.getItem('formbuilder.session.' + sess);
+        if (raw) {
+          this.argsJson = JSON.stringify(JSON.parse(raw), null, 2);
+          preferArgsFromSession = true;
+          // Also expose on instance so later patchTemplate can read it
+          // @ts-ignore
+          (this as any).__preferArgsFromSession = true;
+          localStorage.removeItem('formbuilder.session.' + sess);
+        }
+      } catch {}
+    };
+    tryLoad(this.route.snapshot.queryParamMap.get('fbSession'));
+    try { this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'))); } catch {}
     const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
     this.catalog.listApps().subscribe(list => { this.apps = (list || []).map(a => ({ id: a.id, name: a.name, title: a.title })); });
     if (dup) {
@@ -244,6 +310,18 @@ export class NodeTemplateEditorComponent implements OnInit {
 
   onArgsChange(v: string) { this.argsJson = v || ''; }
 
+  get argsObj(): any {
+    try {
+      const raw = this.argsJson || '';
+      if (!raw.trim()) return { title: 'Arguments', fields: [] };
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+      return { title: 'Arguments', fields: [] };
+    } catch {
+      return { title: 'Arguments', fields: [] };
+    }
+  }
+
   private patchTemplate(t: NodeTemplate) {
     this.form.patchValue({
       id: t.id, name: t.name || '', type: t.type, category: t.category || '', group: (t as any).group || '', description: t.description || '',
@@ -261,7 +339,23 @@ export class NodeTemplateEditorComponent implements OnInit {
       // @ts-ignore
       this.form.get('output_array_field')?.setValue((t as any).output_array_field || 'items', { emitEvent: false });
     }
-    this.argsJson = JSON.stringify(t.args || {}, null, 2);
+    // If we are returning from Form Builder in this navigation cycle, do not
+    // overwrite the freshly returned Arguments JSON with the older stored one.
+    // We detect this via a sticky flag on the closure captured at init time.
+    try {
+      // Access the closure-scoped flag via a property assigned on the instance
+      // the first time tryLoad sets it.
+      // @ts-ignore
+      const preferArgs = (this as any).__preferArgsFromSession === true ? true : false;
+      if (!preferArgs || !this.argsJson || this.argsJson.trim().length === 0) {
+        this.argsJson = JSON.stringify(t.args || {}, null, 2);
+      }
+      // Reset the preference after the first patch to avoid future skips.
+      // @ts-ignore
+      (this as any).__preferArgsFromSession = false;
+    } catch {
+      this.argsJson = JSON.stringify(t.args || {}, null, 2);
+    }
   }
 
   private makeIdFromName(name: string): string {
@@ -304,5 +398,19 @@ export class NodeTemplateEditorComponent implements OnInit {
       next: () => { this.saving = false; this.router.navigate(['/node-templates']); },
       error: () => { this.saving = false; }
     });
+  }
+
+  // ===== Form Builder embedding
+  openFormBuilderRoute() {
+    // Route to full builder with session + return + preloaded schema + locks
+    try {
+      const id = this.form.get('id')?.value;
+      const name = this.form.get('name')?.value || 'Arguments';
+      const session = 's_' + Date.now().toString(36);
+      const schema = this.argsJson && this.argsJson.trim().length ? this.argsJson : JSON.stringify({ title: 'Arguments', fields: [] });
+      const returnTo = this.router.createUrlTree(['/node-templates/editor'], { queryParams: { id, fbSession: session } }).toString();
+      const tplPreset = this.form.get('fb_preset_tpl')?.value ? '1' : undefined;
+      this.router.navigate(['/dynamic-form'], { queryParams: { session, return: returnTo, schema, lockTitle: name, tplPreset } });
+    } catch (e) { console.log(e)/* this.router.navigate(['/dynamic-form']); */ }
   }
 }

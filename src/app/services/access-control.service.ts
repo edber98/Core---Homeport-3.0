@@ -1,0 +1,351 @@
+import { Injectable, computed, signal } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CatalogService, NodeTemplate } from './catalog.service';
+
+export type Role = 'admin' | 'member';
+
+export interface Workspace {
+  id: string;      // slug-like id
+  name: string;    // display name
+}
+
+export interface User {
+  id: string;      // slug-like id
+  name: string;    // display name
+  role: Role;
+  workspaces: string[]; // workspace ids the user can access (ignored for admin)
+}
+
+type ResourceKind = 'flow' | 'form' | 'website';
+
+@Injectable({ providedIn: 'root' })
+export class AccessControlService {
+  private USERS_KEY = 'acl.users';
+  private WORKSPACES_KEY = 'acl.workspaces';
+  private CURRENT_USER_KEY = 'acl.currentUserId';
+  private TPL_ALLOW_KEY = 'acl.allowedTemplates.'; // + workspaceId => string[]
+  private MAP_KEY = 'acl.resource.'; // + kind + '.' + id => workspaceId
+
+  private _users = signal<User[]>([]);
+  private _workspaces = signal<Workspace[]>([]);
+  private _currentUserId = signal<string | null>(null);
+  private _currentWorkspaceId = signal<string | null>(null);
+
+  users = computed(() => this._users());
+  workspaces = computed(() => this._workspaces());
+  currentUser = computed<User | null>(() => {
+    const id = this._currentUserId();
+    return (this._users().find(u => u.id === id) || null);
+  });
+  currentWorkspace = computed<Workspace | null>(() => {
+    const id = this._currentWorkspaceId();
+    return (this._workspaces().find(w => w.id === id) || null);
+  });
+
+  // Emits when user/workspace changes so UI can refresh
+  private _changes = new BehaviorSubject<number>(0);
+  readonly changes$ = this._changes.asObservable();
+
+  constructor(private catalog: CatalogService) {
+    this.ensureSeed();
+  }
+
+  // ===== Seed data =====
+  private ensureSeed() {
+    const storedUsers = this.load<User[]>(this.USERS_KEY, []);
+    const storedWs = this.load<Workspace[]>(this.WORKSPACES_KEY, []);
+    let curr = this.load<string | null>(this.CURRENT_USER_KEY, null);
+    if (!storedWs.length) {
+      const ws: Workspace[] = [
+        { id: 'default', name: 'Default' },
+        { id: 'marketing', name: 'Marketing' }
+      ];
+      this.save(this.WORKSPACES_KEY, ws);
+      this._workspaces.set(ws);
+      // allow all templates by default for all workspaces
+      ws.forEach(w => this.save(this.TPL_ALLOW_KEY + w.id, []));
+    } else {
+      this._workspaces.set(storedWs);
+    }
+    if (!storedUsers.length) {
+      const users: User[] = [
+        { id: 'admin', name: 'Admin', role: 'admin', workspaces: [] },
+        { id: 'alice', name: 'Alice', role: 'member', workspaces: ['default'] },
+      ];
+      this.save(this.USERS_KEY, users);
+      this._users.set(users);
+      curr = users[0].id;
+      this.save(this.CURRENT_USER_KEY, curr);
+      this._currentUserId.set(curr);
+    } else {
+      this._users.set(storedUsers);
+      this._currentUserId.set(curr || storedUsers[0]?.id || null);
+    }
+    // Initialize current workspace to first accessible
+    const wsId = this.pickDefaultWorkspaceId();
+    this._currentWorkspaceId.set(wsId);
+    // Seed resource mapping across workspaces if missing
+    this.seedResourceMappings();
+  }
+
+  // ===== Public API =====
+  setCurrentUser(userId: string) {
+    const exists = this._users().some(u => u.id === userId);
+    if (!exists) return;
+    this._currentUserId.set(userId);
+    this.save(this.CURRENT_USER_KEY, userId);
+    // Adjust current workspace if not accessible anymore
+    const wsId = this.currentWorkspaceId();
+    if (!this.canAccessWorkspace(wsId)) {
+      this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
+    }
+    this._changes.next(Date.now());
+  }
+
+  listUsers(): Observable<User[]> { return of(this._users()); }
+  listWorkspaces(): Observable<Workspace[]> { return of(this._workspaces()); }
+
+  addWorkspace(name: string): Observable<Workspace> {
+    const id = this.slug(name);
+    const ws: Workspace = { id, name: name.trim() || id };
+    const list = [...this._workspaces(), ws];
+    this._workspaces.set(list);
+    this.save(this.WORKSPACES_KEY, list);
+    this.save(this.TPL_ALLOW_KEY + id, []);
+    return of(ws);
+  }
+
+  removeWorkspace(id: string): Observable<boolean> {
+    const list = this._workspaces().filter(w => w.id !== id);
+    this._workspaces.set(list);
+    this.save(this.WORKSPACES_KEY, list);
+    // keep allow list key orphan-safe
+    return of(true);
+  }
+
+  addUser(user: Omit<User, 'id'> & { id?: string }): Observable<User> {
+    const id = user.id || this.slug(user.name || 'user');
+    const u: User = { id, name: user.name, role: user.role, workspaces: user.role === 'admin' ? [] : Array.from(new Set(user.workspaces || [])) };
+    const list = [...this._users(), u];
+    this._users.set(list);
+    this.save(this.USERS_KEY, list);
+    return of(u);
+  }
+
+  updateUser(user: User): Observable<User> {
+    // Normalize: admin => all workspaces (empty list), member => unique array
+    const normalized: User = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      workspaces: user.role === 'admin' ? [] : Array.from(new Set(user.workspaces || [])),
+    };
+    const list = this._users().map(u => u.id === normalized.id ? normalized : u);
+    this._users.set(list);
+    this.save(this.USERS_KEY, list);
+    // If current user updated, ensure current workspace remains valid
+    if (this.currentUser()?.id === normalized.id && !this.canAccessWorkspace(this.currentWorkspaceId())) {
+      this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
+    }
+    this._changes.next(Date.now());
+    return of(normalized);
+  }
+
+  // Permissions helpers
+  canAccessWorkspace(wsId: string, user?: User | null): boolean {
+    const u = user ?? this.currentUser();
+    if (!u) return false;
+    if (u.role === 'admin') return true;
+    return (u.workspaces || []).includes(wsId);
+  }
+
+  // Resource mapping (attach flows/forms/websites to a workspace)
+  getResourceWorkspace(kind: ResourceKind, id: string): string | null {
+    return this.load<string | null>(this.MAP_KEY + kind + '.' + id, null);
+  }
+  setResourceWorkspace(kind: ResourceKind, id: string, workspaceId: string): void {
+    this.save(this.MAP_KEY + kind + '.' + id, workspaceId);
+  }
+
+  // On first access, attach unknown resources to 'default' to simplify filtering
+  ensureResourceWorkspace(kind: ResourceKind, id: string): string {
+    const ws = this.getResourceWorkspace(kind, id);
+    if (ws) return ws;
+    const fallback = 'default';
+    this.setResourceWorkspace(kind, id, fallback);
+    return fallback;
+  }
+
+  // Node template allow-list per workspace
+  listAllowedTemplates(workspaceId: string): Observable<string[]> {
+    // Default workspace: all templates allowed, and edition disabled in UI
+    if (workspaceId === 'default') {
+      try { return this.catalog.listNodeTemplates().pipe(map(list => (list || []).map(t => (t as any).id))); } catch { }
+    }
+    const list = this.load<string[]>(this.TPL_ALLOW_KEY + workspaceId, []);
+    return of(list);
+  }
+  setAllowedTemplates(workspaceId: string, ids: string[]): Observable<string[]> {
+    this.save(this.TPL_ALLOW_KEY + workspaceId, Array.from(new Set(ids)));
+    this._changes.next(Date.now());
+    return this.listAllowedTemplates(workspaceId);
+  }
+  toggleTemplate(workspaceId: string, tplId: string, allowed: boolean): Observable<boolean> {
+    const curr = this.load<string[]>(this.TPL_ALLOW_KEY + workspaceId, []);
+    const next = allowed ? Array.from(new Set([...curr, tplId])) : curr.filter(id => id !== tplId);
+    this.save(this.TPL_ALLOW_KEY + workspaceId, next);
+    this._changes.next(Date.now());
+    return of(true);
+  }
+
+  // Utility
+  private slug(s: string): string {
+    return (s || '').trim().toLowerCase().normalize('NFD')
+      .replace(/[^\p{Letter}\p{Number}\s-]/gu, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-') || 'id-' + Date.now().toString(36);
+  }
+  private save(key: string, val: any) { try { localStorage.setItem(key, JSON.stringify(val)); } catch { } }
+  private load<T>(key: string, def: T): T { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) as T : def; } catch { return def; } }
+  private remove(key: string) { try { localStorage.removeItem(key); } catch {} }
+  private keys(): string[] { try { return Object.keys(localStorage); } catch { return []; } }
+
+  // Workspace selection
+  setCurrentWorkspace(id: string) {
+    if (!id) return;
+    if (!this.canAccessWorkspace(id)) return; // ignore if not accessible
+    this._currentWorkspaceId.set(id);
+    this._changes.next(Date.now());
+  }
+  currentWorkspaceId(): string {
+    return this._currentWorkspaceId() || this.pickDefaultWorkspaceId();
+  }
+  private pickDefaultWorkspaceId(): string {
+    const u = this.currentUser();
+    if (!u) return 'default';
+    if (u.role === 'admin') return this._workspaces()[0]?.id || 'default';
+    return (u.workspaces || [])[0] || 'default';
+  }
+
+  // Seed mapping of existing resources if none assigned yet: distribute by hash across workspaces
+  private seedResourceMappings() {
+    const ws = this._workspaces();
+    if (!ws.length) return;
+    const allWsIds = ws.map(w => w.id);
+    const dist = (id: string) => allWsIds[this.hash(id) % allWsIds.length] || 'default';
+    // Flows
+    this.catalog.listFlows().subscribe(list => {
+      (list || []).forEach(f => {
+        const k = this.MAP_KEY + 'flow.' + f.id;
+        if (localStorage.getItem(k) == null) this.setResourceWorkspace('flow', f.id, dist(f.id));
+      });
+    });
+    // Forms
+    this.catalog.listForms().subscribe(list => {
+      (list || []).forEach(f => {
+        const k = this.MAP_KEY + 'form.' + f.id;
+        if (localStorage.getItem(k) == null) this.setResourceWorkspace('form', f.id, dist(f.id));
+      });
+    });
+    // Websites: default to 'default' unless set during interactions
+    // No async source here; ensure on demand via ensureResourceWorkspace('website', id)
+  }
+  private hash(s: string): number { let h = 0; for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) >>> 0; } return h; }
+
+  // ===== Export / Import / Reset (ACL)
+  resetAll(): Observable<boolean> {
+    try {
+      // Remove base keys
+      this.remove(this.USERS_KEY);
+      this.remove(this.WORKSPACES_KEY);
+      this.remove(this.CURRENT_USER_KEY);
+      // Remove allow lists and resource mappings
+      this.keys().forEach(k => {
+        if (k.startsWith(this.TPL_ALLOW_KEY) || k.startsWith(this.MAP_KEY)) this.remove(k);
+      });
+      // Reseed
+      this.ensureSeed();
+      this._changes.next(Date.now());
+      return of(true);
+    } catch {
+      return of(false);
+    }
+  }
+
+  exportData(): Observable<any> {
+    try {
+      const users = this._users();
+      const workspaces = this._workspaces();
+      const currentUserId = this._currentUserId();
+      // allowed templates per workspace (only persisted keys)
+      const allowed: Record<string, string[]> = {};
+      workspaces.forEach(w => {
+        const v = this.load<string[]>(this.TPL_ALLOW_KEY + w.id, []);
+        allowed[w.id] = v;
+      });
+      // resource mapping per kind
+      const resource: Record<string, Record<string, string>> = { flow: {}, form: {}, website: {} };
+      this.keys().forEach(k => {
+        if (k.startsWith(this.MAP_KEY)) {
+          const rest = k.slice(this.MAP_KEY.length); // kind.id
+          const dot = rest.indexOf('.');
+          if (dot > 0) {
+            const kind = rest.slice(0, dot);
+            const id = rest.slice(dot + 1);
+            try { const ws = this.load<string | null>(k, null); if (ws) (resource as any)[kind][id] = ws; } catch {}
+          }
+        }
+      });
+      const payload = {
+        kind: 'homeport-acl',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        users,
+        workspaces,
+        currentUserId,
+        allowedTemplatesByWorkspace: allowed,
+        resourceWorkspace: resource,
+      };
+      return of(payload);
+    } catch {
+      return of({ kind: 'homeport-acl', version: 1, users: [], workspaces: [], allowedTemplatesByWorkspace: {}, resourceWorkspace: {} });
+    }
+  }
+
+  importData(data: any, mode: 'replace' | 'merge' = 'replace'): Observable<boolean> {
+    try {
+      const payload = typeof data === 'string' ? JSON.parse(data) : data;
+      if (!payload || typeof payload !== 'object') return of(false);
+      const users: User[] = Array.isArray(payload.users) ? payload.users : [];
+      const workspaces: Workspace[] = Array.isArray(payload.workspaces) ? payload.workspaces : [];
+      const currentUserId: string | null = payload.currentUserId ?? null;
+      const allowed: Record<string, string[]> = (payload.allowedTemplatesByWorkspace && typeof payload.allowedTemplatesByWorkspace === 'object') ? payload.allowedTemplatesByWorkspace : {};
+      const resource: Record<string, Record<string, string>> = (payload.resourceWorkspace && typeof payload.resourceWorkspace === 'object') ? payload.resourceWorkspace : {} as any;
+
+      if (mode === 'replace') {
+        // Clear existing
+        this.resetAll();
+      }
+      // Save users/workspaces
+      if (users.length) { this._users.set(users); this.save(this.USERS_KEY, users); }
+      if (workspaces.length) { this._workspaces.set(workspaces); this.save(this.WORKSPACES_KEY, workspaces); }
+      // Save current user
+      if (currentUserId) { this._currentUserId.set(currentUserId); this.save(this.CURRENT_USER_KEY, currentUserId); }
+      // Save allow-lists
+      Object.keys(allowed || {}).forEach(wsId => this.save(this.TPL_ALLOW_KEY + wsId, Array.from(new Set(allowed[wsId] || []))));
+      // Save resource mapping
+      const kinds: ResourceKind[] = ['flow','form','website'];
+      kinds.forEach(k => {
+        const map = (resource as any)[k] || {};
+        Object.keys(map).forEach(id => this.setResourceWorkspace(k, id, map[id]));
+      });
+      // Adjust current workspace if necessary
+      this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
+      this._changes.next(Date.now());
+      return of(true);
+    } catch {
+      return of(false);
+    }
+  }
+}

@@ -58,7 +58,7 @@ type ExprTag = { path: string; name?: string };
           </div>
 
           <div class="expr-box">
-            <app-expression-editor [(ngModel)]="expr" [context]="ctx" [showPreview]="true" [errorMode]="errorMode" [large]="optLarge" [groupBefore]="optGroupBefore" [showDialogAction]="optDialogAction" [dialogMode]="optDialogMode"></app-expression-editor>
+            <app-expression-editor #ee [(ngModel)]="expr" [context]="ctx" [showPreview]="true" [errorMode]="errorMode" [large]="optLarge" [autoHeight]="optAutoHeight" [groupBefore]="optGroupBefore" [showDialogAction]="optDialogAction" [dialogMode]="optDialogMode"></app-expression-editor>
           </div>
           <div class="below">
             <div class="hint">Contexte rapide</div>
@@ -128,6 +128,8 @@ export class DebugExprJsonPlaygroundComponent {
     { name: 'user.name', value: '{{ json.user.name }}' },
     { name: 'items[0].sku', value: '{{ json.items[0].sku }}' },
     { name: 'now ISO', value: '{{ now.toISOString() }}' },
+    { name: 'multi-line', value: 'Hello,\nUser: {{ json.user.name }}\nItems: {{ json.items[0].sku }}' },
+    { name: 'calc', value: 'Total: {{ (json.items?.[0]?.qty ?? 0) * 2 }}' },
   ];
   expr = '{{ json.user.name }}';
   errorMode = false;
@@ -136,6 +138,7 @@ export class DebugExprJsonPlaygroundComponent {
   optGroupBefore = true;
   optDialogAction = true;
   optDialogMode: 'textarea'|'editor' = 'editor';
+  optAutoHeight = false;
 
   get ctx() { return { json: this.currentJson, env: this.envPreset==='dev' ? { NODE_ENV: 'development' } : { NODE_ENV: 'production' }, now: new Date(), node: { Demo: { data: { ok: true } } } }; }
 
@@ -149,6 +152,7 @@ export class DebugExprJsonPlaygroundComponent {
   setJsonPreset(p: { name: string; data: any }) { this.currentJsonPreset = p; this.currentJson = p.data; this.rebuildTags(); }
   onJsonEdited(v: any) { this.currentJson = v; this.rebuildTags(); }
   setExprPreset(p: { name: string; value: string }) { this.expr = p.value; }
+  openEditorDialogExtern() { try { this.editor?.openDialog(); } catch {} }
   setEnvPreset(name: 'dev'|'prod') { this.envPreset = name; }
   toggleErrorMode() { this.errorMode = !this.errorMode; }
 

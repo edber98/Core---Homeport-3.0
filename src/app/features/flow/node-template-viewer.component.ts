@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { CatalogService, NodeTemplate } from '../../services/catalog.service';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 
 @Component({
   selector: 'node-template-viewer',
   standalone: true,
-  imports: [CommonModule, NzTagModule, NzButtonModule, NzIconModule, NzToolTipModule],
+  imports: [CommonModule, FormsModule, NzTagModule, NzButtonModule, NzIconModule, NzToolTipModule, NzCheckboxModule, DynamicForm],
   template: `
   <div class="tpl-viewer">
     <div class="page-header">
@@ -109,9 +112,20 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <div><span class="k">output_array_field</span><span class="v">{{ tplUi?.output_array_field }}</span></div>
         </div>
       </div>
-      <div class="panel span-2">
+      <div class="panel span-2 controls-row">
+        <div class="panel-controls"><label nz-checkbox [(ngModel)]="showJson">Afficher JSON (Arguments)</label></div>
+      </div>
+      <div class="panel span-2" *ngIf="showJson">
         <div class="panel-title">Arguments (JSON)</div>
-        <pre class="args" *ngIf="argsText as a">{{ a }}</pre>
+        <pre class="args">{{ argsText }}</pre>
+      </div>
+      <div class="panel span-2" *ngIf="isFormSchema(view?.args)">
+        <div class="panel-title">Aperçu du formulaire (Arguments)</div>
+        <div class="dialog-preview">
+          <div class="dialog-box">
+            <app-dynamic-form [schema]="view?.args" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -133,6 +147,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
     .panel { background: transparent; border: none; border-radius: 0; padding: 6px 2px; }
     .panel-title { font-weight:600; margin-bottom:8px; color:#6b7280; }
+    .panel-controls { display:flex; align-items:center; justify-content:flex-start; margin-bottom: 8px; }
     .kv { display:flex; flex-direction:column; gap:6px; }
     .kv .k { color:#6b7280; width:180px; display:inline-block; }
     .kv .v { color:#111; }
@@ -169,6 +184,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     /* Gradient hover on all buttons (no extra shadow/transform) */
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
     :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+
+    /* Simulate flow-builder node dialog sizing */
+    .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
+    .dialog-box { max-width: 400px; width: 100%; background:#fff; border-right:1px solid #e5e7eb; border-left:1px solid #e5e7eb; padding:12px; }
   `]
 })
 export class NodeTemplateViewerComponent implements OnInit {
@@ -177,6 +196,16 @@ export class NodeTemplateViewerComponent implements OnInit {
   view: NodeTemplate = { id: '', name: '', type: 'function', args: {}, output: [] };
   tplUi: { icon?: string; title?: string; subtitle?: string; output_array_field?: string } | null = null;
   argsText = '{}';
+  showJson = false;
+  isFormSchema(obj: any): boolean {
+    try {
+      if (!obj || typeof obj !== 'object') return false;
+      // Accept if it has fields or steps arrays (even empty). Title optional.
+      const hasFields = Array.isArray((obj as any).fields);
+      const hasSteps = Array.isArray((obj as any).steps);
+      return hasFields || hasSteps || !!(obj as any).title;
+    } catch { return false; }
+  }
   outputs: string[] = [];
   previewOutputs: string[] = [];
   inputCount = 0;

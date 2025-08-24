@@ -63,11 +63,14 @@
         </ng-template>
         <ng-template let-ctx nodeHtml>
           <div class="node-card" [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id) }"
+            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id) }"
             (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
             <div class="header">
+              <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip nzTooltipTitle="Template non autorisé">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
               <i *ngIf="ctx.node.data.model.templateObj?.icon" [class]="ctx.node.data.model.templateObj?.icon"
                 class="icon"></i>
               <div class="meta">
@@ -174,6 +177,19 @@
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
+      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
+        [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'
+        " [nzPopoverContent]="issuesTpl" title="Problèmes">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
+      </button>
+      <ng-template #issuesTpl>
+        <div style="max-width:320px; max-height: 260px; overflow:auto;">
+          <div style="font-size:12px; color:#111;" *ngFor="let it of validationIssues">
+            <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
+            <span> {{ it.message }}</span>
+          </div>
+        </div>
+      </ng-template>
       <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode"
         title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>

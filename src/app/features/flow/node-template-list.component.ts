@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CatalogService, NodeTemplate, AppProvider } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 @Component({
   selector: 'node-template-list',
@@ -22,10 +25,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
             <i class="fa-solid fa-search"></i>
           </button>
-          <button nz-button nzType="primary" class="primary with-text" (click)="createNew()">
+          <button nz-button nzType="primary" class="primary with-text" (click)="createNew()" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i> Nouveau template
           </button>
-          <button nz-button nzType="primary" class="primary icon-only" (click)="createNew()" aria-label="Nouveau template">
+          <button nz-button nzType="primary" class="primary icon-only" (click)="createNew()" aria-label="Nouveau template" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
@@ -56,7 +59,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
           <div class="trailing">
-            <button class="icon-btn" (click)="edit(it); $event.stopPropagation()" title="Éditer">
+            <button class="icon-btn" (click)="edit(it); $event.stopPropagation()" title="Éditer" [disabled]="!isAdmin">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
           </div>
@@ -80,6 +83,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px; outline: none; }
     .actions .search:focus { border-color:#d1d5db; }
     .actions .primary { background:#111; border-color:#111; }
+    .actions .primary[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
     /* Icon-only buttons: hide by default except search-action */
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
@@ -111,12 +115,13 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     .icon-btn i { font-size:16px; }
     .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
     .icon-btn:active { transform: translateY(0.5px); }
+    .icon-btn[disabled] { opacity: .55; cursor: not-allowed; filter: grayscale(1); background:#f5f5f5; color:#9ca3af; border-color:#e5e7eb; }
     nz-modal .form { display:flex; flex-direction:column; gap:10px; }
     nz-modal .form label { font-size:12px; color:#6b7280; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
   `]
 })
-export class NodeTemplateListComponent implements OnInit {
+export class NodeTemplateListComponent implements OnInit, OnDestroy {
   templates: NodeTemplate[] = [];
   loading = true;
   error: string | null = null;
@@ -138,14 +143,29 @@ export class NodeTemplateListComponent implements OnInit {
     });
   }
 
-  constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
+  get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
 
-  ngOnInit() { this.load(); this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); }); }
+  private changesSub?: Subscription;
+  ngOnInit() {
+    this.load();
+    this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); });
+    try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); } catch {}
+  }
+  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
 
   load() {
     this.loading = true; this.error = null;
     this.catalog.listNodeTemplates().subscribe({
-      next: list => { this.zone.run(() => { this.templates = list || []; }); },
+      next: list => { this.zone.run(() => {
+        const all = list || [];
+        const ws = this.acl.currentWorkspaceId();
+        this.acl.listAllowedTemplates(ws).subscribe(ids => {
+          const allow = Array.isArray(ids) ? ids : [];
+          this.templates = allow.length === 0 ? [] : all.filter(t => allow.includes((t as any).id));
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      }); },
       error: () => { this.zone.run(() => { this.error = 'Impossible de charger les templates.'; }); },
       complete: () => { this.zone.run(() => { this.loading = false; setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
     });

@@ -37,7 +37,7 @@
     </div>
     <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline">
       <ng-container *ngFor="let it of menu">
-        <li nz-submenu *ngIf="it.children?.length">
+        <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
           <span title>
             <nz-icon [nzType]="it.icon"></nz-icon>
             <span>{{ it.label }}</span>
@@ -49,7 +49,7 @@
             </li>
           </ul>
         </li>
-        <li nz-menu-item *ngIf="!it.children?.length" [routerLink]="it.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="getActiveOptions(it.route)">
+        <li nz-menu-item *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)" [routerLink]="it.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="getActiveOptions(it.route)">
           <nz-icon [nzType]="it.icon"></nz-icon>
           <span>{{ it.label }}</span>
         </li>
@@ -82,13 +82,38 @@
            <button nz-button class="hdr-btn" *ngIf="!showSider && !showLaunch" (click)="openLaunch()" title="Ouvrir la launch bar">
           <i class="fa-solid fa-rocket"></i>
         </button>
+        <!-- User switcher -->
+        <nz-select
+          class="user-switcher"
+          [ngModel]="selectedUserId"
+          (ngModelChange)="onUserChange($event)"
+          nzSize="small"
+          nzShowSearch
+          nzBorderless
+          [nzDropdownMatchSelectWidth]="false"
+          nzPlaceHolder="Utilisateur">
+          <nz-option *ngFor="let u of acl.users()" [nzValue]="u.id" [nzLabel]="u.name"></nz-option>
+        </nz-select>
+        <!-- Workspace switcher (only accessible ones) -->
+        <nz-select
+          class="ws-switcher"
+          [ngModel]="selectedWorkspaceId"
+          (ngModelChange)="onWorkspaceChange($event)"
+          nzSize="small"
+          nzShowSearch
+          nzBorderless
+          [nzDropdownMatchSelectWidth]="false"
+          [nzDisabled]="false"
+          nzPlaceHolder="Workspace">
+          <nz-option *ngFor="let w of accessibleWorkspaces" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
+        </nz-select>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
           <nz-badge nzDot>
             <i class="fa-regular fa-bell"></i>
           </nz-badge>
         </button>
         <div class="hdr-avatar" nz-dropdown [nzDropdownMenu]="profileMenu" nzTrigger="click" title="Profil">
-          <nz-avatar nzShape="circle" nzText="EB"></nz-avatar>
+          <nz-avatar nzShape="circle" [nzText]="userInitials"></nz-avatar>
         </div>
       </div>
     </nz-header>
@@ -112,7 +137,7 @@
         <div class="drawer-title">Navigation</div>
         <ul nz-menu nzTheme="light" nzMode="inline" style="border:0">
           <ng-container *ngFor="let it of menu">
-            <li nz-submenu *ngIf="it.children?.length">
+            <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
               <span title>
                 <nz-icon [nzType]="it.icon"></nz-icon>
                 <span>{{ it.label }}</span>
@@ -124,7 +149,7 @@
                 </li>
               </ul>
             </li>
-            <li nz-menu-item *ngIf="!it.children?.length" (click)="go(it.route)">
+            <li nz-menu-item *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)" (click)="go(it.route)">
               <nz-icon [nzType]="it.icon"></nz-icon>
               <span>{{ it.label }}</span>
             </li>

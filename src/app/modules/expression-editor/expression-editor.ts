@@ -43,6 +43,12 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @Input() dialogTitle = "Éditeur d'expression";
   // Future: 'editor' could mount a second CM instance; currently 'textarea'
   @Input() dialogMode: 'textarea' | 'editor' = 'textarea';
+  // Auto-height: grow up to a max, then scroll inside
+  @Input() autoHeight = false;
+  // Optional external trigger to open dialog (EventEmitter or Observable)
+  @Input() openDialogTrigger?: any;
+  // Suggestion popover placement preference: 'auto' (choose by viewport), 'top' or 'bottom'
+  @Input() suggestionPlacement: 'auto'|'top'|'bottom' = 'auto';
   dialogVisible = false;
   dialogText = '';
   @Input() formulaTitle = 'Ouvrir l\'éditeur d\'expression';
@@ -54,6 +60,9 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @ViewChild('list', { static: false }) listRef?: ElementRef<HTMLUListElement>;
   @ViewChild('originEl', { static: false }) originRef?: ElementRef<HTMLElement>;
   @ViewChild('dialogCm', { static: false }) dialogCmRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('dialogOriginEl', { static: false }) dialogOriginRef?: ElementRef<HTMLElement>;
+  @ViewChild('dialogHost', { static: false }) dialogHostRef?: ElementRef<HTMLElement>;
+  @ViewChild('ghostOrigin', { static: false }) ghostOriginRef?: ElementRef<HTMLElement>;
 
   view!: EditorView;
   dialogView?: EditorView;
@@ -72,6 +81,9 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   popoverPlacement: 'bottomLeft'|'bottom'|'bottomRight'|'topLeft'|'top'|'topRight' = 'bottomLeft';
   originTop = 0;
   originLeft = 0;
+  ghostX = 0;
+  ghostY = 0;
+  private anchorPos = 0; // position (index) used to anchor popover (start of '{{')
   sections: { title: string; items: SuggestItem[] }[] = [];
   selIndex = 0;
   options: SuggestItem[] = [];
@@ -94,6 +106,13 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value'] || changes['context']) this.updatePreview();
+    if (changes['context'] && this.showMenu) {
+      try { const v = this.currentView(); this.updateSuggestions(v); this.openAtCaret(v); } catch {}
+    }
+    // Subscribe to external trigger once available
+    if (changes['openDialogTrigger'] && this.openDialogTrigger && typeof this.openDialogTrigger.subscribe === 'function') {
+      try { this.openDialogTrigger.subscribe(() => this.openDialog()); } catch {}
+    }
   }
   ngOnDestroy(): void {
     try { this.cmRef?.nativeElement?.removeEventListener('keydown', this.keyCapture, true); } catch {}
@@ -135,19 +154,122 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   private mountDialogEditor() {
     try { this.dialogView?.destroy(); } catch {}
     if (!this.dialogCmRef?.nativeElement) return;
-    const keymapLocal = keymap.of([
-      ...historyKeymap,
-      { key: 'Mod-Enter', preventDefault: true, run: () => { this.commitValue(this.dialogView!.state.doc.toString()); this.dialogVisible = false; return true; } },
-      { key: 'Escape', preventDefault: true, run: () => { this.dialogVisible = false; return true; } },
-    ]);
+    const self = this;
+    const highlighter = ViewPlugin.fromClass(class {
+      deco: any;
+      constructor(view: EditorView) { this.deco = this.build(view); }
+      update(u: ViewUpdate) { if (u.docChanged || u.viewportChanged) this.deco = this.build(u.view); }
+      build(view: EditorView) {
+        const b = new RangeSetBuilder<any>();
+        for (const { from, to } of view.visibleRanges) {
+          const text = view.state.doc.sliceString(from, to);
+          const opens: number[] = [];
+          for (let i = 0; i < text.length - 1; i++) {
+            const two = text.slice(i, i + 2);
+            if (two === '{{') { opens.push(from + i); i++; }
+            else if (two === '}}' && opens.length) {
+              const a = opens.pop()!; const bto = from + i + 2;
+              const inner = view.state.doc.sliceString(a + 2, bto - 2);
+              let cls = 'cm-expr';
+              const trimmed = inner.trim();
+              const incomplete = trimmed.endsWith('.');
+              if (!incomplete) {
+                try {
+                  const ok = self.sandbox.isValidIsland(inner, self.context);
+                  if (!ok) cls = 'cm-expr-invalid';
+                  else if (self.errorMode) cls = 'cm-expr-valid';
+                } catch { cls = 'cm-expr-invalid'; }
+              } else {
+                cls = 'cm-expr-pending';
+              }
+              b.add(a, bto, Decoration.mark({ class: cls }));
+              i++;
+            }
+          }
+          for (const a of opens) b.add(a, to, Decoration.mark({ class: 'cm-expr-pending' }));
+        }
+        // @ts-ignore
+        return b.finish();
+      }
+    }, { decorations: v => v.deco });
+
     this.dialogView = new EditorView({
       parent: this.dialogCmRef.nativeElement,
       state: EditorState.create({
         doc: this.value || '',
         extensions: [
-          history(),
-          keymapLocal,
           this.dialogEditableCompartment.of(EditorView.editable.of(true)),
+          keymap.of([
+            { key: 'Tab', preventDefault: true, run: (v) => this.acceptSelected(v) },
+            { key: 'Enter', preventDefault: true, run: (v) => this.acceptSelected(v) },
+            { key: 'Escape', run: () => { if (this.showMenu) { this.closeMenu(); return true; } this.dialogVisible = false; return true; } },
+            { key: 'Ctrl-Space', run: (v) => { if (this.showMenu) { this.closeMenu(); return true; } this.updateSuggestions(v); return true; } },
+            { key: 'Mod-Space', run: (v) => { if (this.showMenu) { this.closeMenu(); return true; } this.updateSuggestions(v); return true; } },
+            { key: 'Mod-Enter', preventDefault: true, run: () => { this.commitValue(this.dialogView!.state.doc.toString()); this.dialogVisible = false; return true; } },
+            ...defaultKeymap, ...historyKeymap,
+          ]),
+          history(),
+          EditorView.domEventHandlers({
+            keydown: (event, view) => {
+              if (!this.showMenu) return false;
+              const k = event.key;
+              if (k === 'ArrowDown') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.moveSel(1); return true; }
+              if (k === 'ArrowUp') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.moveSel(-1); return true; }
+              if (k === 'Tab' || k === 'Enter') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.acceptSelected(view); return true; }
+              if ((event.ctrlKey || event.metaKey) && k === ' ') { event.preventDefault(); event.stopPropagation(); (event as any).stopImmediatePropagation?.(); this.closeMenu(); return true; }
+              return false;
+            },
+            dragover: (event, view) => {
+              const dt = (event as DragEvent).dataTransfer;
+              if (!dt) return false;
+              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation(); (event as any).stopImmediatePropagation?.();
+                const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
+                if (pos != null) {
+                  view.dispatch({ selection: { anchor: pos } });
+                  this.ensureCaretVisible();
+                  this.updateDragCaret(pos);
+                }
+                return true;
+              }
+              return false;
+            },
+            drop: (event, view) => {
+              const dt = (event as DragEvent).dataTransfer;
+              if (!dt) return false;
+              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
+                if (this.dropProcessing) { if (event.cancelable) event.preventDefault(); return true; }
+                this.dropProcessing = true;
+                const raw = dt.getData('application/x-expression-tag') || dt.getData('text/plain');
+                if (!raw) return true;
+                try {
+                  if (event.cancelable) event.preventDefault();
+                  event.stopPropagation(); (event as any).stopImmediatePropagation?.();
+                  const data = safeParseTag(raw);
+                  const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
+                  const insertAt = pos != null ? pos : view.state.selection.main.head;
+                  this.insertTagAt(data, insertAt);
+                  this.hideDragCaret();
+                } catch {}
+                setTimeout(() => { this.dropProcessing = false; }, 0);
+                return true;
+              }
+              return false;
+            },
+          }),
+          EditorView.updateListener.of(u => this.onUpdate(u)),
+          highlighter,
+          EditorView.theme({
+            '&': { fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial', fontSize: '13px' },
+            '.cm-content': { padding: '6px 0px' },
+            '.cm-scroller': { overflow: 'auto' },
+            '.cm-line': {padding: 0 },
+            '.cm-expr': { color: '#1677ff', fontWeight: '600' },
+            '.cm-expr-valid': { color: '#52c41a', fontWeight: '600' },
+            '.cm-expr-invalid': { color: '#ff4d4f', fontWeight: '600' },
+            '.cm-expr-pending': { color: '#9ca3af', fontWeight: '600' },
+          })
         ]
       })
     });
@@ -283,8 +405,6 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
             { key: 'Tab', preventDefault: true, run: (v) => this.acceptSelected(v) },
             { key: 'Enter', preventDefault: true, run: (v) => this.acceptSelected(v) },
             { key: 'Escape', run: () => { this.closeMenu(); return true; } },
-            { key: 'ArrowDown', run: () => { this.moveSel(1); return true; } },
-            { key: 'ArrowUp', run: () => { this.moveSel(-1); return true; } },
             { key: 'Ctrl-Space', run: (v) => { if (this.showMenu) { this.closeMenu(); return true; } this.updateSuggestions(v); return true; } },
             { key: 'Mod-Space', run: (v) => { if (this.showMenu) { this.closeMenu(); return true; } this.updateSuggestions(v); return true; } },
             ...defaultKeymap, ...historyKeymap,
@@ -456,10 +576,15 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
 
   private openAtCaret(view: EditorView, atPos?: number) {
     const pos = atPos ?? view.state.selection.main.head;
-    const rect = view.coordsAtPos(pos);
+    // Anchor at start of island '{{' if present, else caret
+    const doc = view.state.doc.toString();
+    const isl = findIsland(doc, pos);
+    const anchor = (isl && typeof isl.open === 'number') ? isl.open : pos;
+    this.anchorPos = anchor;
+    const rect = view.coordsAtPos(anchor);
     if (rect) {
       this.zone.run(() => {
-        this.computePlacement(rect as any);
+        this.computePlacement(rect as any, view);
         if (!this.showMenu) this.selIndex = 0;
         this.showMenu = true;
         view.focus();
@@ -468,6 +593,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
       requestAnimationFrame(() => {
         this.scrollSelectedIntoView();
         this.updateInfoPanel();
+        // Re-affirm anchor position after render (avoid drift)
+        try { const r2 = view.coordsAtPos(this.anchorPos); if (r2) { this.computePlacement(r2 as any, view); this.cdr.detectChanges(); } } catch {}
       });
     }
   }
@@ -483,6 +610,11 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   trackEntry = (_: number, e: MenuEntry) => e.kind === 'header' ? 'h:' + (e as any).title : 'i:' + (e as any).item.label;
 
   clickItem(it: SuggestItem) { this.acceptItem(this.view, it); }
+  private currentView(): EditorView { return (this.dialogVisible && this.dialogView) ? this.dialogView : this.view; }
+  clickItemDialog(it: SuggestItem) { const v = this.currentView(); this.acceptItem(v, it); }
+
+  // Effective before-group visibility: honor groupBefore only when not large
+  get hasBefore(): boolean { return !!(this.groupBefore && !this.large); }
 
   private acceptSelected(view: EditorView): boolean {
     if (!this.showMenu) return false;
@@ -572,19 +704,17 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     return true;
   }
 
-  private computePlacement(caretRect: any) {
-    const hostEl = this.hostRef.nativeElement;
-    const hostRect = hostEl.getBoundingClientRect();
+  private computePlacement(caretRect: any, view?: EditorView) {
     const spaceBelow = window.innerHeight - caretRect.bottom;
     const spaceAbove = caretRect.top;
     // Only top or bottom, let NG Zorro handle horizontal clamping
-    const bottom = spaceBelow >= spaceAbove;
-    this.popoverPlacement = bottom ? 'bottom' : 'top';
-    // Position the virtual origin at caret X (clamped within host's visible box) and at baseline Y
-    const visibleX = caretRect.left - hostRect.left; // X within the visible host viewport
-    const clampedX = Math.max(0, Math.min(visibleX, hostEl.clientWidth - 1));
-    this.originLeft = clampedX;
-    this.originTop = bottom ? (caretRect.bottom - hostRect.top) : (caretRect.top - hostRect.top);
+    let bottom = spaceBelow >= spaceAbove;
+    if (this.suggestionPlacement === 'top') bottom = false;
+    if (this.suggestionPlacement === 'bottom') bottom = true;
+    this.popoverPlacement = bottom ? 'bottomLeft' : 'topLeft';
+    // Position the ghost origin in viewport coordinates so overlay anchors exactly at caret
+    this.ghostX = caretRect.left;
+    this.ghostY = bottom ? caretRect.bottom : caretRect.top;
   }
 
   private updateInfoPanel() {
@@ -716,8 +846,10 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   }
 
   onFormulaClick(e: MouseEvent) {
-    e.preventDefault(); e.stopPropagation();
+    try { e.preventDefault(); e.stopPropagation(); } catch {}
     this.formulaClick.emit();
+    // If not in large mode, use the before-group button as a dialog trigger
+    if (!this.large) this.openDialog();
   }
 }
 

@@ -7,6 +7,9 @@
 .cm-host { position: relative; flex:1; min-height: 30px; max-height: 200px; overflow: hidden; border:1px solid #d9d9d9; border-radius:6px; background:#fff; }
 .cm-host.large { min-height: 160px; max-height: 360px; }
 .cm-host.fullscreen { min-height: 70vh; max-height: 72vh; }
+.cm-host.auto { max-height: 420px; }
+.expr-host .cm-editor { height: auto; }
+.expr-host .cm-scroller { max-height: inherit; overflow-y: auto; }
 /* Remove default outlines from inner CM nodes */
 .cm-host, .cm-host * { outline: none !important; }
 .expr-host *:focus, .expr-host *:focus-visible { outline: none !important; }
@@ -54,6 +57,25 @@
   border-bottom-left-radius: 8px;
   border-left: 1px solid #d9d9d9;
 }
+
+/* Floating expand button */
+.expr-fab {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+}
+.expr-fab:hover { color:#1677ff; }
 
 /* Drag preview caret */
 .drop-caret {
@@ -170,10 +192,18 @@
 .expr-popover-left li[role="option"]:hover { background:#f5faff; }
 .expr-popover-left li[role="option"].active { background:#e6f4ff; }
 .expr-popover-right { width: 360px; padding: 8px 12px; border-left: 1px solid #e5e7eb; }
-.expr-origin { position:absolute; width:1px; height:1px; pointer-events:none; }
+.expr-origin { position:absolute; width:2px; height:2px; pointer-events:none; }
+/* Ghost origin positioned in viewport coordinates for precise popover anchoring */
+.expr-ghost-origin { position: fixed; width: 2px; height: 2px; pointer-events: none; z-index: 1; }
 .expr-preview { margin-top: 6px; font-size: 12px; color:#475569; white-space: pre-wrap; word-break: break-word; }
 
 /* Remove default focus outlines on editor */
 .cm-editor { outline: none !important; }
 .cm-editor *:focus { outline: none !important; }
 .expr-host:focus, .expr-host *:focus { outline: none !important; }
+/* Force-disable any focus outline inside the dialog editor (CodeMirror) */
+.dialog-host .cm-focused { outline: none !important; outline-offset: 0 !important; box-shadow: none !important; }
+.dialog-host .cm-editor.cm-focused { outline: none !important; outline-offset: 0 !important; box-shadow: none !important; }
+/* Increase specificity through modal container in case of stronger defaults */
+:host ::ng-deep .ant-modal .cm-focused { outline: none !important; outline-offset: 0 !important; box-shadow: none !important; }
+:host ::ng-deep .ant-modal .cm-editor.cm-focused { outline: none !important; outline-offset: 0 !important; box-shadow: none !important; }

@@ -5,6 +5,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 
 @Component({
   selector: 'app-provider-viewer',
@@ -18,8 +19,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
         <div class="card-title left"><span class="t">App</span><span class="s">{{ a.name }}</span></div>
       </div>
       <div class="actions">
-        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="edit()"><i class="fa-regular fa-pen-to-square"></i><span class="label">Édition</span></button>
-        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="duplicate()"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
+        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="edit()" [disabled]="!isAdmin"><i class="fa-regular fa-pen-to-square"></i><span class="label">Édition</span></button>
+        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="duplicate()" [disabled]="!isAdmin"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
       </div>
     </div>
     <div class="content">
@@ -43,6 +44,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .header .left { display:flex; align-items:left; gap:0px; }
     .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
     .actions { display:flex; gap:8px; }
+    .apple-btn[disabled] { opacity: .55; filter: grayscale(1); cursor: not-allowed; }
     @media (max-width: 640px) { .apple-btn .label { display:none; } }
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
@@ -58,7 +60,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
 })
 export class AppProviderViewerComponent implements OnInit {
   app?: AppProvider;
-  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
+  get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id') || '';
     if (id) this.catalog.getApp(id).subscribe(a => this.zone.run(() => { this.app = a; try { this.cdr.detectChanges(); } catch {} }));

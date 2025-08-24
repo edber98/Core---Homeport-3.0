@@ -100,6 +100,8 @@ nz-footer {
 .hp-header .hdr-left { display:flex; align-items:center; gap:10px; min-width: 0; }
 .hp-header .hdr-center { position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); display:flex; justify-content:center; align-items:center; }
 .hp-header .hdr-actions { display:flex; align-items:center; gap:8px; }
+.hp-header .hdr-actions .user-switcher { min-width: 160px; }
+.hp-header .hdr-actions .ws-switcher { min-width: 160px; }
 .hp-header .brand { font-weight:600; letter-spacing:-0.01em; }
 .hp-header .burger { border-radius: 10px; border:1px solid #e5e7eb; }
 .hp-header .hdr-btn { border-radius: 10px; border:1px solid #e5e7eb; }

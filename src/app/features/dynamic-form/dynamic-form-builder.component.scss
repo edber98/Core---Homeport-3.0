@@ -4,6 +4,7 @@
   align-items: flex-start;
   height: 100%; /* fill parent instead of min-height */
 }
+.builder .route-save { position: sticky; top: 6px; right: 0; display:flex; justify-content:flex-end; width: 100%; z-index: 2; padding: 4px 0; }
 .left { flex: 0 0 380px; }
 .left { max-height: 100%; overflow: auto; padding-right: 4px; border-right: 1px solid #E2E1E4; }
 .left .ant-card { border: 0 !important; box-shadow: none !important; background: transparent;  }

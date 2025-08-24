@@ -8,11 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { FlowHistoryService } from './flow-history.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 import { FlowPaletteService } from './flow-palette.service';
 import { FlowGraphService } from './flow-graph.service';
 import { FlowBuilderUtilsService } from './flow-builder-utils.service';
@@ -23,7 +26,7 @@ import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.co
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -375,6 +378,7 @@ export class FlowBuilderComponent {
     private paletteSvc: FlowPaletteService,
     private graph: FlowGraphService,
     private fbUtils: FlowBuilderUtilsService,
+    private acl: AccessControlService,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -426,6 +430,10 @@ export class FlowBuilderComponent {
   private lpFired = false;
   private readonly lpDelay = 520; // ms
   private readonly lpMoveThresh = 10; // px
+  private allTemplates: any[] = [];
+  private allowedTplIds = new Set<string>();
+  validationIssues: Array<{ kind: 'node'|'flow'; nodeId?: string; message: string }> = [];
+  private openedNodeConfig = new Set<string>();
 
   // Removed event interceptors to align with working dev playground
 
@@ -440,11 +448,14 @@ export class FlowBuilderComponent {
       // Load palette from Node Templates list (dynamic source)
       this.catalog.listNodeTemplates().subscribe(tpls => this.zone.run(() => {
         try {
-          this.items = this.paletteSvc.toPaletteItems(tpls || []);
-          this.rebuildPaletteGroups();
-          this.cdr.detectChanges();
+          this.allTemplates = tpls || [];
+          this.applyWorkspaceTemplateFilter();
         } catch { }
       }));
+      // Recompute palette when workspace changes
+      try {
+        this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => this.applyWorkspaceTemplateFilter()));
+      } catch {}
     } catch { }
     // Initialise un graphe par défaut à partir de la palette
     const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
@@ -452,6 +463,24 @@ export class FlowBuilderComponent {
     this.edges = seed.edges as any;
     this.history.reset(this.snapshot());
     this.updateTimelineCaches();
+    this.recomputeValidation();
+  }
+
+  
+
+  private applyWorkspaceTemplateFilter() {
+    try {
+      const ws = this.acl.currentWorkspaceId();
+      this.acl.listAllowedTemplates(ws).subscribe(ids => {
+        const allow = Array.isArray(ids) ? ids : [];
+        this.allowedTplIds = new Set(allow);
+        const filtered = allow.length === 0 ? [] : (this.allTemplates || []).filter(t => allow.includes((t as any).id));
+        this.items = this.paletteSvc.toPaletteItems(filtered);
+        this.rebuildPaletteGroups();
+        try { this.cdr.detectChanges(); } catch {}
+        this.recomputeValidation();
+      });
+    } catch { }
   }
 
   // Resolve mini icon for palette: use only template.icon if it is a class (no app logo fallback)
@@ -1001,6 +1030,7 @@ export class FlowBuilderComponent {
       this.nodes = [...this.nodes, vNode];
       this.selection = vNode as any;
       this.history.push(this.snapshot());
+      this.recomputeValidation();
     } catch { }
   }
 
@@ -1025,6 +1055,38 @@ export class FlowBuilderComponent {
   private generateNodeId(tpl?: any, fallbackName?: string): string {
     const used = new Set(this.nodes.map(n => String(n.id)));
     return this.fbUtils.generateNodeId(tpl, fallbackName || '', used);
+  }
+
+  // === Validation: templates allowlist and future checks ===
+  private getNodeTemplateId(node: any): string {
+    try {
+      const m = node?.data?.model || {};
+      return String(m?.templateObj?.id || m?.template?.id || m?.template || '').trim();
+    } catch { return ''; }
+  }
+  isNodeHardError(id: string): boolean {
+    try {
+      const n = this.nodes.find(nn => nn.id === id);
+      const tplId = this.getNodeTemplateId(n);
+      if (!tplId) return false;
+      return !this.allowedTplIds.has(tplId);
+    } catch { return false; }
+  }
+  private recomputeValidation() {
+    const issues: Array<{ kind: 'node'|'flow'; nodeId?: string; message: string }> = [];
+    try {
+      for (const n of this.nodes) {
+        const id = String(n.id);
+        const tpl = this.getNodeTemplateId(n);
+        if (tpl && !this.allowedTplIds.has(tpl)) {
+          issues.push({ kind: 'node', nodeId: id, message: `Template ${tpl} non autorisé dans ce workspace` });
+        }
+        // TODO: required-fields validation, only after node dialog opened at least once
+        // if (this.openedNodeConfig.has(id)) { ... }
+      }
+    } catch { }
+    this.validationIssues = issues;
+    try { this.cdr.detectChanges(); } catch {}
   }
   ctxDeleteTarget() {
     const tgt = this.ctxMenuTarget;
@@ -1087,6 +1149,7 @@ export class FlowBuilderComponent {
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
+    try { this.openedNodeConfig.add(String(m.id)); } catch {}
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
@@ -1097,6 +1160,7 @@ export class FlowBuilderComponent {
     this.edges = res.edges as any;
 
     this.pushState('dialog.modelCommit.final');
+    this.recomputeValidation();
   }
 
   saveSelectedJson() {
@@ -1118,6 +1182,7 @@ export class FlowBuilderComponent {
       }
       this.edges = res.edges as any;
       this.pushState('inspector.saveJson');
+      this.recomputeValidation();
     } catch { }
   }
 
@@ -1140,6 +1205,7 @@ export class FlowBuilderComponent {
     // Deletion may change error-branch reachability
     this.recomputeErrorPropagation();
     this.history.push(this.snapshot());
+    this.recomputeValidation();
   }
 
   undo() {

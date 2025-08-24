@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Website, WebsiteService } from './website.service';
+import { Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
+import { AccessControlService } from '../../services/access-control.service';
 
 @Component({
   selector: 'website-list',
@@ -87,11 +90,28 @@ import { Website, WebsiteService } from './website.service';
     .icon-btn i { font-size:16px; }
   `]
 })
-export class WebsiteListComponent implements OnInit {
+export class WebsiteListComponent implements OnInit, OnDestroy {
   q = '';
   items: Website[] = [];
-  constructor(private svc: WebsiteService, private router: Router) {}
-  ngOnInit() { this.svc.list().subscribe(l => this.items = l || []); }
+  private changesSub?: Subscription;
+  constructor(private svc: WebsiteService, private router: Router, private acl: AccessControlService) {}
+  ngOnInit() {
+    this.load();
+    // Single, throttled subscription to workspace/user changes
+    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load());
+  }
+  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
+  private load() {
+    this.svc.list().subscribe(l => {
+      const list = l || [];
+      // ensure mapping and filter by ACL
+      const activeWs = this.acl.currentWorkspaceId();
+      this.items = list.filter(s => {
+        const ws = this.acl.ensureResourceWorkspace('website', s.id);
+        return ws === activeWs && this.acl.canAccessWorkspace(ws);
+      });
+    });
+  }
   get filtered() {
     const s = (this.q || '').toLowerCase().trim();
     if (!s) return this.items;
@@ -102,4 +122,3 @@ export class WebsiteListComponent implements OnInit {
   edit(s: Website) { this.router.navigate(['/websites/editor'], { queryParams: { id: s.id } }); }
   noop() {}
 }
-

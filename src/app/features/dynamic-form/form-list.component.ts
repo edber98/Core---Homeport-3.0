@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService, FormSummary } from '../../services/catalog.service';
+import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 type FormItem = { id: string; name: string; description?: string };
 
@@ -118,7 +121,7 @@ type FormItem = { id: string; name: string; description?: string };
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
   `]
 })
-export class FormListComponent implements OnInit {
+export class FormListComponent implements OnInit, OnDestroy {
   title = 'Formulaires';
 
   forms: FormSummary[] = [];
@@ -136,16 +139,33 @@ export class FormListComponent implements OnInit {
   createError: string | null = null;
   draft: { name: string; description?: string } = { name: '', description: '' };
 
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  private changesSub?: Subscription;
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() { this.load(); this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); }
+  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
 
   load() {
     this.loading = true; this.error = null;
     this.catalog.listForms().subscribe({
-      next: items => { this.zone.run(() => { this.forms = items || []; }); },
-      error: () => { this.zone.run(() => { this.error = 'Impossible de charger les formulaires.'; }); },
-      complete: () => { this.zone.run(() => { this.loading = false; setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
+      next: items => {
+        this.zone.run(() => {
+          const list = items || [];
+          try {
+            const counts: any = {};
+            (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
+            console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
+          } catch {}
+          const filtered = list.filter(f => {
+            const ws = this.acl.ensureResourceWorkspace('form', f.id);
+            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+          });
+          try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
+          this.forms = filtered;
+        });
+      },
+      error: () => { this.zone.run(() => { this.error = 'Impossible de charger les formulaires.'; try { console.debug('[FormList] error loading'); } catch {} }); },
+      complete: () => { this.zone.run(() => { this.loading = false; try { console.debug('[FormList] complete'); } catch {} setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
     });
   }
 
@@ -167,6 +187,9 @@ export class FormListComponent implements OnInit {
     this.catalog.saveForm(doc).subscribe({
       next: () => {
         this.zone.run(() => {
+          // Attach to currently selected workspace
+          const ws = this.acl.currentWorkspaceId();
+          this.acl.setResourceWorkspace('form', id, ws);
           this.creating = false; this.createVisible = false; this.load(); this.openBuilder({ id, name: doc.name, description: doc.description });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
@@ -174,5 +197,7 @@ export class FormListComponent implements OnInit {
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; }); }
     });
   }
+  // Refresh when user/workspace changes
+  ngAfterViewInit() { try { this.acl.changes$.subscribe(() => this.load()); } catch {} }
   doSearch() { this.q = (this.q || '').trim(); }
 }
