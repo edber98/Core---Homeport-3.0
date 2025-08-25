@@ -10,7 +10,18 @@ module.exports = function(){
 
   r.get('/plugin-repos', async (req, res) => {
     const q = { $or: [ { companyId: null }, { companyId: req.user.companyId } ] };
-    const list = await PluginRepo.find(q).lean();
+    let { limit = 100, page = 1, q: search, sort } = req.query;
+    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    page = Math.max(1, Number(page) || 1);
+    const findQ = { ...q };
+    if (search) Object.assign(findQ, { $or: [ { name: { $regex: String(search), $options: 'i' } }, { type: { $regex: String(search), $options: 'i' } } ] });
+    let sortObj = { createdAt: -1 };
+    if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'asc' ? 1 : -1) }; }
+    const list = await PluginRepo.find(findQ)
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
 
@@ -37,4 +48,3 @@ module.exports = function(){
 
   return r;
 }
-

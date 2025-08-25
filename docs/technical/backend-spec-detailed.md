@@ -221,9 +221,9 @@ Arrêt gracieux:
 
 ---
 
-## 13) OpenAPI/Swagger & Tests
+## 13) Swagger & Tests
 
-- Spécification OpenAPI (YAML/JSON) versionnée; générer SDK si utile.
+- Spécification Swagger (OpenAPI) versionnée; générer SDK si utile.
 - Tests:
   - Unitaires: validation, services, crypto, mappers.
   - Intégration: endpoints clés (auth, workspaces, flows, runs, webhooks).

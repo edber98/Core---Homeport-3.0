@@ -105,5 +105,5 @@ Checksums & Drift
 - Provider.checksum; NodeTemplate.checksumArgs/Feature detect changes from manifests (args used for checksum).
 - On drift (template args/feature updates): backend peut refuser des modifs sans force=true et désactiver les flows impactés avec notifications.
 
-OpenAPI
-- Full spec: docs/api/openapi-backend.yaml — import into Swagger UI/Postman; models reflect frontend UI fields.
+API Spec
+- Full spec: docs/api/swagger-backend.yaml — import into Swagger UI/Postman; models reflect frontend UI fields.

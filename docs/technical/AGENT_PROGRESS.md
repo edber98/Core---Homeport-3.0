@@ -39,7 +39,7 @@ Pending / Next Steps
 - Plugins: support remote registries and versioning; per-provider/app handler selection.
 - Transfer: include forms if backendized; deep copy linked assets.
 - Tests: DB-mode tests for force paths, notifications, plugins import and transfer scenarios.
-- OpenAPI: expand schemas and examples for all endpoints (see docs/api/openapi.yaml).
+- Swagger: expand schemas and examples for all endpoints (see docs/api/swagger.yaml).
 
 Updates in this iteration
 - Plugins repo model with manifest import + functions:
@@ -50,7 +50,16 @@ Updates in this iteration
   - Encryption key derivation fallback (from HMAC_SECRET) if ENC_KEY not set.
 - Transfer improvements: node/edge IDs remapped when copying flows to avoid collisions.
 - DB tests added: force validations + notifications; manifest import; transfer.
-- OpenAPI updated: docs/api/openapi-backend.yaml covers new routes.
+- Swagger spec updated: docs/api/swagger-backend.yaml covers new routes.
+- Swagger UI exposed at /api-docs with JSON/YAML at /api-docs.json and /api-docs.yaml (see docs/technical/api-docs.md).
+- Runs model aligned with frontend:
+  - status values (queued/running/success/error/cancelled/timed_out/partial_success)
+  - finalPayload/result, startedAt/finishedAt/durationMs, msg (per-node logs)
+  - list endpoints with pagination (limit/offset) for virtual lists; cancel endpoint
+- Engine events include input/argsPre/argsPost/result per node (like simulation UI)
+- Socket.IO added alongside SSE:
+  - Subscribe via 'subscribe:run' and receive 'run:event' in room 'run:{runId}'. See docs/technical/realtime.md
+- Frontend integration checklist added: docs/technical/frontend-todo-integration.md (services to adapt + pagination/filters)
 
 Notes
 - Use NODE_ENV=test MONGO_DB_NAME=homeport_test npm run test:db for DB tests.

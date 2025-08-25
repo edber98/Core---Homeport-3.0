@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require('mongoose');
+const { newId } = require('../../utils/ids');
 
 const GraphSchema = new Schema({
   nodes: { type: Schema.Types.Mixed, default: [] },
@@ -6,6 +7,7 @@ const GraphSchema = new Schema({
 }, { _id: false, strict: false });
 
 const FlowSchema = new Schema({
+  id: { type: String, index: true, unique: true, sparse: true },
   name: { type: String, required: true },
   workspaceId: { type: Types.ObjectId, ref: 'Workspace', required: true, index: true },
   status: { type: String, enum: ['draft','test','production'], default: 'draft' },
@@ -13,5 +15,6 @@ const FlowSchema = new Schema({
   graph: { type: GraphSchema, default: () => ({ nodes: [], edges: [] }) },
 }, { timestamps: true });
 
-module.exports = model('Flow', FlowSchema);
+FlowSchema.pre('save', function(next){ if (!this.id) this.id = newId('flw'); next(); });
 
+module.exports = model('Flow', FlowSchema);

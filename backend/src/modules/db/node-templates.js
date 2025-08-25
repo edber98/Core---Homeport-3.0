@@ -13,8 +13,22 @@ module.exports = function(){
 
   r.get('/node-templates', async (req, res) => {
     const { category } = req.query;
-    const q = category ? { category } : {};
-    const list = await NodeTemplate.find(q).lean();
+    let { limit = 100, page = 1 } = req.query;
+    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    page = Math.max(1, Number(page) || 1);
+    const { q, sort } = req.query;
+    const query = category ? { category } : {};
+    if (q) {
+      const rx = { $regex: String(q), $options: 'i' };
+      Object.assign(query, { $or: [ { key: rx }, { name: rx }, { title: rx }, { category: rx }, { tags: rx } ] });
+    }
+    let sortObj = { name: 1 };
+    if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'desc' ? -1 : 1) }; }
+    const list = await NodeTemplate.find(query)
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
 
