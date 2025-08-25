@@ -6,6 +6,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { AppProvider, CatalogService, CredentialDoc } from '../../services/catalog.service';
+import { UiMessageService } from '../../services/ui-message.service';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 
 @Component({
@@ -47,7 +48,7 @@ export class CredentialEditDialogComponent implements OnChanges {
   form: FormGroup;
   values: any = {};
 
-  constructor(private fb: FormBuilder, private catalog: CatalogService) {
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private ui: UiMessageService) {
     this.form = this.fb.group({ name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }) });
   }
 
@@ -78,6 +79,6 @@ export class CredentialEditDialogComponent implements OnChanges {
       workspaceId: base.workspaceId,
       values: this.values || {}
     };
-    this.catalog.saveCredential(out).subscribe(() => this.saved.emit(out));
+    this.catalog.saveCredential(out).subscribe({ next: () => { this.ui.success('Identifiants enregistrés'); this.saved.emit(out); }, error: () => this.ui.error('Échec de l\'enregistrement des identifiants') });
   }
 }

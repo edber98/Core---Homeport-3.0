@@ -2,24 +2,47 @@ import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { AccessControlService } from './access-control.service';
+import { ApiClientService } from './api-client.service';
+import { AuthTokenService } from './auth-token.service';
+import { environment } from '../../environments/environment';
 
 type ResetToken = { token: string; userId: string; exp: number };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private PWD_KEY = 'auth.passwords'; // map userId -> password (demo only)
-  private TOK_KEY = 'auth.resetTokens'; // ResetToken[]
+  private PWD_KEY = 'auth.passwords'; // map userId -> password (demo only, fallback)
+  private TOK_KEY = 'auth.resetTokens'; // ResetToken[] (fallback)
   private LOGGED_KEY = 'auth.loggedIn';
 
   loggedIn = signal<boolean>(false);
 
-  constructor(private router: Router, private acl: AccessControlService) {
-    this.ensureSeed();
-    this.loggedIn.set(this.load<boolean>(this.LOGGED_KEY, false));
+  constructor(private router: Router, private acl: AccessControlService, private api: ApiClientService, private tokens: AuthTokenService) {
+    if (!environment.useBackend) this.ensureSeed();
+    this.loggedIn.set(!!this.tokens.token || this.load<boolean>(this.LOGGED_KEY, false));
   }
 
-  login(userId: string, password: string): Observable<boolean> {
+  login(userIdOrEmail: string, password: string): Observable<boolean> {
+    if (environment.useBackend) {
+      const email = String(userIdOrEmail || '').trim();
+      return new Observable<boolean>((observer) => {
+        this.api.post<{ token: string; user: any; company?: any }>(`/auth/login`, { email, password }).subscribe({
+          next: (data) => {
+            this.tokens.setToken(data?.token || '');
+            this.tokens.setUser(data?.user || null);
+            // Renseigner l’utilisateur courant pour l’ACL si l’id est disponible
+            try { if (data?.user?.id) this.acl.setCurrentUser(String(data.user.id)); } catch {}
+            this.loggedIn.set(true);
+            this.save(this.LOGGED_KEY, true);
+            observer.next(true);
+            observer.complete();
+          },
+          error: (err) => observer.error(err)
+        });
+      });
+    }
+    // Fallback local (demo)
     const pwds = this.load<Record<string, string>>(this.PWD_KEY, {});
+    const userId = userIdOrEmail;
     if (!pwds[userId]) return throwError(() => new Error('Utilisateur inconnu'));
     if ((pwds[userId] || '') !== (password || '')) return throwError(() => new Error('Mot de passe invalide'));
     this.acl.setCurrentUser(userId);
@@ -31,6 +54,7 @@ export class AuthService {
 
   logout(): void {
     this.loggedIn.set(false);
+    this.tokens.clear();
     this.save(this.LOGGED_KEY, false);
     this.router.navigateByUrl('/login');
   }

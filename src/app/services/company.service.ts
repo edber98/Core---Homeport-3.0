@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { ApiClientService } from './api-client.service';
+import { environment } from '../../environments/environment';
 
 export type LicensePlan = 'free' | 'pro' | 'enterprise';
 
@@ -21,16 +23,41 @@ export class CompanyService {
   private KEY = 'company.map'; // stores Record<companyId, Company>
   private LEGACY_KEY = 'company.data';
 
-  constructor() {
-    this.ensureSeed();
+  constructor(private api: ApiClientService) {
+    if (!environment.useBackend) this.ensureSeed();
   }
 
   getCompany(companyId?: string): Observable<Company> {
+    if (environment.useBackend) {
+      return new Observable<Company>((observer) => {
+        this.api.get<any>('/api/company').subscribe({
+          next: (c) => {
+            const id = (c?.id || companyId || 'acme');
+            const local = this.loadMap();
+            const merged = { ...(local[id] || this.defaultCompany(id)), id: c?.id || id, name: c?.name || (local[id]?.name) } as Company;
+            observer.next(merged);
+            observer.complete();
+          },
+          error: (err) => { observer.error(err); }
+        });
+      });
+    }
     const id = companyId || 'acme';
     const map = this.loadMap();
     return of(map[id] || this.defaultCompany(id));
   }
   updateCompany(patch: Partial<Company>, companyId?: string): Observable<Company> {
+    if (environment.useBackend) {
+      return new Observable<Company>((observer) => {
+        this.api.put<any>('/api/company', { name: patch?.name }).subscribe({
+          next: () => {
+            // Recharger depuis le backend pour récupérer le nom à jour
+            this.getCompany(companyId).subscribe({ next: (c) => { observer.next(c); observer.complete(); }, error: (e) => observer.error(e) });
+          },
+          error: (err) => observer.error(err)
+        });
+      });
+    }
     const id = companyId || 'acme';
     const map = this.loadMap();
     const curr = map[id] || this.defaultCompany(id);

@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CatalogService, NodeTemplate } from './catalog.service';
 import { CompanyService } from './company.service';
+import { WorkspaceBackendService } from './workspace-backend.service';
+import { environment } from '../../environments/environment';
 
 export type Role = 'admin' | 'member';
 
@@ -38,6 +40,10 @@ export class AccessControlService {
   users = computed(() => this._users());
   workspaces = computed(() => this._workspaces());
   currentUser = computed<User | null>(() => {
+    if (environment.useBackend) {
+      // In backend mode, UI authorization is handled server-side; expose a synthetic admin user
+      return { id: 'backend', name: 'Backend', role: 'admin', workspaces: [] } as User;
+    }
     const id = this._currentUserId();
     return (this._users().find(u => u.id === id) || null);
   });
@@ -50,12 +56,30 @@ export class AccessControlService {
   private _changes = new BehaviorSubject<number>(0);
   readonly changes$ = this._changes.asObservable();
 
-  constructor(private catalog: CatalogService, private company: CompanyService) {
+  constructor(private catalog: CatalogService, private company: CompanyService, private wsBackend: WorkspaceBackendService) {
     this.ensureSeed();
   }
 
   // ===== Seed data =====
   private ensureSeed() {
+    if (environment.useBackend) {
+      // No local seeding in backend mode; sync from API
+      this._users.set([]);
+      this._workspaces.set([]);
+      try {
+        this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
+          const mapped: Workspace[] = (list || []).map(w => ({ id: String(w.id), name: w.name, companyId: undefined }));
+          this._workspaces.set(mapped);
+          this.save(this.WORKSPACES_KEY, mapped);
+          // Initialize current workspace after sync
+          const wsId2 = this.pickDefaultWorkspaceId();
+          this._currentWorkspaceId.set(wsId2);
+          try { console.debug('[ACL] Synced workspaces (backend)', { count: mapped.length, currentWorkspaceId: wsId2, workspaces: mapped }); } catch {}
+          this._changes.next(Date.now());
+        });
+      } catch {}
+      return;
+    }
     const storedUsers = this.load<User[]>(this.USERS_KEY, []);
     const storedWs = this.load<Workspace[]>(this.WORKSPACES_KEY, []);
     let curr = this.load<string | null>(this.CURRENT_USER_KEY, null);
@@ -90,6 +114,22 @@ export class AccessControlService {
       this._users.set(storedUsers);
       this._currentUserId.set(curr || storedUsers[0]?.id || null);
     }
+    // If branché au backend, synchroniser la liste des workspaces
+    if (environment.useBackend) {
+      try {
+        this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
+          const mapped: Workspace[] = (list || []).map(w => ({ id: String(w.id), name: w.name, companyId: undefined }));
+          if (mapped.length) {
+            this._workspaces.set(mapped);
+            this.save(this.WORKSPACES_KEY, mapped);
+          }
+          // Initialize current workspace after sync
+          const wsId2 = this.pickDefaultWorkspaceId();
+          this._currentWorkspaceId.set(wsId2);
+          this._changes.next(Date.now());
+        });
+      } catch {}
+    }
     // Initialize current workspace to first accessible
     const wsId = this.pickDefaultWorkspaceId();
     this._currentWorkspaceId.set(wsId);
@@ -105,6 +145,7 @@ export class AccessControlService {
     this.save(this.CURRENT_USER_KEY, userId);
     // Always switch to a workspace belonging to the user's company and accessible
     this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
+    try { console.debug('[ACL] Current user set', { userId, currentWorkspaceId: this._currentWorkspaceId(), workspaces: this._workspaces() }); } catch {}
     this._changes.next(Date.now());
   }
 
@@ -175,6 +216,7 @@ export class AccessControlService {
 
   // Permissions helpers
   canAccessWorkspace(wsId: string, user?: User | null): boolean {
+    if (environment.useBackend) return true;
     const u = user ?? this.currentUser();
     if (!u) return false;
     if (u.role === 'admin') return true;
@@ -232,17 +274,39 @@ export class AccessControlService {
   private remove(key: string) { try { localStorage.removeItem(key); } catch {} }
   private keys(): string[] { try { return Object.keys(localStorage); } catch { return []; } }
 
+  // Debug: log current workspace state to console
+  debugLogWorkspaceState(): void {
+    try {
+      console.debug('[ACL] Debug workspace state', {
+        useBackend: environment.useBackend,
+        currentWorkspaceId: this._currentWorkspaceId(),
+        currentWorkspace: this.currentWorkspace(),
+        workspaces: this._workspaces(),
+      });
+    } catch {}
+  }
+
   // Workspace selection
   setCurrentWorkspace(id: string) {
     if (!id) return;
     if (!this.canAccessWorkspace(id)) return; // ignore if not accessible
     this._currentWorkspaceId.set(id);
+    try { console.debug('[ACL] Workspace changed', { id, workspaces: this._workspaces() }); } catch {}
     this._changes.next(Date.now());
   }
   currentWorkspaceId(): string {
+    if (environment.useBackend) {
+      // Avoid returning 'default' before sync; return first real id if ready, else empty string
+      return this._currentWorkspaceId() || (this._workspaces().length ? this._workspaces()[0].id : '');
+    }
     return this._currentWorkspaceId() || this.pickDefaultWorkspaceId();
   }
   private pickDefaultWorkspaceId(): string {
+    // Backend mode: prefer the first synced workspace id
+    if (environment.useBackend) {
+      const list = this._workspaces();
+      if (list && list.length) return list[0].id;
+    }
     const u = this.currentUser();
     if (!u) return 'default';
     const companyWs = this._workspaces().filter(w => !u.companyId || w.companyId === u.companyId);

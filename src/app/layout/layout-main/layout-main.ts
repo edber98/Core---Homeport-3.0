@@ -18,6 +18,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { AccessControlService, User } from '../../services/access-control.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationsBackendService, BackendNotification } from '../../services/notifications-backend.service';
+import { UiMessageService } from '../../services/ui-message.service';
 type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean };
 
 @Component({
@@ -71,7 +73,7 @@ export class LayoutMain implements OnInit {
   selectedUserId: string | null = null;
   selectedWorkspaceId: string | null = null;
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
@@ -83,8 +85,12 @@ export class LayoutMain implements OnInit {
         this.selectedUserId = this.acl.currentUser()?.id || this.selectedUserId;
         this.selectedWorkspaceId = this.acl.currentWorkspaceId();
         try { this.cdr.detectChanges(); } catch {}
+        // Reload notifications on workspace change
+        this.loadNotifications();
       });
     } catch {}
+    // Initial notifications load
+    this.loadNotifications();
   }
 
   get showSider(): boolean { return this.innerWidth >= 992; }
@@ -112,12 +118,57 @@ export class LayoutMain implements OnInit {
     return { exact: true };
   }
 
-  // Simulated notifications (epuré, Apple-like style)
-  notifications = [
-    { title: 'Build terminé', desc: 'Flow “Envoi mail” compilé avec succès', time: 'il y a 2 min', unread: true },
-    { title: 'Exécution', desc: 'Scénario Slack exécuté', time: 'il y a 15 min', unread: false },
-    { title: 'Formulaire', desc: 'Nouveau brouillon “Onboarding”', time: 'hier', unread: false },
-  ];
+  // Notifications (backend)
+  notifications: Array<{ id: string; title: string; desc: string; acknowledged: boolean; link?: string }> = [];
+  notifUnreadCount = 0;
+  notifLoading = false;
+  loadNotifications() {
+    const wsRaw = this.acl.currentWorkspaceId() || undefined;
+    const wsId = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    this.notifLoading = true;
+    this.notifApi.list({ workspaceId: wsId, page: 1, limit: 20, sort: 'createdAt:desc' }).subscribe({
+      next: (list: BackendNotification[]) => {
+        const items = (list || []).map(n => ({
+          id: String(n.id),
+          title: n.code || n.entityType || 'Notification',
+          desc: n.message || '',
+          acknowledged: !!n.acknowledged,
+          link: n.link || undefined,
+        }));
+        this.notifications = items;
+        this.notifUnreadCount = items.filter(i => !i.acknowledged).length;
+      },
+      error: () => {},
+      complete: () => { this.notifLoading = false; try { this.cdr.detectChanges(); } catch {} }
+    });
+  }
+  openNotificationsPopover() { this.loadNotifications(); }
+  ackNotification(n: { id: string; acknowledged: boolean }) {
+    if (!n || n.acknowledged) return;
+    this.notifApi.ack(n.id).subscribe({ next: () => {
+      n.acknowledged = true;
+      this.notifUnreadCount = Math.max(0, this.notifUnreadCount - 1);
+      this.ui.success('Notification marquée comme lue');
+    }, error: () => this.ui.error('Échec de l\'accusé de lecture') });
+  }
+  deleteNotification(n: { id: string }) {
+    if (!n) return;
+    this.notifApi.delete(n.id).subscribe({ next: () => {
+      this.notifications = this.notifications.filter(x => x.id !== n.id);
+      this.notifUnreadCount = this.notifications.filter(i => !i.acknowledged).length;
+      this.ui.success('Notification supprimée');
+    }, error: () => this.ui.error('Échec de la suppression') });
+  }
+  openNotification(n: { id: string; link?: string; acknowledged: boolean }) {
+    if (!n) return;
+    // Ack then navigate if link
+    const go = () => { if (n.link) this.router.navigateByUrl(n.link); };
+    if (!n.acknowledged) {
+      this.notifApi.ack(n.id).subscribe({ next: () => { n.acknowledged = true; this.notifUnreadCount = Math.max(0, this.notifUnreadCount - 1); go(); }, error: () => go() });
+    } else {
+      go();
+    }
+  }
 
   logout() { this.auth.logout(); }
 

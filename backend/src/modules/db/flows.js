@@ -13,7 +13,9 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/workspaces/:wsId/flows', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { Types } = require('mongoose');
+    const wsId = String(req.params.wsId);
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
@@ -33,7 +35,9 @@ module.exports = function(){
   });
 
   r.post('/workspaces/:wsId/flows', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { Types } = require('mongoose');
+    const wsId = String(req.params.wsId);
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
@@ -55,8 +59,10 @@ module.exports = function(){
   });
 
   r.get('/flows/:flowId', async (req, res) => {
+    const { Types } = require('mongoose');
     const fid = String(req.params.flowId);
-    let f = await Flow.findById(fid);
+    let f = null;
+    if (Types.ObjectId.isValid(fid)) f = await Flow.findById(fid);
     if (!f) f = await Flow.findOne({ id: fid });
     if (!f) return res.apiError(404, 'flow_not_found', 'Flow not found');
     const ws = await Workspace.findById(f.workspaceId);
@@ -71,7 +77,11 @@ module.exports = function(){
   });
 
   r.put('/flows/:flowId', async (req, res) => {
-    const f = await Flow.findById(req.params.flowId);
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let f = null;
+    if (Types.ObjectId.isValid(fid)) f = await Flow.findById(fid);
+    if (!f) f = await Flow.findOne({ id: fid });
     if (!f) return res.apiError(404, 'flow_not_found', 'Flow not found');
     const ws = await Workspace.findById(f.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');

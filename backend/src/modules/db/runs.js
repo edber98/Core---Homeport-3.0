@@ -14,7 +14,11 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.post('/flows/:flowId/runs', async (req, res) => {
-    const flow = await Flow.findById(req.params.flowId);
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
     if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
     const ws = await Workspace.findById(flow.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
@@ -117,7 +121,9 @@ module.exports = function(){
 
   // List runs by workspace with filters and pagination
   r.get('/workspaces/:wsId/runs', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { Types } = require('mongoose');
+    const wsId = String(req.params.wsId);
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
@@ -140,7 +146,11 @@ module.exports = function(){
 
   // List runs by flow
   r.get('/flows/:flowId/runs', async (req, res) => {
-    const flow = await Flow.findById(req.params.flowId);
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
     if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
     const ws = await Workspace.findById(flow.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
@@ -159,7 +169,9 @@ module.exports = function(){
 
   // Get latest run (optionally by flowId) for a workspace
   r.get('/workspaces/:wsId/runs/latest', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { Types } = require('mongoose');
+    const wsId = String(req.params.wsId);
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const { flowId } = req.query;
     const q = { workspaceId: ws._id };
