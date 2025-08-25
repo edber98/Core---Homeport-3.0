@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { AccessControlService } from './access-control.service';
 import { AuthService } from './auth.service';
 
@@ -19,4 +19,17 @@ export const authGuard: CanActivateFn = () => {
   if (auth.loggedIn()) return true;
   try { router.navigateByUrl('/login'); } catch {}
   return false;
+};
+
+// Warn when navigating away from editors with unsaved changes
+export const unsavedChangesGuard: CanDeactivateFn<any> = (component: any) => {
+  try {
+    if (component && typeof component.hasUnsavedChanges === 'function') {
+      const has = !!component.hasUnsavedChanges();
+      if (has) {
+        return window.confirm('Quitter sans sauvegarder ? Vos changements seront perdus.');
+      }
+    }
+  } catch {}
+  return true;
 };

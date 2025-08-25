@@ -12,7 +12,10 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.put('/workspaces/:wsId', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { Types } = require('mongoose');
+    const wsId = String(req.params.wsId || '');
+    if (!Types.ObjectId.isValid(wsId)) return res.apiError(400, 'invalid_id', 'Invalid workspace id');
+    const ws = await Workspace.findById(wsId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const patch = req.body || {}; const force = !!patch.force;
 
@@ -45,6 +48,30 @@ module.exports = function(){
     res.apiOk({ workspace: ws, impacted });
   });
 
+  // Aggregate: list workspace elements (flows, credentials, forms, websites)
+  r.get('/workspaces/:wsId/elements', async (req, res) => {
+    const { Types } = require('mongoose');
+    const Flow = require('../../db/models/flow.model');
+    const Credential = require('../../db/models/credential.model');
+    const WorkspaceMembership = require('../../db/models/workspace-membership.model');
+    const wsId = String(req.params.wsId || '');
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
+    const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+    if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+    // Fetch flows and credentials in parallel
+    const [flows, creds] = await Promise.all([
+      Flow.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).limit(500).lean(),
+      Credential.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).limit(500).select('-secret').lean(),
+    ]);
+    res.apiOk({
+      flows: (flows || []).map(f => ({ id: String(f._id), name: f.name })),
+      credentials: (creds || []).map(c => ({ id: String(c._id), name: c.name, providerKey: c.providerKey })),
+      // Forms and websites are not yet backed by DB in this project; return empty arrays for consistency
+      forms: [],
+      websites: [],
+    });
+  });
+
   return r;
 }
-

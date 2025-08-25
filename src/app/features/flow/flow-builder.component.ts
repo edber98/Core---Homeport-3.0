@@ -36,304 +36,12 @@ import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.co
 })
 export class FlowBuilderComponent {
   // Palette configurable (peut évoluer vers un service)
-  items = [
-    { group: 'Core', label: 'Start', template: { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [{ type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false }] } } },
-    { group: 'Core', label: 'Event', template: { id: 'tmpl_event', name: 'Event', type: 'event', icon: 'fa-solid fa-bell', title: 'Event', subtitle: 'Trigger', args: {} } },
-    { group: 'HTTP', label: 'Endpoint', template: { id: 'tmpl_endpoint', name: 'Endpoint', type: 'endpoint', icon: 'fa-solid fa-link', title: 'Endpoint', subtitle: 'HTTP Trigger', category: 'HTTP', args: { title: 'Endpoint', ui: { layout: 'vertical' }, fields: [{ type: 'select', key: 'method', label: 'Method', options: [{ label: 'GET', value: 'GET' }, { label: 'POST', value: 'POST' }], col: { xs: 24 }, default: 'GET' }, { type: 'text', key: 'path', label: 'Path', col: { xs: 24 }, default: '/hook', expression: { allow: true } }] } } },
-    { group: 'Logic', label: 'Condition', template: { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] }, output_array_field: 'items' } },
-    { group: 'Logic', label: 'Loop', template: { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} } },
-    { group: 'Functions', label: 'Action', template: { id: 'tmpl_action', name: 'Action', type: 'function', icon: 'fa-solid fa-bolt', title: 'Action', subtitle: 'Generic action', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
-    {
-      group: 'Functions', label: 'Send Mail', template: {
-        id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', category: 'Gmail', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "Nouveau formulaire",
-          "fields": [
-            {
-              "type": "section",
-              "title": "Information système",
-              "fields": [
-                {
-                  "type": "text",
-                  "key": "event_id",
-                  "label": "Event ID",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                }
-              ],
-              "col": {
-                "xs": 24,
-                "sm": 24,
-                "md": 24,
-                "lg": 24,
-                "xl": 24
-              },
-              "description": "Les ID à renseigner.",
-              "grid": {
-                "gutter": 16
-              },
-              "mode": "normal"
-            },
-            {
-              "type": "text",
-              "key": "user_id",
-              "label": "User ID",
-              "col": {
-                "xs": 24,
-                "sm": 24,
-                "md": 24,
-                "lg": 24,
-                "xl": 24
-              },
-              "default": "",
-              "expression": {
-                "allow": true
-              }
-            },
-            {
-              "type": "section",
-              "title": "Contenu",
-              "fields": [
-                {
-                  "type": "checkbox",
-                  "key": "acr",
-                  "label": "Accusé de reception",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": false,
-                  "expression": {
-                    "allow": true
-                  }
-                },
-                {
-                  "type": "text",
-                  "key": "message",
-                  "label": "Message",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                },
-                {
-                  "type": "text",
-                  "key": "subject",
-                  "label": "Sujet",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                },
-                {
-                  "type": "text",
-                  "key": "dest",
-                  "label": "Dest",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                }
-              ],
-              "col": {
-                "xs": 24,
-                "sm": 24,
-                "md": 24,
-                "lg": 24,
-                "xl": 24
-              },
-              "description": "Le contenu et destinaire du mail",
-              "grid": {
-                "gutter": 16
-              },
-              "mode": "normal"
-            },
-            {
-              "type": "section",
-              "title": "Dossier",
-              "fields": [
-                {
-                  "type": "text",
-                  "key": "file",
-                  "label": "Fichier à envoyer",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                },
-                {
-                  "type": "text",
-                  "key": "path",
-                  "label": "Chemin",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                },
-                {
-                  "type": "text",
-                  "key": "value",
-                  "label": "Valeur",
-                  "col": {
-                    "xs": 24,
-                    "sm": 24,
-                    "md": 24,
-                    "lg": 24,
-                    "xl": 24
-                  },
-                  "default": "",
-                  "expression": {
-                    "allow": true
-                  }
-                }
-              ],
-              "col": {
-                "xs": 24,
-                "sm": 24,
-                "md": 24,
-                "lg": 24,
-                "xl": 24
-              },
-              "grid": {
-                "gutter": 16
-              },
-              "mode": "normal"
-            }
-          ],
-          "ui": {
-            "layout": "vertical",
-            "labelAlign": "left",
-            "labelsOnTop": true,
-            "labelCol": {
-              "span": 8
-            },
-            "controlCol": {
-              "span": 16
-            },
-            "widthPx": 1040,
-            "actions": {
-              "showReset": false,
-              "showCancel": false
-            }
-          },
-          "summary": {
-            "enabled": false,
-            "includeHidden": false,
-            "dateFormat": "dd/MM/yyyy"
-          }
-        }
-      }
-    },
-    {
-      group: 'Functions', label: 'HTTP Request', template: {
-        id: 'tmpl_http', name: 'HTTP Request', type: 'function', icon: 'fa-solid fa-globe', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "HTTP Request",
-          "fields": [
-            { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] },
-            { "type": "select", "key": "method", "label": "Method", "options": ["GET", "POST", "PUT", "DELETE"], "col": { "xs": 24 }, "default": "", "validators": [{ "type": "required" }] },
-            { "type": "textarea", "key": "body", "label": "Body", "col": { "xs": 24 }, "default": "", "expression": { "allow": true } }
-          ],
-          "ui": { "layout": "vertical" }
-        }
-      }
-    },
-    {
-      group: 'Functions', label: 'Slack: Post Message', template: {
-        id: 'tmpl_slack_post', name: 'Slack Post', type: 'function', icon: 'fa-brands fa-slack', title: 'Slack', subtitle: 'Post message', category: 'Slack', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "Slack Message",
-          "fields": [
-            { "type": "text", "key": "channel", "label": "Channel", "col": { "xs": 24 }, "default": "#general" },
-            { "type": "text", "key": "text", "label": "Text", "col": { "xs": 24 }, "default": "Hello", "expression": { "allow": true } }
-          ],
-          "ui": { "layout": "vertical" }
-        }
-      }
-    },
-    {
-      group: 'Functions', label: 'Delay', template: {
-        id: 'tmpl_delay', name: 'Delay', type: 'function', icon: 'fa-regular fa-clock', title: 'Delay', subtitle: 'Wait', category: 'Core', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "Delay",
-          "fields": [{ "type": "number", "key": "ms", "label": "Milliseconds", "default": 1000, "col": { "xs": 24 } }],
-          "ui": { "layout": "vertical" }
-        }
-      }
-    },
-    {
-      group: 'Functions', label: 'Math: Add', template: {
-        id: 'tmpl_math_add', name: 'Math Add', type: 'function', icon: 'fa-solid fa-plus', title: 'Math', subtitle: 'Add numbers', category: 'Math', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "Add",
-          "fields": [{ "type": "number", "key": "a", "label": "A", "default": 0 }, { "type": "number", "key": "b", "label": "B", "default": 0 }],
-          "ui": { "layout": "vertical" }
-        }
-      }
-    },
-    {
-      group: 'Functions', label: 'Text: Uppercase', template: {
-        id: 'tmpl_text_upper', name: 'Text Uppercase', type: 'function', icon: 'fa-solid fa-font', title: 'Text', subtitle: 'Uppercase', category: 'Text', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {
-          "title": "Uppercase",
-          "fields": [{ "type": "text", "key": "input", "label": "Input", "default": "" }],
-          "ui": { "layout": "vertical" }
-        }
-      }
-    },
-    { group: 'Functions', label: 'PDF', template: { id: 'tmpl_pdf', name: 'PDF', type: 'function', icon: 'fa-solid fa-file-pdf', title: 'PDF', subtitle: 'Generate PDF', category: 'Docs', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} } },
-    { group: 'Workflow', label: 'Call Flow', template: { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical' }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, default: 'demo-2' }] } } },
-  ];
+  private DRAFT_KEY_PREFIX = 'flow.draft.';
+  private lastSavedChecksum: string | null = null;
+  items: any[] = [];
 
   templates: any[] = [
-    { id: 'tmpl_start', name: 'Start', type: 'start', icon: 'fa-solid fa-play', title: 'Start', subtitle: 'Trigger', args: {} },
-    { id: 'tmpl_fn', name: 'Function', type: 'function', icon: 'fa-solid fa-cog', title: 'Function', subtitle: 'Generic step', authorize_catch_error: true, authorize_skip_error: true, output: [], args: {} },
-    { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' },
-    { id: 'tmpl_loop', name: 'Loop', type: 'loop', icon: 'fa-solid fa-sync', title: 'Loop', subtitle: 'Iterate', args: {} },
-    { id: 'tmpl_end', name: 'End', type: 'end', icon: 'fa-solid fa-stop', title: 'End', subtitle: 'Terminate', args: {} },
-    { id: 'tmpl_call_flow', name: 'Call Flow', type: 'flow', icon: 'fa-solid fa-diagram-project', title: 'Call Flow', subtitle: 'Invoke subflow', args: { title: 'Call Flow', fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 } }] } },
-  ];
+   ];
 
   nodes: any[] = [];
   edges: Edge[] = [];
@@ -359,6 +67,7 @@ export class FlowBuilderComponent {
   builderMode: 'test'|'prod' = 'test';
   lastRun: any = null;
   currentRun: any = null;
+  loadingFlowDoc = false;
   private startPayloadKey(): string {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.startPayload.${fid}`;
@@ -516,22 +225,30 @@ export class FlowBuilderComponent {
       const flowId = this.route.snapshot.queryParamMap.get('flow');
       if (flowId) {
         this.currentFlowId = flowId;
+        this.loadingFlowDoc = true;
         this.catalog.getFlow(flowId).subscribe(doc => this.zone.run(() => {
-          if (doc) {
-            this.currentFlowName = doc.name || '';
-            this.currentFlowDesc = doc.description || '';
-            this.currentFlowStatus = (doc as any).status || 'draft';
-            this.currentFlowEnabled = !!(doc as any).enabled;
-            this.nodes = (doc.nodes || []) as any[];
-            this.edges = (doc.edges || []) as any;
-            this.history.reset(this.snapshot());
+          try {
+            if (doc) {
+              this.currentFlowName = doc.name || '';
+              this.currentFlowDesc = doc.description || '';
+              this.currentFlowStatus = (doc as any).status || 'draft';
+              this.currentFlowEnabled = !!(doc as any).enabled;
+              this.nodes = (doc.nodes || []) as any[];
+              this.edges = (doc.edges || []) as any;
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.tryRestoreDraft(flowId);
+              this.history.reset(this.snapshot());
+            }
+          } finally {
+            this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
-            return;
           }
+          return;
         }));
       }
-    } catch { }
-    if (!this.nodes || this.nodes.length === 0) {
+    } catch { this.loadingFlowDoc = false; }
+    // Seed only when no flow id (adhoc graph)
+    if (!this.currentFlowId && (!this.nodes || this.nodes.length === 0)) {
       // Initialise un graphe par défaut à partir de la palette
       const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
       this.nodes = seed.nodes;
@@ -540,6 +257,41 @@ export class FlowBuilderComponent {
     }
     this.updateTimelineCaches();
     this.recomputeValidation();
+    try { window.addEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
+  }
+  ngOnDestroy() {
+    try { window.removeEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
+    try { this.viewportSub?.unsubscribe(); } catch { }
+  }
+
+  private beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+    if (this.hasUnsavedChanges()) { e.preventDefault(); (e as any).returnValue = ''; return ''; }
+    return;
+  };
+  private draftKey(flowId: string) { return this.DRAFT_KEY_PREFIX + (flowId || 'adhoc'); }
+  private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }
+  private saveDraft() {
+    const fid = this.currentFlowId || '';
+    if (!fid) return;
+    const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
+    try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
+  }
+  private tryRestoreDraft(flowId: string) {
+    try {
+      const raw = localStorage.getItem(this.draftKey(flowId));
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      this.currentFlowName = draft.name || this.currentFlowName;
+      this.currentFlowDesc = draft.desc || this.currentFlowDesc;
+      this.currentFlowStatus = draft.status || this.currentFlowStatus;
+      this.currentFlowEnabled = !!draft.enabled;
+      this.nodes = (draft.nodes || []) as any[];
+      this.edges = (draft.edges || []) as any;
+    } catch {}
+  }
+  hasUnsavedChanges(): boolean {
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    return current !== (this.lastSavedChecksum || '');
   }
 
 
@@ -607,7 +359,6 @@ export class FlowBuilderComponent {
     // Initial update
     this.updateZoomDisplay();
   }
-  ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch { } }
 
   @HostListener('window:resize') onResize() { this.updateIsMobile(); }
   private updateIsMobile() {
@@ -1747,7 +1498,7 @@ export class FlowBuilderComponent {
     try {
       if (this.currentFlowId) {
         this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
-          next: () => { try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); } },
+          next: () => { try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); } this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled }); try { localStorage.removeItem(this.DRAFT_KEY_PREFIX + (this.currentFlowId || '')); } catch {} },
           error: () => { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } },
         });
       } else {
@@ -1810,6 +1561,7 @@ export class FlowBuilderComponent {
             try { this.shared.setGraph(this.snapshot() as any); } catch {}
             this.updateTimelineCaches();
             try { this.cdr.detectChanges(); } catch { }
+            this.saveDraft();
           });
         } catch {
           this.history.push(this.snapshot(), reason);
@@ -1825,6 +1577,7 @@ export class FlowBuilderComponent {
           try { this.shared.setGraph(this.snapshot() as any); } catch {}
           this.updateTimelineCaches();
           try { this.cdr.detectChanges(); } catch { }
+          this.saveDraft();
         });
       } catch {
         this.history.push(this.snapshot(), reason);

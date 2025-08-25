@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './services/route-guards';
+import { unsavedChangesGuard } from './services/route-guards';
 import { Home } from './pages/home/home';
 import { Graphviz } from './pages/graphviz/graphviz';
 import { Flow } from './pages/flow/flow';
@@ -81,7 +82,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),
                 children: [
                   { path: '', pathMatch: 'full', redirectTo: 'editor' },
-                  { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder' },
+                  { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder', canDeactivate: [unsavedChangesGuard] },
                   { path: 'executions', loadComponent: () => import('./features/flow/flow-execution.component').then(m => m.FlowExecutionComponent), title: 'Exécutions' },
                 ]
             },

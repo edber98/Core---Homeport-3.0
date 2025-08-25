@@ -9,8 +9,41 @@ module.exports = function(){
   r.use(authMiddleware());
   r.use(requireCompanyScope());
 
+  async function ensureDefaultWorkspace(companyId, userId){
+    try {
+      let def = await Workspace.findOne({ companyId, isDefault: true });
+      if (!def){
+        const c = await Company.findById(companyId).lean();
+        const name = (c?.name ? `${c.name} Default` : 'Default');
+        def = await Workspace.create({ name, companyId, isDefault: true, templatesAllowed: [] });
+        // Ensure membership for current user so default is always visible
+        try {
+          if (userId) {
+            await WorkspaceMembership.updateOne(
+              { userId, workspaceId: def._id },
+              { $setOnInsert: { role: 'owner' } },
+              { upsert: true }
+            );
+          }
+        } catch {}
+      }
+      // Ensure membership exists even if default already existed
+      try {
+        if (userId && def?._id) {
+          await WorkspaceMembership.updateOne(
+            { userId, workspaceId: def._id },
+            { $setOnInsert: { role: 'owner' } },
+            { upsert: true }
+          );
+        }
+      } catch {}
+      return def;
+    } catch (e) { return null; }
+  }
+
   r.get('/company', async (req, res) => {
     const c = await Company.findById(req.user.companyId).lean();
+    await ensureDefaultWorkspace(req.user.companyId, req.user.id);
     res.apiOk(c || null);
   });
 
@@ -41,6 +74,7 @@ module.exports = function(){
   });
 
   r.get('/workspaces', async (req, res) => {
+    await ensureDefaultWorkspace(req.user.companyId, req.user.id);
     const memberships = await WorkspaceMembership.find({ userId: req.user.id }).lean();
     const ids = memberships.map(m => m.workspaceId);
     let { limit = 50, page = 1 } = req.query;

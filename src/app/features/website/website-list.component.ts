@@ -77,6 +77,11 @@ import { AccessControlService } from '../../services/access-control.service';
       .actions .primary.icon-only { display:inline-flex; }
     }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+    .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
     .leading .avatar { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-weight:600; color:#111; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; }
@@ -93,6 +98,8 @@ import { AccessControlService } from '../../services/access-control.service';
 export class WebsiteListComponent implements OnInit, OnDestroy {
   q = '';
   items: Website[] = [];
+  loading = false;
+  error: string | null = null;
   private changesSub?: Subscription;
   constructor(private svc: WebsiteService, private router: Router, private acl: AccessControlService) {}
   ngOnInit() {
@@ -102,14 +109,18 @@ export class WebsiteListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
   private load() {
-    this.svc.list().subscribe(l => {
-      const list = l || [];
-      // ensure mapping and filter by ACL
-      const activeWs = this.acl.currentWorkspaceId();
-      this.items = list.filter(s => {
-        const ws = this.acl.ensureResourceWorkspace('website', s.id);
-        return ws === activeWs && this.acl.canAccessWorkspace(ws);
-      });
+    this.loading = true; this.error = null;
+    this.svc.list().subscribe({
+      next: l => {
+        const list = l || [];
+        const activeWs = this.acl.currentWorkspaceId();
+        this.items = list.filter(s => {
+          const ws = this.acl.ensureResourceWorkspace('website', s.id);
+          return ws === activeWs && this.acl.canAccessWorkspace(ws);
+        });
+      },
+      error: () => { this.error = 'Chargement des sites échoué'; },
+      complete: () => { this.loading = false; }
     });
   }
   get filtered() {

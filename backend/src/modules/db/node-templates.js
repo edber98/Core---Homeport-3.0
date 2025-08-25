@@ -32,8 +32,15 @@ module.exports = function(){
     res.apiOk(list);
   });
 
+  function sanitizeName(name){
+    return String(name || '').trim().replace(/\s+/g, '_');
+  }
+
   r.post('/node-templates', requireAdmin(), async (req, res) => {
     const body = req.body || {};
+    if (body && body.name) body.name = sanitizeName(body.name);
+    if (!body.title && body.name) body.title = body.name;
+    if (!body.subtitle && body.providerKey) body.subtitle = body.providerKey;
     const t = await NodeTemplate.create(body);
     res.status(201).json({ success: true, data: t, requestId: req.requestId, ts: Date.now() });
   });
@@ -43,6 +50,9 @@ module.exports = function(){
     const tpl = await NodeTemplate.findOne({ key });
     if (!tpl) return res.apiError(404, 'template_not_found', 'Node template not found');
     const old = tpl.toObject();
+    if (patch && patch.name) patch.name = sanitizeName(patch.name);
+    if (!patch.title && patch.name) patch.title = patch.name;
+    if (!patch.subtitle && (patch.providerKey || tpl.providerKey)) patch.subtitle = patch.providerKey || tpl.providerKey;
     Object.assign(tpl, patch); await tpl.save();
 
     // If args (form) changed, flag impacted flows (optional)

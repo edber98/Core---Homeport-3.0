@@ -50,7 +50,8 @@ type FlowItem = { id: string; name: string; description?: string };
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
 
-      <div class="grid" *ngIf="!loading && !error">
+      <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
+      <div class="grid" *ngIf="!loading && !error && filtered.length>0">
         <div class="card" *ngFor="let it of filtered">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>

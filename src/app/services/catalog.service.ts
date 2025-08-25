@@ -123,6 +123,14 @@ export class CatalogService {
     this.save(this.FLOW_LIST_KEY, list);
     return of(doc).pipe(delay(CatalogService.LATENCY));
   }
+  transferFlow(flowId: string, destWorkspaceId: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.flowsApi.update(flowId, { workspaceId: destWorkspaceId }).pipe(map(() => true));
+    }
+    // Local mode: just remap resource workspace
+    try { (window as any).acl?.setResourceWorkspace?.('flow', flowId, destWorkspaceId); } catch {}
+    return of(true);
+  }
   createFlow(wsId: string, name: string, status: string = 'draft', enabled = false, nodes: any[] = [], edges: any[] = []): Observable<FlowDoc> {
     if (!environment.useBackend) {
       const id = (name || 'flow') + '-' + Date.now().toString(36);
@@ -153,17 +161,32 @@ export class CatalogService {
   // ===== Public API (Node Templates)
   listNodeTemplates(): Observable<NodeTemplate[]> {
     if (environment.useBackend) {
-      return this.templatesApi.list({ page: 1, limit: 500 }).pipe(map(list => (list || []).map(t => ({
-        id: t.key,
-        type: t.type as any,
-        name: t.name,
-        title: t.name,
-        category: t.category,
-        args: t.args,
-        output: t.output,
-        authorize_catch_error: t.authorize_catch_error,
-        authorize_skip_error: t.authorize_skip_error,
-      } as NodeTemplate))));
+      return this.templatesApi.list({ page: 1, limit: 500 }).pipe(map(list => (list || []).map(t => {
+        const sanitize = (s: string) => (String(s || '').trim().replace(/\s+/g, '_'));
+        const nameNoSpace = sanitize(t.name || t.key);
+        const tpl: NodeTemplate = {
+          id: t.key,
+          type: t.type as any,
+          // technical identifier used by runtime (no spaces)
+          name: nameNoSpace,
+          // UI metadata
+          title: t.title || t.name || t.key,
+          subtitle: t.subtitle || t.appName || t.providerKey || undefined,
+          icon: t.icon,
+          description: t.description,
+          category: t.category,
+          appId: t.providerKey || undefined,
+          tags: t.tags || [],
+          group: t.group,
+          args: t.args,
+          output: t.output,
+          authorize_catch_error: t.authorize_catch_error,
+          authorize_skip_error: t.authorize_skip_error,
+          allowWithoutCredentials: !!t.allowWithoutCredentials,
+          output_array_field: t.output_array_field,
+        };
+        return tpl;
+      })));
     }
     return of(this.load<NodeTemplate[]>(this.TPL_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
   }

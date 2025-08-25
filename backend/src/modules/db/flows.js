@@ -104,7 +104,18 @@ module.exports = function(){
         await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: 'Flow updated with invalid graph; disabled', details: { errors: v.errors }, link: `/flows/${f._id}/editor` });
       }
     }
-    Object.assign(f, patch);
+    // Workspace transfer: allow changing workspace if user is member of destination too
+    if (patch.workspaceId) {
+      const { Types } = require('mongoose');
+      const wsId = String(patch.workspaceId);
+      const dest = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
+      if (!dest || String(dest.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Destination workspace not found');
+      const destMember = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: dest._id });
+      if (!destMember) return res.apiError(403, 'not_a_member', 'User not a destination workspace member');
+      f.workspaceId = dest._id;
+    }
+    // Patch other fields
+    Object.assign(f, { name: patch.name ?? f.name, status: patch.status ?? f.status, enabled: (patch.enabled != null ? patch.enabled : f.enabled) });
     await f.save();
     res.apiOk(f);
   });

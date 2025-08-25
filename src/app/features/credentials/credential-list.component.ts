@@ -104,12 +104,20 @@ import { environment } from '../../../environments/environment';
     .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; }
     .create-modal .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; }
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
+    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+    .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
+    .empty { color:#6b7280; margin-top: 8px; }
   `]
 })
 export class CredentialListComponent implements OnInit, OnDestroy {
   providers: AppProvider[] = [];
   creds: CredentialSummary[] = [];
   providerFilter: string | null = null;
+  loading = false;
+  error: string | null = null;
 
   createVisible = false;
   createForm!: FormGroup;
@@ -141,10 +149,13 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void { try { this.aclSub?.unsubscribe?.(); } catch {} }
 
   reload() {
-    if (!this.workspaceId) { this.creds = []; try { console.debug('[Credentials] reload skipped: no wsId yet', { workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}; return; }
+    this.loading = true; this.error = null;
+    if (!this.workspaceId) { this.creds = []; this.loading = false; try { console.debug('[Credentials] reload skipped: no wsId yet', { workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}; return; }
     try { console.debug('[Credentials] reload', { wsId: this.workspaceId, workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}
-    this.catalog.listCredentials(this.workspaceId, this.providerFilter || undefined).subscribe(list => {
-      this.zone.run(() => { this.creds = list || []; try { this.cdr.detectChanges(); } catch {} });
+    this.catalog.listCredentials(this.workspaceId, this.providerFilter || undefined).subscribe({
+      next: list => this.zone.run(() => { this.creds = list || []; }),
+      error: () => this.zone.run(() => { this.error = 'Chargement des credentials échoué'; }),
+      complete: () => this.zone.run(() => { this.loading = false; try { this.cdr.detectChanges(); } catch {} })
     });
   }
 

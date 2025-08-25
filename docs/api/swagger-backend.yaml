@@ -161,6 +161,82 @@ paths:
       requestBody: { content: { application/json: { schema: { type: object, properties: { name: { type: string }, templatesAllowed: { type: array, items: { type: string } }, force: { type: boolean } } } } } }
       responses: { '200': { $ref: '#/components/responses/Error' } }
 
+  /api/users:
+    get:
+      summary: List company users
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+        - in: query
+          name: q
+          schema: { type: string }
+          example: demo
+        - in: query
+          name: sort
+          schema: { type: string }
+          example: createdAt:desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiOk'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total: { type: integer }
+                          page: { type: integer }
+                          limit: { type: integer }
+                          items:
+                            type: array
+                            items: { type: object, properties: { id: { type: string }, email: { type: string }, name: { type: string }, role: { type: string, enum: [admin,member] }, workspaces: { type: array, items: { type: string } } } }
+    post:
+      summary: Create user (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { email: { type: string }, password: { type: string }, role: { type: string, enum: [admin,member], default: member }, workspaces: { type: array, items: { type: string } } }
+              required: [email]
+            example: { email: "user@example.com", password: "changeme", role: "member", workspaces: ["acme-testing"] }
+      responses: { '201': { $ref: '#/components/responses/Error' } }
+  /api/users/{id}:
+    get:
+      summary: Get user
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiOk'
+                  - type: object
+                    properties:
+                      data: { type: object, properties: { id: { type: string }, email: { type: string }, name: { type: string }, role: { type: string, enum: [admin,member] }, workspaces: { type: array, items: { type: string } } } }
+    put:
+      summary: Update user (admin)
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { role: { type: string, enum: [admin,member] }, workspaces: { type: array, items: { type: string } } }
+            example: { role: "member", workspaces: ["acme-testing"] }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+
   /api/providers:
     get:
       summary: List providers
@@ -342,6 +418,15 @@ paths:
   /api/workspaces/{wsId}/runs/latest:
     get: { summary: Get latest run in workspace (optionally by flow), parameters: [ { in: path, name: wsId, required: true, schema: { type: string } }, { in: query, name: flowId, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
 
+  /api/workspaces/{wsId}/elements:
+    get:
+      summary: List aggregated workspace elements
+      description: Returns flows and credentials for a workspace in a single response (forms/websites not yet persisted; returned as empty arrays)
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/Error' }
+
   /api/notifications:
     get:
       summary: List notifications
@@ -353,6 +438,16 @@ paths:
         - { in: query, name: limit, schema: { type: integer, default: 100 } }
         - { in: query, name: q, schema: { type: string }, example: invalid }
         - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/notifications/count:
+    get:
+      summary: Count notifications matching filters
+      description: Returns the total count for the given filters (useful for unread badge beyond pagination)
+      parameters:
+        - { in: query, name: workspaceId, schema: { type: string } }
+        - { in: query, name: entityType, schema: { type: string } }
+        - { in: query, name: acknowledged, schema: { type: string, enum: ['true','false'] } }
+        - { in: query, name: q, schema: { type: string }, example: invalid }
       responses: { '200': { $ref: '#/components/responses/Error' } }
   /api/notifications/{id}/ack:
     post: { summary: Ack notification, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
