@@ -142,30 +142,43 @@
       "tags": [
         "document"
       ]
+    },
+    {
+      "key": "http",
+      "name": "HTTP",
+      "title": "HTTP",
+      "iconClass": "fa-solid fa-code",
+      "color": "#1677ff",
+      "tags": [
+        "network",
+        "api"
+      ]
     }
   ],
   "nodeTemplates": [
     {
       "key": "start",
-      "name": "Start",
+      "name": "start",
       "title": "Start",
       "subtitle": "Trigger",
       "type": "start",
       "category": "Core",
-      "output": []
+      "output": [],
+      "description": "Point d'entrée du flow"
     },
     {
       "key": "condition",
-      "name": "Condition",
+      "name": "condition",
       "title": "Condition",
       "subtitle": "Multi-branch",
       "type": "condition",
       "category": "Logic",
-      "output_array_field": "items"
+      "output_array_field": "items",
+      "description": "Branche selon une condition"
     },
     {
       "key": "sendmail",
-      "name": "SendMail",
+      "name": "sendMail",
       "title": "Send mail",
       "subtitle": "Gmail",
       "type": "function",
@@ -178,37 +191,128 @@
       "authorize_skip_error": true,
       "args": {
         "title": "Envoyer un email",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "to", "label": "Destinataire (To)", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
-          { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
-          { "type": "textarea", "key": "body", "label": "Message (HTML ou texte)", "col": { "xs": 24 }, "expression": { "allow": true } }
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire (To)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Message (HTML ou texte)",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
         ]
-      }
+      },
+      "description": "Envoyer un email via Gmail"
     },
     {
       "key": "email_received",
-      "name": "EmailReceived",
+      "name": "emailReceived",
       "title": "Email reçu",
       "subtitle": "Gmail",
       "type": "event",
       "category": "Email",
       "providerKey": "gmail",
-      "output": [ "Received" ],
+      "output": [
+        "Received"
+      ],
       "args": {
         "title": "Déclencheur — Email reçu",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "mailbox", "label": "Boîte (label)", "col": { "xs": 24 }, "default": "INBOX", "expression": { "allow": true } },
-          { "type": "text", "key": "from", "label": "De contient", "col": { "xs": 24 }, "expression": { "allow": true } },
-          { "type": "text", "key": "subject", "label": "Sujet contient", "col": { "xs": 24 }, "expression": { "allow": true } },
-          { "type": "text", "key": "includes", "label": "Corps contient", "col": { "xs": 24 }, "expression": { "allow": true } }
+          {
+            "type": "text",
+            "key": "mailbox",
+            "label": "Boîte (label)",
+            "col": {
+              "xs": 24
+            },
+            "default": "INBOX",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "from",
+            "label": "De contient",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet contient",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "includes",
+            "label": "Corps contient",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
         ]
-      }
+      },
+      "description": "Déclencheur sur réception d'email"
     },
     {
       "key": "http",
-      "name": "HTTP Request",
+      "name": "httpRequest",
       "title": "HTTP Request",
       "subtitle": "Call API",
       "type": "function",
@@ -217,11 +321,12 @@
         "Success"
       ],
       "authorize_catch_error": true,
-      "authorize_skip_error": true
+      "authorize_skip_error": true,
+      "description": "Effectuer un appel HTTP"
     },
     {
       "key": "slack_post",
-      "name": "Slack Post",
+      "name": "slackPost",
       "title": "Slack Post",
       "subtitle": "Slack",
       "type": "function",
@@ -279,11 +384,12 @@
             }
           }
         ]
-      }
+      },
+      "description": "Publier un message sur Slack"
     },
     {
       "key": "delay",
-      "name": "Delay",
+      "name": "delay",
       "title": "Delay",
       "subtitle": "Core",
       "type": "function",
@@ -316,11 +422,12 @@
             }
           }
         ]
-      }
+      },
+      "description": "Attendre un certain temps"
     },
     {
       "key": "math_add",
-      "name": "Math Add",
+      "name": "mathAdd",
       "title": "Math Add",
       "type": "function",
       "category": "Math",
@@ -365,11 +472,12 @@
             }
           }
         ]
-      }
+      },
+      "description": "Additionner deux nombres"
     },
     {
       "key": "text_upper",
-      "name": "Text Uppercase",
+      "name": "toUppercase",
       "title": "Text Uppercase",
       "type": "function",
       "category": "Text",
@@ -399,11 +507,12 @@
             }
           }
         ]
-      }
+      },
+      "description": "Convertir un texte en majuscules"
     },
     {
       "key": "pdf",
-      "name": "PDF",
+      "name": "pdfAction",
       "title": "PDF",
       "type": "function",
       "category": "Docs",
@@ -434,7 +543,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Action PDF générique"
     }
   ]
 }

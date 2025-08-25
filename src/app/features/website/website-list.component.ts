@@ -44,7 +44,7 @@ import { AccessControlService } from '../../services/access-control.service';
               <span class="chip">{{ s.status }}</span>
               <span class="chip" *ngFor="let t of s.tags || []">{{ t }}</span>
             </div>
-            <div class="desc">/{{ s.slug }} · {{ s.routes?.length || 0 }} routes</div>
+            <div class="desc">/{{ s.slug }} · {{ s.routes.length || 0 }} routes</div>
           </div>
           <div class="trailing">
             <button class="icon-btn" (click)="edit(s); $event.stopPropagation()" title="Éditer">

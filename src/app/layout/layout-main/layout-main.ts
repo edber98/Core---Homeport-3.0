@@ -61,6 +61,7 @@ export class LayoutMain implements OnInit {
     { label: 'Workspaces', icon: 'cluster', route: '/workspaces', adminOnly: true },
     { label: 'Users', icon: 'user', route: '/users', adminOnly: true },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
+    { label: 'Plugin Repos', icon: 'database', route: '/plugin-repos', adminOnly: true },
     { label: 'Debugging', icon: 'tool', route: '/debug' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },
   ];

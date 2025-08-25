@@ -83,10 +83,14 @@ components:
         id: { type: string }
         name: { type: string }
         type: { type: string, enum: [local, git, http] }
+        gitAuth: { type: string, enum: [ssh, http, token, basic] }
         path: { type: string }
         url: { type: string }
         branch: { type: string }
+        gitUsername: { type: string }
         enabled: { type: boolean }
+        status: { type: string }
+        lastSyncAt: { type: string, format: date-time }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
     PluginRepoCreate:
@@ -98,6 +102,12 @@ components:
         url: { type: string }
         branch: { type: string }
         enabled: { type: boolean, default: true }
+        gitAuth: { type: string, enum: [ssh, http, token, basic] }
+        gitUsername: { type: string }
+        gitPassword: { type: string }
+        gitToken: { type: string }
+        sshPrivateKey: { type: string }
+        sshPassphrase: { type: string }
       required: [name]
     PluginRepoUpdate:
       type: object
@@ -108,6 +118,12 @@ components:
         url: { type: string }
         branch: { type: string }
         enabled: { type: boolean }
+        gitUsername: { type: string }
+        gitPassword: { type: string }
+        gitToken: { type: string }
+        gitAuth: { type: string, enum: [ssh, http, token, basic] }
+        sshPrivateKey: { type: string }
+        sshPassphrase: { type: string }
   responses:
     Error: { description: Error envelope, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
 
@@ -550,4 +566,29 @@ paths:
   /api/plugin-repos/reload:
     post:
       summary: Reload plugin repositories (admin)
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/plugin-repos/{id}/sync:
+    post:
+      summary: Sync a plugin repository (admin)
+      description: Reloads plugins from the repository; validates flows against updated templates. If invalid and force=false, returns impacted flows. If force=true, disables impacted flows, cancels running runs, and creates notifications.
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                force: { type: boolean }
+                credentials:
+                  type: object
+                  properties:
+                    username: { type: string }
+                    password: { type: string }
+                    token: { type: string }
+            example: { force: false, credentials: { token: "ghp_***" } }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    delete:
+      summary: Delete plugin repository (admin)
+      description: Cannot delete the built-in local repository.
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
       responses: { '200': { $ref: '#/components/responses/Error' } }

@@ -46,9 +46,9 @@ import { auditTime } from 'rxjs/operators';
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
-                <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass"></i>
+                <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
                 <img *ngIf="!appFor(it)?.iconClass && appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
-                <img *ngIf="!appFor(it)?.iconClass && !appFor(it)?.iconUrl" [src]="simpleIconUrl(appFor(it)?.id || '')" alt="icon"/>
+                <img *ngIf="!appFor(it)?.iconClass && !appFor(it)?.iconUrl" [src]="simpleIconUrlWithColor(appFor(it)?.id || '', fgColor(appFor(it)?.color))" alt="icon"/>
               </div>
             </ng-template>
           </div>
@@ -173,6 +173,16 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy {
       complete: () => { this.zone.run(() => { this.loading = false; setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
     });
   }
+  fgColor(bg?: string|null): string {
+    const b = String(bg || '#1677ff');
+    try {
+      const { r, g, b: bb } = this.hexToRgb(b);
+      const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
+      return yiq >= 140 ? '#111' : '#fff';
+    } catch { return '#111'; }
+  }
+  simpleIconUrlWithColor(id: string, color?: string) { const hex = (color || '#111').replace('#',''); return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`; }
+  private hexToRgb(hex: string): { r: number; g: number; b: number } { let s = hex.trim(); if (s.startsWith('#')) s = s.slice(1); if (s.length === 3) s = s.split('').map(c => c + c).join(''); const num = parseInt(s, 16); return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 }; }
 
   edit(it: NodeTemplate) { this.router.navigate(['/node-templates/editor'], { queryParams: { id: it.id } }); }
   view(it: NodeTemplate) { this.router.navigate(['/node-templates/viewer'], { queryParams: { id: it.id } }); }

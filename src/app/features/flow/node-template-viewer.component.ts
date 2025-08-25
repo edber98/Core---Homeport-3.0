@@ -46,9 +46,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
           <div *ngIf="view.group"><span class="k">Groupe</span><span class="v">{{view.group}}</span></div>
           <div *ngIf="appLbl"><span class="k">App</span><span class="v app">
             <span class="icon" [style.background]="appIconClass ? appColor : 'transparent'">
-              <i *ngIf="appIconClass" [class]="appIconClass"></i>
+              <i *ngIf="appIconClass" [class]="appIconClass" [style.color]="fgColor(appColor)"></i>
               <img *ngIf="!appIconClass && appIconUrl" [src]="appIconUrl" alt="icon"/>
-              <img *ngIf="!appIconClass && !appIconUrl && appId" [src]="simpleIconUrl(appId)" alt="icon"/>
+              <img *ngIf="!appIconClass && !appIconUrl && appId" [src]="simpleIconUrlWithColor(appId, fgColor(appColor))" alt="icon"/>
             </span>
             <span class="lbl">{{ appLbl }}</span>
           </span></div>
@@ -265,6 +265,16 @@ export class NodeTemplateViewerComponent implements OnInit {
     }
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
+  simpleIconUrlWithColor(id: string, color?: string) { const hex = (color || '#111').replace('#',''); return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`; }
+  fgColor(bg?: string|null): string {
+    const b = String(bg || '#1677ff');
+    try {
+      const { r, g, b: bb } = this.hexToRgb(b);
+      const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
+      return yiq >= 140 ? '#111' : '#fff';
+    } catch { return '#111'; }
+  }
+  private hexToRgb(hex: string): { r: number; g: number; b: number } { let s = hex.trim(); if (s.startsWith('#')) s = s.slice(1); if (s.length === 3) s = s.split('').map(c => c + c).join(''); const num = parseInt(s, 16); return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 }; }
   back() { history.back(); }
   openApp() { if (this.appId) this.router.navigate(['/apps/viewer'], { queryParams: { id: this.appId } }); }
   private computePreviewPorts() {
