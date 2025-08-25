@@ -36,5 +36,21 @@ module.exports = function(){
     res.apiOk(n);
   });
 
+  r.put('/notifications/:id', async (req, res) => {
+    const n = await Notification.findById(req.params.id);
+    if (!n || String(n.companyId) !== req.user.companyId) return res.apiError(404, 'notification_not_found', 'Notification not found');
+    const body = req.body || {};
+    if (typeof body.acknowledged === 'boolean') n.acknowledged = body.acknowledged;
+    await n.save();
+    res.apiOk(n);
+  });
+
+  r.delete('/notifications/:id', async (req, res) => {
+    const n = await Notification.findById(req.params.id);
+    if (!n || String(n.companyId) !== req.user.companyId) return res.apiError(404, 'notification_not_found', 'Notification not found');
+    await n.deleteOne();
+    res.apiOk({ deleted: true, id: req.params.id });
+  });
+
   return r;
 }

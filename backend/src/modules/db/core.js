@@ -14,6 +14,32 @@ module.exports = function(){
     res.apiOk(c || null);
   });
 
+  r.put('/company', async (req, res) => {
+    const c = await Company.findById(req.user.companyId);
+    if (!c) return res.apiError(404, 'company_not_found', 'Company not found');
+    const before = c.toObject();
+    const body = req.body || {};
+    if (typeof body.name === 'string' && body.name.trim()) c.name = body.name.trim();
+    await c.save();
+    // Cascade event: notify all workspaces of this company about the update
+    try {
+      const Workspace = require('../../db/models/workspace.model');
+      const Notification = require('../../db/models/notification.model');
+      const wss = await Workspace.find({ companyId: req.user.companyId }).lean();
+      const notes = wss.map(w => ({
+        companyId: c._id,
+        workspaceId: w._id,
+        entityType: 'company',
+        entityId: String(c._id),
+        severity: 'info',
+        code: 'company_updated',
+        message: `Company updated: ${before.name} → ${c.name}`,
+      }));
+      if (notes.length) await Notification.insertMany(notes);
+    } catch {}
+    res.apiOk(c);
+  });
+
   r.get('/workspaces', async (req, res) => {
     const memberships = await WorkspaceMembership.find({ userId: req.user.id }).lean();
     const ids = memberships.map(m => m.workspaceId);

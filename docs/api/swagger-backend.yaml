@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Kinn Backend API (Homeport)
-  version: 0.2.1
+  version: 0.2.2
   description: |
     Use the Authorize button (top-right) with a bearer token.
     Example: paste a JWT like `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (no "Bearer " prefix needed).
@@ -119,6 +119,19 @@ paths:
     get:
       summary: Get current company
       responses: { '200': { description: OK, content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/ApiOk' }, { type: object, properties: { data: { $ref: '#/components/schemas/Company' } } } ] } } } } }
+    put:
+      summary: Update company
+      description: Updates company fields and emits notifications to all workspaces.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+            example:
+              name: "Kinn"
+      responses: { '200': { $ref: '#/components/responses/Error' } }
 
   /api/workspaces:
     get:
@@ -343,6 +356,23 @@ paths:
       responses: { '200': { $ref: '#/components/responses/Error' } }
   /api/notifications/{id}/ack:
     post: { summary: Ack notification, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+  /api/notifications/{id}:
+    put:
+      summary: Update notification (acknowledge)
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                acknowledged: { type: boolean }
+            example: { acknowledged: true }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    delete:
+      summary: Delete notification
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      responses: { '200': { $ref: '#/components/responses/Error' } }
 
   /api/workspaces/{wsId}/transfer:
     post: { summary: Transfer/duplicate items, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/TransferRequest' } } } }, responses: { '200': { $ref: '#/components/responses/Error' } } }
