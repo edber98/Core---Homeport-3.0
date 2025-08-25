@@ -162,7 +162,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
     } catch {}
 
     // Demo graph if requested
-    if (this.demo) this.loadDemo();
+    // if (this.demo) this.loadDemo();
   }
 
   ngAfterViewInit() {

@@ -193,3 +193,22 @@ nz-drawer { display: contents; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
 .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
 .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: all;
+}
+.loading-overlay .spinner {
+  width: 28px; height: 28px;
+  border: 3px solid #e5e7eb; border-top-color: #111827;
+  border-radius: 50%;
+  animation: fb-spin .8s linear infinite;
+}
+.loading-overlay .text { margin-top: 10px; color: #374151; font-weight: 500; }
+@keyframes fb-spin { to { transform: rotate(360deg); } }

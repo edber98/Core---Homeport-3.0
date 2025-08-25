@@ -34,11 +34,13 @@ import { auditTime } from 'rxjs/operators';
         </div>
       </div>
     <div class="loading" *ngIf="loading">
-      <div class="spinner"></div>
-      <div>Chargement des templates…</div>
+      <div class="skeleton-grid">
+        <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5,6]"></div>
+      </div>
     </div>
     <div class="error" *ngIf="!loading && error">{{ error }}</div>
-      <div class="grid" *ngIf="!loading && !error">
+      <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
+      <div class="grid" *ngIf="!loading && !error && filtered.length>0">
         <div class="card" *ngFor="let it of filtered" (click)="view(it)">
           <div class="leading">
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 }}</div>
@@ -95,9 +97,10 @@ import { auditTime } from 'rxjs/operators';
       .actions .with-text { display:none; }
       .actions .primary.icon-only { display:inline-flex; }
     }
-    .loading { display:flex; align-items:center; gap:10px; color:#666; margin: 12px 0; }
-    .spinner { width:16px; height:16px; border:2px solid #e5e7eb; border-top-color:#1677ff; border-radius:50%; animation: spin .8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }

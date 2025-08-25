@@ -57,6 +57,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/plugins')());
     app.use('/api', require('./modules/db/plugin-repos')());
     app.use('/api', require('./modules/db/notifications')());
+    app.use('/api', require('./modules/db/users')());
   }
 
   // API docs (Swagger UI)

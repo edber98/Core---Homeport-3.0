@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RunsBackendService, BackendRun } from '../../services/runs-backend.service';
@@ -32,7 +32,13 @@ import { UiMessageService } from '../../services/ui-message.service';
         </div>
       </div>
 
-      <div class="grid">
+      <div class="loading" *ngIf="loading">
+        <div class="skeleton-grid">
+          <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5]"></div>
+        </div>
+      </div>
+      <div class="error" *ngIf="!loading && error">{{ error }}</div>
+      <div class="grid" *ngIf="!loading && !error">
         <div class="card" *ngFor="let r of runs" (click)="open(r)">
           <div class="content">
             <div class="title-row">
@@ -45,7 +51,7 @@ import { UiMessageService } from '../../services/ui-message.service';
             <button class="icon-btn" (click)="cancel(r, $event)" title="Annuler"><i class="fa-solid fa-ban"></i></button>
           </div>
         </div>
-        <div *ngIf="!runs.length" class="empty">Aucune exécution</div>
+        <div *ngIf="!runs.length" class="empty">Aucun élément trouvé.</div>
       </div>
     </div>
   </div>
@@ -64,21 +70,34 @@ import { UiMessageService } from '../../services/ui-message.service';
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .trailing .icon-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; }
     .empty { color:#6b7280; }
+    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+    .skeleton-card { height: 72px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
   `]
 })
-export class WorkspaceRunListComponent implements OnInit {
+export class WorkspaceRunListComponent implements OnInit, OnDestroy {
   runs: BackendRun[] = [];
+  loading = false;
+  error: string | null = null;
   statuses = ['queued','running','success','error','cancelled','timed_out','partial_success'];
   status = '';
   sort = 'createdAt:desc';
   q = '';
   get wsId() { return this.acl.currentWorkspaceId(); }
-  constructor(private runsApi: RunsBackendService, private acl: AccessControlService, private router: Router, private ui: UiMessageService) {}
-  ngOnInit(): void { this.reload(); }
+  private sub: any;
+  constructor(private runsApi: RunsBackendService, private acl: AccessControlService, private router: Router, private ui: UiMessageService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  ngOnInit(): void {
+    this.reload();
+    try { this.sub = this.acl.changes$.subscribe(() => this.zone.run(() => { this.reload(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
+  }
+  ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
   reload() {
+    this.loading = true; this.error = null;
     this.runsApi.listByWorkspace(this.wsId, { status: this.status || undefined, q: this.q || undefined, sort: this.sort, page: 1, limit: 50 }).subscribe({
       next: l => this.runs = l || [],
-      error: () => this.ui.error('Chargement des exécutions échoué'),
+      error: () => { this.error = 'Chargement des exécutions échoué'; },
+      complete: () => { this.loading = false; }
     });
   }
   open(r: BackendRun) {

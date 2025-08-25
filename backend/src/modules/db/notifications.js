@@ -30,15 +30,33 @@ module.exports = function(){
     res.apiOk(list);
   });
 
+  // Count notifications matching filters (useful for unread badge)
+  r.get('/notifications/count', async (req, res) => {
+    const { workspaceId, entityType, entityId, acknowledged, q: search } = req.query;
+    const base = { companyId: req.user.companyId };
+    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) base.workspaceId = workspaceId;
+    if (entityType) base.entityType = entityType;
+    if (entityId) base.entityId = entityId;
+    if (acknowledged != null) base.acknowledged = acknowledged === 'true';
+    const findQ = { ...base };
+    if (search) Object.assign(findQ, { $or: [ { code: { $regex: String(search), $options: 'i' } }, { message: { $regex: String(search), $options: 'i' } } ] });
+    const total = await Notification.countDocuments(findQ);
+    res.apiOk({ total });
+  });
+
   r.post('/notifications/:id/ack', async (req, res) => {
-    const n = await Notification.findById(req.params.id);
+    const id = String(req.params.id || '');
+    if (!Types.ObjectId.isValid(id)) return res.apiError(400, 'invalid_id', 'Invalid notification id');
+    const n = await Notification.findById(id);
     if (!n || String(n.companyId) !== req.user.companyId) return res.apiError(404, 'notification_not_found', 'Notification not found');
     n.acknowledged = true; await n.save();
     res.apiOk(n);
   });
 
   r.put('/notifications/:id', async (req, res) => {
-    const n = await Notification.findById(req.params.id);
+    const id = String(req.params.id || '');
+    if (!Types.ObjectId.isValid(id)) return res.apiError(400, 'invalid_id', 'Invalid notification id');
+    const n = await Notification.findById(id);
     if (!n || String(n.companyId) !== req.user.companyId) return res.apiError(404, 'notification_not_found', 'Notification not found');
     const body = req.body || {};
     if (typeof body.acknowledged === 'boolean') n.acknowledged = body.acknowledged;
@@ -47,7 +65,9 @@ module.exports = function(){
   });
 
   r.delete('/notifications/:id', async (req, res) => {
-    const n = await Notification.findById(req.params.id);
+    const id = String(req.params.id || '');
+    if (!Types.ObjectId.isValid(id)) return res.apiError(400, 'invalid_id', 'Invalid notification id');
+    const n = await Notification.findById(id);
     if (!n || String(n.companyId) !== req.user.companyId) return res.apiError(404, 'notification_not_found', 'Notification not found');
     await n.deleteOne();
     res.apiOk({ deleted: true, id: req.params.id });

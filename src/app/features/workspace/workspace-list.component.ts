@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -10,9 +10,11 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AccessControlService, Workspace } from '../../services/access-control.service';
+import { WorkspaceBackendService } from '../../services/workspace-backend.service';
 import { CatalogService, NodeTemplate, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { WebsiteService, Website } from '../website/website.service';
 import { forkJoin, of, Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { auditTime } from 'rxjs/operators';
 
 @Component({
@@ -37,31 +39,41 @@ import { auditTime } from 'rxjs/operators';
       </div>
 
       <div class="grid">
+        <div class="loading" *ngIf="loadingWs">
+          <div class="skeleton-grid">
+            <div class="skeleton-card" *ngFor="let _ of [1,2,3,4]"></div>
+          </div>
+        </div>
         <div class="card" *ngFor="let w of workspaces" (click)="select(w)" [class.active]="selected?.id===w.id">
           <div class="leading"><div class="avatar">{{ w.name | slice:0:1 }}</div></div>
           <div class="content"><div class="name">{{ w.name }}</div><div class="desc">{{ w.id }}</div></div>
         </div>
       </div>
 
-      <div class="editor" *ngIf="selected as ws">
-        <div class="editor-header">
-          <div class="title">Autorisations de templates — {{ ws.name }}</div>
-          <div class="actions">
-            <button nz-button class="btn" (click)="selectAll(true)" [disabled]="ws.id==='default'">Tout autoriser</button>
-            <button nz-button class="btn" (click)="selectAll(false)" [disabled]="ws.id==='default'">Tout retirer</button>
+        <div class="editor" *ngIf="selected as ws">
+          <div class="editor-header">
+            <div class="title">Autorisations de templates — {{ ws.name }}</div>
+            <div class="actions">
+            <button nz-button class="btn" (click)="selectAll(true)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)">Tout autoriser</button>
+            <button nz-button class="btn" (click)="selectAll(false)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)">Tout retirer</button>
+            </div>
           </div>
-        </div>
-        <div class="tpl-grid">
+        <div class="tpl-grid" *ngIf="!loadingAllowed; else allowedLoading">
           <label class="tpl-item" *ngFor="let t of templates" nz-tooltip [nzTooltipTitle]="tplLabel(t)">
-            <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.id==='default'"/>
+            <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)"/>
             <span class="tpl-line">{{ tplLabel(t) }}</span>
           </label>
-          <div class="muted" *ngIf="ws.id==='default'">Le workspace “Default” autorise tous les templates (édition désactivée).</div>
+          <div class="muted" *ngIf="ws.isDefault">Le workspace par défaut autorise tous les templates (édition désactivée).</div>
         </div>
+        <ng-template #allowedLoading>
+          <div class="skeleton-grid small">
+            <div class="skeleton-line" *ngFor="let _ of [1,2,3,4,5,6,7,8]"></div>
+          </div>
+        </ng-template>
 
         <div class="transfer-block">
           <div class="section-title">Éléments de « {{ ws.name }} »</div>
-          <div class="move-form">
+          <div class="move-form" *ngIf="!loadingItems; else itemsLoading">
             <!-- Flows -->
             <div class="row">
               <label class="field-label">Flows</label>
@@ -151,6 +163,11 @@ import { auditTime } from 'rxjs/operators';
               <ng-template #emptyCreds><div class="empty">Aucun credential.</div></ng-template>
             </div>
           </div>
+          <ng-template #itemsLoading>
+            <div class="skeleton-grid">
+              <div class="skeleton-card" *ngFor="let _ of [1,2,3,4]"></div>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
@@ -209,7 +226,7 @@ import { auditTime } from 'rxjs/operators';
     .move-form { display:flex; flex-direction:column; gap:10px; }
     .move-form .row { display:flex; align-items:flex-start; gap:10px; }
     .move-form .row .field-label { width: 90px; color:#6b7280; font-size:12px; padding-top:6px; }
-    .move-form .items { display:flex; flex-direction:column; gap:6px; max-height: 260px; overflow:auto; flex: 1 1 auto; }
+    .move-form .items { display:flex; flex-direction:column; gap:6px; max-height: 260px; overflow:auto; flex: 1 1 auto; padding-bottom: 12px; }
     .move-form .item { display:flex; align-items:center; gap:8px; border:1px solid #f0f0f0; border-radius:10px; padding:6px 8px; }
     .move-form .item .id { color:#9ca3af; font-size:12px; margin-left:auto; }
     .empty { color:#9ca3af; font-size: 12px; border:1px dashed #e5e7eb; padding:8px 10px; border-radius: 10px; }
@@ -217,6 +234,14 @@ import { auditTime } from 'rxjs/operators';
     .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; }
+    @media (max-width: 1024px) { .loading .skeleton-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px) { .loading .skeleton-grid { grid-template-columns: 1fr; } }
+    .skeleton-card { height: 64px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    /* Extra spacing for elements loaders */
+    .transfer-block .skeleton-grid { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 4px 0 14px; }
   `]
 })
 export class WorkspaceListComponent implements OnInit {
@@ -226,33 +251,87 @@ export class WorkspaceListComponent implements OnInit {
   selected: Workspace | null = null;
   draftName = '';
   private changesSub?: Subscription;
+  loadingWs = false;
+  loadingAllowed = false;
+  loadingItems = false;
+  savingAllowed = false;
+  isBackendId(id: string | null | undefined): boolean { return !!id && /^[a-fA-F0-9]{24}$/.test(String(id)); }
+  private itemsReqId = 0;
+  private dbg(msg: string, data?: any) { try { console.debug('[WorkspaceList]', msg, data ?? ''); } catch {} }
 
-  constructor(private acl: AccessControlService, private catalog: CatalogService, private websites: WebsiteService, private cdr: ChangeDetectorRef) {}
+  constructor(private acl: AccessControlService, private catalog: CatalogService, private websites: WebsiteService, private wsApi: WorkspaceBackendService, private cdr: ChangeDetectorRef, private zone: NgZone) {}
   ngOnInit(): void {
     // N'afficher que les workspaces de l'entreprise de l'utilisateur courant
-    this.acl.listCompanyWorkspaces().subscribe(ws => this.workspaces = ws || []);
-    this.catalog.listNodeTemplates().subscribe(list => this.templates = list || []);
-    // Refresh lists when ACL changes (mapping/allowlists/users/workspaces)
-    try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.reloadAll()); } catch {}
+    this.loadingWs = true;
+    this.syncWorkspacesFromAcl();
+    this.catalog.listNodeTemplates().subscribe(list => {
+      this.templates = list || [];
+      if (this.selected && (this.selected as any).isDefault) {
+        this.loadingAllowed = false;
+        this.allowed = this.templates.map(t => t.id);
+        try { this.cdr.detectChanges(); } catch {}
+      }
+    });
+    // Rafraîchir la liste et la sélection quand l'ACL change (ex: au premier sync backend)
+    try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.syncWorkspacesFromAcl()); } catch {}
+  }
+  private syncWorkspacesFromAcl() {
+    this.acl.listCompanyWorkspaces().subscribe(ws => {
+      this.zone.run(() => {
+        this.dbg('ACL sync start');
+        const incoming = ws || [];
+        this.workspaces = incoming;
+        this.loadingWs = false;
+        const selectedStillExists = this.selected && incoming.some(w => w.id === this.selected!.id);
+        if (!selectedStillExists) {
+          const def = incoming.find(w => (w as any).isDefault);
+          this.selected = def || incoming[0] || null;
+        }
+        if (this.selected) {
+          this.dbg('Selecting ws', { id: this.selected.id, name: this.selected.name });
+          this.select(this.selected);
+        } else {
+          // No selection; clear panels and loaders
+          this.allowed = [];
+          this.loadingAllowed = false;
+          this.flowsAvail = []; this.formsAvail = []; this.sitesAvail = []; this.credsAvail = [];
+          this.loadingItems = false;
+        }
+        this.dbg('ACL sync done', { count: incoming.length, selected: this.selected?.id });
+        try { this.cdr.detectChanges(); } catch {}
+      });
+    });
   }
   select(w: Workspace) {
-    this.selected = w;
-    if (w.id === 'default') { this.allowed = this.templates.map(t => t.id); this.initMoveDefaults(); return; }
-    this.acl.listAllowedTemplates(w.id).subscribe(ids => this.allowed = ids || []);
-    // Initialize transfer panel defaults on selection
-    this.initMoveDefaults();
+    this.zone.run(() => {
+      this.selected = w;
+      this.loadingAllowed = true;
+      this.dbg('Allowed loading start', { wsId: w.id, isDefault: (w as any).isDefault });
+      if ((w as any).isDefault) { this.allowed = this.templates.map(t => t.id); this.loadingAllowed = false; this.initMoveDefaults(); return; }
+      this.acl.listAllowedTemplates(w.id).subscribe(ids => this.zone.run(() => { this.allowed = ids || []; this.loadingAllowed = false; this.dbg('Allowed loaded', { count: this.allowed.length }); try { this.cdr.detectChanges(); } catch {} }));
+      // Initialize transfer panel defaults on selection
+      this.initMoveDefaults();
+    });
   }
   ngOnDestroy() { try { this.changesSub?.unsubscribe(); } catch {}
   }
   isAllowed(id: string): boolean { return this.allowed.includes(id); }
   toggle(t: NodeTemplate, on: boolean) {
     if (!this.selected) return;
-    this.acl.toggleTemplate(this.selected.id, t.id, on).subscribe(() => this.select(this.selected!));
+    this.savingAllowed = true;
+    this.acl.toggleTemplate(this.selected.id, t.id, on).subscribe({
+      next: () => this.select(this.selected!),
+      complete: () => { this.savingAllowed = false; }
+    });
   }
   selectAll(on: boolean) {
     if (!this.selected) return;
     const ids = on ? this.templates.map(t => t.id) : [];
-    this.acl.setAllowedTemplates(this.selected.id, ids).subscribe(() => this.select(this.selected!));
+    this.savingAllowed = true;
+    this.acl.setAllowedTemplates(this.selected.id, ids).subscribe({
+      next: () => this.select(this.selected!),
+      complete: () => { this.savingAllowed = false; }
+    });
   }
   canCreate() { return (this.draftName || '').trim().length >= 2; }
   create() {
@@ -292,38 +371,68 @@ export class WorkspaceListComponent implements OnInit {
   }
   private reloadAll() {
     const src = this.selected?.id || '';
-    if (!src) { this.flowsAvail = []; this.formsAvail = []; this.sitesAvail = []; this.credsAvail = []; return; }
-    // Flows
-    this.catalog.listFlows().subscribe(list => {
-      const items = (list || []).filter(f => this.acl.ensureResourceWorkspace('flow', f.id) === src);
-      this.flowsAvail = items.map(f => ({ id: f.id, name: f.name }));
-      try { this.cdr.detectChanges(); } catch {}
-    });
-    // Forms
-    this.catalog.listForms().subscribe(list => {
-      const items = (list || []).filter(f => this.acl.ensureResourceWorkspace('form', f.id) === src);
-      this.formsAvail = items.map(f => ({ id: f.id, name: f.name }));
-      try { this.cdr.detectChanges(); } catch {}
-    });
-    // Websites
-    this.websites.list().subscribe(list => {
-      const items = (list || []).filter(s => this.acl.ensureResourceWorkspace('website', s.id) === src);
-      this.sitesAvail = items.map(s => ({ id: s.id, name: s.name }));
-      try { this.cdr.detectChanges(); } catch {}
-    });
-    // Credentials
-    this.catalog.listCredentials(src).subscribe(list => {
-      const items = (list || []).map(c => ({ id: c.id, name: c.name }));
-      this.credsAvail = items;
-      try { this.cdr.detectChanges(); } catch {}
-    });
+    if (!src) { this.flowsAvail = []; this.formsAvail = []; this.sitesAvail = []; this.credsAvail = []; this.loadingItems = false; return; }
+    const reqId = ++this.itemsReqId;
+    this.zone.run(() => { this.loadingItems = true; this.dbg('Items loading start', { wsId: src, reqId }); });
+    // In backend mode: fetch aggregated elements to avoid race conditions
+    if (environment.useBackend && this.isBackendId(src)) {
+      let pending = 3; // elements + forms + websites (forms/websites are local)
+      const finish = () => {
+        if (reqId !== this.itemsReqId) return; // selection changed; ignore
+        if (--pending <= 0) { this.zone.run(() => { this.loadingItems = false; this.dbg('Items loading done', { wsId: src, reqId }); try { this.cdr.detectChanges(); } catch {} }); }
+      };
+      this.dbg('Elements request', { wsId: src, reqId });
+      this.wsApi.elements(src).subscribe({
+        next: (resp: any) => this.zone.run(() => {
+          if (reqId !== this.itemsReqId) return;
+          const flows = Array.isArray(resp?.flows) ? resp.flows : [];
+          const creds = Array.isArray(resp?.credentials) ? resp.credentials : [];
+          this.flowsAvail = flows.map((f: any) => ({ id: String(f.id || f._id || ''), name: f.name || String(f.id || '') }));
+          this.credsAvail = creds.map((c: any) => ({ id: String(c.id || c._id || ''), name: c.name || String(c.id || '') }));
+          this.dbg('Elements response', { flows: this.flowsAvail.length, creds: this.credsAvail.length, reqId });
+          try { this.cdr.detectChanges(); } catch {}
+        }),
+        error: (e) => this.zone.run(() => {
+          if (reqId !== this.itemsReqId) return;
+          this.dbg('Elements error', { error: (e && (e.message || e.code)) || 'error', reqId });
+          this.flowsAvail = []; this.credsAvail = [];
+          finish();
+        }),
+        complete: () => this.zone.run(() => { this.dbg('Elements complete', { reqId }); finish(); })
+      });
+      // Local forms (demo)
+      this.catalog.listForms().subscribe({ next: list => { this.dbg('Forms response');
+        const items = (list || []).filter(f => this.acl.ensureResourceWorkspace('form', f.id) === src);
+        this.formsAvail = items.map(f => ({ id: f.id, name: f.name }));
+        try { this.cdr.detectChanges(); } catch {}
+      }, error: () => {}, complete: () => this.zone.run(() => { finish(); }) });
+      // Local websites (demo)
+      this.websites.list().subscribe({ next: list => { this.dbg('Websites response');
+        const items = (list || []).filter(s => this.acl.ensureResourceWorkspace('website', s.id) === src);
+        this.sitesAvail = items.map(s => ({ id: s.id, name: s.name }));
+        try { this.cdr.detectChanges(); } catch {}
+      }, error: () => {}, complete: () => this.zone.run(() => { finish(); }) });
+      return;
+    }
+    // Local mode: original parallel calls
+    let pending2 = 4; const finish2 = () => { if (reqId !== this.itemsReqId) return; if (--pending2<=0) this.zone.run(() => { this.loadingItems=false; this.dbg('Items loading done (local)', { wsId: src, reqId }); try { this.cdr.detectChanges(); } catch {} }); };
+    this.catalog.listFlows(src).subscribe({ next: list => { this.dbg('Flows response (local)'); this.flowsAvail = (list||[]).map(f => ({ id: f.id, name: f.name })); try { this.cdr.detectChanges(); } catch {}; }, complete: finish2, error: finish2 });
+    this.catalog.listForms().subscribe({ next: list => { this.dbg('Forms response (local)'); const items = (list||[]).filter(f => this.acl.ensureResourceWorkspace('form', f.id)===src); this.formsAvail = items.map(f => ({ id: f.id, name: f.name })); try { this.cdr.detectChanges(); } catch {}; }, complete: finish2, error: finish2 });
+    this.websites.list().subscribe({ next: list => { this.dbg('Websites response (local)'); const items = (list||[]).filter(s => this.acl.ensureResourceWorkspace('website', s.id)===src); this.sitesAvail = items.map(s => ({ id: s.id, name: s.name })); try { this.cdr.detectChanges(); } catch {}; }, complete: finish2, error: finish2 });
+    this.catalog.listCredentials(src).subscribe({ next: list => { this.dbg('Credentials response (local)'); this.credsAvail = (list||[]).map(c => ({ id: c.id, name: c.name })); try { this.cdr.detectChanges(); } catch {}; }, complete: finish2, error: finish2 });
   }
   transferOne(kind: 'flow'|'form'|'website'|'credential', id: string, dest: string) {
     this.moveDestWs = dest; this.moveMode = 'transfer';
     if (kind === 'flow') {
       this.checkMissingTemplatesForFlows(dest, [id], (missing) => {
         if (missing.length) { this.missingTemplates = missing; this.pendingIds = [id]; this.missingVisible = true; return; }
-        this.acl.setResourceWorkspace('flow', id, dest); this.afterMoveCleanup();
+        // Backend: update flow workspaceId; Local: update mapping
+        if (environment.useBackend) {
+          // Call through catalog via flowsApi.update (workspaceId)
+          this.catalog.transferFlow(id, dest).subscribe(() => this.afterMoveCleanup());
+        } else {
+          this.acl.setResourceWorkspace('flow', id, dest); this.afterMoveCleanup();
+        }
       });
     } else if (kind === 'form') {
       this.acl.setResourceWorkspace('form', id, dest); this.afterMoveCleanup();
@@ -341,10 +450,16 @@ export class WorkspaceListComponent implements OnInit {
     this.moveDestWs = dest; this.moveMode = 'duplicate';
     if (kind === 'flow') {
       this.catalog.getFlow(id).subscribe(doc => {
-        const nid = id + '-copy-' + Date.now().toString(36);
-        const copy = { ...doc, id: nid, name: (doc.name || id) + ' (copie)' };
-        this.catalog.saveFlow(copy).subscribe(() => this.acl.setResourceWorkspace('flow', nid, dest));
-        this.afterMoveCleanup();
+        const nameCopy = (doc.name || id) + ' (copie)';
+        // Backend: create in destination ws; Local: save with new id then map
+        if (environment.useBackend) {
+          this.catalog.createFlow(dest, nameCopy, (doc as any).status || 'draft', !!(doc as any).enabled, (doc.nodes || []), (doc.edges || [])).subscribe(() => this.afterMoveCleanup());
+        } else {
+          const nid = id + '-copy-' + Date.now().toString(36);
+          const copy = { ...doc, id: nid, name: nameCopy };
+          this.catalog.saveFlow(copy).subscribe(() => this.acl.setResourceWorkspace('flow', nid, dest));
+          this.afterMoveCleanup();
+        }
       });
     } else if (kind === 'form') {
       this.catalog.getForm(id).subscribe(doc => {

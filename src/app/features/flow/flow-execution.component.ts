@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
@@ -78,6 +78,10 @@ import { ChangeDetectorRef } from '@angular/core';
       </div>
     </aside>
     <section class="viewer">
+      <div class="loading-overlay" *ngIf="loadingFlowDoc">
+        <div class="spinner"></div>
+        <div class="text">Chargement du flow…</div>
+      </div>
       <flow-viewer class="viewer-canvas"
         [nodes]="decoratedNodes"
         [edges]="decoratedEdges"
@@ -113,8 +117,12 @@ import { ChangeDetectorRef } from '@angular/core';
     .attempt .io { display:grid; grid-template-columns: 1fr; gap:8px; margin-top:6px; }
     .attempt .io .k { font-size:12px; color:#8c8c8c; margin-bottom:4px; }
     pre { background:#fafafa; border:1px solid #eee; border-radius:6px; padding:6px; font-size:11px; overflow:auto; }
-    .viewer { height:100%; overflow: hidden; }
+    .viewer { position: relative; height:100%; overflow: hidden; }
     .viewer-canvas { height: 100%; display:block; }
+    .loading-overlay { position:absolute; inset:0; background: rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index: 10; }
+    .loading-overlay .spinner { width:28px; height:28px; border:3px solid #e5e7eb; border-top-color:#111827; border-radius:50%; animation: spin .8s linear infinite; }
+    .loading-overlay .text { margin-top:10px; color:#374151; font-weight:500; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   `]
 })
 export class FlowExecutionComponent {
@@ -125,6 +133,8 @@ export class FlowExecutionComponent {
   selectedRun: ExecutionRun | null = null;
 
   currentFlowId: string | null = null;
+  hasFlowParam = false;
+  loadingFlowDoc = false;
 
   constructor(
     private runner: FlowRunService,
@@ -135,6 +145,7 @@ export class FlowExecutionComponent {
     private runsApi: RunsBackendService,
     private ui: UiMessageService,
     private acl: AccessControlService,
+    private zone: NgZone,
   ) {
     this.runner.runs$.subscribe(rs => { this.runs = rs; this.updateVisibleRuns(); });
     this.runner.counters$.subscribe(c => this.counters = c);
@@ -148,13 +159,21 @@ export class FlowExecutionComponent {
     try {
       this.route.queryParamMap.subscribe(qp => {
         const flowId = qp.get('flow');
+        this.hasFlowParam = !!flowId;
         if (flowId && flowId !== this.currentFlowId) {
           this.currentFlowId = flowId;
-          this.catalog.getFlow(flowId).subscribe(doc => {
-            if (doc) this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] };
-            this.updateVisibleRuns();
-            this.loadBackendRuns(flowId);
-            try { this.cdr.detectChanges(); } catch {}
+          this.currentGraph = null;
+          this.loadingFlowDoc = true;
+          this.catalog.getFlow(flowId).subscribe({
+            next: (doc) => this.zone.run(() => {
+              if (doc) this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] };
+              this.updateVisibleRuns();
+              this.loadBackendRuns(flowId);
+              this.loadingFlowDoc = false;
+              try { this.cdr.detectChanges(); } catch {}
+            }),
+            error: () => this.zone.run(() => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {} }),
+            complete: () => this.zone.run(() => { /* ensure overlay clears in all cases */ this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {} })
           });
         }
       });
@@ -278,14 +297,14 @@ export class FlowExecutionComponent {
 
   // Decorate nodes/edges for selected run: add status per node and highlight taken edges
   get decoratedNodes(): any[] {
-    const baseNodes = (this.currentGraph?.nodes || this.exampleGraph.nodes) || [];
+    const baseNodes = this.hasFlowParam ? (this.currentGraph?.nodes || []) : ((this.currentGraph?.nodes || this.exampleGraph.nodes) || []);
     const smap = new Map<string, string>();
     const atts = this.selectedRun?.attempts || [];
     for (const a of atts) smap.set(String(a.nodeId), a.status);
     return baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)) } }));
   }
   get decoratedEdges(): any[] {
-    const baseEdges = (this.currentGraph?.edges || this.exampleGraph.edges) || [];
+    const baseEdges = this.hasFlowParam ? (this.currentGraph?.edges || []) : ((this.currentGraph?.edges || this.exampleGraph.edges) || []);
     const atts = (this.selectedRun?.attempts || []).slice();
     const pairs = new Set<string>();
     for (let i = 1; i < atts.length; i++) {

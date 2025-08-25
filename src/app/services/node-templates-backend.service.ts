@@ -5,12 +5,22 @@ import { ApiClientService } from './api-client.service';
 export interface BackendNodeTemplate {
   key: string;
   name: string;
+  title?: string;
+  subtitle?: string;
+  icon?: string;
+  description?: string;
+  tags?: string[];
+  group?: string;
+  providerKey?: string;
+  appName?: string;
   type: 'start'|'function'|'condition'|'loop'|'end'|'flow';
   category?: string;
   args?: any;
   output?: string[];
   authorize_catch_error?: boolean;
   authorize_skip_error?: boolean;
+  allowWithoutCredentials?: boolean;
+  output_array_field?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -25,4 +35,3 @@ export class NodeTemplatesBackendService {
     return this.api.put<any>(`/api/node-templates/${encodeURIComponent(key)}`, body);
   }
 }
-

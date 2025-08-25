@@ -122,6 +122,14 @@ export class LayoutMain implements OnInit {
   notifications: Array<{ id: string; title: string; desc: string; acknowledged: boolean; link?: string }> = [];
   notifUnreadCount = 0;
   notifLoading = false;
+  private refreshUnreadCount() {
+    const wsRaw = this.acl.currentWorkspaceId() || undefined;
+    const wsId = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    this.notifApi.count({ workspaceId: wsId, acknowledged: 'false' }).subscribe({
+      next: (n) => { this.notifUnreadCount = Number(n) || 0; },
+      error: () => { /* keep previous value */ },
+    });
+  }
   loadNotifications() {
     const wsRaw = this.acl.currentWorkspaceId() || undefined;
     const wsId = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
@@ -129,14 +137,15 @@ export class LayoutMain implements OnInit {
     this.notifApi.list({ workspaceId: wsId, page: 1, limit: 20, sort: 'createdAt:desc' }).subscribe({
       next: (list: BackendNotification[]) => {
         const items = (list || []).map(n => ({
-          id: String(n.id),
+          id: String((n as any).id || (n as any)._id || ''),
           title: n.code || n.entityType || 'Notification',
           desc: n.message || '',
           acknowledged: !!n.acknowledged,
           link: n.link || undefined,
         }));
         this.notifications = items;
-        this.notifUnreadCount = items.filter(i => !i.acknowledged).length;
+        // Use server count for accuracy beyond pagination
+        this.refreshUnreadCount();
       },
       error: () => {},
       complete: () => { this.notifLoading = false; try { this.cdr.detectChanges(); } catch {} }
@@ -145,17 +154,21 @@ export class LayoutMain implements OnInit {
   openNotificationsPopover() { this.loadNotifications(); }
   ackNotification(n: { id: string; acknowledged: boolean }) {
     if (!n || n.acknowledged) return;
-    this.notifApi.ack(n.id).subscribe({ next: () => {
+    const id = (n as any).id;
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant de notification invalide'); return; }
+    this.notifApi.ack(id).subscribe({ next: () => {
       n.acknowledged = true;
-      this.notifUnreadCount = Math.max(0, this.notifUnreadCount - 1);
+      this.refreshUnreadCount();
       this.ui.success('Notification marquée comme lue');
     }, error: () => this.ui.error('Échec de l\'accusé de lecture') });
   }
   deleteNotification(n: { id: string }) {
     if (!n) return;
-    this.notifApi.delete(n.id).subscribe({ next: () => {
+    const id = (n as any).id;
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant de notification invalide'); return; }
+    this.notifApi.delete(id).subscribe({ next: () => {
       this.notifications = this.notifications.filter(x => x.id !== n.id);
-      this.notifUnreadCount = this.notifications.filter(i => !i.acknowledged).length;
+      this.refreshUnreadCount();
       this.ui.success('Notification supprimée');
     }, error: () => this.ui.error('Échec de la suppression') });
   }
@@ -164,7 +177,9 @@ export class LayoutMain implements OnInit {
     // Ack then navigate if link
     const go = () => { if (n.link) this.router.navigateByUrl(n.link); };
     if (!n.acknowledged) {
-      this.notifApi.ack(n.id).subscribe({ next: () => { n.acknowledged = true; this.notifUnreadCount = Math.max(0, this.notifUnreadCount - 1); go(); }, error: () => go() });
+      const id = (n as any).id;
+      if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { go(); return; }
+      this.notifApi.ack(id).subscribe({ next: () => { n.acknowledged = true; this.refreshUnreadCount(); go(); }, error: () => go() });
     } else {
       go();
     }

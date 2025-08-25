@@ -12,6 +12,8 @@ export interface Workspace {
   id: string;      // slug-like id
   name: string;    // display name
   companyId?: string; // optional company scope
+  isDefault?: boolean;
+  templatesAllowed?: string[];
 }
 
 export interface User {
@@ -68,7 +70,7 @@ export class AccessControlService {
       this._workspaces.set([]);
       try {
         this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
-          const mapped: Workspace[] = (list || []).map(w => ({ id: String(w.id), name: w.name, companyId: undefined }));
+          const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault, templatesAllowed: (w as any).templatesAllowed || [] }));
           this._workspaces.set(mapped);
           this.save(this.WORKSPACES_KEY, mapped);
           // Initialize current workspace after sync
@@ -118,7 +120,7 @@ export class AccessControlService {
     if (environment.useBackend) {
       try {
         this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
-          const mapped: Workspace[] = (list || []).map(w => ({ id: String(w.id), name: w.name, companyId: undefined }));
+          const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault, templatesAllowed: (w as any).templatesAllowed || [] }));
           if (mapped.length) {
             this._workspaces.set(mapped);
             this.save(this.WORKSPACES_KEY, mapped);
@@ -242,19 +244,47 @@ export class AccessControlService {
 
   // Node template allow-list per workspace
   listAllowedTemplates(workspaceId: string): Observable<string[]> {
-    // Default workspace: all templates allowed, and edition disabled in UI
-    if (workspaceId === 'default') {
-      try { return this.catalog.listNodeTemplates().pipe(map(list => (list || []).map(t => (t as any).id))); } catch { }
+    if (environment.useBackend) {
+      const ws = this._workspaces().find(w => w.id === workspaceId);
+      if (ws?.isDefault) {
+        return this.catalog.listNodeTemplates().pipe(map(list => (list || []).map(t => (t as any).id)));
+      }
+      return of((ws?.templatesAllowed || []).slice());
     }
     const list = this.load<string[]>(this.TPL_ALLOW_KEY + workspaceId, []);
     return of(list);
   }
   setAllowedTemplates(workspaceId: string, ids: string[]): Observable<string[]> {
-    this.save(this.TPL_ALLOW_KEY + workspaceId, Array.from(new Set(ids)));
+    const uniq = Array.from(new Set(ids));
+    if (environment.useBackend) {
+      const isOid = /^[a-fA-F0-9]{24}$/.test(String(workspaceId));
+      if (!isOid) { return of(uniq); }
+      return new Observable<string[]>((observer) => {
+        this.wsBackend.update(workspaceId, { templatesAllowed: uniq, force: true }).subscribe({
+          next: () => { this.refreshBackendWorkspaces(); observer.next(uniq); observer.complete(); },
+          error: (e) => observer.error(e),
+        });
+      });
+    }
+    this.save(this.TPL_ALLOW_KEY + workspaceId, uniq);
     this._changes.next(Date.now());
-    return this.listAllowedTemplates(workspaceId);
+    return of(uniq);
   }
   toggleTemplate(workspaceId: string, tplId: string, allowed: boolean): Observable<boolean> {
+    if (environment.useBackend) {
+      const ws = this._workspaces().find(w => w.id === workspaceId);
+      const curr = new Set(ws?.templatesAllowed || []);
+      if (allowed) curr.add(tplId); else curr.delete(tplId);
+      const next = Array.from(curr);
+      const isOid = /^[a-fA-F0-9]{24}$/.test(String(workspaceId));
+      if (!isOid) { return of(true); }
+      return new Observable<boolean>((observer) => {
+        this.wsBackend.update(workspaceId, { templatesAllowed: next, force: true }).subscribe({
+          next: () => { this.refreshBackendWorkspaces(); observer.next(true); observer.complete(); },
+          error: (e) => observer.error(e),
+        });
+      });
+    }
     const curr = this.load<string[]>(this.TPL_ALLOW_KEY + workspaceId, []);
     const next = allowed ? Array.from(new Set([...curr, tplId])) : curr.filter(id => id !== tplId);
     this.save(this.TPL_ALLOW_KEY + workspaceId, next);
@@ -305,7 +335,10 @@ export class AccessControlService {
     // Backend mode: prefer the first synced workspace id
     if (environment.useBackend) {
       const list = this._workspaces();
-      if (list && list.length) return list[0].id;
+      if (list && list.length) {
+        const def = list.find(w => (w as any).isDefault);
+        return (def?.id || list[0].id);
+      }
     }
     const u = this.currentUser();
     if (!u) return 'default';
@@ -313,6 +346,22 @@ export class AccessControlService {
     if (u.role === 'admin') return companyWs[0]?.id || this._workspaces()[0]?.id || 'default';
     const allowed = (u.workspaces || []).filter(id => companyWs.some(w => w.id === id));
     return allowed[0] || companyWs[0]?.id || 'default';
+  }
+
+  // Backend: refresh workspaces after login/token change and pick default
+  refreshBackendWorkspaces(): void {
+    if (!environment.useBackend) return;
+    try {
+      this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
+        const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault }));
+        this._workspaces.set(mapped);
+        this.save(this.WORKSPACES_KEY, mapped);
+        const wsId = this.pickDefaultWorkspaceId();
+        this._currentWorkspaceId.set(wsId);
+        try { console.debug('[ACL] Refreshed workspaces (backend)', { count: mapped.length, currentWorkspaceId: wsId, workspaces: mapped }); } catch {}
+        this._changes.next(Date.now());
+      });
+    } catch {}
   }
 
   // Seed mapping of existing resources if none assigned yet: distribute by hash across workspaces

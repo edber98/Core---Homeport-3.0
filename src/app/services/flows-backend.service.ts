@@ -4,7 +4,7 @@ import { ApiClientService } from './api-client.service';
 
 export interface BackendFlow { id: string; name: string; status?: 'draft'|'test'|'production'; enabled?: boolean; graph?: any }
 export interface BackendFlowCreate { name: string; status?: string; enabled?: boolean; graph?: any; force?: boolean }
-export interface BackendFlowUpdate { name?: string; status?: string; enabled?: boolean; graph?: any; force?: boolean }
+export interface BackendFlowUpdate { name?: string; status?: string; enabled?: boolean; graph?: any; workspaceId?: string; force?: boolean }
 
 @Injectable({ providedIn: 'root' })
 export class FlowsBackendService {
@@ -23,4 +23,3 @@ export class FlowsBackendService {
     return this.api.put<any>(`/api/flows/${encodeURIComponent(flowId)}`, body);
   }
 }
-

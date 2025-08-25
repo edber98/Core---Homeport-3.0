@@ -32,4 +32,20 @@ Date: 2025-08-25
 
 - Docs backend (Swagger UI): http://localhost:5055/api-docs
 - JSON/YAML: http://localhost:5055/api-docs.json · http://localhost:5055/api-docs.yaml
+- Styles de chargement unifiés: skeleton grids sur pages listes (flows, credentials, notifications, runs, node-templates, users), message "Aucun élément trouvé." si liste vide hors erreur.
+
+## Styles de chargement (listes)
+
+- Structure:
+  - Conteneur: `<div class="loading"><div class="skeleton-grid">…</div></div>` rendu quand `loading === true`.
+  - Carte: `<div class="skeleton-card"></div>` répétée (5–6 éléments) selon la grille.
+- CSS commun:
+  - `.loading .skeleton-grid` : grille responsive (colonnes selon la page: 1, 2, 3 ou 4 colonnes).
+  - `.skeleton-card` : hauteur 56–96px selon contexte, `border-radius: 12–14px`, fond dégradé clair, bordure #ececec.
+  - Animation shimmer:
+    - `.skeleton-card:after { inset:0; transform: translateX(-100%); background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.05) 50%, transparent 100%); animation: shimmer 1.2s infinite; }`
+    - `@keyframes shimmer { 100% { transform: translateX(100%); } }`
+- État vide et erreur:
+  - Erreur: `.error` (fond #fee4e2, bordure #fecaca, texte #b42318), affichée si `!loading && error`.
+  - Vide: `.empty` (texte #6b7280), affichée si `!loading && !error && items.length===0`.
 

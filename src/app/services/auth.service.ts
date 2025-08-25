@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { AccessControlService } from './access-control.service';
+import { WorkspaceBackendService } from './workspace-backend.service';
 import { ApiClientService } from './api-client.service';
 import { AuthTokenService } from './auth-token.service';
 import { environment } from '../../environments/environment';
@@ -16,7 +17,7 @@ export class AuthService {
 
   loggedIn = signal<boolean>(false);
 
-  constructor(private router: Router, private acl: AccessControlService, private api: ApiClientService, private tokens: AuthTokenService) {
+  constructor(private router: Router, private acl: AccessControlService, private api: ApiClientService, private tokens: AuthTokenService, private wsBackend: WorkspaceBackendService) {
     if (!environment.useBackend) this.ensureSeed();
     this.loggedIn.set(!!this.tokens.token || this.load<boolean>(this.LOGGED_KEY, false));
   }
@@ -31,6 +32,8 @@ export class AuthService {
             this.tokens.setUser(data?.user || null);
             // Renseigner l’utilisateur courant pour l’ACL si l’id est disponible
             try { if (data?.user?.id) this.acl.setCurrentUser(String(data.user.id)); } catch {}
+            // Après login, rafraîchir les workspaces côté backend et sélectionner le défaut
+            try { this.acl.refreshBackendWorkspaces(); } catch {}
             this.loggedIn.set(true);
             this.save(this.LOGGED_KEY, true);
             observer.next(true);

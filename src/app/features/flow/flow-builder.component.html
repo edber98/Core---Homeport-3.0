@@ -36,6 +36,11 @@
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
       (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
+      <!-- Loading overlay during flow document fetch -->
+      <div class="loading-overlay" *ngIf="loadingFlowDoc">
+        <div class="spinner"></div>
+        <div class="text">Chargement du flow…</div>
+      </div>
       <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodes"
         [edges]="edges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"

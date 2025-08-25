@@ -108,7 +108,7 @@
           <nz-option *ngFor="let w of accessibleWorkspaces" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
         </nz-select>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
-          <nz-badge [nzDot]="notifUnreadCount>0">
+          <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false">
             <i class="fa-regular fa-bell"></i>
           </nz-badge>
         </button>
