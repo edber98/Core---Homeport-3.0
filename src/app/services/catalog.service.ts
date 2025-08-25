@@ -223,12 +223,17 @@ export class CatalogService {
   // ===== Public API (Apps / Providers)
   listApps(): Observable<AppProvider[]> {
     if (environment.useBackend) {
-      return this.providersApi.list({ page: 1, limit: 1000 }).pipe(map(list => (list || []).map(p => ({
+      return this.providersApi.list({ page: 1, limit: 1000 }).pipe(map(list => (list || []).map((p: any) => ({
         id: p.key,
         name: p.name,
-        title: p.name,
-        tags: p.categories || [],
-        hasCredentials: true,
+        title: p.title || p.name,
+        iconClass: p.iconClass,
+        iconUrl: p.iconUrl,
+        color: p.color,
+        tags: p.tags || p.categories || [],
+        hasCredentials: !!p.hasCredentials,
+        allowWithoutCredentials: !!p.allowWithoutCredentials,
+        credentialsForm: p.credentialsForm,
       } as AppProvider))));
     }
     return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
@@ -242,7 +247,22 @@ export class CatalogService {
   }
   saveApp(app: AppProvider): Observable<AppProvider> {
     if (!app?.id) return throwError(() => new Error('Missing id'));
-    // Pas d’endpoint direct pour créer un provider côté backend → fallback local
+    if (environment.useBackend) {
+      const body: any = {
+        key: app.id,
+        name: app.name,
+        title: app.title,
+        iconClass: app.iconClass,
+        iconUrl: app.iconUrl,
+        color: app.color,
+        tags: app.tags || [],
+        hasCredentials: !!app.hasCredentials,
+        allowWithoutCredentials: !!app.allowWithoutCredentials,
+        credentialsForm: app.credentialsForm || undefined,
+      };
+      return this.providersApi.update(app.id, body).pipe(map(() => app));
+    }
+    // Local fallback
     const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
     const idx = list.findIndex(x => x.id === app.id);
     if (idx >= 0) list[idx] = app; else list.push(app);

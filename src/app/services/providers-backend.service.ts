@@ -2,7 +2,20 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
 
-export interface BackendProvider { key: string; name: string; categories?: string[]; enabled?: boolean }
+export interface BackendProvider {
+  key: string;
+  name: string;
+  title?: string;
+  iconClass?: string;
+  iconUrl?: string;
+  color?: string;
+  tags?: string[];
+  categories?: string[];
+  enabled?: boolean;
+  hasCredentials?: boolean;
+  allowWithoutCredentials?: boolean;
+  credentialsForm?: any;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ProvidersBackendService {
@@ -15,4 +28,3 @@ export class ProvidersBackendService {
     return this.api.put<any>(`/api/providers/${encodeURIComponent(key)}`, body);
   }
 }
-
