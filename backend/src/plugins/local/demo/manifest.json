@@ -175,7 +175,36 @@
         "Success"
       ],
       "authorize_catch_error": true,
-      "authorize_skip_error": true
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Envoyer un email",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "to", "label": "Destinataire (To)", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
+          { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
+          { "type": "textarea", "key": "body", "label": "Message (HTML ou texte)", "col": { "xs": 24 }, "expression": { "allow": true } }
+        ]
+      }
+    },
+    {
+      "key": "email_received",
+      "name": "EmailReceived",
+      "title": "Email reçu",
+      "subtitle": "Gmail",
+      "type": "event",
+      "category": "Email",
+      "providerKey": "gmail",
+      "output": [ "Received" ],
+      "args": {
+        "title": "Déclencheur — Email reçu",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "mailbox", "label": "Boîte (label)", "col": { "xs": 24 }, "default": "INBOX", "expression": { "allow": true } },
+          { "type": "text", "key": "from", "label": "De contient", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "subject", "label": "Sujet contient", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "includes", "label": "Corps contient", "col": { "xs": 24 }, "expression": { "allow": true } }
+        ]
+      }
     },
     {
       "key": "http",

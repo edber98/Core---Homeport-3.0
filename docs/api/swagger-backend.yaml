@@ -28,7 +28,21 @@ components:
       properties: { success: { type: boolean, const: false }, error: { type: object, properties: { code: { type: string }, message: { type: string }, details: {} } }, requestId: { type: string }, ts: { type: number } }
     Company: { type: object, properties: { id: { type: string }, name: { type: string } } }
     Workspace: { type: object, properties: { id: { type: string }, name: { type: string }, templatesAllowed: { type: array, items: { type: string } } } }
-    Provider: { type: object, properties: { key: { type: string }, name: { type: string }, categories: { type: array, items: { type: string } }, enabled: { type: boolean } } }
+    Provider:
+      type: object
+      properties:
+        key: { type: string }
+        name: { type: string }
+        title: { type: string }
+        iconClass: { type: string }
+        iconUrl: { type: string }
+        color: { type: string }
+        tags: { type: array, items: { type: string } }
+        categories: { type: array, items: { type: string } }
+        enabled: { type: boolean }
+        hasCredentials: { type: boolean }
+        allowWithoutCredentials: { type: boolean }
+        credentialsForm: { type: object }
     NodeTemplate:
       type: object
       properties:
@@ -262,7 +276,16 @@ paths:
     put:
       summary: Update provider
       parameters: [ { in: path, name: key, required: true, schema: { type: string } } ]
-      requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/Provider' } } } }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Provider' }
+            example:
+              name: "PDF"
+              title: "PDF Tools"
+              hasCredentials: true
+              allowWithoutCredentials: false
+              credentialsForm: { title: "Credentials", ui: { layout: "vertical" }, fields: [ { type: "text", key: "apiKey", label: "API Key", validators: [ { type: "required" } ] } ] }
       responses: { '200': { $ref: '#/components/responses/Error' } }
 
   /api/node-templates:
