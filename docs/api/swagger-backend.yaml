@@ -1,0 +1,405 @@
+openapi: 3.0.3
+info:
+  title: Kinn Backend API (Homeport)
+  version: 0.2.1
+  description: |
+    Use the Authorize button (top-right) with a bearer token.
+    Example: paste a JWT like `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (no "Bearer " prefix needed).
+    Quick-test examples are pre-filled in request bodies and query parameters.
+servers:
+  - url: http://localhost:5055
+security:
+  - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Click Authorize and paste your JWT token (without the "Bearer " prefix).
+        The UI will send `Authorization: Bearer <token>` automatically.
+  schemas:
+    ApiOk:
+      type: object
+      properties: { success: { type: boolean, const: true }, data: {}, requestId: { type: string }, ts: { type: number } }
+    ApiError:
+      type: object
+      properties: { success: { type: boolean, const: false }, error: { type: object, properties: { code: { type: string }, message: { type: string }, details: {} } }, requestId: { type: string }, ts: { type: number } }
+    Company: { type: object, properties: { id: { type: string }, name: { type: string } } }
+    Workspace: { type: object, properties: { id: { type: string }, name: { type: string }, templatesAllowed: { type: array, items: { type: string } } } }
+    Provider: { type: object, properties: { key: { type: string }, name: { type: string }, categories: { type: array, items: { type: string } }, enabled: { type: boolean } } }
+    NodeTemplate:
+      type: object
+      properties:
+        key: { type: string }
+        name: { type: string }
+        type: { type: string, enum: [start,function,condition,loop,end,flow] }
+        category: { type: string }
+        args: {}
+        output: { type: array, items: { type: string } }
+        authorize_catch_error: { type: boolean }
+        authorize_skip_error: { type: boolean }
+    App: { type: object, properties: { id: { type: string }, name: { type: string }, providerId: { type: string }, workspaceId: { type: string }, config: {} } }
+    CredentialSummary: { type: object, properties: { id: { type: string }, name: { type: string }, providerKey: { type: string }, workspaceId: { type: string } } }
+    CredentialCreate: { type: object, properties: { name: { type: string }, providerKey: { type: string }, values: {} }, required: [name, providerKey] }
+    CredentialUpdate: { type: object, properties: { name: { type: string }, providerKey: { type: string }, values: {} } }
+    Flow: { type: object, properties: { id: { type: string }, name: { type: string }, status: { type: string, enum: [draft,test,production] }, enabled: { type: boolean }, graph: {} } }
+    FlowCreate: { type: object, properties: { name: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } }, required: [name] }
+    FlowUpdate: { type: object, properties: { name: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } } }
+    Run: { type: object, properties: { id: { type: string }, flowId: { type: string }, workspaceId: { type: string }, companyId: { type: string }, status: { type: string }, events: { type: array, items: {} }, result: {} } }
+    Notification: { type: object, properties: { id: { type: string }, entityType: { type: string }, entityId: { type: string }, severity: { type: string }, code: { type: string }, message: { type: string }, link: { type: string }, acknowledged: { type: boolean } } }
+    TransferRequest:
+      type: object
+      properties:
+        targetWorkspaceId: { type: string }
+        force: { type: boolean }
+        items:
+          type: array
+          items: { type: object, properties: { type: { type: string, enum: [flow,credential,app] }, id: { type: string } }, required: [type,id] }
+      required: [targetWorkspaceId, items]
+    Manifest:
+      type: object
+      properties:
+        providers: { type: array, items: { type: object, properties: { key: { type: string }, name: { type: string }, categories: { type: array, items: { type: string } }, enabled: { type: boolean } } } }
+        nodeTemplates: { type: array, items: { $ref: '#/components/schemas/NodeTemplate' } }
+    PluginRepo:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string, enum: [local, git, http] }
+        path: { type: string }
+        url: { type: string }
+        branch: { type: string }
+        enabled: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    PluginRepoCreate:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string, enum: [local, git, http], default: local }
+        path: { type: string }
+        url: { type: string }
+        branch: { type: string }
+        enabled: { type: boolean, default: true }
+      required: [name]
+    PluginRepoUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string, enum: [local, git, http] }
+        path: { type: string }
+        url: { type: string }
+        branch: { type: string }
+        enabled: { type: boolean }
+  responses:
+    Error: { description: Error envelope, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+
+paths:
+  /auth/login:
+    post:
+      summary: Login
+      description: Obtain a JWT token for subsequent requests.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: { email: { type: string }, password: { type: string } }
+              required: [email, password]
+            example: { email: "demo@example.com", password: "demo1234" }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/ApiOk' }, { type: object, properties: { data: { type: object, properties: { token: { type: string }, user: { type: object }, company: { $ref: '#/components/schemas/Company' } } } } } ] } } } }
+        '401': { $ref: '#/components/responses/Error' }
+
+  /api/company:
+    get:
+      summary: Get current company
+      responses: { '200': { description: OK, content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/ApiOk' }, { type: object, properties: { data: { $ref: '#/components/schemas/Company' } } } ] } } } } }
+
+  /api/workspaces:
+    get:
+      summary: List workspaces for current user
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+          example: 1
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+          example: 50
+        - in: query
+          name: q
+          schema: { type: string }
+          example: demo
+        - in: query
+          name: sort
+          schema: { type: string }
+          example: createdAt:desc
+      responses: { '200': { description: OK, content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/ApiOk' }, { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Workspace' } } } } ] } } } } }
+  /api/workspaces/{wsId}:
+    put:
+      summary: Update workspace (force policy)
+      parameters: [ { in: path, name: wsId, required: true, schema: { type: string } } ]
+      requestBody: { content: { application/json: { schema: { type: object, properties: { name: { type: string }, templatesAllowed: { type: array, items: { type: string } }, force: { type: boolean } } } } } }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+
+  /api/providers:
+    get:
+      summary: List providers
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+          example: 1
+        - in: query
+          name: limit
+          schema: { type: integer, default: 100 }
+          example: 100
+        - in: query
+          name: q
+          schema: { type: string }
+          example: gmail
+        - in: query
+          name: sort
+          schema: { type: string }
+          example: name:asc
+      responses: { '200': { description: OK, content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/ApiOk' }, { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Provider' } } } } ] } } } } }
+  /api/providers/{key}:
+    put:
+      summary: Update provider
+      parameters: [ { in: path, name: key, required: true, schema: { type: string } } ]
+      requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/Provider' } } } }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+
+  /api/node-templates:
+    get:
+      summary: List node templates
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 100 }
+        - in: query
+          name: q
+          schema: { type: string }
+          example: http
+        - in: query
+          name: category
+          schema: { type: string }
+          example: HTTP
+        - in: query
+          name: sort
+          schema: { type: string }
+          example: name:asc
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    post:
+      summary: Create node template
+      requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/NodeTemplate' } } } }
+      responses: { '201': { $ref: '#/components/responses/Error' } }
+  /api/node-templates/{key}:
+    put:
+      summary: Update node template (force)
+      parameters: [ { in: path, name: key, required: true, schema: { type: string } } ]
+      requestBody: { content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/NodeTemplate' }, { type: object, properties: { force: { type: boolean } } } ] } } } }
+      responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+
+  /api/workspaces/{wsId}/apps:
+    get:
+      summary: List apps
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+        - { in: query, name: page, schema: { type: integer, default: 1 } }
+        - { in: query, name: limit, schema: { type: integer, default: 100 } }
+        - { in: query, name: q, schema: { type: string }, example: crm }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    post: { summary: Create app, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/App' } } } }, responses: { '201': { $ref: '#/components/responses/Error' } } }
+  /api/apps/{id}:
+    put: { summary: Update app, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/App' } } } }, responses: { '200': { $ref: '#/components/responses/Error' } } }
+
+  /api/workspaces/{wsId}/credentials:
+    get:
+      summary: List credentials
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+        - { in: query, name: page, schema: { type: integer, default: 1 } }
+        - { in: query, name: limit, schema: { type: integer, default: 100 } }
+        - { in: query, name: q, schema: { type: string }, example: gmail }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    post: { summary: Create credential, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/CredentialCreate' } } } }, responses: { '201': { $ref: '#/components/responses/Error' } } }
+  /api/credentials/{id}:
+    get: { summary: Get credential summary, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+    put: { summary: Update credential, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/CredentialUpdate' } } } }, responses: { '200': { $ref: '#/components/responses/Error' } } }
+  /api/credentials/{id}/values:
+    get:
+      summary: Read credential values (masked by default; reveal=1 requires admin)
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } }, { in: query, name: reveal, schema: { type: string, enum: ['0','1'] } } ]
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+
+  /api/workspaces/{wsId}/flows:
+    get:
+      summary: List flows
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+        - { in: query, name: page, schema: { type: integer, default: 1 } }
+        - { in: query, name: limit, schema: { type: integer, default: 100 } }
+        - { in: query, name: q, schema: { type: string }, example: demo }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    post:
+      summary: Create flow (force)
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FlowCreate' }
+            example:
+              name: "Demo Flow"
+              status: "draft"
+              enabled: true
+              force: false
+              graph:
+                nodes:
+                  - { id: "start1", type: "start", key: "start", name: "Start" }
+                  - { id: "fn1", type: "function", key: "http_request", name: "HTTP" }
+                edges:
+                  - { from: "start1", to: "fn1" }
+      responses: { '201': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+  /api/flows/{flowId}:
+    get: { summary: Get flow, parameters: [ { in: path, name: flowId, required: true, schema: { type: string } }, { in: query, name: populate, schema: { type: string, enum: ['0','1'] } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+    put:
+      summary: Update flow (force)
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FlowUpdate' }
+            example:
+              name: "Demo Flow Updated"
+              status: "test"
+              enabled: true
+              force: true
+      responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+
+  /api/flows/{flowId}/runs:
+    post:
+      summary: Start run
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object, properties: { payload: {} } }
+            example: { payload: { hello: "world" } }
+      responses: { '201': { $ref: '#/components/responses/Error' }, '409': { $ref: '#/components/responses/Error' } }
+    get:
+      summary: List runs by flow
+      parameters:
+        - { in: path, name: flowId, required: true, schema: { type: string } }
+        - { in: query, name: status, schema: { type: string }, example: running }
+        - { in: query, name: page, schema: { type: integer, default: 1 }, example: 1 }
+        - { in: query, name: limit, schema: { type: integer, default: 50 }, example: 50 }
+        - { in: query, name: q, schema: { type: string }, example: error }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses:
+        '200': { $ref: '#/components/responses/Error' }
+  /api/runs/{runId}:
+    get: { summary: Get run, parameters: [ { in: path, name: runId, required: true, schema: { type: string } }, { in: query, name: populate, schema: { type: string, enum: ['0','1'] } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+  /api/runs/{runId}/cancel:
+    post: { summary: Cancel a run, parameters: [ { in: path, name: runId, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+  /api/runs/{runId}/stream:
+    get: { summary: SSE run events, responses: { '200': { description: SSE Stream } } }
+
+  /api/workspaces/{wsId}/runs:
+    get:
+      summary: List runs by workspace
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+        - { in: query, name: flowId, schema: { type: string }, example: flow_demo_1 }
+        - { in: query, name: status, schema: { type: string }, example: success }
+        - { in: query, name: page, schema: { type: integer, default: 1 }, example: 1 }
+        - { in: query, name: limit, schema: { type: integer, default: 50 }, example: 50 }
+        - { in: query, name: q, schema: { type: string }, example: timeout }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/workspaces/{wsId}/runs/latest:
+    get: { summary: Get latest run in workspace (optionally by flow), parameters: [ { in: path, name: wsId, required: true, schema: { type: string } }, { in: query, name: flowId, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+
+  /api/notifications:
+    get:
+      summary: List notifications
+      parameters:
+        - { in: query, name: workspaceId, schema: { type: string } }
+        - { in: query, name: entityType, schema: { type: string } }
+        - { in: query, name: acknowledged, schema: { type: string, enum: ['true','false'] } }
+        - { in: query, name: page, schema: { type: integer, default: 1 } }
+        - { in: query, name: limit, schema: { type: integer, default: 100 } }
+        - { in: query, name: q, schema: { type: string }, example: invalid }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/notifications/{id}/ack:
+    post: { summary: Ack notification, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
+
+  /api/workspaces/{wsId}/transfer:
+    post: { summary: Transfer/duplicate items, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/TransferRequest' } } } }, responses: { '200': { $ref: '#/components/responses/Error' } } }
+
+  /api/plugins:
+    get:
+      summary: List plugins
+      parameters:
+        - { in: query, name: page, schema: { type: integer, default: 1 }, example: 1 }
+        - { in: query, name: limit, schema: { type: integer, default: 200 }, example: 100 }
+        - { in: query, name: q, schema: { type: string }, example: http }
+        - { in: query, name: sort, schema: { type: string }, example: key:asc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/plugins/reload:
+    post: { summary: Reload plugins, responses: { '200': { $ref: '#/components/responses/Error' } } }
+  /api/plugins/import-manifest:
+    post:
+      summary: Import manifest
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Manifest' }
+            example:
+              providers:
+                - { key: "email", name: "Email", categories: ["COMM"], enabled: true }
+              nodeTemplates:
+                - { key: "send_email", name: "Send Email", type: "function", category: "COMM", args: { to: { type: "string" }, subject: { type: "string" } } }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+
+  /api/plugin-repos:
+    get:
+      summary: List plugin repositories
+      parameters:
+        - { in: query, name: page, schema: { type: integer, default: 1 }, example: 1 }
+        - { in: query, name: limit, schema: { type: integer, default: 100 }, example: 50 }
+        - { in: query, name: q, schema: { type: string }, example: local }
+        - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+    post:
+      summary: Create plugin repository (admin)
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PluginRepoCreate' }
+            example: { name: "Local Dev Plugins", type: "local", path: "./backend/src/plugins/local" }
+      responses: { '201': { $ref: '#/components/responses/Error' } }
+  /api/plugin-repos/{id}:
+    put:
+      summary: Update plugin repository (admin)
+      parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PluginRepoUpdate' }
+            example: { enabled: true }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/plugin-repos/reload:
+    post:
+      summary: Reload plugin repositories (admin)
+      responses: { '200': { $ref: '#/components/responses/Error' } }

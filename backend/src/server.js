@@ -7,6 +7,8 @@ const { app } = buildApp({ useMemory });
 const server = http.createServer(app);
 // Attach WebSocket if available
 try { require('./realtime/ws').attach(server); } catch {}
+// Attach Socket.IO if available
+try { require('./realtime/socketio').attach(server); } catch {}
 
 (async () => {
   if (!useMemory) {

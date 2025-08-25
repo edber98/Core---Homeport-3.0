@@ -8,13 +8,24 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/notifications', async (req, res) => {
-    const { workspaceId, entityType, entityId, acknowledged } = req.query;
-    const q = { companyId: req.user.companyId };
-    if (workspaceId) q.workspaceId = workspaceId;
-    if (entityType) q.entityType = entityType;
-    if (entityId) q.entityId = entityId;
-    if (acknowledged != null) q.acknowledged = acknowledged === 'true';
-    const list = await Notification.find(q).sort({ createdAt: -1 }).lean();
+    const { workspaceId, entityType, entityId, acknowledged, q: search, sort } = req.query;
+    const base = { companyId: req.user.companyId };
+    if (workspaceId) base.workspaceId = workspaceId;
+    if (entityType) base.entityType = entityType;
+    if (entityId) base.entityId = entityId;
+    if (acknowledged != null) base.acknowledged = acknowledged === 'true';
+    let { limit = 100, page = 1 } = req.query;
+    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    page = Math.max(1, Number(page) || 1);
+    const findQ = { ...base };
+    if (search) Object.assign(findQ, { $or: [ { code: { $regex: String(search), $options: 'i' } }, { message: { $regex: String(search), $options: 'i' } } ] });
+    let sortObj = { createdAt: -1 };
+    if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'asc' ? 1 : -1) }; }
+    const list = await Notification.find(findQ)
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
 
@@ -27,4 +38,3 @@ module.exports = function(){
 
   return r;
 }
-

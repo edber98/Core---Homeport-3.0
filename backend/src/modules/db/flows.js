@@ -17,7 +17,18 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
-    const list = await Flow.find({ workspaceId: ws._id }).lean();
+    let { limit = 100, page = 1, q, sort } = req.query;
+    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    page = Math.max(1, Number(page) || 1);
+    const query = { workspaceId: ws._id };
+    if (q) query['name'] = { $regex: String(q), $options: 'i' };
+    let sortObj = { createdAt: -1 };
+    if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'asc' ? 1 : -1) }; }
+    const list = await Flow.find(query)
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
 
@@ -44,7 +55,9 @@ module.exports = function(){
   });
 
   r.get('/flows/:flowId', async (req, res) => {
-    const f = await Flow.findById(req.params.flowId);
+    const fid = String(req.params.flowId);
+    let f = await Flow.findById(fid);
+    if (!f) f = await Flow.findOne({ id: fid });
     if (!f) return res.apiError(404, 'flow_not_found', 'Flow not found');
     const ws = await Workspace.findById(f.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');

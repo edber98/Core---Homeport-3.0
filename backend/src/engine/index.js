@@ -55,12 +55,12 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       nodeLog.args_post_compilation = deepRender(node.model?.context || {}, evalCtx) || null;
       nodeLog.result = { started: true };
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, result: nodeLog.result });
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result });
     } else if (nType === 'condition'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const chosen = evaluateCondition(node, initialContext, msg);
       nodeLog.result = { chosen }; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, result: nodeLog.result });
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result });
       const outs = outEdges.get(node.id) || []; if (chosen != null){ const next = outs.find(o => o.labelText === String(chosen)); if (next) queue.push(next.target); }
       continue;
     } else if (nType === 'function'){
@@ -70,7 +70,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
       else { try { result = await fn({ id: node.id, model: node.model }, msg, inputs); } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; } }
       nodeLog.result = result; msg.payload = result; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, result });
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result });
     } else {
       send({ type: 'node.skipped', nodeId: node.id });
     }

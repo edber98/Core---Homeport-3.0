@@ -17,7 +17,22 @@ module.exports = function(){
   r.get('/workspaces', async (req, res) => {
     const memberships = await WorkspaceMembership.find({ userId: req.user.id }).lean();
     const ids = memberships.map(m => m.workspaceId);
-    const list = await Workspace.find({ _id: { $in: ids } }).lean();
+    let { limit = 50, page = 1 } = req.query;
+    limit = Math.max(1, Math.min(100, Number(limit) || 50));
+    page = Math.max(1, Number(page) || 1);
+    const { q, sort } = req.query;
+    const query = { _id: { $in: ids } };
+    if (q) query['name'] = { $regex: String(q), $options: 'i' };
+    let sortObj = { createdAt: -1 };
+    if (typeof sort === 'string') {
+      const [field, dir] = String(sort).split(':');
+      if (field) sortObj = { [field]: (dir === 'asc' ? 1 : -1) };
+    }
+    const list = await Workspace.find(query)
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
   return r;

@@ -59,6 +59,9 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/notifications')());
   }
 
+  // API docs (Swagger UI)
+  app.use(require('./modules/docs')());
+
   // Health endpoints (work in both modes)
   app.use('/api', require('./modules/health')());
 
