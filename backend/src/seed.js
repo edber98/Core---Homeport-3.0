@@ -57,8 +57,8 @@ async function seedMongoIfEmpty(){
   }
 
   // Providers
-  await Provider.create({ key: 'http', name: 'HTTP', title: 'HTTP', categories: ['network'], enabled: true });
-  await Provider.create({ key: 'mail', name: 'Mail', title: 'Mail', categories: ['communication'], enabled: true });
+  await Provider.create({ key: 'http', name: 'HTTP', title: 'HTTP', categories: ['network'], enabled: true, iconClass: 'fa-solid fa-code' });
+  await Provider.create({ key: 'mail', name: 'Mail', title: 'Mail', categories: ['communication'], enabled: true, iconClass: 'fa-solid fa-envelope' });
 
   // Node templates (website + form examples)
   await NodeTemplate.create({ key: 'website_open', name: 'OpenWebsite', title: 'Open Website', subtitle: 'Website', description: 'Open an URL in a browser', icon: 'fa-solid fa-globe', type: 'function', category: 'website', providerKey: 'http', args: { title: 'Open Website', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'url', label: 'URL', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true }, validators: [{ type: 'required' }] } ] }, output: ['Success'], authorize_catch_error: true, authorize_skip_error: true });
