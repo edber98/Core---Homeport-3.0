@@ -3,6 +3,7 @@ const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
 const Workspace = require('../../db/models/workspace.model');
 const Credential = require('../../db/models/credential.model');
 const { encrypt, decrypt } = require('../../utils/enc');
+const { Types } = require('mongoose');
 
 module.exports = function(){
   const r = express.Router();
@@ -10,7 +11,10 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/workspaces/:wsId/credentials', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { wsId } = req.params;
+    let ws;
+    if (Types.ObjectId.isValid(String(wsId))) ws = await Workspace.findById(wsId);
+    else ws = await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const WorkspaceMembership = require('../../db/models/workspace-membership.model');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
@@ -31,7 +35,10 @@ module.exports = function(){
   });
 
   r.post('/workspaces/:wsId/credentials', async (req, res) => {
-    const ws = await Workspace.findById(req.params.wsId);
+    const { wsId } = req.params;
+    let ws;
+    if (Types.ObjectId.isValid(String(wsId))) ws = await Workspace.findById(wsId);
+    else ws = await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const body = req.body || {};
     if (!body.name || !body.providerKey) return res.apiError(400, 'bad_request', 'Missing name or providerKey');

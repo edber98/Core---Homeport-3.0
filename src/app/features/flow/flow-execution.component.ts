@@ -3,6 +3,10 @@ import { Component } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
+import { RunsBackendService, BackendRun } from '../../services/runs-backend.service';
+import { UiMessageService } from '../../services/ui-message.service';
+import { AccessControlService } from '../../services/access-control.service';
+import { environment } from '../../../environments/environment';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { ActivatedRoute } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
@@ -21,7 +25,8 @@ import { ChangeDetectorRef } from '@angular/core';
           <option value="test">test</option>
           <option value="prod">prod</option>
         </select>
-        <button class="icon-btn ghost" (click)="onRun()" title="Lancer" aria-label="Lancer"><i class="fa-solid fa-play"></i></button>
+        <button class="icon-btn ghost" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
+        <button class="icon-btn ghost" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
       </div>
       <div class="counters">
         <span class="badge">Lancements: {{ counters.launched }}</span>
@@ -33,6 +38,16 @@ import { ChangeDetectorRef } from '@angular/core';
           <div class="line2">{{ r.startedAt | date:'short' }} · {{ r.durationMs || 0 }} ms</div>
         </li>
       </ul>
+      <h5 style="margin-top:10px;">Historique (backend)</h5>
+      <div class="exec-list">
+        <div class="exec-item" *ngFor="let b of backendFlowRuns" (click)="selectedBackendRun=b">
+          <div class="line1">#{{ b.id }} — {{ b.status }}</div>
+          <div class="actions">
+            <button class="icon-btn" (click)="cancelBackend(b.id); $event.stopPropagation()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
+          </div>
+        </div>
+        <div class="empty" *ngIf="backendFlowRuns.length===0">Aucune exécution pour ce flow</div>
+      </div>
       <div class="attempts" *ngIf="selectedRun as rs">
         <h5>Détails ({{ rs.attempts?.length || 0 }} nœuds)</h5>
         <div class="attempt" *ngFor="let a of rs.attempts">
@@ -67,6 +82,10 @@ import { ChangeDetectorRef } from '@angular/core';
         [nodes]="decoratedNodes"
         [edges]="decoratedEdges"
         [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
+      <div *ngIf="selectedBackendRun as br" style="padding:10px;">
+        <h5>Exécution backend sélectionnée</h5>
+        <pre>{{ br | json }}</pre>
+      </div>
     </section>
   </div>
   `,
@@ -113,6 +132,9 @@ export class FlowExecutionComponent {
     private route: ActivatedRoute,
     private catalog: CatalogService,
     private cdr: ChangeDetectorRef,
+    private runsApi: RunsBackendService,
+    private ui: UiMessageService,
+    private acl: AccessControlService,
   ) {
     this.runner.runs$.subscribe(rs => { this.runs = rs; this.updateVisibleRuns(); });
     this.runner.counters$.subscribe(c => this.counters = c);
@@ -131,6 +153,7 @@ export class FlowExecutionComponent {
           this.catalog.getFlow(flowId).subscribe(doc => {
             if (doc) this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] };
             this.updateVisibleRuns();
+            this.loadBackendRuns(flowId);
             try { this.cdr.detectChanges(); } catch {}
           });
         }
@@ -219,6 +242,30 @@ export class FlowExecutionComponent {
     const flowId = (this.currentGraph && (this.currentGraph as any).id) || this.route.snapshot.queryParamMap.get('flow') || 'adhoc';
     const run = this.runner.run(graph, this.mode, { hello: 'world' }, flowId);
     this.selectedRun = run;
+  }
+
+  // Backend runs (history + start/cancel)
+  backendFlowRuns: BackendRun[] = [];
+  backendWsRuns: BackendRun[] = [];
+  selectedBackendRun: BackendRun | null = null;
+  private loadBackendRuns(flowId?: string) {
+    const fid = flowId || this.currentFlowId || undefined;
+    const wsId = this.acl.currentWorkspaceId() || undefined;
+    if (environment.useBackend) {
+      if (fid) this.runsApi.listByFlow(fid, { page: 1, limit: 50, sort: 'createdAt:desc' }).subscribe({ next: l => this.backendFlowRuns = l || [] });
+      if (wsId) this.runsApi.listByWorkspace(wsId, { page: 1, limit: 50, sort: 'createdAt:desc' }).subscribe({ next: l => this.backendWsRuns = l || [] });
+    }
+  }
+  runBackend() {
+    const fid = this.currentFlowId;
+    if (!fid) { this.ui.error('Aucun flow associé'); return; }
+    this.runsApi.start(fid, { hello: 'world' }).subscribe({
+      next: () => { this.ui.success('Exécution démarrée'); this.loadBackendRuns(fid); },
+      error: () => this.ui.error('Échec du démarrage'),
+    });
+  }
+  cancelBackend(runId: string) {
+    this.runsApi.cancel(runId).subscribe({ next: () => { this.ui.success('Annulation demandée'); this.loadBackendRuns(this.currentFlowId || undefined); }, error: () => this.ui.error('Échec de l\'annulation') });
   }
 
   selectRun(r: ExecutionRun) { this.selectedRun = r; }

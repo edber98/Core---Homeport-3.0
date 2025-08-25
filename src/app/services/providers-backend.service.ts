@@ -1,0 +1,18 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiClientService } from './api-client.service';
+
+export interface BackendProvider { key: string; name: string; categories?: string[]; enabled?: boolean }
+
+@Injectable({ providedIn: 'root' })
+export class ProvidersBackendService {
+  constructor(private api: ApiClientService) {}
+
+  list(params?: { page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendProvider[]> {
+    return this.api.get<BackendProvider[]>(`/api/providers`, params);
+  }
+  update(key: string, body: Partial<BackendProvider>): Observable<any> {
+    return this.api.put<any>(`/api/providers/${encodeURIComponent(key)}`, body);
+  }
+}
+

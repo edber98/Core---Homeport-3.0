@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of, throwError, forkJoin } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { ProvidersBackendService } from './providers-backend.service';
+import { NodeTemplatesBackendService } from './node-templates-backend.service';
+import { CredentialsBackendService } from './credentials-backend.service';
+import { FlowsBackendService } from './flows-backend.service';
 
 export type FlowStatus = 'draft' | 'test' | 'production';
 export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean };
@@ -65,15 +70,50 @@ export class CatalogService {
   private CRED_LIST_KEY = 'catalog.credentials'; // stores array of CredentialSummary
   private CRED_DOC_KEY = 'catalog.credential.';  // + id
 
-  constructor() { this.ensureSeed(); }
+  constructor(
+    private providersApi: ProvidersBackendService,
+    private templatesApi: NodeTemplatesBackendService,
+    private credsApi: CredentialsBackendService,
+    private flowsApi: FlowsBackendService,
+  ) { if (!environment.useBackend) this.ensureSeed(); }
 
   // ===== Public API (Flows)
-  listFlows(): Observable<FlowSummary[]> { return of(this.load<FlowSummary[]>(this.FLOW_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  listFlows(wsId?: string): Observable<FlowSummary[]> {
+    if (environment.useBackend) {
+      const workspaceId = wsId || '';
+      if (!workspaceId) return of([]);
+      return this.flowsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
+        id: f.id,
+        name: f.name,
+        description: undefined,
+        status: (f.status as any) || 'draft',
+        enabled: !!f.enabled,
+      } as FlowSummary))));
+    }
+    return of(this.load<FlowSummary[]>(this.FLOW_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+  }
   getFlow(id: string): Observable<FlowDoc> {
+    if (environment.useBackend) {
+      return this.flowsApi.get(id, { populate: '1' }).pipe(map(f => ({
+        id: f.id,
+        name: f.name,
+        description: undefined,
+        status: (f.status as any) || 'draft',
+        enabled: !!f.enabled,
+        nodes: (f as any).graph?.nodes || [],
+        edges: (f as any).graph?.edges || [],
+        meta: {}
+      } as FlowDoc)));
+    }
     const doc = this.load<FlowDoc | null>(this.FLOW_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Flow not found'));
   }
   saveFlow(doc: FlowDoc): Observable<FlowDoc> {
+    if (environment.useBackend) {
+      if (!doc?.id) return throwError(() => new Error('Missing id'));
+      const payload = { name: doc.name, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, force: true };
+      return this.flowsApi.update(doc.id, payload).pipe(map(() => doc));
+    }
     if (!doc?.id) return throwError(() => new Error('Missing id'));
     this.save(this.FLOW_DOC_KEY + doc.id, doc);
     const list = this.load<FlowSummary[]>(this.FLOW_LIST_KEY, []);
@@ -82,6 +122,15 @@ export class CatalogService {
     if (idx >= 0) list[idx] = summary; else list.push(summary);
     this.save(this.FLOW_LIST_KEY, list);
     return of(doc).pipe(delay(CatalogService.LATENCY));
+  }
+  createFlow(wsId: string, name: string, status: string = 'draft', enabled = false, nodes: any[] = [], edges: any[] = []): Observable<FlowDoc> {
+    if (!environment.useBackend) {
+      const id = (name || 'flow') + '-' + Date.now().toString(36);
+      const doc: FlowDoc = { id, name, description: '', status: status as any, enabled, nodes, edges };
+      return this.saveFlow(doc);
+    }
+    const payload = { name, status, enabled, graph: { nodes, edges }, force: false } as any;
+    return this.flowsApi.create(wsId, payload).pipe(map(() => ({ id: '', name, description: '', status: status as any, enabled, nodes, edges } as FlowDoc)));
   }
 
   // ===== Public API (Forms)
@@ -102,13 +151,45 @@ export class CatalogService {
   }
 
   // ===== Public API (Node Templates)
-  listNodeTemplates(): Observable<NodeTemplate[]> { return of(this.load<NodeTemplate[]>(this.TPL_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  listNodeTemplates(): Observable<NodeTemplate[]> {
+    if (environment.useBackend) {
+      return this.templatesApi.list({ page: 1, limit: 500 }).pipe(map(list => (list || []).map(t => ({
+        id: t.key,
+        type: t.type as any,
+        name: t.name,
+        title: t.name,
+        category: t.category,
+        args: t.args,
+        output: t.output,
+        authorize_catch_error: t.authorize_catch_error,
+        authorize_skip_error: t.authorize_skip_error,
+      } as NodeTemplate))));
+    }
+    return of(this.load<NodeTemplate[]>(this.TPL_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+  }
   getNodeTemplate(id: string): Observable<NodeTemplate | undefined> {
+    if (environment.useBackend) {
+      return this.listNodeTemplates().pipe(map(list => list.find(x => x.id === id)));
+    }
     const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
     return of(list.find(x => x.id === id)).pipe(delay(CatalogService.LATENCY));
   }
   saveNodeTemplate(tpl: NodeTemplate): Observable<NodeTemplate> {
     if (!tpl?.id) return throwError(() => new Error('Missing id'));
+    if (environment.useBackend) {
+      const body = {
+        key: tpl.id,
+        name: tpl.name || tpl.title || tpl.id,
+        type: tpl.type,
+        category: tpl.category,
+        args: tpl.args,
+        output: tpl.output,
+        authorize_catch_error: tpl.authorize_catch_error,
+        authorize_skip_error: tpl.authorize_skip_error,
+        force: true,
+      } as any;
+      return this.templatesApi.update(tpl.id, body).pipe(map(() => tpl));
+    }
     const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
     const idx = list.findIndex(x => x.id === tpl.id);
     if (idx >= 0) list[idx] = tpl; else list.push(tpl);
@@ -117,13 +198,28 @@ export class CatalogService {
   }
 
   // ===== Public API (Apps / Providers)
-  listApps(): Observable<AppProvider[]> { return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  listApps(): Observable<AppProvider[]> {
+    if (environment.useBackend) {
+      return this.providersApi.list({ page: 1, limit: 1000 }).pipe(map(list => (list || []).map(p => ({
+        id: p.key,
+        name: p.name,
+        title: p.name,
+        tags: p.categories || [],
+        hasCredentials: true,
+      } as AppProvider))));
+    }
+    return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+  }
   getApp(id: string): Observable<AppProvider | undefined> {
+    if (environment.useBackend) {
+      return this.listApps().pipe(map(list => list.find(x => x.id === id)));
+    }
     const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
     return of(list.find(x => x.id === id)).pipe(delay(CatalogService.LATENCY));
   }
   saveApp(app: AppProvider): Observable<AppProvider> {
     if (!app?.id) return throwError(() => new Error('Missing id'));
+    // Pas d’endpoint direct pour créer un provider côté backend → fallback local
     const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
     const idx = list.findIndex(x => x.id === app.id);
     if (idx >= 0) list[idx] = app; else list.push(app);
@@ -131,6 +227,7 @@ export class CatalogService {
     return of(app).pipe(delay(CatalogService.LATENCY));
   }
   deleteApp(id: string): Observable<boolean> {
+    // Pas d’endpoint pour delete provider → fallback local
     const list = this.load<AppProvider[]>(this.APP_LIST_KEY, []);
     const next = list.filter(x => x.id !== id);
     this.save(this.APP_LIST_KEY, next);
@@ -139,16 +236,46 @@ export class CatalogService {
 
   // ===== Public API (Credentials)
   listCredentials(workspaceId?: string, providerId?: string): Observable<CredentialSummary[]> {
+    if (environment.useBackend && workspaceId) {
+      return this.credsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).filter(c => !providerId || c.providerKey === providerId).map(c => ({
+        id: c.id,
+        name: c.name,
+        providerId: c.providerKey,
+        workspaceId: c.workspaceId,
+      } as CredentialSummary))));
+    }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
     const filtered = list.filter(c => (!workspaceId || c.workspaceId === workspaceId) && (!providerId || c.providerId === providerId));
     return of(filtered).pipe(delay(CatalogService.LATENCY));
   }
   getCredential(id: string): Observable<CredentialDoc> {
+    if (environment.useBackend) {
+      // Compose summary + masked values
+      return forkJoin({
+        summary: this.credsApi.get(id),
+        values: this.credsApi.values(id, '0')
+      }).pipe(map(({ summary, values }) => ({
+        id: summary.id,
+        name: summary.name,
+        providerId: summary.providerKey,
+        workspaceId: summary.workspaceId,
+        values
+      } as CredentialDoc)));
+    }
     const doc = this.load<CredentialDoc | null>(this.CRED_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Credential not found'));
   }
   saveCredential(doc: CredentialDoc): Observable<CredentialDoc> {
-    if (!doc?.id) return throwError(() => new Error('Missing id'));
+    if (!doc?.id) {
+      if (environment.useBackend) {
+        // Create (id optional)
+        return this.credsApi.create(doc.workspaceId, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(map(() => doc));
+      }
+      return throwError(() => new Error('Missing id'));
+    }
+    if (environment.useBackend) {
+      return this.credsApi.update(doc.id, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(map(() => doc));
+    }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
     const summary: CredentialSummary = { id: doc.id, name: doc.name || doc.id, providerId: doc.providerId, workspaceId: doc.workspaceId };
     const idx = list.findIndex(x => x.id === doc.id);
@@ -158,6 +285,10 @@ export class CatalogService {
     return of(doc).pipe(delay(CatalogService.LATENCY));
   }
   deleteCredential(id: string): Observable<boolean> {
+    if (environment.useBackend) {
+      // Pas d’endpoint delete explicite dans le Swagger pour /credentials/{id}; si ajouté, remplacer ci-dessous
+      return of(true).pipe(delay(CatalogService.LATENCY));
+    }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
     const next = list.filter(x => x.id !== id);
     this.save(this.CRED_LIST_KEY, next);

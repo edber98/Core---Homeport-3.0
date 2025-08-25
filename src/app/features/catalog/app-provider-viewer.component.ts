@@ -111,6 +111,7 @@ export class AppProviderViewerComponent implements OnInit, OnDestroy {
       const providerId = this.app?.id || '';
       if (!providerId) return;
       const ws = this.acl.currentWorkspaceId();
+      if (!ws) return;
       this.catalog.listCredentials(ws, providerId).subscribe((list: CredentialSummary[]) => {
         const recs: Array<Record<string, any>> = [];
         let remaining = (list || []).length;

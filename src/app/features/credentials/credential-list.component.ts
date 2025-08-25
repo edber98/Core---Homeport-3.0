@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -12,6 +12,8 @@ import { AccessControlService } from '../../services/access-control.service';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { DynamicFormService, FormSchema } from '../../modules/dynamic-form/dynamic-form.service';
 import { Router } from '@angular/router';
+import { UiMessageService } from '../../services/ui-message.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'credential-list',
@@ -104,7 +106,7 @@ import { Router } from '@angular/router';
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
   `]
 })
-export class CredentialListComponent implements OnInit {
+export class CredentialListComponent implements OnInit, OnDestroy {
   providers: AppProvider[] = [];
   creds: CredentialSummary[] = [];
   providerFilter: string | null = null;
@@ -115,7 +117,8 @@ export class CredentialListComponent implements OnInit {
   credValues: any = {};
   credValid = false;
 
-  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router) {}
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService) {}
+  private aclSub?: any;
 
   get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
   get workspaceId(): string { return this.acl.currentWorkspaceId(); }
@@ -133,9 +136,13 @@ export class CredentialListComponent implements OnInit {
         try { this.cdr.detectChanges(); } catch {}
       });
     });
+    try { this.aclSub = this.acl.changes$.subscribe(() => this.zone.run(() => { this.reload(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
   }
+  ngOnDestroy(): void { try { this.aclSub?.unsubscribe?.(); } catch {} }
 
   reload() {
+    if (!this.workspaceId) { this.creds = []; try { console.debug('[Credentials] reload skipped: no wsId yet', { workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}; return; }
+    try { console.debug('[Credentials] reload', { wsId: this.workspaceId, workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}
     this.catalog.listCredentials(this.workspaceId, this.providerFilter || undefined).subscribe(list => {
       this.zone.run(() => { this.creds = list || []; try { this.cdr.detectChanges(); } catch {} });
     });
@@ -164,29 +171,28 @@ export class CredentialListComponent implements OnInit {
   create() {
     if (!this.createForm.valid || !this.credValid || !this.currentSchema) return;
     const v = this.createForm.value as any;
-    const id = this.slug(`${v.providerId}-${v.name}-${Date.now().toString(36)}`);
     const doc: CredentialDoc = {
-      id,
+      id: environment.useBackend ? '' : this.slug(`${v.providerId}-${v.name}-${Date.now().toString(36)}`),
       name: v.name,
       providerId: v.providerId,
       workspaceId: this.workspaceId,
       values: this.credValues || {}
     };
-    this.catalog.saveCredential(doc).subscribe(() => { this.createVisible = false; this.reload(); });
+    this.catalog.saveCredential(doc).subscribe({ next: () => { this.ui.success('Credentials créés'); this.createVisible = false; this.reload(); }, error: () => this.ui.error('Création échouée') });
   }
 
   view(c: CredentialSummary) { this.router.navigate(['/credentials/viewer'], { queryParams: { id: c.id } }); }
   duplicate(c: CredentialSummary) {
     if (!this.isAdmin) return;
     this.catalog.getCredential(c.id).subscribe(doc => {
-      const copy: CredentialDoc = { ...doc, id: this.slug(doc.id + '-copy'), name: doc.name + ' (copie)' };
-      this.catalog.saveCredential(copy).subscribe(() => this.reload());
+      const copy: CredentialDoc = { ...doc, id: environment.useBackend ? '' : this.slug(doc.id + '-copy'), name: doc.name + ' (copie)' };
+      this.catalog.saveCredential(copy).subscribe({ next: () => { this.ui.success('Copie créée'); this.reload(); }, error: () => this.ui.error('Échec de la duplication') });
     });
   }
   remove(c: CredentialSummary) {
     if (!this.isAdmin) return;
     if (!confirm(`Supprimer ${c.name} ?`)) return;
-    this.catalog.deleteCredential(c.id).subscribe(() => this.reload());
+    this.catalog.deleteCredential(c.id).subscribe({ next: () => { this.ui.success('Credentials supprimés'); this.reload(); }, error: () => this.ui.error('Échec de la suppression') });
   }
 
   private slug(s: string): string {

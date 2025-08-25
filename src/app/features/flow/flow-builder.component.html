@@ -170,10 +170,18 @@
             </div>
           </div>
         </div>
-        <div class="row actions">
+        <div class="row actions" style="gap:8px; align-items:center;">
           <button class="btn primary" (click)="saveFlow()" title="Enregistrer" aria-label="Enregistrer">
             <i class="fa-solid fa-floppy-disk"></i>
           </button>
+          <select [(ngModel)]="currentFlowStatus" title="Statut" style="border:1px solid #e5e7eb; border-radius:8px; padding:4px 6px; font-size:12px;">
+            <option value="draft">brouillon</option>
+            <option value="test">test</option>
+            <option value="production">production</option>
+          </select>
+          <label title="En service" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#444;">
+            <input type="checkbox" [(ngModel)]="currentFlowEnabled" /> en service
+          </label>
         </div>
       </div>
 

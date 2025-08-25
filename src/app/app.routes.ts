@@ -62,6 +62,8 @@ export const routes: Routes = [
             { path: 'websites/page', loadComponent: () => import('./features/website/website-page-viewer.component').then(m => m.WebsitePageViewerComponent), title: 'Site — Page Viewer' },
             { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },
             { path: 'credentials', loadComponent: () => import('./features/credentials/credential-list.component').then(m => m.CredentialListComponent), title: 'Credentials' },
+            { path: 'runs', loadComponent: () => import('./features/flow/workspace-run-list.component').then(m => m.WorkspaceRunListComponent), title: 'Exécutions (workspace)' },
+            { path: 'notifications', loadComponent: () => import('./features/notifications/notifications-page.component').then(m => m.NotificationsPageComponent), title: 'Notifications' },
             { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
             { path: 'debug/expr-json', loadComponent: () => import('./features/debug/debug-expr-json-playground.component').then(m => m.DebugExprJsonPlaygroundComponent), title: 'Debug — JSON + Expression' },
             { path: 'debug/form-viewers', loadComponent: () => import('./features/debug/debug-form-viewers.component').then(m => m.DebugFormViewersComponent), title: 'Debug — Form Viewers' },

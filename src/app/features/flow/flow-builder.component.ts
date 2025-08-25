@@ -458,6 +458,8 @@ export class FlowBuilderComponent {
   private currentFlowId: string | null = null;
   currentFlowName: string = '';
   currentFlowDesc: string = '';
+  currentFlowStatus: 'draft'|'test'|'production' = 'draft';
+  currentFlowEnabled: boolean = false;
 
   // Long-press detection for mobile context menu
   private lpTimer: any = null;
@@ -518,6 +520,8 @@ export class FlowBuilderComponent {
           if (doc) {
             this.currentFlowName = doc.name || '';
             this.currentFlowDesc = doc.description || '';
+            this.currentFlowStatus = (doc as any).status || 'draft';
+            this.currentFlowEnabled = !!(doc as any).enabled;
             this.nodes = (doc.nodes || []) as any[];
             this.edges = (doc.edges || []) as any;
             this.history.reset(this.snapshot());
@@ -1742,7 +1746,7 @@ export class FlowBuilderComponent {
   saveFlow() {
     try {
       if (this.currentFlowId) {
-        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
           next: () => { try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); } },
           error: () => { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } },
         });

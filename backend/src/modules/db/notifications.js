@@ -1,6 +1,7 @@
 const express = require('express');
 const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
 const Notification = require('../../db/models/notification.model');
+const { Types } = require('mongoose');
 
 module.exports = function(){
   const r = express.Router();
@@ -10,7 +11,7 @@ module.exports = function(){
   r.get('/notifications', async (req, res) => {
     const { workspaceId, entityType, entityId, acknowledged, q: search, sort } = req.query;
     const base = { companyId: req.user.companyId };
-    if (workspaceId) base.workspaceId = workspaceId;
+    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) base.workspaceId = workspaceId;
     if (entityType) base.entityType = entityType;
     if (entityId) base.entityId = entityId;
     if (acknowledged != null) base.acknowledged = acknowledged === 'true';

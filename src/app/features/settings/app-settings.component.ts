@@ -71,6 +71,14 @@ import { Router } from '@angular/router';
         </div>
       </div>
       <div class="result" *ngIf="msg">{{ msg }}</div>
+      <div class="card" style="margin-top:12px;">
+        <div class="title">Sécurité</div>
+        <p>Purger le stockage local et se déconnecter pour forcer la reconnexion au backend sans données résiduelles.</p>
+        <div class="actions">
+          <button nz-button nzType="default" (click)="purgeAndLogout()">Purger localStorage + Logout</button>
+          <button nz-button nzType="default" (click)="logWorkspaceState()">Console: Workspace state</button>
+        </div>
+      </div>
     </div>
   </div>
   `,
@@ -159,6 +167,13 @@ export class AppSettingsComponent {
       error: () => { this.msg = 'Export: échec.'; setTimeout(() => this.msg = '', 2500); }
     });
   }
+
+  purgeAndLogout() {
+    try { localStorage.clear(); } catch {}
+    try { sessionStorage.clear(); } catch {}
+    this.auth.logout();
+  }
+  logWorkspaceState() { try { this.acl.debugLogWorkspaceState(); this.msg = 'Voir console (F12)'; setTimeout(() => this.msg = '', 2000); } catch {} }
 
   onImportFile(ev: Event) {
     const input = ev.target as HTMLInputElement;

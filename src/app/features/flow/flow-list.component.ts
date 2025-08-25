@@ -12,6 +12,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
+import { UiMessageService } from '../../services/ui-message.service';
+import { environment } from '../../../environments/environment';
 
 type FlowItem = { id: string; name: string; description?: string };
 
@@ -193,7 +195,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
   doSearch() { this.q = (this.q || '').trim(); }
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) { }
 
   private autoOpened = false;
   ngOnInit() {
@@ -219,7 +221,10 @@ export class FlowListComponent implements OnInit, OnDestroy {
 
   load() {
     this.loading = true; this.error = null;
-    this.catalog.listFlows().subscribe({
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.loading = false; try { console.debug('[FlowList] load skipped: no wsId yet', { workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}; return; }
+    try { console.debug('[FlowList] load', { wsId, workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}
+    this.catalog.listFlows(wsId).subscribe({
       next: items => {
         this.zone.run(() => {
           const list = items || [];
@@ -228,12 +233,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
             (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('flow', f.id); counts[w] = (counts[w]||0)+1; });
             console.debug('[FlowList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
           } catch {}
-          const filtered = list.filter(f => {
-            const ws = this.acl.ensureResourceWorkspace('flow', f.id);
-            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-          });
-          try { console.debug('[FlowList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
-          this.flows = filtered;
+          this.flows = list;
         });
       },
       error: () => {
@@ -263,19 +263,23 @@ export class FlowListComponent implements OnInit, OnDestroy {
   createFlow() {
     if (!this.canCreate()) return;
     this.creating = true; this.createError = null;
-    const id = this.makeIdFromName(this.draft.name);
-    const doc = { id, name: this.draft.name.trim(), description: (this.draft.description || '').trim(), status: this.draft.status || 'draft', enabled: !!this.draft.enabled, nodes: [], edges: [], meta: {} };
-    this.catalog.saveFlow(doc).subscribe({
+    const name = this.draft.name.trim();
+    const status = this.draft.status || 'draft';
+    const enabled = !!this.draft.enabled;
+    const localId = this.makeIdFromName(name);
+    const wsId = this.acl.currentWorkspaceId() || 'default';
+    const obs = environment.useBackend ? this.catalog.createFlow(wsId, name, status, enabled, [], []) : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: {} } as any);
+    obs.subscribe({
       next: () => {
         this.zone.run(() => {
-          // Attach to currently selected workspace
           const ws = this.acl.currentWorkspaceId();
-          this.acl.setResourceWorkspace('flow', id, ws);
-          this.creating = false; this.createVisible = false; this.load(); this.openEditor({ id, name: doc.name, description: doc.description });
+          try { this.acl.setResourceWorkspace('flow', localId, ws); } catch {}
+          this.creating = false; this.createVisible = false; this.ui.success('Flow créé');
+          this.load(); this.openEditor({ id: localId, name, description: (this.draft.description || '').trim() });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
       },
-      error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; }); }
+      error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; this.ui.error('Échec de la création du flow'); }); }
     });
   }
   // Change handling moved to ngOnInit with throttle and cleanup

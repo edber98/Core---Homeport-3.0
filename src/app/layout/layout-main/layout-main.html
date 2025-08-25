@@ -107,8 +107,8 @@
           nzPlaceHolder="Workspace">
           <nz-option *ngFor="let w of accessibleWorkspaces" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
         </nz-select>
-        <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
-          <nz-badge nzDot>
+        <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
+          <nz-badge [nzDot]="notifUnreadCount>0">
             <i class="fa-regular fa-bell"></i>
           </nz-badge>
         </button>
@@ -207,15 +207,22 @@
 <ng-template #notifTpl>
   <div class="notif-panel">
     <div class="notif-header">Notifications</div>
-    <div class="notif-list">
-      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="n.unread">
+    <div class="notif-list" *ngIf="!notifLoading; else notifLoadingTpl">
+      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
         <div class="meta">
           <div class="title">{{ n.title }}</div>
           <div class="desc">{{ n.desc }}</div>
         </div>
-        <div class="time">{{ n.time }}</div>
+        <div class="actions">
+          <button nz-button nzSize="small" class="mini" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged">Lu</button>
+          <button nz-button nzSize="small" class="mini" (click)="deleteNotification(n); $event.stopPropagation()"><i class="fa-regular fa-trash-can"></i></button>
+        </div>
       </div>
+      <div class="empty" *ngIf="notifications.length===0">Aucune notification</div>
     </div>
+    <ng-template #notifLoadingTpl>
+      <div class="notif-loading">Chargement…</div>
+    </ng-template>
     <div class="notif-footer"><a [routerLink]="'/flows'">Voir tout</a></div>
   </div>
   
