@@ -31,7 +31,12 @@ export class NodeTemplatesBackendService {
     return this.api.get<BackendNodeTemplate[]>(`/api/node-templates`, params);
   }
   create(tpl: BackendNodeTemplate): Observable<any> { return this.api.post<any>(`/api/node-templates`, tpl); }
-  update(key: string, body: Partial<BackendNodeTemplate> & { force?: boolean }): Observable<any> {
-    return this.api.put<any>(`/api/node-templates/${encodeURIComponent(key)}`, body);
+  update(key: string, body: Partial<BackendNodeTemplate>, force?: boolean): Observable<any> {
+    const params: any = {}; if (force) params.force = '1';
+    return this.api.put<any>(`/api/node-templates/${encodeURIComponent(key)}`, body, params);
+  }
+  delete(key: string, force?: boolean): Observable<any> {
+    const params: any = {}; if (force) params.force = '1';
+    return this.api.delete<any>(`/api/node-templates/${encodeURIComponent(key)}`, params);
   }
 }

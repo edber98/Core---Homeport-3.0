@@ -41,16 +41,21 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
-    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] }, force = false } = req.body || {};
+    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] } } = req.body || {};
     if (!name || String(name).trim() === '') return res.apiError(400, 'name_required', 'Flow name is required');
+    const Provider = require('../../db/models/provider.model');
+    const Credential = require('../../db/models/credential.model');
     const loaders = {
       getTemplateByKey: async (key) => NodeTemplate.findOne({ key }).lean(),
       isTemplateAllowed: async (key) => (ws.templatesAllowed || []).length === 0 || ws.templatesAllowed.includes(key),
+      getProviderByKey: async (key) => Provider.findOne({ key }).lean(),
+      hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
     };
     const v = await validateFlowGraph(graph, { strict: true, loaders });
     // Allow empty graphs to be created (disabled) without forcing
     const isEmptyGraph = !graph || !Array.isArray(graph.nodes) || graph.nodes.length === 0;
     const onlyNoStart = (v.errors || []).length === 1 && v.errors[0]?.code === 'no_start';
+    const force = (String(req.query.force || '').toLowerCase() === '1' || String(req.query.force || '').toLowerCase() === 'true' || !!(req.body && req.body.force));
     if (!v.ok && !force && !(isEmptyGraph && onlyNoStart)){
       return res.apiError(400, 'flow_invalid', 'Flow validation failed', { errors: v.errors, warnings: v.warnings });
     }
@@ -91,11 +96,15 @@ module.exports = function(){
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
     const patch = req.body || {};
-    const force = !!patch.force;
+    const force = (String(req.query.force || '').toLowerCase() === '1' || String(req.query.force || '').toLowerCase() === 'true' || !!patch.force);
     if (patch.graph){
+      const Provider = require('../../db/models/provider.model');
+      const Credential = require('../../db/models/credential.model');
       const loaders = {
         getTemplateByKey: async (key) => NodeTemplate.findOne({ key }).lean(),
         isTemplateAllowed: async (key) => (ws.templatesAllowed || []).length === 0 || ws.templatesAllowed.includes(key),
+        getProviderByKey: async (key) => Provider.findOne({ key }).lean(),
+        hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
       };
       const v = await validateFlowGraph(patch.graph, { strict: true, loaders });
       if (!v.ok && !force){

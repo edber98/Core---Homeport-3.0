@@ -15,6 +15,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
@@ -33,7 +34,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -129,6 +130,7 @@ export class FlowBuilderComponent {
     private route: ActivatedRoute,
     private runner: FlowRunService,
     private shared: FlowSharedStateService,
+    private modal: NzModalService,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -1578,7 +1580,25 @@ export class FlowBuilderComponent {
             } catch {}
             try { this.cdr.detectChanges(); } catch {}
           },
-          error: () => { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } },
+          error: (e) => {
+            const code = String(e?.code || '');
+            if (code === 'flow_invalid'){
+              const errors = (e?.details?.errors || []) as any[];
+              const list = (errors || []).map((x, i) => `• ${x.code || 'error'}${x.details?.nodeId ? ' (node ' + x.details.nodeId + ')' : ''}`).join('<br/>');
+              this.modal.confirm({
+                nzTitle: 'Flow invalide',
+                nzContent: `Le flow contient des erreurs (requis/connexion/credentials).<br/>${list}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
+                nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({ next: () => {
+                  try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
+                  this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+                  try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                } })
+              });
+            } else {
+              try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+            }
+          },
         });
       } else {
         try { this.message.warning('Aucun flow associé'); } catch { this.showToast('Aucun flow associé'); }

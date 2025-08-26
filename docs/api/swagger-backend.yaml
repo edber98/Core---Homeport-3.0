@@ -58,9 +58,9 @@ components:
     CredentialSummary: { type: object, properties: { id: { type: string }, name: { type: string }, providerKey: { type: string }, workspaceId: { type: string } } }
     CredentialCreate: { type: object, properties: { name: { type: string }, providerKey: { type: string }, values: {} }, required: [name, providerKey] }
     CredentialUpdate: { type: object, properties: { name: { type: string }, providerKey: { type: string }, values: {} } }
-    Flow: { type: object, properties: { id: { type: string }, name: { type: string }, status: { type: string, enum: [draft,test,production] }, enabled: { type: boolean }, graph: {} } }
-    FlowCreate: { type: object, properties: { name: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } }, required: [name] }
-    FlowUpdate: { type: object, properties: { name: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } } }
+    Flow: { type: object, properties: { id: { type: string }, name: { type: string }, description: { type: string }, status: { type: string, enum: [draft,test,production] }, enabled: { type: boolean }, graph: {} } }
+    FlowCreate: { type: object, properties: { name: { type: string }, description: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } }, required: [name] }
+    FlowUpdate: { type: object, properties: { name: { type: string }, description: { type: string }, status: { type: string }, enabled: { type: boolean }, graph: {}, force: { type: boolean } } }
     Run: { type: object, properties: { id: { type: string }, flowId: { type: string }, workspaceId: { type: string }, companyId: { type: string }, status: { type: string }, events: { type: array, items: {} }, result: {} } }
     Notification: { type: object, properties: { id: { type: string }, entityType: { type: string }, entityId: { type: string }, severity: { type: string }, code: { type: string }, message: { type: string }, link: { type: string }, acknowledged: { type: boolean } } }
     TransferRequest:
@@ -295,7 +295,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Provider' }
+            schema: { allOf: [ { $ref: '#/components/schemas/Provider' }, { type: object, properties: { force: { type: boolean } } } ] }
             example:
               name: "PDF"
               title: "PDF Tools"
@@ -336,6 +336,12 @@ paths:
       summary: Update node template (force)
       parameters: [ { in: path, name: key, required: true, schema: { type: string } } ]
       requestBody: { content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/NodeTemplate' }, { type: object, properties: { force: { type: boolean } } } ] } } } }
+      responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+    delete:
+      summary: Delete node template (force)
+      parameters:
+        - { in: path, name: key, required: true, schema: { type: string } }
+        - { in: query, name: force, required: false, schema: { type: string, enum: ['0','1'] }, example: '1' }
       responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
 
   /api/workspaces/{wsId}/apps:
@@ -383,7 +389,10 @@ paths:
         - { in: query, name: sort, schema: { type: string }, example: createdAt:desc }
       responses: { '200': { $ref: '#/components/responses/Error' } }
     post:
-      summary: Create flow (force)
+      summary: Create flow (force as query)
+      parameters:
+        - { in: path, name: wsId, required: true, schema: { type: string } }
+        - { in: query, name: force, required: false, schema: { type: string, enum: ['0','1'] }, example: '1' }
       requestBody:
         content:
           application/json:
@@ -392,7 +401,6 @@ paths:
               name: "Demo Flow"
               status: "draft"
               enabled: true
-              force: false
               graph:
                 nodes:
                   - { id: "start1", type: "start", key: "start", name: "Start" }
@@ -403,7 +411,10 @@ paths:
   /api/flows/{flowId}:
     get: { summary: Get flow, parameters: [ { in: path, name: flowId, required: true, schema: { type: string } }, { in: query, name: populate, schema: { type: string, enum: ['0','1'] } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
     put:
-      summary: Update flow (force)
+      summary: Update flow (force as query)
+      parameters:
+        - { in: path, name: flowId, required: true, schema: { type: string } }
+        - { in: query, name: force, required: false, schema: { type: string, enum: ['0','1'] }, example: '1' }
       requestBody:
         content:
           application/json:
@@ -412,7 +423,14 @@ paths:
               name: "Demo Flow Updated"
               status: "test"
               enabled: true
-              force: true
+      responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+
+  /api/plugin-repos/{id}/sync:
+    post:
+      summary: Sync plugin repo (force as query)
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: string } }
+        - { in: query, name: force, required: false, schema: { type: string, enum: ['0','1'] }, example: '1' }
       responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
 
   /api/flows/{flowId}/runs:
@@ -580,6 +598,17 @@ paths:
               properties:
                 force: { type: boolean }
                 credentials:
+  /api/providers/{key}:
+    put:
+      summary: Update provider (force as query)
+      parameters:
+        - { in: path, name: key, required: true, schema: { type: string } }
+        - { in: query, name: force, required: false, schema: { type: string, enum: ['0','1'] }, example: '1' }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Provider' }
+      responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
                   type: object
                   properties:
                     username: { type: string }

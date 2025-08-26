@@ -46,7 +46,8 @@ module.exports = function(){
   });
 
   r.put('/node-templates/:key', requireAdmin(), async (req, res) => {
-    const { key } = req.params; const patch = req.body || {}; const force = !!patch.force;
+    const { key } = req.params; const patch = req.body || {};
+    const force = (String(req.query.force || '').toLowerCase() === '1' || String(req.query.force || '').toLowerCase() === 'true' || !!patch.force);
     const tpl = await NodeTemplate.findOne({ key });
     if (!tpl) return res.apiError(404, 'template_not_found', 'Node template not found');
     const old = tpl.toObject();
@@ -61,32 +62,75 @@ module.exports = function(){
       // get all flows in company scope? templates are global, validate all flows
       const flows = await Flow.find();
       const impacted = [];
-      const loaders = {
-        getTemplateByKey: async (k) => NodeTemplate.findOne({ key: k }).lean(),
-        isTemplateAllowed: async () => true,
-      };
+      const Provider = require('../../db/models/provider.model');
+      const Credential = require('../../db/models/credential.model');
       for (const f of flows){
+        const ws = await Workspace.findById(f.workspaceId).lean();
+        const loaders = {
+          getTemplateByKey: async (k) => NodeTemplate.findOne({ key: k }).lean(),
+          isTemplateAllowed: async () => true,
+          getProviderByKey: async (k) => Provider.findOne({ key: k }).lean(),
+          hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
+        };
         const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
         if (!v.ok){
           // restrict to errors about this template key
-          const has = v.errors.some(e => (e.details && e.details.nodeId) || e.code === 'args_invalid');
-          if (has) impacted.push({ flowId: String(f._id), name: f.name, errors: v.errors });
+          // keep all errors; FE can filter by node if needed
+          impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: v.errors });
         }
       }
       if (impacted.length && !force){
         return res.apiError(400, 'template_update_breaks_flows', 'Template update invalidates flows', { impacted });
       }
       if (impacted.length && force){
+        const Run = require('../../db/models/run.model');
         for (const it of impacted){
           const f = await Flow.findById(it.flowId);
-          f.enabled = false; await f.save();
-          const ws = await Workspace.findById(f.workspaceId);
-          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          if (f) { f.enabled = false; await f.save(); }
+          await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
       return res.apiOk({ template: tpl, impacted });
     }
     res.apiOk({ template: tpl, impacted: [] });
+  });
+
+  // Delete a template with impact analysis
+  r.delete('/node-templates/:key', requireAdmin(), async (req, res) => {
+    const { key } = req.params; const force = !!(req.query.force === '1' || req.body?.force);
+    const tpl = await NodeTemplate.findOne({ key });
+    if (!tpl) return res.apiError(404, 'template_not_found', 'Node template not found');
+    // Simulate deletion by validating flows without this template present
+    await tpl.deleteOne();
+    const flows = await Flow.find();
+    const Provider = require('../../db/models/provider.model');
+    const Credential = require('../../db/models/credential.model');
+    const impacted = [];
+    for (const f of flows){
+      const ws = await Workspace.findById(f.workspaceId).lean();
+      const loaders = {
+        getTemplateByKey: async (k) => NodeTemplate.findOne({ key: k }).lean(),
+        isTemplateAllowed: async () => true,
+        getProviderByKey: async (k) => Provider.findOne({ key: k }).lean(),
+        hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
+      };
+      const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
+      if (!v.ok) impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: v.errors });
+    }
+    if (impacted.length && !force){
+      return res.apiError(400, 'template_delete_breaks_flows', 'Deleting template invalidates flows', { impacted });
+    }
+    if (impacted.length && force){
+      const Run = require('../../db/models/run.model');
+      for (const it of impacted){
+        const f = await Flow.findById(it.flowId);
+        if (f) { f.enabled = false; await f.save(); }
+        await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
+        await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow disabled due to deleted template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+      }
+    }
+    res.apiOk({ deleted: true, key, impacted });
   });
   return r;
 }

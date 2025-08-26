@@ -12,5 +12,10 @@ export class PluginReposBackendService {
   update(id: string, body: Partial<PluginRepoDto>): Observable<any> { return this.api.put<any>(`/api/plugin-repos/${encodeURIComponent(id)}`, body); }
   delete(id: string): Observable<any> { return this.api.delete<any>(`/api/plugin-repos/${encodeURIComponent(id)}`); }
   reload(): Observable<{ loaded: string[]; repos: string[] }> { return this.api.post<any>(`/api/plugin-repos/reload`, {}); }
-  sync(id: string, body?: { force?: boolean; credentials?: { username?: string; password?: string; token?: string } }): Observable<any> { return this.api.post<any>(`/api/plugin-repos/${encodeURIComponent(id)}/sync`, body || {}); }
+  sync(id: string, opts?: { force?: boolean; credentials?: { username?: string; password?: string; token?: string } }): Observable<any> {
+    const params: any = {};
+    if (opts?.force) params.force = '1';
+    const body = opts?.credentials ? { credentials: opts.credentials } : {};
+    return this.api.post<any>(`/api/plugin-repos/${encodeURIComponent(id)}/sync`, body, params);
+  }
 }
