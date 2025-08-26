@@ -19,8 +19,8 @@ function seedAllMemory(store){
     const wsTesting = store.add(store.workspaces, { name: `${c.name} Testing`, companyId: c.id, templatesAllowed: [] });
   }
   for (const ws of store.workspaces.values()){
-    store.add(store.flows, { name: `${ws.name} — Demo 1`, workspaceId: ws.id, status: 'draft', enabled: true, graph: { nodes: [], edges: [] } });
-    store.add(store.flows, { name: `${ws.name} — Demo 2`, workspaceId: ws.id, status: 'test', enabled: false, graph: { nodes: [], edges: [] } });
+    store.add(store.flows, { name: `${ws.name} — Demo 1`, description: 'Flow de démonstration (brouillon)', workspaceId: ws.id, status: 'draft', enabled: true, graph: { nodes: [], edges: [] } });
+    store.add(store.flows, { name: `${ws.name} — Demo 2`, description: 'Flow de démonstration (test)', workspaceId: ws.id, status: 'test', enabled: false, graph: { nodes: [], edges: [] } });
   }
   return store;
 }
@@ -52,8 +52,8 @@ async function seedMongoIfEmpty(){
   }
   const wss = await Workspace.find();
   for (const ws of wss){
-    await Flow.create({ name: `${ws.name} — Demo 1`, workspaceId: ws._id, status: 'draft', enabled: true, graph: { nodes: [], edges: [] } });
-    await Flow.create({ name: `${ws.name} — Demo 2`, workspaceId: ws._id, status: 'test', enabled: false, graph: { nodes: [], edges: [] } });
+    await Flow.create({ name: `${ws.name} — Demo 1`, description: 'Flow de démonstration (brouillon)', workspaceId: ws._id, status: 'draft', enabled: true, graph: { nodes: [], edges: [] } });
+    await Flow.create({ name: `${ws.name} — Demo 2`, description: 'Flow de démonstration (test)', workspaceId: ws._id, status: 'test', enabled: false, graph: { nodes: [], edges: [] } });
   }
 
   // Providers

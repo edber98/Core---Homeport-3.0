@@ -28,6 +28,7 @@ import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.co
 import { FlowRunService } from '../../services/flow-run.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'flow-builder',
@@ -84,6 +85,8 @@ export class FlowBuilderComponent {
       return def;
     } catch { return { payload: null }; }
   }
+
+  
   private setStartPayload(v: any) {
     try { localStorage.setItem(this.startPayloadKey(), JSON.stringify(v ?? {})); } catch {}
   }
@@ -212,14 +215,11 @@ export class FlowBuilderComponent {
           this.applyWorkspaceTemplateFilter();
         } catch { }
       }));
-      // Load flows to expose in "Workflows" palette group
-      this.catalog.listFlows().subscribe(list => this.zone.run(() => {
-        this.allFlows = list || [];
-        this.rebuildPaletteGroups();
-      }));
+      // Load flows to expose in "Workflows" palette group (scoped to current workspace)
+      this.loadFlowsForWorkspace();
       // Recompute palette when workspace changes
       try {
-        this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => this.applyWorkspaceTemplateFilter()));
+        this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => { this.applyWorkspaceTemplateFilter(); this.loadFlowsForWorkspace(); }));
       } catch { }
     } catch { }
     // Load flow by id if provided
@@ -267,6 +267,18 @@ export class FlowBuilderComponent {
   ngOnDestroy() {
     try { window.removeEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
     try { this.viewportSub?.unsubscribe(); } catch { }
+  }
+
+  private loadFlowsForWorkspace(){
+    try {
+      const ws = this.acl.currentWorkspaceId();
+      if (!ws) { this.allFlows = []; this.rebuildPaletteGroups(); return; }
+      this.catalog.listFlows(ws).subscribe(list => this.zone.run(() => {
+        this.allFlows = list || [];
+        this.rebuildPaletteGroups();
+        try { this.cdr.detectChanges(); } catch {}
+      }));
+    } catch { this.allFlows = []; this.rebuildPaletteGroups(); }
   }
 
   private beforeUnloadHandler = (e: BeforeUnloadEvent) => {
@@ -459,7 +471,10 @@ export class FlowBuilderComponent {
     // Build bottom group: Workflows (flows available in current workspace)
     const ws = this.acl.currentWorkspaceId();
     const q = (this.paletteQuery || '').trim().toLowerCase();
-    const flowsInWs = (this.allFlows || []).filter(f => (this.acl.getResourceWorkspace('flow', f.id) || 'default') === ws);
+    // In backend mode, allFlows is already scoped to the current workspace. In local mode, filter by ACL mapping.
+    const flowsInWs = environment.useBackend
+      ? (this.allFlows || [])
+      : (this.allFlows || []).filter(f => (this.acl.getResourceWorkspace('flow', f.id) || 'default') === ws);
     const sorted = flowsInWs.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     const filtered = q ? sorted.filter(f => `${f.name} ${f.id} ${f.description || ''}`.toLowerCase().includes(q)) : sorted;
     // Use canonical template from catalog to keep checksum stable; pass selected flowId via __preContext
@@ -476,10 +491,21 @@ export class FlowBuilderComponent {
     const groups = [...base];
     groups.push({ title: 'Workflows', items: wfItems });
     this.paletteGroups = groups;
+    try { this.cdr.detectChanges(); } catch {}
   }
 
   trackGroup = (_: number, g: any) => (g && (g.appId || g.title)) || _;
-  trackItem = (_: number, it: any) => (it && (it.template?.id || it.label)) || _;
+  trackItem = (_: number, it: any) => {
+    try {
+      const flowId = it?.template?.__preContext?.flowId || '';
+      const tplId = it?.template?.id || '';
+      const label = it?.label || '';
+      // Ensure unique key per flow item to avoid trackBy collisions
+      if (flowId) return `${tplId}:${flowId}`;
+      if (tplId || label) return `${tplId}:${label}`;
+      return _;
+    } catch { return _; }
+  };
 
   // No-op; change tracking handled via vflow outputs
 
@@ -1540,7 +1566,18 @@ export class FlowBuilderComponent {
     try {
       if (this.currentFlowId) {
         this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
-          next: () => { try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); } this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled }); try { localStorage.removeItem(this.DRAFT_KEY_PREFIX + (this.currentFlowId || '')); } catch {} },
+          next: () => {
+            try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
+            // Mettre à jour la référence serveur (checksum) pour refléter l’état sauvegardé
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            // Mettre à jour le snapshot partagé et le draft local afin que le bouton Sauvegarder se désactive
+            try {
+              this.updateSharedGraph();
+              this.saveDraft(); // efface le draft si identique à la version serveur
+              this.persistHistory();
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+          },
           error: () => { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } },
         });
       } else {

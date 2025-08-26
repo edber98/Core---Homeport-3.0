@@ -18,7 +18,10 @@ try { require('./realtime/socketio').attach(server); } catch {}
       const { connectMongo } = require('./db/mongo');
       const { seedMongoIfEmpty } = require('./seed');
       await connectMongo();
+      // Seed first to avoid duplicate key collisions during import
       await seedMongoIfEmpty();
+      // Then clone/update repos from env and reload registry
+      try { const { ensureReposFromEnv } = require('./plugins/bootstrap'); await ensureReposFromEnv(); } catch (e) { try { console.error('[backend] plugin bootstrap failed:', e.message); } catch {} }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);
     }

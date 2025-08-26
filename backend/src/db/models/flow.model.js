@@ -10,6 +10,7 @@ const FlowSchema = new Schema({
   id: { type: String, index: true, unique: true, sparse: true },
   name: { type: String, required: true },
   workspaceId: { type: Types.ObjectId, ref: 'Workspace', required: true, index: true },
+  description: { type: String, default: '' },
   status: { type: String, enum: ['draft','test','production'], default: 'draft' },
   enabled: { type: Boolean, default: true },
   graph: { type: GraphSchema, default: () => ({ nodes: [], edges: [] }) },

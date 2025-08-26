@@ -1,0 +1,40 @@
+{
+  "providers": [
+    {
+      "key": "nextcloud",
+      "name": "Nextcloud",
+      "title": "Nextcloud",
+      "iconClass": "fa-solid fa-cloud",
+      "color": "#0082C9",
+      "tags": ["webdav", "storage"],
+      "categories": ["Docs & Drive"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Nextcloud WebDAV",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "baseUrl", "label": "URL de base (WebDAV)", "col": { "xs": 24 }, "default": "https://cloud.example.com/remote.php/dav" },
+          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "col": { "xs": 24 } },
+          { "type": "text", "key": "password", "label": "Mot de passe / App password", "col": { "xs": 24 }, "secret": true }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "nextcloud_upload_file", "name": "nextcloudUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
+      "description": "Téléverser un fichier via WebDAV", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"path","label":"Chemin distant","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
+      ] } },
+    { "key": "nextcloud_create_share_link", "name": "nextcloudCreateShareLink", "title": "Créer un lien de partage", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
+      "description": "Créer un lien de partage public", "args": { "title": "Partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"path","label":"Chemin","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"select","key":"permissions","label":"Permissions","col":{"xs":24},"options":[{"label":"lecture","value":"read"},{"label":"écriture","value":"write"}],"default":"read"}
+      ] } },
+    { "key": "nextcloud_set_permissions", "name": "nextcloudSetPermissions", "title": "Définir les permissions", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
+      "description": "Définir les permissions d’un fichier/dossier", "args": { "title": "Permissions", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"path","label":"Chemin","col":{"xs":24}},
+        {"type":"textarea","key":"acl","label":"ACL (JSON)","col":{"xs":24},"default":"{}"}
+      ] } }
+  ]
+}

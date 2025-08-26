@@ -5,13 +5,14 @@ import { CatalogService, NodeTemplate, AppProvider } from '../../services/catalo
 import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 @Component({
   selector: 'node-template-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzToolTipModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -43,7 +44,7 @@ import { auditTime } from 'rxjs/operators';
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
         <div class="card" *ngFor="let it of filtered" (click)="view(it)">
           <div class="leading">
-            <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 }}</div>
+            <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 | uppercase }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
                 <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
@@ -53,10 +54,9 @@ import { auditTime } from 'rxjs/operators';
             </ng-template>
           </div>
           <div class="content">
-            <div class="title-row"><div class="name">{{ it.name }}</div>
-              <span class="chip">{{ it.type }}</span>
-              <span class="chip" *ngIf="it.category">{{ it.category }}</span>
-              <ng-container *ngIf="appFor(it) as a"><span class="chip">{{ a.title || a.name }}</span></ng-container>
+            <div class="title-row"><div class="name">{{ titleOf(it) }}</div>
+              <span class="chip" *ngIf="primaryChip(it)">{{ primaryChip(it) }}</span>
+              <span class="chip more" *ngIf="chipsFor(it).length > 1" nz-tooltip [nzTooltipTitle]="restChips(it).join(', ')">+{{ chipsFor(it).length - 1 }}</span>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
@@ -97,12 +97,14 @@ import { auditTime } from 'rxjs/operators';
       .actions .with-text { display:none; }
       .actions .primary.icon-only { display:inline-flex; }
     }
-    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .loading .skeleton-grid { display:grid; gap:16px; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .loading .skeleton-grid { grid-template-columns: repeat(2, 1fr); } }
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .grid { display:grid; gap:16px; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
     .leading .avatar { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-weight:600; color:#111; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; }
@@ -112,6 +114,7 @@ import { auditTime } from 'rxjs/operators';
     .title-row { display:flex; align-items:center; gap:8px; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
+    .chip.more { background:#eef2ff; border-color:#e0e7ff; color:#3730a3; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
@@ -148,6 +151,20 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
   get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
+  titleOf(it: any): string { try { return (it && (it.title || it.name)) || ''; } catch { return ''; } }
+  primaryChip(it: any): string { const c = this.chipsFor(it); return c.length ? c[0] : ''; }
+  chipsFor(it: any): string[] {
+    try {
+      const chips: string[] = [];
+      // Order: category, app, then type last if present
+      if (it?.category) chips.push(String(it.category));
+      const app = this.appFor(it);
+      if (app && (app.title || app.name)) chips.push(String(app.title || app.name));
+      if (it?.type) chips.push(String(it.type));
+      return chips.filter(Boolean);
+    } catch { return []; }
+  }
+  restChips(it: any): string[] { const c = this.chipsFor(it); return c.slice(1); }
 
   private changesSub?: Subscription;
   ngOnInit() {

@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 const NodeTemplateSchema = new Schema({
   key: { type: String, required: true, unique: true, index: true },
@@ -9,7 +9,8 @@ const NodeTemplateSchema = new Schema({
   description: { type: String },
   tags: { type: [String], default: [] },
   group: { type: String },
-  type: { type: String, enum: ['start','function','condition','loop','end','flow'], required: true },
+  // Allow 'event' and 'endpoint' as valid trigger nodes in addition to existing kinds
+  type: { type: String, enum: ['start','event','endpoint','function','condition','loop','end','flow'], required: true },
   category: { type: String, default: '' },
   providerKey: { type: String },
   appName: { type: String },
@@ -21,6 +22,9 @@ const NodeTemplateSchema = new Schema({
   output_array_field: { type: String },
   checksumArgs: { type: String },
   checksumFeature: { type: String },
+  // Origin repo (optional)
+  repoId: { type: Types.ObjectId, ref: 'PluginRepo', index: true },
+  repoName: { type: String },
 }, { timestamps: true });
 
 module.exports = model('NodeTemplate', NodeTemplateSchema);

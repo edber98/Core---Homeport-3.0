@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 const ProviderSchema = new Schema({
   key: { type: String, required: true, unique: true, index: true },
@@ -14,6 +14,9 @@ const ProviderSchema = new Schema({
   allowWithoutCredentials: { type: Boolean, default: false },
   credentialsForm: { type: Schema.Types.Mixed },
   checksum: { type: String },
+  // Origin repo (optional)
+  repoId: { type: Types.ObjectId, ref: 'PluginRepo', index: true },
+  repoName: { type: String },
 }, { timestamps: true });
 
 module.exports = model('Provider', ProviderSchema);

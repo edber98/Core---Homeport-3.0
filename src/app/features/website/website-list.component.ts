@@ -36,7 +36,7 @@ import { AccessControlService } from '../../services/access-control.service';
       <div class="grid">
         <div class="card" *ngFor="let s of filtered" (click)="view(s)">
           <div class="leading">
-            <div class="avatar">{{ (s.name || s.slug) | slice:0:1 }}</div>
+            <div class="avatar">{{ (s.name || s.slug) | slice:0:1 | uppercase }}</div>
           </div>
           <div class="content">
             <div class="title-row">

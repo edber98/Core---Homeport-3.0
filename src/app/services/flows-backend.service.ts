@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
 
-export interface BackendFlow { id: string; name: string; status?: 'draft'|'test'|'production'; enabled?: boolean; graph?: any }
-export interface BackendFlowCreate { name: string; status?: string; enabled?: boolean; graph?: any; force?: boolean }
-export interface BackendFlowUpdate { name?: string; status?: string; enabled?: boolean; graph?: any; workspaceId?: string; force?: boolean }
+export interface BackendFlow { id: string; name: string; description?: string; status?: 'draft'|'test'|'production'; enabled?: boolean; graph?: any }
+export interface BackendFlowCreate { name: string; description?: string; status?: string; enabled?: boolean; graph?: any; force?: boolean }
+export interface BackendFlowUpdate { name?: string; description?: string; status?: string; enabled?: boolean; graph?: any; workspaceId?: string; force?: boolean }
 
 @Injectable({ providedIn: 'root' })
 export class FlowsBackendService {

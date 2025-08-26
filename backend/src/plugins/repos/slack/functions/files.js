@@ -1,0 +1,9 @@
+module.exports = {
+  async slack_upload_file(node, msg, inputs) {
+    return { ok: true, uploaded: true, filename: node.args?.filename };
+  },
+  async slack_slash_command(node, msg, inputs) {
+    return { ok: true, command: node.args?.command, event: 'slash_command' };
+  }
+};
+

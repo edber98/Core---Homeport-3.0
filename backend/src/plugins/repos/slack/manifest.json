@@ -1,0 +1,48 @@
+{
+  "providers": [
+    {
+      "key": "slack",
+      "name": "Slack",
+      "title": "Slack",
+      "iconClass": "fa-brands fa-slack",
+      "color": "#4A154B",
+      "tags": ["chat", "collaboration"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants de l’application Slack",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "botToken", "label": "Jeton bot (xoxb-)", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "signingSecret", "label": "Secret de signature", "col": { "xs": 24 }, "secret": true },
+          { "type": "text", "key": "appId", "label": "ID d’app", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "slack_post_message", "name": "slackPostMessage", "title": "Publier un message", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+      "description": "Publier un message dans un canal ou DM", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"channel","label":"Canal/DM","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}},
+        {"type":"textarea","key":"blocks","label":"Blocs (JSON)","col":{"xs":24},"default":"[]"}
+      ] } },
+    { "key": "slack_reply_in_thread", "name": "slackReplyInThread", "title": "Répondre dans un fil", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+      "description": "Répondre dans un fil", "args": { "title": "Fil", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"channel","label":"Canal","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"text","key":"threadTs","label":"TS du fil","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}}
+      ] } },
+    { "key": "slack_upload_file", "name": "slackUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+      "description": "Téléverser un fichier sur Slack", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"channels","label":"Canaux (séparés par des virgules)","col":{"xs":24}},
+        {"type":"text","key":"filename","label":"Nom de fichier","col":{"xs":24}},
+        {"type":"textarea","key":"content","label":"Contenu (texte)","col":{"xs":24}}
+      ] } },
+    { "key": "slack_slash_command", "name": "slackSlashCommand", "title": "Commande slash", "subtitle": "Déclencheur", "type": "event", "category": "Slack", "providerKey": "slack",
+      "description": "Déclenchement sur commande slash", "args": { "title": "Commande slash", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"command","label":"Commande (ex. /hp)","col":{"xs":24}},
+        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/slack"}
+      ] } }
+  ]
+}
