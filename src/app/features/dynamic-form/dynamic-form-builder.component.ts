@@ -124,6 +124,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   private currentFormId: string | null = null;
   currentFormName: string = '';
   currentFormDesc: string = '';
+  private lastSavedChecksum: string | null = null;
 
   // Sélection (centralisée via service)
   get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
@@ -1488,7 +1489,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       if (this.currentFormId) {
         try {
           this.catalog.saveForm({ id: this.currentFormId, name: this.currentFormName || (this.schema.title || 'Formulaire'), description: this.currentFormDesc, schema: this.schema } as any).subscribe({
-            next: () => this.msg.success('Formulaire sauvegardé'),
+            next: () => { this.msg.success('Formulaire sauvegardé'); this.updateLastChecksum(); this.purgeDraft(); },
             error: () => this.msg.error('Échec de la sauvegarde')
           });
         } catch {
@@ -1982,6 +1983,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
             this.model = s; this.schema = JSON.parse(JSON.stringify(s)); this.select(this.schema);
             if (this.applyTplPreset) this.applyTemplateDefaults();
             this.refresh();
+            this.updateLastChecksum();
           });
         } catch {}
       }
@@ -2010,6 +2012,16 @@ export class DynamicFormBuilderComponent implements OnChanges {
       if (!schemaParam && this.applyTplPreset) this.applyTemplateDefaults();
       this.refresh();
     } catch {}
+  }
+
+  private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }
+  private currentChecksum(): string {
+    return this.computeChecksum({ name: this.currentFormName, desc: this.currentFormDesc, schema: this.schema });
+  }
+  private updateLastChecksum() { this.lastSavedChecksum = this.currentChecksum(); }
+  hasUnsavedChanges(): boolean { return this.currentChecksum() !== (this.lastSavedChecksum || ''); }
+  purgeDraft() {
+    try { if (this.sessionKey) localStorage.removeItem('formbuilder.session.' + this.sessionKey); } catch {}
   }
 
   private applyTemplateDefaults() {

@@ -41,7 +41,8 @@ export const routes: Routes = [
             {
                 path: 'dynamic-form',
                 loadComponent: () => import('./features/dynamic-form/dynamic-form-builder.component').then(m => m.DynamicFormBuilderComponent),
-                title: 'Dynamic Form Builder'
+                title: 'Dynamic Form Builder',
+                canDeactivate: [unsavedChangesGuard]
             },
             // Listing routes (standalone, no modules)
             { path: 'flows', loadComponent: () => import('./features/flow/flow-list.component').then(m => m.FlowListComponent), title: 'Flows' },
@@ -61,7 +62,7 @@ export const routes: Routes = [
             { path: 'change-password', loadComponent: () => import('./features/users/change-password.component').then(m => m.ChangePasswordComponent), title: 'Changer le mot de passe' },
             // Websites (list/editor/viewer)
             { path: 'websites', loadComponent: () => import('./features/website/website-list.component').then(m => m.WebsiteListComponent), title: 'Sites web' },
-            { path: 'websites/editor', loadComponent: () => import('./features/website/website-editor.component').then(m => m.WebsiteEditorComponent), title: 'Site — Éditeur' },
+            { path: 'websites/editor', loadComponent: () => import('./features/website/website-editor.component').then(m => m.WebsiteEditorComponent), title: 'Site — Éditeur', canDeactivate: [unsavedChangesGuard] },
             { path: 'websites/viewer', loadComponent: () => import('./features/website/website-viewer.component').then(m => m.WebsiteViewerComponent), title: 'Site — Viewer' },
             { path: 'websites/page', loadComponent: () => import('./features/website/website-page-viewer.component').then(m => m.WebsitePageViewerComponent), title: 'Site — Page Viewer' },
             { path: 'apps', loadComponent: () => import('./features/catalog/app-provider-list.component').then(m => m.AppProviderListComponent), title: 'Apps / Providers' },

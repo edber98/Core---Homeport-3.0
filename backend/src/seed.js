@@ -1,4 +1,4 @@
-const { SEED, SEED_COMPANIES, SEED_USERS } = require('./config/env');
+const { SEED, SEED_COMPANIES, SEED_USERS, DEFAULT_WORKSPACE_NAME } = require('./config/env');
 const { hashPassword } = require('./utils/crypto');
 // DB models are required lazily inside seedMongoIfEmpty to allow memory-only mode without mongoose installed
 
@@ -15,7 +15,7 @@ function seedAllMemory(store){
     store.add(store.users, { email: u.email, pwdHash: hashPassword(u.password), role: u.role, companyId: c.id });
   }
   for (const c of store.companies.values()){
-    const wsDefault = store.add(store.workspaces, { name: `${c.name} Default`, companyId: c.id, templatesAllowed: [], isDefault: true });
+    const wsDefault = store.add(store.workspaces, { name: `${c.name} ${DEFAULT_WORKSPACE_NAME}`, companyId: c.id, templatesAllowed: [], isDefault: true });
     const wsTesting = store.add(store.workspaces, { name: `${c.name} Testing`, companyId: c.id, templatesAllowed: [] });
   }
   for (const ws of store.workspaces.values()){
@@ -47,7 +47,7 @@ async function seedMongoIfEmpty(){
     await User.create({ email: u.email, pwdHash: hashPassword(u.password), role: u.role, companyId });
   }
   for (const [name, companyId] of nameToId.entries()){
-    await Workspace.create({ name: `${name} Default`, companyId, templatesAllowed: [], isDefault: true });
+    await Workspace.create({ name: `${name} ${DEFAULT_WORKSPACE_NAME}`, companyId, templatesAllowed: [], isDefault: true });
     await Workspace.create({ name: `${name} Testing`, companyId, templatesAllowed: [] });
   }
   const wss = await Workspace.find();

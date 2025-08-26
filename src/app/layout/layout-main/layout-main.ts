@@ -20,6 +20,8 @@ import { AccessControlService, User } from '../../services/access-control.servic
 import { AuthService } from '../../services/auth.service';
 import { NotificationsBackendService, BackendNotification } from '../../services/notifications-backend.service';
 import { UiMessageService } from '../../services/ui-message.service';
+import { ConfirmService, ConfirmRequest } from '../../services/confirm.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
 type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean };
 
 @Component({
@@ -74,13 +76,29 @@ export class LayoutMain implements OnInit {
   selectedUserId: string | null = null;
   selectedWorkspaceId: string | null = null;
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
   }
   ngOnInit(): void {
     try {
+      // Global confirm bridge: show styled NzModal for guard-originated confirmations
+      this.confirm.requests$.subscribe((req: ConfirmRequest) => {
+        const ref = this.modal.confirm({
+          nzTitle: req.title,
+          nzContent: req.content,
+          nzOkText: req.okText || 'OK',
+          nzCancelText: req.cancelText || 'Annuler',
+          nzOkDanger: true,
+          nzCentered: req.centered ?? true,
+          nzWidth: req.width ?? 480,
+          nzClassName: req.className || 'unsaved-leave-modal',
+          nzOnOk: () => this.confirm.resolve(req.id, true),
+          nzOnCancel: () => this.confirm.resolve(req.id, false)
+        });
+        void ref;
+      });
       this.acl.changes$.subscribe(() => {
         // keep header selections in sync if service adjusts them
         this.selectedUserId = this.acl.currentUser()?.id || this.selectedUserId;

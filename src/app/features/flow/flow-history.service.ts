@@ -73,4 +73,21 @@ export class FlowHistoryService {
     if (index < 0 || index >= this.future.length) return null;
     return this.clone(this.future[this.future.length - 1 - index]); // index 0 = next redo
   }
+
+  // Serialize/deserialize full history for persistence (localStorage)
+  exportAll(): { past: FlowState[]; future: FlowState[]; pastMeta: FlowHistoryMeta[]; futureMeta: FlowHistoryMeta[] } {
+    return {
+      past: this.past.map(s => this.clone(s)),
+      future: this.future.map(s => this.clone(s)),
+      pastMeta: this.pastMeta.slice(),
+      futureMeta: this.futureMeta.slice(),
+    };
+  }
+  hydrate(dump: { past?: FlowState[]; future?: FlowState[]; pastMeta?: FlowHistoryMeta[]; futureMeta?: FlowHistoryMeta[] }) {
+    const toStates = (arr?: FlowState[]) => (arr || []).map(s => this.clone(s));
+    this.past = toStates(dump.past);
+    this.future = toStates(dump.future);
+    this.pastMeta = (dump.pastMeta || []).slice();
+    this.futureMeta = (dump.futureMeta || []).slice();
+  }
 }
