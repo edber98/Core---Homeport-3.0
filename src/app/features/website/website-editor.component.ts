@@ -147,4 +147,8 @@ export class WebsiteEditorComponent implements OnInit {
     const r = this.routes.at(i)?.value as WebsiteRoute; if (!r) return;
     this.router.navigate(['/ui-builder'], { queryParams: { route: r.path, site: this.form.get('id')?.value } });
   }
+
+  // Leave-guard hooks
+  hasUnsavedChanges(): boolean { try { return this.form?.dirty ?? false; } catch { return false; } }
+  purgeDraft() { /* no-op for websites (no localStorage) */ }
 }

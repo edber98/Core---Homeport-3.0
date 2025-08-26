@@ -1,3 +1,5 @@
+// Load .env early (idempotent)
+try { require('./config/load-env').loadEnvOnce(); } catch {}
 const http = require('http');
 const { buildApp } = require('./app');
 const { PORT } = require('./config/env');

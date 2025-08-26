@@ -11,6 +11,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Subscription } from 'rxjs';
@@ -30,7 +32,7 @@ import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.co
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzInputModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -236,8 +238,10 @@ export class FlowBuilderComponent {
               this.nodes = (doc.nodes || []) as any[];
               this.edges = (doc.edges || []) as any;
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.updateSharedGraph();
               this.tryRestoreDraft(flowId);
-              this.history.reset(this.snapshot());
+              const hydrated = this.tryHydrateHistory();
+              if (!hydrated) { this.history.reset(this.snapshot()); this.persistHistory(); }
             }
           } finally {
             this.loadingFlowDoc = false;
@@ -253,7 +257,8 @@ export class FlowBuilderComponent {
       const seed = this.fbUtils.buildDefaultGraphFromPalette(this.items);
       this.nodes = seed.nodes;
       this.edges = seed.edges as any;
-      this.history.reset(this.snapshot());
+      const hydratedAdhoc = this.tryHydrateHistory();
+      if (!hydratedAdhoc) { this.history.reset(this.snapshot()); this.persistHistory(); }
     }
     this.updateTimelineCaches();
     this.recomputeValidation();
@@ -273,8 +278,14 @@ export class FlowBuilderComponent {
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
-    const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
-    try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    // Keep draft only if it differs from backend; otherwise clear it to avoid noise
+    if (current !== (this.lastSavedChecksum || '')) {
+      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
+      try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
+    } else {
+      try { localStorage.removeItem(this.draftKey(fid)); } catch {}
+    }
   }
   private tryRestoreDraft(flowId: string) {
     try {
@@ -292,6 +303,25 @@ export class FlowBuilderComponent {
   hasUnsavedChanges(): boolean {
     const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
     return current !== (this.lastSavedChecksum || '');
+  }
+  get canSave(): boolean { return !!this.currentFlowId && this.hasUnsavedChanges(); }
+
+  // Keep shared checksum updated when meta fields change via ngModel (name/desc/status/enabled)
+  onMetaChange() {
+    try {
+      this.updateSharedGraph();
+      this.saveDraft();
+    } catch {}
+  }
+
+  // Exposed for route guard: clear current flow draft from localStorage
+  public purgeDraft() {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid) return;
+      localStorage.removeItem(this.draftKey(fid));
+      try { localStorage.removeItem(this.historyKey()); } catch {}
+    } catch {}
   }
 
 
@@ -636,6 +666,7 @@ export class FlowBuilderComponent {
       'drop.node': { type: 'Add', color: '#10b981' },
       'connect.edge': { type: 'Connect', color: '#1677ff' },
       'delete.edge': { type: 'Delete', color: '#b91c1c' },
+      'nodes.removed': { type: 'Delete', color: '#b91c1c' },
       'edges.removed': { type: 'Cleanup', color: '#9ca3af' },
       'edges.detached.final': { type: 'Detach', color: '#f59e0b' },
       'node.position.final': { type: 'Move', color: '#f59e0b' },
@@ -746,6 +777,8 @@ export class FlowBuilderComponent {
         } as any;
         this.edges = [...this.edges, edge];
       }
+      // Record addition of start/event-like node
+      this.pushState('palette.click.add');
     } else if (wantsConnect) {
       // Utiliser la source calculée avant l'ajout pour éviter l'auto-liaison vers soi-même
       const source = sourceForConnect || this.fbUtils.findBestSourceNode(this.nodes.filter(n => n.id !== newId), worldCenter.x, worldCenter.y);
@@ -777,6 +810,10 @@ export class FlowBuilderComponent {
       }
       this.pushState('palette.click.add');
       // Immediately reflect required-field issues for the new node
+      this.recomputeValidation();
+    } else {
+      // Non-function node: still record addition and revalidate
+      this.pushState('palette.click.add');
       this.recomputeValidation();
     }
   }
@@ -1217,16 +1254,18 @@ export class FlowBuilderComponent {
       // If it's an edge, delete edge; if it's a node, delete node and linked edges
       if ((tgt as any).source && (tgt as any).target) {
         this.edges = this.edges.filter(e => e !== tgt);
+        this.pushState('delete.edge');
       } else {
         const id = (tgt as any).id;
         this.nodes = this.nodes.filter(n => n.id !== id);
         this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
         this.errorNodes.delete(String(id));
+        this.pushState('nodes.removed');
       }
       this.selection = null;
       // Context deletions may affect error branches
       this.recomputeErrorPropagation();
-      this.history.push(this.snapshot());
+      this.recomputeValidation();
     } catch { }
   }
   ctxCenterTarget() {
@@ -1333,17 +1372,20 @@ export class FlowBuilderComponent {
     if ((sel as any).source && (sel as any).target) {
       // selected an edge
       this.edges = this.edges.filter(e => e !== sel);
+      // Record deletion of a specific edge
+      this.pushState('delete.edge');
     } else {
       // selected a node
       const id = sel.id;
       this.nodes = this.nodes.filter(n => n.id !== id);
       this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
       this.errorNodes.delete(String(id));
+      // Record deletion of one or more nodes
+      this.pushState('nodes.removed');
     }
     this.selection = null;
     // Deletion may change error-branch reachability
     this.recomputeErrorPropagation();
-    this.history.push(this.snapshot());
     this.recomputeValidation();
   }
 
@@ -1538,7 +1580,44 @@ export class FlowBuilderComponent {
     }
   }
 
-  private snapshot() { return { nodes: JSON.parse(JSON.stringify(this.nodes)), edges: JSON.parse(JSON.stringify(this.edges)) }; }
+  private snapshot() {
+    const snap = {
+      nodes: JSON.parse(JSON.stringify(this.nodes)),
+      edges: JSON.parse(JSON.stringify(this.edges)),
+      id: this.currentFlowId || undefined,
+      name: this.currentFlowName || undefined,
+      description: this.currentFlowDesc || undefined,
+    } as any;
+    try {
+      const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+      snap.currentChecksum = current;
+      snap.serverChecksum = this.lastSavedChecksum;
+    } catch {}
+    return snap;
+  }
+  private updateSharedGraph() {
+    try { this.shared.setGraph(this.snapshot() as any); } catch {}
+  }
+  private historyKey(): string {
+    const fid = this.currentFlowId || 'adhoc';
+    return `flow.history.${fid}`;
+  }
+  private persistHistory() {
+    try {
+      const dump = (this.history as any).exportAll?.();
+      if (dump) localStorage.setItem(this.historyKey(), JSON.stringify(dump));
+    } catch {}
+  }
+  private tryHydrateHistory(): boolean {
+    try {
+      const raw = localStorage.getItem(this.historyKey());
+      if (!raw) return false;
+      const dump = JSON.parse(raw);
+      (this.history as any).hydrate?.(dump);
+      this.updateTimelineCaches();
+      return true;
+    } catch { return false; }
+  }
   private now() { return Date.now(); }
   private isIgnoring() { return this.applyingHistory || this.now() < this.ignoreEventsUntil; }
   private beginApplyingHistory(ms = 400) {
@@ -1558,32 +1637,36 @@ export class FlowBuilderComponent {
         try {
           this.zone.run(() => {
             this.history.push(this.snapshot(), reason);
-            try { this.shared.setGraph(this.snapshot() as any); } catch {}
+            this.updateSharedGraph();
             this.updateTimelineCaches();
             try { this.cdr.detectChanges(); } catch { }
             this.saveDraft();
+            this.persistHistory();
           });
         } catch {
           this.history.push(this.snapshot(), reason);
-          try { this.shared.setGraph(this.snapshot() as any); } catch {}
+          this.updateSharedGraph();
           this.updateTimelineCaches();
           try { this.cdr.detectChanges(); } catch { }
+          this.persistHistory();
         }
       }, 60);
     } else {
       try {
         this.zone.run(() => {
           this.history.push(this.snapshot(), reason);
-          try { this.shared.setGraph(this.snapshot() as any); } catch {}
+          this.updateSharedGraph();
           this.updateTimelineCaches();
           try { this.cdr.detectChanges(); } catch { }
           this.saveDraft();
+          this.persistHistory();
         });
       } catch {
         this.history.push(this.snapshot(), reason);
-        try { this.shared.setGraph(this.snapshot() as any); } catch {}
+        this.updateSharedGraph();
         this.updateTimelineCaches();
         try { this.cdr.detectChanges(); } catch { }
+        this.persistHistory();
       }
     }
   }

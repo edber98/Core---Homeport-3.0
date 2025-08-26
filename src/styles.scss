@@ -164,6 +164,21 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 .in-flow-editor-modal .ant-modal, .in-flow-editor-modal .ant-modal-mask { z-index: 100012 !important; }
 
 /* styles.scss */
+
+/* Styled confirm for unsaved changes */
+.unsaved-leave-modal .ant-modal-confirm-title {
+  font-weight: 700;
+}
+.unsaved-leave-modal .ant-modal-confirm-body-wrapper {
+  padding-top: 6px;
+}
+.unsaved-leave-modal .ant-modal-confirm-content {
+  color: #374151;
+}
+.unsaved-leave-modal .ant-modal-confirm-btns .ant-btn-primary {
+  background: #ef4444;
+  border-color: #ef4444;
+}
 @font-face {
     font-family: 'Sarine';
     src: url('../public/fronts/sarine-medium.ttf') format('truetype');

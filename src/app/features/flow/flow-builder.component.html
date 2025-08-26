@@ -145,50 +145,70 @@
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
       (saveJson)="saveSelectedJson()"></flow-inspector-panel>
-    <div style="padding: 8px; overflow: auto;">
-      <!-- Flow meta quick edit -->
-      <div class="flow-meta apple">
-        <div class="row">
-          <label>Nom</label>
-          <input nz-input [(ngModel)]="currentFlowName" placeholder="Nom du flow" />
-        </div>
-        <div class="row">
-          <label>Description</label>
-          <input nz-input [(ngModel)]="currentFlowDesc" placeholder="Description" />
-        </div>
-        <div class="row exec">
-          <label>Exécution</label>
-          <div class="exec-controls">
-            <select class="mode-select" [(ngModel)]="builderMode">
-              <option value="test">test</option>
-              <option value="prod">prod</option>
-            </select>
-            <button class="icon-btn ghost" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-              <i class="fa-solid fa-play"></i>
-            </button>
-            <button class="icon-btn ghost" (click)="stopLastRun()" title="Stop" aria-label="Stop">
-              <i class="fa-solid fa-stop"></i>
-            </button>
+    <div class="inspector-meta" style="padding: 8px; overflow: auto;">
+      <form nz-form nzLayout="vertical" class="meta-form">
+        <nz-form-item>
+          <nz-form-label>Nom</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="onMetaChange()" name="flowName" placeholder="Nom du flow" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Description</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="onMetaChange()" name="flowDesc" placeholder="Description" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Exécution</nz-form-label>
+          <nz-form-control>
+            <div class="exec-row">
+              <nz-select [(ngModel)]="builderMode" name="builderMode" nzPlaceHolder="Mode">
+                <nz-option nzValue="test" nzLabel="test"></nz-option>
+                <nz-option nzValue="prod" nzLabel="prod"></nz-option>
+              </nz-select>
+              <button nz-button class="apple-btn icon-only" nzType="primary" type="button" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <button nz-button class="apple-btn icon-only" type="button" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+                <i class="fa-solid fa-stop"></i>
+              </button>
+            </div>
             <div class="status mono" title="Dernier / En cours">
               <div>Dernier: {{ lastRun?.status || '—' }}</div>
               <div>En cours: {{ currentRun?.status || '—' }}</div>
             </div>
-          </div>
-        </div>
-        <div class="row actions" style="gap:8px; align-items:center;">
-          <button class="btn primary" (click)="saveFlow()" title="Enregistrer" aria-label="Enregistrer">
-            <i class="fa-solid fa-floppy-disk"></i>
-          </button>
-          <select [(ngModel)]="currentFlowStatus" title="Statut" style="border:1px solid #e5e7eb; border-radius:8px; padding:4px 6px; font-size:12px;">
-            <option value="draft">brouillon</option>
-            <option value="test">test</option>
-            <option value="production">production</option>
-          </select>
-          <label title="En service" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#444;">
-            <input type="checkbox" [(ngModel)]="currentFlowEnabled" /> en service
-          </label>
-        </div>
-      </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Publication</nz-form-label>
+          <nz-form-control>
+            <div class="pub-row">
+              <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="onMetaChange()" name="flowStatus" nzPlaceHolder="Statut">
+                <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
+                <nz-option nzValue="test" nzLabel="test"></nz-option>
+                <nz-option nzValue="production" nzLabel="production"></nz-option>
+              </nz-select>
+              <button nz-button class="apple-btn icon-only" nzType="default" type="button" (click)="saveFlow()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </button>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>En service</nz-form-label>
+          <nz-form-control>
+            <label class="enabled single-line">
+              <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="onMetaChange()" name="flowEnabled" />
+              <span>Activer ce flow</span>
+            </label>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
 
       <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
         (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
@@ -203,7 +223,7 @@
   <!-- Left vertical floating actions (responsive only) -->
   <div class="left-bar">
     <div class="actions">
-      <button class="icon-btn" (click)="saveFlow()" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
@@ -270,7 +290,7 @@
       <button class="icon-btn desktop-only" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
         <i class="fa-solid fa-cloud-arrow-down"></i>
       </button>
-      <button class="icon-btn desktop-only" (click)="saveFlow()" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
     </div>

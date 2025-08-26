@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Load .env for CLI usage too
+try { require('../src/config/load-env').loadEnvOnce(); } catch {}
 // Simple CLI: purge DB, seed, reload plugins, import manifest
 const fs = require('fs');
 const path = require('path');
@@ -60,4 +62,3 @@ async function main(){
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
-

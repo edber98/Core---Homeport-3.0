@@ -10,4 +10,3 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './flow-workbench.component.scss'
 })
 export class FlowWorkbenchComponent {}
-
