@@ -108,11 +108,11 @@ export class CatalogService {
     const doc = this.load<FlowDoc | null>(this.FLOW_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Flow not found'));
   }
-  saveFlow(doc: FlowDoc): Observable<FlowDoc> {
+  saveFlow(doc: FlowDoc, force = false): Observable<FlowDoc> {
     if (environment.useBackend) {
       if (!doc?.id) return throwError(() => new Error('Missing id'));
-      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, force: true };
-      return this.flowsApi.update(doc.id, payload).pipe(map(() => doc));
+      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] } } as any;
+      return this.flowsApi.update(doc.id, payload, force).pipe(map(() => doc));
     }
     if (!doc?.id) return throwError(() => new Error('Missing id'));
     this.save(this.FLOW_DOC_KEY + doc.id, doc);
@@ -137,8 +137,8 @@ export class CatalogService {
       const doc: FlowDoc = { id, name, description: '', status: status as any, enabled, nodes, edges };
       return this.saveFlow(doc);
     }
-    const payload = { name, status, enabled, graph: { nodes, edges }, force: false } as any;
-    return this.flowsApi.create(wsId, payload).pipe(map(() => ({ id: '', name, description: '', status: status as any, enabled, nodes, edges } as FlowDoc)));
+    const payload = { name, status, enabled, graph: { nodes, edges } } as any;
+    return this.flowsApi.create(wsId, payload, false).pipe(map(() => ({ id: '', name, description: '', status: status as any, enabled, nodes, edges } as FlowDoc)));
   }
 
   // ===== Public API (Forms)
@@ -197,7 +197,7 @@ export class CatalogService {
     const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
     return of(list.find(x => x.id === id)).pipe(delay(CatalogService.LATENCY));
   }
-  saveNodeTemplate(tpl: NodeTemplate): Observable<NodeTemplate> {
+  saveNodeTemplate(tpl: NodeTemplate, force = false): Observable<NodeTemplate> {
     if (!tpl?.id) return throwError(() => new Error('Missing id'));
     if (environment.useBackend) {
       const body = {
@@ -209,15 +209,23 @@ export class CatalogService {
         output: tpl.output,
         authorize_catch_error: tpl.authorize_catch_error,
         authorize_skip_error: tpl.authorize_skip_error,
-        force: true,
       } as any;
-      return this.templatesApi.update(tpl.id, body).pipe(map(() => tpl));
+      return this.templatesApi.update(tpl.id, body, force).pipe(map(() => tpl));
     }
     const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
     const idx = list.findIndex(x => x.id === tpl.id);
     if (idx >= 0) list[idx] = tpl; else list.push(tpl);
     this.save(this.TPL_LIST_KEY, list);
     return of(tpl).pipe(delay(CatalogService.LATENCY));
+  }
+  deleteNodeTemplate(id: string, force = false): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.templatesApi.delete(id, force).pipe(map(() => true));
+    }
+    const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.TPL_LIST_KEY, next);
+    return of(true).pipe(delay(CatalogService.LATENCY));
   }
 
   // ===== Public API (Apps / Providers)

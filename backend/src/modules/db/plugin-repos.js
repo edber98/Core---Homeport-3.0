@@ -104,6 +104,8 @@ module.exports = function(){
     const Flow = require('../../db/models/flow.model');
     const Workspace = require('../../db/models/workspace.model');
     const NodeTemplate = require('../../db/models/node-template.model');
+    const Provider = require('../../db/models/provider.model');
+    const Credential = require('../../db/models/credential.model');
     const Notification = require('../../db/models/notification.model');
     const Run = require('../../db/models/run.model');
     const { validateFlowGraph } = require('../../utils/validate');
@@ -115,11 +117,13 @@ module.exports = function(){
       const loaders = {
         getTemplateByKey: async (key) => NodeTemplate.findOne({ key }).lean(),
         isTemplateAllowed: async (_key) => true,
+        getProviderByKey: async (key) => Provider.findOne({ key }).lean(),
+        hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
       };
       const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
       if (!v.ok) impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: v.errors });
     }
-    const force = !!(req.body && req.body.force);
+    const force = (String(req.query.force || '').toLowerCase() === '1' || String(req.query.force || '').toLowerCase() === 'true' || !!(req.body && req.body.force));
     if (impacted.length && !force){
       repo.status = 'sync_failed'; await repo.save();
       return res.apiError(400, 'plugin_repo_update_invalid', 'Some flows are invalid with updated plugins', { impacted, loaded });

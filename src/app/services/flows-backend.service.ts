@@ -16,10 +16,12 @@ export class FlowsBackendService {
   get(flowId: string, params?: { populate?: '0'|'1' }): Observable<BackendFlow> {
     return this.api.get<BackendFlow>(`/api/flows/${encodeURIComponent(flowId)}`, params);
   }
-  create(wsId: string, body: BackendFlowCreate): Observable<any> {
-    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/flows`, body);
+  create(wsId: string, body: BackendFlowCreate, force?: boolean): Observable<any> {
+    const params: any = {}; if (force || body.force) params.force = '1';
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/flows`, body, params);
   }
-  update(flowId: string, body: BackendFlowUpdate): Observable<any> {
-    return this.api.put<any>(`/api/flows/${encodeURIComponent(flowId)}`, body);
+  update(flowId: string, body: BackendFlowUpdate, force?: boolean): Observable<any> {
+    const params: any = {}; if (force || (body as any).force) params.force = '1';
+    return this.api.put<any>(`/api/flows/${encodeURIComponent(flowId)}`, body, params);
   }
 }

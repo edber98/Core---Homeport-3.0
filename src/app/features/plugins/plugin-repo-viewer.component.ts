@@ -3,12 +3,13 @@ import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-repos-backend.service';
 
 @Component({
   selector: 'plugin-repo-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzModalModule],
   template: `
   <div class="viewer">
     <div class="header" *ngIf="repo as r">
@@ -67,7 +68,7 @@ export class PluginRepoViewerComponent implements OnInit {
   repo: (PluginRepoDto & { id: string }) | null = null;
   gitUser = ''; gitPass = ''; gitToken = '';
   error: string | null = null; impacted: Array<{ flowId: string; name?: string; errors?: any[] }> = [];
-  constructor(private route: ActivatedRoute, private api: PluginReposBackendService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private route: ActivatedRoute, private api: PluginReposBackendService, private zone: NgZone, private cdr: ChangeDetectorRef, private modal: NzModalService) {}
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id');
     this.api.list({ page:1, limit:200 }).subscribe(list => { this.zone.run(()=>{
@@ -82,6 +83,25 @@ export class PluginRepoViewerComponent implements OnInit {
   sync(force: boolean){
     if (!this.repo) return; this.error = null; this.impacted = [];
     const id = this.repo.id; const credentials = { username: this.gitUser || undefined, password: this.gitPass || undefined, token: this.gitToken || undefined };
-    this.api.sync(id, { force, credentials }).subscribe({ next: (r) => { this.zone.run(()=>{ this.error=null; this.impacted = r?.impacted || []; try{ this.cdr.detectChanges(); }catch{} }); }, error: (e) => { this.zone.run(()=>{ this.error = e?.message || 'Sync échouée'; const details = (e?.details||{}); this.impacted = Array.isArray(details?.impacted) ? details.impacted : []; try{ this.cdr.detectChanges(); }catch{} }); } });
+    this.api.sync(id, { force, credentials }).subscribe({
+      next: (r) => { this.zone.run(()=>{ this.error=null; this.impacted = r?.impacted || []; try{ this.cdr.detectChanges(); }catch{} }); },
+      error: (e) => {
+        this.zone.run(()=>{
+          this.error = e?.message || 'Sync échouée';
+          const details = (e?.details||{});
+          this.impacted = Array.isArray(details?.impacted) ? details.impacted : [];
+          try{ this.cdr.detectChanges(); }catch{}
+        });
+        if (!force && (e?.code || '').includes('invalid')) {
+          const list = (this.impacted || []).map(x => `• ${x.name || x.flowId}`).join('<br/>');
+          this.modal.confirm({
+            nzTitle: 'Flows impactés',
+            nzContent: `Des flows deviendront invalides (${this.impacted.length}).<br/>${list || ''}<br/><br/>Forcer la synchronisation, désactiver les flows impactés et créer des notifications ?`,
+            nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+            nzOnOk: () => this.sync(true)
+          });
+        }
+      }
+    });
   }
 }

@@ -6,6 +6,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { CatalogService, NodeTemplate } from '../../services/catalog.service';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
@@ -13,7 +14,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 @Component({
   selector: 'node-template-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTagModule, NzButtonModule, NzIconModule, NzToolTipModule, NzCheckboxModule, DynamicForm],
+  imports: [CommonModule, FormsModule, NzTagModule, NzButtonModule, NzIconModule, NzToolTipModule, NzCheckboxModule, NzModalModule, DynamicForm],
   template: `
   <div class="tpl-viewer">
     <div class="page-header">
@@ -32,6 +33,10 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         <button nz-button class="apple-btn" *ngIf="view?.id" (click)="duplicate()" nz-tooltip="Dupliquer ce template">
           <i class="fa-regular fa-copy"></i>
           <span class="label">Dupliquer</span>
+        </button>
+        <button nz-button nzDanger class="apple-btn" *ngIf="view?.id" (click)="tryDelete()" nz-tooltip="Supprimer ce template">
+          <i class="fa-regular fa-trash-can"></i>
+          <span class="label">Supprimer</span>
         </button>
       </div>
     </div>
@@ -121,11 +126,11 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         <div class="panel-title">Arguments (JSON)</div>
         <pre class="args">{{ argsText }}</pre>
       </div>
-      <div class="panel span-2" *ngIf="isFormSchema(view?.args)">
+      <div class="panel span-2" *ngIf="isFormSchema(view.args)">
         <div class="panel-title">Aperçu du formulaire (Arguments)</div>
         <div class="dialog-preview">
           <div class="dialog-box">
-            <app-dynamic-form [schema]="view?.args" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+            <app-dynamic-form [schema]="view.args" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
           </div>
         </div>
       </div>
@@ -223,12 +228,33 @@ export class NodeTemplateViewerComponent implements OnInit {
     const id = this.view?.id || this.id; if (!id) return;
     this.router.navigate(['/node-templates/editor'], { queryParams: { duplicateFrom: id } });
   }
+  tryDelete(){
+    const key = this.view?.id || this.id; if (!key) return;
+    this.modal.confirm({
+      nzTitle: 'Supprimer ce template ?',
+      nzContent: 'Cette action peut invalider des flows.',
+      nzOkText: 'Supprimer', nzOkDanger: true, nzCancelText: 'Annuler',
+      nzOnOk: () => (this.catalog as any).deleteNodeTemplate(key).subscribe({
+        next: () => this.back(),
+        error: (e: any) => {
+          const impacted = Array.isArray(e?.details?.impacted) ? e.details.impacted : [];
+          const list = impacted.map((x: any) => `• ${x.name || x.flowId}`).join('<br/>');
+          this.modal.confirm({
+            nzTitle: 'Flows impactés',
+            nzContent: `Suppression impossible: ${e?.message || 'impact détecté'}.<br/>Flows impactés: ${impacted.length}.<br/>${list}<br/><br/>Forcer et désactiver les flows impactés ?`,
+            nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+            nzOnOk: () => (this.catalog as any).deleteNodeTemplate(key, true).subscribe(() => this.back())
+          });
+        }
+      })
+    });
+  }
   openEditor() {
     const id = this.view?.id || this.id;
     if (!id) return;
     this.router.navigate(['/node-templates/editor'], { queryParams: { id } });
   }
-  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private zone: NgZone, private cdr: ChangeDetectorRef, private modal: NzModalService) {}
   ngOnInit(): void {
     const id = this.id || this.route.snapshot.queryParamMap.get('id') || '';
     if (id) {
