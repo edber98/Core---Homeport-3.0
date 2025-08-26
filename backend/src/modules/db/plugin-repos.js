@@ -97,7 +97,7 @@ module.exports = function(){
     // Mark sync attempt
     repo.lastSyncAt = new Date(); repo.status = 'syncing'; await repo.save();
     // Add base dir when local
-    if (repo.type === 'local' && repo.path) registry.addBaseDir(repo.path);
+    if (repo.type === 'local' && repo.path) registry.addBaseDir(repo.path, { id: repo._id, name: repo.name, companyId: repo.companyId || null });
     // Reload plugins (imports manifest → providers/node-templates)
     const loaded = registry.reload();
     // Validate flows against current templates
@@ -145,9 +145,19 @@ module.exports = function(){
     await ensureDefaultLocal();
     // Add base dirs for enabled local repos then reload
     const repos = await PluginRepo.find({ enabled: true, type: 'local' });
-    for (const rp of repos){ if (rp.path) registry.addBaseDir(rp.path); }
+    for (const rp of repos){ if (rp.path) registry.addBaseDir(rp.path, { id: rp._id, name: rp.name, companyId: rp.companyId || null }); }
     const loaded = registry.reload();
     res.apiOk({ loaded, repos: repos.map(r => r.path) });
+  });
+
+  // Summary of items imported from a repo (providers, node templates)
+  r.get('/plugin-repos/:id/summary', async (req, res) => {
+    const id = req.params.id;
+    const Provider = require('../../db/models/provider.model');
+    const NodeTemplate = require('../../db/models/node-template.model');
+    const providers = await Provider.find({ repoId: id }).lean();
+    const nodeTemplates = await NodeTemplate.find({ repoId: id }).lean();
+    res.apiOk({ providers, nodeTemplates });
   });
 
   // Optional delete: forbid deletion of built-in local repo

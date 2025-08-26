@@ -1,0 +1,101 @@
+{
+  "providers": [
+    {
+      "key": "smtp_imap",
+      "name": "SMTP/IMAP",
+      "title": "E-mail (SMTP/IMAP)",
+      "iconClass": "fa-solid fa-envelope",
+      "color": "#ef4444",
+      "tags": ["email"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants SMTP/IMAP",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "smtpHost", "label": "Hôte SMTP", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "smtpPort", "label": "Port SMTP", "col": { "xs": 24 }, "default": 587 },
+          { "type": "checkbox", "key": "smtpSecure", "label": "TLS SMTP", "col": { "xs": 24 }, "default": true },
+          { "type": "text", "key": "imapHost", "label": "Hôte IMAP", "col": { "xs": 24 } },
+          { "type": "number", "key": "imapPort", "label": "Port IMAP", "col": { "xs": 24 }, "default": 993 },
+          { "type": "checkbox", "key": "imapSecure", "label": "TLS IMAP", "col": { "xs": 24 }, "default": true },
+          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "password", "label": "Mot de passe", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] }
+        ]
+      }
+    },
+    {
+      "key": "gmail",
+      "name": "Gmail",
+      "title": "Gmail",
+      "iconClass": "fa-brands fa-google",
+      "color": "#ea4335",
+      "tags": ["email", "gmail"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "OAuth Gmail",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true },
+          { "type": "text", "key": "refreshToken", "label": "Jeton d’actualisation", "col": { "xs": 24 }, "secret": true }
+        ]
+      }
+    },
+    {
+      "key": "outlook",
+      "name": "Outlook",
+      "title": "Microsoft Outlook",
+      "iconClass": "fa-brands fa-microsoft",
+      "color": "#2563eb",
+      "tags": ["email", "outlook"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "OAuth Microsoft",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "tenantId", "label": "ID du tenant", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "email_send", "name": "emailSend", "title": "Envoyer un e-mail", "type": "function", "category": "E-mail", "providerKey": "smtp_imap", "output": ["Success"],
+      "description": "Envoyer un e-mail avec pièces jointes", "args": { "title": "Envoyer un e-mail", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"from","label":"De","col":{"xs":24}},
+        {"type":"text","key":"to","label":"À","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"text","key":"cc","label":"CC","col":{"xs":24}},
+        {"type":"text","key":"bcc","label":"BCC","col":{"xs":24}},
+        {"type":"text","key":"subject","label":"Objet","col":{"xs":24}},
+        {"type":"textarea","key":"text","label":"Corps (texte)","col":{"xs":24}},
+        {"type":"textarea","key":"html","label":"Corps (HTML)","col":{"xs":24}},
+        {"type":"textarea","key":"attachments","label":"Pièces jointes (tableau JSON)","col":{"xs":24},"default":"[]"}
+      ] } },
+    { "key": "email_read", "name": "emailRead", "title": "Lire les e-mails", "type": "function", "category": "E-mail", "providerKey": "smtp_imap", "output": ["Messages"],
+      "description": "Lire des e-mails via IMAP avec filtre", "args": { "title": "Lecture", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"mailbox","label":"Boîte","col":{"xs":24},"default":"INBOX"},
+        {"type":"text","key":"search","label":"Requête de recherche","col":{"xs":24},"default":"UNSEEN"},
+        {"type":"number","key":"limit","label":"Limite","col":{"xs":24},"default":10}
+      ] } },
+    { "key": "email_new_message", "name": "emailNewMessage", "title": "Nouvel e-mail", "subtitle": "Déclencheur", "type": "event", "category": "E-mail", "providerKey": "smtp_imap",
+      "description": "Déclenché à la réception d’un message IMAP", "args": { "title": "Déclencheur IMAP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"mailbox","label":"Boîte","col":{"xs":24},"default":"INBOX"}
+      ] } },
+    { "key": "email_list_labels", "name": "emailListLabels", "title": "Lister les libellés", "type": "function", "category": "E-mail", "providerKey": "gmail", "output": ["Labels"],
+      "description": "Lister les libellés Gmail", "args": { "title": "Libellés", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [] } },
+    { "key": "email_add_label", "name": "emailAddLabel", "title": "Ajouter un libellé", "type": "function", "category": "E-mail", "providerKey": "gmail", "output": ["Success"],
+      "description": "Ajouter un libellé Gmail à un message", "args": { "title": "Ajouter un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"messageId","label":"ID du message","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"text","key":"label","label":"Libellé","col":{"xs":24},"validators":[{"type":"required"}]}
+      ] } },
+    { "key": "email_remove_label", "name": "emailRemoveLabel", "title": "Retirer un libellé", "type": "function", "category": "E-mail", "providerKey": "gmail", "output": ["Success"],
+      "description": "Retirer un libellé Gmail d’un message", "args": { "title": "Retirer un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"messageId","label":"ID du message","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"text","key":"label","label":"Libellé","col":{"xs":24},"validators":[{"type":"required"}]}
+      ] } }
+  ]
+}

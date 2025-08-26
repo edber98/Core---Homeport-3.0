@@ -1,5 +1,16 @@
 
-function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='end') return 'end'; if (s==='loop') return 'loop'; if (s==='flow') return 'flow'; return ''; }
+function normalizeNodeKind(nameOrType=''){
+  const s = String(nameOrType||'').trim().toLowerCase();
+  if (s==='start') return 'start';
+  if (s==='event') return 'event';
+  if (s==='endpoint') return 'event'; // treat endpoint as event-like trigger
+  if (s==='condition') return 'condition';
+  if (s==='function') return 'function';
+  if (s==='end') return 'end';
+  if (s==='loop') return 'loop';
+  if (s==='flow') return 'flow';
+  return '';
+}
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function collectGraph(flow){
@@ -17,7 +28,8 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
 
   // 1) Start nodes
   const kinds = nodes.map(n => ({ id: n.id, kind: normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) }));
-  const starts = kinds.filter(k => k.kind === 'start');
+  // Accept both 'start' and 'event' nodes as valid triggers
+  const starts = kinds.filter(k => k.kind === 'start' || k.kind === 'event');
   if (starts.length === 0) errors.push({ code: 'no_start', message: 'No start node found' });
   if (starts.length > 1) errors.push({ code: 'multiple_starts', message: 'Multiple start nodes' });
 

@@ -1,0 +1,35 @@
+{
+  "providers": [
+    {
+      "key": "googlechat",
+      "name": "Google Chat",
+      "title": "Google Chat",
+      "iconClass": "fa-brands fa-google",
+      "color": "#34A853",
+      "tags": ["chat"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Webhook Google Chat",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "webhookUrl", "label": "URL du webhook", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "googlechat_post_message", "name": "googlechatPostMessage", "title": "Publier un message", "type": "function", "category": "Google Chat", "providerKey": "googlechat", "output": ["Success"],
+      "description": "Publier un message dans Google Chat", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}}
+      ] } },
+    { "key": "googlechat_card_message", "name": "googlechatCardMessage", "title": "Message carte", "type": "function", "category": "Google Chat", "providerKey": "googlechat", "output": ["Success"],
+      "description": "Publier une carte sur Google Chat", "args": { "title": "Carte", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"textarea","key":"card","label":"JSON de la carte","col":{"xs":24},"default":"{}"}
+      ] } },
+    { "key": "googlechat_incoming_webhook", "name": "googlechatIncomingWebhook", "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Google Chat", "providerKey": "googlechat",
+      "description": "Déclenchement sur webhook entrant", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/google-chat"}
+      ] } }
+  ]
+}

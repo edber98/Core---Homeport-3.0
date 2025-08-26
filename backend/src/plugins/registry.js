@@ -5,7 +5,8 @@ class PluginRegistry {
   constructor(){
     this.handlers = new Map(); // key -> async (node,msg,inputs)
     this.meta = new Map();     // key -> { source, mtime }
-    this.baseDirs = [ path.resolve(__dirname, 'local'), path.resolve(__dirname, 'repos') ];
+    // Track baseDirs with optional repo metadata for import attribution
+    this.baseDirs = [ { path: path.resolve(__dirname, 'local'), repo: null }, { path: path.resolve(__dirname, 'repos'), repo: null } ];
   }
 
   normalizeKey(k){
@@ -27,9 +28,9 @@ class PluginRegistry {
 
   list(){ return [...this.handlers.keys()].map(k => ({ key: k, ...this.meta.get(k) })); }
 
-  addBaseDir(dir){ this.baseDirs.push(path.resolve(dir)); }
+  addBaseDir(dir, repo = null){ this.baseDirs.push({ path: path.resolve(dir), repo: repo || null }); }
 
-  loadFromDir(dir){
+  loadFromDir(dir, repo){
     const loaded = [];
     if (!fs.existsSync(dir)) return loaded;
     // Each subdir is a plugin repo with manifest.json and functions/*.js
@@ -41,8 +42,13 @@ class PluginRegistry {
         try {
           const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
           // Import providers/nodeTemplates into DB
-          try { const { importManifest } = require('./importer'); importManifest(manifest).catch(()=>{}); } catch {}
-        } catch {}
+          try {
+            const { importManifest } = require('./importer');
+            importManifest(manifest, { repo })
+              .then((summary) => logImportSuccess(repo, manifestPath, summary))
+              .catch((e)=>logImportError(repo, manifestPath, e));
+          } catch (e) { logImportError(repo, manifestPath, e); }
+        } catch (e) { logImportError(repo, manifestPath, e); }
       }
       const fnDir = path.join(plugDir, 'functions');
       if (fs.existsSync(fnDir)){
@@ -72,18 +78,38 @@ class PluginRegistry {
         }
       }
     }
+    if (loaded.length) {
+      try { console.log('[plugins] handlers loaded from', dir, '→', loaded.length); } catch {}
+    }
     return loaded;
   }
 
   reload(){
     this.handlers.clear(); this.meta.clear();
     let total = [];
-    for (const d of this.baseDirs) total = total.concat(this.loadFromDir(d));
+    for (const entry of this.baseDirs) total = total.concat(this.loadFromDir(entry.path, entry.repo || null));
     return total;
   }
 }
 
 const registry = new PluginRegistry();
-registry.reload();
-
+// Do not auto-reload on module load to avoid side effects (e.g., CLI purge)
 module.exports = { registry, PluginRegistry };
+
+function logImportError(repo, manifestPath, e){
+  try { console.error('[plugins] import failed', manifestPath, e && e.message ? e.message : e); } catch {}
+  try {
+    const Notification = require('../db/models/notification.model');
+    const companyId = repo && repo.companyId ? repo.companyId : null;
+    const entityId = repo && repo.id ? String(repo.id) : null;
+    Notification.create({ companyId, workspaceId: null, entityType: 'plugin_repo', entityId, severity: 'error', code: 'plugin_import_error', message: `Import failed for ${manifestPath}`, details: { error: String(e && e.message || e) } }).catch(()=>{});
+  } catch {}
+}
+
+function logImportSuccess(repo, manifestPath, summary){
+  try {
+    const p = summary && summary.providers || {};
+    const t = summary && summary.nodeTemplates || {};
+    console.log('[plugins] import ok', manifestPath, `providers(c/u/s): ${p.created||0}/${p.updated||0}/${p.skipped||0}`, `templates(c/u/s): ${t.created||0}/${t.updated||0}/${t.skipped||0}`);
+  } catch {}
+}

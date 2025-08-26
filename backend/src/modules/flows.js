@@ -19,9 +19,9 @@ module.exports = function(store){
     const { wsId } = req.params;
     const ws = store.workspaces.get(wsId);
     if (!ws || ws.companyId !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
-    const { name, status = 'draft', enabled = true, graph = { nodes: [], edges: [] } } = req.body || {};
+    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] } } = req.body || {};
     if (!name || String(name).trim() === '') return res.status(400).json({ error: 'name required' });
-    const flow = store.add(store.flows, { name: String(name), workspaceId: wsId, status, enabled, graph });
+    const flow = store.add(store.flows, { name: String(name), description: String(description || ''), workspaceId: wsId, status, enabled, graph });
     res.status(201).json({ success: true, data: flow, requestId: req.requestId, ts: Date.now() });
   });
 

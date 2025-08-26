@@ -85,7 +85,7 @@ export class CatalogService {
       return this.flowsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
         id: f.id,
         name: f.name,
-        description: undefined,
+        description: (f as any).description || '',
         status: (f.status as any) || 'draft',
         enabled: !!f.enabled,
       } as FlowSummary))));
@@ -97,7 +97,7 @@ export class CatalogService {
       return this.flowsApi.get(id, { populate: '1' }).pipe(map(f => ({
         id: f.id,
         name: f.name,
-        description: undefined,
+        description: (f as any).description || '',
         status: (f.status as any) || 'draft',
         enabled: !!f.enabled,
         nodes: (f as any).graph?.nodes || [],
@@ -111,7 +111,7 @@ export class CatalogService {
   saveFlow(doc: FlowDoc): Observable<FlowDoc> {
     if (environment.useBackend) {
       if (!doc?.id) return throwError(() => new Error('Missing id'));
-      const payload = { name: doc.name, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, force: true };
+      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, force: true };
       return this.flowsApi.update(doc.id, payload).pipe(map(() => doc));
     }
     if (!doc?.id) return throwError(() => new Error('Missing id'));

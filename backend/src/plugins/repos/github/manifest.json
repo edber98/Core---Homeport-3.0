@@ -40,8 +40,8 @@
   "nodeTemplates": [
     {
       "key": "github_issue_create",
-      "name": "GitHub Create Issue",
-      "title": "Create Issue",
+      "name": "githubCreateIssue",
+      "title": "Créer une issue",
       "subtitle": "GitHub",
       "type": "function",
       "category": "GitHub",
@@ -49,8 +49,9 @@
       "output": [
         "Success"
       ],
+      "description": "Créer une issue GitHub",
       "args": {
-        "title": "Create Issue",
+        "title": "Créer une issue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -59,7 +60,7 @@
           {
             "type": "text",
             "key": "owner",
-            "label": "Owner",
+            "label": "Propriétaire",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -79,7 +80,7 @@
           {
             "type": "text",
             "key": "repo",
-            "label": "Repo",
+            "label": "Dépôt",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -99,7 +100,7 @@
           {
             "type": "text",
             "key": "title",
-            "label": "Title",
+            "label": "Titre",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -119,7 +120,7 @@
           {
             "type": "textarea",
             "key": "body",
-            "label": "Body",
+            "label": "Corps",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -136,8 +137,8 @@
     },
     {
       "key": "github_comment",
-      "name": "GitHub Comment",
-      "title": "Add Comment",
+      "name": "githubAddComment",
+      "title": "Ajouter un commentaire",
       "subtitle": "GitHub",
       "type": "function",
       "category": "GitHub",
@@ -145,8 +146,9 @@
       "output": [
         "Success"
       ],
+      "description": "Ajouter un commentaire à une issue GitHub",
       "args": {
-        "title": "Add Comment",
+        "title": "Ajouter un commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -155,7 +157,7 @@
           {
             "type": "text",
             "key": "owner",
-            "label": "Owner",
+            "label": "Propriétaire",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -175,7 +177,7 @@
           {
             "type": "text",
             "key": "repo",
-            "label": "Repo",
+            "label": "Dépôt",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -215,7 +217,7 @@
           {
             "type": "textarea",
             "key": "comment",
-            "label": "Comment",
+            "label": "Commentaire",
             "col": {
               "xs": 24,
               "sm": 24,

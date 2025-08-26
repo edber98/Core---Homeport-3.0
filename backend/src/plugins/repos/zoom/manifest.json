@@ -1,0 +1,36 @@
+{
+  "providers": [
+    {
+      "key": "zoom",
+      "name": "Zoom",
+      "title": "Zoom",
+      "iconClass": "fa-solid fa-video",
+      "color": "#2D8CFF",
+      "tags": ["meetings"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Zoom OAuth/JWT",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "accountId", "label": "ID du compte", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "zoom_create_meeting", "name": "zoomCreateMeeting", "title": "Créer une réunion", "type": "function", "category": "Zoom", "providerKey": "zoom", "output": ["Success"],
+      "description": "Créer une réunion Zoom", "args": { "title": "Créer une réunion", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"topic","label":"Sujet","col":{"xs":24}},
+        {"type":"select","key":"type","label":"Type","col":{"xs":24},"options":[{"label":"Planifiée","value":2},{"label":"Instantanée","value":1}]},
+        {"type":"datetime","key":"startTime","label":"Heure de début","col":{"xs":24}},
+        {"type":"number","key":"duration","label":"Durée (min)","col":{"xs":24},"default":30}
+      ] } },
+    { "key": "zoom_webhook_event", "name": "zoomWebhookEvent", "title": "Webhook participant", "subtitle": "Déclencheur", "type": "event", "category": "Zoom", "providerKey": "zoom",
+      "description": "Déclenchement via webhook Zoom (participant, réunion)", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
+        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/zoom"}
+      ] } }
+  ]
+}

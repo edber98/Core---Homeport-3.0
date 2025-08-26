@@ -41,17 +41,20 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
-    const { name, status = 'draft', enabled = true, graph = { nodes: [], edges: [] }, force = false } = req.body || {};
+    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] }, force = false } = req.body || {};
     if (!name || String(name).trim() === '') return res.apiError(400, 'name_required', 'Flow name is required');
     const loaders = {
       getTemplateByKey: async (key) => NodeTemplate.findOne({ key }).lean(),
       isTemplateAllowed: async (key) => (ws.templatesAllowed || []).length === 0 || ws.templatesAllowed.includes(key),
     };
     const v = await validateFlowGraph(graph, { strict: true, loaders });
-    if (!v.ok && !force){
+    // Allow empty graphs to be created (disabled) without forcing
+    const isEmptyGraph = !graph || !Array.isArray(graph.nodes) || graph.nodes.length === 0;
+    const onlyNoStart = (v.errors || []).length === 1 && v.errors[0]?.code === 'no_start';
+    if (!v.ok && !force && !(isEmptyGraph && onlyNoStart)){
       return res.apiError(400, 'flow_invalid', 'Flow validation failed', { errors: v.errors, warnings: v.warnings });
     }
-    const flow = await Flow.create({ name: String(name), workspaceId: ws._id, status, enabled: v.ok ? enabled : false, graph });
+    const flow = await Flow.create({ name: String(name), description: String(description || ''), workspaceId: ws._id, status, enabled: v.ok ? enabled : false, graph });
     if (!v.ok){
       await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: 'Flow created with invalid graph (disabled)', details: { errors: v.errors }, link: `/flows/${flow._id}/editor` });
     }
@@ -115,7 +118,7 @@ module.exports = function(){
       f.workspaceId = dest._id;
     }
     // Patch other fields
-    Object.assign(f, { name: patch.name ?? f.name, status: patch.status ?? f.status, enabled: (patch.enabled != null ? patch.enabled : f.enabled) });
+    Object.assign(f, { name: patch.name ?? f.name, description: (patch.description != null ? String(patch.description) : f.description), status: patch.status ?? f.status, enabled: (patch.enabled != null ? patch.enabled : f.enabled) });
     await f.save();
     res.apiOk(f);
   });

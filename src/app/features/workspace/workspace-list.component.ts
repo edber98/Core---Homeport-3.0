@@ -45,7 +45,7 @@ import { auditTime } from 'rxjs/operators';
           </div>
         </div>
         <div class="card" *ngFor="let w of workspaces" (click)="select(w)" [class.active]="selected?.id===w.id">
-          <div class="leading"><div class="avatar">{{ w.name | slice:0:1 }}</div></div>
+          <div class="leading"><div class="avatar">{{ w.name | slice:0:1 | uppercase }}</div></div>
           <div class="content"><div class="name">{{ w.name }}</div><div class="desc">{{ w.id }}</div></div>
         </div>
       </div>

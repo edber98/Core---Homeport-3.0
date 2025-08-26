@@ -16,8 +16,8 @@
   "nodeTemplates": [
     {
       "key": "crm_contact_create",
-      "name": "CRM Create Contact",
-      "title": "Create Contact",
+      "name": "crmCreateContact",
+      "title": "Créer un contact",
       "subtitle": "CRM",
       "type": "function",
       "category": "CRM",
@@ -25,8 +25,9 @@
       "output": [
         "Success"
       ],
+      "description": "Créer un contact CRM",
       "args": {
-        "title": "Create Contact",
+        "title": "Créer un contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35,7 +36,7 @@
           {
             "type": "text",
             "key": "firstName",
-            "label": "First name",
+            "label": "Prénom",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -55,7 +56,7 @@
           {
             "type": "text",
             "key": "lastName",
-            "label": "Last name",
+            "label": "Nom",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -92,8 +93,8 @@
     },
     {
       "key": "crm_contact_update",
-      "name": "CRM Update Contact",
-      "title": "Update Contact",
+      "name": "crmUpdateContact",
+      "title": "Mettre à jour un contact",
       "subtitle": "CRM",
       "type": "function",
       "category": "CRM",
@@ -101,8 +102,9 @@
       "output": [
         "Success"
       ],
+      "description": "Mettre à jour un contact CRM",
       "args": {
-        "title": "Update Contact",
+        "title": "Mettre à jour un contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -111,7 +113,7 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Contact ID",
+            "label": "ID du contact",
             "col": {
               "xs": 24,
               "sm": 24,

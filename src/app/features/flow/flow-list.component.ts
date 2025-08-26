@@ -141,14 +141,14 @@ type FlowItem = { id: string; name: string; description?: string };
       .actions .primary.icon-only { display:inline-flex; }
     }
 
-    .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+    .loading .skeleton-grid { display:grid; grid-template-columns: 1fr; gap:16px; }
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
 
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
 
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer;
             background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
             border: 1px solid #ececec;

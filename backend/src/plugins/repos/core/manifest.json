@@ -1,0 +1,198 @@
+{
+  "providers": [
+    {
+      "key": "core",
+      "name": "Core",
+      "title": "Utilitaires de base",
+      "iconClass": "fa-solid fa-cubes",
+      "color": "#111827",
+      "tags": ["core"],
+      "hasCredentials": false
+    },
+    {
+      "key": "mqtt",
+      "name": "MQTT",
+      "title": "MQTT",
+      "iconClass": "fa-solid fa-satellite-dish",
+      "color": "#22c55e",
+      "tags": ["iot", "messaging"],
+      "hasCredentials": true,
+      "allowWithoutCredentials": false,
+      "credentialsForm": {
+        "title": "MQTT – Connexion",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "brokerUrl", "label": "Broker URL", "col": { "xs": 24 }, "default": "mqtt://localhost:1883", "validators": [{"type":"required"}] },
+          { "type": "text", "key": "clientId", "label": "Client ID", "col": { "xs": 24 }, "default": "homeport-client" },
+          { "type": "text", "key": "username", "label": "Username", "col": { "xs": 24 } },
+          { "type": "text", "key": "password", "label": "Password", "col": { "xs": 24 }, "secret": true },
+          { "type": "checkbox", "key": "tls", "label": "TLS", "col": { "xs": 24 }, "default": false }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "core_webhook",
+      "name": "httpEndpoint",
+      "title": "Point d’entrée HTTP",
+      "subtitle": "Trigger",
+      "type": "event",
+      "category": "HTTP",
+      "description": "Déclenchement via requête HTTP entrante (webhook)",
+      "args": {
+        "title": "Point d’entrée HTTP",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 }, "default": "/hooks/event", "validators": [{"type":"required"}] },
+          { "type": "select", "key": "method", "label": "Méthode", "col": { "xs": 24 }, "options": [
+            {"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}
+          ], "default": "POST" },
+          { "type": "select", "key": "contentType", "label": "Content-Type attendu", "col": { "xs": 24 }, "options": [
+            {"label":"application/json","value":"application/json"},
+            {"label":"application/x-www-form-urlencoded","value":"application/x-www-form-urlencoded"},
+            {"label":"text/plain","value":"text/plain"},
+            {"label":"multipart/form-data","value":"multipart/form-data"}
+          ], "default": "application/json" },
+          { "type": "checkbox", "key": "verifySignature", "label": "Vérifier signature (HMAC)", "col": { "xs": 24 }, "default": false },
+          { "type": "select", "key": "signatureAlg", "label": "Algorithme", "col": { "xs": 24 }, "visibleIf": { "verifySignature": true }, "options": [
+            {"label":"HMAC-SHA256","value":"hmac_sha256"},
+            {"label":"Aucun","value":"none"}
+          ], "default": "hmac_sha256" },
+          { "type": "text", "key": "secret", "label": "Secret (signature)", "col": { "xs": 24 }, "secret": true, "visibleIf": { "verifySignature": true } },
+          { "type": "checkbox", "key": "cors", "label": "Autoriser CORS (\"*\")", "col": { "xs": 24 }, "default": true },
+          { "type": "checkbox", "key": "captureHeaders", "label": "Inclure les en-têtes dans le payload", "col": { "xs": 24 }, "default": false },
+          { "type": "number", "key": "respondStatus", "label": "HTTP status de réponse", "col": { "xs": 24 }, "default": 200 },
+          { "type": "textarea", "key": "respondBody", "label": "Corps de réponse (template JSON/texte)", "col": { "xs": 24 }, "default": "" }
+        ]
+      }
+    },
+    {
+      "key": "core_scheduler",
+      "name": "scheduler",
+      "title": "Planificateur",
+      "subtitle": "Trigger",
+      "type": "start",
+      "category": "Core",
+      "description": "Déclenchement programmé (cron / intervalle)",
+      "args": {
+        "title": "Planificateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "select", "key": "mode", "label": "Mode", "col": { "xs": 24 }, "options":[{"label":"cron","value":"cron"},{"label":"interval","value":"interval"}] },
+          { "type": "text", "key": "cron", "label": "Expression cron", "col": { "xs": 24 }, "visibleIf": { "mode": "cron" }, "default": "*/5 * * * *" },
+          { "type": "number", "key": "everySec", "label": "Toutes les X secondes", "col": { "xs": 24 }, "visibleIf": { "mode": "interval" }, "default": 60 }
+        ]
+      }
+    },
+    {
+      "key": "core_function_code",
+      "name": "functionCode",
+      "title": "Fonction/Code",
+      "subtitle": "Snippet JS",
+      "type": "function",
+      "category": "Core",
+      "description": "Exécute un snippet JS sandbox (entrée → sortie)",
+      "args": { "title": "Code", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "textarea", "key": "code", "label": "Code (JS)", "col": { "xs": 24 }, "default": "return inputs;" }
+      ] }
+    },
+    {
+      "key": "core_transform",
+      "name": "transform",
+      "title": "Transformation",
+      "subtitle": "Mappage",
+      "type": "function",
+      "category": "Core",
+      "description": "Mapper/renommer des champs, casts, templates",
+      "args": { "title": "Transformation", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "textarea", "key": "mappings", "label": "Mappings (JSON: {\"dst\":\"src\"})", "col": { "xs": 24 }, "default": "{}" }
+      ] }
+    },
+    {
+      "key": "core_validator",
+      "name": "validator",
+      "title": "Validateur",
+      "subtitle": "Schéma JSON",
+      "type": "function",
+      "category": "Core",
+      "description": "Valide un payload selon JSON Schema",
+      "args": { "title": "Validateur", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "textarea", "key": "schema", "label": "Schema (JSON)", "col": { "xs": 24 }, "default": "{}" },
+        { "type": "checkbox", "key": "strict", "label": "Strict (toutes erreurs)", "col": { "xs": 24 }, "default": true }
+      ] }
+    },
+    {
+      "key": "core_http_request",
+      "name": "httpRequest",
+      "title": "Requête HTTP",
+      "subtitle": "Client",
+      "type": "function",
+      "category": "HTTP",
+      "description": "HTTP client basique (placeholder)",
+      "output": ["Success"],
+      "args": { "title": "HTTP", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "select", "key": "method", "label": "Méthode", "options":[{"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}], "col": { "xs": 24 }, "default": "GET" },
+        { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "validators":[{"type":"required"}] },
+        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "col": { "xs": 24 }, "default": "{}" },
+        { "type": "textarea", "key": "body", "label": "Body (JSON)", "col": { "xs": 24 }, "default": "{}", "visibleIf": { "method": ["POST","PUT","PATCH"] } }
+      ] }
+    },
+    {
+      "key": "mqtt_publish",
+      "name": "mqttPublish",
+      "title": "Publier MQTT",
+      "subtitle": "Publication",
+      "type": "function",
+      "category": "MQTT",
+      "providerKey": "mqtt",
+      "output": ["Success"],
+      "description": "Publier un message dans un topic",
+      "args": { "title": "Publication", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "topic", "label": "Topic", "col": { "xs": 24 }, "validators":[{"type":"required"}] },
+        { "type": "textarea", "key": "payload", "label": "Payload (JSON ou texte)", "col": { "xs": 24 } },
+        { "type": "number", "key": "qos", "label": "QoS", "col": { "xs": 24 }, "default": 0 },
+        { "type": "checkbox", "key": "retain", "label": "Retain", "col": { "xs": 24 }, "default": false }
+      ] }
+    },
+    {
+      "key": "mqtt_subscribe",
+      "name": "mqttSubscribe",
+      "title": "Abonnement MQTT",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "category": "MQTT",
+      "providerKey": "mqtt",
+      "description": "Déclenchement sur messages MQTT (topic)",
+      "args": { "title": "Abonnement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "topic", "label": "Topic filter", "col": { "xs": 24 }, "default": "+/sensor/#" },
+        { "type": "number", "key": "qos", "label": "QoS", "col": { "xs": 24 }, "default": 0 }
+      ] }
+    },
+    {
+      "key": "ws_event",
+      "name": "websocketEvent",
+      "title": "Événement WebSocket",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "category": "WebSockets",
+      "description": "Déclenchement sur message WebSocket",
+      "args": { "title": "WebSocket", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "path", "label": "Chemin WS", "col": { "xs": 24 }, "default": "/ws" }
+      ] }
+    },
+    {
+      "key": "socketio_event",
+      "name": "socketIoEvent",
+      "title": "Événement Socket.IO",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "category": "WebSockets",
+      "description": "Déclenchement sur événement Socket.IO",
+      "args": { "title": "Socket.IO", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "namespace", "label": "Namespace", "col": { "xs": 24 }, "default": "/" },
+        { "type": "text", "key": "event", "label": "Nom de l’événement", "col": { "xs": 24 }, "default": "message" }
+      ] }
+    }
+  ]
+}
