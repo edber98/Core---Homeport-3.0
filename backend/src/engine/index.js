@@ -114,6 +114,11 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       if (chosen != null){
         const picks = Array.isArray(chosen) ? chosen : [chosen];
         const targets = picks.map(pick => outs.find(o => o.labelText === String(pick))).filter(Boolean).map(o => o.target);
+        // Emit edges taken for visualization
+        for (const pick of picks){
+          const next = outs.find(o => o.labelText === String(pick));
+          if (next) await send({ type: 'edge.taken', sourceId: node.id, targetId: next.target });
+        }
         if (targets.length === 1) {
           await runBranch(targets[0], msg, seen);
         } else if (targets.length > 1) {
@@ -144,8 +149,10 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
     }
     const outs = outEdges.get(curId) || [];
     if (outs.length === 1){
+      await send({ type: 'edge.taken', sourceId: node.id, targetId: outs[0].target });
       await runBranch(outs[0].target, msg, seen);
     } else if (outs.length > 1){
+      for (const o of outs){ await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
       await Promise.all(outs.map(o => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen))));
     }
   };

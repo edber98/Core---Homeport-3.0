@@ -561,6 +561,11 @@ export class FlowExecutionComponent {
           }
         }
       }
+      if (t === 'edge.taken') {
+        const s = String(ev?.data?.sourceId || ev?.sourceId || '');
+        const d = String(ev?.data?.targetId || ev?.targetId || '');
+        if (s && d && s !== d) this.backendPairs.add(`${s}->${d}`);
+      }
       if (t === 'node.result') {
         const nodeId = String(ev.nodeId || '');
         const last = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId);

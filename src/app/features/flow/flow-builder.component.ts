@@ -1796,6 +1796,16 @@ export class FlowBuilderComponent {
         try { this.cdr.detectChanges(); } catch {}
         return;
       }
+      if (type === 'edge.taken') {
+        const sId = String(ev?.data?.sourceId || ev?.sourceId || '');
+        const tId = String(ev?.data?.targetId || ev?.targetId || '');
+        if (sId && tId && sId !== tId) {
+          this.backendEdgesTaken.add(`${sId}->${tId}`);
+          this.applyBackendEdgeHighlights();
+        }
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
       if (type === 'node.result') {
         const nid = String(ev.nodeId || '');
         if (nid) {
