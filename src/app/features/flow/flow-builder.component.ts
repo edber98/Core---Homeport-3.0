@@ -1760,60 +1760,50 @@ export class FlowBuilderComponent {
     const s = this.runsApi.stream(runId);
     this.backendStream = s;
     s.on((ev) => {
-      const type = ev?.type;
-      const data = ev?.data || {};
+      const type = ev?.type as string;
       if (!type) return;
-      // Start of run: clear stats/paths
-      if (type === 'run.started') {
-        this.backendNodeStats.clear();
-        this.backendEdgesTaken.clear();
-        // Seed last node as the Start node so the first node.done can draw the Start -> Next edge
-        this.backendLastNodeId = this.findStartNodeId();
-        this.applyBackendEdgeHighlights();
+      // LiveEvent mapping
+      if (type === 'run.status') {
+        const st = ev?.run?.status || ev?.data?.status;
+        if (st === 'running') {
+          this.backendNodeStats.clear();
+          this.backendEdgesTaken.clear();
+          this.backendLastNodeId = this.findStartNodeId();
+          this.applyBackendEdgeHighlights();
+          try { this.cdr.detectChanges(); } catch {}
+        } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
+          try { s.close(); } catch {}
+        }
+        return;
+      }
+      if (type === 'node.status') {
+        const nid = String(ev.nodeId || ev.data?.nodeId || '');
+        const st = ev?.data?.status || 'running';
+        if (nid) {
+          const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
+          cur.lastStatus = st as any;
+          this.backendNodeStats.set(nid, cur);
+          // Track path on running transition (edge from previous to current)
+          if (st === 'running') {
+            const prev = this.backendLastNodeId;
+            if (prev && prev !== nid) {
+              this.backendEdgesTaken.add(`${prev}->${nid}`);
+              this.applyBackendEdgeHighlights();
+            }
+            this.backendLastNodeId = nid;
+          }
+        }
         try { this.cdr.detectChanges(); } catch {}
         return;
       }
-      if (type === 'node.done') {
-        const nid = String(data?.nodeId || '');
+      if (type === 'node.result') {
+        const nid = String(ev.nodeId || '');
         if (nid) {
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.count = (cur.count || 0) + 1; cur.lastStatus = 'success';
           this.backendNodeStats.set(nid, cur);
-          // Track path: last node → current node
-          const prev = this.backendLastNodeId;
-          if (prev && prev !== nid) {
-            this.backendEdgesTaken.add(`${prev}->${nid}`);
-            this.applyBackendEdgeHighlights();
-          }
-          this.backendLastNodeId = nid;
+          // Edge path was updated on node.status running; nothing else to do here
         }
-        try { this.cdr.detectChanges(); } catch {}
-        return;
-      }
-      if (type === 'node.skipped') {
-        const nid = String(data?.nodeId || '');
-        if (nid) {
-          const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
-          cur.lastStatus = 'skipped';
-          this.backendNodeStats.set(nid, cur);
-        }
-        try { this.cdr.detectChanges(); } catch {}
-        return;
-      }
-      if (type === 'run.error' || type === 'run.failed') {
-        // Mark last node as error if available
-        const last = this.backendLastNodeId;
-        if (last) {
-          const cur = this.backendNodeStats.get(last) || { count: 0 } as any;
-          cur.lastStatus = 'error';
-          this.backendNodeStats.set(last, cur);
-        }
-        try { s.close(); } catch {}
-        try { this.cdr.detectChanges(); } catch {}
-        return;
-      }
-      if (type === 'run.success' || type === 'run.completed') {
-        try { s.close(); } catch {}
         try { this.cdr.detectChanges(); } catch {}
         return;
       }

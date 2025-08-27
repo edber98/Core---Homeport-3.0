@@ -4,6 +4,8 @@ const Flow = require('../../db/models/flow.model');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const Run = require('../../db/models/run.model');
+const Attempt = require('../../db/models/attempt.model');
+const RunEvent = require('../../db/models/run-event.model');
 const { runFlow } = require('../../engine');
 const { broadcast } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
@@ -40,12 +42,66 @@ module.exports = function(){
         const payload = req.body?.payload ?? null;
         const initialMsg = { payload };
         let finalMsg = null;
+        let seq = 0; // live event sequence
         await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, async (ev) => {
-          const doc = await Run.findById(run._id);
-          doc.events.push({ ts: Date.now(), type: ev.type, data: ev });
-          await doc.save();
-          broadcast(String(run._id), ev);
-          broadcastRun(String(run._id), ev);
+          const ts = new Date();
+          // Translate engine ev -> LiveEvents and persist
+          if (ev.type === 'run.started'){
+            await Run.updateOne({ _id: run._id }, { $set: { status: 'running' }, $push: { /* keep legacy empty */ } });
+            await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'running', startedAt: ev.startedAt || ts.toISOString() }, ts });
+          }
+          if (ev.type === 'node.started'){
+            const nodeId = String(ev.nodeId || '');
+            const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
+            const nextAttempt = last ? (last.attempt + 1) : 1;
+            const startedAt = ev.startedAt ? new Date(ev.startedAt) : ts;
+            const att = await Attempt.findOneAndUpdate(
+              { runId: run._id, nodeId, attempt: nextAttempt },
+              { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre } },
+              { upsert: true, new: true }
+            );
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: nextAttempt, seq: ++seq, data: { status: 'running', startedAt }, ts });
+          }
+          if (ev.type === 'node.done'){
+            const nodeId = String(ev.nodeId || '');
+            let att = await Attempt.findOne({ runId: run._id, nodeId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
+            const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            if (att){
+              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.argsPost = ev.argsPost; att.input = ev.input; att.result = ev.result; await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+            } else {
+              // fallback: create completed attempt
+              const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
+              const nextAttempt = last ? last.attempt + 1 : 1;
+              att = await Attempt.findOneAndUpdate(
+                { runId: run._id, nodeId, attempt: nextAttempt },
+                { $setOnInsert: { status: 'success', startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result } },
+                { upsert: true, new: true }
+              );
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+            }
+          }
+          if (ev.type === 'node.skipped'){
+            const nodeId = String(ev.nodeId || '');
+            const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
+            const nextAttempt = last ? last.attempt + 1 : 1;
+            const att = await Attempt.findOneAndUpdate(
+              { runId: run._id, nodeId, attempt: nextAttempt },
+              { $setOnInsert: { status: 'skipped' } },
+              { upsert: true, new: true }
+            );
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'skipped' }, ts });
+          }
+          // broadcast Live-like messages for frontend
+          const livePackets = [];
+          if (ev.type === 'run.started') livePackets.push({ type: 'run.status', run: { status: 'running' } });
+          if (ev.type === 'node.started') livePackets.push({ type: 'node.status', nodeId: ev.nodeId, data: { status: 'running' } });
+          if (ev.type === 'node.done') livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+          if (ev.type === 'run.completed') livePackets.push({ type: 'run.status', run: { status: 'success', result: ev.payload } });
+          for (const pkt of livePackets){ broadcast(String(run._id), pkt); broadcastRun(String(run._id), pkt); }
           try { if (ev && ev.type) console.log(`[runs][db] event: runId=${String(run._id)} type=${ev.type}`); } catch {}
           if (ev.type === 'run.completed') finalMsg = ev; // capture full payload
         });
@@ -57,17 +113,18 @@ module.exports = function(){
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
         doc.msg = finalMsg || null;
         await doc.save();
+        try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
         console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
       } catch (e) {
         const doc = await Run.findById(run._id);
         doc.status = 'error';
-        const ev = { ts: Date.now(), type: 'run.failed', error: e.message };
-        doc.events.push(ev);
         doc.finishedAt = new Date();
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
         await doc.save();
-        broadcast(String(run._id), ev);
-        broadcastRun(String(run._id), ev);
+        await RunEvent.create({ runId: run._id, type: 'run.status', seq: 1, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
+        const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
+        broadcast(String(run._id), pkt);
+        broadcastRun(String(run._id), pkt);
         console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
       }
     })();
@@ -82,11 +139,23 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'run_not_found', 'Run not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+    const include = String(req.query.include || '').split(',').map(s=>s.trim()).filter(Boolean);
     if (req.query.populate === '1'){
-      const rp = await Run.findById(run._id).populate('flowId').populate('workspaceId');
+      const rp = await Run.findById(run._id).populate('flowId').populate('workspaceId').lean();
+      if (include.length){
+        const out = { ...rp };
+        if (include.includes('attempts')) out.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
+        if (include.includes('events')) out.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+        return res.apiOk(out);
+      }
       return res.apiOk(rp);
     }
-    res.apiOk({ id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, events: run.events, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs });
+    const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
+    if (include.length){
+      if (include.includes('attempts')) base.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
+      if (include.includes('events')) base.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+    }
+    res.apiOk(base);
   });
 
   r.get('/runs/:runId/stream', async (req, res) => {
@@ -103,27 +172,29 @@ module.exports = function(){
     res.flushHeaders && res.flushHeaders();
     console.log(`[runs][db] stream open: runId=${String(run._id)} events=${(run.events||[]).length} reqId=${req.requestId}`);
 
-    const sendEvent = (ev) => { res.write(`event: ${ev.type}\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
-    // replay
-    for (const ev of run.events){ sendEvent(ev); }
+    const sendLive = (ev) => { res.write(`event: live\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
+    // Replay persisted live events
+    let lastSeq = 0;
+    const history = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+    for (const ev of history){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+    // Immediately send current status to keep the connection warm
+    try {
+      const doc0 = await Run.findById(run._id).lean();
+      if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status } });
+    } catch {}
 
-    let lastCount = run.events.length;
     const interval = setInterval(async () => {
       const doc = await Run.findById(run._id).lean();
       if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
-      if (doc.events.length > lastCount){
-        for (let i=lastCount;i<doc.events.length;i++) sendEvent(doc.events[i]);
-        lastCount = doc.events.length;
-      }
-      res.write(`event: heartbeat\n`);
-      res.write(`data: ${JSON.stringify({ ts: Date.now(), status: doc.status })}\n\n`);
+      const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
+      for (const ev of news){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+      // heartbeat with current status
+      sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status } });
       if (doc.status === 'success' || doc.status === 'error'){
-        res.write(`event: run.${doc.status}\n`);
-        res.write(`data: ${JSON.stringify({ ts: Date.now(), status: doc.status, result: doc.result })}\n\n`);
         clearInterval(interval);
         try{ res.end(); }catch{}
       }
-    }, 600);
+    }, 200);
 
     req.on('close', () => { clearInterval(interval); console.log(`[runs][db] stream closed: runId=${String(run._id)} reqId=${req.requestId}`); });
   });

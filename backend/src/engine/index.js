@@ -12,7 +12,29 @@ function isTemplateLike(s){ return typeof s === 'string' && /\{\{[\s\S]*?\}\}/.t
 function isTruthyText(s){ if (s == null) return false; const t = String(s).trim(); if (t === '') return false; const low = t.toLowerCase(); if (low==='false'||low==='0'||low==='null'||low==='undefined'||low==='nan') return false; return true; }
 function buildEvalContext(initialContext, msg){ return { ...initialContext, msg, payload: msg.payload }; }
 function renderTemplate(value, evalCtx){ if (typeof value !== 'string') return value; return evaluateTemplateDetailed(value, evalCtx).text; }
-function deepRender(obj, evalCtx){ if (obj == null) return obj; if (typeof obj === 'string') return renderTemplate(obj, evalCtx); if (Array.isArray(obj)) return obj.map(v=>deepRender(v, evalCtx)); if (typeof obj === 'object'){ const out={}; for (const [k,v] of Object.entries(obj)) out[k]=deepRender(v, evalCtx); return out; } return obj; }
+function deepRender(obj, evalCtx){
+  if (obj == null) return obj;
+  if (typeof obj === 'string') return renderTemplate(obj, evalCtx);
+  if (Array.isArray(obj)) return obj.map(v=>deepRender(v, evalCtx));
+  if (typeof obj === 'object'){
+    // {$expr:"..."}
+    if (Object.keys(obj).length === 1 && typeof obj.$expr === 'string'){
+      try { return evaluateExpression(obj.$expr, evalCtx); } catch { return obj; }
+    }
+    const out={};
+    for (const [k,v] of Object.entries(obj)){
+      if (v && typeof v === 'object' && !Array.isArray(v)){
+        const keys = Object.keys(v);
+        if (keys.length === 1 && typeof v.$expr === 'string'){
+          try { out[k] = evaluateExpression(v.$expr, evalCtx); continue; } catch { /* fallthrough */ }
+        }
+      }
+      out[k]=deepRender(v, evalCtx);
+    }
+    return out;
+  }
+  return obj;
+}
 
 const builtinRegistry = {
   action: async (node, msg, inputs) => ({ ok: true, echo: inputs }),
@@ -23,21 +45,44 @@ const builtinRegistry = {
 function buildGraph(flow){ const nodesById = new Map(); const outEdges = new Map(); for (const n of (flow.nodes||[])){ n.model = n.data?.model || n.model || n.data || {}; nodesById.set(n.id, n); outEdges.set(n.id, []); } for (const e of (flow.edges||[])){ const src = e.source, tgt = e.target; if (!nodesById.has(src) || !nodesById.has(tgt)) continue; const labelText = e.edgeLabels?.center?.data?.text ?? e.label ?? ''; outEdges.get(src).push({ target: tgt, labelText: String(labelText).trim(), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }); } return { nodesById, outEdges }; }
 function findStartNode(nodesById){ for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'start') return n; } for (const n of nodesById.values()){ if (String(n.id).toLowerCase().includes('start')) return n; } return [...nodesById.values()][0] || null; }
 
-function evaluateCondition(node, initialContext, msg){ const items = node.model?.context?.items || []; for (const it of items){ const name = String(it.name ?? ''); const raw = String(it.condition ?? ''); try{ const unwrapped = unwrapIsland(raw); if (unwrapped !== raw){ const val = evaluateExpression(unwrapped, buildEvalContext(initialContext, msg)); if (val) return name; continue; } if (!isTemplateLike(raw)){ const lit = raw.trim().toLowerCase(); if (lit === 'true') return name; if (lit === '' || lit === 'false' || lit === '0'){} else { const val = evaluateExpression(raw, buildEvalContext(initialContext, msg)); if (val) return name; } continue; } const rendered = evaluateTemplateDetailed(raw, buildEvalContext(initialContext, msg)).text; if (isTruthyText(rendered)) return name; } catch(e){ log('condition error', { node: node.id, item: name, error: e.message }); } } return null; }
+function evaluateCondition(node, initialContext, msg){
+  const ctx = node.model?.context || {};
+  const mode = String(ctx.mode || 'firstMatch');
+  const items = Array.isArray(ctx.items) ? ctx.items : [];
+  const matches = [];
+  for (const it of items){
+    const name = String(it._id ?? it.name ?? '');
+    const raw = String(it.expression ?? it.condition ?? '');
+    try{
+      const unwrapped = unwrapIsland(raw);
+      if (unwrapped !== raw){ const val = evaluateExpression(unwrapped, buildEvalContext(initialContext, msg)); if (val) { matches.push(name); if (mode==='firstMatch') break; } continue; }
+      if (!isTemplateLike(raw)){
+        const lit = raw.trim().toLowerCase();
+        if (lit === 'true') { matches.push(name); if (mode==='firstMatch') break; continue; }
+        if (lit === '' || lit === 'false' || lit === '0') { continue; }
+        const val = evaluateExpression(raw, buildEvalContext(initialContext, msg)); if (val) { matches.push(name); if (mode==='firstMatch') break; }
+        continue;
+      }
+      const rendered = evaluateTemplateDetailed(raw, buildEvalContext(initialContext, msg)).text;
+      if (isTruthyText(rendered)) { matches.push(name); if (mode==='firstMatch') break; }
+    } catch(e){ log('condition error', { node: node.id, item: name, error: e.message }); }
+  }
+  if (matches.length) return mode === 'firstMatch' ? matches[0] : matches;
+  const el = (ctx && ctx.else && ctx.else._id) ? ctx.else._id : (ctx && ctx.elseId ? ctx.elseId : null);
+  return el ? (mode === 'allMatches' ? [String(el)] : String(el)) : null;
+}
 
 async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
   const { nodesById, outEdges } = buildGraph(flow);
   if (nodesById.size === 0) throw new Error('Flow vide');
-  const msg = { payload: null, ...initialMsg };
   const start = findStartNode(nodesById); if (!start) throw new Error('Nœud start introuvable');
-  const queue = [start.id]; const visited = new Set();
 
-  const send = (ev) => { try { emit && emit(ev); } catch { /* noop */ } };
-  send({ type: 'run.started', startedAt: new Date().toISOString() });
+  const send = async (ev) => { try { if (emit) await emit(ev); } catch { /* noop */ } };
+  await send({ type: 'run.started', startedAt: new Date().toISOString() });
 
-  while (queue.length){
-    const curId = queue.shift(); const node = nodesById.get(curId); if (!node) continue;
-    if (visited.has(curId)) continue; visited.add(curId);
+  const runBranch = async (curId, msg, seen) => {
+    const node = nodesById.get(curId); if (!node) return;
+    if (seen.has(curId)) return; seen.add(curId);
     const tObj = node.model?.templateObj || {};
     const kindFromName = normalizeNodeKind(tObj.name);
     const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(node.model?.type) || normalizeNodeKind(node.type);
@@ -50,37 +95,65 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
 
     if (nType === 'start'){
       nodeLog.start = new Date().toISOString();
+      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: node.model?.context || null });
       const evalCtx = buildEvalContext(initialContext, msg);
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = deepRender(node.model?.context || {}, evalCtx) || null;
       nodeLog.result = { started: true };
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else if (nType === 'condition'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
+      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation });
       const chosen = evaluateCondition(node, initialContext, msg);
       nodeLog.result = { chosen }; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] condition', { node: node.id, chosen }); } catch {}
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
-      const outs = outEdges.get(node.id) || []; if (chosen != null){ const next = outs.find(o => o.labelText === String(chosen)); if (next) queue.push(next.target); }
-      continue;
+      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      const outs = outEdges.get(node.id) || [];
+      if (chosen != null){
+        const picks = Array.isArray(chosen) ? chosen : [chosen];
+        const targets = picks.map(pick => outs.find(o => o.labelText === String(pick))).filter(Boolean).map(o => o.target);
+        if (targets.length === 1) {
+          await runBranch(targets[0], msg, seen);
+        } else if (targets.length > 1) {
+          await Promise.all(targets.map(t => runBranch(t, JSON.parse(JSON.stringify(msg)), new Set(seen))));
+        }
+      }
+      return;
     } else if (nType === 'function'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
-      const evalCtx = buildEvalContext(initialContext, msg); const inputs = deepRender(node.model?.context || {}, evalCtx); nodeLog.args_post_compilation = inputs;
+      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, templateKey: tmplKey, kind: 'function' });
+      const evalCtx = buildEvalContext(initialContext, msg);
+      const compiled = deepRender(node.model?.context || {}, evalCtx);
+      let inputs = compiled;
+      try {
+        if (compiled && typeof compiled === 'object' && !Array.isArray(compiled) && msg && typeof msg.payload === 'object' && !Array.isArray(msg.payload)){
+          inputs = { ...(msg.payload || {}), ...(compiled || {}) };
+        }
+      } catch {}
+      nodeLog.args_post_compilation = inputs;
       const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey]; let result = null;
       try { console.log('[engine] call', { node: node.id, template: tmplKey, inputs }); } catch {}
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
       else { try { result = await fn({ id: node.id, model: node.model }, msg, inputs); } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; } }
       nodeLog.result = result; msg.payload = result; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else {
-      send({ type: 'node.skipped', nodeId: node.id });
+      await send({ type: 'node.skipped', nodeId: node.id });
     }
-    const outs = outEdges.get(curId) || []; for (const o of outs) queue.push(o.target);
-  }
-  send({ type: 'run.completed', payload: msg.payload });
-  return msg;
+    const outs = outEdges.get(curId) || [];
+    if (outs.length === 1){
+      await runBranch(outs[0].target, msg, seen);
+    } else if (outs.length > 1){
+      await Promise.all(outs.map(o => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen))));
+    }
+  };
+
+  const rootMsg = { payload: null, ...initialMsg };
+  await runBranch(start.id, rootMsg, new Set());
+  await send({ type: 'run.completed', payload: rootMsg.payload });
+  return rootMsg;
 }
 
 module.exports = { runFlow };
