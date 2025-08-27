@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
 import { MonacoJsonEditorComponent } from '../dynamic-form/components/monaco-json-editor.component';
@@ -27,6 +27,7 @@ import { FlowBuilderUtilsService } from './flow-builder-utils.service';
 import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
 import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.component';
 import { FlowRunService } from '../../services/flow-run.service';
+import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
 import { environment } from '../../../environments/environment';
@@ -72,6 +73,12 @@ export class FlowBuilderComponent {
   lastRun: any = null;
   currentRun: any = null;
   loadingFlowDoc = false;
+  // Backend live run state (per current execution)
+  backendRunId: string | null = null;
+  private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
+  private backendNodeStats = new Map<string, { count: number; lastStatus?: 'success'|'error'|'skipped'|'running' }>();
+  private backendLastNodeId: string | null = null;
+  private backendEdgesTaken = new Set<string>();
   private startPayloadKey(): string {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.startPayload.${fid}`;
@@ -129,8 +136,10 @@ export class FlowBuilderComponent {
     private dfs: DynamicFormService,
     private route: ActivatedRoute,
     private runner: FlowRunService,
+    private runsApi: RunsBackendService,
     private shared: FlowSharedStateService,
     private modal: NzModalService,
+    private router: Router,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -227,6 +236,7 @@ export class FlowBuilderComponent {
     // Load flow by id if provided
     try {
       const flowId = this.route.snapshot.queryParamMap.get('flow');
+      const focusNode = this.route.snapshot.queryParamMap.get('node');
       if (flowId) {
         this.currentFlowId = flowId;
         this.loadingFlowDoc = true;
@@ -243,16 +253,66 @@ export class FlowBuilderComponent {
               this.updateSharedGraph();
               this.tryRestoreDraft(flowId);
               const hydrated = this.tryHydrateHistory();
-              if (!hydrated) { this.history.reset(this.snapshot()); this.persistHistory(); }
+              if (!hydrated) { this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory(); } else { this.updateTimelineCaches(); }
             }
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // Deep-link: focus a specific node if requested
+            try {
+              if (focusNode) {
+                const id = String(focusNode);
+                const node = this.nodes.find(n => String(n.id) === id);
+                if (node) {
+                  this.selectItem(node);
+                  // Center after a tick to ensure view init
+                  setTimeout(() => this.centerOnNodeId(id), 0);
+                }
+              }
+            } catch {}
           }
           return;
         }));
       }
     } catch { this.loadingFlowDoc = false; }
+    // React to query param changes (same component instance)
+    try {
+      this.route.queryParamMap.subscribe(pm => {
+        const fid = pm.get('flow');
+        const node = pm.get('node') || undefined;
+        if (!fid) return;
+        if (fid === this.currentFlowId) return;
+        this.currentFlowId = fid;
+        this.loadingFlowDoc = true;
+        this.catalog.getFlow(fid).subscribe(doc => this.zone.run(() => {
+          try {
+            if (doc) {
+              this.currentFlowName = doc.name || '';
+              this.currentFlowDesc = doc.description || '';
+              this.currentFlowStatus = (doc as any).status || 'draft';
+              this.currentFlowEnabled = !!(doc as any).enabled;
+              this.nodes = (doc.nodes || []) as any[];
+              this.edges = (doc.edges || []) as any;
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.updateSharedGraph();
+              this.tryRestoreDraft(fid);
+              const hydrated = this.tryHydrateHistory();
+              if (!hydrated) { this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory(); } else { this.updateTimelineCaches(); }
+            }
+          } finally {
+            this.loadingFlowDoc = false;
+            try { this.cdr.detectChanges(); } catch { }
+            if (node) {
+              try {
+                const id = String(node);
+                const n = this.nodes.find(nn => String(nn.id) === id);
+                if (n) { this.selectItem(n); setTimeout(() => this.centerOnNodeId(id), 0); }
+              } catch {}
+            }
+          }
+        }));
+      });
+    } catch {}
     // Seed only when no flow id (adhoc graph)
     if (!this.currentFlowId && (!this.nodes || this.nodes.length === 0)) {
       // Initialise un graphe par défaut à partir de la palette
@@ -260,7 +320,7 @@ export class FlowBuilderComponent {
       this.nodes = seed.nodes;
       this.edges = seed.edges as any;
       const hydratedAdhoc = this.tryHydrateHistory();
-      if (!hydratedAdhoc) { this.history.reset(this.snapshot()); this.persistHistory(); }
+      if (!hydratedAdhoc) { this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory(); } else { this.updateTimelineCaches(); }
     }
     this.updateTimelineCaches();
     this.recomputeValidation();
@@ -269,6 +329,8 @@ export class FlowBuilderComponent {
   ngOnDestroy() {
     try { window.removeEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
     try { this.viewportSub?.unsubscribe(); } catch { }
+    // If leaving builder without unsaved changes, clear persisted snapshots/drafts
+    try { if (!this.hasUnsavedChanges()) this.purgeDraft(); } catch {}
   }
 
   private loadFlowsForWorkspace(){
@@ -306,6 +368,13 @@ export class FlowBuilderComponent {
       const raw = localStorage.getItem(this.draftKey(flowId));
       if (!raw) return;
       const draft = JSON.parse(raw);
+      // Only restore if draft matches current server version
+      const server = this.lastSavedChecksum || null;
+      if (draft && draft.serverChecksum && server && String(draft.serverChecksum) !== String(server)) {
+        // Stale draft: discard
+        try { localStorage.removeItem(this.draftKey(flowId)); } catch {}
+        return;
+      }
       this.currentFlowName = draft.name || this.currentFlowName;
       this.currentFlowDesc = draft.desc || this.currentFlowDesc;
       this.currentFlowStatus = draft.status || this.currentFlowStatus;
@@ -433,6 +502,11 @@ export class FlowBuilderComponent {
   // Execution stats: expose last status/count for badges
   nodeExecStatus(id: string): { count: number; lastStatus?: string } | null {
     try {
+      // Prefer current backend run stats if present
+      if (this.backendRunId) {
+        const b = this.backendNodeStats.get(String(id));
+        if (b) return { count: b.count, lastStatus: b.lastStatus } as any;
+      }
       const map = (this.runner as any).nodeStats$?.value as Map<string, any>;
       if (!map) return null;
       const v = map.get(String(id));
@@ -713,11 +787,9 @@ export class FlowBuilderComponent {
   }
 
   isNodeInError(id: string): boolean {
-    if (this.errorNodes.has(String(id))) return true;
-    try {
-      const n = this.nodes.find(nn => nn.id === id);
-      return !!n?.data?.model?.invalid;
-    } catch { return false; }
+    // Pink (error-branch) should reflect try/catch propagation only
+    // Do NOT include form invalid state here; that is handled by isNodeHardError (red)
+    try { return this.errorNodes.has(String(id)); } catch { return false; }
   }
 
   isEdgeDeleteDisabled(edge: Edge): boolean {
@@ -1581,13 +1653,26 @@ export class FlowBuilderComponent {
             try { this.cdr.detectChanges(); } catch {}
           },
           error: (e) => {
-            const code = String(e?.code || '');
+            const apiErr = this.normalizeApiError(e);
+            const code = String(apiErr?.code || '');
             if (code === 'flow_invalid'){
-              const errors = (e?.details?.errors || []) as any[];
-              const list = (errors || []).map((x, i) => `• ${x.code || 'error'}${x.details?.nodeId ? ' (node ' + x.details.nodeId + ')' : ''}`).join('<br/>');
+              const errors = Array.isArray(apiErr?.details?.errors) ? apiErr.details.errors : [];
+              const warnings = Array.isArray(apiErr?.details?.warnings) ? apiErr.details.warnings : [];
+              const fmt = (it: any) => {
+                const c = it?.code || 'error';
+                const msg = it?.message ? `: ${it.message}` : '';
+                const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                const detEdge = it?.details?.edge ? ` (arête ${it.details.edge})` : '';
+                const detProv = it?.details?.providerKey ? ` [${it.details.providerKey}]` : '';
+                const detKey = it?.details?.key ? ` [${it.details.key}]` : '';
+                const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                return `• ${c}${msg}${detNode}${detEdge}${detProv}${detKey}${detField}`;
+              };
+              const listErr = errors.map(fmt).join('<br/>') || '• Erreurs inconnues';
+              const listWarn = warnings.length ? ('<br/><br/><b>Avertissements</b><br/>' + warnings.map(fmt).join('<br/>')) : '';
               this.modal.confirm({
                 nzTitle: 'Flow invalide',
-                nzContent: `Le flow contient des erreurs (requis/connexion/credentials).<br/>${list}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
+                nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
                 nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({ next: () => {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
@@ -1596,7 +1681,7 @@ export class FlowBuilderComponent {
                 } })
               });
             } else {
-              try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+              try { this.message.error(apiErr?.message || 'Échec de la sauvegarde'); } catch { this.showToast(apiErr?.message || 'Échec de la sauvegarde'); }
             }
           },
         });
@@ -1606,10 +1691,163 @@ export class FlowBuilderComponent {
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
   runFlow() {
-    try { this.message.info(`Lancement du flow (${this.builderMode})…`); } catch { this.showToast(`Lancement du flow (${this.builderMode})…`); }
     const snap = this.snapshot();
+    // Always update the shared graph snapshot (used by the executions page)
     this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });
+
+    // If backend is enabled and we have a flowId, launch on backend
+    if (environment.useBackend && this.currentFlowId) {
+      // Optional: ensure we have a start-like node to avoid ambiguous entrypoint
+      if (!this.hasStartLikeNode()) {
+        try { this.message.warning('Ajoutez un nœud de départ (Start) avant de lancer sur le backend'); } catch { this.showToast('Nœud Start requis pour lancer sur le backend'); }
+        // Fallback: still allow local run to preview
+        try { this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
+        return;
+      }
+      const launch = () => {
+        const p = this.getStartPayload();
+        this.runsApi.start(this.currentFlowId!, (p && (p as any).payload) ?? null).subscribe({
+          next: (r: any) => {
+            try { this.message.success('Exécution backend démarrée'); } catch { this.showToast('Exécution backend démarrée'); }
+            // Ouvrir le flux SSE et afficher l’état en direct dans l’éditeur (pas de redirection)
+            try {
+              const runId = r?.id || r?.data?.id || r?.runId;
+              if (runId) this.openBackendStream(runId);
+            } catch {}
+          },
+          error: (e) => {
+            const err = this.normalizeApiError(e);
+            try { this.message.error(err?.message || 'Échec du démarrage backend'); } catch { this.showToast(err?.message || 'Échec du démarrage backend'); }
+          }
+        });
+      };
+      // Save first if there are unsaved changes to ensure backend has the latest graph
+      if (this.hasUnsavedChanges()) {
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
+          next: () => {
+            // Update checksum/draft like saveFlow()
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+            launch();
+          },
+          error: (e) => {
+            const err = this.normalizeApiError(e);
+            try { this.message.error(err?.message || 'Échec de la sauvegarde'); } catch { this.showToast(err?.message || 'Échec de la sauvegarde'); }
+          }
+        });
+      } else {
+        launch();
+      }
+      return;
+    }
+
+    // Local run fallback (dev playground)
+    try { this.message.info(`Lancement local (${this.builderMode})…`); } catch { this.showToast(`Lancement local (${this.builderMode})…`); }
     try { this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
+  }
+
+  private openBackendStream(runId: string) {
+    // Reset per-run visual state
+    this.backendRunId = runId;
+    this.backendNodeStats = new Map();
+    this.backendEdgesTaken.clear();
+    this.backendLastNodeId = null;
+    // Refresh edge visuals immediately
+    this.applyBackendEdgeHighlights();
+    try { this.cdr.detectChanges(); } catch {}
+
+    try { this.backendStream?.close(); } catch {}
+    const s = this.runsApi.stream(runId);
+    this.backendStream = s;
+    s.on((ev) => {
+      const type = ev?.type;
+      const data = ev?.data || {};
+      if (!type) return;
+      // Start of run: clear stats/paths
+      if (type === 'run.started') {
+        this.backendNodeStats.clear();
+        this.backendEdgesTaken.clear();
+        // Seed last node as the Start node so the first node.done can draw the Start -> Next edge
+        this.backendLastNodeId = this.findStartNodeId();
+        this.applyBackendEdgeHighlights();
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'node.done') {
+        const nid = String(data?.nodeId || '');
+        if (nid) {
+          const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
+          cur.count = (cur.count || 0) + 1; cur.lastStatus = 'success';
+          this.backendNodeStats.set(nid, cur);
+          // Track path: last node → current node
+          const prev = this.backendLastNodeId;
+          if (prev && prev !== nid) {
+            this.backendEdgesTaken.add(`${prev}->${nid}`);
+            this.applyBackendEdgeHighlights();
+          }
+          this.backendLastNodeId = nid;
+        }
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'node.skipped') {
+        const nid = String(data?.nodeId || '');
+        if (nid) {
+          const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
+          cur.lastStatus = 'skipped';
+          this.backendNodeStats.set(nid, cur);
+        }
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'run.error' || type === 'run.failed') {
+        // Mark last node as error if available
+        const last = this.backendLastNodeId;
+        if (last) {
+          const cur = this.backendNodeStats.get(last) || { count: 0 } as any;
+          cur.lastStatus = 'error';
+          this.backendNodeStats.set(last, cur);
+        }
+        try { s.close(); } catch {}
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'run.success' || type === 'run.completed') {
+        try { s.close(); } catch {}
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+    });
+  }
+
+  private findStartNodeId(): string | null {
+    try {
+      const nodes = (this.nodes || []) as any[];
+      for (const n of nodes) {
+        const t = n?.data?.model?.templateObj || {};
+        const ty = String(t?.type || '').toLowerCase();
+        if (ty === 'start') return String(n.id);
+      }
+      for (const n of nodes) { if (String(n.id).toLowerCase().includes('start')) return String(n.id); }
+    } catch {}
+    return null;
+  }
+
+  private applyBackendEdgeHighlights() {
+    try {
+      const pairs = this.backendEdgesTaken;
+      this.edges = (this.edges || []).map((e: any) => {
+        const took = pairs.has(`${e.source}->${e.target}`);
+        const data = { ...(e.data || {}) };
+        if (took) { data.strokeWidth = (data.strokeWidth || 2) + 2; data.color = '#1677ff'; }
+        else {
+          // Light reset to default if previously highlighted
+          if (data.color === '#1677ff') data.color = '#b1b1b7';
+          if ((data.strokeWidth || 0) > 2) data.strokeWidth = 2;
+        }
+        return { ...e, data };
+      });
+    } catch {}
   }
   stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
 
@@ -1618,6 +1856,22 @@ export class FlowBuilderComponent {
     this.toastMsg = msg;
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => { this.toastMsg = ''; }, 1800);
+  }
+
+  // Normalize API error from either envelope unwrap or HttpErrorResponse
+  private normalizeApiError(e: any): { code?: string; message?: string; details?: any } {
+    try {
+      // Already-unwrapped shape thrown by ApiClientService.unwrap
+      if (e && (e.code || e.message || e.details)) return { code: e.code, message: e.message, details: e.details };
+      // HttpErrorResponse with envelope in e.error
+      const ee = e?.error;
+      if (ee && (ee.error || ee.message || ee.details)) {
+        const inner = ee.error || ee; // prefer nested error object
+        return { code: inner.code, message: inner.message, details: inner.details };
+      }
+      // Fallback
+      return { message: (e && e.message) || 'API error' };
+    } catch { return { message: 'API error' }; }
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -1662,18 +1916,47 @@ export class FlowBuilderComponent {
   private persistHistory() {
     try {
       const dump = (this.history as any).exportAll?.();
-      if (dump) localStorage.setItem(this.historyKey(), JSON.stringify(dump));
+      if (!dump) return;
+      const payload = {
+        version: 1,
+        flowId: this.currentFlowId || 'adhoc',
+        serverChecksum: this.lastSavedChecksum || null,
+        ts: Date.now(),
+        dump,
+      };
+      localStorage.setItem(this.historyKey(), JSON.stringify(payload));
     } catch {}
   }
   private tryHydrateHistory(): boolean {
     try {
       const raw = localStorage.getItem(this.historyKey());
       if (!raw) return false;
-      const dump = JSON.parse(raw);
+      const obj = JSON.parse(raw);
+      // Back-compat: either { past, future, ... } or wrapper { version, dump }
+      const isWrapper = obj && typeof obj === 'object' && ('dump' in obj || 'version' in obj);
+      if (!isWrapper) {
+        // legacy format without checksum/flowId — discard to avoid stale timelines
+        try { localStorage.removeItem(this.historyKey()); } catch {}
+        return false;
+      }
+      const dump = (obj.dump || {});
+      const storedChecksum = isWrapper ? (obj.serverChecksum || null) : null;
+      const storedFlowId = isWrapper ? (obj.flowId || null) : null;
+      // Hydrate only if same flow and same server checksum (prevents stale history from another version)
+      if (storedFlowId && this.currentFlowId && String(storedFlowId) !== String(this.currentFlowId)) {
+        localStorage.removeItem(this.historyKey());
+        return false;
+      }
+      if (storedChecksum && this.lastSavedChecksum && String(storedChecksum) !== String(this.lastSavedChecksum)) {
+        localStorage.removeItem(this.historyKey());
+        return false;
+      }
       (this.history as any).hydrate?.(dump);
       this.updateTimelineCaches();
       return true;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }
   private now() { return Date.now(); }
   private isIgnoring() { return this.applyingHistory || this.now() < this.ignoreEventsUntil; }

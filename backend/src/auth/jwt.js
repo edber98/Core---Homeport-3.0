@@ -15,11 +15,15 @@ function verify(token){
 
 function authMiddleware(){
   return (req, res, next) => {
+    let token = null;
     const h = req.headers['authorization'] || '';
     const m = /bearer (.+)/i.exec(h);
-    if (!m) return res.status(401).json({ error: 'missing bearer token' });
+    if (m) token = m[1];
+    // Fallback for EventSource/WebSocket: allow token via query param
+    if (!token) token = (req.query && (req.query.token || req.query.access_token)) ? String(req.query.token || req.query.access_token) : null;
+    if (!token) return res.status(401).json({ error: 'missing bearer token' });
     try {
-      const payload = verify(m[1]);
+      const payload = verify(token);
       req.user = payload.user; // { id, email, role, companyId }
       next();
     } catch (e) {

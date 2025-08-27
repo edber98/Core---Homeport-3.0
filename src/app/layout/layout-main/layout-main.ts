@@ -177,6 +177,8 @@ export class LayoutMain implements OnInit {
     if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant de notification invalide'); return; }
     this.notifApi.ack(id).subscribe({ next: () => {
       n.acknowledged = true;
+      // Trigger change detection for immediate UI update
+      try { this.cdr.detectChanges(); } catch {}
       this.refreshUnreadCount();
       this.ui.success('Notification marquée comme lue');
     }, error: () => this.ui.error('Échec de l\'accusé de lecture') });
@@ -187,6 +189,8 @@ export class LayoutMain implements OnInit {
     if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant de notification invalide'); return; }
     this.notifApi.delete(id).subscribe({ next: () => {
       this.notifications = this.notifications.filter(x => x.id !== n.id);
+      // Trigger change detection for immediate UI update
+      try { this.cdr.detectChanges(); } catch {}
       this.refreshUnreadCount();
       this.ui.success('Notification supprimée');
     }, error: () => this.ui.error('Échec de la suppression') });
@@ -198,7 +202,7 @@ export class LayoutMain implements OnInit {
     if (!n.acknowledged) {
       const id = (n as any).id;
       if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { go(); return; }
-      this.notifApi.ack(id).subscribe({ next: () => { n.acknowledged = true; this.refreshUnreadCount(); go(); }, error: () => go() });
+      this.notifApi.ack(id).subscribe({ next: () => { n.acknowledged = true; try { this.cdr.detectChanges(); } catch {} this.refreshUnreadCount(); go(); }, error: () => go() });
     } else {
       go();
     }

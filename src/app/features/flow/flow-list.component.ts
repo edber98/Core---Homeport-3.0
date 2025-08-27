@@ -5,6 +5,7 @@ import { CatalogService, FlowSummary } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -20,7 +21,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -52,15 +53,18 @@ type FlowItem = { id: string; name: string; description?: string };
 
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered">
+        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>
           <div class="content">
             <div class="title-row">
               <div class="name">{{ it.name }}</div>
-              <span class="chip" *ngIf="it.status">{{ it.status }}</span>
-              <span class="chip ok" *ngIf="it.enabled">en service</span>
+              <span class="chip" *ngIf="it.status" [ngClass]="statusClass(it.status)">{{ statusLabel(it.status) }}</span>
+              <span class="chip on" *ngIf="it.enabled">Activé</span>
+              <span class="chip off" *ngIf="!it.enabled">Désactivé</span>
+              <i *ngIf="it.invalid" class="fa-solid fa-triangle-exclamation warn"
+                 nz-tooltip [nzTooltipTitle]="errorTooltip(it)" aria-label="Flow invalide"></i>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
@@ -156,15 +160,22 @@ type FlowItem = { id: string; name: string; description?: string };
             transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
+    .card.invalid { border-color:#fca5a5; box-shadow: 0 0 0 1px #fecaca inset, 0 8px 24px rgba(0,0,0,0.04); }
+    .card.invalid:hover { border-color:#f87171; box-shadow: 0 0 0 1px #fca5a5 inset, 0 16px 40px rgba(0,0,0,0.08); }
     .leading .icon-badge { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center;
                            background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
                            border: 1px solid #e5e7eb; color:#111; }
     .leading .icon-badge i { font-size: 18px; }
     .content { flex:1; min-width:0; }
     .title-row { display:flex; align-items:center; gap:8px; }
+    .title-row .warn { color:#b42318; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
-    .chip.ok { background:#eefcef; border-color:#dcfce7; color:#166534; }
+    .chip.on { background:#eefcef; border-color:#dcfce7; color:#166534; }
+    .chip.off { background:#fef2f2; border-color:#fee2e2; color:#991b1b; }
+    .chip.status-draft { background:#f5f3ff; border-color:#e9d5ff; color:#5b21b6; }
+    .chip.status-test { background:#eff6ff; border-color:#dbeafe; color:#1e3a8a; }
+    .chip.status-production { background:#ecfdf5; border-color:#d1fae5; color:#065f46; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
@@ -187,6 +198,21 @@ export class FlowListComponent implements OnInit, OnDestroy {
     const s = (this.q || '').trim().toLowerCase();
     if (!s) return this.flows;
     return this.flows.filter(f => (f.name || '').toLowerCase().includes(s) || (f.description || '').toLowerCase().includes(s));
+  }
+  // Helpers d'affichage statut
+  statusLabel(s: any): string {
+    const v = String(s || '').toLowerCase();
+    if (v === 'draft') return 'Brouillon';
+    if (v === 'test') return 'Test';
+    if (v === 'production') return 'Production';
+    return s || '';
+  }
+  statusClass(s: any): string {
+    const v = String(s || '').toLowerCase();
+    if (v === 'draft') return 'status-draft';
+    if (v === 'test') return 'status-test';
+    if (v === 'production') return 'status-production';
+    return '';
   }
   // create dialog state
   createVisible = false;
@@ -250,6 +276,20 @@ export class FlowListComponent implements OnInit, OnDestroy {
     return 'fa-solid fa-diagram-project';
   }
 
+  errorTooltip(it: any): string {
+    try {
+      const errs = Array.isArray(it?.validationErrors) ? it.validationErrors : [];
+      if (!errs.length) return 'Flow invalide';
+      const map = (e: any) => {
+        const c = e?.code || 'error';
+        const m = e?.message ? `: ${e.message}` : '';
+        const n = e?.details?.nodeId ? ` (nœud ${e.details.nodeId})` : '';
+        return `• ${c}${m}${n}`;
+      };
+      return errs.map(map).join('\n');
+    } catch { return 'Flow invalide'; }
+  }
+
   openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
 
@@ -269,14 +309,17 @@ export class FlowListComponent implements OnInit, OnDestroy {
     const enabled = !!this.draft.enabled;
     const localId = this.makeIdFromName(name);
     const wsId = this.acl.currentWorkspaceId() || 'default';
-    const obs = environment.useBackend ? this.catalog.createFlow(wsId, name, status, enabled, [], []) : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: {} } as any);
+    const obs = environment.useBackend
+      ? this.catalog.createFlow(wsId, name, status, enabled, [], [], (this.draft.description || '').trim())
+      : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: {} } as any);
     obs.subscribe({
-      next: () => {
+      next: (doc) => {
         this.zone.run(() => {
           const ws = this.acl.currentWorkspaceId();
-          try { this.acl.setResourceWorkspace('flow', localId, ws); } catch {}
+          const newId = (doc && (doc as any).id) ? String((doc as any).id) : localId;
+          try { this.acl.setResourceWorkspace('flow', newId, ws); } catch {}
           this.creating = false; this.createVisible = false; this.ui.success('Flow créé');
-          this.load(); this.openEditor({ id: localId, name, description: (this.draft.description || '').trim() });
+          this.load(); this.openEditor({ id: newId, name: doc?.name || name, description: (doc as any)?.description || (this.draft.description || '').trim() });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
       },

@@ -1,5 +1,64 @@
 # Codex Build Report
+Build production: statut et correctifs
 
+1) Résumé du style appliqué
+- Langage: TypeScript (Angular 20) avec composants standalone.
+- Conventions: fichiers en kebab-case, classes en PascalCase, inputs/outputs en tête, cycle de vie ensuite.
+- UI: NG Zorro; grilles `nz-row`/`nz-col`, `trackBy` pour limiter le churn DOM.
+- Modules: fonctionnalités lazy sous `src/app/features/*`, modules réutilisables sous `src/app/modules/*` (ex.: `dynamic-form`).
+- Assets: `public/` copié vers `dist` au build; budgets et allowlist CommonJS réglés dans `angular.json`.
+
+2) Changements effectués (build production)
+- Aucun changement requis. La commande `ng build --configuration production` a réussi du premier coup.
+- Sortie: artefacts générés sous `dist/homeport`.
+
+3) Fichiers modifiés
+- Aucun fichier modifié dans cette passe.
+
+4) Commit simulé (Conventional Commits)
+- build: passer le build Angular en production sans modifications de code
+
+---
+
+Exécution temps réel: backend + frontend
+
+1) Résumé du style appliqué
+- Transport: SSE (Server-Sent Events) natif, compatible CORS simple.
+- Auth SSE: jeton JWT accepté via query `?token=` (fallback pour EventSource).
+- Statuts d’exécution alignés: `running` → `success`/`error` (au lieu de `completed`/`failed`).
+- Diffusion optionnelle: `ws` et `socket.io` émettent les mêmes événements (si attachés).
+
+2) Changements effectués
+- backend/auth: accepte le token via `?token`/`?access_token` en plus de l’en-tête Authorization.
+- backend/runs (mémoire):
+  - Corrigé SSE pour émettre les nouveaux événements au fil de l’eau (plus de simple heartbeat).
+  - Aligné les statuts finaux sur `success`/`error` et émission des événements terminaux `run.success`/`run.error`.
+  - Diffusion des événements via ws/socket.io quand présents.
+  - Ajout des routes: `POST /api/runs/:runId/cancel`, `GET /api/workspaces/:wsId/runs`, `GET /api/flows/:flowId/runs`.
+- backend/runs (Mongo): corrigé la condition de fin SSE pour `success`/`error`.
+- frontend/service: `RunsBackendService.stream(runId)` ouvre un EventSource `${apiBaseUrl}/api/runs/:id/stream?token=...` et parse les événements.
+- frontend/ui: `FlowExecutionComponent` ouvre le stream après démarrage backend et affiche les événements en temps réel.
+
+3) Fichiers modifiés
+- backend/src/auth/jwt.js
+- backend/src/modules/runs.js
+- backend/src/modules/db/runs.js
+  - Logs détaillés ajoutés (start/created/event/complete/stream open/close)
+- src/app/services/runs-backend.service.ts
+- src/app/features/flow/flow-execution.component.ts
+
+4) Commit simulé (Conventional Commits)
+- feat(flow): brancher l’exécution backend en temps réel (SSE) et afficher les événements côté UI
+
+---
+
+Logs et debug « flow_disabled »
+
+- Ajout de logs verbeux dans:
+  - `backend/src/modules/runs.js` (mémoire)
+  - `backend/src/modules/db/runs.js` (Mongo)
+  - Détails dans `docs/flow-execution-debug.md` (chemin complet, endpoints, logs attendus, erreurs fréquentes, check-list).
+- Réponses `flow_disabled` enrichies avec `details: { flowId, workspaceId, enabled }`.
 Date: 2025-08-24
 
 1) Résumé du style appliqué
