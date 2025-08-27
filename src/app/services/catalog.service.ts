@@ -8,7 +8,7 @@ import { CredentialsBackendService } from './credentials-backend.service';
 import { FlowsBackendService } from './flows-backend.service';
 
 export type FlowStatus = 'draft' | 'test' | 'production';
-export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean };
+export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean; invalid?: boolean; validationErrors?: any[] };
 export type FlowDoc = { id: string; name: string; nodes?: any[]; edges?: any[]; meta?: any; description?: string; status?: FlowStatus; enabled?: boolean };
 
 export type FormSummary = { id: string; name: string; description?: string };
@@ -88,6 +88,8 @@ export class CatalogService {
         description: (f as any).description || '',
         status: (f.status as any) || 'draft',
         enabled: !!f.enabled,
+        invalid: !!(f as any).invalid,
+        validationErrors: (f as any).validationErrors || [],
       } as FlowSummary))));
     }
     return of(this.load<FlowSummary[]>(this.FLOW_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
@@ -131,14 +133,22 @@ export class CatalogService {
     try { (window as any).acl?.setResourceWorkspace?.('flow', flowId, destWorkspaceId); } catch {}
     return of(true);
   }
-  createFlow(wsId: string, name: string, status: string = 'draft', enabled = false, nodes: any[] = [], edges: any[] = []): Observable<FlowDoc> {
+  createFlow(wsId: string, name: string, status: string = 'draft', enabled = false, nodes: any[] = [], edges: any[] = [], description: string = ''): Observable<FlowDoc> {
     if (!environment.useBackend) {
       const id = (name || 'flow') + '-' + Date.now().toString(36);
-      const doc: FlowDoc = { id, name, description: '', status: status as any, enabled, nodes, edges };
+      const doc: FlowDoc = { id, name, description, status: status as any, enabled, nodes, edges };
       return this.saveFlow(doc);
     }
-    const payload = { name, status, enabled, graph: { nodes, edges } } as any;
-    return this.flowsApi.create(wsId, payload, false).pipe(map(() => ({ id: '', name, description: '', status: status as any, enabled, nodes, edges } as FlowDoc)));
+    const payload = { name, description, status, enabled, graph: { nodes, edges } } as any;
+    return this.flowsApi.create(wsId, payload, false).pipe(map((f: any) => ({
+      id: String((f && (f.id || f._id)) || ''),
+      name: f?.name || name,
+      description: (f as any)?.description || description || '',
+      status: (f as any)?.status || (status as any),
+      enabled: !!((f as any)?.enabled ?? enabled),
+      nodes: (f as any)?.graph?.nodes || nodes,
+      edges: (f as any)?.graph?.edges || edges,
+    } as FlowDoc)));
   }
 
   // ===== Public API (Forms)

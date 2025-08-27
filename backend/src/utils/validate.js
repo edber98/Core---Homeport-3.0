@@ -75,9 +75,11 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
   const errors = [];
   const warnings = [];
   const { nodes, edges, nodesById } = collectGraph(flowGraph);
+  // Normalize nodes so downstream logic can consistently read n.model.*
+  const nNodes = (nodes || []).map(n => ({ ...n, model: (n && (n.data && n.data.model)) ? n.data.model : (n.model || n.data || {}) }));
 
   // 1) Start nodes
-  const kinds = nodes.map(n => ({ id: n.id, kind: normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) }));
+  const kinds = nNodes.map(n => ({ id: n.id, kind: normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name) }));
   // Accept both 'start' and 'event' nodes as valid triggers
   const starts = kinds.filter(k => k.kind === 'start' || k.kind === 'event');
   if (starts.length === 0) errors.push({ code: 'no_start', message: 'No start node found' });
@@ -90,9 +92,11 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
   const getTemplateByKey = loaders?.getTemplateByKey;
   const getProviderByKey = loaders?.getProviderByKey;
   const hasCredential = loaders?.hasCredential;
-  for (const n of nodes){
-    const kind = normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type);
-    if (kind === 'function' || kind === 'event' || kind === 'start' || kind === 'endpoint' || kind === 'flow'){
+  for (const n of nNodes){
+    const kind = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name);
+    // Start nodes are core triggers; do not require a registered template, no args/credentials validation
+    if (kind === 'start') continue;
+    if (kind === 'function' || kind === 'event' || kind === 'flow' || kind === 'condition' || kind === 'loop'){
       const rawKey = n.model?.template || n.model?.templateObj?.template?.id || n.model?.templateObj?.id || n.model?.name || '';
       const key = normalizeTemplateKey(rawKey);
       if (getTemplateByKey){
@@ -138,8 +142,8 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
 
   // 4) Allowed templates (workspace policy)
   if (loaders?.isTemplateAllowed) {
-    for (const n of nodes){
-      const kind = normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type);
+    for (const n of nNodes){
+      const kind = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name);
       if (kind === 'function'){
         const rawKey = n.model?.template || n.model?.templateObj?.template?.id || n.model?.templateObj?.id || n.model?.name || '';
         const key = normalizeTemplateKey(rawKey);
@@ -153,20 +157,20 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
   try {
     const inDeg = new Map();
     const outDeg = new Map();
-    nodes.forEach(n => { inDeg.set(n.id, 0); outDeg.set(n.id, 0); });
+    nNodes.forEach(n => { inDeg.set(n.id, 0); outDeg.set(n.id, 0); });
     edges.forEach(e => { if (inDeg.has(e.target)) inDeg.set(e.target, (inDeg.get(e.target) || 0)+1); if (outDeg.has(e.source)) outDeg.set(e.source, (outDeg.get(e.source) || 0)+1); });
-    for (const n of nodes){
+    for (const n of nNodes){
       const deg = (inDeg.get(n.id) || 0) + (outDeg.get(n.id) || 0);
       if (deg === 0) errors.push({ code: 'node_disconnected', message: 'Node is not connected', details: { nodeId: n.id } });
     }
     // Reachability: from starts/events, traverse outgoing edges
-    const startIds = nodes.filter(n => {
-      const k = normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type);
+    const startIds = nNodes.filter(n => {
+      const k = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name);
       return k === 'start' || k === 'event';
     }).map(n => n.id);
     if (startIds.length){
       const adj = new Map();
-      nodes.forEach(n => adj.set(n.id, []));
+      nNodes.forEach(n => adj.set(n.id, []));
       edges.forEach(e => { if (adj.has(e.source)) adj.get(e.source).push(e.target); });
       const vis = new Set(startIds);
       const q = [...startIds];
@@ -174,8 +178,8 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
         const u = q.shift();
         for (const v of (adj.get(u) || [])) if (!vis.has(v)) { vis.add(v); q.push(v); }
       }
-      for (const n of nodes){
-        const k = normalizeNodeKind(n.model?.templateObj?.name) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type);
+      for (const n of nNodes){
+        const k = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name);
         if (k !== 'start' && !vis.has(n.id)) errors.push({ code: 'node_unreachable', message: 'Node is not reachable from start', details: { nodeId: n.id } });
       }
     }

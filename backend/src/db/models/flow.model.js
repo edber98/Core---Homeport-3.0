@@ -14,6 +14,10 @@ const FlowSchema = new Schema({
   status: { type: String, enum: ['draft','test','production'], default: 'draft' },
   enabled: { type: Boolean, default: true },
   graph: { type: GraphSchema, default: () => ({ nodes: [], edges: [] }) },
+  // Validation snapshot to surface in UI lists
+  invalid: { type: Boolean, default: false },
+  validationErrors: { type: [Schema.Types.Mixed], default: [] },
+  validationWarnings: { type: [Schema.Types.Mixed], default: [] },
 }, { timestamps: true });
 
 FlowSchema.pre('save', function(next){ if (!this.id) this.id = newId('flw'); next(); });

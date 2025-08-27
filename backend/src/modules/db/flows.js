@@ -59,9 +59,31 @@ module.exports = function(){
     if (!v.ok && !force && !(isEmptyGraph && onlyNoStart)){
       return res.apiError(400, 'flow_invalid', 'Flow validation failed', { errors: v.errors, warnings: v.warnings });
     }
-    const flow = await Flow.create({ name: String(name), description: String(description || ''), workspaceId: ws._id, status, enabled: v.ok ? enabled : false, graph });
+    const flow = await Flow.create({
+      name: String(name),
+      description: String(description || ''),
+      workspaceId: ws._id,
+      status,
+      enabled: v.ok ? enabled : false,
+      graph,
+      invalid: !v.ok,
+      validationErrors: v.errors || [],
+      validationWarnings: v.warnings || [],
+    });
     if (!v.ok){
-      await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: 'Flow created with invalid graph (disabled)', details: { errors: v.errors }, link: `/flows/${flow._id}/editor` });
+      // Create one precise notification per error with deep link to node when available
+      const baseLink = `/flow-builder/editor?flow=${encodeURIComponent(String(flow._id))}`;
+      const errs = Array.isArray(v.errors) ? v.errors : [];
+      if (errs.length === 0) {
+        await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: 'Flow created with invalid graph (disabled)', details: {}, link: baseLink });
+      } else {
+        for (const e of errs){
+          const nodeId = e?.details?.nodeId ? String(e.details.nodeId) : null;
+          const link = nodeId ? `${baseLink}&node=${encodeURIComponent(nodeId)}` : baseLink;
+          const msg = `[${e?.code || 'error'}] ${e?.message || 'Erreur de validation'}`;
+          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: msg, details: e, link });
+        }
+      }
     }
     res.status(201).json({ success: true, data: { ...flow.toObject(), validation: v }, requestId: req.requestId, ts: Date.now() });
   });
@@ -113,8 +135,30 @@ module.exports = function(){
       // If invalid but force: disable flow and notify
       if (!v.ok && force){
         f.enabled = false;
-        await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: 'Flow updated with invalid graph; disabled', details: { errors: v.errors }, link: `/flows/${f._id}/editor` });
+        f.invalid = true;
+        f.validationErrors = v.errors || [];
+        f.validationWarnings = v.warnings || [];
+        // Create precise notifications with deep links to problematic node when available
+        const baseLink = `/flow-builder/editor?flow=${encodeURIComponent(String(f._id))}`;
+        const errs = Array.isArray(v.errors) ? v.errors : [];
+        if (errs.length === 0){
+          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: 'Flow updated with invalid graph; disabled', details: {}, link: baseLink });
+        } else {
+          for (const e of errs){
+            const nodeId = e?.details?.nodeId ? String(e.details.nodeId) : null;
+            const link = nodeId ? `${baseLink}&node=${encodeURIComponent(nodeId)}` : baseLink;
+            const msg = `[${e?.code || 'error'}] ${e?.message || 'Erreur de validation'}`;
+            await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: msg, details: e, link });
+          }
+        }
+      } else if (v.ok){
+        // Clear previous validation issues on success
+        f.invalid = false;
+        f.validationErrors = [];
+        f.validationWarnings = [];
       }
+      // Apply graph patch (whether valid or forced)
+      f.graph = patch.graph;
     }
     // Workspace transfer: allow changing workspace if user is member of destination too
     if (patch.workspaceId) {

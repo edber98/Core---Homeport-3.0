@@ -25,10 +25,15 @@ module.exports = function(){
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
 
-    if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+    if (flow.enabled === false) {
+      console.warn(`[runs][db] start: flow disabled flowId=${fid} enabled=${flow.enabled} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
+      return res.apiError(409, 'flow_disabled', 'Flow is disabled', { flowId: String(flow._id), workspaceId: String(ws._id), enabled: flow.enabled });
+    }
+    console.log(`[runs][db] start: flowId=${fid} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
     const now = new Date();
     const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now });
     res.status(201).json({ success: true, data: { id: String(run._id), status: run.status }, requestId: req.requestId, ts: Date.now() });
+    console.log(`[runs][db] created run: id=${String(run._id)} flowId=${String(flow._id)} status=${run.status} reqId=${req.requestId}`);
 
     (async () => {
       try {
@@ -41,6 +46,7 @@ module.exports = function(){
           await doc.save();
           broadcast(String(run._id), ev);
           broadcastRun(String(run._id), ev);
+          try { if (ev && ev.type) console.log(`[runs][db] event: runId=${String(run._id)} type=${ev.type}`); } catch {}
           if (ev.type === 'run.completed') finalMsg = ev; // capture full payload
         });
         const doc = await Run.findById(run._id);
@@ -51,6 +57,7 @@ module.exports = function(){
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
         doc.msg = finalMsg || null;
         await doc.save();
+        console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
       } catch (e) {
         const doc = await Run.findById(run._id);
         doc.status = 'error';
@@ -61,6 +68,7 @@ module.exports = function(){
         await doc.save();
         broadcast(String(run._id), ev);
         broadcastRun(String(run._id), ev);
+        console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
       }
     })();
   });
@@ -93,6 +101,7 @@ module.exports = function(){
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders && res.flushHeaders();
+    console.log(`[runs][db] stream open: runId=${String(run._id)} events=${(run.events||[]).length} reqId=${req.requestId}`);
 
     const sendEvent = (ev) => { res.write(`event: ${ev.type}\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
     // replay
@@ -108,7 +117,7 @@ module.exports = function(){
       }
       res.write(`event: heartbeat\n`);
       res.write(`data: ${JSON.stringify({ ts: Date.now(), status: doc.status })}\n\n`);
-      if (doc.status === 'completed' || doc.status === 'failed'){
+      if (doc.status === 'success' || doc.status === 'error'){
         res.write(`event: run.${doc.status}\n`);
         res.write(`data: ${JSON.stringify({ ts: Date.now(), status: doc.status, result: doc.result })}\n\n`);
         clearInterval(interval);
@@ -116,7 +125,7 @@ module.exports = function(){
       }
     }, 600);
 
-    req.on('close', () => { clearInterval(interval); });
+    req.on('close', () => { clearInterval(interval); console.log(`[runs][db] stream closed: runId=${String(run._id)} reqId=${req.requestId}`); });
   });
 
   // List runs by workspace with filters and pagination
@@ -141,7 +150,12 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
-    res.apiOk(list.map(r => ({ id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status, startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload })));
+    res.apiOk(list.map(r => ({
+      id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
+      startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
+      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
+      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+    })));
   });
 
   // List runs by flow
@@ -164,7 +178,12 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
-    res.apiOk(list.map(r => ({ id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status, startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload })));
+    res.apiOk(list.map(r => ({
+      id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
+      startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
+      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
+      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+    })));
   });
 
   // Get latest run (optionally by flowId) for a workspace

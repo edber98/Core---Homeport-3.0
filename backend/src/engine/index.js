@@ -33,7 +33,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
   const queue = [start.id]; const visited = new Set();
 
   const send = (ev) => { try { emit && emit(ev); } catch { /* noop */ } };
-  send({ type: 'run.started' });
+  send({ type: 'run.started', startedAt: new Date().toISOString() });
 
   while (queue.length){
     const curId = queue.shift(); const node = nodesById.get(curId); if (!node) continue;
@@ -55,22 +55,25 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       nodeLog.args_post_compilation = deepRender(node.model?.context || {}, evalCtx) || null;
       nodeLog.result = { started: true };
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result });
+      try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else if (nType === 'condition'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const chosen = evaluateCondition(node, initialContext, msg);
       nodeLog.result = { chosen }; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result });
+      try { console.log('[engine] condition', { node: node.id, chosen }); } catch {}
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
       const outs = outEdges.get(node.id) || []; if (chosen != null){ const next = outs.find(o => o.labelText === String(chosen)); if (next) queue.push(next.target); }
       continue;
     } else if (nType === 'function'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const evalCtx = buildEvalContext(initialContext, msg); const inputs = deepRender(node.model?.context || {}, evalCtx); nodeLog.args_post_compilation = inputs;
       const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey]; let result = null;
+      try { console.log('[engine] call', { node: node.id, template: tmplKey, inputs }); } catch {}
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
       else { try { result = await fn({ id: node.id, model: node.model }, msg, inputs); } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; } }
       nodeLog.result = result; msg.payload = result; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result });
+      send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else {
       send({ type: 'node.skipped', nodeId: node.id });
     }
