@@ -6,6 +6,24 @@ const RunEventSchema = new Schema({
   type: { type: String, required: true },
   data: { type: Schema.Types.Mixed },
   error: { type: Schema.Types.Mixed },
+}, { _id: false, strict: false, suppressReservedKeysWarning: true });
+
+const AttemptSchema = new Schema({
+  runId: { type: String },
+  nodeId: { type: String, required: true },
+  attempt: { type: Number, default: 1 },
+  kind: { type: String },
+  templateKey: { type: String },
+  templateRaw: { type: String },
+  status: { type: String, enum: ['pending','running','success','error','skipped','blocked','timed_out'], default: 'running' },
+  startedAt: { type: Date },
+  finishedAt: { type: Date },
+  durationMs: { type: Number },
+  argsPre: { type: Schema.Types.Mixed },
+  argsPost: { type: Schema.Types.Mixed },
+  input: { type: Schema.Types.Mixed },
+  result: { type: Schema.Types.Mixed },
+  attemptErrors: { type: [Schema.Types.Mixed], default: [] },
 }, { _id: false, strict: false });
 
 const RunSchema = new Schema({
@@ -21,7 +39,8 @@ const RunSchema = new Schema({
   finishedAt: { type: Date },
   durationMs: { type: Number },
   msg: { type: Schema.Types.Mixed },
-}, { timestamps: true });
+  attempts: { type: [AttemptSchema], default: [] },
+}, { timestamps: true, suppressReservedKeysWarning: true });
 
 RunSchema.index({ workspaceId: 1, createdAt: -1 });
 RunSchema.index({ flowId: 1, createdAt: -1 });

@@ -18,6 +18,8 @@ const App = require('../src/db/models/app.model');
 const Notification = require('../src/db/models/notification.model');
 const PluginRepo = require('../src/db/models/plugin-repo.model');
 const Run = require('../src/db/models/run.model');
+const Attempt = require('../src/db/models/attempt.model');
+const RunEvent = require('../src/db/models/run-event.model');
 const WorkspaceMembership = require('../src/db/models/workspace-membership.model');
 const { seedMongoIfEmpty } = require('../src/seed');
 const { importManifest } = require('../src/plugins/importer');
@@ -25,9 +27,14 @@ const { registry } = require('../src/plugins/registry');
 
 async function purge(){
   await Promise.all([
+    // Core entities
     Company.deleteMany({}), User.deleteMany({}), Workspace.deleteMany({}), WorkspaceMembership.deleteMany({}),
+    // Catalog/templates/providers/apps/credentials
     Flow.deleteMany({}), Provider.deleteMany({}), NodeTemplate.deleteMany({}), Credential.deleteMany({}), App.deleteMany({}),
-    Notification.deleteMany({}), PluginRepo.deleteMany({}), Run.deleteMany({})
+    // Plugins and notifications
+    Notification.deleteMany({}), PluginRepo.deleteMany({}),
+    // Execution data
+    RunEvent.deleteMany({}), Attempt.deleteMany({}), Run.deleteMany({})
   ]);
 }
 

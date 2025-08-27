@@ -17,6 +17,7 @@ export interface BackendRun {
   durationMs?: number;
   nodesExecuted?: number;
   eventsCount?: number;
+  attempts?: any[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +28,11 @@ export class RunsBackendService {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/runs`, { payload });
   }
   get(runId: string, params?: { populate?: '0'|'1' }): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, params); }
+  getWith(runId: string, include: Array<'attempts'|'events'> = []): Observable<BackendRun> {
+    const p: any = {};
+    if (include && include.length) p.include = include.join(',');
+    return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, p);
+  }
   cancel(runId: string): Observable<any> { return this.api.post<any>(`/api/runs/${encodeURIComponent(runId)}/cancel`, {}); }
   listByFlow(flowId: string, params?: { status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/flows/${encodeURIComponent(flowId)}/runs`, params);
@@ -35,7 +41,7 @@ export class RunsBackendService {
     return this.api.get<BackendRun[]>(`/api/workspaces/${encodeURIComponent(wsId)}/runs`, params);
   }
 
-  // Open an SSE stream for a given runId and emit parsed events
+  // Open an SSE stream for a given runId and emit parsed LiveEvents
   stream(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
     const base = environment.apiBaseUrl.replace(/\/$/, '');
     const token = this.auth.token;
@@ -44,26 +50,19 @@ export class RunsBackendService {
     // Basic logs for debugging SSE lifecycle
     try { console.log('[frontend][sse] open', { runId, url }); } catch {}
     const on = (cb: (ev: any) => void) => {
-      const handler = (evt: MessageEvent) => {
+      const live = (evt: MessageEvent) => {
         try {
           const parsed = JSON.parse(evt.data);
-          try { console.log('[frontend][sse] event', parsed?.type || 'message', parsed); } catch {}
+          try { console.log('[frontend][sse] live', parsed?.type, parsed); } catch {}
           cb(parsed);
-        } catch {
-          try { console.log('[frontend][sse] message(raw)', evt.data); } catch {}
-          cb({ raw: evt.data });
+        } catch (e) {
+          try { console.warn('[frontend][sse] bad json', evt.data); } catch {}
         }
       };
-      // wildcard-like: subscribe to known event types and default message
-      source.addEventListener('run.started', handler);
-      source.addEventListener('node.done', handler);
-      source.addEventListener('node.skipped', handler);
-      source.addEventListener('run.completed', handler);
-      source.addEventListener('run.failed', handler);
-      source.addEventListener('run.success', handler);
-      source.addEventListener('run.error', handler);
-      source.addEventListener('heartbeat', handler);
-      source.onmessage = handler as any;
+      // New channel: 'live' events with seq and type
+      source.addEventListener('live', live);
+      // Fallback: default message
+      source.onmessage = live as any;
     };
     source.onerror = (e) => { try { console.error('[frontend][sse] error', e); } catch {} };
     const close = () => { try { console.log('[frontend][sse] close', { runId }); } catch {} try { source.close(); } catch {} };

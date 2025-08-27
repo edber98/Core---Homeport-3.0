@@ -1,0 +1,41 @@
+{
+  "name": "local-core",
+  "version": "1.0.0",
+  "providers": [],
+  "nodeTemplates": [
+    {
+      "key": "wait_all",
+      "name": "waitAll",
+      "title": "Wait All",
+      "subtitle": "Barrière (Promise.all)",
+      "type": "function",
+      "category": "Core",
+      "icon": "fa-solid fa-arrows-to-dot",
+      "output": ["ok"],
+      "args": {
+        "expected": { "type": "string", "enum": ["auto"], "default": "auto" },
+        "combine": { "type": "string", "enum": ["array","object"], "default": "array" },
+        "objectKey": { "type": "string", "enum": ["nodeId","inputId","edgeId"], "default": "nodeId" },
+        "dedupeBy": { "type": "string", "enum": ["nodeId","inputId","edgeId"], "default": "nodeId" },
+        "timeoutMs": { "type": "number", "default": 0 },
+        "onTimeout": { "type": "string", "enum": ["error","continue"], "default": "error" }
+      }
+    },
+    {
+      "key": "merge_race",
+      "name": "mergeRace",
+      "title": "Merge Race",
+      "subtitle": "Première arrivée",
+      "type": "function",
+      "category": "Core",
+      "icon": "fa-solid fa-flag-checkered",
+      "output": ["ok"],
+      "args": {
+        "cancelOthers": { "type": "boolean", "default": true },
+        "timeoutMs": { "type": "number", "default": 0 },
+        "onTimeout": { "type": "string", "enum": ["error","continue"], "default": "error" }
+      }
+    }
+  ]
+}
+

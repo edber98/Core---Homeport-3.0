@@ -423,12 +423,25 @@ export class FlowExecutionComponent {
     if (fid && (!this.currentGraph || String(this.currentGraph.id) !== String(fid))) {
       this.loadingFlowDoc = true;
       this.catalog.getFlow(fid).subscribe({
-        next: (doc) => { this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] } : null; this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.openBackendStream(b.id); },
-        error: () => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.openBackendStream(b.id); }
+        next: (doc) => { this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] } : null; this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); },
+        error: () => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); }
       });
     } else if (b && b.id) {
-      this.openBackendStream(b.id);
+      this.prepareRunDetail(b);
     }
+  }
+  private prepareRunDetail(runOrId: BackendRun | string){
+    const runId = typeof runOrId === 'string' ? runOrId : runOrId.id;
+    const status = typeof runOrId === 'string' ? (this.selectedBackendRun?.status || 'running') : (runOrId.status || 'running');
+    // Load attempts snapshot first so historic runs render without SSE
+    this.runsApi.getWith(runId, ['attempts']).subscribe({ next: (r) => {
+      const attempts = (r as any)?.attempts || [];
+      this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result }));
+      this.expanded = this.backendAttempts.map(() => false);
+      try { this.cdr.detectChanges(); } catch {}
+    }, complete: () => {
+      if (status === 'running') this.openBackendStream(runId);
+    } });
   }
   onViewRunClick(b: BackendRun) {
     this.selectBackendRun(b);
@@ -458,13 +471,18 @@ export class FlowExecutionComponent {
   get decoratedNodes(): any[] {
     const baseNodes = (this.currentGraph?.nodes || []) as any[];
     const smap = new Map<string, string>();
+    const counts = new Map<string, number>();
     if (this.selectedBackendRun) {
-      for (const a of this.backendAttempts) smap.set(String(a.nodeId), a.status || 'success');
+      for (const a of this.backendAttempts) {
+        const nid = String(a.nodeId);
+        smap.set(nid, a.status || 'success');
+        counts.set(nid, (counts.get(nid) || 0) + 1);
+      }
     } else {
       const atts = this.selectedRun?.attempts || [];
-      for (const a of atts) smap.set(String(a.nodeId), a.status);
+      for (const a of atts) { const nid = String(a.nodeId); smap.set(nid, a.status); counts.set(nid, (counts.get(nid) || 0) + 1); }
     }
-    return baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)) } }));
+    return baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)), execCount: counts.get(String(n.id)) || 0 } }));
   }
   get decoratedEdges(): any[] {
     const baseEdges = (this.currentGraph?.edges || []) as any[];
@@ -498,40 +516,70 @@ export class FlowExecutionComponent {
     const s = this.runsApi.stream(runId);
     this.currentStream = s;
     s.on((ev) => {
-      try { console.log('[frontend][exec] event', ev?.type || 'message', ev); } catch {}
-      // Ignore heartbeats in the list but still keep latest status
-      if (ev?.type === 'heartbeat') {
-        // keep last known status
-      } else {
-        this.backendEvents.push(ev);
-        if (ev?.type === 'run.started') {
-          this.backendAttempts = [];
-          this.expanded = [];
-          this.backendPairs.clear();
-          this.backendLastNodeId = this.findStartNodeId();
+      const t = ev?.type as string;
+      if (!t) return;
+      if (t === 'run.status') {
+        const st = ev?.run?.status || ev?.data?.status;
+        if (this.selectedBackendRun) this.selectedBackendRun.status = st || this.selectedBackendRun.status;
+        // Also reflect in history list item if present
+        try {
+          const idx = this.backendFlowRuns.findIndex(x => String(x.id) === String(runId));
+          if (idx >= 0 && st) this.backendFlowRuns[idx] = { ...this.backendFlowRuns[idx], status: st } as any;
+        } catch {}
+        // Close stream on terminal state to avoid EventSource auto-reconnect loop
+        if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
+          try { s.close(); } catch {}
         }
-        if (ev?.type === 'node.done') {
-          const d = ev?.data || {};
-          this.backendAttempts.push({ nodeId: String(d.nodeId || ''), status: 'success', input: d.input, argsPre: d.argsPre, argsPost: d.argsPost, result: d.result, durationMs: d.durationMs, startedAt: d.startedAt, finishedAt: d.finishedAt } as any);
-          this.expanded.push(false);
-          const nid = String(d.nodeId || '');
+      }
+      if (t === 'node.status') {
+        const nodeId = String(ev.nodeId || ev.data?.nodeId || '');
+        const status = ev?.data?.status || 'running';
+        const startedAt = ev?.data?.startedAt;
+        const finishedAt = ev?.data?.finishedAt;
+        const durationMs = ev?.data?.durationMs;
+        if (status === 'running') {
+          const existing = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId && a.status === 'running');
+          if (existing) {
+            existing.startedAt = existing.startedAt || startedAt;
+          } else {
+            this.backendAttempts.push({ nodeId, status, startedAt } as any);
+            this.expanded.push(false);
+          }
           const prev = this.backendLastNodeId;
-          if (prev && nid && prev !== nid) this.backendPairs.add(`${prev}->${nid}`);
-          this.backendLastNodeId = nid || this.backendLastNodeId;
+          if (prev && nodeId && prev !== nodeId) this.backendPairs.add(`${prev}->${nodeId}`);
+          this.backendLastNodeId = nodeId || this.backendLastNodeId;
+        } else {
+          // update last attempt for this node (whatever its current status) to avoid duplicates
+          const last = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId);
+          if (last) {
+            last.status = status;
+            last.finishedAt = finishedAt ?? last.finishedAt;
+            last.durationMs = durationMs ?? last.durationMs;
+          } else {
+            this.backendAttempts.push({ nodeId, status, startedAt, finishedAt, durationMs } as any);
+            this.expanded.push(false);
+          }
         }
-        if (ev?.type === 'node.skipped') {
-          const d = ev?.data || {};
-          this.backendAttempts.push({ nodeId: String(d.nodeId || ''), status: 'skipped' });
+      }
+      if (t === 'node.result') {
+        const nodeId = String(ev.nodeId || '');
+        const last = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId);
+        if (last) {
+          if (!last.status || last.status === 'running') last.status = 'success';
+          last.input = ev.data?.input ?? last.input;
+          last.argsPre = ev.data?.argsPre ?? last.argsPre;
+          last.result = (ev.result ?? ev.data?.result) ?? last.result;
+          last.argsPost = ev.data?.argsPost ?? last.argsPost;
+          last.durationMs = ev.data?.durationMs ?? last.durationMs;
+          last.startedAt = ev.data?.startedAt ?? last.startedAt;
+          last.finishedAt = ev.data?.finishedAt ?? last.finishedAt;
+        } else {
+          this.backendAttempts.push({ nodeId, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
       }
-      // Auto-select run view
       if (!this.selectedBackendRun) this.selectedBackendRun = { id: runId, flowId: this.currentFlowId || '', status: 'running' } as BackendRun;
       try { this.cdr.detectChanges(); } catch {}
-      // Auto-close on terminal events
-      if (ev?.type === 'run.success' || ev?.type === 'run.error' || ev?.type === 'run.completed' || ev?.type === 'run.failed') {
-        try { s.close(); } catch {}
-      }
     });
   }
 

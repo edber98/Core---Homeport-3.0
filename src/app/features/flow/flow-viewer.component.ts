@@ -59,6 +59,7 @@ import { Subscription } from 'rxjs';
               </div>
               <div class="exec-badge" *ngIf="ctx.node.data.execStatus as st">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')"></i>
+                <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
               </div>
             </div>
           </ng-template>
@@ -100,6 +101,7 @@ import { Subscription } from 'rxjs';
     .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
     .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
     .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
+    .node-card .exec-badge .cnt { font-size:11px; color:#6b7280; }
     .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
     .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
     .bottom-bar button { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }

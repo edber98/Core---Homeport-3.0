@@ -21,7 +21,7 @@ module.exports = function(store){
     console.log(`[runs][mem] start: flowId=${flowId} enabled=${flow.enabled !== false} ws=${ws.id} user=${req.user?.id} reqId=${req.requestId}`);
     const runId = randomUUID();
     const now = new Date();
-    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
     store.runs.set(runId, run);
     res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
     console.log(`[runs][mem] created run: id=${runId} flowId=${flowId} status=${run.status} reqId=${req.requestId}`);
@@ -34,6 +34,20 @@ module.exports = function(store){
         await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, (ev) => {
           const evt = { ts: Date.now(), type: ev.type, data: ev };
           run.events.push(evt);
+          // Maintain attempts in memory
+          try {
+            if (ev.type === 'node.started'){
+              run.attempts.push({ runId, nodeId: String(ev.nodeId||''), attempt: 1, status: 'running', startedAt: ev.startedAt || new Date().toISOString(), argsPre: ev.argsPre, templateKey: ev.templateKey, kind: ev.kind });
+            } else if (ev.type === 'node.done'){
+              const nid = String(ev.nodeId || '');
+              const last = run.attempts.slice().reverse().find(a => String(a.nodeId) === nid && !a.finishedAt);
+              if (last){
+                last.status = 'success'; last.finishedAt = ev.finishedAt || new Date().toISOString(); last.durationMs = ev.durationMs; last.argsPost = ev.argsPost; last.input = ev.input; last.result = ev.result;
+              } else {
+                run.attempts.push({ runId, nodeId: nid, attempt: 1, status: 'success', startedAt: ev.startedAt, finishedAt: ev.finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result });
+              }
+            }
+          } catch {}
           try { broadcast(String(runId), ev); } catch {}
           try { broadcastRun(String(runId), ev); } catch {}
           try { if (ev && ev.type) console.log(`[runs][mem] event: runId=${runId} type=${ev.type}`); } catch {}
