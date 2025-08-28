@@ -264,13 +264,28 @@ export class FlowBuilderUtilsService {
       }
       const newEdges: Edge[] = (edges as any[]).map((e: any) => {
         const isErr = String(e.sourceHandle) === 'err' || next.has(String(e.source));
-        const baseWidth = (e.data && typeof e.data.__baseWidth === 'number') ? e.data.__baseWidth : (e.data?.strokeWidth ?? 2);
-        const baseColor = (e.data && typeof e.data.__baseColor === 'string') ? e.data.__baseColor : (e.data?.color ?? '#b1b1b7');
-        const newData: any = { ...(e.data || {}) };
+        const prevData = e.data || {};
+        const baseWidth = (typeof prevData.__baseWidth === 'number') ? prevData.__baseWidth : (prevData.strokeWidth ?? 2);
+        const baseColor = (typeof prevData.__baseColor === 'string') ? prevData.__baseColor : (prevData.color ?? '#b1b1b7');
+        const isTaken = !!prevData.__taken; // preserve blue highlight if set by overlays
+        const newData: any = { ...prevData };
         if (typeof newData.__baseWidth !== 'number') newData.__baseWidth = baseWidth;
         if (typeof newData.__baseColor !== 'string') newData.__baseColor = baseColor;
-        if (isErr) { newData.error = true; newData.strokeWidth = 1; newData.color = '#f759ab'; }
-        else { newData.error = false; newData.strokeWidth = baseWidth; newData.color = baseColor; }
+        // If edge is currently highlighted as taken, do not mark as error nor override its blue color
+        if (isTaken) {
+          newData.error = false;
+          // keep stroke width at least 2 and color blue
+          newData.strokeWidth = Math.max(2, Number(newData.strokeWidth ?? 2));
+          newData.color = '#1677ff';
+        } else if (isErr) {
+          newData.error = true;
+          newData.strokeWidth = 1;
+          newData.color = '#f759ab';
+        } else {
+          newData.error = false;
+          newData.strokeWidth = baseWidth;
+          newData.color = baseColor;
+        }
         return { ...e, data: newData } as Edge;
       });
       return { edges: newEdges, errorNodes: next };

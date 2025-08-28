@@ -73,6 +73,8 @@ export class FlowBuilderComponent {
   lastRun: any = null;
   currentRun: any = null;
   loadingFlowDoc = false;
+  // When opening a specific backend run in editor, skip restoring local drafts
+  private openingRunId: string | null = null;
   // Backend live run state (per current execution)
   backendRunId: string | null = null;
   private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
@@ -220,6 +222,7 @@ export class FlowBuilderComponent {
       this.route.queryParamMap.subscribe(qp => {
         const runId = qp.get('run');
         const flowId = qp.get('flow');
+        this.openingRunId = runId;
         if (flowId && (!this.currentFlowId || String(this.currentFlowId) !== String(flowId))) {
           // Load flow graph first, then open run stream/snapshot
           this.loadingFlowDoc = true;
@@ -281,7 +284,7 @@ export class FlowBuilderComponent {
               this.edges = (doc.edges || []) as any;
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
               this.updateSharedGraph();
-              this.tryRestoreDraft(flowId);
+              if (!this.openingRunId) this.tryRestoreDraft(flowId);
               const hydrated = this.tryHydrateHistory();
               if (!hydrated) { this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory(); } else { this.updateTimelineCaches(); }
             }
@@ -325,7 +328,7 @@ export class FlowBuilderComponent {
               this.edges = (doc.edges || []) as any;
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
               this.updateSharedGraph();
-              this.tryRestoreDraft(fid);
+              if (!this.openingRunId) this.tryRestoreDraft(fid);
               const hydrated = this.tryHydrateHistory();
               if (!hydrated) { this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory(); } else { this.updateTimelineCaches(); }
             }
@@ -1902,13 +1905,20 @@ export class FlowBuilderComponent {
         const data = e.data || (e.data = {});
         const end = (e as any).markers?.end || {};
         if (took) {
+          (data as any).__taken = true;
           (data as any).strokeWidth = 2;
           (data as any).color = '#1677ff';
-          (e as any).markers = { ...(e.markers || {}), end: { ...end, color: '#1677ff' } };
+          const endType = end.type || 'arrow-closed';
+          (e as any).markers = { ...(e.markers || {}), end: { ...end, type: endType, color: '#1677ff' } };
         } else {
+          // mark as not taken so error propagation can restore base style
+          if ((data as any).__taken) delete (data as any).__taken;
           if ((data as any).color === '#1677ff') (data as any).color = '#b1b1b7';
           if (((data as any).strokeWidth || 0) > 2) (data as any).strokeWidth = 2;
-          if (end && end.color === '#1677ff') (e as any).markers = { ...(e.markers || {}), end: { ...end, color: '#b1b1b7' } };
+          if (end && end.color === '#1677ff') {
+            const endType = end.type || 'arrow-closed';
+            (e as any).markers = { ...(e.markers || {}), end: { ...end, type: endType, color: '#b1b1b7' } };
+          }
         }
       });
     } catch {}
@@ -1929,8 +1939,8 @@ export class FlowBuilderComponent {
   }
 
   private openRunSnapshotInEditor(runId: string) {
-    // Load attempts snapshot (for historic runs) and open SSE if still running
-    this.runsApi.getWith(runId, ['attempts']).subscribe({
+    // Load attempts + events snapshot (for historic runs) and open SSE if still running
+    this.runsApi.getWith(runId, ['attempts','events']).subscribe({
       next: (r: any) => {
         // Reset state
         this.backendNodeStats = new Map();
@@ -1946,13 +1956,23 @@ export class FlowBuilderComponent {
           this.backendNodeAttempts.set(nid, arr);
           this.updateNodeVisual(nid);
         });
-        // Derive path pairs from attempts order for historical view
+        // Prefer exact path from persisted edge.taken events; fallback to attempts order
         try {
           this.backendEdgesTaken.clear();
-          for (let i = 1; i < attempts.length; i++) {
-            const prev = String(attempts[i - 1]?.nodeId || '');
-            const cur = String(attempts[i]?.nodeId || '');
-            if (prev && cur && prev !== cur) this.backendEdgesTaken.add(`${prev}->${cur}`);
+          const events = (r?.events || []) as any[];
+          const taken = events?.filter(ev => (ev?.type || ev?.eventType) === 'edge.taken') || [];
+          if (taken.length) {
+            for (const ev of taken) {
+              const sId = String(ev?.data?.sourceId || ev?.sourceId || '');
+              const tId = String(ev?.data?.targetId || ev?.targetId || '');
+              if (sId && tId && sId !== tId) this.backendEdgesTaken.add(`${sId}->${tId}`);
+            }
+          } else {
+            for (let i = 1; i < attempts.length; i++) {
+              const prev = String(attempts[i - 1]?.nodeId || '');
+              const cur = String(attempts[i]?.nodeId || '');
+              if (prev && cur && prev !== cur) this.backendEdgesTaken.add(`${prev}->${cur}`);
+            }
           }
           this.applyBackendEdgeHighlights();
         } catch {}
