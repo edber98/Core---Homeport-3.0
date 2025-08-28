@@ -164,6 +164,23 @@ export class FlowBuilderComponent {
   private pushPending = false;
   private allowedRemovedEdgeIds = new Set<string>();
   private draggingPalette = new Set<string>();
+  previewLoading = false;
+  outputLoading = false;
+  testStatus: 'idle'|'running'|'success'|'error' = 'idle';
+  testStartedAt: number | null = null;
+  testDurationMs: number | null = null;
+  isTestDisabled(): boolean {
+    try {
+      if (this.testStatus === 'running') return true;
+      if (this.backendRunStatus === 'running') return true;
+      const nodeId = this.selectedModel?.id;
+      if (!nodeId) return false;
+      const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
+      const last = arr[arr.length - 1];
+      if (last && last.status === 'running') return true;
+      return false;
+    } catch { return false; }
+  }
 
   // Lightweight tooltip state for output handles
   tipVisible = false;
@@ -694,6 +711,9 @@ export class FlowBuilderComponent {
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
+  hasPredecessor(nodeId?: string | null): boolean {
+    try { const id = String(nodeId || ''); if (!id) return false; return (this.edges || []).some(e => String(e.target) === id); } catch { return false; }
+  }
   onExternalDrop(event: any) {
     // logs disabled
     if (this.isMobile) return; // Disable DnD on mobile
@@ -1101,24 +1121,64 @@ export class FlowBuilderComponent {
   // Run selected node in test mode and show I/O in dialog wings
   onTestSelectedNode() {
     try {
-      const m = this.selectedModel;
-      if (!m) return;
+      const m = this.selectedModel; if (!m) return;
       const isStart = String(m?.templateObj?.type || '').toLowerCase() === 'start';
-      const input = isStart ? (this.getStartPayload() || {}) : (this.computePrevPayload(m?.id) || {});
+      let msgIn = this.advancedInjectedInput;
+      if (msgIn == null || (typeof msgIn === 'object' && Object.keys(msgIn).length === 0)) {
+        this.modal.confirm({ nzTitle: 'Exécuter sans entrée ?', nzContent: 'Aucune entrée détectée pour ce nœud. Voulez-vous exécuter quand même ?', nzOnOk: () => this._doTestNodeBackend(m, isStart, msgIn || {}) });
+        return;
+      }
+      this._doTestNodeBackend(m, isStart, msgIn);
+    } catch {}
+  }
+  private _doTestNode(m: any, isStart: boolean, input: any) {
+    try {
+      this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
+      const t0 = performance.now();
       const run = this.runner.runNode(m?.templateObj || {}, m?.id, 'test', input);
+      const t1 = performance.now();
       const last = run.attempts[run.attempts.length - 1];
       this.advancedInjectedInput = last?.input ?? input;
       if (isStart) {
-        this.advancedInjectedOutput = this.getStartPayload() || {};
+        this.advancedInjectedOutput = this.getStartPayload().payload || {};
       } else {
         const flowOut = (this.lastRun && this.lastRun.finalPayload) ? this.lastRun.finalPayload : null;
         const nodeOut = last?.result;
         this.advancedInjectedOutput = flowOut ?? nodeOut ?? null;
       }
-      // ctx à plat
       this.advancedCtx = this.advancedInjectedInput || {};
+      this.testDurationMs = Math.round(t1 - t0);
+      this.testStatus = 'success';
       try { this.cdr.detectChanges(); } catch {}
-    } catch {}
+    } catch (e) {
+      this.testStatus = 'error';
+      this.testDurationMs = null;
+      try { this.cdr.detectChanges(); } catch {}
+    }
+  }
+  private _doTestNodeBackend(m: any, isStart: boolean, msgIn: any) {
+    if (environment.useBackend && this.currentFlowId) {
+      this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
+      const t0 = performance.now();
+      this.runsApi.testNode(this.currentFlowId, m?.id, msgIn).subscribe({
+        next: (resp: any) => {
+          const t1 = performance.now();
+          this.advancedInjectedInput = resp?.msgIn ?? msgIn;
+          if (isStart) {
+            this.advancedInjectedOutput = this.getStartPayload().payload || {};
+          } else {
+            this.advancedInjectedOutput = resp?.msgOut ?? resp?.result ?? null;
+          }
+          this.advancedCtx = this.advancedInjectedInput || {};
+          this.testDurationMs = this.testDurationMs ?? Math.round(t1 - t0);
+          this.testStatus = 'success';
+          try { this.cdr.detectChanges(); } catch {}
+        },
+        error: () => { this.testStatus = 'error'; this.testDurationMs = null; try { this.cdr.detectChanges(); } catch {} },
+      });
+    } else {
+      this._doTestNode(m, isStart, msgIn);
+    }
   }
 
   onRunPrevNodes() {
@@ -1127,6 +1187,7 @@ export class FlowBuilderComponent {
       if (!nodeId) return;
       if (environment.useBackend && this.currentFlowId) {
         const p = this.getStartPayload().payload;
+        this.previewLoading = true;
         this.runsApi.preview(this.currentFlowId, nodeId, p).subscribe({
           next: (resp) => {
             this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
@@ -1139,7 +1200,8 @@ export class FlowBuilderComponent {
             this.advancedInjectedInput = injected;
             this.advancedCtx = this.advancedInjectedInput || {};
             try { this.cdr.detectChanges(); } catch {}
-          }
+          },
+          complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
         });
       } else {
         const injected = this.runPredecessorsAndGetResult(nodeId);
@@ -1919,6 +1981,13 @@ export class FlowBuilderComponent {
             this.backendAttemptSeq = startId ? [startId] : [];
             this.applyBackendEdgeHighlights();
             this.refreshOverlayDiff('run.status:running');
+            // Clear dialog I/O since a new run restarts attempts from zero
+            if (this.advancedOpen) {
+              this.advancedInjectedInput = null;
+              this.advancedInjectedOutput = null;
+              this.previewLoading = false;
+              this.outputLoading = false;
+            }
             try { this.cdr.detectChanges(); } catch {}
           }
           this.backendRunStatus = 'running';
@@ -1942,9 +2011,24 @@ export class FlowBuilderComponent {
           let at = arr.find(a => a.exec === exec);
           if (!at) { at = { exec, status: st }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
           else { at.status = st || at.status; }
+          // capture input/args/msg at start if provided
+          if (ev.data) {
+            if (ev.data.input !== undefined) at.input = ev.data.input;
+            if (ev.data.argsPre !== undefined) at.argsPre = ev.data.argsPre;
+            if (ev.data.argsPost !== undefined) at.argsPost = ev.data.argsPost;
+            if (ev.data.msgIn !== undefined) at.msgIn = ev.data.msgIn;
+          }
           this.updateNodeVisual(nid);
           // Track path based on actual start sequence if no explicit edge.taken yet
           if (st === 'running') {
+            if (this.selectedModel && String(this.selectedModel.id) === nid) {
+              // Live update dialog input if open
+              if (this.advancedOpen) {
+                this.advancedInjectedInput = (ev.data && (ev.data.msgIn ?? ev.data.input)) || this.advancedInjectedInput;
+                this.previewLoading = false;
+              }
+              this.outputLoading = true;
+            }
             const prev = this.backendAttemptSeq.length ? this.backendAttemptSeq[this.backendAttemptSeq.length - 1] : null;
             this.backendAttemptSeq.push(nid);
             if (prev && prev !== nid) {
@@ -1992,6 +2076,12 @@ export class FlowBuilderComponent {
           cur.lastStatus = 'success';
           this.backendNodeStats.set(nid, cur);
           this.updateNodeVisual(nid);
+          if (this.selectedModel && String(this.selectedModel.id) === nid) {
+            if (this.advancedOpen) {
+              this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? this.advancedInjectedOutput;
+              this.outputLoading = false;
+            }
+          }
           // Edge path was updated on node.status running; nothing else to do here
         }
         try { this.cdr.detectChanges(); } catch {}

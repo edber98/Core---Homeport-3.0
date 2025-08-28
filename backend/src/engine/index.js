@@ -138,7 +138,6 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
     } else if (nType === 'function'){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
-      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, templateKey: tmplKey, kind: 'function', msgIn: msgBefore });
       const evalCtx = buildEvalContext(initialContext, msg);
       const compiled = deepRender(node.model?.context || {}, evalCtx);
       let inputs = compiled;
@@ -148,6 +147,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
         }
       } catch {}
       nodeLog.args_post_compilation = inputs;
+      // Emit started with full computed input
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, input: inputs, templateKey: tmplKey, kind: 'function', msgIn: msgBefore });
       const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey]; let result = null;
       try { console.log('[engine] call', { node: node.id, template: tmplKey, inputs }); } catch {}
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
