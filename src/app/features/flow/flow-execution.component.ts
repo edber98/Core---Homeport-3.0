@@ -130,6 +130,10 @@ import { ChangeDetectorRef } from '@angular/core';
                 <pre>{{ a.input | json }}</pre>
               </div>
               <div>
+                <div class="k">msgIn</div>
+                <pre>{{ a.msgIn | json }}</pre>
+              </div>
+              <div>
                 <div class="k">args.pre</div>
                 <pre>{{ a.argsPre | json }}</pre>
               </div>
@@ -140,6 +144,10 @@ import { ChangeDetectorRef } from '@angular/core';
               <div>
                 <div class="k">output</div>
                 <pre>{{ a.result | json }}</pre>
+              </div>
+              <div>
+                <div class="k">msgOut</div>
+                <pre>{{ a.msgOut | json }}</pre>
               </div>
             </div>
           </div>
@@ -354,7 +362,7 @@ export class FlowExecutionComponent {
   backendWsRuns: BackendRun[] = [];
   selectedBackendRun: BackendRun | null = null;
   backendEvents: any[] = [];
-  backendAttempts: Array<{ nodeId: string; exec?: number; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any }> = [];
+  backendAttempts: Array<{ nodeId: string; exec?: number; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any }> = [];
   expanded: boolean[] = [];
   private currentStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendLastNodeId: string | null = null;
@@ -451,7 +459,7 @@ export class FlowExecutionComponent {
     // Load attempts snapshot first so historic runs render without SSE
     this.runsApi.getWith(runId, ['attempts']).subscribe({ next: (r) => {
       const attempts = (r as any)?.attempts || [];
-      this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result }));
+      this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut }));
       this.expanded = this.backendAttempts.map(() => false);
       try { this.cdr.detectChanges(); } catch {}
     }, complete: () => {
@@ -585,11 +593,13 @@ export class FlowExecutionComponent {
           cur.argsPre = ev.data?.argsPre ?? cur.argsPre;
           cur.result = (ev.result ?? ev.data?.result) ?? cur.result;
           cur.argsPost = ev.data?.argsPost ?? cur.argsPost;
+          cur.msgIn = ev.data?.msgIn ?? cur.msgIn;
+          cur.msgOut = ev.data?.msgOut ?? cur.msgOut;
           cur.durationMs = ev.data?.durationMs ?? cur.durationMs;
           cur.startedAt = ev.data?.startedAt ?? cur.startedAt;
           cur.finishedAt = ev.data?.finishedAt ?? cur.finishedAt;
         } else {
-          this.backendAttempts.push({ nodeId, exec, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
+          this.backendAttempts.push({ nodeId, exec, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
       }

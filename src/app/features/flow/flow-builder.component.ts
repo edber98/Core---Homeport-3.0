@@ -80,7 +80,7 @@ export class FlowBuilderComponent {
   backendRunId: string | null = null;
   private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendNodeStats = new Map<string, { count: number; lastStatus?: 'success'|'error'|'skipped'|'running' }>();
-  private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any }>>();
+  private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any }>>();
   private backendLastNodeId: string | null = null; // legacy linear tracker
   private backendEdgesTaken = new Set<string>();
   private backendAttemptSeq: string[] = [];
@@ -136,20 +136,27 @@ export class FlowBuilderComponent {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.startPayload.${fid}`;
   }
-  private getStartPayload(): any {
+  private getStartPayload(): { payload: any } {
     try {
       const key = this.startPayloadKey();
       const raw = localStorage.getItem(key);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const obj = JSON.parse(raw);
+        // Normalize legacy format: if stored value is the payload itself, wrap it
+        if (obj && typeof obj === 'object' && 'payload' in obj) return { payload: obj.payload };
+        return { payload: obj };
+      }
       const def = { payload: null };
       try { localStorage.setItem(key, JSON.stringify(def)); } catch {}
       return def;
     } catch { return { payload: null }; }
   }
 
-  
   private setStartPayload(v: any) {
-    try { localStorage.setItem(this.startPayloadKey(), JSON.stringify(v ?? {})); } catch {}
+    try {
+      const wrapped = (v && typeof v === 'object' && 'payload' in v) ? { payload: (v as any).payload } : { payload: v };
+      localStorage.setItem(this.startPayloadKey(), JSON.stringify(wrapped));
+    } catch {}
   }
   private toastTimer: any;
   private applyingHistory = false;
@@ -1492,16 +1499,30 @@ export class FlowBuilderComponent {
     try {
       const nodeId = this.selectedModel?.id;
       const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
-      this.advancedInjectedInput = isStart ? (this.getStartPayload() || {}) : this.computePrevPayload(nodeId);
-      if (isStart) this.advancedInjectedOutput = this.getStartPayload() || {};
+      // Prefer backend attempts if a live/snapshotted run is selected
+      if (this.backendRunId && nodeId) {
+        const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
+        const last = arr[arr.length - 1];
+        if (last) {
+          this.advancedInjectedInput = last.msgIn ?? last.input ?? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId));
+          this.advancedInjectedOutput = last.msgOut ?? last.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
+        } else {
+          this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
+          if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+        }
+      } else {
+        this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
+        if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+      }
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
     this.advancedOpen = true;
   }
   onStartPayloadChange(v: any) {
     this.setStartPayload(v);
-    this.advancedInjectedInput = v || {};
-    this.advancedInjectedOutput = v || {};
+    const p = this.getStartPayload().payload;
+    this.advancedInjectedInput = p || {};
+    this.advancedInjectedOutput = p || {};
     this.advancedCtx = this.advancedInjectedInput || {};
     try { this.cdr.detectChanges(); } catch {}
   }
@@ -1937,6 +1958,8 @@ export class FlowBuilderComponent {
           at.argsPre = ev.data?.argsPre ?? at.argsPre;
           at.argsPost = ev.data?.argsPost ?? at.argsPost;
           at.result = (ev.result ?? ev.data?.result) ?? at.result;
+          at.msgIn = ev.data?.msgIn ?? at.msgIn;
+          at.msgOut = ev.data?.msgOut ?? at.msgOut;
           at.durationMs = ev.data?.durationMs ?? at.durationMs;
           at.startedAt = ev.data?.startedAt ?? at.startedAt;
           at.finishedAt = ev.data?.finishedAt ?? at.finishedAt;
@@ -1992,6 +2015,7 @@ export class FlowBuilderComponent {
 
   private openRunSnapshotInEditor(runId: string) {
     this.openingRunId = runId;
+    this.backendRunId = runId; // allow dialogs to read attempts even without SSE
     this.backendRunStatus = 'idle';
     // Load attempts + events snapshot (for historic runs) and open SSE if still running
     this.runsApi.getWith(runId, ['attempts','events']).subscribe({
@@ -2006,7 +2030,7 @@ export class FlowBuilderComponent {
           const nid = String(a.nodeId);
           const exec = a.attempt;
           const arr = this.backendNodeAttempts.get(nid) || [];
-          arr.push({ exec, status: a.status, startedAt: a.startedAt, finishedAt: a.finishedAt, durationMs: a.durationMs, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result });
+          arr.push({ exec, status: a.status, startedAt: a.startedAt, finishedAt: a.finishedAt, durationMs: a.durationMs, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut });
           this.backendNodeAttempts.set(nid, arr);
           this.updateNodeVisual(nid);
         });
