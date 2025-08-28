@@ -67,11 +67,11 @@ module.exports = function(){
               usedAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: usedAttempt },
-                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, branchId } },
+                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, branchId, msgIn: ev.msgIn } },
                 { upsert: true, new: true }
               );
             }
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt }, ts });
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
@@ -80,8 +80,8 @@ module.exports = function(){
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
             if (att){
               att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
-              att.argsPost = ev.argsPost; att.input = ev.input; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
               await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
             } else {
               // fallback: create completed attempt
@@ -93,10 +93,10 @@ module.exports = function(){
               const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: nextAttempt },
-                { $setOnInsert: { status: 'success', branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result } },
+                { $setOnInsert: { status: 'success', branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, msgIn: ev.msgIn, msgOut: ev.msgOut, result: ev.result } },
                 { upsert: true, new: true }
               );
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
               await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
             }
           }

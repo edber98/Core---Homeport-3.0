@@ -27,6 +27,7 @@ import { FlowBuilderUtilsService } from './flow-builder-utils.service';
 import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
 import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.component';
 import { FlowRunService } from '../../services/flow-run.service';
+import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
@@ -80,8 +81,57 @@ export class FlowBuilderComponent {
   private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendNodeStats = new Map<string, { count: number; lastStatus?: 'success'|'error'|'skipped'|'running' }>();
   private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any }>>();
-  private backendLastNodeId: string | null = null;
+  private backendLastNodeId: string | null = null; // legacy linear tracker
   private backendEdgesTaken = new Set<string>();
+  private backendAttemptSeq: string[] = [];
+  private lastOverlayPairs = new Set<string>();
+  private backendRunStatus: 'idle'|'running'|'done' = 'idle';
+  // Derived pairs builder for overlay (does not mutate base edges)
+  private buildOverlayPairs(): Set<string> {
+    const pairs = new Set<string>();
+    // Prefer explicit edge.taken collected live
+    if (this.backendEdgesTaken && this.backendEdgesTaken.size) {
+      this.backendEdgesTaken.forEach(p => pairs.add(p));
+    }
+    // Fallback to live attempt sequence (linear) if available
+    if (pairs.size === 0 && this.backendAttemptSeq && this.backendAttemptSeq.length > 1) {
+      for (let i = 1; i < this.backendAttemptSeq.length; i++) {
+        const prev = this.backendAttemptSeq[i - 1];
+        const cur = this.backendAttemptSeq[i];
+        if (prev && cur && prev !== cur) pairs.add(`${prev}->${cur}`);
+      }
+    }
+    return pairs;
+  }
+
+  // Exposed to template: compute decorated edges from base + overlay pairs
+  get renderedEdges(): any[] {
+    try {
+      const base = this.edges as any[];
+      const pairs = this.buildOverlayPairs();
+      if (pairs.size === 0) return base;
+      return this.pathSvc.decorateEdges(base, pairs);
+    } catch { return this.edges as any[]; }
+  }
+
+  private logEdgeColorChange(src: string, dst: string, to: 'blue'|'grey', reason: string) {
+    try {
+      console.log('[editor][edge-color]', { source: src, target: dst, to, reason });
+    } catch {}
+  }
+  private refreshOverlayDiff(reason: string) {
+    try {
+      const next = this.buildOverlayPairs();
+      // additions -> blue; removals -> grey
+      next.forEach(p => { if (!this.lastOverlayPairs.has(p)) {
+        const [s, d] = p.split('->'); this.logEdgeColorChange(s, d, 'blue', reason);
+      }});
+      this.lastOverlayPairs.forEach(p => { if (!next.has(p)) {
+        const [s, d] = p.split('->'); this.logEdgeColorChange(s, d, 'grey', reason);
+      }});
+      this.lastOverlayPairs = new Set(next);
+    } catch {}
+  }
   private startPayloadKey(): string {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.startPayload.${fid}`;
@@ -143,6 +193,7 @@ export class FlowBuilderComponent {
     private shared: FlowSharedStateService,
     private modal: NzModalService,
     private router: Router,
+    private pathSvc: FlowPathHighlightService,
   ) { }
   isMobile = false;
   // Apps map for provider grouping/logo
@@ -291,6 +342,8 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // If we are opening a specific run, re-apply backend highlights after any flow swap
+            try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
             // Deep-link: focus a specific node if requested
             try {
               if (focusNode) {
@@ -335,6 +388,8 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // If a run is open, re-apply backend highlights after swap
+            try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
             if (node) {
               try {
                 const id = String(node);
@@ -1792,6 +1847,9 @@ export class FlowBuilderComponent {
     this.backendNodeAttempts = new Map();
     this.backendEdgesTaken.clear();
     this.backendLastNodeId = null;
+    this.backendAttemptSeq = [];
+    this.lastOverlayPairs = new Set();
+    this.backendRunStatus = 'idle';
     // Refresh edge visuals immediately
     this.applyBackendEdgeHighlights();
     try { this.cdr.detectChanges(); } catch {}
@@ -1805,13 +1863,23 @@ export class FlowBuilderComponent {
       // LiveEvent mapping
       if (type === 'run.status') {
         const st = ev?.run?.status || ev?.data?.status;
+        const was = this.backendRunStatus;
         if (st === 'running') {
-          this.backendNodeStats.clear();
-          this.backendEdgesTaken.clear();
-          this.backendLastNodeId = this.findStartNodeId();
-          this.applyBackendEdgeHighlights();
-          try { this.cdr.detectChanges(); } catch {}
+          if (was !== 'running') {
+            this.backendNodeStats.clear();
+            this.backendEdgesTaken.clear();
+            this.lastOverlayPairs = new Set();
+            this.backendLastNodeId = null; // legacy unused
+            // Seed sequence with start node if identifiable to color first hop
+            const startId = this.findStartNodeId();
+            this.backendAttemptSeq = startId ? [startId] : [];
+            this.applyBackendEdgeHighlights();
+            this.refreshOverlayDiff('run.status:running');
+            try { this.cdr.detectChanges(); } catch {}
+          }
+          this.backendRunStatus = 'running';
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
+          this.backendRunStatus = 'done';
           try { s.close(); } catch {}
           // Keep snapshot of attempts but stop further updates
         }
@@ -1831,14 +1899,15 @@ export class FlowBuilderComponent {
           if (!at) { at = { exec, status: st }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
           else { at.status = st || at.status; }
           this.updateNodeVisual(nid);
-          // Track path on running transition (edge from previous to current)
+          // Track path based on actual start sequence if no explicit edge.taken yet
           if (st === 'running') {
-            const prev = this.backendLastNodeId;
+            const prev = this.backendAttemptSeq.length ? this.backendAttemptSeq[this.backendAttemptSeq.length - 1] : null;
+            this.backendAttemptSeq.push(nid);
             if (prev && prev !== nid) {
               this.backendEdgesTaken.add(`${prev}->${nid}`);
               this.applyBackendEdgeHighlights();
+              this.refreshOverlayDiff('node.status:running');
             }
-            this.backendLastNodeId = nid;
           }
         }
         try { this.cdr.detectChanges(); } catch {}
@@ -1850,6 +1919,7 @@ export class FlowBuilderComponent {
         if (sId && tId && sId !== tId) {
           this.backendEdgesTaken.add(`${sId}->${tId}`);
           this.applyBackendEdgeHighlights();
+          this.refreshOverlayDiff('edge.taken');
         }
         try { this.cdr.detectChanges(); } catch {}
         return;
@@ -1881,6 +1951,7 @@ export class FlowBuilderComponent {
         try { this.cdr.detectChanges(); } catch {}
         return;
       }
+      // No extra fallback here; overlay getter will use backendAttemptSeq if needed
     });
   }
 
@@ -1899,29 +1970,10 @@ export class FlowBuilderComponent {
 
   private applyBackendEdgeHighlights() {
     try {
-      const pairs = this.backendEdgesTaken;
-      (this.edges || []).forEach((e: any) => {
-        const took = pairs.has(`${e.source}->${e.target}`);
-        const data = e.data || (e.data = {});
-        const end = (e as any).markers?.end || {};
-        if (took) {
-          (data as any).__taken = true;
-          (data as any).strokeWidth = 2;
-          (data as any).color = '#1677ff';
-          const endType = end.type || 'arrow-closed';
-          (e as any).markers = { ...(e.markers || {}), end: { ...end, type: endType, color: '#1677ff' } };
-        } else {
-          // mark as not taken so error propagation can restore base style
-          if ((data as any).__taken) delete (data as any).__taken;
-          if ((data as any).color === '#1677ff') (data as any).color = '#b1b1b7';
-          if (((data as any).strokeWidth || 0) > 2) (data as any).strokeWidth = 2;
-          if (end && end.color === '#1677ff') {
-            const endType = end.type || 'arrow-closed';
-            (e as any).markers = { ...(e.markers || {}), end: { ...end, type: endType, color: '#b1b1b7' } };
-          }
-        }
-      });
+      // Keep base edges intact (no blue stored); recompute errors only
+      this.recomputeErrorPropagation();
     } catch {}
+    try { this.cdr.detectChanges(); } catch {}
   }
 
   // (no decorated getters; we update in place to preserve Vflow entity identity)
@@ -1939,6 +1991,8 @@ export class FlowBuilderComponent {
   }
 
   private openRunSnapshotInEditor(runId: string) {
+    this.openingRunId = runId;
+    this.backendRunStatus = 'idle';
     // Load attempts + events snapshot (for historic runs) and open SSE if still running
     this.runsApi.getWith(runId, ['attempts','events']).subscribe({
       next: (r: any) => {
@@ -1975,6 +2029,7 @@ export class FlowBuilderComponent {
             }
           }
           this.applyBackendEdgeHighlights();
+          this.refreshOverlayDiff('snapshot.load');
         } catch {}
         try { this.cdr.detectChanges(); } catch {}
         // Open live stream if still running
