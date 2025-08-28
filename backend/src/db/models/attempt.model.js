@@ -4,6 +4,7 @@ const AttemptSchema = new Schema({
   runId: { type: Types.ObjectId, ref: 'Run', required: true, index: true },
   nodeId: { type: String, required: true, index: true },
   attempt: { type: Number, required: true, index: true },
+  branchId: { type: String, index: true },
   kind: { type: String },
   templateKey: { type: String },
   templateRaw: { type: String },

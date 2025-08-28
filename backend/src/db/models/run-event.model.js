@@ -9,6 +9,7 @@ const RunEventSchema = new Schema({
   nodeId: { type: String },
   attemptId: { type: Types.ObjectId, ref: 'Attempt' },
   exec: { type: Number }, // attempt number for the node
+  branchId: { type: String },
   level: { type: String }, // for log events
   data: { type: Schema.Types.Mixed },
   ts: { type: Date, default: () => new Date(), index: true },
@@ -17,4 +18,3 @@ const RunEventSchema = new Schema({
 RunEventSchema.index({ runId: 1, seq: 1 }, { unique: true });
 
 module.exports = model('RunEvent', RunEventSchema);
-

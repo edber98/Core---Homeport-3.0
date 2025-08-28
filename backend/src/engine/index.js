@@ -80,7 +80,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
   const send = async (ev) => { try { if (emit) await emit(ev); } catch { /* noop */ } };
   await send({ type: 'run.started', startedAt: new Date().toISOString() });
 
-  const runBranch = async (curId, msg, seen) => {
+  const runBranch = async (curId, msg, seen, branchId) => {
     const node = nodesById.get(curId); if (!node) return;
     if (seen.has(curId)) return; seen.add(curId);
     const tObj = node.model?.templateObj || {};
@@ -95,40 +95,37 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
 
     if (nType === 'start'){
       nodeLog.start = new Date().toISOString();
-      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: node.model?.context || null });
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null });
       const evalCtx = buildEvalContext(initialContext, msg);
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = deepRender(node.model?.context || {}, evalCtx) || null;
       nodeLog.result = { started: true };
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
-      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else if (nType === 'condition'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
-      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation });
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation });
       const chosen = evaluateCondition(node, initialContext, msg);
       nodeLog.result = { chosen }; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] condition', { node: node.id, chosen }); } catch {}
-      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
       const outs = outEdges.get(node.id) || [];
       if (chosen != null){
         const picks = Array.isArray(chosen) ? chosen : [chosen];
-        const targets = picks.map(pick => outs.find(o => o.labelText === String(pick))).filter(Boolean).map(o => o.target);
+        const targets = picks.map((pick, idx) => ({ next: outs.find(o => o.labelText === String(pick)), idx })).filter(x => !!x.next).map(x => ({ target: x.next.target, idx: x.idx }));
         // Emit edges taken for visualization
-        for (const pick of picks){
-          const next = outs.find(o => o.labelText === String(pick));
-          if (next) await send({ type: 'edge.taken', sourceId: node.id, targetId: next.target });
-        }
+        for (const t of targets){ await send({ type: 'edge.taken', sourceId: node.id, targetId: t.target }); }
         if (targets.length === 1) {
-          await runBranch(targets[0], msg, seen);
+          await runBranch(targets[0].target, msg, seen, `${branchId}:${targets[0].idx}`);
         } else if (targets.length > 1) {
-          await Promise.all(targets.map(t => runBranch(t, JSON.parse(JSON.stringify(msg)), new Set(seen))));
+          await Promise.all(targets.map(t => runBranch(t.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${t.idx}`)));
         }
       }
       return;
     } else if (nType === 'function'){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
-      await send({ type: 'node.started', nodeId: node.id, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, templateKey: tmplKey, kind: 'function' });
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, templateKey: tmplKey, kind: 'function' });
       const evalCtx = buildEvalContext(initialContext, msg);
       const compiled = deepRender(node.model?.context || {}, evalCtx);
       let inputs = compiled;
@@ -143,22 +140,22 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
       else { try { result = await fn({ id: node.id, model: node.model }, msg, inputs); } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; } }
       nodeLog.result = result; msg.payload = result; nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      await send({ type: 'node.done', nodeId: node.id, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration });
     } else {
-      await send({ type: 'node.skipped', nodeId: node.id });
+      await send({ type: 'node.skipped', nodeId: node.id, branchId });
     }
     const outs = outEdges.get(curId) || [];
     if (outs.length === 1){
       await send({ type: 'edge.taken', sourceId: node.id, targetId: outs[0].target });
-      await runBranch(outs[0].target, msg, seen);
+      await runBranch(outs[0].target, msg, seen, `${branchId}:0`);
     } else if (outs.length > 1){
-      for (const o of outs){ await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
-      await Promise.all(outs.map(o => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen))));
+      for (let i=0;i<outs.length;i++){ const o = outs[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
+      await Promise.all(outs.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
     }
   };
 
   const rootMsg = { payload: null, ...initialMsg };
-  await runBranch(start.id, rootMsg, new Set());
+  await runBranch(start.id, rootMsg, new Set(), 'b0');
   await send({ type: 'run.completed', payload: rootMsg.payload });
   return rootMsg;
 }

@@ -5,6 +5,7 @@ const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const Run = require('../../db/models/run.model');
 const Attempt = require('../../db/models/attempt.model');
+const AttemptCounter = require('../../db/models/attempt-counter.model');
 const RunEvent = require('../../db/models/run-event.model');
 const { runFlow } = require('../../engine');
 const { broadcast } = require('../../realtime/ws');
@@ -52,48 +53,68 @@ module.exports = function(){
           }
           if (ev.type === 'node.started'){
             const nodeId = String(ev.nodeId || '');
-            const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
-            const nextAttempt = last ? (last.attempt + 1) : 1;
+            const branchId = String(ev.branchId || '');
             const startedAt = ev.startedAt ? new Date(ev.startedAt) : ts;
-            const att = await Attempt.findOneAndUpdate(
-              { runId: run._id, nodeId, attempt: nextAttempt },
-              { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre } },
-              { upsert: true, new: true }
-            );
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: nextAttempt, seq: ++seq, data: { status: 'running', startedAt }, ts });
+            // Reuse open attempt for this branch if any; otherwise allocate a new exec
+            let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
+            let usedAttempt = att?.attempt;
+            if (!att) {
+              const ctr = await AttemptCounter.findOneAndUpdate(
+                { runId: run._id, nodeId },
+                { $inc: { seq: 1 } },
+                { upsert: true, new: true }
+              );
+              usedAttempt = Math.max(1, Number(ctr?.seq || 1));
+              att = await Attempt.findOneAndUpdate(
+                { runId: run._id, nodeId, attempt: usedAttempt },
+                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, branchId } },
+                { upsert: true, new: true }
+              );
+            }
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
-            let att = await Attempt.findOne({ runId: run._id, nodeId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
+            const branchId = String(ev.branchId || '');
+            let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
             if (att){
               att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
               att.argsPost = ev.argsPost; att.input = ev.input; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
             } else {
               // fallback: create completed attempt
-              const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
-              const nextAttempt = last ? last.attempt + 1 : 1;
-              att = await Attempt.findOneAndUpdate(
-                { runId: run._id, nodeId, attempt: nextAttempt },
-                { $setOnInsert: { status: 'success', startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result } },
+              const ctr = await AttemptCounter.findOneAndUpdate(
+                { runId: run._id, nodeId },
+                { $inc: { seq: 1 } },
                 { upsert: true, new: true }
               );
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
+              att = await Attempt.findOneAndUpdate(
+                { runId: run._id, nodeId, attempt: nextAttempt },
+                { $setOnInsert: { status: 'success', branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result } },
+                { upsert: true, new: true }
+              );
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
             }
           }
           if (ev.type === 'node.skipped'){
             const nodeId = String(ev.nodeId || '');
-            const last = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
-            const nextAttempt = last ? last.attempt + 1 : 1;
-            const att = await Attempt.findOneAndUpdate(
-              { runId: run._id, nodeId, attempt: nextAttempt },
-              { $setOnInsert: { status: 'skipped' } },
+            const branchId = String(ev.branchId || '');
+            const ctr = await AttemptCounter.findOneAndUpdate(
+              { runId: run._id, nodeId },
+              { $inc: { seq: 1 } },
               { upsert: true, new: true }
             );
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, seq: ++seq, data: { status: 'skipped' }, ts });
+            const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
+            const att = await Attempt.findOneAndUpdate(
+              { runId: run._id, nodeId, attempt: nextAttempt },
+              { $setOnInsert: { status: 'skipped', branchId } },
+              { upsert: true, new: true }
+            );
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'skipped' }, ts });
           }
           if (ev.type === 'edge.taken'){
             await RunEvent.create({ runId: run._id, type: 'edge.taken', seq: ++seq, data: { sourceId: ev.sourceId, targetId: ev.targetId }, ts });
@@ -101,8 +122,24 @@ module.exports = function(){
           // broadcast Live-like messages for frontend
           const livePackets = [];
           if (ev.type === 'run.started') livePackets.push({ type: 'run.status', run: { status: 'running' } });
-          if (ev.type === 'node.started') livePackets.push({ type: 'node.status', nodeId: ev.nodeId, data: { status: 'running' } });
-          if (ev.type === 'node.done') livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+          if (ev.type === 'node.started'){
+            try {
+              const nodeId = String(ev.nodeId || ''); const branchId = String(ev.branchId || '');
+              const att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 }).lean();
+              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status: 'running' } });
+            } catch { livePackets.push({ type: 'node.status', nodeId: ev.nodeId, data: { status: 'running' } }); }
+          }
+          if (ev.type === 'node.done'){
+            // Try to fetch last open attempt for exec to include in WS broadcast
+            try {
+              const nodeId = String(ev.nodeId || '');
+              const att = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
+              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status: 'success', finishedAt: ev.finishedAt, durationMs: ev.durationMs } });
+            } catch {
+              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+            }
+          }
           if (ev.type === 'edge.taken') livePackets.push({ type: 'edge.taken', data: { sourceId: ev.sourceId, targetId: ev.targetId } });
           if (ev.type === 'run.completed') livePackets.push({ type: 'run.status', run: { status: 'success', result: ev.payload } });
           for (const pkt of livePackets){ broadcast(String(run._id), pkt); broadcastRun(String(run._id), pkt); }
