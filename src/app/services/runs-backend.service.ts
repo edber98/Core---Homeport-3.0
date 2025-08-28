@@ -40,6 +40,9 @@ export class RunsBackendService {
   listByWorkspace(wsId: string, params?: { flowId?: string; status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/workspaces/${encodeURIComponent(wsId)}/runs`, params);
   }
+  preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
+    return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
+  }
 
   // Open an SSE stream for a given runId and emit parsed LiveEvents
   stream(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
