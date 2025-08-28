@@ -100,16 +100,16 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString();
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null, msgIn: msgBefore });
-      const evalCtx = buildEvalContext(initialContext, msg);
+      // Start node: do not transform the user-provided payload; expose it as the node result
       nodeLog.args_pre_compilation = node.model?.context || null;
-      nodeLog.args_post_compilation = deepRender(node.model?.context || {}, evalCtx) || null;
-      nodeLog.result = { started: true };
-      // Expose result under msg[nodeId] for easy downstream access
+      nodeLog.args_post_compilation = null;
+      nodeLog.result = (msg && typeof msg.payload !== 'undefined') ? JSON.parse(JSON.stringify(msg.payload)) : null;
+      // Expose start result under msg[nodeId] but do not modify payload here
       msg[node.id] = nodeLog.result;
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
-      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'condition'){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
@@ -121,7 +121,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] condition', { node: node.id, chosen }); } catch {}
-      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
       const outs = outEdges.get(node.id) || [];
       if (chosen != null){
         const picks = Array.isArray(chosen) ? chosen : [chosen];
@@ -158,7 +158,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       msg.payload = result;
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      await send({ type: 'node.done', nodeId: node.id, branchId, input: msg.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else {
       await send({ type: 'node.skipped', nodeId: node.id, branchId });
     }

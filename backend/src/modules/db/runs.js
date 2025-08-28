@@ -70,6 +70,8 @@ module.exports = function(){
                 { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, branchId, msgIn: ev.msgIn } },
                 { upsert: true, new: true }
               );
+            } else {
+              if (ev.msgIn && (att.msgIn == null)) { try { await Attempt.updateOne({ _id: att._id }, { $set: { msgIn: ev.msgIn } }); } catch {} }
             }
             await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn }, ts });
           }
