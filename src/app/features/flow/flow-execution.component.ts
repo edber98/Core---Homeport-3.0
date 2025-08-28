@@ -8,7 +8,7 @@ import { UiMessageService } from '../../services/ui-message.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { environment } from '../../../environments/environment';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -56,6 +56,7 @@ import { ChangeDetectorRef } from '@angular/core';
               <i class="fa-solid fa-eye"></i>
             </button>
             <button class="icon-btn" (click)="cancelBackend(b.id); $event.stopPropagation()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
+            <button class="icon-btn" (click)="openInEditor(b); $event.stopPropagation()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
           </div>
         </div>
         <div class="empty" *ngIf="backendFlowRuns.length===0">Aucune exécution pour ce flow</div>
@@ -220,6 +221,7 @@ export class FlowExecutionComponent {
     private runner: FlowRunService,
     private shared: FlowSharedStateService,
     private route: ActivatedRoute,
+    private router: Router,
     private catalog: CatalogService,
     private cdr: ChangeDetectorRef,
     private runsApi: RunsBackendService,
@@ -350,7 +352,7 @@ export class FlowExecutionComponent {
   backendWsRuns: BackendRun[] = [];
   selectedBackendRun: BackendRun | null = null;
   backendEvents: any[] = [];
-  backendAttempts: Array<{ nodeId: string; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any }> = [];
+  backendAttempts: Array<{ nodeId: string; exec?: number; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any }> = [];
   expanded: boolean[] = [];
   private currentStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendLastNodeId: string | null = null;
@@ -416,6 +418,10 @@ export class FlowExecutionComponent {
     if (this.selectedBackendRun && this.selectedBackendRun.id === b.id) {
       this.selectedBackendRun = null;
       try { this.currentStream?.close(); } catch {}
+      // Clear visuals when no run is selected
+      this.backendPairs.clear();
+      this.backendAttempts = [];
+      this.backendEvents = [];
       return;
     }
     this.selectedBackendRun = b;
@@ -436,7 +442,7 @@ export class FlowExecutionComponent {
     // Load attempts snapshot first so historic runs render without SSE
     this.runsApi.getWith(runId, ['attempts']).subscribe({ next: (r) => {
       const attempts = (r as any)?.attempts || [];
-      this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result }));
+      this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result }));
       this.expanded = this.backendAttempts.map(() => false);
       try { this.cdr.detectChanges(); } catch {}
     }, complete: () => {
@@ -446,6 +452,9 @@ export class FlowExecutionComponent {
   onViewRunClick(b: BackendRun) {
     this.selectBackendRun(b);
     this.scrollToDetails();
+  }
+  openInEditor(b: BackendRun) {
+    try { this.router.navigate(['/flow-builder'], { queryParams: { flow: b.flowId, run: b.id } }); } catch {}
   }
   private scrollToDetails() {
     try { setTimeout(() => { const el = this.detailsPanel?.nativeElement; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); } catch {}
@@ -526,6 +535,10 @@ export class FlowExecutionComponent {
           const idx = this.backendFlowRuns.findIndex(x => String(x.id) === String(runId));
           if (idx >= 0 && st) this.backendFlowRuns[idx] = { ...this.backendFlowRuns[idx], status: st } as any;
         } catch {}
+        // Seed start node to allow prev->current fallback path coloring
+        if (st === 'running') {
+          this.backendLastNodeId = this.findStartNodeId();
+        }
         // Close stream on terminal state to avoid EventSource auto-reconnect loop
         if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           try { s.close(); } catch {}
@@ -533,30 +546,31 @@ export class FlowExecutionComponent {
       }
       if (t === 'node.status') {
         const nodeId = String(ev.nodeId || ev.data?.nodeId || '');
+        const exec = (ev as any)?.exec ?? ev?.data?.exec;
         const status = ev?.data?.status || 'running';
         const startedAt = ev?.data?.startedAt;
         const finishedAt = ev?.data?.finishedAt;
         const durationMs = ev?.data?.durationMs;
         if (status === 'running') {
-          const existing = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId && a.status === 'running');
+          const existing = this.backendAttempts.find(a => a.nodeId === nodeId && a.exec === exec);
           if (existing) {
             existing.startedAt = existing.startedAt || startedAt;
+            existing.status = 'running';
           } else {
-            this.backendAttempts.push({ nodeId, status, startedAt } as any);
+            this.backendAttempts.push({ nodeId, exec, status, startedAt } as any);
             this.expanded.push(false);
           }
           const prev = this.backendLastNodeId;
           if (prev && nodeId && prev !== nodeId) this.backendPairs.add(`${prev}->${nodeId}`);
           this.backendLastNodeId = nodeId || this.backendLastNodeId;
         } else {
-          // update last attempt for this node (whatever its current status) to avoid duplicates
-          const last = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId);
-          if (last) {
-            last.status = status;
-            last.finishedAt = finishedAt ?? last.finishedAt;
-            last.durationMs = durationMs ?? last.durationMs;
+          const cur = this.backendAttempts.find(a => a.nodeId === nodeId && a.exec === exec);
+          if (cur) {
+            cur.status = status;
+            cur.finishedAt = finishedAt ?? cur.finishedAt;
+            cur.durationMs = durationMs ?? cur.durationMs;
           } else {
-            this.backendAttempts.push({ nodeId, status, startedAt, finishedAt, durationMs } as any);
+            this.backendAttempts.push({ nodeId, exec, status, startedAt, finishedAt, durationMs } as any);
             this.expanded.push(false);
           }
         }
@@ -568,18 +582,19 @@ export class FlowExecutionComponent {
       }
       if (t === 'node.result') {
         const nodeId = String(ev.nodeId || '');
-        const last = this.backendAttempts.slice().reverse().find(a => a.nodeId === nodeId);
-        if (last) {
-          if (!last.status || last.status === 'running') last.status = 'success';
-          last.input = ev.data?.input ?? last.input;
-          last.argsPre = ev.data?.argsPre ?? last.argsPre;
-          last.result = (ev.result ?? ev.data?.result) ?? last.result;
-          last.argsPost = ev.data?.argsPost ?? last.argsPost;
-          last.durationMs = ev.data?.durationMs ?? last.durationMs;
-          last.startedAt = ev.data?.startedAt ?? last.startedAt;
-          last.finishedAt = ev.data?.finishedAt ?? last.finishedAt;
+        const exec = (ev as any)?.exec ?? ev?.data?.exec;
+        const cur = this.backendAttempts.find(a => a.nodeId === nodeId && a.exec === exec);
+        if (cur) {
+          if (!cur.status || cur.status === 'running') cur.status = 'success';
+          cur.input = ev.data?.input ?? cur.input;
+          cur.argsPre = ev.data?.argsPre ?? cur.argsPre;
+          cur.result = (ev.result ?? ev.data?.result) ?? cur.result;
+          cur.argsPost = ev.data?.argsPost ?? cur.argsPost;
+          cur.durationMs = ev.data?.durationMs ?? cur.durationMs;
+          cur.startedAt = ev.data?.startedAt ?? cur.startedAt;
+          cur.finishedAt = ev.data?.finishedAt ?? cur.finishedAt;
         } else {
-          this.backendAttempts.push({ nodeId, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
+          this.backendAttempts.push({ nodeId, exec, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
       }

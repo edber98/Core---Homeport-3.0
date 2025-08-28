@@ -77,6 +77,7 @@ export class FlowBuilderComponent {
   backendRunId: string | null = null;
   private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendNodeStats = new Map<string, { count: number; lastStatus?: 'success'|'error'|'skipped'|'running' }>();
+  private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any }>>();
   private backendLastNodeId: string | null = null;
   private backendEdgesTaken = new Set<string>();
   private startPayloadKey(): string {
@@ -214,6 +215,32 @@ export class FlowBuilderComponent {
       });
     } catch {}
     this.updateIsMobile();
+    // Open specific run in editor if ?run is provided
+    try {
+      this.route.queryParamMap.subscribe(qp => {
+        const runId = qp.get('run');
+        const flowId = qp.get('flow');
+        if (flowId && (!this.currentFlowId || String(this.currentFlowId) !== String(flowId))) {
+          // Load flow graph first, then open run stream/snapshot
+          this.loadingFlowDoc = true;
+          this.catalog.getFlow(flowId).subscribe({
+            next: (doc) => {
+              this.currentFlowId = flowId;
+              this.currentFlowName = doc?.name || this.currentFlowName;
+              this.currentFlowDesc = doc?.description || this.currentFlowDesc;
+              this.nodes = (doc?.nodes || []);
+              this.edges = (doc?.edges || []);
+              this.loadingFlowDoc = false;
+              if (runId) this.openRunSnapshotInEditor(runId);
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            error: () => { this.loadingFlowDoc = false; if (runId) this.openRunSnapshotInEditor(runId); }
+          });
+        } else if (runId) {
+          this.openRunSnapshotInEditor(runId);
+        }
+      });
+    } catch {}
     try {
       this.catalog.listApps().subscribe(list => this.zone.run(() => {
         (list || []).forEach(a => this.appsMap.set(a.id, a));
@@ -247,6 +274,9 @@ export class FlowBuilderComponent {
               this.currentFlowDesc = doc.description || '';
               this.currentFlowStatus = (doc as any).status || 'draft';
               this.currentFlowEnabled = !!(doc as any).enabled;
+              // Suppress Vflow transient events while swapping graph
+              this.suppressGraphEventsUntil = Date.now() + 1200;
+              this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
               this.nodes = (doc.nodes || []) as any[];
               this.edges = (doc.edges || []) as any;
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
@@ -502,7 +532,13 @@ export class FlowBuilderComponent {
   // Execution stats: expose last status/count for badges
   nodeExecStatus(id: string): { count: number; lastStatus?: string } | null {
     try {
-      // Prefer current backend run stats if present
+      // Prefer backend overlay attempts if present
+      const arr = this.backendNodeAttempts.get(String(id));
+      if (arr && arr.length) {
+        const last = arr[arr.length - 1];
+        return { count: arr.length, lastStatus: last?.status || 'running' } as any;
+      }
+      // Then prefer current backend run stats if present
       if (this.backendRunId) {
         const b = this.backendNodeStats.get(String(id));
         if (b) return { count: b.count, lastStatus: b.lastStatus } as any;
@@ -1750,6 +1786,7 @@ export class FlowBuilderComponent {
     // Reset per-run visual state
     this.backendRunId = runId;
     this.backendNodeStats = new Map();
+    this.backendNodeAttempts = new Map();
     this.backendEdgesTaken.clear();
     this.backendLastNodeId = null;
     // Refresh edge visuals immediately
@@ -1773,16 +1810,24 @@ export class FlowBuilderComponent {
           try { this.cdr.detectChanges(); } catch {}
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           try { s.close(); } catch {}
+          // Keep snapshot of attempts but stop further updates
         }
         return;
       }
       if (type === 'node.status') {
         const nid = String(ev.nodeId || ev.data?.nodeId || '');
         const st = ev?.data?.status || 'running';
+        const exec = (ev as any)?.exec ?? ev?.data?.exec;
         if (nid) {
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
+          // Track per-node attempts by (nodeId, exec)
+          let arr = this.backendNodeAttempts.get(nid) || [];
+          let at = arr.find(a => a.exec === exec);
+          if (!at) { at = { exec, status: st }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
+          else { at.status = st || at.status; }
+          this.updateNodeVisual(nid);
           // Track path on running transition (edge from previous to current)
           if (st === 'running') {
             const prev = this.backendLastNodeId;
@@ -1809,9 +1854,25 @@ export class FlowBuilderComponent {
       if (type === 'node.result') {
         const nid = String(ev.nodeId || '');
         if (nid) {
+          const exec = (ev as any)?.exec ?? ev?.data?.exec;
+          // Update per-node attempt I/O and status for this exec
+          let arr = this.backendNodeAttempts.get(nid) || [];
+          let at = arr.find(a => a.exec === exec);
+          if (!at) { at = { exec }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
+          at.status = 'success';
+          at.input = ev.data?.input ?? at.input;
+          at.argsPre = ev.data?.argsPre ?? at.argsPre;
+          at.argsPost = ev.data?.argsPost ?? at.argsPost;
+          at.result = (ev.result ?? ev.data?.result) ?? at.result;
+          at.durationMs = ev.data?.durationMs ?? at.durationMs;
+          at.startedAt = ev.data?.startedAt ?? at.startedAt;
+          at.finishedAt = ev.data?.finishedAt ?? at.finishedAt;
+          // Update quick stats (count is attempts length)
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
-          cur.count = (cur.count || 0) + 1; cur.lastStatus = 'success';
+          cur.count = (this.backendNodeAttempts.get(nid)?.length || 0);
+          cur.lastStatus = 'success';
           this.backendNodeStats.set(nid, cur);
+          this.updateNodeVisual(nid);
           // Edge path was updated on node.status running; nothing else to do here
         }
         try { this.cdr.detectChanges(); } catch {}
@@ -1836,18 +1897,57 @@ export class FlowBuilderComponent {
   private applyBackendEdgeHighlights() {
     try {
       const pairs = this.backendEdgesTaken;
-      this.edges = (this.edges || []).map((e: any) => {
+      (this.edges || []).forEach((e: any) => {
         const took = pairs.has(`${e.source}->${e.target}`);
-        const data = { ...(e.data || {}) };
+        const data = e.data || (e.data = {});
         if (took) { data.strokeWidth = (data.strokeWidth || 2) + 2; data.color = '#1677ff'; }
         else {
-          // Light reset to default if previously highlighted
           if (data.color === '#1677ff') data.color = '#b1b1b7';
           if ((data.strokeWidth || 0) > 2) data.strokeWidth = 2;
         }
-        return { ...e, data };
       });
     } catch {}
+  }
+
+  // (no decorated getters; we update in place to preserve Vflow entity identity)
+  private updateNodeVisual(nid: string) {
+    try {
+      const atts = this.backendNodeAttempts.get(nid) || [];
+      const last = atts[atts.length - 1];
+      const execCount = atts.length;
+      const node = (this.nodes || []).find(n => String(n.id) === String(nid));
+      if (!node) return;
+      const data = node.data || (node.data = {} as any);
+      (data as any).execStatus = last?.status || 'running';
+      (data as any).execCount = execCount;
+    } catch {}
+  }
+
+  private openRunSnapshotInEditor(runId: string) {
+    // Load attempts snapshot (for historic runs) and open SSE if still running
+    this.runsApi.getWith(runId, ['attempts']).subscribe({
+      next: (r: any) => {
+        // Reset state
+        this.backendNodeStats = new Map();
+        this.backendNodeAttempts = new Map();
+        this.backendEdgesTaken.clear();
+        // Fill attempts per node/exec
+        const attempts = (r?.attempts || []) as any[];
+        attempts.forEach(a => {
+          const nid = String(a.nodeId);
+          const exec = a.attempt;
+          const arr = this.backendNodeAttempts.get(nid) || [];
+          arr.push({ exec, status: a.status, startedAt: a.startedAt, finishedAt: a.finishedAt, durationMs: a.durationMs, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result });
+          this.backendNodeAttempts.set(nid, arr);
+          this.updateNodeVisual(nid);
+        });
+        try { this.cdr.detectChanges(); } catch {}
+        // Open live stream if still running
+        const st = r?.status || 'success';
+        if (st === 'running') this.openBackendStream(runId);
+      },
+      error: () => { this.openBackendStream(runId); }
+    });
   }
   stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
 
@@ -2073,12 +2173,13 @@ export class FlowBuilderComponent {
   onNodesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {
-      if (Date.now() < (this.suppressGraphEventsUntil || 0)) return;
+      if (Date.now() < (this.suppressGraphEventsUntil || 0)) { this.log('nodes.removed.suppressed', { until: this.suppressGraphEventsUntil }); return; }
       const ids = new Set((changes || []).map(c => c?.id).filter(Boolean));
-      if (Date.now() < this.suppressNodesRemovedUntil) return;
+      if (Date.now() < this.suppressNodesRemovedUntil) { this.log('nodes.removed.ignored.window', { until: this.suppressNodesRemovedUntil }); return; }
       if (!ids.size) return;
       const beforeNodes = this.nodes.length;
       const beforeEdges = this.edges.length;
+      this.log('nodes.removed', { ids: Array.from(ids) });
       this.nodes = this.nodes.filter(n => !ids.has(n.id));
       this.edges = this.edges.filter(e => !ids.has(String(e.source)) && !ids.has(String(e.target)));
       const changed = (this.nodes.length !== beforeNodes) || (this.edges.length !== beforeEdges);
@@ -2093,10 +2194,11 @@ export class FlowBuilderComponent {
   onEdgesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {
-      if (Date.now() < (this.suppressGraphEventsUntil || 0)) return;
+      if (Date.now() < (this.suppressGraphEventsUntil || 0)) { this.log('edges.removed.suppressed', { until: this.suppressGraphEventsUntil }); return; }
       const removedIds = new Set((changes || []).map(c => c?.id).filter(Boolean));
       if (Date.now() < this.suppressRemoveUntil) return;
       if (!removedIds.size) return;
+      this.log('edges.removed', { ids: Array.from(removedIds) });
       const nextEdges: Edge[] = [];
       let changed = false;
       for (const e of this.edges) {
@@ -2124,7 +2226,7 @@ export class FlowBuilderComponent {
   private suppressNodesRemovedUntil = 0;
   private suppressGraphEventsUntil = 0;
   private previewBaseline: { nodes: any[]; edges: any[] } | null = null;
-  private log(_evt: string, _data?: any) { /* logs disabled */ }
+  private log(evt: string, data?: any) { try { console.log('[editor]', evt, data || ''); } catch {} }
   onEdgesDetached(changes: any[]) {
     if (this.isIgnoring()) { return; }
     try {

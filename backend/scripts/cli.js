@@ -20,6 +20,7 @@ const PluginRepo = require('../src/db/models/plugin-repo.model');
 const Run = require('../src/db/models/run.model');
 const Attempt = require('../src/db/models/attempt.model');
 const RunEvent = require('../src/db/models/run-event.model');
+const AttemptCounter = require('../src/db/models/attempt-counter.model');
 const WorkspaceMembership = require('../src/db/models/workspace-membership.model');
 const { seedMongoIfEmpty } = require('../src/seed');
 const { importManifest } = require('../src/plugins/importer');
@@ -34,7 +35,7 @@ async function purge(){
     // Plugins and notifications
     Notification.deleteMany({}), PluginRepo.deleteMany({}),
     // Execution data
-    RunEvent.deleteMany({}), Attempt.deleteMany({}), Run.deleteMany({})
+    RunEvent.deleteMany({}), Attempt.deleteMany({}), AttemptCounter.deleteMany({}), Run.deleteMany({})
   ]);
 }
 
