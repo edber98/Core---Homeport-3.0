@@ -43,6 +43,9 @@ export class RunsBackendService {
   preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
     return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
   }
+  testNode(flowId: string, nodeId: string, msg: any): Observable<any> {
+    return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/test-node`, { nodeId, msg });
+  }
 
   // Open an SSE stream for a given runId and emit parsed LiveEvents
   stream(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {

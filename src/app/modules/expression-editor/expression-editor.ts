@@ -109,6 +109,10 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     if (changes['context'] && this.showMenu) {
       try { const v = this.currentView(); this.updateSuggestions(v); this.openAtCaret(v); } catch {}
     }
+    // Force re-highlight when context changes so islands reflect new validity
+    if (changes['context']) {
+      try { this.forceRehighlight(); } catch {}
+    }
     // Subscribe to external trigger once available
     if (changes['openDialogTrigger'] && this.openDialogTrigger && typeof this.openDialogTrigger.subscribe === 'function') {
       try { this.openDialogTrigger.subscribe(() => this.openDialog()); } catch {}
@@ -141,6 +145,20 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     this.writeValue(next);
     this.valueChange.emit(next);
     this.onChange(next);
+  }
+
+  // Trigger CodeMirror decoration rebuild without altering user content
+  private forceRehighlight() {
+    const bump = (view?: EditorView) => {
+      if (!view) return;
+      const cur = view.state.doc.toString();
+      // Apply a no-op replace to mark docChanged and trigger plugins' update()
+      this.suppressChange = true;
+      try { view.dispatch({ changes: { from: 0, to: cur.length, insert: cur } }); } catch {}
+      this.suppressChange = false;
+    };
+    bump(this.view);
+    if (this.dialogVisible) bump(this.dialogView);
   }
 
   openDialog() {

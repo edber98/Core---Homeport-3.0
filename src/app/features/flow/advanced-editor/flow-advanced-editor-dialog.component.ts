@@ -4,6 +4,7 @@ import { FlowAdvancedInputPanelComponent } from './flow-advanced-input-panel.com
 import { FlowAdvancedOutputPanelComponent } from './flow-advanced-output-panel.component';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
  
 //               <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
 
@@ -11,13 +12,14 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
 @Component({
   selector: 'flow-advanced-editor-dialog',
   standalone: true,
-  imports: [CommonModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent],
+  imports: [CommonModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule],
   template: `
     <div class="overlay" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
     <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
-        <div *ngIf="injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+        <div *ngIf="loadingInput" class="loading-box"><span class="tiny-spinner"></span> Chargement de l'entrée…</div>
+        <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
         </div>
@@ -25,10 +27,12 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
         <app-json-schema-viewer *ngIf="injectedInput != null && !isStart(model)" [data]="injectedInput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
-        <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+        <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
+          [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
+        <div *ngIf="loadingOutput" class="loading-box"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
         <!-- Start: output = payload initial du flow (éditable et persisté) -->
         <app-json-schema-viewer *ngIf="isStart(model)" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'
           " (dataChange)="startPayloadChange.emit($event)"></app-json-schema-viewer>
@@ -59,11 +63,12 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
           <!-- Input panel -->
           <div class="slide">
             <div class="scroll">
-              <div *ngIf="injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+              <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
                 Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
                 <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
               </div>
-              <app-json-schema-viewer *ngIf="injectedInput != null" [data]="injectedInput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
+              <div *ngIf="loadingInput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de l'entrée…</div>
+              <app-json-schema-viewer *ngIf="!loadingInput && injectedInput != null" [data]="injectedInput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
             </div>
           </div>
             <!-- Center panel -->
@@ -75,7 +80,8 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
           <!-- Output panel -->
           <div class="slide">
             <div class="scroll">
-              <app-json-schema-viewer *ngIf="injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+              <div *ngIf="loadingOutput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
+              <app-json-schema-viewer *ngIf="!loadingOutput && injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
             </div>
           </div>
           </div>
@@ -117,6 +123,11 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
     .dots { display:flex; gap:8px; }
     .dot { width:8px; height:8px; border-radius:50%; border:0; background:#d4d4d8; padding:0; cursor:pointer; }
     .dot.active { background:#111827; }
+    .loading-box { display:flex; align-items:center; gap:8px; border:1px dashed #d1d5db; background:#f9fafb; color:#374151; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px; }
+    .tiny-spinner { width:14px; height:14px; border:2px solid #e5e7eb; border-top-color:#111827; border-radius:50%; display:inline-block; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toolbar { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+    .toolbar .sp { flex:1 1 auto; }
     .edge-sensor { position:absolute; top:0; bottom:0; width:24px; z-index:3; }
     .edge-sensor.left { left:0; }
     .edge-sensor.right { right:0; }
@@ -136,6 +147,13 @@ import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/j
 export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
   @Input() model: any;
   @Input() disableForChecksum = false;
+  @Input() hasPrev: boolean = false;
+  @Input() loadingInput: boolean = false;
+  @Input() loadingOutput: boolean = false;
+  @Input() testStatus: 'idle'|'running'|'success'|'error' = 'idle';
+  @Input() testStartedAt: number | null = null;
+  @Input() testDurationMs: number | null = null;
+  @Input() testDisabled: boolean = false;
   // Injected context and I/O for test mode previews
   @Input() ctx: any = {};
   @Input() injectedInput: any = null;

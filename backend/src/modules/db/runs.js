@@ -67,13 +67,17 @@ module.exports = function(){
               usedAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: usedAttempt },
-                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, branchId, msgIn: ev.msgIn } },
+                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } },
                 { upsert: true, new: true }
               );
             } else {
-              if (ev.msgIn && (att.msgIn == null)) { try { await Attempt.updateOne({ _id: att._id }, { $set: { msgIn: ev.msgIn } }); } catch {} }
+              const set = {};
+              if (ev.msgIn && (att.msgIn == null)) set.msgIn = ev.msgIn;
+              if (ev.input != null && (att.input == null)) set.input = ev.input;
+              if (ev.argsPost != null && (att.argsPost == null)) set.argsPost = ev.argsPost;
+              if (Object.keys(set).length) { try { await Attempt.updateOne({ _id: att._id }, { $set: set }); } catch {} }
             }
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn }, ts });
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
@@ -136,10 +140,10 @@ module.exports = function(){
             try {
               const nodeId = String(ev.nodeId || '');
               const att = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
-              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
               livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status: 'success', finishedAt: ev.finishedAt, durationMs: ev.durationMs } });
             } catch {
-              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
             }
           }
           if (ev.type === 'edge.taken') livePackets.push({ type: 'edge.taken', data: { sourceId: ev.sourceId, targetId: ev.targetId } });
@@ -199,6 +203,62 @@ module.exports = function(){
       // ignore engine errors for preview; return what we may have captured
     }
     return res.apiOk({ nodeId: targetNodeId, msgIn: captured, payload: captured && captured.payload });
+  });
+
+  // Test a single node with provided msg (server-side execution of the function only)
+  r.post('/flows/:flowId/test-node', async (req, res) => {
+    const { Types } = require('mongoose');
+    const { registry } = require('../../plugins/registry');
+    const { evaluateTemplateDetailed, evaluateExpression } = require('../../engine/expression-sandbox');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = await Workspace.findById(flow.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+    if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+    const nodeId = String(req.body?.nodeId || '');
+    const msg = (req.body && req.body.msg && typeof req.body.msg === 'object') ? req.body.msg : {};
+    if (!nodeId) return res.apiError(400, 'bad_request', 'Missing nodeId');
+    try {
+      const nodes = (flow.graph || flow).nodes || [];
+      const node = nodes.find((n) => String(n.id) === nodeId);
+      if (!node) return res.apiError(404, 'node_not_found', 'Node not found');
+      const tObj = (node.data && node.data.model && node.data.model.templateObj) || node.model?.templateObj || {};
+      const tmplKey = String(node.data?.model?.template || tObj?.template?.id || tObj?.template?.name || tObj?.id || '').replace(/^tmpl_/,'');
+      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload });
+      const deepRender = (obj, evalCtx) => {
+        if (obj == null) return obj;
+        if (typeof obj === 'string') return evaluateTemplateDetailed(obj, evalCtx).text;
+        if (Array.isArray(obj)) return obj.map(v => deepRender(v, evalCtx));
+        if (typeof obj === 'object'){
+          if (Object.keys(obj).length === 1 && typeof obj.$expr === 'string') { try { return evaluateExpression(obj.$expr, evalCtx); } catch { return obj; } }
+          const out = {}; for (const [k,v] of Object.entries(obj)) { out[k] = deepRender(v, evalCtx); } return out;
+        }
+        return obj;
+      };
+      const evalCtx = buildEvalContext({ now: new Date() }, msg);
+      const argsPre = (node.data && node.data.model && node.data.model.context) || node.model?.context || {};
+      const compiled = deepRender(argsPre, evalCtx);
+      let inputs = compiled;
+      try {
+        if (compiled && typeof compiled === 'object' && msg && typeof msg.payload === 'object' && !Array.isArray(msg.payload)) {
+          inputs = { ...(msg.payload || {}), ...(compiled || {}) };
+        }
+      } catch {}
+      const fn = registry.resolve(tmplKey);
+      const t0 = Date.now();
+      let result = null;
+      if (!fn) result = { error: `No handler for template '${tmplKey}'` };
+      else { try { result = await fn({ id: nodeId, model: node.data?.model || node.model }, msg, inputs); } catch (e) { result = { error: e && e.message ? e.message : String(e) }; } }
+      const msgOut = JSON.parse(JSON.stringify(msg || {}));
+      try { msgOut[nodeId] = result; msgOut.payload = result; } catch {}
+      return res.apiOk({ nodeId, msgIn: msg, input: inputs, argsPre, argsPost: inputs, result, msgOut, startedAt: new Date(t0).toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - t0 });
+    } catch (e) {
+      return res.apiError(500, 'test_failed', e && e.message ? e.message : 'Test failed');
+    }
   });
 
   r.get('/runs/:runId', async (req, res) => {

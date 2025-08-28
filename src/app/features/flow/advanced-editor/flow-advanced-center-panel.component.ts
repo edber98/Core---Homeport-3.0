@@ -6,6 +6,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
@@ -14,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzIconModule, DynamicForm, CredentialEditDialogComponent],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent],
   template: `
     <div class="card" [class.panel-card]="bare">
       <div class="tabs">
@@ -35,7 +36,12 @@ import { FormsModule } from '@angular/forms';
             </div>
             <div [class.dimmed]="disabled">
               <div class="test-row">
-                <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud"><i class="fa-solid fa-play"></i> Tester</button>
+                <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
+                <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
+                <div class="test-meta" *ngIf="testStartedAt as t">
+                  <span>{{ t | date:'shortTime' }}</span>
+                  <span *ngIf="testDurationMs != null"> · {{ testDurationMs }} ms</span>
+                </div>
               </div>
               <!-- Credentials selection (above form) -->
               <div class="cred-box" *ngIf="credVisible">
@@ -114,7 +120,8 @@ import { FormsModule } from '@angular/forms';
     .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
-    .test-row { display:flex; justify-content:flex-end; margin: 0 0 8px; }
+    .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
+    .test-badge { margin-left: 8px; }
     .body { position: relative; }
     .dimmed { opacity: .6; pointer-events: none; }
     .disabled-overlay { position:absolute; inset:0; background:transparent; z-index: 2; }
@@ -152,6 +159,10 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() bare = false;
   @Input() disabled = false;
   @Input() disableReason: string | null = null;
+  @Input() testStatus: 'idle'|'running'|'success'|'error' = 'idle';
+  @Input() testStartedAt: number | null = null;
+  @Input() testDurationMs: number | null = null;
+  @Input() testDisabled: boolean = false;
   @Output() updateArgs = new EventEmitter<void>();
   @Output() test = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
