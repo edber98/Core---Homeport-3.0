@@ -15,6 +15,8 @@ const AttemptSchema = new Schema({
   argsPre: { type: Schema.Types.Mixed },
   argsPost: { type: Schema.Types.Mixed },
   input: { type: Schema.Types.Mixed },
+  msgIn: { type: Schema.Types.Mixed },
+  msgOut: { type: Schema.Types.Mixed },
   result: { type: Schema.Types.Mixed },
   attemptErrors: { type: [Schema.Types.Mixed], default: [] },
 }, { timestamps: true, suppressReservedKeysWarning: true });

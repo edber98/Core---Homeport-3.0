@@ -42,7 +42,7 @@
         <div class="text">Chargement du flow…</div>
       </div>
       <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodes"
-        [edges]="edges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
+        [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
         (onEdgesChange.detached)="onEdgesDetached($event)" #flow>

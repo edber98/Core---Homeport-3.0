@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
 import { RunsBackendService, BackendRun } from '../../services/runs-backend.service';
 import { UiMessageService } from '../../services/ui-message.service';
+import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { environment } from '../../../environments/environment';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
@@ -228,6 +229,7 @@ export class FlowExecutionComponent {
     private ui: UiMessageService,
     private acl: AccessControlService,
     private zone: NgZone,
+    private pathSvc: FlowPathHighlightService,
   ) {
     this.runner.runs$.subscribe(rs => { this.runs = rs; this.updateVisibleRuns(); });
     this.runner.counters$.subscribe(c => this.counters = c);
@@ -502,32 +504,9 @@ export class FlowExecutionComponent {
   }
   get decoratedEdges(): any[] {
     const baseEdges = (this.currentGraph?.edges || []) as any[];
-    let pairs: Set<string> = new Set<string>();
-    if (this.selectedBackendRun) {
-      // Prefer explicit edge.taken pairs; if none, derive from attempts order
-      if (this.backendPairs && this.backendPairs.size > 0) {
-        this.backendPairs.forEach(p => pairs.add(p));
-      } else {
-        const atts = (this.backendAttempts || []).slice();
-        for (let i = 1; i < atts.length; i++) {
-          const prev = atts[i - 1]?.nodeId; const cur = atts[i]?.nodeId;
-          if (prev && cur) pairs.add(`${prev}->${cur}`);
-        }
-      }
-    } else {
-      const atts = (this.selectedRun?.attempts || []).slice();
-      for (let i = 1; i < atts.length; i++) {
-        const prev = atts[i - 1]?.nodeId; const cur = atts[i]?.nodeId;
-        if (prev && cur) pairs.add(`${prev}->${cur}`);
-      }
-    }
-    return baseEdges.map((e: any) => {
-      const took = pairs.has(`${e.source}->${e.target}`);
-      const data = { ...(e.data || {}) } as any;
-      const markers = { ...(e.markers || {}), end: { ...(e.markers?.end || {}), color: took ? '#1677ff' : (e.markers?.end?.color || '#b1b1b7') } } as any;
-      if (took) { data.strokeWidth = 2; data.color = '#1677ff'; }
-      return { ...e, data, markers };
-    });
+    // Build pairs from live explicit pairs, then fallback to attempts
+    const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, attempts: this.backendAttempts });
+    return this.pathSvc.decorateEdges(baseEdges, pairs);
   }
 
   private openBackendStream(runId: string) {

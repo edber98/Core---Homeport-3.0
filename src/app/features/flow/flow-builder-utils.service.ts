@@ -266,13 +266,17 @@ export class FlowBuilderUtilsService {
         const isErr = String(e.sourceHandle) === 'err' || next.has(String(e.source));
         const prevData = e.data || {};
         const baseWidth = (typeof prevData.__baseWidth === 'number') ? prevData.__baseWidth : (prevData.strokeWidth ?? 2);
-        const baseColor = (typeof prevData.__baseColor === 'string') ? prevData.__baseColor : (prevData.color ?? '#b1b1b7');
+        // Avoid capturing transient highlight blue as base color
+        const computedBaseColor = (typeof prevData.__baseColor === 'string')
+          ? prevData.__baseColor
+          : (prevData.__taken ? '#b1b1b7' : (prevData.color ?? '#b1b1b7'));
         const isTaken = !!prevData.__taken; // preserve blue highlight if set by overlays
         const newData: any = { ...prevData };
         if (typeof newData.__baseWidth !== 'number') newData.__baseWidth = baseWidth;
-        if (typeof newData.__baseColor !== 'string') newData.__baseColor = baseColor;
+        if (typeof newData.__baseColor !== 'string') newData.__baseColor = computedBaseColor;
         // If edge is currently highlighted as taken, do not mark as error nor override its blue color
         if (isTaken) {
+          newData.__taken = true; // keep flag across recomputation
           newData.error = false;
           // keep stroke width at least 2 and color blue
           newData.strokeWidth = Math.max(2, Number(newData.strokeWidth ?? 2));
@@ -284,7 +288,7 @@ export class FlowBuilderUtilsService {
         } else {
           newData.error = false;
           newData.strokeWidth = baseWidth;
-          newData.color = baseColor;
+          newData.color = newData.__baseColor;
         }
         return { ...e, data: newData } as Edge;
       });
