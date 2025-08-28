@@ -1900,10 +1900,15 @@ export class FlowBuilderComponent {
       (this.edges || []).forEach((e: any) => {
         const took = pairs.has(`${e.source}->${e.target}`);
         const data = e.data || (e.data = {});
-        if (took) { data.strokeWidth = (data.strokeWidth || 2) + 2; data.color = '#1677ff'; }
-        else {
-          if (data.color === '#1677ff') data.color = '#b1b1b7';
-          if ((data.strokeWidth || 0) > 2) data.strokeWidth = 2;
+        const end = (e as any).markers?.end || {};
+        if (took) {
+          (data as any).strokeWidth = 2;
+          (data as any).color = '#1677ff';
+          (e as any).markers = { ...(e.markers || {}), end: { ...end, color: '#1677ff' } };
+        } else {
+          if ((data as any).color === '#1677ff') (data as any).color = '#b1b1b7';
+          if (((data as any).strokeWidth || 0) > 2) (data as any).strokeWidth = 2;
+          if (end && end.color === '#1677ff') (e as any).markers = { ...(e.markers || {}), end: { ...end, color: '#b1b1b7' } };
         }
       });
     } catch {}
@@ -1941,6 +1946,16 @@ export class FlowBuilderComponent {
           this.backendNodeAttempts.set(nid, arr);
           this.updateNodeVisual(nid);
         });
+        // Derive path pairs from attempts order for historical view
+        try {
+          this.backendEdgesTaken.clear();
+          for (let i = 1; i < attempts.length; i++) {
+            const prev = String(attempts[i - 1]?.nodeId || '');
+            const cur = String(attempts[i]?.nodeId || '');
+            if (prev && cur && prev !== cur) this.backendEdgesTaken.add(`${prev}->${cur}`);
+          }
+          this.applyBackendEdgeHighlights();
+        } catch {}
         try { this.cdr.detectChanges(); } catch {}
         // Open live stream if still running
         const st = r?.status || 'success';

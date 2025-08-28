@@ -402,7 +402,14 @@ export class FlowExecutionComponent {
         this.loadBackendRuns(fid);
         try {
           const runId = resp?.id || resp?.data?.id || resp?.runId;
-          if (runId) this.openBackendStream(runId);
+          if (runId) {
+            // Decharge l'ancien run (visuels) et sélectionne le nouveau
+            this.backendPairs.clear();
+            this.backendAttempts = [];
+            this.backendEvents = [];
+            this.selectedBackendRun = { id: runId, flowId: this.currentFlowId || '', status: 'running' } as BackendRun;
+            this.openBackendStream(runId);
+          }
         } catch {}
       },
       error: (e) => { try { console.error('[frontend][exec] run start error', e); } catch {} this.ui.error('Échec du démarrage'); },
@@ -495,12 +502,20 @@ export class FlowExecutionComponent {
   }
   get decoratedEdges(): any[] {
     const baseEdges = (this.currentGraph?.edges || []) as any[];
-    let pairs: Set<string>;
+    let pairs: Set<string> = new Set<string>();
     if (this.selectedBackendRun) {
-      pairs = this.backendPairs;
+      // Prefer explicit edge.taken pairs; if none, derive from attempts order
+      if (this.backendPairs && this.backendPairs.size > 0) {
+        this.backendPairs.forEach(p => pairs.add(p));
+      } else {
+        const atts = (this.backendAttempts || []).slice();
+        for (let i = 1; i < atts.length; i++) {
+          const prev = atts[i - 1]?.nodeId; const cur = atts[i]?.nodeId;
+          if (prev && cur) pairs.add(`${prev}->${cur}`);
+        }
+      }
     } else {
       const atts = (this.selectedRun?.attempts || []).slice();
-      pairs = new Set<string>();
       for (let i = 1; i < atts.length; i++) {
         const prev = atts[i - 1]?.nodeId; const cur = atts[i]?.nodeId;
         if (prev && cur) pairs.add(`${prev}->${cur}`);
@@ -508,9 +523,10 @@ export class FlowExecutionComponent {
     }
     return baseEdges.map((e: any) => {
       const took = pairs.has(`${e.source}->${e.target}`);
-      const data = { ...(e.data || {}) };
-      if (took) { data.strokeWidth = (data.strokeWidth || 2) + 2; data.color = '#1677ff'; }
-      return { ...e, data };
+      const data = { ...(e.data || {}) } as any;
+      const markers = { ...(e.markers || {}), end: { ...(e.markers?.end || {}), color: took ? '#1677ff' : (e.markers?.end?.color || '#b1b1b7') } } as any;
+      if (took) { data.strokeWidth = 2; data.color = '#1677ff'; }
+      return { ...e, data, markers };
     });
   }
 
