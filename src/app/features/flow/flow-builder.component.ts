@@ -1125,10 +1125,28 @@ export class FlowBuilderComponent {
     try {
       const nodeId = this.selectedModel?.id;
       if (!nodeId) return;
-      const injected = this.runPredecessorsAndGetResult(nodeId);
-      this.advancedInjectedInput = injected;
-      this.advancedCtx = { input: this.advancedInjectedInput, output: this.advancedInjectedOutput };
-      try { this.cdr.detectChanges(); } catch {}
+      if (environment.useBackend && this.currentFlowId) {
+        const p = this.getStartPayload().payload;
+        this.runsApi.preview(this.currentFlowId, nodeId, p).subscribe({
+          next: (resp) => {
+            this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
+            this.advancedCtx = this.advancedInjectedInput || {};
+            try { this.cdr.detectChanges(); } catch {}
+          },
+          error: () => {
+            // Fallback to local simulation
+            const injected = this.runPredecessorsAndGetResult(nodeId);
+            this.advancedInjectedInput = injected;
+            this.advancedCtx = this.advancedInjectedInput || {};
+            try { this.cdr.detectChanges(); } catch {}
+          }
+        });
+      } else {
+        const injected = this.runPredecessorsAndGetResult(nodeId);
+        this.advancedInjectedInput = injected;
+        this.advancedCtx = this.advancedInjectedInput || {};
+        try { this.cdr.detectChanges(); } catch {}
+      }
     } catch {}
   }
 
@@ -1499,6 +1517,11 @@ export class FlowBuilderComponent {
     try {
       const nodeId = this.selectedModel?.id;
       const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
+      const hasPrev = (this.edges || []).some(e => String(e.target) === String(nodeId));
+      // If no predecessor, hide the 'Lancer les précédents' hint by providing empty input
+      if (!hasPrev) {
+        this.advancedInjectedInput = {};
+      }
       // Prefer backend attempts if a live/snapshotted run is selected
       if (this.backendRunId && nodeId) {
         const arr = this.backendNodeAttempts.get(String(nodeId)) || [];

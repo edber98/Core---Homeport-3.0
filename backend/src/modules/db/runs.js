@@ -173,6 +173,34 @@ module.exports = function(){
     })();
   });
 
+  // Preview: execute predecessors only and return msgIn for a target node (no persistence)
+  r.post('/flows/:flowId/preview', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = await Workspace.findById(flow.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+    if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+    const targetNodeId = String(req.body?.targetNodeId || '');
+    const payload = req.body?.payload ?? null;
+    if (!targetNodeId) return res.apiError(400, 'bad_request', 'Missing targetNodeId');
+    let captured = null;
+    try {
+      await require('../../engine').runFlow(flow.graph || flow, { now: new Date() }, { payload }, async (ev) => {
+        if (!captured && ev && ev.type === 'node.started' && String(ev.nodeId || '') === targetNodeId) {
+          captured = ev.msgIn || null;
+        }
+      });
+    } catch (e) {
+      // ignore engine errors for preview; return what we may have captured
+    }
+    return res.apiOk({ nodeId: targetNodeId, msgIn: captured, payload: captured && captured.payload });
+  });
+
   r.get('/runs/:runId', async (req, res) => {
     const rid = String(req.params.runId);
     let run = await Run.findById(rid);
