@@ -4,6 +4,7 @@ import { FlowAdvancedInputPanelComponent } from './flow-advanced-input-panel.com
 import { FlowAdvancedOutputPanelComponent } from './flow-advanced-output-panel.component';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
+import { FormsModule } from '@angular/forms';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
  
 //               <app-json-schema-viewer [data]="model?.context || {}" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
@@ -12,7 +13,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 @Component({
   selector: 'flow-advanced-editor-dialog',
   standalone: true,
-  imports: [CommonModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule],
+  imports: [CommonModule, FormsModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule],
   template: `
     <div class="overlay" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
     <!-- Desktop / tablet layout with wings (classic appearance) -->
@@ -28,7 +29,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       </div>
       <div class="center" (pointerup)="onFormReleased()">
         <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
-          [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled" [attemptEvents]="attemptEvents"></flow-advanced-center-panel>
+          [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled" [attemptEvents]="attemptEvents"
+          [attemptExecs]="attemptExecs" [selectedExec]="selectedExec" [selectedExecCount]="selectedExecCount" [selectedOccurIndex]="selectedOccurIndex" (selectedExecChange)="selectedExecChange.emit($event)" (selectedOccurIndexChange)="selectedOccurIndexChange.emit($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
@@ -154,6 +156,13 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Input() testStartedAt: number | null = null;
   @Input() testDurationMs: number | null = null;
   @Input() attemptEvents: any[] = [];
+  // Attempt selection controls provided by parent (builder)
+  @Input() attemptExecs: Array<{ exec: number; count: number }> = [];
+  @Input() selectedExec: number | null = null;
+  @Input() selectedExecCount: number | null = null;
+  @Input() selectedOccurIndex: number | null = null;
+  @Output() selectedExecChange = new EventEmitter<number>();
+  @Output() selectedOccurIndexChange = new EventEmitter<number>();
   @Input() testDisabled: boolean = false;
   // Injected context and I/O for test mode previews
   @Input() ctx: any = {};
@@ -190,6 +199,10 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   private edgeOnly = false;
   private swipeFromEdge: 'left'|'right'|null = null;
   // (removed viewer drag auto-pan state)
+
+  // Emitters wrappers for template value changes
+  onExecChange(ev: any) { try { const n = Number(ev); this.selectedExecChange.emit(n); } catch { this.selectedExecChange.emit(ev); } }
+  onOccurChange(ev: any) { try { const n = Number(ev); this.selectedOccurIndexChange.emit(n); } catch { this.selectedOccurIndexChange.emit(ev); } }
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
   emitModel(m: any) {

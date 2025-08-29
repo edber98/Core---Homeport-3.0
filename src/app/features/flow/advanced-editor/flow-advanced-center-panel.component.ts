@@ -37,6 +37,15 @@ import { FormsModule } from '@angular/forms';
             <div [class.dimmed]="disabled">
               <div class="test-row">
                 <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
+                <div class="attempt-selects" *ngIf="attemptExecs?.length">
+                  <i class="fa-solid fa-hashtag" aria-hidden="true" style="color:#6b7280"></i>
+                  <nz-select class="exec" [ngModel]="selectedExec" (ngModelChange)="selectedExecChange.emit($event)" nzSize="small" nzPlaceHolder="#exec">
+                    <nz-option *ngFor="let op of attemptExecs" [nzValue]="op.exec" [nzLabel]="('#' + op.exec + (op.count > 1 ? ' (×' + op.count + ')' : ''))"></nz-option>
+                  </nz-select>
+                  <nz-select class="occur" *ngIf="selectedExecCount && selectedExecCount > 1" [ngModel]="selectedOccurIndex" (ngModelChange)="selectedOccurIndexChange.emit($event)" nzSize="small" nzPlaceHolder="Occur.">
+                    <nz-option *ngFor="let _ of [].constructor(selectedExecCount); index as idx" [nzValue]="idx" [nzLabel]="(idx + 1) + ''"></nz-option>
+                  </nz-select>
+                </div>
                 <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
                 <div class="test-meta" *ngIf="testStartedAt as t">
                   <span>{{ t | date:'shortTime' }}</span>
@@ -137,6 +146,8 @@ import { FormsModule } from '@angular/forms';
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
     .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
+    .test-row .attempt-selects { display:flex; align-items:center; gap:6px; }
+    .test-row .attempt-selects .exec, .test-row .attempt-selects .occur { min-width: 96px; }
     .test-badge { margin-left: 8px; }
     .body { position: relative; }
     .dimmed { opacity: .6; pointer-events: none; }
@@ -180,6 +191,13 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() testDurationMs: number | null = null;
   @Input() testDisabled: boolean = false;
   @Input() attemptEvents: any[] = [];
+  // Attempt selection controls (from parent)
+  @Input() attemptExecs: Array<{ exec: number; count: number }> = [];
+  @Input() selectedExec: number | null = null;
+  @Input() selectedExecCount: number | null = null;
+  @Input() selectedOccurIndex: number | null = null;
+  @Output() selectedExecChange = new EventEmitter<number>();
+  @Output() selectedOccurIndexChange = new EventEmitter<number>();
   @Output() updateArgs = new EventEmitter<void>();
   @Output() test = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
