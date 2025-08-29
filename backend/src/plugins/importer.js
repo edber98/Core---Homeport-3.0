@@ -38,16 +38,40 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
     } else { summary.providers.skipped++; }
   }
 
+  // Ensure expression editor is enabled by default for all node template args (form-builder schemas)
+  const enableExpressionsOnSchema = (schema) => {
+    try {
+      if (!schema || typeof schema !== 'object') return schema;
+      const visitFields = (fields) => {
+        for (const f of (fields || [])) {
+          if (!f || typeof f !== 'object') continue;
+          const t = String(f.type || '').toLowerCase();
+          if (t === 'section' || t === 'section_array') {
+            // recurse into section contents
+            visitFields(f.fields || []);
+          } else if (t && t !== 'textblock') {
+            const cur = f.expression && typeof f.expression === 'object' ? f.expression : {};
+            f.expression = { ...cur, allow: true, defaultMode: 'expr' };
+          }
+        }
+      };
+      if (Array.isArray(schema.fields)) visitFields(schema.fields);
+      if (Array.isArray(schema.steps)) (schema.steps || []).forEach(st => visitFields((st && st.fields) || []));
+      return schema;
+    } catch { return schema; }
+  };
+
   for (const t of (m.nodeTemplates || [])){
     const key = t.key; if (!key) continue;
-    const checksumArgs = checksumJSON(t.args || {});
+    const argsWithExpr = enableExpressionsOnSchema(t.args || {});
+    const checksumArgs = checksumJSON(argsWithExpr || {});
     const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, output: t.output || [], allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || null });
     const existing = await NodeTemplate.findOne({ key });
     // Normalize name/title/description
     const normName = toCamelCase(t.name || key);
     const normTitle = t.title || humanizeTitle(normName);
     const normDesc = t.description || `${normTitle} node`;
-    const base = { key, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: t.args || null, output: t.output || [], authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || null, checksumArgs, checksumFeature };
+    const base = { key, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, output: t.output || [], authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || null, checksumArgs, checksumFeature };
     if (!existing){
       if (!dryRun){ await NodeTemplate.create({ ...base, repoId: repo && repo.id || undefined, repoName: repo && repo.name || undefined }); }
       summary.nodeTemplates.created++;

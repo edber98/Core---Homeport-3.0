@@ -449,7 +449,19 @@ export class DynamicFormBuilderComponent implements OnChanges {
       label: [''],
       secret: [false],
       expression_allow: [false],
+      expression_defaultMode: ['val'],
       expression_hideErrors: [false],
+      expression_large: [false],
+      expression_showDialogAction: [false],
+      expression_dialogTitle: [''],
+      expression_dialogMode: ['textarea'],
+      expression_autoHeight: [false],
+      expression_groupBefore: [true],
+      expression_showFormulaAction: [true],
+      expression_suggestionPlacement: ['auto'],
+      expression_errorMode: [false],
+      expression_showPreview: [true],
+      expression_inline: [true],
       placeholder: [''],
       descriptionField: [''],   // description propre au champ
       default: [''],
@@ -686,9 +698,24 @@ export class DynamicFormBuilderComponent implements OnChanges {
         }
         // Expression toggle + options
         if (v.expression_allow) {
-          (f as any).expression = { allow: true, showPreviewErrors: !v.expression_hideErrors };
+          (f as any).expression = {
+            allow: true,
+            showPreviewErrors: !v.expression_hideErrors,
+            defaultMode: (v.expression_defaultMode === 'expr') ? 'expr' : 'val',
+            large: !!v.expression_large,
+            showDialogAction: !!v.expression_showDialogAction,
+            dialogTitle: v.expression_dialogTitle || undefined,
+            dialogMode: (v.expression_dialogMode === 'editor') ? 'editor' : 'textarea',
+            autoHeight: !!v.expression_autoHeight,
+            groupBefore: v.expression_groupBefore !== false,
+            showFormulaAction: v.expression_showFormulaAction !== false,
+            suggestionPlacement: (['auto','top','bottom'].includes(v.expression_suggestionPlacement) ? v.expression_suggestionPlacement : 'auto'),
+            errorMode: !!v.expression_errorMode,
+            showPreview: v.expression_showPreview !== false,
+            inline: v.expression_inline !== false,
+          } as any;
         } else {
-          (f as any).expression = undefined;
+          (f as any).expression = { allow: false } as any;
         }
         (f as any).placeholder = v.placeholder || undefined;
         (f as any).description = v.descriptionField || undefined;
@@ -1070,6 +1097,18 @@ export class DynamicFormBuilderComponent implements OnChanges {
         secret: !!(obj as any).secret,
         expression_allow: !!(obj as any).expression?.allow,
         expression_hideErrors: ((obj as any).expression?.allow ? ((obj as any).expression?.showPreviewErrors === false) : false),
+        expression_defaultMode: ((obj as any).expression?.defaultMode === 'expr') ? 'expr' : 'val',
+        expression_large: !!(obj as any).expression?.large,
+        expression_showDialogAction: !!(obj as any).expression?.showDialogAction,
+        expression_dialogTitle: (obj as any).expression?.dialogTitle ?? '',
+        expression_dialogMode: ((obj as any).expression?.dialogMode === 'editor') ? 'editor' : 'textarea',
+        expression_autoHeight: !!(obj as any).expression?.autoHeight,
+        expression_groupBefore: ((obj as any).expression?.groupBefore !== false),
+        expression_showFormulaAction: ((obj as any).expression?.showFormulaAction !== false),
+        expression_suggestionPlacement: ((['auto','top','bottom'].includes((obj as any).expression?.suggestionPlacement)) ? (obj as any).expression?.suggestionPlacement : 'auto'),
+        expression_errorMode: !!(obj as any).expression?.errorMode,
+        expression_showPreview: ((obj as any).expression?.showPreview !== false),
+        expression_inline: ((obj as any).expression?.inline !== false),
         placeholder: (obj as any).placeholder ?? '',
         descriptionField: (obj as any).description ?? '',
         default: (obj as any).default ?? '',

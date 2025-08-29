@@ -63,18 +63,88 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
             <nz-switch formControlName="expression_allow"></nz-switch>
           </nz-form-control>
         </nz-form-item>
+        <ng-container *ngIf="group.get('expression_allow')?.value === true">
+          <div class="ins-section-header"><div class="card-title"><span class="t">Expressions — Options</span><span class="s">Comportement de l’éditeur</span></div></div>
+          <div class="ins-grid cols-2">
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Mode par défaut à l’ouverture"><span>Mode par défaut</span></nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="expression_defaultMode">
+                  <nz-option nzValue="val" nzLabel="Valeur"></nz-option>
+                  <nz-option nzValue="expr" nzLabel="Expression"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Agrandir la zone d’édition"><span>Grand</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_large"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Afficher un bouton pour ouvrir un dialogue"><span>Action dialogue</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_showDialogAction"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="group.get('expression_showDialogAction')?.value === true">
+              <nz-form-label nzTooltipTitle="Titre du dialogue"><span>Titre dialogue</span></nz-form-label>
+              <nz-form-control><input nz-input formControlName="expression_dialogTitle" /></nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="group.get('expression_showDialogAction')?.value === true">
+              <nz-form-label nzTooltipTitle="Mode du dialogue"><span>Mode dialogue</span></nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="expression_dialogMode">
+                  <nz-option nzValue="textarea" nzLabel="Textarea"></nz-option>
+                  <nz-option nzValue="editor" nzLabel="Éditeur avancé"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Ajuster automatiquement la hauteur"><span>Auto-height</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_autoHeight"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Groupe de bouton avant (formule)"><span>Bouton gauche</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_groupBefore"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Afficher l’action formule"><span>Action formule</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_showFormulaAction"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Position des suggestions"><span>Suggestions</span></nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="expression_suggestionPlacement">
+                  <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
+                  <nz-option nzValue="top" nzLabel="Haut"></nz-option>
+                  <nz-option nzValue="bottom" nzLabel="Bas"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Colorer selon validité"><span>Mode erreurs</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_errorMode"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Montrer l’aperçu du résultat"><span>Aperçu</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_showPreview"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Afficher inline"><span>Inline</span></nz-form-label>
+              <nz-form-control><nz-switch formControlName="expression_inline"></nz-switch></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Cacher les erreurs d’expression en prévisualisation"><span>Masquer erreurs (preview)</span></nz-form-label>
+              <nz-form-control>
+                <nz-switch formControlName="expression_hideErrors"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </ng-container>
         <nz-form-item *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea'">
           <nz-form-label nzTooltipTitle="Masquer la saisie et l'affichage (secret)"><span>Secret</span></nz-form-label>
           <nz-form-control>
             <nz-switch formControlName="secret"></nz-switch>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item *ngIf="group.get('expression_allow')?.value === true">
-          <nz-form-label nzTooltipTitle="Cacher les erreurs d’expression en prévisualisation"><span>Masquer erreurs (preview)</span></nz-form-label>
-          <nz-form-control>
-            <nz-switch formControlName="expression_hideErrors"></nz-switch>
-          </nz-form-control>
-        </nz-form-item>
+        <!-- doublon supprimé: switch déjà dans la section 'Expressions — Options' -->
         <nz-form-item>
           <nz-form-label nzFor="fld_placeholder" nzTooltipTitle="Texte indicatif dans le champ"><span>Placeholder</span></nz-form-label>
           <nz-form-control><input nz-input id="fld_placeholder" formControlName="placeholder"/></nz-form-control>
