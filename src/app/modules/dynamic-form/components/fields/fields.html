@@ -45,6 +45,8 @@
             </div>
 
             <ng-container *ngIf="fieldKey as key">
+              <!-- Guard: render classic inputs only when the control exists on the form -->
+              <ng-container *ngIf="form.get(key) as ctrl">
               <!-- Expression editor mode -->
               <app-expression-editor *ngIf="!disableExpressions && exprEnabled"
                                      [inline]="true"
@@ -79,6 +81,7 @@
                     {{ opt.label || '' }}
                   </label>
                 </nz-radio-group>
+              </ng-container>
               </ng-container>
             </ng-container>
           </div>
