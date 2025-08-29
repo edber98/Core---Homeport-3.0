@@ -19,7 +19,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
-        <div *ngIf="loadingInput" class="loading-box"><span class="tiny-spinner"></span> Chargement de l'entrée…</div>
+        <div *ngIf="loadingInput" class="wing-loading"><span class="tiny-spinner big"></span></div>
         <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
@@ -34,7 +34,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
-        <div *ngIf="loadingOutput" class="loading-box"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
+        <div *ngIf="loadingOutput" class="wing-loading"><span class="tiny-spinner big"></span></div>
         <!-- Start: output = payload initial du flow (éditable et persisté) -->
         <app-json-schema-viewer *ngIf="isStart(model)" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'
           " (dataChange)="startPayloadChange.emit($event)"></app-json-schema-viewer>
@@ -108,6 +108,8 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     /* Style card + rayon selon côté en non-responsive */
     /* Avoid overlap with center by using safe widths and a flex gap; remove transforms to avoid Safari hit-testing bugs */
     .wing { position: relative; pointer-events: auto; height:var(--wing-h); overflow:auto; padding: 9px; opacity:0; background:#fff; }
+    .wing .wing-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.65); z-index: 10; }
+    .tiny-spinner.big { width: 28px; height: 28px; border-width: 3px; }
     .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
     .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
