@@ -104,6 +104,22 @@ import { FormsModule } from '@angular/forms';
             <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
           </div>
         </nz-tab>
+        <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
+          <div class="settings-pane" style="gap: 6px;">
+            <div *ngFor="let ev of attemptEventsSorted()" style="border:1px solid #ececec; border-radius:8px; padding:8px;">
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <div style="font-weight:600; font-size:12px; color:#111;">{{ ev.type }}</div>
+                <div style="color:#6b7280; font-size:12px;">{{ ev.createdAt | date:'shortTime' }}</div>
+              </div>
+              <div style="margin-top:6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; color:#111;">
+                {{ ev.status ? ('status: ' + ev.status) : '' }}
+              </div>
+              <div *ngIf="ev.data != null" style="margin-top:6px; font-size:12px; color:#374151; max-height: 160px; overflow:auto; background:#fafafa; border:1px dashed #eee; border-radius:6px; padding:6px;">
+                {{ ev.data | json }}
+              </div>
+            </div>
+          </div>
+        </nz-tab>
       </nz-tabset>
       </div>
     </div>
@@ -163,6 +179,7 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() testStartedAt: number | null = null;
   @Input() testDurationMs: number | null = null;
   @Input() testDisabled: boolean = false;
+  @Input() attemptEvents: any[] = [];
   @Output() updateArgs = new EventEmitter<void>();
   @Output() test = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
@@ -223,6 +240,14 @@ export class FlowAdvancedCenterPanelComponent {
     } catch {}
     // Refresh credentials UI based on provider
     this.refreshCredentialsState();
+  }
+
+  attemptEventsSorted(): any[] {
+    try {
+      const list = Array.isArray(this.attemptEvents) ? this.attemptEvents.slice() : [];
+      list.sort((a: any, b: any) => new Date(a?.createdAt || 0).getTime() - new Date(b?.createdAt || 0).getTime());
+      return list;
+    } catch { return Array.isArray(this.attemptEvents) ? this.attemptEvents : []; }
   }
 
   private refreshCredentialsState() {

@@ -28,7 +28,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       </div>
       <div class="center" (pointerup)="onFormReleased()">
         <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
-          [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled"></flow-advanced-center-panel>
+          [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled" [attemptEvents]="attemptEvents"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
@@ -153,6 +153,7 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Input() testStatus: 'idle'|'running'|'success'|'error' = 'idle';
   @Input() testStartedAt: number | null = null;
   @Input() testDurationMs: number | null = null;
+  @Input() attemptEvents: any[] = [];
   @Input() testDisabled: boolean = false;
   // Injected context and I/O for test mode previews
   @Input() ctx: any = {};
