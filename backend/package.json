@@ -16,15 +16,17 @@
     "node": ">=18.17"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
-    "morgan": "^1.10.0",
+    "@langchain/openai": "^0.6.9",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "mongoose": "^8.7.0",
-    "swagger-ui-express": "^5.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
     "js-yaml": "^4.1.0",
-    "socket.io": "^4.7.5"
+    "mongoose": "^8.7.0",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.7.5",
+    "swagger-ui-express": "^5.0.0",
+    "zod": "^3.25.32"
   },
   "devDependencies": {
     "supertest": "^6.3.4"
