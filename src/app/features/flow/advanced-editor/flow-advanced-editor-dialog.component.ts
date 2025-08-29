@@ -30,7 +30,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       <div class="center" (pointerup)="onFormReleased()">
         <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
           [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled" [attemptEvents]="attemptEvents"
-          [attemptExecs]="attemptExecs" [selectedExec]="selectedExec" [selectedExecCount]="selectedExecCount" [selectedOccurIndex]="selectedOccurIndex" (selectedExecChange)="selectedExecChange.emit($event)" (selectedOccurIndexChange)="selectedOccurIndexChange.emit($event)"></flow-advanced-center-panel>
+          [attemptOptions]="attemptOptions" [selectedAttemptIdx]="selectedAttemptIdx" (selectedAttemptIdxChange)="selectedAttemptIdxChange.emit($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
@@ -159,12 +159,9 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Input() testDurationMs: number | null = null;
   @Input() attemptEvents: any[] = [];
   // Attempt selection controls provided by parent (builder)
-  @Input() attemptExecs: Array<{ exec: number; count: number }> = [];
-  @Input() selectedExec: number | null = null;
-  @Input() selectedExecCount: number | null = null;
-  @Input() selectedOccurIndex: number | null = null;
-  @Output() selectedExecChange = new EventEmitter<number>();
-  @Output() selectedOccurIndexChange = new EventEmitter<number>();
+  @Input() attemptOptions: Array<{ idx: number; exec: number; occur: number; label: string }> = [];
+  @Input() selectedAttemptIdx: number | null = null;
+  @Output() selectedAttemptIdxChange = new EventEmitter<number>();
   @Input() testDisabled: boolean = false;
   // Injected context and I/O for test mode previews
   @Input() ctx: any = {};
@@ -202,9 +199,7 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   private swipeFromEdge: 'left'|'right'|null = null;
   // (removed viewer drag auto-pan state)
 
-  // Emitters wrappers for template value changes
-  onExecChange(ev: any) { try { const n = Number(ev); this.selectedExecChange.emit(n); } catch { this.selectedExecChange.emit(ev); } }
-  onOccurChange(ev: any) { try { const n = Number(ev); this.selectedOccurIndexChange.emit(n); } catch { this.selectedOccurIndexChange.emit(ev); } }
+  // (no-op) legacy wrappers removed; selection handled directly by center panel
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
   emitModel(m: any) {

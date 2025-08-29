@@ -310,8 +310,8 @@
     [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
     [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"
     [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
-    [attemptExecs]="advancedAttemptExecs" [selectedExec]="advancedSelectedExec" [selectedExecCount]="advancedExecCount" [selectedOccurIndex]="advancedOccurIndex"
-    (selectedExecChange)="onDialogExecChange($event)" (selectedOccurIndexChange)="onDialogOccurChange($event)"
+    [attemptOptions]="advancedAttemptOptions" [selectedAttemptIdx]="advancedSelectedAttemptIdx"
+    (selectedAttemptIdxChange)="onDialogAttemptIdxChange($event)"
     (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>

@@ -177,6 +177,9 @@ export class FlowBuilderComponent {
   advancedAttemptExecs: Array<{ exec: number; count: number }> = [];
   advancedExecCount: number | null = null;
   advancedOccurIndex: number | null = null;
+  // Unified attempt options (single select)
+  advancedAttemptOptions: Array<{ idx: number; exec: number; occur: number; label: string }> = [];
+  advancedSelectedAttemptIdx: number | null = null;
   isTestDisabled(): boolean {
     try {
       if (this.testStatus === 'running') return true;
@@ -1359,7 +1362,17 @@ export class FlowBuilderComponent {
       const counts = this.groupExecCounts(atts);
       const ops = Array.from(counts.entries()).map(([exec, count]) => ({ exec, count }));
       ops.sort((a, b) => a.exec - b.exec);
-      this.advancedAttemptExecs = ops;
+      // Expand standalone occurrences as separate pseudo-exec options
+      const standaloneCount = counts.get(-1) || 0;
+      if (standaloneCount > 0) {
+        // remove generic -1 entry
+        const base = ops.filter(o => o.exec !== -1);
+        for (let i = 0; i < standaloneCount; i++) base.push({ exec: -1000 - i, count: 1 } as any);
+        base.sort((a,b) => a.exec - b.exec);
+        this.advancedAttemptExecs = base as any;
+      } else {
+        this.advancedAttemptExecs = ops;
+      }
     } catch { this.advancedAttemptExecs = []; }
   }
   private resolveAttemptForSelection(nodeId?: string): any | null {
@@ -1388,8 +1401,39 @@ export class FlowBuilderComponent {
       this.advancedOccurIndex = (this.advancedExecCount && this.advancedExecCount > 1) ? (this.advancedOccurByNode.get(id) ?? (this.advancedExecCount - 1)) : null;
     } catch { this.advancedExecCount = null; this.advancedOccurIndex = null; }
   }
+
+  // Build unified attempt options for single-select UI
+  private recomputeAttemptOptionsFor(nodeId?: string) {
+    try {
+      const id = String(nodeId || this.selectedModel?.id || ''); if (!id) { this.advancedAttemptOptions = []; return; }
+      const atts = this.nodeAttempts(id);
+      const options: Array<{ idx: number; exec: number; occur: number; label: string }> = [];
+      const seenExecOccurs = new Map<number, number>();
+      for (let i = 0; i < atts.length; i++) {
+        const a = atts[i];
+        const e = Number(a.exec);
+        const prev = seenExecOccurs.get(e) || 0;
+        const occur = prev; // 0-based
+        seenExecOccurs.set(e, prev + 1);
+        const label = (e === -1) ? `Standalone #${occur + 1}` : (`#${e}` + ((atts.filter(x => Number(x.exec) === e).length > 1) ? ` · ${occur + 1}` : ''));
+        options.push({ idx: i, exec: e, occur, label });
+      }
+      this.advancedAttemptOptions = options;
+    } catch { this.advancedAttemptOptions = []; }
+  }
   onDialogExecChange(exec: number) {
     try { this.advancedSelectedExec = Number(exec); } catch { this.advancedSelectedExec = exec as any; }
+    // Handle standalone occurrence encoded in exec (<= -1000)
+    if (Number(this.advancedSelectedExec) <= -1000) {
+      const id = String(this.selectedModel?.id || '');
+      const occ = Math.max(0, (-1000 - Number(this.advancedSelectedExec)));
+      this.advancedSelectedExec = -1;
+      if (id) this.advancedOccurByNode.set(id, occ);
+      this.recomputeExecCountAndOccIndex();
+      this.recomputeAttemptOptionsFor(id);
+      this.refreshDialogIOFromSelection();
+      return;
+    }
     // Reset per-node occurrence to last for new exec by default
     try {
       const id = String(this.selectedModel?.id || '');
@@ -1400,6 +1444,7 @@ export class FlowBuilderComponent {
       }
     } catch {}
     this.recomputeExecCountAndOccIndex();
+    this.recomputeAttemptOptionsFor();
     this.refreshDialogIOFromSelection();
   }
   onDialogOccurChange(idx: number) {
@@ -1407,7 +1452,24 @@ export class FlowBuilderComponent {
     const v = Math.max(0, Number(idx) || 0);
     this.advancedOccurByNode.set(id, v);
     this.advancedOccurIndex = v;
+    this.recomputeAttemptOptionsFor(id);
     this.refreshDialogIOFromSelection();
+  }
+  onDialogAttemptIdxChange(idx: number) {
+    try {
+      this.advancedSelectedAttemptIdx = Number(idx);
+      const id = String(this.selectedModel?.id || '');
+      const atts = this.nodeAttempts(id);
+      const att = atts[this.advancedSelectedAttemptIdx || 0];
+      const e = Number(att?.exec);
+      // derive occurrence within that exec
+      let occur = 0;
+      for (let i = 0; i < (this.advancedSelectedAttemptIdx || 0); i++) if (Number(atts[i]?.exec) === e) occur++;
+      this.advancedSelectedExec = e;
+      if (id) this.advancedOccurByNode.set(id, occur);
+      this.recomputeExecCountAndOccIndex(id);
+      this.refreshDialogIOFromSelection();
+    } catch {}
   }
   private refreshDialogIOFromSelection() {
     try {
@@ -1760,7 +1822,10 @@ export class FlowBuilderComponent {
             this.advancedOccurByNode.set(String(nodeId), idx);
           } catch {}
           this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
           this.recomputeExecCountAndOccIndex(nodeId);
+          // Default selected attempt idx = last
+          this.advancedSelectedAttemptIdx = arr.length - 1;
           this.refreshDialogIOFromSelection();
           // Set output loading according to selected attempt status
           try {
@@ -1771,6 +1836,7 @@ export class FlowBuilderComponent {
           // No attempts yet for this node in current run
           this.advancedAttemptEvents = [];
           this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
           this.recomputeExecCountAndOccIndex(nodeId);
           this.refreshDialogIOFromSelection(); // will enable both spinners if run is running and no attempt
         }

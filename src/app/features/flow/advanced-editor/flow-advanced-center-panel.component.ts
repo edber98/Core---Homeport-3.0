@@ -37,13 +37,9 @@ import { FormsModule } from '@angular/forms';
             <div [class.dimmed]="disabled">
               <div class="test-row">
                 <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
-                <div class="attempt-selects" *ngIf="attemptExecs?.length">
-                  <i class="fa-solid fa-hashtag" aria-hidden="true" style="color:#6b7280"></i>
-                  <nz-select class="exec" [ngModel]="selectedExec" (ngModelChange)="selectedExecChange.emit($event)" nzSize="small" nzPlaceHolder="#exec">
-                    <nz-option *ngFor="let op of attemptExecs" [nzValue]="op.exec" [nzLabel]="('#' + op.exec + (op.count > 1 ? ' (×' + op.count + ')' : ''))"></nz-option>
-                  </nz-select>
-                  <nz-select class="occur" *ngIf="selectedExecCount && selectedExecCount > 1" [ngModel]="selectedOccurIndex" (ngModelChange)="selectedOccurIndexChange.emit($event)" nzSize="small" nzPlaceHolder="Occur.">
-                    <nz-option *ngFor="let _ of [].constructor(selectedExecCount); index as idx" [nzValue]="idx" [nzLabel]="(idx + 1) + ''"></nz-option>
+                <div class="attempt-selects" *ngIf="attemptOptions?.length">
+                  <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzSize="small" nzPlaceHolder="Tentative">
+                    <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
                   </nz-select>
                   <span class="attempt-name" *ngIf="attemptName() as an">{{ an }}</span>
                 </div>
@@ -116,7 +112,7 @@ import { FormsModule } from '@angular/forms';
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
           <div class="settings-pane" style="gap: 6px;">
-            <div *ngFor="let ev of attemptEventsSorted()" style="border:1px solid #ececec; border-radius:8px; padding:8px;">
+            <div *ngFor="let ev of attemptEventsView; trackBy: trackEvent" style="border:1px solid #ececec; border-radius:8px; padding:8px;">
               <div style="display:flex; align-items:baseline; gap:8px;">
                 <div style="font-weight:600; font-size:12px; color:#111;">{{ ev.type }}</div>
                 <div style="color:#6b7280; font-size:12px;">{{ ev.createdAt | date:'shortTime' }}</div>
@@ -148,7 +144,7 @@ import { FormsModule } from '@angular/forms';
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
     .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
     .test-row .attempt-selects { display:flex; align-items:center; gap:6px; }
-    .test-row .attempt-selects .exec, .test-row .attempt-selects .occur { min-width: 96px; }
+    .test-row .attempt-selects .attempt { min-width: 156px; }
     .test-row .attempt-name { color:#6b7280; font-size:12px; }
     .test-badge { margin-left: 8px; }
     .body { position: relative; }
@@ -194,12 +190,17 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() testDisabled: boolean = false;
   @Input() attemptEvents: any[] = [];
   // Attempt selection controls (from parent)
+  @Input() attemptOptions: Array<{ idx: number; exec: number; occur: number; label: string }> = [];
+  @Input() selectedAttemptIdx: number | null = null;
+  @Output() selectedAttemptIdxChange = new EventEmitter<number>();
   @Input() attemptExecs: Array<{ exec: number; count: number }> = [];
   @Input() selectedExec: number | null = null;
   @Input() selectedExecCount: number | null = null;
   @Input() selectedOccurIndex: number | null = null;
   @Output() selectedExecChange = new EventEmitter<number>();
   @Output() selectedOccurIndexChange = new EventEmitter<number>();
+  // View models to avoid per-CD array re-creation
+  attemptEventsView: any[] = [];
   @Output() updateArgs = new EventEmitter<void>();
   @Output() test = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
@@ -260,15 +261,21 @@ export class FlowAdvancedCenterPanelComponent {
     } catch {}
     // Refresh credentials UI based on provider
     this.refreshCredentialsState();
-  }
-
-  attemptEventsSorted(): any[] {
+    // Refresh logs view when input reference changes
     try {
-      const list = Array.isArray(this.attemptEvents) ? this.attemptEvents.slice() : [];
-      list.sort((a: any, b: any) => new Date(a?.createdAt || 0).getTime() - new Date(b?.createdAt || 0).getTime());
-      return list;
-    } catch { return Array.isArray(this.attemptEvents) ? this.attemptEvents : []; }
+      if (Array.isArray(this.attemptEvents)) {
+        const copy = this.attemptEvents.slice();
+        copy.sort((a: any, b: any) => new Date(a?.createdAt || 0).getTime() - new Date(b?.createdAt || 0).getTime());
+        this.attemptEventsView = copy;
+      } else {
+        this.attemptEventsView = [];
+      }
+    } catch { this.attemptEventsView = []; }
   }
+  trackIdx(i: number, v: number) { return v; }
+
+  trackEvent(i: number, ev: any) { try { return ev?.createdAt + ':' + (ev?.type || '') + ':' + (ev?.exec ?? '') + ':' + (ev?.nodeId || '') + ':' + i; } catch { return i; } }
+  trackAttempt(i: number, op: any) { try { return op?.idx ?? i; } catch { return i; } }
 
   private refreshCredentialsState() {
     try {
@@ -301,11 +308,12 @@ export class FlowAdvancedCenterPanelComponent {
 
   attemptName(): string | null {
     try {
-      if (this.selectedExec == null) return null;
-      const occ = (this.selectedOccurIndex != null ? Number(this.selectedOccurIndex) + 1 : 1);
-      const isStandalone = Number(this.selectedExec) === -1;
-      if (isStandalone) return `Tentative #${occ} (Standalone)`;
-      return this.selectedExecCount && this.selectedExecCount > 1 ? `Tentative #${occ}` : `Tentative #1`;
+      const idx = this.selectedAttemptIdx;
+      const op = (Array.isArray(this.attemptOptions) ? this.attemptOptions.find(o => o.idx === idx) : null) || null;
+      if (!op) return null;
+      if (Number(op.exec) === -1) return `Tentative #${op.occur + 1} (Standalone)`;
+      const hasMany = (this.attemptOptions || []).some(o => o.exec === op.exec && o.idx !== op.idx);
+      return hasMany ? `Tentative #${op.occur + 1}` : `Tentative #1`;
     } catch { return null; }
   }
 
