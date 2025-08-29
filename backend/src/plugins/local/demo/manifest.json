@@ -161,7 +161,7 @@
       "name": "startForm",
       "title": "Start (Form)",
       "subtitle": "Form Trigger",
-      "type": "start",
+      "type": "start_form",
       "category": "Core",
       "icon": "fa-solid fa-clipboard-list",
       "output": [],

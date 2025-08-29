@@ -4,7 +4,7 @@ const { registry } = require('../plugins/registry');
 
 function log(step, data) { const payload = data === undefined ? '' : (typeof data === 'string' ? data : JSON.stringify(data)); console.log(`[engine] ${step} ${payload}`); }
 
-function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; return ''; }
+function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; return ''; }
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
@@ -72,6 +72,7 @@ function evaluateCondition(node, initialContext, msg){
   return el ? (mode === 'allMatches' ? [String(el)] : String(el)) : null;
 }
 
+// Optionally, initialContext may provide an async getCredentials(node) => { values: object } | object | null
 async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
   const { nodesById, outEdges } = buildGraph(flow);
   if (nodesById.size === 0) throw new Error('Flow vide');
@@ -100,16 +101,16 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString();
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null, msgIn: msgBefore });
-      // Start node: do not transform the user-provided payload; expose it as the node result
+      // Start-like node: take current msg.payload as the node result and ensure msg.payload is the authoritative input for downstream nodes
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = null;
       nodeLog.result = (msg && typeof msg.payload !== 'undefined') ? JSON.parse(JSON.stringify(msg.payload)) : null;
-      // Expose start result under msg[nodeId] but do not modify payload here
-      msg[node.id] = nodeLog.result;
+      // Ensure payload is set to the result value (form or external payload) and do not inject result under msg[nodeId]
+      try { msg.payload = (msg && typeof msg.payload !== 'undefined') ? msg.payload : null; } catch {}
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
-      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'condition'){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
@@ -140,19 +141,34 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const evalCtx = buildEvalContext(initialContext, msg);
       const compiled = deepRender(node.model?.context || {}, evalCtx);
+      // Function inputs are derived strictly from compiled args (no implicit merge of msg.payload)
       let inputs = compiled;
-      try {
-        if (compiled && typeof compiled === 'object' && !Array.isArray(compiled) && msg && typeof msg.payload === 'object' && !Array.isArray(msg.payload)){
-          inputs = { ...(msg.payload || {}), ...(compiled || {}) };
-        }
-      } catch {}
       nodeLog.args_post_compilation = inputs;
       // Emit started with full computed input
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, input: inputs, templateKey: tmplKey, kind: 'function', msgIn: msgBefore });
       const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey]; let result = null;
       try { console.log('[engine] call', { node: node.id, template: tmplKey, inputs }); } catch {}
       if (!fn) { result = { error: `No handler for template '${tmplKey}'` }; }
-      else { try { result = await fn({ id: node.id, model: node.model }, msg, inputs); } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; } }
+      else {
+        // Inject credentials if a resolver is provided via initialContext; never expose them in events/logs
+        let inputsForFn = inputs;
+        let metaForFn = undefined;
+        try {
+          const getter = initialContext && typeof initialContext.getCredentials === 'function' ? initialContext.getCredentials : null;
+          if (getter){
+            const creds = await getter(node);
+            if (creds && typeof creds === 'object'){
+              // Provide only decrypted values to the handler via opts (4th arg)
+              const values = (creds && creds.values != null) ? creds.values : creds;
+              metaForFn = { credentials: values };
+            }
+          }
+        } catch {}
+        try {
+          try { console.log('[engine] fn opts', { node: node.id, hasCredentials: !!metaForFn }); } catch {}
+          result = await fn({ id: node.id, model: node.model }, msg, inputsForFn, metaForFn);
+        } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
+      }
       // Store function result under msg[nodeId] and mirror to payload
       nodeLog.result = result;
       msg[node.id] = result;

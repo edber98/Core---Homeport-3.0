@@ -15,6 +15,7 @@ module.exports = function(){
   const r = express.Router();
   // Public: start a run if the Start node exposes a public form
   r.post('/public/flows/:flowId/runs', async (req, res) => {
+    try { console.log('[api][public-run][db] start', req.params.flowId, 'payload:', JSON.stringify(req.body?.payload)); } catch {}
     const { Types } = require('mongoose');
     const fid = String(req.params.flowId);
     let flow = null;
@@ -27,7 +28,9 @@ module.exports = function(){
       // Check Start node public flag
       const graph = flow.graph || {};
       const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
-      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      const startFormByType = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start_form');
+      const startFormById = nodes.find(n => String(n?.data?.model?.templateObj?.id || n?.data?.model?.template || '').toLowerCase() === 'start_form');
+      const start = startFormByType || startFormById || nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
@@ -38,7 +41,24 @@ module.exports = function(){
         try {
           const payload = req.body?.payload ?? null;
           const initialMsg = { payload };
-          await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, async (ev) => {
+          // Prepare credentials resolver for this workspace
+          const Credential = require('../../db/models/credential.model');
+          const { Types } = require('mongoose');
+          const { decrypt } = require('../../utils/enc');
+          const getCredentials = async (node) => {
+            try {
+              const credId = String(node?.data?.model?.credentialId || node?.model?.credentialId || '');
+              if (!credId) return null;
+              let cred = null;
+              if (Types.ObjectId.isValid(credId)) cred = await Credential.findById(credId).lean();
+              if (!cred) cred = await Credential.findOne({ id: credId }).lean();
+              if (!cred) return null;
+              if (String(cred.workspaceId) !== String(ws._id)) return null;
+              const values = decrypt(cred.secret);
+              return { id: String(cred._id), providerKey: cred.providerKey, values };
+            } catch { return null; }
+          };
+          await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
             const ts = new Date();
             let seq = 0;
             if (ev.type === 'run.started'){
@@ -82,6 +102,48 @@ module.exports = function(){
       })();
     } catch (e){ return res.apiError(500, 'internal_error', 'Failed to start run', { message: e?.message }); }
   });
+  // Public: SSE stream for a run (DB mode)
+  r.get('/public/runs/:runId/stream', async (req, res) => {
+    const { Types } = require('mongoose');
+    const Run = require('../../db/models/run.model');
+    const RunEvent = require('../../db/models/run-event.model');
+    const rid = String(req.params.runId);
+    let run = null;
+    if (Types.ObjectId.isValid(rid)) run = await Run.findById(rid);
+    if (!run) run = await Run.findOne({ id: rid });
+    if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders && res.flushHeaders();
+    const send = (ev) => { res.write(`event: live\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
+    let lastSeq = 0;
+    const history = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+    for (const ev of history){ send(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+    const interval = setInterval(async () => {
+      const doc = await Run.findById(run._id).lean();
+      if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
+      const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
+      for (const ev of news){ send(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+      send({ type: 'run.status', runId: String(run._id), run: { status: doc.status } });
+      if (doc.status === 'success' || doc.status === 'error') { clearInterval(interval); try{ res.end(); }catch{} }
+    }, 300);
+    req.on('close', () => clearInterval(interval));
+  });
+  // Public: get run status snapshot (no auth)
+  r.get('/public/runs/:runId', async (req, res) => {
+    const { Types } = require('mongoose');
+    const rid = String(req.params.runId);
+    const Run = require('../../db/models/run.model');
+    let run = null;
+    if (Types.ObjectId.isValid(rid)) run = await Run.findById(rid).lean();
+    if (!run) run = await Run.findOne({ id: rid }).lean();
+    if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+    try {
+      const data = { id: String(run._id || run.id), status: run.status, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
+      return res.apiOk(data);
+    } catch (e) { return res.apiError(500, 'internal_error', 'Failed to read run'); }
+  });
   r.use(authMiddleware());
   r.use(requireCompanyScope());
 
@@ -113,7 +175,23 @@ module.exports = function(){
         const initialMsg = { payload };
         let finalMsg = null;
         let seq = 0; // live event sequence
-        await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, async (ev) => {
+        const Credential = require('../../db/models/credential.model');
+        const { Types } = require('mongoose');
+        const { decrypt } = require('../../utils/enc');
+        const getCredentials = async (node) => {
+          try {
+            const credId = String(node?.data?.model?.credentialId || node?.model?.credentialId || '');
+            if (!credId) return null;
+            let cred = null;
+            if (Types.ObjectId.isValid(credId)) cred = await Credential.findById(credId).lean();
+            if (!cred) cred = await Credential.findOne({ id: credId }).lean();
+            if (!cred) return null;
+            if (String(cred.workspaceId) !== String(ws._id)) return null;
+            const values = decrypt(cred.secret);
+            return { id: String(cred._id), providerKey: cred.providerKey, values };
+          } catch { return null; }
+        };
+        await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
           const ts = new Date();
           // Translate engine ev -> LiveEvents and persist
           if (ev.type === 'run.started'){
@@ -311,19 +389,32 @@ module.exports = function(){
       const evalCtx = buildEvalContext({ now: new Date() }, msg);
       const argsPre = (node.data && node.data.model && node.data.model.context) || node.model?.context || {};
       const compiled = deepRender(argsPre, evalCtx);
-      let inputs = compiled;
-      try {
-        if (compiled && typeof compiled === 'object' && msg && typeof msg.payload === 'object' && !Array.isArray(msg.payload)) {
-          inputs = { ...(msg.payload || {}), ...(compiled || {}) };
-        }
-      } catch {}
+      const inputs = compiled; // do not merge with msg.payload
       const fn = registry.resolve(tmplKey);
       const t0 = Date.now();
       let result = null;
+      // Attach credentials to opts (4th arg) only, not into inputs
+      let optsForFn = undefined;
+      try {
+        const credId = String(node?.data?.model?.credentialId || node?.model?.credentialId || '');
+        if (credId){
+          const Credential = require('../../db/models/credential.model');
+          const { Types } = require('mongoose');
+          const { decrypt } = require('../../utils/enc');
+          let cred = null;
+          if (Types.ObjectId.isValid(credId)) cred = await Credential.findById(credId).lean();
+          if (!cred) cred = await Credential.findOne({ id: credId }).lean();
+          if (cred && String(cred.workspaceId) === String(ws._id)){
+            const values = decrypt(cred.secret);
+            optsForFn = { credentials: values };
+          }
+        }
+      } catch {}
       if (!fn) result = { error: `No handler for template '${tmplKey}'` };
-      else { try { result = await fn({ id: nodeId, model: node.data?.model || node.model }, msg, inputs); } catch (e) { result = { error: e && e.message ? e.message : String(e) }; } }
+      else { try { result = await fn({ id: nodeId, model: node.data?.model || node.model }, msg, inputs, optsForFn); } catch (e) { result = { error: e && e.message ? e.message : String(e) }; } }
       const msgOut = JSON.parse(JSON.stringify(msg || {}));
       try { msgOut[nodeId] = result; msgOut.payload = result; } catch {}
+      // Do not echo credentials; return compiled args as input/argsPost
       return res.apiOk({ nodeId, msgIn: msg, input: inputs, argsPre, argsPost: inputs, result, msgOut, startedAt: new Date(t0).toISOString(), finishedAt: new Date().toISOString(), durationMs: Date.now() - t0 });
     } catch (e) {
       return res.apiError(500, 'test_failed', e && e.message ? e.message : 'Test failed');
@@ -380,7 +471,7 @@ module.exports = function(){
     // Immediately send current status to keep the connection warm
     try {
       const doc0 = await Run.findById(run._id).lean();
-      if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status } });
+      if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status, startedAt: doc0.startedAt, finishedAt: doc0.finishedAt, durationMs: doc0.durationMs } });
     } catch {}
 
     const interval = setInterval(async () => {
@@ -388,8 +479,8 @@ module.exports = function(){
       if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
       const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
       for (const ev of news){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
-      // heartbeat with current status
-      sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status } });
+      // heartbeat with current status and timings
+      sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status, startedAt: doc.startedAt, finishedAt: doc.finishedAt, durationMs: doc.durationMs } });
       if (doc.status === 'success' || doc.status === 'error'){
         clearInterval(interval);
         try{ res.end(); }catch{}

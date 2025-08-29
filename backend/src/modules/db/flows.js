@@ -11,6 +11,7 @@ module.exports = function(){
   const r = express.Router();
   // Public: expose minimal info for Start Form if public is enabled
   r.get('/public/flows/:flowId/public-form', async (req, res) => {
+    try { console.log('[api][public-form][db] fetch', req.params.flowId); } catch {}
     const { Types } = require('mongoose');
     const fid = String(req.params.flowId);
     let f = null;
@@ -20,19 +21,27 @@ module.exports = function(){
     try {
       const graph = f.graph || {};
       const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
-      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      // Prefer explicit Start Form template if present
+      const startForm = nodes.find(n => String(n?.data?.model?.templateObj?.id || n?.data?.model?.template || '').toLowerCase() === 'start_form');
+      const start = startForm || nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
       if (!start) return res.apiError(404, 'start_not_found', 'Start node not found');
       const m = start?.data?.model || {};
       const isPublic = !!m.startFormPublic;
       if (!isPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
-      const schema = m.startFormSchema || null;
-      return res.apiOk({
+      let schema = null;
+      try {
+        if (m && m.context && (Array.isArray(m.context.fields) || Array.isArray(m.context.steps))) schema = m.context;
+        else schema = m.startFormSchema || null;
+      } catch { schema = m.startFormSchema || null; }
+      const out = {
         flowId: String(f._id || f.id),
         name: f.name,
         nodeId: String(start.id || start._id || ''),
         nodeTitle: (m.templateObj && (m.templateObj.title || m.name)) || m.name || 'Start',
         schema,
-      });
+      };
+      try { console.log('[api][public-form][db] ok', out.nodeId, !!out.schema); } catch {}
+      return res.apiOk(out);
     } catch (e) { return res.apiError(500, 'internal_error', 'Failed to read start form', { message: e?.message }); }
   });
   r.use(authMiddleware());

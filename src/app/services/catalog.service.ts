@@ -16,7 +16,7 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 
 export type NodeTemplate = {
   id: string;
-  type: 'start' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
+  type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
   name: string;           // technical identifier (no spaces)
   // UI/metadata
   title?: string;         // display title on node

@@ -1,7 +1,7 @@
 const Ajv = require('ajv');
 
 exports.key = 'core_validator';
-exports.run = async (_node, _msg, inputs) => {
+exports.run = async (_node, _msg, inputs, opts) => {
   const ctx = _node?.data?.model?.context || {};
   const schema = parseJson(ctx.schema, {});
   const strict = !!ctx.strict;
@@ -16,4 +16,3 @@ exports.run = async (_node, _msg, inputs) => {
 };
 
 function parseJson(s, d){ try { if (!s) return d; return typeof s === 'string' ? JSON.parse(s) : s; } catch { return d; } }
-

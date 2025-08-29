@@ -1,7 +1,7 @@
 
 function normalizeNodeKind(nameOrType=''){
   const s = String(nameOrType||'').trim().toLowerCase();
-  if (s==='start') return 'start';
+  if (s==='start' || s==='start_form') return 'start';
   if (s==='event') return 'event';
   if (s==='endpoint') return 'event'; // treat endpoint as event-like trigger
   if (s==='condition') return 'condition';

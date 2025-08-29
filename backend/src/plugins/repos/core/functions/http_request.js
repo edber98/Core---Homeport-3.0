@@ -1,5 +1,5 @@
 exports.key = 'core_http_request';
-exports.run = async (_node, _msg, inputs) => {
+exports.run = async (_node, _msg, inputs, opts) => {
   const args = _node?.data?.model?.context || {};
   const method = String(args.method || 'GET').toUpperCase();
   const url = String(args.url || '');
@@ -10,4 +10,3 @@ exports.run = async (_node, _msg, inputs) => {
 };
 
 function safeJson(x, def){ try { if (x == null) return def; if (typeof x === 'string') return JSON.parse(x); return x; } catch { return def; } }
-

@@ -142,12 +142,12 @@ export class FlowPalettePanelComponent {
   @Output() dragEnd = new EventEmitter<any>();
 
   isStartLikeTpl(t: any): boolean {
-    try { const ty = String(t?.type || '').toLowerCase(); return ty === 'start' || ty === 'event' || ty === 'endpoint'; } catch { return false; }
+    try { const ty = String(t?.type || '').toLowerCase(); return ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint'; } catch { return false; }
   }
   startLikeTooltip(t: any): string {
     try {
       const ty = String(t?.type || '').toLowerCase();
-      if (ty === 'start') return 'Début de flow (manuel)';
+      if (ty === 'start' || ty === 'start_form') return 'Début de flow (manuel)';
       if (ty === 'event') return 'Déclencheur (événement externe)';
       if (ty === 'endpoint') return 'Déclencheur (HTTP endpoint)';
       return 'Déclencheur';

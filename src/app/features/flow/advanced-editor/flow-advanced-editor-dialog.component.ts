@@ -19,13 +19,11 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
         <div *ngIf="loadingInput" class="wing-loading"><span class="tiny-spinner big"></span></div>
-        <div *ngIf="!loadingInput && hasPrev && injectedInput == null && !(isStart(model) && model?.startFormEnabled)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+        <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
         </div>
-        <!-- Start Form: afficher le Dynamic Form comme panneau Input -->
-        <app-dynamic-form *ngIf="isStart(model) && model?.startFormEnabled" [schema]="model?.startFormSchema || { title: 'Formulaire', fields: [] }" [value]="injectedInput || {}" (valueChange)="injectedInputChange.emit($event)"></app-dynamic-form>
-        <!-- Autres: input en lecture via viewer -->
+        <!-- Input en lecture via viewer (tous sauf Start-like) -->
         <app-json-schema-viewer *ngIf="injectedInput != null && !isStart(model)" [data]="injectedInput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
@@ -36,11 +34,16 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       </div>
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
         <div *ngIf="loadingOutput" class="wing-loading"><span class="tiny-spinner big"></span></div>
-        <!-- Start: output = payload initial du flow (éditable et persisté) -->
-        <app-json-schema-viewer *ngIf="isStart(model)" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'
+        <!-- Start Form: afficher le Dynamic Form dans le panneau Output pour éditer le payload -->
+        <app-dynamic-form *ngIf="isStartForm(model) && model?.startFormEnabled"
+          [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }"
+          [value]="injectedOutput || {}"
+          (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
+        <!-- Start simple: payload JSON éditable -->
+        <app-json-schema-viewer *ngIf="isStart(model) && !isStartForm(model)" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'
           " (dataChange)="startPayloadChange.emit($event)"></app-json-schema-viewer>
-        <!-- Autres: output en lecture -->
-        <app-json-schema-viewer *ngIf="!isStart(model) && injectedOutput != null" [data]="injectedOutput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+        <!-- Autres (hors start/start_form): output en lecture -->
+        <app-json-schema-viewer *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null" [data]="injectedOutput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
 
         </div>
     </div>
@@ -84,7 +87,12 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
           <div class="slide">
             <div class="scroll">
               <div *ngIf="loadingOutput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
-              <app-json-schema-viewer *ngIf="!loadingOutput && injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
+              <!-- Start Form (mobile): formulaire dans l'onglet Output -->
+              <app-dynamic-form *ngIf="!loadingOutput && isStartForm(model) && model?.startFormEnabled"
+                [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }" [value]="injectedOutput || {}"
+                (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
+              <!-- Autres (hors start_form): viewer de sortie -->
+              <app-json-schema-viewer *ngIf="!loadingOutput && (!isStart(model)) && (!isStartForm(model)) && injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
             </div>
           </div>
           </div>
@@ -237,7 +245,11 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   }
 
   hasInput(model: any): boolean {
-    try { return !!model && model.templateObj?.type !== 'start'; } catch { return false; }
+    try {
+      const t = String(model?.templateObj?.type || '').toLowerCase();
+      // Aucun panneau gauche pour les déclencheurs (start, start_form, event, endpoint)
+      return !(t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint');
+    } catch { return false; }
   }
   hasOutput(model: any): boolean {
     try { return !!model && model.templateObj?.type !== 'end'; } catch { return false; }
@@ -366,5 +378,6 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   }
 
   // (test diagnostics removed)
-  isStart(m: any): boolean { try { return String(m?.templateObj?.type || '').toLowerCase() === 'start'; } catch { return false; } }
+  isStart(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start'; } catch { return false; } }
+  isStartForm(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start_form'; } catch { return false; } }
 }

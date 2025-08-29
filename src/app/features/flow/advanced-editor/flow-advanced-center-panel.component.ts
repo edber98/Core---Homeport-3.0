@@ -9,6 +9,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
+import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
@@ -36,8 +37,8 @@ import { FormsModule } from '@angular/forms';
               <button class="update" (click)="updateArgs.emit()">Mettre à jour</button>
             </div>
             <div [class.dimmed]="disabled">
-              <!-- Start Form configuration (special start type) -->
-              <div class="start-form-box" *ngIf="isStart(model)" style="padding:6px 0 10px; margin: 8px 0 12px;">
+              <!-- Start Form configuration (only for Start Form template) -->
+              <div class="start-form-box" *ngIf="isStartForm(model)" style="padding:6px 0 10px; margin: 8px 0 12px;">
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap: wrap;">
                   <div style="display:flex; align-items:center; gap:10px;">
                     <div style="font-weight:600; font-size:13px;">Formulaire de démarrage</div>
@@ -240,7 +241,7 @@ export class FlowAdvancedCenterPanelComponent {
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router) {}
 
   // Credentials state
   credVisible = false;
@@ -300,11 +301,13 @@ export class FlowAdvancedCenterPanelComponent {
     try { this._computedFormUrl = this.computeFormUrl(); } catch {}
     try { this.syncSchemaTextFromModel(); } catch {}
   }
-  isStart(m: any): boolean { try { return String(m?.templateObj?.type || '').toLowerCase() === 'start'; } catch { return false; } }
+  isStart(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start'; } catch { return false; } }
+  isStartForm(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start_form'; } catch { return false; } }
   private _computedFormUrl: string | null = null;
   computeFormUrl(): string | null {
     try {
-      if (!this.isStart(this.model)) return null;
+      // Allow public URL for both 'start' and 'start_form'
+      if (!(this.isStart(this.model) || this.isStartForm(this.model))) return null;
       const fid = this.flowId || '';
       const nid = String(this.model?.id || '');
       if (!fid || !nid) return null;
@@ -343,16 +346,18 @@ export class FlowAdvancedCenterPanelComponent {
   openFormBuilder() {
     try {
       const sess = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-      // Seed initial schema
-      try {
-        const init = (this.model && (this.model.startFormSchema != null)) ? this.model.startFormSchema : { title: 'Formulaire', ui: { layout: 'vertical', labelsOnTop: true }, fields: [] };
-        localStorage.setItem('formbuilder.session.' + sess, JSON.stringify(init));
-      } catch {}
-      const ret = new URL(window.location.href);
-      ret.searchParams.set('fbSession', sess);
-      const returnUrl = ret.toString();
-      const url = `${location.origin.replace(/\/$/, '')}/dynamic-form?session=${encodeURIComponent(sess)}&return=${encodeURIComponent(returnUrl)}&tplPreset=1`;
-      window.open(url, '_blank');
+      const init = (this.model && this.model.context && (this.model.context.fields || this.model.context.steps))
+        ? this.model.context
+        : ((this.model && (this.model.startFormSchema != null))
+          ? this.model.startFormSchema
+          : (this.model?.templateObj?.args || { title: 'Formulaire', ui: { layout: 'vertical', labelsOnTop: true }, fields: [] }));
+      try { localStorage.setItem('formbuilder.session.' + sess, JSON.stringify(init)); } catch {}
+      const flow = this.flowId || '';
+      const node = String(this.model?.id || '');
+      const returnTo = this.router.createUrlTree(['/flow-builder/editor'], { queryParams: { flow, node, fbSession: sess } }).toString();
+      const query: any = { session: sess, return: returnTo, tplPreset: '1' };
+      try { query.schema = JSON.stringify(init); } catch {}
+      this.router.navigate(['/dynamic-form'], { queryParams: query });
     } catch {}
   }
   trackIdx(i: number, v: number) { return v; }

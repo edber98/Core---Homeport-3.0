@@ -191,6 +191,8 @@ export class FlowBuilderComponent {
   // Unified attempt options (single select)
   advancedAttemptOptions: Array<{ idx: number; exec: number; occur: number; label: string }> = [];
   advancedSelectedAttemptIdx: number | null = null;
+  // When starting a run with Start Form and missing payload, open dialog and run after first payload change
+  private pendingRunAfterStartForm: boolean = false;
   isTestDisabled(): boolean {
     try {
       if (this.testStatus === 'running') return true;
@@ -301,6 +303,9 @@ export class FlowBuilderComponent {
   private allFlows: { id: string; name: string; description?: string }[] = [];
   validationIssues: Array<{ kind: 'node' | 'flow'; nodeId?: string; message: string }> = [];
   private openedNodeConfig = new Set<string>();
+  // Pending Dynamic Form return session (apply after flow graph is loaded)
+  private pendingFbSession: string | null = null;
+  private pendingFbNodeId: string | null = null;
 
   // Removed event interceptors to align with working dev playground
 
@@ -340,12 +345,8 @@ export class FlowBuilderComponent {
         } else if (runId) {
           this.openRunSnapshotInEditor(runId);
         }
-        // Handle return from Dynamic Form Builder (session-based)
-        if (fbSession) {
-          this.applyStartFormSchemaFromSession(fbSession);
-          // Clean the query param to avoid reapplying on next navigation changes
-          try { const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) }; delete q.fbSession; this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
-        }
+        // Defer Dynamic Form session application until after the flow is loaded
+        if (fbSession) { this.pendingFbSession = fbSession; this.pendingFbNodeId = qp.get('node'); }
       });
     } catch {}
     try {
@@ -395,6 +396,21 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // Apply pending Dynamic Form session (if any) once nodes are available
+            try {
+              const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
+              if (sess) {
+                this.applyStartFormSchemaFromSession(sess);
+                this.pendingFbSession = null;
+                // Clean the query param to avoid reapplying
+                try {
+                  const qp = this.route.snapshot.queryParamMap;
+                  const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+                  delete q.fbSession;
+                  this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
+              }
+            } catch {}
             // If we are opening a specific run, re-apply backend highlights after any flow swap
             try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
             // Deep-link: focus a specific node if requested
@@ -442,6 +458,20 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // Apply pending Dynamic Form session (if any) once nodes are available
+            try {
+              const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
+              if (sess) {
+                this.applyStartFormSchemaFromSession(sess);
+                this.pendingFbSession = null;
+                try {
+                  const qp = this.route.snapshot.queryParamMap;
+                  const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+                  delete q.fbSession;
+                  this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
+              }
+            } catch {}
             // If a run is open, re-apply backend highlights after swap
             try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
             if (node) {
@@ -584,7 +614,9 @@ export class FlowBuilderComponent {
   typeIconClass(tpl: any): string {
     const type = String(tpl?.type || '').toLowerCase();
     switch (type) {
-      case 'start': return 'fa-solid fa-play';
+      case 'start':
+      case 'start_form':
+        return 'fa-solid fa-play';
       case 'event': return 'fa-solid fa-bell';
       case 'endpoint': return 'fa-solid fa-link';
       case 'function': return 'fa-solid fa-cog';
@@ -741,7 +773,7 @@ export class FlowBuilderComponent {
   inputId(tmpl: any): string | null {
     if (!tmpl) return null;
     const ty = String(tmpl.type || '').toLowerCase();
-    return (ty === 'start' || ty === 'event' || ty === 'endpoint') ? null : 'in';
+    return (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint') ? null : 'in';
   }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
@@ -1078,7 +1110,7 @@ export class FlowBuilderComponent {
   isStartLike(tmpl: any): boolean {
     try {
       const ty = String(tmpl?.type || '').toLowerCase();
-      return ty === 'start' || ty === 'trigger' || ty === 'event' || ty === 'endpoint';
+      return ty === 'start' || ty === 'start_form' || ty === 'trigger' || ty === 'event' || ty === 'endpoint';
     } catch { return false; }
   }
   private hasStartLikeNode(): boolean {
@@ -1425,11 +1457,30 @@ export class FlowBuilderComponent {
       const raw = localStorage.getItem('formbuilder.session.' + session);
       if (!raw) return;
       const schema = JSON.parse(raw);
-      const m = this.selectedModel;
+      let m = this.selectedModel;
+      if (!m) {
+        try {
+          const nodeId = this.pendingFbNodeId || this.route.snapshot.queryParamMap.get('node');
+          if (nodeId) {
+            const node = this.nodes.find(n => String(n.id) === String(nodeId));
+            if (node) { this.selectItem(node); m = node.data?.model || null; }
+          }
+        } catch {}
+      }
       if (!m) return;
-      const newModel = { ...m, startFormEnabled: true, startFormSchema: schema };
+      const newModel = { ...m, startFormEnabled: true, context: schema };
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
+      // Re-sélectionner le nœud et rouvrir la boîte de dialogue pour permettre de tester/remplir immédiatement
+      try {
+        const id = String(newModel.id || '');
+        const node = this.nodes.find(n => String(n.id) === id);
+        if (node) {
+          this.selectItem(node);
+          setTimeout(() => this.openAdvancedEditor(), 0);
+        }
+      } catch {}
+      // Do not auto-save the flow here; let the user decide to save
       try { localStorage.removeItem('formbuilder.session.' + session); } catch {}
       try { this.message.success('Formulaire importé dans le nœud'); } catch { this.showToast('Formulaire importé'); }
     } catch {}
@@ -1959,7 +2010,14 @@ export class FlowBuilderComponent {
     this.advancedInjectedInput = p || {};
     this.advancedInjectedOutput = p || {};
     this.advancedCtx = this.advancedInjectedInput || {};
+    try { console.log('[builder][start] payloadChange', p); } catch {}
     try { this.cdr.detectChanges(); } catch {}
+    // If we were waiting for the payload to start the run, close dialog and launch
+    if (this.pendingRunAfterStartForm) {
+      this.pendingRunAfterStartForm = false;
+      try { this.closeAdvancedEditor(); } catch {}
+      setTimeout(() => this.runFlow(), 0);
+    }
   }
   closeAdvancedEditor() { this.advancedOpen = false; }
   onAdvancedModelChange(m: any) {
@@ -2244,6 +2302,58 @@ export class FlowBuilderComponent {
     const snap = this.snapshot();
     // Always update the shared graph snapshot (used by the executions page)
     this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });
+
+    // Helper: detect Start Form node and schema from model.context/startFormSchema/template args
+    const findStartForm = (): { nodeId: string; model: any; schema: any } | null => {
+      try {
+        const isStart = (m: any) => String(m?.templateObj?.type || '').toLowerCase() === 'start';
+        const isStartForm = (m: any) => {
+          try { const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase(); const tplName = String(m?.templateObj?.name || '').toLowerCase(); return isStart(m) && (tplId === 'start_form' || tplName === 'startform'); } catch { return false; }
+        };
+        for (const n of (snap.nodes || [])) {
+          const m = n?.data?.model; if (!m) continue;
+          if (isStartForm(m)) {
+            const ctx = m.context; const hasCtx = ctx && (ctx.fields || ctx.steps);
+            const schema = hasCtx ? ctx : (m.startFormSchema || m.templateObj?.args || { title: 'Formulaire', fields: [] });
+            return { nodeId: String(n.id), model: m, schema };
+          }
+        }
+      } catch {}
+      return null;
+    };
+    const startInfo = findStartForm();
+    try { console.log('[builder][run] startInfo', startInfo); } catch {}
+    const currentPayload = this.getStartPayload().payload;
+    const isEmpty = (v: any) => v == null || (typeof v === 'object' && Object.keys(v).length === 0);
+    // If flow starts with a Start Form and no payload provided yet, prompt for input first
+    if (startInfo && isEmpty(currentPayload)) {
+      // Open the node configuration dialog to let user fill the Start Form, then run automatically
+      try {
+        const id = startInfo.nodeId;
+        const node = this.nodes.find(n => String(n.id) === String(id));
+        if (node) {
+          this.pendingRunAfterStartForm = true;
+          this.selectItem(node);
+          this.openAdvancedEditor();
+          return;
+        }
+      } catch {}
+      // Fallback to modal if selection failed
+      try {
+        import('./start-form-modal.component').then(mod => {
+          const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
+          const inst: any = ref.getContentComponent();
+          try { inst.schema = startInfo.schema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+          const sub = inst.submitted.subscribe((val: any) => {
+            try { sub.unsubscribe(); } catch {}
+            ref.close();
+            try { this.setStartPayload(val || {}); } catch {}
+            this.runFlow();
+          });
+        });
+        return;
+      } catch {}
+    }
 
     // If backend is enabled and we have a flowId, launch on backend
     if (environment.useBackend && this.currentFlowId) {

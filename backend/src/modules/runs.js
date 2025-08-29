@@ -9,12 +9,16 @@ module.exports = function(store){
   const r = express.Router();
   // Public route to start a run if Start Form is public
   r.post('/public/flows/:flowId/runs', (req, res) => {
+    try { console.log('[api][public-run][mem] start', req.params.flowId, 'payload:', JSON.stringify(req.body?.payload)); } catch {}
     const { flowId } = req.params; const flow = store.flows.get(flowId);
     if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
     try {
       const graph = flow.graph || {};
       const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
-      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      // Prefer explicit Start Form template if present
+      const startFormByType = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start_form');
+      const startFormById = nodes.find(n => String(n?.data?.model?.templateObj?.id || n?.data?.model?.template || '').toLowerCase() === 'start_form');
+      const start = startFormByType || startFormById || nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
@@ -36,6 +40,41 @@ module.exports = function(store){
         } catch (e) { run.status = 'error'; run.finishedAt = new Date(); }
       })();
     } catch (e) { return res.apiError(500, 'internal_error', 'Failed to start run'); }
+  });
+  // Public: SSE stream for a run (memory mode)
+  r.get('/public/runs/:runId/stream', (req, res) => {
+    const { runId } = req.params; const run = store.runs.get(runId);
+    if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders && res.flushHeaders();
+    const send = (ev) => { res.write(`event: live\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
+    // Replay existing
+    for (const ev of (run.events || [])) send(ev);
+    let last = (run.events || []).length;
+    const interval = setInterval(() => {
+      const r = store.runs.get(runId);
+      if (!r) { clearInterval(interval); try{ res.end(); }catch{} return; }
+      // heartbeat with status and timings
+      send({ type: 'run.status', runId, run: { status: r.status, startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs } });
+      if ((r.events?.length || 0) > last) {
+        for (let i = last; i < r.events.length; i++) send(r.events[i]);
+        last = r.events.length;
+      }
+      if (r.status === 'success' || r.status === 'error') { clearInterval(interval); try{ res.end(); }catch{} }
+    }, 300);
+    req.on('close', () => clearInterval(interval));
+  });
+  // Public: get run status snapshot (no auth)
+  r.get('/public/runs/:runId', (req, res) => {
+    const { runId } = req.params;
+    const run = store.runs.get(runId);
+    if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+    try {
+      const data = { id: String(runId), status: run.status, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
+      return res.apiOk(data);
+    } catch (e) { return res.apiError(500, 'internal_error', 'Failed to read run'); }
   });
   r.use(authMiddleware(store));
   r.use(requireCompanyScope());

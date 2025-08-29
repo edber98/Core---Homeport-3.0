@@ -9,8 +9,8 @@ const NodeTemplateSchema = new Schema({
   description: { type: String },
   tags: { type: [String], default: [] },
   group: { type: String },
-  // Allow 'event' and 'endpoint' as valid trigger nodes in addition to existing kinds
-  type: { type: String, enum: ['start','event','endpoint','function','condition','loop','end','flow'], required: true },
+  // Allow 'start_form', 'event' and 'endpoint' as valid trigger nodes in addition to existing kinds
+  type: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow'], required: true },
   category: { type: String, default: '' },
   providerKey: { type: String },
   appName: { type: String },

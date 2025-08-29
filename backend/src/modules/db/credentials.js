@@ -48,7 +48,11 @@ module.exports = function(){
   });
 
   r.get('/credentials/:id', async (req, res) => {
-    const cred = await Credential.findById(req.params.id);
+    const { Types } = require('mongoose');
+    const rawId = String(req.params.id);
+    let cred = null;
+    if (Types.ObjectId.isValid(rawId)) cred = await Credential.findById(rawId);
+    if (!cred) cred = await Credential.findOne({ id: rawId });
     if (!cred) return res.apiError(404, 'credential_not_found', 'Credential not found');
     const ws = await Workspace.findById(cred.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'credential_not_found', 'Credential not found');
@@ -57,7 +61,11 @@ module.exports = function(){
 
   // Secure read of credential values
   r.get('/credentials/:id/values', async (req, res) => {
-    const cred = await Credential.findById(req.params.id);
+    const { Types } = require('mongoose');
+    const rawId = String(req.params.id);
+    let cred = null;
+    if (Types.ObjectId.isValid(rawId)) cred = await Credential.findById(rawId);
+    if (!cred) cred = await Credential.findOne({ id: rawId });
     if (!cred) return res.apiError(404, 'credential_not_found', 'Credential not found');
     const ws = await Workspace.findById(cred.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'credential_not_found', 'Credential not found');
@@ -76,7 +84,11 @@ module.exports = function(){
   });
 
   r.put('/credentials/:id', async (req, res) => {
-    const cred = await Credential.findById(req.params.id);
+    const { Types } = require('mongoose');
+    const rawId = String(req.params.id);
+    let cred = null;
+    if (Types.ObjectId.isValid(rawId)) cred = await Credential.findById(rawId);
+    if (!cred) cred = await Credential.findOne({ id: rawId });
     if (!cred) return res.apiError(404, 'credential_not_found', 'Credential not found');
     const ws = await Workspace.findById(cred.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'credential_not_found', 'Credential not found');
