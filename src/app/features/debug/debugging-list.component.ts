@@ -37,6 +37,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
           <div class="leading"><div class="avatar">FV</div></div>
           <div class="content"><div class="title-row"><div class="name">Form Viewers</div><span class="chip">/debug/form-viewers</span></div><div class="desc">Tester df-table-viewer et df-records-table</div></div>
         </div>
+        <div class="card" (click)="go('/debug/ai-form-agent')">
+          <div class="leading"><div class="avatar">AI</div></div>
+          <div class="content"><div class="title-row"><div class="name">AI Form Agent</div><span class="chip">/debug/ai-form-agent</span></div><div class="desc">Génération live (SSE) d’un formulaire</div></div>
+        </div>
       </div>
     </div>
   </div>
