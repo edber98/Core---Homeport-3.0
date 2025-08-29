@@ -59,6 +59,13 @@ export class CredentialEditDialogComponent implements OnChanges {
       const n = (this.doc?.name || '').trim();
       this.form.patchValue({ name: n });
       this.values = this.doc?.values ? { ...(this.doc.values) } : {};
+      // When opening the dialog in backend mode, fetch decrypted values (admin required)
+      if (this.visible && this.doc?.id) {
+        this.catalog.getCredentialValues(this.doc.id, true).subscribe({
+          next: (vals: any) => { this.values = { ...(vals || {}) }; },
+          error: () => { /* keep masked/empty values on error */ }
+        });
+      }
     }
   }
 

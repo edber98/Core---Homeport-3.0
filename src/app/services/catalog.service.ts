@@ -311,7 +311,7 @@ export class CatalogService {
   }
   getCredential(id: string): Observable<CredentialDoc> {
     if (environment.useBackend) {
-      // Compose summary + masked values
+      // Compose summary + masked values (safe by default)
       return forkJoin({
         summary: this.credsApi.get(id),
         values: this.credsApi.values(id, '0')
@@ -320,11 +320,21 @@ export class CatalogService {
         name: summary.name,
         providerId: summary.providerKey,
         workspaceId: summary.workspaceId,
-        values
+        // API returns { masked: boolean, values: {...} } → extract values
+        values: (values as any)?.values ?? {}
       } as CredentialDoc)));
     }
     const doc = this.load<CredentialDoc | null>(this.CRED_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Credential not found'));
+  }
+
+  /** Fetch only the values of a credential. When reveal=true, asks backend to decrypt (admin required). */
+  getCredentialValues(id: string, reveal = false): Observable<any> {
+    if (environment.useBackend) {
+      return this.credsApi.values(id, reveal ? '1' : '0').pipe(map((resp: any) => (resp?.values || {})));
+    }
+    const doc = this.load<CredentialDoc | null>(this.CRED_DOC_KEY + id, null);
+    return of(doc?.values || {});
   }
   saveCredential(doc: CredentialDoc): Observable<CredentialDoc> {
     if (!doc?.id) {
