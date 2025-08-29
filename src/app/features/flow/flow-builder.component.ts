@@ -1141,6 +1141,11 @@ export class FlowBuilderComponent {
   }
   private _doTestNode(m: any, isStart: boolean, input: any) {
     try {
+      // Prepare UI: input ready, output loading until result
+      this.advancedInjectedInput = input;
+      this.advancedCtx = this.advancedInjectedInput || {};
+      this.previewLoading = false;
+      this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
       const t0 = performance.now();
       const run = this.runner.runNode(m?.templateObj || {}, m?.id, 'test', input);
@@ -1157,15 +1162,38 @@ export class FlowBuilderComponent {
       this.advancedCtx = this.advancedInjectedInput || {};
       this.testDurationMs = Math.round(t1 - t0);
       this.testStatus = 'success';
+      this.outputLoading = false;
+      // Record as a standalone attempt (exec = -1)
+      try {
+        const nid = String(m?.id || this.selectedModel?.id || '');
+        if (nid) {
+          let arr = this.backendNodeAttempts.get(nid) || [];
+          const att = { exec: -1, status: 'success', input: last?.input ?? input, argsPre: last?.argsPre, argsPost: last?.argsPost, result: last?.result, msgIn: last?.input ?? input, msgOut: last?.result, durationMs: this.testDurationMs || undefined, startedAt: new Date(this.testStartedAt || Date.now()).toISOString(), finishedAt: new Date().toISOString(), events: [] } as any;
+          arr = [...arr, att];
+          this.backendNodeAttempts.set(nid, arr);
+          this.advancedSelectedExec = -1;
+          // Select last standalone occurrence
+          const same = arr.filter(a => Number(a.exec) === -1);
+          this.advancedOccurByNode.set(nid, Math.max(0, same.length - 1));
+          this.recomputeAttemptExecOptionsFor(nid);
+          this.recomputeExecCountAndOccIndex(nid);
+        }
+      } catch {}
       try { this.cdr.detectChanges(); } catch {}
     } catch (e) {
       this.testStatus = 'error';
       this.testDurationMs = null;
+      this.outputLoading = false;
       try { this.cdr.detectChanges(); } catch {}
     }
   }
   private _doTestNodeBackend(m: any, isStart: boolean, msgIn: any) {
     if (environment.useBackend && this.currentFlowId) {
+      // Prepare UI: input ready, output loading until result
+      this.advancedInjectedInput = msgIn;
+      this.advancedCtx = this.advancedInjectedInput || {};
+      this.previewLoading = false;
+      this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
       const t0 = performance.now();
       this.runsApi.testNode(this.currentFlowId, m?.id, msgIn).subscribe({
@@ -1180,9 +1208,25 @@ export class FlowBuilderComponent {
           this.advancedCtx = this.advancedInjectedInput || {};
           this.testDurationMs = this.testDurationMs ?? Math.round(t1 - t0);
           this.testStatus = 'success';
+          this.outputLoading = false;
+          // Record as a standalone attempt (exec = -1)
+          try {
+            const nid = String(m?.id || this.selectedModel?.id || '');
+            if (nid) {
+              let arr = this.backendNodeAttempts.get(nid) || [];
+              const att = { exec: -1, status: 'success', input: resp?.input ?? resp?.msgIn ?? msgIn, argsPre: resp?.argsPre, argsPost: resp?.argsPost, result: resp?.result, msgIn: resp?.msgIn ?? msgIn, msgOut: resp?.msgOut ?? resp?.result, durationMs: this.testDurationMs || undefined, startedAt: resp?.startedAt || new Date(this.testStartedAt || Date.now()).toISOString(), finishedAt: resp?.finishedAt || new Date().toISOString(), events: [] } as any;
+              arr = [...arr, att];
+              this.backendNodeAttempts.set(nid, arr);
+              this.advancedSelectedExec = -1;
+              const same = arr.filter(a => Number(a.exec) === -1);
+              this.advancedOccurByNode.set(nid, Math.max(0, same.length - 1));
+              this.recomputeAttemptExecOptionsFor(nid);
+              this.recomputeExecCountAndOccIndex(nid);
+            }
+          } catch {}
           try { this.cdr.detectChanges(); } catch {}
         },
-        error: () => { this.testStatus = 'error'; this.testDurationMs = null; try { this.cdr.detectChanges(); } catch {} },
+        error: () => { this.testStatus = 'error'; this.testDurationMs = null; this.outputLoading = false; try { this.cdr.detectChanges(); } catch {} },
       });
     } else {
       this._doTestNode(m, isStart, msgIn);
@@ -1378,6 +1422,16 @@ export class FlowBuilderComponent {
       try {
         const st = (att && (att.status as any)) || null;
         this.outputLoading = (st === 'running');
+        // Update badge/meta from selected attempt when no test is currently running
+        if (att) {
+          if (st === 'running') this.testStatus = 'running';
+          else if (st === 'error') this.testStatus = 'error';
+          else if (st === 'success') this.testStatus = 'success';
+          else this.testStatus = 'idle';
+          const started = (att as any).startedAt ? Date.parse((att as any).startedAt as any) : null;
+          this.testStartedAt = Number.isFinite(started as any) ? (started as any as number) : null;
+          this.testDurationMs = (att as any).durationMs != null ? Number((att as any).durationMs) : null;
+        }
       } catch { this.outputLoading = false; }
       // When a backend run is in progress and node hasn't started yet, keep both spinners on
       if (this.backendRunStatus === 'running' && !att) {
