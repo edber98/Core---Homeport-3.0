@@ -45,6 +45,7 @@ import { FormsModule } from '@angular/forms';
                   <nz-select class="occur" *ngIf="selectedExecCount && selectedExecCount > 1" [ngModel]="selectedOccurIndex" (ngModelChange)="selectedOccurIndexChange.emit($event)" nzSize="small" nzPlaceHolder="Occur.">
                     <nz-option *ngFor="let _ of [].constructor(selectedExecCount); index as idx" [nzValue]="idx" [nzLabel]="(idx + 1) + ''"></nz-option>
                   </nz-select>
+                  <span class="attempt-name" *ngIf="attemptName() as an">{{ an }}</span>
                 </div>
                 <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
                 <div class="test-meta" *ngIf="testStartedAt as t">
@@ -148,6 +149,7 @@ import { FormsModule } from '@angular/forms';
     .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
     .test-row .attempt-selects { display:flex; align-items:center; gap:6px; }
     .test-row .attempt-selects .exec, .test-row .attempt-selects .occur { min-width: 96px; }
+    .test-row .attempt-name { color:#6b7280; font-size:12px; }
     .test-badge { margin-left: 8px; }
     .body { position: relative; }
     .dimmed { opacity: .6; pointer-events: none; }
@@ -295,6 +297,16 @@ export class FlowAdvancedCenterPanelComponent {
         });
       });
     } catch { this.credVisible = false; this.currentProvider = null; this.credentials = []; this.selectedCredId = null; }
+  }
+
+  attemptName(): string | null {
+    try {
+      if (this.selectedExec == null) return null;
+      const occ = (this.selectedOccurIndex != null ? Number(this.selectedOccurIndex) + 1 : 1);
+      const isStandalone = Number(this.selectedExec) === -1;
+      if (isStandalone) return `Tentative #${occ} (Standalone)`;
+      return this.selectedExecCount && this.selectedExecCount > 1 ? `Tentative #${occ}` : `Tentative #1`;
+    } catch { return null; }
   }
 
   onCredChange(id: string | null) {
