@@ -36,7 +36,7 @@
 
           <div class="df-control-wrap">
             <!-- Toggle expression mode if allowed -->
-            <div class="df-expr-toggle" *ngIf="!disableExpressions && ($any(field).expression?.allow !== false)">
+            <div class="df-expr-toggle" *ngIf="!disableExpressions && ($any(field).expression?.allow === true)">
               <nz-segmented
                 [(ngModel)]="exprMode"
                 [ngModelOptions]="{ standalone: true }"
@@ -48,19 +48,39 @@
               <!-- Guard: render classic inputs only when the control exists on the form -->
               <ng-container *ngIf="form.get(key) as ctrl">
               <!-- Expression editor mode -->
-              <app-expression-editor *ngIf="!disableExpressions && exprEnabled"
-                                     [inline]="true"
+              <app-expression-editor *ngIf="!disableExpressions && exprEnabled && ($any(field).expression?.allow === true)"
+                                     [inline]="$any(field).expression?.inline ?? true"
+                                     [large]="$any(field).expression?.large === true"
+                                     [showDialogAction]="$any(field).expression?.showDialogAction === true"
+                                     [dialogTitle]="$any(field).expression?.dialogTitle || 'Éditeur d\'expression'"
+                                     [dialogMode]="$any(field).expression?.dialogMode || 'textarea'"
+                                     [autoHeight]="$any(field).expression?.autoHeight === true"
+                                     [groupBefore]="$any(field).expression?.groupBefore !== false"
+                                     [showFormulaAction]="$any(field).expression?.showFormulaAction !== false"
+                                     [suggestionPlacement]="$any(field).expression?.suggestionPlacement || 'auto'"
+                                     [errorMode]="$any(field).expression?.errorMode === true"
+                                     [showPreview]="$any(field).expression?.showPreview !== false"
                                      [context]="ctx"
                                      [showPreviewErrors]="showPreviewErrors"
-                                     [showFormulaAction]="true"
                                      [formControlName]="key">
               </app-expression-editor>
 
               <!-- Classic inputs -->
               <ng-container *ngIf="!exprEnabled">
                 <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
-                <input *ngIf="field.type==='text'"
-                      nz-input [id]="key" [type]="$any(field).secret ? 'password' : 'text'" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+
+                <!-- Secret text input with show/hide toggle -->
+                <ng-container *ngIf="field.type==='text' && $any(field).secret; else plainTextInput">
+                  <nz-input-group [nzSuffix]="secretToggleTpl">
+                    <input nz-input [id]="key" [type]="secretVisible ? 'text' : 'password'" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+                  </nz-input-group>
+                  <ng-template #secretToggleTpl>
+                    <i class="fa-regular" [class.fa-eye]="!secretVisible" [class.fa-eye-slash]="secretVisible" (click)="secretVisible = !secretVisible" style="cursor:pointer;"></i>
+                  </ng-template>
+                </ng-container>
+                <ng-template #plainTextInput>
+                  <input nz-input [id]="key" type="text" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+                </ng-template>
 
                 <textarea *ngIf="field.type==='textarea'"
                           nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>

@@ -43,6 +43,8 @@ export class Fields implements OnInit, OnDestroy {
   // segmented model: 'val' | 'expr'
   exprMode: 'val'|'expr' = 'val';
   get exprEnabled() { return this.exprMode === 'expr'; }
+  // Secret input visibility
+  secretVisible = false;
 
   // Final flag used for ExpressionEditor preview errors: combine global + field-level
   get showPreviewErrors(): boolean {
@@ -61,8 +63,13 @@ export class Fields implements OnInit, OnDestroy {
   private sub: any;
   ngOnInit(): void {
     const k = this.fieldKey;
-    // Initial auto-switch: if value looks like an expression and allowed
-    if (((this.field as any).expression?.allow !== false) && k) {
+    // Initial default mode: honor explicit defaultMode first, fallback to auto-detect
+    const exprCfg = (this.field as any)?.expression || {};
+    if (exprCfg?.defaultMode === 'expr' && exprCfg?.allow !== false) {
+      this.exprMode = 'expr';
+    }
+    // Auto-switch if value looks like an expression and expressions are allowed
+    if (this.exprMode !== 'expr' && (exprCfg?.allow !== false) && k) {
       const cur = this.form.get(k)?.value;
       if (typeof cur === 'string' && /\{\{[\s\S]*\}\}/.test(cur)) {
         this.exprMode = 'expr';
@@ -72,7 +79,7 @@ export class Fields implements OnInit, OnDestroy {
     if (k) {
       this.sub = this.form.get(k)?.valueChanges.subscribe(val => {
         if (this.exprMode === 'expr') return; // do not override once enabled
-        if (((this.field as any).expression?.allow === false)) return;
+        if (exprCfg?.allow === false) return;
         if (typeof val === 'string' && /\{\{[\s\S]*\}\}/.test(val)) {
           this.exprMode = 'expr';
         }

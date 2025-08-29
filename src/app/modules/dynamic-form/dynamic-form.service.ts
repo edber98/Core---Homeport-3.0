@@ -29,8 +29,24 @@ export interface FieldConfigCommon {
     textHtml?: string; // textblock
     // Expression support: when allowed, UI can switch the field to expression editor
     expression?: {
-        allow?: boolean;            // show toggle to switch to expression editor
-        showPreviewErrors?: boolean; // controls preview error display (default: true)
+        // Allow expression editor for this field (default: true)
+        allow?: boolean;
+        // Controls preview error display (default: true)
+        showPreviewErrors?: boolean;
+        // Default mode when the field renders: 'expr' forces expression mode
+        defaultMode?: 'val' | 'expr';
+        // Passthrough options to ExpressionEditor
+        large?: boolean;
+        showDialogAction?: boolean;
+        dialogTitle?: string;
+        dialogMode?: 'textarea' | 'editor';
+        autoHeight?: boolean;
+        groupBefore?: boolean;
+        showFormulaAction?: boolean;
+        suggestionPlacement?: 'auto' | 'top' | 'bottom';
+        errorMode?: boolean;
+        showPreview?: boolean;
+        inline?: boolean;
     };
 }
 
