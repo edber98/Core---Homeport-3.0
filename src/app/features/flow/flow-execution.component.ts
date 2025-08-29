@@ -456,10 +456,12 @@ export class FlowExecutionComponent {
   private prepareRunDetail(runOrId: BackendRun | string){
     const runId = typeof runOrId === 'string' ? runOrId : runOrId.id;
     const status = typeof runOrId === 'string' ? (this.selectedBackendRun?.status || 'running') : (runOrId.status || 'running');
-    // Load attempts snapshot first so historic runs render without SSE
-    this.runsApi.getWith(runId, ['attempts']).subscribe({ next: (r) => {
+    // Load attempts + events snapshot so historic runs render with exact path
+    this.runsApi.getWith(runId, ['attempts','events']).subscribe({ next: (r) => {
       const attempts = (r as any)?.attempts || [];
+      const events = (r as any)?.events || [];
       this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut }));
+      this.backendEvents = events;
       this.expanded = this.backendAttempts.map(() => false);
       try { this.cdr.detectChanges(); } catch {}
     }, complete: () => {
@@ -512,8 +514,8 @@ export class FlowExecutionComponent {
   }
   get decoratedEdges(): any[] {
     const baseEdges = (this.currentGraph?.edges || []) as any[];
-    // Build pairs from live explicit pairs, then fallback to attempts
-    const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, attempts: this.backendAttempts });
+    // Build pairs like in builder: prefer explicit live pairs, else exact events, else linear attempts
+    const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, events: this.backendEvents, attempts: this.backendAttempts });
     return this.pathSvc.decorateEdges(baseEdges, pairs);
   }
 

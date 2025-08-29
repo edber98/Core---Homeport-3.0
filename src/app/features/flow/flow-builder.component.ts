@@ -171,6 +171,12 @@ export class FlowBuilderComponent {
   testDurationMs: number | null = null;
   // Dialog logs for current node latest attempt
   advancedAttemptEvents: any[] = [];
+  // Attempt selection shared across nodes: selected exec number, plus per-node occurrence index
+  advancedSelectedExec: number | null = null;
+  private advancedOccurByNode = new Map<string, number>();
+  advancedAttemptExecs: Array<{ exec: number; count: number }> = [];
+  advancedExecCount: number | null = null;
+  advancedOccurIndex: number | null = null;
   isTestDisabled(): boolean {
     try {
       if (this.testStatus === 'running') return true;
@@ -1290,6 +1296,91 @@ export class FlowBuilderComponent {
     try { this.selectItem(node); } catch {}
     this.openAdvancedEditor();
   }
+
+  // Dialog attempt helpers
+  private nodeAttempts(nodeId?: string): Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any; events?: any[] }> {
+    const id = String(nodeId || this.selectedModel?.id || '');
+    if (!id) return [];
+    return (this.backendNodeAttempts.get(id) || []).slice();
+  }
+  private groupExecCounts(atts: any[]): Map<number, number> {
+    const m = new Map<number, number>();
+    for (const a of atts) { const e = Number(a.exec); if (!Number.isFinite(e)) continue; m.set(e, (m.get(e) || 0) + 1); }
+    return m;
+  }
+  private recomputeAttemptExecOptionsFor(nodeId?: string) {
+    try {
+      const atts = this.nodeAttempts(nodeId);
+      if (!atts.length) { this.advancedAttemptExecs = []; return; }
+      const counts = this.groupExecCounts(atts);
+      const ops = Array.from(counts.entries()).map(([exec, count]) => ({ exec, count }));
+      ops.sort((a, b) => a.exec - b.exec);
+      this.advancedAttemptExecs = ops;
+    } catch { this.advancedAttemptExecs = []; }
+  }
+  private resolveAttemptForSelection(nodeId?: string): any | null {
+    const id = String(nodeId || this.selectedModel?.id || ''); if (!id) return null;
+    const atts = this.nodeAttempts(id);
+    if (!atts.length) return null;
+    let exec = this.advancedSelectedExec;
+    if (exec == null) {
+      exec = Number(atts[atts.length - 1]?.exec);
+      if (Number.isFinite(exec)) this.advancedSelectedExec = exec;
+    }
+    const sameExec = atts.filter(a => Number(a.exec) === Number(exec));
+    if (!sameExec.length) return atts[atts.length - 1];
+    const occIdx = Math.max(0, Math.min((this.advancedOccurByNode.get(id) ?? (sameExec.length - 1)), sameExec.length - 1));
+    this.advancedOccurByNode.set(id, occIdx);
+    return sameExec[occIdx];
+  }
+  private recomputeExecCountAndOccIndex(nodeId?: string) {
+    try {
+      const id = String(nodeId || this.selectedModel?.id || ''); if (!id) { this.advancedExecCount = null; this.advancedOccurIndex = null; return; }
+      const atts = this.nodeAttempts(id);
+      if (!atts.length || this.advancedSelectedExec == null) { this.advancedExecCount = null; this.advancedOccurIndex = null; return; }
+      const counts = this.groupExecCounts(atts);
+      const c = counts.get(Number(this.advancedSelectedExec)) || 0;
+      this.advancedExecCount = c > 0 ? c : null;
+      this.advancedOccurIndex = (this.advancedExecCount && this.advancedExecCount > 1) ? (this.advancedOccurByNode.get(id) ?? (this.advancedExecCount - 1)) : null;
+    } catch { this.advancedExecCount = null; this.advancedOccurIndex = null; }
+  }
+  onDialogExecChange(exec: number) {
+    try { this.advancedSelectedExec = Number(exec); } catch { this.advancedSelectedExec = exec as any; }
+    // Reset per-node occurrence to last for new exec by default
+    try {
+      const id = String(this.selectedModel?.id || '');
+      if (id) {
+        const atts = this.nodeAttempts(id).filter(a => Number(a.exec) === Number(this.advancedSelectedExec));
+        const idx = atts.length ? (atts.length - 1) : 0;
+        this.advancedOccurByNode.set(id, idx);
+      }
+    } catch {}
+    this.recomputeExecCountAndOccIndex();
+    this.refreshDialogIOFromSelection();
+  }
+  onDialogOccurChange(idx: number) {
+    const id = String(this.selectedModel?.id || ''); if (!id) return;
+    const v = Math.max(0, Number(idx) || 0);
+    this.advancedOccurByNode.set(id, v);
+    this.advancedOccurIndex = v;
+    this.refreshDialogIOFromSelection();
+  }
+  private refreshDialogIOFromSelection() {
+    try {
+      const id = String(this.selectedModel?.id || '');
+      const att = this.resolveAttemptForSelection(id);
+      const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
+      this.advancedInjectedInput = att?.msgIn ?? att?.input ?? (isStart ? (this.getStartPayload().payload || {}) : null);
+      this.advancedInjectedOutput = att?.msgOut ?? att?.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
+      this.advancedAttemptEvents = (att?.events || []).slice().sort((a:any,b:any)=> new Date(a?.createdAt||0).getTime() - new Date(b?.createdAt||0).getTime());
+      this.advancedCtx = this.advancedInjectedInput || {};
+      // Output loader should reflect current attempt status
+      try {
+        const st = (att && (att.status as any)) || null;
+        this.outputLoading = (st === 'running');
+      } catch { this.outputLoading = false; }
+    } catch {}
+  }
   closeCtxMenu() { this.ctxMenuVisible = false; this.ctxMenuTarget = null; }
   ctxOpenAdvancedAndInspector() {
     if (!this.ctxMenuTarget) return;
@@ -1596,18 +1687,38 @@ export class FlowBuilderComponent {
         const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
         const last = arr[arr.length - 1];
         if (last) {
-          this.advancedInjectedInput = last.msgIn ?? last.input ?? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId));
-          this.advancedInjectedOutput = last.msgOut ?? last.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
-          try { this.advancedAttemptEvents = (last.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (last.events || []).slice(); }
+          // Initialize selection: keep existing global exec if present, otherwise use last's exec
+          if (this.advancedSelectedExec == null && last.exec != null) this.advancedSelectedExec = Number(last.exec);
+          try {
+            const sameExec = arr.filter(a => Number(a.exec) === Number(this.advancedSelectedExec ?? last.exec));
+            const idx = sameExec.length ? (sameExec.length - 1) : 0;
+            this.advancedOccurByNode.set(String(nodeId), idx);
+          } catch {}
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.refreshDialogIOFromSelection();
+          // Set output loading according to selected attempt status
+          try {
+            const att = this.resolveAttemptForSelection(nodeId);
+            this.outputLoading = att?.status === 'running';
+          } catch { this.outputLoading = false; }
         } else {
           this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
           if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
           this.advancedAttemptEvents = [];
+          this.advancedAttemptExecs = [];
+          this.advancedExecCount = null;
+          this.advancedOccurIndex = null;
+          this.outputLoading = false;
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
         if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
         this.advancedAttemptEvents = [];
+        this.advancedAttemptExecs = [];
+        this.advancedExecCount = null;
+        this.advancedOccurIndex = null;
+        this.outputLoading = false;
       }
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
@@ -2056,8 +2167,17 @@ export class FlowBuilderComponent {
             if (this.selectedModel && String(this.selectedModel.id) === nid) {
               // Live update dialog input if open
               if (this.advancedOpen) {
-                this.advancedInjectedInput = (ev.data && (ev.data.msgIn ?? ev.data.input)) || this.advancedInjectedInput;
-                this.previewLoading = false;
+                // Lock global exec selection if not set yet
+                if (this.advancedSelectedExec == null && exec != null) this.advancedSelectedExec = Number(exec);
+                // Only update I/O if matches selected exec
+                if (exec == null || this.advancedSelectedExec == null || Number(exec) === Number(this.advancedSelectedExec)) {
+                  this.advancedInjectedInput = (ev.data && (ev.data.msgIn ?? ev.data.input)) || this.advancedInjectedInput;
+                  this.previewLoading = false;
+                  try { this.advancedOccurByNode.set(nid, Math.max(0, (this.advancedOccurByNode.get(nid) ?? 0))); } catch {}
+                }
+                // Recompute selector data for current node
+                this.recomputeAttemptExecOptionsFor(nid);
+                this.recomputeExecCountAndOccIndex(nid);
               }
               this.outputLoading = true;
               // Update badge to reflect global execution for this node
@@ -2128,15 +2248,23 @@ export class FlowBuilderComponent {
           this.updateNodeVisual(nid);
           if (this.selectedModel && String(this.selectedModel.id) === nid) {
             if (this.advancedOpen) {
-              this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? this.advancedInjectedOutput;
-              this.outputLoading = false;
+              // Only update I/O if matches selected exec
+              if (exec == null || this.advancedSelectedExec == null || Number(exec) === Number(this.advancedSelectedExec)) {
+                this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? this.advancedInjectedOutput;
+                this.outputLoading = false;
+                // Update dialog logs list
+                try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
+              }
+              // Recompute selector data for current node
+              this.recomputeAttemptExecOptionsFor(nid);
+              this.recomputeExecCountAndOccIndex(nid);
               // Update badge with duration if available
               const dur = Number(ev?.data?.durationMs);
               this.testDurationMs = Number.isFinite(dur) ? dur : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null);
               this.testStatus = 'success';
-              // Update dialog logs list
-              try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
             }
+            // Regardless of exec filter, the node finished; ensure loader is off
+            this.outputLoading = false;
           }
           // Edge path was updated on node.status running; nothing else to do here
         }
