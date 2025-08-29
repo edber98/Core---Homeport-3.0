@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef, NgZone, SimpleChanges } from '@angular/core';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -44,9 +44,9 @@ import { FormsModule } from '@angular/forms';
                   <span class="attempt-name" *ngIf="attemptName() as an">{{ an }}</span>
                 </div>
                 <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
-                <div class="test-meta" *ngIf="testStartedAt as t">
-                  <span>{{ t | date:'shortTime' }}</span>
-                  <span *ngIf="testDurationMs != null"> · {{ testDurationMs }} ms</span>
+                <div class="test-meta" *ngIf="(testStartedAt != null) || (testDurationMs != null)">
+                  <span *ngIf="testStartedAt as t">{{ t | date:'shortTime' }}</span>
+                  <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
                 </div>
               </div>
               <!-- Credentials selection (above form) -->
@@ -230,7 +230,7 @@ export class FlowAdvancedCenterPanelComponent {
   createVisible = false;
   workspaceId: string | null = null;
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     // Reset local form history only when switching node/template (not on each context patch)
     const id = this.model?.id || null;
     // Include checksum/featureSig to properly reset after template update
@@ -241,36 +241,39 @@ export class FlowAdvancedCenterPanelComponent {
     const needReset = (this.lastModelId == null) || (id !== this.lastModelId) || (tmplSig !== this.lastTemplateSig);
     this.lastModelId = id;
     this.lastTemplateSig = tmplSig;
-    if (!needReset) return;
-    try {
-      const init = this.model?.context || {};
-      this.formPast = [JSON.parse(JSON.stringify(init))];
-      this.formFuture = [];
-      this.lastJson = JSON.stringify(init);
-    } catch { this.formPast = [{}]; this.formFuture = []; this.lastJson = '{}'; }
-    // Force destroy/recreate of DynamicForm to reset validators + status
-    try {
-      this.dfVisible = false;
-      this.cdr.detectChanges();
-      setTimeout(() => {
-        this.zone.run(() => {
-          this.dfVisible = true;
-          try { this.cdr.detectChanges(); } catch {}
-        });
-      }, 0);
-    } catch {}
-    // Refresh credentials UI based on provider
-    this.refreshCredentialsState();
-    // Refresh logs view when input reference changes
-    try {
-      if (Array.isArray(this.attemptEvents)) {
-        const copy = this.attemptEvents.slice();
-        copy.sort((a: any, b: any) => new Date(a?.createdAt || 0).getTime() - new Date(b?.createdAt || 0).getTime());
-        this.attemptEventsView = copy;
-      } else {
-        this.attemptEventsView = [];
-      }
-    } catch { this.attemptEventsView = []; }
+    if (needReset) {
+      try {
+        const init = this.model?.context || {};
+        this.formPast = [JSON.parse(JSON.stringify(init))];
+        this.formFuture = [];
+        this.lastJson = JSON.stringify(init);
+      } catch { this.formPast = [{}]; this.formFuture = []; this.lastJson = '{}'; }
+      // Force destroy/recreate of DynamicForm to reset validators + status
+      try {
+        this.dfVisible = false;
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.zone.run(() => {
+            this.dfVisible = true;
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        }, 0);
+      } catch {}
+      // Refresh credentials UI based on provider
+      this.refreshCredentialsState();
+    }
+    // Always refresh logs view when attemptEvents changes (even without node/template reset)
+    if ('attemptEvents' in changes) {
+      try {
+        if (Array.isArray(this.attemptEvents)) {
+          const copy = this.attemptEvents.slice();
+          copy.sort((a: any, b: any) => new Date(a?.createdAt || 0).getTime() - new Date(b?.createdAt || 0).getTime());
+          this.attemptEventsView = copy;
+        } else {
+          this.attemptEventsView = [];
+        }
+      } catch { this.attemptEventsView = []; }
+    }
   }
   trackIdx(i: number, v: number) { return v; }
 

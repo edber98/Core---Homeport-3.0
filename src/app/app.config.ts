@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { fr_FR, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
+import { LOCALE_ID } from '@angular/core';
 import fr from '@angular/common/locales/fr';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes), provideNzI18n(fr_FR), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient(withInterceptors([httpLoadingInterceptor, authInterceptor, httpErrorInterceptor])),
     Title,
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: TitleStrategy, useClass: KinnTitleStrategy },
     
   ]

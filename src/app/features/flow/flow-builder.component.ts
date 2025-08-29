@@ -104,13 +104,24 @@ export class FlowBuilderComponent {
     return pairs;
   }
 
-  // Exposed to template: compute decorated edges from base + overlay pairs
+  // Exposed to template: compute decorated edges from base + overlay pairs with memoization
+  private _cachedRenderedEdges: any[] | null = null;
+  private _cachedRenderedEdgesBaseRef: any[] | null = null;
+  private _cachedRenderedPairsKey: string = '';
+  private pairsKey(pairs: Set<string>): string { try { return pairs && pairs.size ? Array.from(pairs).sort().join('|') : ''; } catch { return ''; } }
   get renderedEdges(): any[] {
     try {
       const base = this.edges as any[];
       const pairs = this.buildOverlayPairs();
-      if (pairs.size === 0) return base;
-      return this.pathSvc.decorateEdges(base, pairs);
+      const key = this.pairsKey(pairs);
+      if (this._cachedRenderedEdges && this._cachedRenderedEdgesBaseRef === base && this._cachedRenderedPairsKey === key) {
+        return this._cachedRenderedEdges;
+      }
+      const next = pairs.size === 0 ? base : this.pathSvc.decorateEdges(base, pairs);
+      this._cachedRenderedEdges = next;
+      this._cachedRenderedEdgesBaseRef = base;
+      this._cachedRenderedPairsKey = key;
+      return next;
     } catch { return this.edges as any[]; }
   }
 
@@ -1180,6 +1191,8 @@ export class FlowBuilderComponent {
           this.advancedOccurByNode.set(nid, Math.max(0, same.length - 1));
           this.recomputeAttemptExecOptionsFor(nid);
           this.recomputeExecCountAndOccIndex(nid);
+          this.recomputeAttemptOptionsFor(nid);
+          this.recomputeSelectedAttemptIdxForNode(nid);
         }
       } catch {}
       try { this.cdr.detectChanges(); } catch {}
@@ -1225,6 +1238,8 @@ export class FlowBuilderComponent {
               this.advancedOccurByNode.set(nid, Math.max(0, same.length - 1));
               this.recomputeAttemptExecOptionsFor(nid);
               this.recomputeExecCountAndOccIndex(nid);
+              this.recomputeAttemptOptionsFor(nid);
+              this.recomputeSelectedAttemptIdxForNode(nid);
             }
           } catch {}
           try { this.cdr.detectChanges(); } catch {}
@@ -1453,6 +1468,7 @@ export class FlowBuilderComponent {
     this.advancedOccurByNode.set(id, v);
     this.advancedOccurIndex = v;
     this.recomputeAttemptOptionsFor(id);
+    this.recomputeSelectedAttemptIdxForNode(id);
     this.refreshDialogIOFromSelection();
   }
   onDialogAttemptIdxChange(idx: number) {
@@ -1470,6 +1486,18 @@ export class FlowBuilderComponent {
       this.recomputeExecCountAndOccIndex(id);
       this.refreshDialogIOFromSelection();
     } catch {}
+  }
+  private recomputeSelectedAttemptIdxForNode(id: string) {
+    try {
+      const atts = this.nodeAttempts(id);
+      if (!atts.length) { this.advancedSelectedAttemptIdx = null; return; }
+      const e = Number(this.advancedSelectedExec);
+      if (!Number.isFinite(e)) { this.advancedSelectedAttemptIdx = atts.length - 1; return; }
+      let occur = this.advancedOccurByNode.get(id) ?? 0; if (occur < 0) occur = 0;
+      let idx = -1; let seen = -1;
+      for (let i = 0; i < atts.length; i++) { if (Number(atts[i]?.exec) === e) { seen++; if (seen === occur) { idx = i; break; } } }
+      this.advancedSelectedAttemptIdx = idx >= 0 ? idx : (atts.length - 1);
+    } catch { this.advancedSelectedAttemptIdx = null; }
   }
   private refreshDialogIOFromSelection() {
     try {
@@ -1490,9 +1518,31 @@ export class FlowBuilderComponent {
           else if (st === 'error') this.testStatus = 'error';
           else if (st === 'success') this.testStatus = 'success';
           else this.testStatus = 'idle';
-          const started = (att as any).startedAt ? Date.parse((att as any).startedAt as any) : null;
-          this.testStartedAt = Number.isFinite(started as any) ? (started as any as number) : null;
-          this.testDurationMs = (att as any).durationMs != null ? Number((att as any).durationMs) : null;
+          // startedAt may be number or string; normalize to epoch ms; fallback to earliest event.createdAt
+          let started: any = (att as any).startedAt;
+          if (typeof started === 'string') { const p = Date.parse(started as any); started = Number.isFinite(p) ? p : null; }
+          else if (typeof started === 'number') { /* keep as-is */ }
+          else {
+            // try earliest event createdAt
+            try {
+              const evs = Array.isArray(att?.events) ? att.events.slice().sort((a:any,b:any)=> new Date(a?.createdAt||0).getTime() - new Date(b?.createdAt||0).getTime()) : [];
+              const first = evs[0];
+              if (first && first.createdAt) { const p = Date.parse(first.createdAt as any); started = Number.isFinite(p) ? p : null; }
+              else { started = null; }
+            } catch { started = null; }
+          }
+          this.testStartedAt = (started != null && Number.isFinite(started)) ? Number(started) : null;
+          // Prefer attempt.durationMs; if missing, compute from finishedAt - startedAt
+          let dur: any = (att as any).durationMs;
+          if (dur == null) {
+            let fin: any = (att as any).finishedAt;
+            if (typeof fin === 'string') { const pf = Date.parse(fin as any); fin = Number.isFinite(pf) ? pf : null; }
+            if (typeof fin === 'number' && typeof started === 'number') {
+              const d = Math.max(0, fin - started);
+              dur = Number.isFinite(d) ? d : null;
+            }
+          }
+          this.testDurationMs = (dur != null && dur !== '') ? Number(dur) : null;
         }
       } catch { this.outputLoading = false; }
       // When a backend run is in progress and node hasn't started yet, keep both spinners on
@@ -2256,7 +2306,20 @@ export class FlowBuilderComponent {
           this.backendRunStatus = 'done';
           try { s.close(); } catch {}
           // Keep snapshot of attempts but stop further updates
-          if (this.advancedOpen) { this.previewLoading = false; this.outputLoading = false; }
+          if (this.advancedOpen) {
+            this.previewLoading = false; this.outputLoading = false;
+            // Ensure dialog shows final I/O and latest attempt selection
+            try {
+              const nid = String(this.selectedModel?.id || '');
+              if (nid) {
+                this.recomputeAttemptExecOptionsFor(nid);
+                this.recomputeExecCountAndOccIndex(nid);
+                this.recomputeAttemptOptionsFor(nid);
+                this.recomputeSelectedAttemptIdxForNode(nid);
+                this.refreshDialogIOFromSelection();
+              }
+            } catch {}
+          }
         }
         return;
       }
@@ -2309,6 +2372,8 @@ export class FlowBuilderComponent {
                 // Recompute selector data for current node
                 this.recomputeAttemptExecOptionsFor(nid);
                 this.recomputeExecCountAndOccIndex(nid);
+                this.recomputeAttemptOptionsFor(nid);
+                this.recomputeSelectedAttemptIdxForNode(nid);
               }
               this.outputLoading = true;
               // Update badge to reflect global execution for this node
@@ -2359,6 +2424,13 @@ export class FlowBuilderComponent {
           at.durationMs = ev.data?.durationMs ?? at.durationMs;
           at.startedAt = ev.data?.startedAt ?? at.startedAt;
           at.finishedAt = ev.data?.finishedAt ?? at.finishedAt;
+          // If duration missing but timestamps provided, compute it
+          try {
+            if ((at.durationMs == null) && at.startedAt && at.finishedAt) {
+              const d = Date.parse(at.finishedAt as any) - Date.parse(at.startedAt as any);
+              if (Number.isFinite(d)) at.durationMs = Math.max(0, d);
+            }
+          } catch {}
           // Append a normalized event for logs on this attempt
           try {
             at.events = Array.isArray(at.events) ? at.events : [];
@@ -2381,7 +2453,7 @@ export class FlowBuilderComponent {
             if (this.advancedOpen) {
               // Only update I/O if matches selected exec
               if (exec == null || this.advancedSelectedExec == null || Number(exec) === Number(this.advancedSelectedExec)) {
-                this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? this.advancedInjectedOutput;
+                this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? (ev as any)?.result ?? this.advancedInjectedOutput;
                 this.outputLoading = false;
                 // Update dialog logs list
                 try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
@@ -2389,9 +2461,14 @@ export class FlowBuilderComponent {
               // Recompute selector data for current node
               this.recomputeAttemptExecOptionsFor(nid);
               this.recomputeExecCountAndOccIndex(nid);
+              this.recomputeAttemptOptionsFor(nid);
+              this.recomputeSelectedAttemptIdxForNode(nid);
+              this.refreshDialogIOFromSelection();
               // Update badge with duration if available
               const dur = Number(ev?.data?.durationMs);
-              this.testDurationMs = Number.isFinite(dur) ? dur : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null);
+              // Prefer attempt timestamps for badge
+              try { this.testStartedAt = at?.startedAt ? Date.parse(at.startedAt as any) : this.testStartedAt; } catch {}
+              this.testDurationMs = Number.isFinite(dur) ? dur : (at?.durationMs != null ? Number(at.durationMs) : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null));
               this.testStatus = 'success';
             }
             // Regardless of exec filter, the node finished; ensure loader is off
@@ -2402,6 +2479,33 @@ export class FlowBuilderComponent {
         try { this.cdr.detectChanges(); } catch {}
         return;
       }
+      // Catch-all: append other node-scoped events to attempt logs in real-time
+      try {
+        const nid = String((ev as any)?.nodeId || (ev as any)?.data?.nodeId || '');
+        const ex = (ev as any)?.exec ?? (ev as any)?.data?.exec;
+        if (nid && ex != null) {
+          const arr = this.backendNodeAttempts.get(nid) || [];
+          const at = arr.find(a => a.exec === ex);
+          if (at) {
+            at.events = Array.isArray(at.events) ? at.events : [];
+            at.events.push({
+              type: (ev as any)?.type || 'event',
+              nodeId: nid,
+              exec: ex,
+              status: (ev as any)?.data?.status,
+              createdAt: (ev as any)?.createdAt || (ev as any)?.data?.createdAt || new Date().toISOString(),
+              data: (ev as any)?.data || null,
+            });
+            if (this.selectedModel && String(this.selectedModel.id) === nid && this.advancedOpen) {
+              // Only update if matches selected exec
+              if (this.advancedSelectedExec == null || Number(ex) === Number(this.advancedSelectedExec)) {
+                try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
+                try { this.cdr.detectChanges(); } catch {}
+              }
+            }
+          }
+        }
+      } catch {}
       // No extra fallback here; overlay getter will use backendAttemptSeq if needed
     });
   }
