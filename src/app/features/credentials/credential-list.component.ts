@@ -62,7 +62,7 @@ import { environment } from '../../../environments/environment';
                 <nz-form-item>
                   <nz-form-label>Application</nz-form-label>
                   <nz-form-control>
-                    <nz-select formControlName="providerId" (ngModelChange)="onProviderChange($event)" nzPlaceHolder="Choisir l'application">
+                    <nz-select formControlName="providerId" nzPlaceHolder="Choisir l'application">
                       <nz-option *ngFor="let p of providers" [nzValue]="p.id" [nzLabel]="p.title || p.name"></nz-option>
                     </nz-select>
                   </nz-form-control>
@@ -171,13 +171,19 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   closeCreate() { this.createVisible = false; }
   onProviderChange(providerId: string) {
     const p = this.providers.find(x => x.id === providerId);
-    const base = (p?.credentialsForm as FormSchema) || {} as any;
+    const base = (p?.credentialsForm as FormSchema) || ({} as any);
     // Provide a visible default schema if none or empty
     const hasContent = base && (Array.isArray((base as any).fields) || Array.isArray((base as any).steps));
-    this.currentSchema = hasContent ? base : { title: 'Credentials', ui: { layout: 'vertical' }, fields: [] } as FormSchema;
+    const nextSchema = hasContent ? base : ({ title: 'Credentials', ui: { layout: 'vertical' }, fields: [] } as FormSchema);
+    // Drop current form component to avoid transient control-name mismatches
+    this.currentSchema = null;
     this.credValues = {};
     this.credValid = false;
     try { this.cdr.detectChanges(); } catch {}
+    setTimeout(() => {
+      this.currentSchema = nextSchema;
+      try { this.cdr.detectChanges(); } catch {}
+    }, 0);
   }
   create() {
     if (!this.createForm.valid || !this.credValid || !this.currentSchema) return;
