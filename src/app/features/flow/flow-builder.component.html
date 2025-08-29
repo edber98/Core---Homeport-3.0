@@ -69,7 +69,7 @@
         <ng-template let-ctx nodeHtml>
           <div class="node-card" [attr.data-node-id]="ctx.node.id"
             [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id) }"
-            (click)="selectItem(ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+            (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
             <div class="header">
@@ -309,7 +309,7 @@
     [disableForChecksum]="hasTemplateMismatch(selectedModel)"
     [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
     [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"
-    [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()"
+    [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
     (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>

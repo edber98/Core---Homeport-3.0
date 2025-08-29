@@ -13,7 +13,6 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { MonacoJsonEditorComponent } from '../../features/dynamic-form/components/monaco-json-editor.component';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
-import { DynamicFormBuilderComponent } from '../dynamic-form/dynamic-form-builder.component';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { CatalogService, NodeTemplate } from '../../services/catalog.service';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -24,7 +23,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule, ReactiveFormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzSwitchModule, NzCheckboxModule, NzButtonModule, NzIconModule, NzToolTipModule, NzAutocompleteModule,
-    MonacoJsonEditorComponent, DragDropModule, NzDrawerModule, DynamicFormBuilderComponent, DynamicForm
+    MonacoJsonEditorComponent, DragDropModule, NzDrawerModule, DynamicForm
   ],
   template: `
   <div class="tpl-editor">

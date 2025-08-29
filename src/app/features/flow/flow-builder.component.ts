@@ -80,7 +80,7 @@ export class FlowBuilderComponent {
   backendRunId: string | null = null;
   private backendStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendNodeStats = new Map<string, { count: number; lastStatus?: 'success'|'error'|'skipped'|'running' }>();
-  private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any }>>();
+  private backendNodeAttempts = new Map<string, Array<{ exec?: number; status?: string; startedAt?: string; finishedAt?: string; durationMs?: number; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any; events?: any[] }>>();
   private backendLastNodeId: string | null = null; // legacy linear tracker
   private backendEdgesTaken = new Set<string>();
   private backendAttemptSeq: string[] = [];
@@ -169,6 +169,8 @@ export class FlowBuilderComponent {
   testStatus: 'idle'|'running'|'success'|'error' = 'idle';
   testStartedAt: number | null = null;
   testDurationMs: number | null = null;
+  // Dialog logs for current node latest attempt
+  advancedAttemptEvents: any[] = [];
   isTestDisabled(): boolean {
     try {
       if (this.testStatus === 'running') return true;
@@ -1283,6 +1285,11 @@ export class FlowBuilderComponent {
     try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch { }
     this.lpTimer = null; this.lpTarget = null; this.lpFired = false;
   }
+  onNodeDoubleClick(ev: MouseEvent, node: any) {
+    try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    try { this.selectItem(node); } catch {}
+    this.openAdvancedEditor();
+  }
   closeCtxMenu() { this.ctxMenuVisible = false; this.ctxMenuTarget = null; }
   ctxOpenAdvancedAndInspector() {
     if (!this.ctxMenuTarget) return;
@@ -1591,13 +1598,16 @@ export class FlowBuilderComponent {
         if (last) {
           this.advancedInjectedInput = last.msgIn ?? last.input ?? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId));
           this.advancedInjectedOutput = last.msgOut ?? last.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
+          try { this.advancedAttemptEvents = (last.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (last.events || []).slice(); }
         } else {
           this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
           if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+          this.advancedAttemptEvents = [];
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
         if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+        this.advancedAttemptEvents = [];
       }
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
@@ -1956,6 +1966,11 @@ export class FlowBuilderComponent {
     this.backendAttemptSeq = [];
     this.lastOverlayPairs = new Set();
     this.backendRunStatus = 'idle';
+    // Reset dialog badge + logs for a fresh run
+    this.testStatus = 'idle';
+    this.testStartedAt = null;
+    this.testDurationMs = null;
+    this.advancedAttemptEvents = [];
     // Refresh edge visuals immediately
     this.applyBackendEdgeHighlights();
     try { this.cdr.detectChanges(); } catch {}
@@ -1987,6 +2002,11 @@ export class FlowBuilderComponent {
               this.advancedInjectedOutput = null;
               this.previewLoading = false;
               this.outputLoading = false;
+              this.advancedAttemptEvents = [];
+              // Reset badge; will flip to running when node actually starts
+              this.testStatus = 'idle';
+              this.testStartedAt = null;
+              this.testDurationMs = null;
             }
             try { this.cdr.detectChanges(); } catch {}
           }
@@ -2018,6 +2038,18 @@ export class FlowBuilderComponent {
             if (ev.data.argsPost !== undefined) at.argsPost = ev.data.argsPost;
             if (ev.data.msgIn !== undefined) at.msgIn = ev.data.msgIn;
           }
+          // Append a normalized event for logs on this attempt
+          try {
+            at.events = Array.isArray(at.events) ? at.events : [];
+            at.events.push({
+              type: 'node.status',
+              nodeId: nid,
+              exec,
+              status: st,
+              createdAt: ev?.data?.createdAt || new Date().toISOString(),
+              data: ev?.data || null,
+            });
+          } catch {}
           this.updateNodeVisual(nid);
           // Track path based on actual start sequence if no explicit edge.taken yet
           if (st === 'running') {
@@ -2028,6 +2060,12 @@ export class FlowBuilderComponent {
                 this.previewLoading = false;
               }
               this.outputLoading = true;
+              // Update badge to reflect global execution for this node
+              this.testStatus = 'running';
+              this.testStartedAt = Date.now();
+              this.testDurationMs = null;
+              // Keep dialog logs list in sync
+              try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
             }
             const prev = this.backendAttemptSeq.length ? this.backendAttemptSeq[this.backendAttemptSeq.length - 1] : null;
             this.backendAttemptSeq.push(nid);
@@ -2070,6 +2108,18 @@ export class FlowBuilderComponent {
           at.durationMs = ev.data?.durationMs ?? at.durationMs;
           at.startedAt = ev.data?.startedAt ?? at.startedAt;
           at.finishedAt = ev.data?.finishedAt ?? at.finishedAt;
+          // Append a normalized event for logs on this attempt
+          try {
+            at.events = Array.isArray(at.events) ? at.events : [];
+            at.events.push({
+              type: 'node.result',
+              nodeId: nid,
+              exec,
+              status: 'success',
+              createdAt: ev?.data?.finishedAt || new Date().toISOString(),
+              data: { result: ev?.result ?? ev?.data?.result, msgOut: ev?.data?.msgOut, durationMs: ev?.data?.durationMs }
+            });
+          } catch {}
           // Update quick stats (count is attempts length)
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.count = (this.backendNodeAttempts.get(nid)?.length || 0);
@@ -2080,6 +2130,12 @@ export class FlowBuilderComponent {
             if (this.advancedOpen) {
               this.advancedInjectedOutput = ev.data?.msgOut ?? ev.data?.result ?? this.advancedInjectedOutput;
               this.outputLoading = false;
+              // Update badge with duration if available
+              const dur = Number(ev?.data?.durationMs);
+              this.testDurationMs = Number.isFinite(dur) ? dur : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null);
+              this.testStatus = 'success';
+              // Update dialog logs list
+              try { this.advancedAttemptEvents = (at.events || []).slice().sort((a,b) => new Date(a.createdAt||0).getTime() - new Date(b.createdAt||0).getTime()); } catch { this.advancedAttemptEvents = (at.events || []).slice(); }
             }
           }
           // Edge path was updated on node.status running; nothing else to do here
@@ -2143,7 +2199,7 @@ export class FlowBuilderComponent {
           const nid = String(a.nodeId);
           const exec = a.attempt;
           const arr = this.backendNodeAttempts.get(nid) || [];
-          arr.push({ exec, status: a.status, startedAt: a.startedAt, finishedAt: a.finishedAt, durationMs: a.durationMs, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut });
+          arr.push({ exec, status: a.status, startedAt: a.startedAt, finishedAt: a.finishedAt, durationMs: a.durationMs, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut, events: [] });
           this.backendNodeAttempts.set(nid, arr);
           this.updateNodeVisual(nid);
         });
@@ -2165,6 +2221,27 @@ export class FlowBuilderComponent {
               if (prev && cur && prev !== cur) this.backendEdgesTaken.add(`${prev}->${cur}`);
             }
           }
+          // Map events to attempt.events for Logs tab
+          try {
+            const evts = Array.isArray(events) ? events : [];
+            for (const e of evts) {
+              const t = (e?.type || e?.eventType || '').toString();
+              const nid = (e?.nodeId || e?.data?.nodeId || '').toString();
+              const ex = (e?.exec != null ? e.exec : (e?.data?.exec != null ? e.data.exec : null));
+              if (!nid || ex == null) continue;
+              const arr = this.backendNodeAttempts.get(nid) || [];
+              const at = arr.find(a => a.exec === ex);
+              if (!at) continue;
+              at.events = Array.isArray(at.events) ? at.events : [];
+              at.events.push({
+                type: t || 'event',
+                nodeId: nid,
+                exec: ex,
+                createdAt: e?.createdAt || e?.time || e?.timestamp || new Date().toISOString(),
+                data: e?.data || null
+              });
+            }
+          } catch {}
           this.applyBackendEdgeHighlights();
           this.refreshOverlayDiff('snapshot.load');
         } catch {}
