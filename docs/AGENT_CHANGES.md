@@ -45,3 +45,29 @@ Files
 Usage
 - In templates: `<app-expression-editor-testing-component [context]="ctx" [functionSpecs]="{ add: { args: ['a','b'] } }">`.
 - Toggle "Erreur" to enable validation coloring. Valid islands turn green, invalid red.
+## start_form — Nouveau type de nœud (Start avec formulaire)
+
+- Ajout d’un type `start_form` distinct de `start`.
+- Le runtime traite `start_form` comme un start (entrée du flow) mais le front attache l’UI formulaire (panneau Output, ouverture au lancement si payload vide).
+- Le schéma de formulaire est lu prioritairement depuis `node.context` (fallback `startFormSchema`/`args`).
+- En public, l’endpoint `GET /api/public/flows/{flowId}/public-form` renvoie le schéma (context prioritaire).
+- L’endpoint `POST /api/public/flows/{flowId}/runs` accepte un `payload` qui devient le `result` du `start_form`.
+
+### Backend
+
+- `engine/index.js` et `utils/validate.js`: normalisent `start_form` en type logique `start`.
+- Endpoints publics (DB et mémoire) mis à jour pour préférer `start_form` au lieu de `start`.
+- Manifest local (démo): la template "Start (Form)" a désormais `type: start_form`.
+
+### Frontend (Angular)
+
+- Graph/viewer: `start_form` est start-like (0 input, 1 output label "Success").
+- Builder: ouverture automatique de la dialog Start Form lors d’un lancement si payload vide.
+- Exécutions: prompt modal pour payload si `start_form` en tête.
+- Public: la page charge le schéma via `node.context`.
+
+### Swagger
+
+- `docs/api/swagger-backend.yaml`:
+  - `components.schemas.NodeTemplate.type` inclut `start_form` (+ `event`, `endpoint`).
+  - Ajout des endpoints publics `GET /api/public/flows/{flowId}/public-form` et `POST /api/public/flows/{flowId}/runs`.

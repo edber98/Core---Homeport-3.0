@@ -13,7 +13,7 @@ export interface BackendNodeTemplate {
   group?: string;
   providerKey?: string;
   appName?: string;
-  type: 'start'|'function'|'condition'|'loop'|'end'|'flow';
+  type: 'start'|'start_form'|'function'|'condition'|'loop'|'end'|'flow'|'event'|'endpoint';
   category?: string;
   args?: any;
   output?: string[];

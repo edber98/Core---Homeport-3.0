@@ -306,7 +306,7 @@ export class NodeTemplateViewerComponent implements OnInit {
   private computePreviewPorts() {
     const type = (this.view?.type || 'function') as string;
     // Input handles: default 1, except 'start' = 0. Keep parity with flow (single top handle), but allow future types.
-    this.inputCount = (type === 'start' || type === 'event' || type === 'endpoint') ? 0 : 1;
+    this.inputCount = (type === 'start' || type === 'start_form' || type === 'event' || type === 'endpoint') ? 0 : 1;
     const outs: string[] = [];
     if (type === 'function' || type === 'flow') {
       const core = (this.outputs || []).filter(o => (String(o || '').toLowerCase() !== 'err'));
@@ -322,7 +322,7 @@ export class NodeTemplateViewerComponent implements OnInit {
         });
         if (outs.length === 0) outs.push('True', 'False');
       }
-    } else if (type === 'start' || type === 'event' || type === 'endpoint') {
+    } else if (type === 'start' || type === 'start_form' || type === 'event' || type === 'endpoint') {
       outs.push('next');
     } else if (type === 'end') {
       // no outputs

@@ -65,6 +65,9 @@ export const unsavedChangesGuard: CanDeactivateFn<any> = (
 
     // If navigation keeps us inside /flow-builder (including executions), do nothing
     if (stayingInWorkbench) return true;
+    // Exception: allow navigating to the Dynamic Form Builder without warning or purging drafts
+    const goingToDynamicForm = nextUrl.startsWith('/dynamic-form');
+    if (goingToDynamicForm) return true;
 
     if (has) {
       const confirm = inject(ConfirmService);

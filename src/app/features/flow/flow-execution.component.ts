@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
 import { RunsBackendService, BackendRun } from '../../services/runs-backend.service';
@@ -12,11 +13,12 @@ import { FlowSharedStateService } from '../../services/flow-shared-state.service
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'flow-execution',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowViewerComponent],
+  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule],
   template: `
   <div class="flow-exec">
     <aside class="side executions">
@@ -238,6 +240,7 @@ export class FlowExecutionComponent {
     private acl: AccessControlService,
     private zone: NgZone,
     private pathSvc: FlowPathHighlightService,
+    private modal: NzModalService,
   ) {
     this.runner.runs$.subscribe(rs => { this.runs = rs; this.updateVisibleRuns(); });
     this.runner.counters$.subscribe(c => this.counters = c);
@@ -409,6 +412,40 @@ export class FlowExecutionComponent {
   runBackend() {
     const fid = this.currentFlowId || (this.currentGraph && (this.currentGraph as any).id) || null;
     if (!fid) { this.ui.error('Aucun flow associé'); try { console.warn('[frontend][exec] runBackend: missing flowId'); } catch {} return; }
+    // Detect Start Form at head and prompt for payload if empty
+    try {
+      const graph = this.currentGraph || { nodes: [], edges: [] };
+      const nodes: any[] = Array.isArray(graph.nodes) ? graph.nodes : [];
+      const edges: any[] = Array.isArray(graph.edges) ? graph.edges : [];
+      const incoming = (id: string) => edges.some((e: any) => String(e.target) === String(id));
+      const isStart = (m: any) => String(m?.templateObj?.type || '').toLowerCase() === 'start';
+      const isStartForm = (m: any) => { try { const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase(); const tplName = String(m?.templateObj?.name || '').toLowerCase(); return isStart(m) && (tplId === 'start_form' || tplName === 'startform'); } catch { return false; } };
+      const startHead = nodes.find((n: any) => isStartForm(n?.data?.model) && !incoming(String(n.id)));
+      if (startHead) {
+        const m = startHead.data?.model || {};
+        const ctx = m?.context; const schema = (ctx && (Array.isArray(ctx.fields) || Array.isArray(ctx.steps))) ? ctx : (m?.startFormSchema || m?.templateObj?.args || { title: 'Formulaire', fields: [] });
+        // Open a lightweight modal to capture payload then start
+        import('./start-form-modal.component').then(mod => {
+          const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
+          const inst: any = ref.getContentComponent();
+          try { inst.schema = schema; inst.value = {}; } catch {}
+          const sub = inst.submitted.subscribe((val: any) => {
+            try { sub.unsubscribe(); } catch {}
+            ref.close();
+            this.runsApi.start(fid, val || {}).subscribe({
+              next: (resp: any) => {
+                this.ui.success('Exécution démarrée');
+                try { console.log('[frontend][exec] run started with payload', resp); } catch {}
+                this.loadBackendRuns(fid);
+                try { const runId = resp?.id || resp?.data?.id || resp?.runId; if (runId) { this.selectedBackendRun = { id: runId, flowId: fid, status: 'running' } as any; this.openBackendStream(runId); } } catch {}
+              },
+              error: (e) => { try { console.error('[frontend][exec] run start error', e); } catch {} this.ui.error('Échec du démarrage'); },
+            });
+          });
+        });
+        return;
+      }
+    } catch {}
     this.runsApi.start(fid, { hello: 'world' }).subscribe({
       next: (resp: any) => {
         this.ui.success('Exécution démarrée');

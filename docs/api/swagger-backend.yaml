@@ -48,7 +48,7 @@ components:
       properties:
         key: { type: string }
         name: { type: string }
-        type: { type: string, enum: [start,function,condition,loop,end,flow] }
+        type: { type: string, enum: [start,start_form,event,endpoint,function,condition,loop,end,flow] }
         category: { type: string }
         args: {}
         output: { type: array, items: { type: string } }
@@ -621,3 +621,112 @@ paths:
       description: Cannot delete the built-in local repository.
       parameters: [ { in: path, name: id, required: true, schema: { type: string } } ]
       responses: { '200': { $ref: '#/components/responses/Error' } }
+  /api/public/flows/{flowId}/public-form:
+    get:
+      summary: Get public Start Form schema for a flow
+      description: Returns the public Start Form schema when the first start-like node is of type `start_form` and marked as public.
+      parameters:
+        - in: path
+          name: flowId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiOk'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          flowId: { type: string }
+                          name: { type: string }
+                          nodeId: { type: string }
+                          nodeTitle: { type: string }
+                          schema: {}
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+
+  /api/public/flows/{flowId}/runs:
+    post:
+      summary: Start a public run (Start Form)
+      description: Starts a flow run using the provided payload as the `start_form` node result.
+      parameters:
+        - in: path
+          name: flowId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payload: {}
+            example:
+              payload: { email: "user@example.com", name: "Jane" }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiOk'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id: { type: string }
+                          status: { type: string, enum: [running,success,error,cancelled] }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+
+  /api/public/runs/{runId}:
+    get:
+      summary: Get public run status snapshot
+      description: Returns the status and timing of a run started via the public API.
+      parameters:
+        - in: path
+          name: runId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiOk'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id: { type: string }
+                          status: { type: string, enum: [running,success,error,cancelled] }
+                          startedAt: { type: string }
+                          finishedAt: { type: string }
+                          durationMs: { type: integer }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /api/public/runs/{runId}/stream:
+    get:
+      summary: Stream public run events (SSE)
+      description: Server-Sent Events stream of live run events and status for a public run.
+      parameters:
+        - in: path
+          name: runId
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK (text/event-stream) }
+        '404': { $ref: '#/components/responses/Error' }

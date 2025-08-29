@@ -193,12 +193,14 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
     } catch { return this.nodes || []; }
   }
 
-  inputId(tmpl: any): string | null { if (!tmpl) return null; return tmpl.type === 'start' ? null : 'in'; }
+  inputId(tmpl: any): string | null { if (!tmpl) return null; return (tmpl.type === 'start' || tmpl.type === 'start_form') ? null : 'in'; }
   outputIds(model: any): string[] {
     const tmpl = model?.templateObj || {};
     switch (tmpl.type) {
       case 'end': return [];
-      case 'start': return ['out'];
+      case 'start':
+      case 'start_form':
+        return ['out'];
       case 'loop': return ['loop_start', 'loop_end', 'end'];
       case 'condition': {
         const field = tmpl.output_array_field || 'items';
@@ -336,7 +338,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
     try {
       const tmpl = model?.templateObj || {};
       if (typeof idxOrId === 'string' && idxOrId === 'err') return 'Error';
-      if (tmpl.type === 'start' && String(idxOrId) === 'out') return 'Succes';
+      if ((tmpl.type === 'start' || tmpl.type === 'start_form') && String(idxOrId) === 'out') return 'Succes';
       const idx = (typeof idxOrId === 'string' && /^\d+$/.test(idxOrId)) ? parseInt(idxOrId, 10) : (typeof idxOrId === 'number' ? idxOrId : NaN);
       if (tmpl.type === 'condition') {
         const field = tmpl.output_array_field || 'items';
