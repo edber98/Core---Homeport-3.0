@@ -40,7 +40,7 @@ testem.log
 /typings
 
 .env
-
+/backend/.env
 
 # System files
 .DS_Store
