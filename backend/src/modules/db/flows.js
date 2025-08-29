@@ -9,6 +9,32 @@ const { validateFlowGraph, normalizeTemplateKey } = require('../../utils/validat
 
 module.exports = function(){
   const r = express.Router();
+  // Public: expose minimal info for Start Form if public is enabled
+  r.get('/public/flows/:flowId/public-form', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let f = null;
+    if (Types.ObjectId.isValid(fid)) f = await Flow.findById(fid).lean();
+    if (!f) f = await Flow.findOne({ id: fid }).lean();
+    if (!f) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    try {
+      const graph = f.graph || {};
+      const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      if (!start) return res.apiError(404, 'start_not_found', 'Start node not found');
+      const m = start?.data?.model || {};
+      const isPublic = !!m.startFormPublic;
+      if (!isPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
+      const schema = m.startFormSchema || null;
+      return res.apiOk({
+        flowId: String(f._id || f.id),
+        name: f.name,
+        nodeId: String(start.id || start._id || ''),
+        nodeTitle: (m.templateObj && (m.templateObj.title || m.name)) || m.name || 'Start',
+        schema,
+      });
+    } catch (e) { return res.apiError(500, 'internal_error', 'Failed to read start form', { message: e?.message }); }
+  });
   r.use(authMiddleware());
   r.use(requireCompanyScope());
 

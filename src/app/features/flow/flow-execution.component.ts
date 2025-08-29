@@ -63,7 +63,7 @@ import { ChangeDetectorRef } from '@angular/core';
         <div class="empty" *ngIf="backendFlowRuns.length===0">Aucune exécution pour ce flow</div>
       </div>
       <div class="attempts" *ngIf="selectedRun as rs">
-        <h5>Détails ({{ rs.attempts?.length || 0 }} nœuds)</h5>
+        <h5>Détails ({{ attemptsLen(rs.attempts) }} nœuds)</h5>
         <div class="attempt" *ngFor="let a of rs.attempts">
           <div class="hdr">
             <span class="nid">{{ a.nodeId }}</span>
@@ -401,6 +401,10 @@ export class FlowExecutionComponent {
         });
       }, error: () => { this.flowRunsLoading = false; } });
     }
+  }
+
+  attemptsLen(v: any): number {
+    try { return Array.isArray(v) ? v.length : 0; } catch { return 0; }
   }
   runBackend() {
     const fid = this.currentFlowId || (this.currentGraph && (this.currentGraph as any).id) || null;

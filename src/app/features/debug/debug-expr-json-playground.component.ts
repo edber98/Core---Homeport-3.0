@@ -34,10 +34,10 @@ type ExprTag = { path: string; name?: string };
               <div class="subtitle">Faites glisser les champs vers l'éditeur</div>
             </div>
             <div class="actions">
-              <button nz-button nzSize="small" *ngFor="let p of jsonPresets; trackBy: trackName" (click)="setJsonPreset(p)" [nzType]="currentJsonPreset?.name===p.name ? 'primary' : 'default'">{{ p.name }}</button>
+              <button nz-button nzSize="small" *ngFor="let p of jsonPresets; trackBy: trackName" (click)="setJsonPreset(p)" [nzType]="currentJsonPreset.name===p.name ? 'primary' : 'default'">{{ p.name }}</button>
             </div>
           </div>
-          <app-json-schema-viewer [data]="currentJson" [rootAlias]="'json'" [editable]="true" [initialMode]="'Schema'" [title]="'Contexte JSON'" [subtitle]="currentJsonPreset?.name || ''" (dataChange)="onJsonEdited($event)"></app-json-schema-viewer>
+          <app-json-schema-viewer [data]="currentJson" [rootAlias]="'json'" [editable]="true" [initialMode]="'Schema'" [title]="'Contexte JSON'" [subtitle]="currentJsonPreset.name || ''" (dataChange)="onJsonEdited($event)"></app-json-schema-viewer>
           <div class="below">
             <div class="hint">Entrées possibles (tags) — cliquer pour insérer</div>
             <div class="tags">

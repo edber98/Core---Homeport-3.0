@@ -157,6 +157,17 @@
   ],
   "nodeTemplates": [
     {
+      "key": "start_form",
+      "name": "startForm",
+      "title": "Start (Form)",
+      "subtitle": "Form Trigger",
+      "type": "start",
+      "category": "Core",
+      "icon": "fa-solid fa-clipboard-list",
+      "output": [],
+      "description": "Démarre le flow via un formulaire public ou authentifié"
+    },
+    {
       "key": "start",
       "name": "start",
       "title": "Start",

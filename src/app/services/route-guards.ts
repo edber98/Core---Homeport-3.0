@@ -34,14 +34,18 @@ export const unsavedChangesGuard: CanDeactivateFn<any> = (
     // Decide if we're staying inside the workbench (any /flow-builder path)
     const nextUrl = String(nextState?.url || '');
     const stayingInWorkbench = nextUrl.startsWith('/flow-builder');
+    // Current location context
+    const currentUrl = String(_currentState?.url || '');
+    const inFlowBuilder = currentUrl.startsWith('/flow-builder');
+    const inDynamicForm = currentUrl.startsWith('/dynamic-form');
 
     // Check unsaved via component or shared state fallback
     let has = false;
     try { if (component && typeof component.hasUnsavedChanges === 'function') has = !!component.hasUnsavedChanges(); } catch {}
-    // Shared-state fallback + flow id for purge
+    // Shared-state fallback (only relevant for Flow Builder, not for other routes like /dynamic-form)
     let flowId: string | null = null;
     try { if (component && typeof component.currentFlowId === 'string') flowId = component.currentFlowId; } catch {}
-    if (!has) {
+    if (!has && inFlowBuilder && !inDynamicForm) {
       try {
         const shared = inject(FlowSharedStateService);
         const cur = (shared as any).current as { id?: string; currentChecksum?: string | null; serverChecksum?: string | null } | null;

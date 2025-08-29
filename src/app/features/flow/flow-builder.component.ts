@@ -36,7 +36,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, MonacoJsonEditorComponent, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -280,7 +280,7 @@ export class FlowBuilderComponent {
   // Header labels
   headerTitle = 'Flow Builder';
   headerSubtitle = 'Conception du flow';
-  private currentFlowId: string | null = null;
+  currentFlowId: string | null = null;
   currentFlowName: string = '';
   currentFlowDesc: string = '';
   currentFlowStatus: 'draft'|'test'|'production' = 'draft';
@@ -319,6 +319,7 @@ export class FlowBuilderComponent {
       this.route.queryParamMap.subscribe(qp => {
         const runId = qp.get('run');
         const flowId = qp.get('flow');
+        const fbSession = qp.get('fbSession');
         this.openingRunId = runId;
         if (flowId && (!this.currentFlowId || String(this.currentFlowId) !== String(flowId))) {
           // Load flow graph first, then open run stream/snapshot
@@ -338,6 +339,12 @@ export class FlowBuilderComponent {
           });
         } else if (runId) {
           this.openRunSnapshotInEditor(runId);
+        }
+        // Handle return from Dynamic Form Builder (session-based)
+        if (fbSession) {
+          this.applyStartFormSchemaFromSession(fbSession);
+          // Clean the query param to avoid reapplying on next navigation changes
+          try { const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) }; delete q.fbSession; this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
         }
       });
     } catch {}
@@ -412,6 +419,7 @@ export class FlowBuilderComponent {
       this.route.queryParamMap.subscribe(pm => {
         const fid = pm.get('flow');
         const node = pm.get('node') || undefined;
+        const fbSession = pm.get('fbSession') || undefined;
         if (!fid) return;
         if (fid === this.currentFlowId) return;
         this.currentFlowId = fid;
@@ -442,6 +450,11 @@ export class FlowBuilderComponent {
                 const n = this.nodes.find(nn => String(nn.id) === id);
                 if (n) { this.selectItem(n); setTimeout(() => this.centerOnNodeId(id), 0); }
               } catch {}
+            }
+            // Apply session import if present after loading flow
+            if (fbSession) {
+              this.applyStartFormSchemaFromSession(fbSession);
+              try { const q: any = { ...Object.fromEntries(pm.keys.map(k => [k, pm.get(k)]) as any) }; delete q.fbSession; this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
             }
           }
         }));
@@ -1146,7 +1159,23 @@ export class FlowBuilderComponent {
       const m = this.selectedModel; if (!m) return;
       const isStart = String(m?.templateObj?.type || '').toLowerCase() === 'start';
       let msgIn = this.advancedInjectedInput;
-      if (msgIn == null || (typeof msgIn === 'object' && Object.keys(msgIn).length === 0)) {
+      const isEmpty = (v: any) => v == null || (typeof v === 'object' && Object.keys(v).length === 0);
+      if (isStart && m?.startFormEnabled && isEmpty(msgIn)) {
+        // Ouvrir une modale avec le Dynamic Form pour saisir l'entrée
+        import('./start-form-modal.component').then(mod => {
+          const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
+          const inst: any = ref.getContentComponent();
+          try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+          const sub = inst.submitted.subscribe((val: any) => {
+            try { sub.unsubscribe(); } catch {}
+            ref.close();
+            this.advancedInjectedInput = val; this.advancedCtx = val || {};
+            this._doTestNodeBackend(m, isStart, this.advancedInjectedInput || {});
+          });
+        });
+        return;
+      }
+      if (isEmpty(msgIn)) {
         this.modal.confirm({ nzTitle: 'Exécuter sans entrée ?', nzContent: 'Aucune entrée détectée pour ce nœud. Voulez-vous exécuter quand même ?', nzOnOk: () => this._doTestNodeBackend(m, isStart, msgIn || {}) });
         return;
       }
@@ -1390,6 +1419,21 @@ export class FlowBuilderComponent {
       }
     } catch { this.advancedAttemptExecs = []; }
   }
+  private applyStartFormSchemaFromSession(session: string | null) {
+    if (!session) return;
+    try {
+      const raw = localStorage.getItem('formbuilder.session.' + session);
+      if (!raw) return;
+      const schema = JSON.parse(raw);
+      const m = this.selectedModel;
+      if (!m) return;
+      const newModel = { ...m, startFormEnabled: true, startFormSchema: schema };
+      this.onAdvancedModelChange(newModel);
+      this.onAdvancedModelCommitted(newModel);
+      try { localStorage.removeItem('formbuilder.session.' + session); } catch {}
+      try { this.message.success('Formulaire importé dans le nœud'); } catch { this.showToast('Formulaire importé'); }
+    } catch {}
+  }
   private resolveAttemptForSelection(nodeId?: string): any | null {
     const id = String(nodeId || this.selectedModel?.id || ''); if (!id) return null;
     const atts = this.nodeAttempts(id);
@@ -1485,6 +1529,12 @@ export class FlowBuilderComponent {
       if (id) this.advancedOccurByNode.set(id, occur);
       this.recomputeExecCountAndOccIndex(id);
       this.refreshDialogIOFromSelection();
+    } catch {}
+  }
+  onDialogInputChange(v: any) {
+    try {
+      this.advancedInjectedInput = v;
+      this.advancedCtx = v || {};
     } catch {}
   }
   private recomputeSelectedAttemptIdxForNode(id: string) {

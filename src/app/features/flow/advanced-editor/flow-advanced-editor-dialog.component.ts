@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
-import { FlowAdvancedInputPanelComponent } from './flow-advanced-input-panel.component';
-import { FlowAdvancedOutputPanelComponent } from './flow-advanced-output-panel.component';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
+import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
 import { FormsModule } from '@angular/forms';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
  
@@ -13,22 +12,24 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 @Component({
   selector: 'flow-advanced-editor-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowAdvancedInputPanelComponent, FlowAdvancedOutputPanelComponent, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule],
+  imports: [CommonModule, FormsModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule, DynamicForm],
   template: `
     <div class="overlay" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
     <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
         <div *ngIf="loadingInput" class="wing-loading"><span class="tiny-spinner big"></span></div>
-        <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+        <div *ngIf="!loadingInput && hasPrev && injectedInput == null && !(isStart(model) && model?.startFormEnabled)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
         </div>
-        <!-- Pour Start, on privilégie l'édition dans l'onglet Output; ne rien afficher ici -->
+        <!-- Start Form: afficher le Dynamic Form comme panneau Input -->
+        <app-dynamic-form *ngIf="isStart(model) && model?.startFormEnabled" [schema]="model?.startFormSchema || { title: 'Formulaire', fields: [] }" [value]="injectedInput || {}" (valueChange)="injectedInputChange.emit($event)"></app-dynamic-form>
+        <!-- Autres: input en lecture via viewer -->
         <app-json-schema-viewer *ngIf="injectedInput != null && !isStart(model)" [data]="injectedInput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'"></app-json-schema-viewer>
       </div>
       <div class="center" (pointerup)="onFormReleased()">
-        <flow-advanced-center-panel [model]="model" [ctx]="ctx" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
+        <flow-advanced-center-panel [model]="model" [ctx]="ctx" [flowId]="flowId" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"
           [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled" [attemptEvents]="attemptEvents"
           [attemptOptions]="attemptOptions" [selectedAttemptIdx]="selectedAttemptIdx" (selectedAttemptIdxChange)="selectedAttemptIdxChange.emit($event)"></flow-advanced-center-panel>
         <button class="close" (click)="startExit()" title="Fermer" aria-label="Fermer">✕</button>
@@ -76,7 +77,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
             <!-- Center panel -->
             <div class="slide center">
               <div class="scroll" (pointerup)="onFormReleased()">
-                <flow-advanced-center-panel [model]="model" [ctx]="ctx" [bare]="true" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
+                <flow-advanced-center-panel [model]="model" [ctx]="ctx" [flowId]="flowId" [bare]="true" [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'" (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()" (modelChange)="emitModel($event)" (committed)="onCommittedFromCenter($event)" (submitted)="onFormSubmitted($event)"></flow-advanced-center-panel>
               </div>
             </div>
           <!-- Output panel -->
@@ -149,6 +150,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
   `]
 })
 export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
+  @Input() flowId: string | null = null;
   @Input() model: any;
   @Input() disableForChecksum = false;
   @Input() hasPrev: boolean = false;
@@ -167,6 +169,7 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Input() ctx: any = {};
   @Input() injectedInput: any = null;
   @Input() injectedOutput: any = null;
+  @Output() injectedInputChange = new EventEmitter<any>();
   @Output() requestUpdateArgs = new EventEmitter<void>();
   @Output() modelChange = new EventEmitter<any>();
   @Output() test = new EventEmitter<void>();

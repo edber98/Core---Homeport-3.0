@@ -311,6 +311,14 @@ export class NodeTemplateEditorComponent implements OnInit {
     };
     tryLoad(this.route.snapshot.queryParamMap.get('fbSession'));
     try { this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'))); } catch {}
+    // Fallback: if we previously opened a session for this template and no fbSession param is present
+    try {
+      if (!this.route.snapshot.queryParamMap.get('fbSession')) {
+        const lastKey = 'formbuilder.session.last.tpl.' + (id || 'new');
+        const lastSess = localStorage.getItem(lastKey);
+        if (lastSess) { tryLoad(lastSess); localStorage.removeItem(lastKey); }
+      }
+    } catch {}
     const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
     this.catalog.listApps().subscribe(list => {
       const all = (list || []);
@@ -492,6 +500,8 @@ export class NodeTemplateEditorComponent implements OnInit {
       const session = 's_' + Date.now().toString(36);
       const schema = this.argsJson && this.argsJson.trim().length ? this.argsJson : JSON.stringify({ title: 'Arguments', fields: [] });
       const returnTo = this.router.createUrlTree(['/node-templates/editor'], { queryParams: { id, fbSession: session } }).toString();
+      // Mark last session for this template so back navigation without fbSession can recover
+      try { localStorage.setItem('formbuilder.session.last.tpl.' + (id || 'new'), session); } catch {}
       const tplPreset = this.form.get('fb_preset_tpl')?.value ? '1' : undefined;
       this.router.navigate(['/dynamic-form'], { queryParams: { session, return: returnTo, schema, lockTitle: name, tplPreset } });
     } catch (e) { console.log(e)/* this.router.navigate(['/dynamic-form']); */ }

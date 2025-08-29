@@ -125,6 +125,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   currentFormName: string = '';
   currentFormDesc: string = '';
   private lastSavedChecksum: string | null = null;
+  private leavingAfterSave = false;
 
   // Sélection (centralisée via service)
   get selected(): StepConfig | SectionConfig | FieldConfig | FormSchema | null { return this.state.selected; }
@@ -1476,14 +1477,17 @@ export class DynamicFormBuilderComponent implements OnChanges {
     }
   }
 
-  // Save current schema (export to JSON area + toast)
+  // Save current schema (export to JSON area + toast) or orchestrate route return if provided
   saveSchema(): void {
     try {
       this.export();
-      // If orchestrated via route: persist and return using the builder's own Save button
+      // Mark current state as saved to silence unsaved guard
+      this.updateLastChecksum();
+      // If orchestrated via route: persist in session and return
       if (this.returnTo) {
         try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
-        try { this.router.navigateByUrl(this.returnTo); return; } catch { location.href = this.returnTo!; return; }
+        this.leavingAfterSave = true;
+        try { this.router.navigateByUrl(this.returnTo, { replaceUrl: true }); return; } catch { location.href = this.returnTo!; return; }
       }
       // If opened from /forms with an id, persist to CatalogService
       if (this.currentFormId) {
@@ -1992,6 +1996,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
           const parsed = JSON.parse(schemaParam);
           this.model = parsed; this.schema = parsed; this.select(this.schema);
           if (this.applyTplPreset) this.applyTemplateDefaults();
+          // Consider initial schema as saved baseline to avoid false unsaved prompt
+          this.updateLastChecksum();
         } catch { }
       }
       const lockTitle = qp.get('lockTitle') || (search ? new URLSearchParams(search).get('lockTitle') : null);
@@ -2019,10 +2025,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
     return this.computeChecksum({ name: this.currentFormName, desc: this.currentFormDesc, schema: this.schema });
   }
   private updateLastChecksum() { this.lastSavedChecksum = this.currentChecksum(); }
-  hasUnsavedChanges(): boolean { return this.currentChecksum() !== (this.lastSavedChecksum || ''); }
-  purgeDraft() {
-    try { if (this.sessionKey) localStorage.removeItem('formbuilder.session.' + this.sessionKey); } catch {}
+  hasUnsavedChanges(): boolean {
+    // When using Save & Return orchestration, bypass guard after we recorded the save
+    if (this.leavingAfterSave) return false;
+    return this.currentChecksum() !== (this.lastSavedChecksum || '');
   }
+  // Do NOT purge the session payload here: the caller (editor route) reads
+  // and clears 'formbuilder.session.<session>' itself after return.
+  // Keeping this as a no-op avoids deleting the form just before the parent loads it.
+  purgeDraft() { /* no-op for session-based return */ }
 
   private applyTemplateDefaults() {
     try {
@@ -2044,10 +2055,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
 
   saveAndReturn() {
     try {
+      // Mark current schema as saved for the unsaved guard
+      this.updateLastChecksum();
+      this.leavingAfterSave = true;
       if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema));
-      if (this.returnTo) this.router.navigateByUrl(this.returnTo);
+      if (this.returnTo) this.router.navigateByUrl(this.returnTo, { replaceUrl: true });
     } catch { if (this.returnTo) location.href = this.returnTo; }
   }
+
+
 
   // Debounced refresh for inspector typing to avoid letter-by-letter history
   private refreshDebounced(delay = 350): void {

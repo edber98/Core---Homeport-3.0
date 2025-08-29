@@ -7,6 +7,36 @@ const { broadcastRun } = require('../realtime/socketio');
 
 module.exports = function(store){
   const r = express.Router();
+  // Public route to start a run if Start Form is public
+  r.post('/public/flows/:flowId/runs', (req, res) => {
+    const { flowId } = req.params; const flow = store.flows.get(flowId);
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    try {
+      const graph = flow.graph || {};
+      const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      const m = start?.data?.model || {};
+      if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
+      if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      const ws = store.workspaces.get(flow.workspaceId);
+      const runId = randomUUID();
+      const now = new Date();
+      const run = { id: runId, flowId, workspaceId: ws?.id, companyId: ws?.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+      store.runs.set(runId, run);
+      res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
+      (async () => {
+        try{
+          const payload = req.body?.payload ?? null;
+          const initialMsg = { payload };
+          await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, (ev) => {
+            const evt = { ts: Date.now(), type: ev.type, data: ev };
+            run.events.push(evt);
+          });
+          run.status = 'success'; run.finishedAt = new Date();
+        } catch (e) { run.status = 'error'; run.finishedAt = new Date(); }
+      })();
+    } catch (e) { return res.apiError(500, 'internal_error', 'Failed to start run'); }
+  });
   r.use(authMiddleware(store));
   r.use(requireCompanyScope());
 
