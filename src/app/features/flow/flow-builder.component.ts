@@ -1379,6 +1379,17 @@ export class FlowBuilderComponent {
         const st = (att && (att.status as any)) || null;
         this.outputLoading = (st === 'running');
       } catch { this.outputLoading = false; }
+      // When a backend run is in progress and node hasn't started yet, keep both spinners on
+      if (this.backendRunStatus === 'running' && !att) {
+        this.previewLoading = true;
+        this.outputLoading = true;
+      } else if (!att) {
+        // No attempt (e.g., finished without this node)
+        this.previewLoading = false;
+      } else {
+        // Attempt exists: ensure input spinner is off
+        this.previewLoading = false;
+      }
     } catch {}
   }
   closeCtxMenu() { this.ctxMenuVisible = false; this.ctxMenuTarget = null; }
@@ -1703,13 +1714,11 @@ export class FlowBuilderComponent {
             this.outputLoading = att?.status === 'running';
           } catch { this.outputLoading = false; }
         } else {
-          this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
-          if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+          // No attempts yet for this node in current run
           this.advancedAttemptEvents = [];
-          this.advancedAttemptExecs = [];
-          this.advancedExecCount = null;
-          this.advancedOccurIndex = null;
-          this.outputLoading = false;
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.refreshDialogIOFromSelection(); // will enable both spinners if run is running and no attempt
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
@@ -2111,8 +2120,9 @@ export class FlowBuilderComponent {
             if (this.advancedOpen) {
               this.advancedInjectedInput = null;
               this.advancedInjectedOutput = null;
-              this.previewLoading = false;
-              this.outputLoading = false;
+              // Show centered spinners until the selected node actually starts
+              this.previewLoading = true;
+              this.outputLoading = true;
               this.advancedAttemptEvents = [];
               // Reset badge; will flip to running when node actually starts
               this.testStatus = 'idle';
@@ -2126,6 +2136,7 @@ export class FlowBuilderComponent {
           this.backendRunStatus = 'done';
           try { s.close(); } catch {}
           // Keep snapshot of attempts but stop further updates
+          if (this.advancedOpen) { this.previewLoading = false; this.outputLoading = false; }
         }
         return;
       }
