@@ -54,13 +54,13 @@ import { auditTime } from 'rxjs/operators';
           <div class="editor-header">
             <div class="title">Autorisations de templates — {{ ws.name }}</div>
             <div class="actions">
-            <button nz-button class="btn" (click)="selectAll(true)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)">Tout autoriser</button>
-            <button nz-button class="btn" (click)="selectAll(false)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)">Tout retirer</button>
+            <button nz-button class="btn" (click)="selectAll(true)" [disabled]="ws.isDefault || savingAllowed">Tout autoriser</button>
+            <button nz-button class="btn" (click)="selectAll(false)" [disabled]="ws.isDefault || savingAllowed">Tout retirer</button>
             </div>
           </div>
         <div class="tpl-grid" *ngIf="!loadingAllowed; else allowedLoading">
           <label class="tpl-item" *ngFor="let t of templates" nz-tooltip [nzTooltipTitle]="tplLabel(t)">
-            <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.isDefault || savingAllowed || !isBackendId(ws.id)"/>
+            <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.isDefault || savingAllowed"/>
             <span class="tpl-line">{{ tplLabel(t) }}</span>
           </label>
           <div class="muted" *ngIf="ws.isDefault">Le workspace par défaut autorise tous les templates (édition désactivée).</div>
@@ -255,7 +255,8 @@ export class WorkspaceListComponent implements OnInit {
   loadingAllowed = false;
   loadingItems = false;
   savingAllowed = false;
-  isBackendId(id: string | null | undefined): boolean { return !!id && /^[a-fA-F0-9]{24}$/.test(String(id)); }
+  // Accept both ObjectId and custom ids in backend mode; UI no longer blocks by id format
+  isBackendId(id: string | null | undefined): boolean { return true; }
   private itemsReqId = 0;
   private dbg(msg: string, data?: any) { try { console.debug('[WorkspaceList]', msg, data ?? ''); } catch {} }
 
@@ -375,7 +376,7 @@ export class WorkspaceListComponent implements OnInit {
     const reqId = ++this.itemsReqId;
     this.zone.run(() => { this.loadingItems = true; this.dbg('Items loading start', { wsId: src, reqId }); });
     // In backend mode: fetch aggregated elements to avoid race conditions
-    if (environment.useBackend && this.isBackendId(src)) {
+    if (environment.useBackend) {
       let pending = 3; // elements + forms + websites (forms/websites are local)
       const finish = () => {
         if (reqId !== this.itemsReqId) return; // selection changed; ignore

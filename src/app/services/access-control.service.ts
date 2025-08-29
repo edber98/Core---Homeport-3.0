@@ -14,6 +14,7 @@ export interface Workspace {
   companyId?: string; // optional company scope
   isDefault?: boolean;
   templatesAllowed?: string[];
+  backendId?: string; // real Mongo _id when available
 }
 
 export interface User {
@@ -70,7 +71,7 @@ export class AccessControlService {
       this._workspaces.set([]);
       try {
         this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
-          const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault, templatesAllowed: (w as any).templatesAllowed || [] }));
+          const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault, templatesAllowed: (w as any).templatesAllowed || [], backendId: String((w as any)._id || '') }));
           this._workspaces.set(mapped);
           this.save(this.WORKSPACES_KEY, mapped);
           // Initialize current workspace after sync
@@ -257,10 +258,10 @@ export class AccessControlService {
   setAllowedTemplates(workspaceId: string, ids: string[]): Observable<string[]> {
     const uniq = Array.from(new Set(ids));
     if (environment.useBackend) {
-      const isOid = /^[a-fA-F0-9]{24}$/.test(String(workspaceId));
-      if (!isOid) { return of(uniq); }
+      const ws = this._workspaces().find(w => w.id === workspaceId);
+      const targetId = ws?.backendId || workspaceId;
       return new Observable<string[]>((observer) => {
-        this.wsBackend.update(workspaceId, { templatesAllowed: uniq, force: true }).subscribe({
+        this.wsBackend.update(targetId, { templatesAllowed: uniq, force: true }).subscribe({
           next: () => { this.refreshBackendWorkspaces(); observer.next(uniq); observer.complete(); },
           error: (e) => observer.error(e),
         });
@@ -276,10 +277,9 @@ export class AccessControlService {
       const curr = new Set(ws?.templatesAllowed || []);
       if (allowed) curr.add(tplId); else curr.delete(tplId);
       const next = Array.from(curr);
-      const isOid = /^[a-fA-F0-9]{24}$/.test(String(workspaceId));
-      if (!isOid) { return of(true); }
+      const targetId = ws?.backendId || workspaceId;
       return new Observable<boolean>((observer) => {
-        this.wsBackend.update(workspaceId, { templatesAllowed: next, force: true }).subscribe({
+        this.wsBackend.update(targetId, { templatesAllowed: next, force: true }).subscribe({
           next: () => { this.refreshBackendWorkspaces(); observer.next(true); observer.complete(); },
           error: (e) => observer.error(e),
         });
@@ -353,7 +353,7 @@ export class AccessControlService {
     if (!environment.useBackend) return;
     try {
       this.wsBackend.list({ page: 1, limit: 100 }).subscribe(list => {
-        const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault }));
+        const mapped: Workspace[] = (list || []).map(w => ({ id: String((w as any).id || (w as any)._id || ''), name: (w as any).name, companyId: undefined, isDefault: (w as any).isDefault, templatesAllowed: (w as any).templatesAllowed || [], backendId: String((w as any)._id || '') }));
         this._workspaces.set(mapped);
         this.save(this.WORKSPACES_KEY, mapped);
         const wsId = this.pickDefaultWorkspaceId();

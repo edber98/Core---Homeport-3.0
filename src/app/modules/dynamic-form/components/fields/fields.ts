@@ -62,7 +62,7 @@ export class Fields implements OnInit, OnDestroy {
   ngOnInit(): void {
     const k = this.fieldKey;
     // Initial auto-switch: if value looks like an expression and allowed
-    if ((this.field as any).expression?.allow && k) {
+    if (((this.field as any).expression?.allow !== false) && k) {
       const cur = this.form.get(k)?.value;
       if (typeof cur === 'string' && /\{\{[\s\S]*\}\}/.test(cur)) {
         this.exprMode = 'expr';
@@ -72,7 +72,7 @@ export class Fields implements OnInit, OnDestroy {
     if (k) {
       this.sub = this.form.get(k)?.valueChanges.subscribe(val => {
         if (this.exprMode === 'expr') return; // do not override once enabled
-        if (!(this.field as any).expression?.allow) return;
+        if (((this.field as any).expression?.allow === false)) return;
         if (typeof val === 'string' && /\{\{[\s\S]*\}\}/.test(val)) {
           this.exprMode = 'expr';
         }

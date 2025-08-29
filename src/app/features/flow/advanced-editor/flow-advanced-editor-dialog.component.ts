@@ -35,7 +35,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
       <div class="wing right" aria-label="Output wing" *ngIf="hasOutput(model)">
         <div *ngIf="loadingOutput" class="wing-loading"><span class="tiny-spinner big"></span></div>
         <!-- Start Form: afficher le Dynamic Form dans le panneau Output pour éditer le payload -->
-        <app-dynamic-form *ngIf="isStartForm(model) && model?.startFormEnabled"
+        <app-dynamic-form *ngIf="isStartForm(model)"
           [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }"
           [value]="injectedOutput || {}"
           (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
@@ -88,7 +88,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
             <div class="scroll">
               <div *ngIf="loadingOutput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
               <!-- Start Form (mobile): formulaire dans l'onglet Output -->
-              <app-dynamic-form *ngIf="!loadingOutput && isStartForm(model) && model?.startFormEnabled"
+              <app-dynamic-form *ngIf="!loadingOutput && isStartForm(model)"
                 [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }" [value]="injectedOutput || {}"
                 (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
               <!-- Autres (hors start_form): viewer de sortie -->

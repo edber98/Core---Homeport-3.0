@@ -14,8 +14,7 @@ module.exports = function(){
   r.put('/workspaces/:wsId', async (req, res) => {
     const { Types } = require('mongoose');
     const wsId = String(req.params.wsId || '');
-    if (!Types.ObjectId.isValid(wsId)) return res.apiError(400, 'invalid_id', 'Invalid workspace id');
-    const ws = await Workspace.findById(wsId);
+    const ws = Types.ObjectId.isValid(wsId) ? await Workspace.findById(wsId) : await Workspace.findOne({ id: wsId });
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const patch = req.body || {}; const force = !!patch.force;
 
