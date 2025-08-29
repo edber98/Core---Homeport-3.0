@@ -4,6 +4,22 @@ const { randomUUID } = require('crypto');
 
 module.exports = function(store){
   const r = express.Router();
+  // Public minimal endpoint for Start Form
+  r.get('/public/flows/:flowId/public-form', (req, res) => {
+    const { flowId } = req.params; const flow = store.flows.get(flowId);
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    try {
+      const graph = flow.graph || {};
+      const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      if (!start) return res.apiError(404, 'start_not_found', 'Start node not found');
+      const m = start?.data?.model || {};
+      const isPublic = !!m.startFormPublic;
+      if (!isPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
+      const schema = m.startFormSchema || null;
+      return res.apiOk({ flowId, name: flow.name, nodeId: String(start.id || ''), nodeTitle: (m.templateObj && (m.templateObj.title || m.name)) || m.name || 'Start', schema });
+    } catch (e) { return res.apiError(500, 'internal_error', 'Failed to read start form'); }
+  });
   r.use(authMiddleware(store));
   r.use(requireCompanyScope());
 

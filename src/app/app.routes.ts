@@ -15,6 +15,8 @@ export const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'dashboard'  // ou 'builder' si tu veux rediriger ailleurs
   },
+  // Public forms (no auth required)
+  { path: 'public/form/:flowId/:nodeId', loadComponent: () => import('./features/flow/public-form-start.component').then(m => m.PublicFormStartComponent), title: 'Formulaire' },
 
     // Auth-only layout (no navbar)
     {

@@ -13,6 +13,75 @@ const { broadcastRun } = require('../../realtime/socketio');
 
 module.exports = function(){
   const r = express.Router();
+  // Public: start a run if the Start node exposes a public form
+  r.post('/public/flows/:flowId/runs', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    try {
+      const ws = await Workspace.findById(flow.workspaceId);
+      if (!ws) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
+      // Check Start node public flag
+      const graph = flow.graph || {};
+      const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+      const start = nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start');
+      const m = start?.data?.model || {};
+      if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
+      if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      const now = new Date();
+      const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now });
+      res.status(201).json({ success: true, data: { id: String(run._id), status: run.status }, requestId: req.requestId, ts: Date.now() });
+      (async () => {
+        try {
+          const payload = req.body?.payload ?? null;
+          const initialMsg = { payload };
+          await runFlow(flow.graph || flow, { now: new Date() }, initialMsg, async (ev) => {
+            const ts = new Date();
+            let seq = 0;
+            if (ev.type === 'run.started'){
+              await Run.updateOne({ _id: run._id }, { $set: { status: 'running' } });
+              await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'running', startedAt: ev.startedAt || ts.toISOString() }, ts });
+            }
+            if (ev.type === 'node.started'){
+              const nodeId = String(ev.nodeId || '');
+              const branchId = String(ev.branchId || '');
+              const startedAt = ev.startedAt ? new Date(ev.startedAt) : ts;
+              let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
+              let usedAttempt = att?.attempt;
+              if (!att) {
+                const ctr = await AttemptCounter.findOneAndUpdate({ runId: run._id, nodeId }, { $inc: { seq: 1 } }, { upsert: true, new: true });
+                usedAttempt = Math.max(1, Number(ctr?.seq || 1));
+                att = await Attempt.findOneAndUpdate({ runId: run._id, nodeId, attempt: usedAttempt }, { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } }, { upsert: true, new: true });
+              }
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
+          }
+          if (ev.type === 'node.done'){
+            const nodeId = String(ev.nodeId || '');
+            const branchId = String(ev.branchId || '');
+            let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
+            const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            if (att){
+              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+            }
+          }
+          if (ev.type === 'edge.taken'){
+            await RunEvent.create({ runId: run._id, type: 'edge.taken', seq: ++seq, data: { sourceId: ev.sourceId, targetId: ev.targetId }, ts });
+          }
+          // No broadcast to private channels for public route
+          });
+          await Run.updateOne({ _id: run._id }, { $set: { status: 'success', finishedAt: new Date() } });
+        } catch (e) {
+          await Run.updateOne({ _id: run._id }, { $set: { status: 'error', finishedAt: new Date() } });
+        }
+      })();
+    } catch (e){ return res.apiError(500, 'internal_error', 'Failed to start run', { message: e?.message }); }
+  });
   r.use(authMiddleware());
   r.use(requireCompanyScope());
 

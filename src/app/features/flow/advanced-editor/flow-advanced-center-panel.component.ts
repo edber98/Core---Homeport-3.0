@@ -5,6 +5,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
@@ -15,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzInputModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent],
   template: `
     <div class="card" [class.panel-card]="bare">
       <div class="tabs">
@@ -35,6 +36,26 @@ import { FormsModule } from '@angular/forms';
               <button class="update" (click)="updateArgs.emit()">Mettre à jour</button>
             </div>
             <div [class.dimmed]="disabled">
+              <!-- Start Form configuration (special start type) -->
+              <div class="start-form-box" *ngIf="isStart(model)" style="padding:6px 0 10px; margin: 8px 0 12px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap: wrap;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="font-weight:600; font-size:13px;">Formulaire de démarrage</div>
+                    <nz-switch [(ngModel)]="model.startFormEnabled" (ngModelChange)="startFormEnabled = $event"></nz-switch>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <button nz-button nzSize="small" class="apple-btn" (click)="openFormBuilder()" [disabled]="!startFormEnabled"><i class="fa-regular fa-pen-to-square"></i> Éditer le formulaire</button>
+                    <label style="display:flex; align-items:center; gap:6px;">
+                      <span class="muted">Public</span>
+                      <nz-switch [(ngModel)]="model.startFormPublic" (ngModelChange)="startFormPublic = $event" [nzDisabled]="!startFormEnabled"></nz-switch>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="startFormEnabled && flowId" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                  <input nz-input [readonly]="true" [value]="formUrl || ''" placeholder="URL publique" style="flex:1 1 auto; min-width: 260px;" />
+                  <button nz-button nzSize="small" class="apple-btn" (click)="copyFormUrl()" [disabled]="!formUrl">Copier</button>
+                </div>
+              </div>
               <div class="test-row">
                 <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
                 <div class="attempt-selects" *ngIf="attemptOptions?.length">
@@ -181,6 +202,7 @@ import { FormsModule } from '@angular/forms';
 export class FlowAdvancedCenterPanelComponent {
   @Input() model: any = {};
   @Input() ctx: any = {};
+  @Input() flowId: string | null = null;
   @Input() bare = false;
   @Input() disabled = false;
   @Input() disableReason: string | null = null;
@@ -274,6 +296,64 @@ export class FlowAdvancedCenterPanelComponent {
         }
       } catch { this.attemptEventsView = []; }
     }
+    // Refresh computed URL for Start-Form settings and sync schema text
+    try { this._computedFormUrl = this.computeFormUrl(); } catch {}
+    try { this.syncSchemaTextFromModel(); } catch {}
+  }
+  isStart(m: any): boolean { try { return String(m?.templateObj?.type || '').toLowerCase() === 'start'; } catch { return false; } }
+  private _computedFormUrl: string | null = null;
+  computeFormUrl(): string | null {
+    try {
+      if (!this.isStart(this.model)) return null;
+      const fid = this.flowId || '';
+      const nid = String(this.model?.id || '');
+      if (!fid || !nid) return null;
+      const origin = window.location.origin.replace(/\/$/, '');
+      return `${origin}/public/form/${encodeURIComponent(fid)}/${encodeURIComponent(nid)}`;
+    } catch { return null; }
+  }
+  get formUrl(): string | null { return this._computedFormUrl; }
+  get startFormEnabled(): boolean { try { return !!this.model?.startFormEnabled; } catch { return false; } }
+  set startFormEnabled(v: boolean) { this.patchModel({ startFormEnabled: !!v }); }
+  get startFormPublic(): boolean { try { return !!this.model?.startFormPublic; } catch { return false; } }
+  set startFormPublic(v: boolean) { this.patchModel({ startFormPublic: !!v }); }
+  startFormSchemaText = '';
+  private syncSchemaTextFromModel() {
+    try {
+      const s = (this.model && (this.model.startFormSchema != null)) ? this.model.startFormSchema : (this.model?.context?.startFormSchema);
+      this.startFormSchemaText = s ? JSON.stringify(s, null, 2) : '{\n  "title": "Formulaire",\n  "fields": []\n}';
+    } catch { this.startFormSchemaText = '{\n  "title": "Formulaire",\n  "fields": []\n}'; }
+  }
+  onSchemaTextChange(v: string) { this.startFormSchemaText = v || ''; }
+  applySchemaText() {
+    try {
+      const parsed = JSON.parse(this.startFormSchemaText || '{}');
+      this.patchModel({ startFormSchema: parsed });
+    } catch { /* ignore parse errors; user sees raw text */ }
+  }
+  private patchModel(patch: any) {
+    try {
+      const m = { ...this.model, ...patch };
+      this.model = m;
+      this.modelChange.emit(m);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+  copyFormUrl() { try { const url = this.formUrl || ''; if (!url) return; (window.navigator as any)?.clipboard?.writeText?.(url); } catch {} }
+  openFormBuilder() {
+    try {
+      const sess = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      // Seed initial schema
+      try {
+        const init = (this.model && (this.model.startFormSchema != null)) ? this.model.startFormSchema : { title: 'Formulaire', ui: { layout: 'vertical', labelsOnTop: true }, fields: [] };
+        localStorage.setItem('formbuilder.session.' + sess, JSON.stringify(init));
+      } catch {}
+      const ret = new URL(window.location.href);
+      ret.searchParams.set('fbSession', sess);
+      const returnUrl = ret.toString();
+      const url = `${location.origin.replace(/\/$/, '')}/dynamic-form?session=${encodeURIComponent(sess)}&return=${encodeURIComponent(returnUrl)}&tplPreset=1`;
+      window.open(url, '_blank');
+    } catch {}
   }
   trackIdx(i: number, v: number) { return v; }
 

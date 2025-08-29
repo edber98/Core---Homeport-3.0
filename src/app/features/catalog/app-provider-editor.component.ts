@@ -187,6 +187,17 @@ export class AppProviderEditorComponent implements OnInit {
     };
     tryLoad(this.route.snapshot.queryParamMap.get('fbSession'));
     try { this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'))); } catch {}
+    // Fallback: if no fbSession in URL, try the last session key once
+    try {
+      if (!this.route.snapshot.queryParamMap.get('fbSession')) {
+        const lastKey = 'formbuilder.session.last.app.' + (id || 'new');
+        const lastSess = localStorage.getItem(lastKey);
+        if (lastSess) {
+          tryLoad(lastSess);
+          try { localStorage.removeItem(lastKey); } catch {}
+        }
+      }
+    } catch {}
     const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
     // If user navigated back (without fbSession), try last session marker for this app
     const initialId = id || 'new';
