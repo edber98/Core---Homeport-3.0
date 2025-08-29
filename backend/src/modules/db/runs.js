@@ -315,7 +315,10 @@ module.exports = function(){
         doc.finishedAt = new Date();
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
         await doc.save();
-        await RunEvent.create({ runId: run._id, type: 'run.status', seq: 1, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
+        // Allocate next sequence safely to avoid duplicate key on (runId, seq)
+        let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+        const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
+        await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
         const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
         broadcast(String(run._id), pkt);
         broadcastRun(String(run._id), pkt);

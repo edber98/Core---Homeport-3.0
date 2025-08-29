@@ -418,8 +418,16 @@ export class FlowExecutionComponent {
       const nodes: any[] = Array.isArray(graph.nodes) ? graph.nodes : [];
       const edges: any[] = Array.isArray(graph.edges) ? graph.edges : [];
       const incoming = (id: string) => edges.some((e: any) => String(e.target) === String(id));
-      const isStart = (m: any) => String(m?.templateObj?.type || '').toLowerCase() === 'start';
-      const isStartForm = (m: any) => { try { const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase(); const tplName = String(m?.templateObj?.name || '').toLowerCase(); return isStart(m) && (tplId === 'start_form' || tplName === 'startform'); } catch { return false; } };
+      const tyOf = (m: any) => String(m?.templateObj?.type || '').toLowerCase();
+      const isStartForm = (m: any) => {
+        try {
+          const t = tyOf(m);
+          if (t === 'start_form') return true;
+          const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase();
+          const tplName = String(m?.templateObj?.name || '').toLowerCase();
+          return (tplId === 'start_form' || tplName === 'startform');
+        } catch { return false; }
+      };
       const startHead = nodes.find((n: any) => isStartForm(n?.data?.model) && !incoming(String(n.id)));
       if (startHead) {
         const m = startHead.data?.model || {};

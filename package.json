@@ -48,6 +48,7 @@
     "ng-zorro-antd": "^20.1.0",
     "ngx-codemirror": "^1.0.0",
     "ngx-vflow": "^1.12.0",
+    "nodemailer": "^7.0.5",
     "nunjucks": "^3.2.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

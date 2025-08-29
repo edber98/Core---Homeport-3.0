@@ -36,7 +36,7 @@
 
           <div class="df-control-wrap">
             <!-- Toggle expression mode if allowed -->
-            <div class="df-expr-toggle" *ngIf="!disableExpressions && $any(field).expression?.allow">
+            <div class="df-expr-toggle" *ngIf="!disableExpressions && ($any(field).expression?.allow !== false)">
               <nz-segmented
                 [(ngModel)]="exprMode"
                 [ngModelOptions]="{ standalone: true }"

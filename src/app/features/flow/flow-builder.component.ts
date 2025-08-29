@@ -175,6 +175,7 @@ export class FlowBuilderComponent {
   private pushPending = false;
   private allowedRemovedEdgeIds = new Set<string>();
   private draggingPalette = new Set<string>();
+  private skipStartFormPromptOnce = false;
   previewLoading = false;
   outputLoading = false;
   testStatus: 'idle'|'running'|'success'|'error' = 'idle';
@@ -2306,9 +2307,16 @@ export class FlowBuilderComponent {
     // Helper: detect Start Form node and schema from model.context/startFormSchema/template args
     const findStartForm = (): { nodeId: string; model: any; schema: any } | null => {
       try {
-        const isStart = (m: any) => String(m?.templateObj?.type || '').toLowerCase() === 'start';
+        const tyOf = (m: any) => String(m?.templateObj?.type || '').toLowerCase();
+        const isStartLike = (m: any) => { const t = tyOf(m); return t === 'start' || t === 'start_form'; };
         const isStartForm = (m: any) => {
-          try { const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase(); const tplName = String(m?.templateObj?.name || '').toLowerCase(); return isStart(m) && (tplId === 'start_form' || tplName === 'startform'); } catch { return false; }
+          try {
+            const t = tyOf(m);
+            if (t === 'start_form') return true;
+            const tplId = String(m?.templateObj?.id || m?.template || '').toLowerCase();
+            const tplName = String(m?.templateObj?.name || '').toLowerCase();
+            return (tplId === 'start_form' || tplName === 'startform');
+          } catch { return false; }
         };
         for (const n of (snap.nodes || [])) {
           const m = n?.data?.model; if (!m) continue;
@@ -2323,36 +2331,29 @@ export class FlowBuilderComponent {
     };
     const startInfo = findStartForm();
     try { console.log('[builder][run] startInfo', startInfo); } catch {}
-    const currentPayload = this.getStartPayload().payload;
-    const isEmpty = (v: any) => v == null || (typeof v === 'object' && Object.keys(v).length === 0);
-    // If flow starts with a Start Form and no payload provided yet, prompt for input first
-    if (startInfo && isEmpty(currentPayload)) {
-      // Open the node configuration dialog to let user fill the Start Form, then run automatically
-      try {
-        const id = startInfo.nodeId;
-        const node = this.nodes.find(n => String(n.id) === String(id));
-        if (node) {
-          this.pendingRunAfterStartForm = true;
-          this.selectItem(node);
-          this.openAdvancedEditor();
-          return;
-        }
-      } catch {}
-      // Fallback to modal if selection failed
-      try {
-        import('./start-form-modal.component').then(mod => {
-          const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
-          const inst: any = ref.getContentComponent();
-          try { inst.schema = startInfo.schema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
-          const sub = inst.submitted.subscribe((val: any) => {
-            try { sub.unsubscribe(); } catch {}
-            ref.close();
-            try { this.setStartPayload(val || {}); } catch {}
-            this.runFlow();
+    // If flow starts with a Start Form, prompt with the same lightweight modal as Execution, then autostart
+    if (startInfo) {
+      if (this.skipStartFormPromptOnce) {
+        // Skip the prompt once (we just collected values); reset flag and proceed to launch
+        this.skipStartFormPromptOnce = false;
+      } else {
+        try {
+          import('./start-form-modal.component').then(mod => {
+            const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
+            const inst: any = ref.getContentComponent();
+            try { inst.schema = startInfo.schema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+            const sub = inst.submitted.subscribe((val: any) => {
+              try { sub.unsubscribe(); } catch {}
+              ref.close();
+              try { this.setStartPayload(val || {}); } catch {}
+              // On next call, continue without reopening the modal
+              this.skipStartFormPromptOnce = true;
+              this.runFlow();
+            });
           });
-        });
-        return;
-      } catch {}
+          return;
+        } catch {}
+      }
     }
 
     // If backend is enabled and we have a flowId, launch on backend
