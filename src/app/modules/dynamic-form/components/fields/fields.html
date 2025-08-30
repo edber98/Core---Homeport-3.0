@@ -47,60 +47,64 @@
             <ng-container *ngIf="fieldKey as key">
               <!-- Guard: render classic inputs only when the control exists on the form -->
               <ng-container *ngIf="form.get(key) as ctrl">
-              <!-- Expression editor mode -->
-              <app-expression-editor *ngIf="!disableExpressions && exprEnabled && ($any(field).expression?.allow === true)"
-                                     [inline]="$any(field).expression?.inline ?? true"
-                                     [large]="$any(field).expression?.large === true"
-                                     [showDialogAction]="$any(field).expression?.showDialogAction === true"
-                                     [dialogTitle]="$any(field).expression?.dialogTitle || 'Éditeur d\'expression'"
-                                     [dialogMode]="$any(field).expression?.dialogMode || 'textarea'"
-                                     [autoHeight]="$any(field).expression?.autoHeight === true"
-                                     [groupBefore]="$any(field).expression?.groupBefore !== false"
-                                     [showFormulaAction]="$any(field).expression?.showFormulaAction !== false"
-                                     [suggestionPlacement]="$any(field).expression?.suggestionPlacement || 'auto'"
-                                     [errorMode]="$any(field).expression?.errorMode === true"
-                                     [showPreview]="$any(field).expression?.showPreview !== false"
-                                     [context]="ctx"
-                                     [showPreviewErrors]="showPreviewErrors"
-                                     [formControlName]="key">
-              </app-expression-editor>
+              <!-- Exactly one branch renders: expression OR classic inputs -->
+              <ng-container [ngSwitch]="(!disableExpressions && ($any(field).expression?.allow === true)) ? exprEnabled : false">
+                <!-- Expression editor mode -->
+                <app-expression-editor *ngSwitchCase="true"
+                                       [inline]="$any(field).expression?.inline ?? true"
+                                       [large]="$any(field).expression?.large === true"
+                                       [showDialogAction]="$any(field).expression?.showDialogAction === true"
+                                       [dialogTitle]="$any(field).expression?.dialogTitle || 'Éditeur d\'expression'"
+                                       [dialogMode]="$any(field).expression?.dialogMode || 'textarea'"
+                                       [autoHeight]="$any(field).expression?.autoHeight === true"
+                                       [groupBefore]="$any(field).expression?.groupBefore !== false"
+                                       [showFormulaAction]="$any(field).expression?.showFormulaAction !== false"
+                                       [suggestionPlacement]="$any(field).expression?.suggestionPlacement || 'auto'"
+                                       [errorMode]="$any(field).expression?.errorMode === true"
+                                       [showPreview]="$any(field).expression?.showPreview !== false"
+                                       [context]="ctx"
+                                       [showPreviewErrors]="showPreviewErrors"
+                                       [formControlName]="key">
+                </app-expression-editor>
 
-              <!-- Classic inputs -->
-              <ng-container *ngIf="!exprEnabled">
-                <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
+                <!-- Classic inputs -->
+                <ng-container *ngSwitchDefault>
+                  <label *ngIf="field.type==='checkbox'" nz-checkbox [formControlName]="key">{{ field.label || '' }}</label>
 
-                <!-- Secret text input with show/hide toggle -->
-                <ng-container *ngIf="field.type==='text' && $any(field).secret; else plainTextInput">
-                  <nz-input-group [nzSuffix]="secretToggleTpl">
-                    <input nz-input [id]="key" [type]="secretVisible ? 'text' : 'password'" [placeholder]="field.placeholder || ''" [formControlName]="key" />
-                  </nz-input-group>
-                  <ng-template #secretToggleTpl>
-                    <i class="fa-regular" [class.fa-eye]="!secretVisible" [class.fa-eye-slash]="secretVisible" (click)="secretVisible = !secretVisible" style="cursor:pointer;"></i>
+                <!-- Text input rendering (only for type==='text') -->
+                <ng-container *ngIf="field.type==='text'">
+                  <!-- Secret text input with show/hide toggle -->
+                  <ng-container *ngIf="$any(field).secret; else plainTextInput">
+                    <nz-input-group [nzSuffix]="secretToggleTpl">
+                      <input nz-input [id]="key" [type]="secretVisible ? 'text' : 'password'" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+                    </nz-input-group>
+                    <ng-template #secretToggleTpl>
+                      <i class="fa-regular" [class.fa-eye]="!secretVisible" [class.fa-eye-slash]="secretVisible" (click)="secretVisible = !secretVisible" style="cursor:pointer;"></i>
+                    </ng-template>
+                  </ng-container>
+                  <ng-template #plainTextInput>
+                    <input nz-input [id]="key" type="text" [placeholder]="field.placeholder || ''" [formControlName]="key" />
                   </ng-template>
                 </ng-container>
-                <ng-template #plainTextInput>
-                  <input nz-input [id]="key" type="text" [placeholder]="field.placeholder || ''" [formControlName]="key" />
-                </ng-template>
 
-                <textarea *ngIf="field.type==='textarea'"
-                          nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
+                  <textarea *ngIf="field.type==='textarea'"
+                            nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
 
-                <input *ngIf="field.type==='number'"
-                      nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
+                  <input *ngIf="field.type==='number'"
+                        nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
-                <nz-date-picker *ngIf="field.type==='date'"
-                                style="width: 100%;" [formControlName]="key"></nz-date-picker>
+                  <nz-date-picker *ngIf="field.type==='date'"
+                                  style="width: 100%;" [formControlName]="key"></nz-date-picker>
 
-                <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
-                  <nz-option *ngFor="let opt of (field.options || [])"
-                            [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
-                </nz-select>
+                  <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
+                    <nz-option *ngFor="let opt of (field.options || [])"
+                              [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
+                  </nz-select>
 
-                <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
-                  <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">
-                    {{ opt.label || '' }}
-                  </label>
-                </nz-radio-group>
+                  <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
+                    <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">{{ opt.label || '' }}</label>
+                  </nz-radio-group>
+                </ng-container>
               </ng-container>
               </ng-container>
             </ng-container>

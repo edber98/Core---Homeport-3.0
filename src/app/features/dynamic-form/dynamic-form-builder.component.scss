@@ -43,6 +43,35 @@
   border-radius: 0 !important;
   background: transparent;
 }
+
+/* Floating AI chat action */
+.ai-chat-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1000;
+  border-radius: 999px;
+  height: 42px;
+  width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(2,6,23,.12), 0 2px 6px rgba(2,6,23,.06);
+}
+
+.ai-chat-backdrop {
+  position: fixed; inset: 0; background: rgba(2,6,23,0.24);
+  z-index: 998; opacity: 0; pointer-events: none; transition: opacity .15s ease;
+}
+.ai-chat-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.ai-chat-popover {
+  position: fixed; right: 18px; bottom: 70px; z-index: 999;
+  background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(2,6,23,.18), 0 4px 14px rgba(2,6,23,.10);
+  padding: 0; overflow: hidden; transform: translateY(8px); opacity: 0; pointer-events: none;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.ai-chat-popover.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
 /* Add a subtle right border to the preview (center) card to separate from inspector */
 .center .ant-card.no-chrome { border-right: 1px solid #E2E1E4 !important; /* reserve space for history bar */ --hb-space: 52px; }
 .center .ant-card.no-chrome .ant-card-body { padding: 8px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }

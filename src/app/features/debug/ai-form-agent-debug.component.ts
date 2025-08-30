@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -8,14 +8,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { JsonSchemaViewerComponent } from '../../modules/json-schema-viewer/json-schema-viewer';
 import { environment } from '../../../environments/environment';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { AiFormAgentService, AgentEvent } from '../../services/ai-form-agent.service';
 
-type AgentEvent =
-  | { type: 'message'; role?: string; text?: string }
-  | { type: 'patch'; ops: Array<{ op: 'add'|'replace'|'remove'; path: string; value?: any }> }
-  | { type: 'snapshot'; schema: any }
-  | { type: 'warning'; code?: string; message?: string }
-  | { type: 'error'; code?: string; message?: string }
-  | { type: 'done' };
+// AgentEvent now comes from service
 
 @Component({
   selector: 'debug-ai-form-agent',
@@ -44,6 +39,14 @@ type AgentEvent =
           <label>Steps: <input type="checkbox" [(ngModel)]="steps"/></label>
           <label>Max fields: <input type="number" [(ngModel)]="maxFields"/></label>
           <label>OpenAI: <input type="checkbox" [(ngModel)]="useOpenAI"/></label>
+          <label>Agent:
+            <select [(ngModel)]="agentMode">
+              <option value="langchain">langchain</option>
+              <option value="tools">tools</option>
+              <option value="none">none</option>
+            </select>
+          </label>
+          <label>EventSource: <input type="checkbox" [(ngModel)]="useEventSource"/></label>
           <button nz-button nzType="primary" (click)="start()" [disabled]="busy">Démarrer</button>
           <button nz-button (click)="reset()" [disabled]="busy">Reset</button>
         </div>
@@ -66,7 +69,7 @@ type AgentEvent =
 
       <div class="preview" *ngIf="schema && (schema.fields || schema.steps)">
         <h3>Prévisualisation</h3>
-        <app-dynamic-form [schema]="$any(schema)" [hideActions]="true" [disableExpressions]="false"></app-dynamic-form>
+        <app-dynamic-form [schema]="$any(schema)" [hideActions]="false" [disableExpressions]="false"></app-dynamic-form>
       </div>
     </div>
   </div>
@@ -83,59 +86,40 @@ type AgentEvent =
     .preview { margin-top: 16px; }
   `]
 })
-export class AiFormAgentDebugComponent {
+export class AiFormAgentDebugComponent implements OnDestroy {
   prompt = '';
   layout: 'vertical'|'horizontal'|'inline' = 'vertical';
   steps = false;
   maxFields = 20;
   useOpenAI = false;
+  agentMode: 'langchain'|'tools'|'none' = 'langchain';
+  useEventSource = false;
+  rawMode = false; // use structured events via service
   busy = false;
   log = '';
   schema: any = {};
 
-  constructor(private zone: NgZone, private auth: AuthTokenService, private cdr: ChangeDetectorRef) {}
+  private stopStream?: () => void;
+  private logBuf = '';
+  private logFlushTimer: any = null;
+
+  constructor(private zone: NgZone, private auth: AuthTokenService, private cdr: ChangeDetectorRef, private agentSvc: AiFormAgentService) {}
 
   reset() { this.schema = {}; this.log = ''; }
+
+  ngOnDestroy(): void {
+    try { this.stopStream?.(); } catch {}
+    this.stopStream = undefined;
+    if (this.logFlushTimer) { clearTimeout(this.logFlushTimer); this.logFlushTimer = null; }
+  }
 
   async start() {
     if (this.busy) return;
     this.busy = true; this.log = ''; this.schema = {};
     try {
-      const url = `${environment.apiBaseUrl}/api/ai/form/build`;
-      const tok = this.auth.token;
-      const headers: Record<string,string> = { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' };
-      if (tok) headers['Authorization'] = `Bearer ${tok}`;
-      console.log('[AI-DBG] POST', url);
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ prompt: this.prompt || '', provider: this.useOpenAI ? 'openai' : undefined, options: { layout: this.layout, steps: this.steps, maxFields: this.maxFields } })
-      });
-      console.log('[AI-DBG] Response', resp.status, resp.statusText, resp.headers.get('content-type'));
-      if (!resp.body) { this.appendLog('No stream body'); this.busy = false; return; }
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        console.log('[AI-DBG] chunk len=', chunk.length);
-        buf += chunk;
-        // Support both LF and CRLF delimiters between SSE events
-        let sepIdx = findDelimiter(buf);
-        while (sepIdx >= 0) {
-          const raw = buf.slice(0, sepIdx).trim();
-          buf = buf.slice(sepIdx + delimiterLength(buf, sepIdx));
-          if (!raw.startsWith('data:')) { this.appendLog('Skip chunk: ' + raw); console.log('[AI-DBG] skip', raw); sepIdx = findDelimiter(buf); continue; }
-          const json = raw.slice(5).trim();
-          try { const evt = JSON.parse(json) as AgentEvent; console.log('[AI-DBG] evt', evt); this.onEvent(evt); }
-          catch { this.appendLog('Parse error on chunk: ' + raw); console.warn('[AI-DBG] parse error', raw); }
-          sepIdx = findDelimiter(buf);
-        }
-      }
-      this.appendLog('Stream closed');
-      console.log('[AI-DBG] stream closed');
+      const stream = this.agentSvc.stream({ prompt: this.prompt || '', layout: this.layout, steps: this.steps, maxFields: this.maxFields });
+      this.stopStream = stream.stop;
+      stream.events$.subscribe((evt) => this.onEvent(evt));
     } catch (e:any) {
       this.appendLog('Stream error: ' + (e?.message || e));
     } finally {
@@ -144,19 +128,37 @@ export class AiFormAgentDebugComponent {
   }
 
   private appendLog(s: string) {
-    try {
-      this.zone.run(() => { this.log += (s + '\n'); try { this.cdr.detectChanges(); } catch {} });
-      console.log('[AI-DBG]', s);
-    } catch {}
+    // Buffer logs and flush at ~60Hz to avoid change detection storms
+    this.logBuf += (s + '\n');
+    if (this.logFlushTimer) return;
+    this.logFlushTimer = setTimeout(() => {
+      try {
+        const chunk = this.logBuf; this.logBuf = ''; this.logFlushTimer = null;
+        this.zone.run(() => { this.log += chunk; try { this.cdr.detectChanges(); } catch {} });
+      } catch { this.logFlushTimer = null; }
+    }, 16);
   }
 
   private onEvent(evt: AgentEvent) {
     this.zone.run(() => {
-      if (evt.type === 'message') { this.appendLog('» ' + (evt.text || '')); }
-      else if (evt.type === 'patch') { this.applyOps(evt.ops || []); this.appendLog('[patch] ' + JSON.stringify(evt.ops)); }
-      else if (evt.type === 'snapshot') { this.schema = evt.schema || {}; this.appendLog('[snapshot]'); try { this.cdr.detectChanges(); } catch {} }
-      else if (evt.type === 'warning') this.appendLog('[warn] ' + (evt.message || evt.code));
-      else if (evt.type === 'error') this.appendLog('[error] ' + (evt.message || evt.code));
+      if (evt.type === 'final') {
+        let s: any = (evt as any).schema;
+        if (typeof s === 'string') {
+          try { s = JSON.parse(s); }
+          catch { this.appendLog('[final] invalid JSON schema string'); return; }
+        }
+        // Console log the final schema for inspection
+        try { console.log('[ai-form][final_schema]', s); } catch {}
+        this.schema = s || {};
+        this.appendLog('[final] schema received');
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (evt.type === 'message') this.appendLog('» ' + (evt.text || ''));
+      else if (evt.type === 'patch') this.appendLog(`[patch] ${Array.isArray((evt as any).ops) ? (evt as any).ops.length : 0} ops`);
+      else if (evt.type === 'snapshot') this.appendLog('[snapshot] (ignored)');
+      else if (evt.type === 'warning') this.appendLog('[warn] ' + ((evt as any).message || (evt as any).code));
+      else if (evt.type === 'error') this.appendLog('[error] ' + ((evt as any).message || (evt as any).code));
       else if (evt.type === 'done') this.appendLog('✓ done');
     });
   }

@@ -340,6 +340,15 @@
       </div>
       </ng-container>
     </nz-card>
+
+    <!-- Floating AI Chat Popover Trigger + persistent popover -->
+    <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
+      <i class="fa-solid fa-message"></i>
+    </button>
+    <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
+    <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
+      <df-ai-chat (close)="aiChatOpen=false" (schemaGenerated)="applyAiSchema($event)"></df-ai-chat>
+    </div>
   </div>
 
   <!-- INSPECTOR template for reuse (desktop + drawer) -->

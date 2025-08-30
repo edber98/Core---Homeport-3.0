@@ -45,6 +45,7 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
+    "langchain": "^0.3.31",
     "ng-zorro-antd": "^20.1.0",
     "ngx-codemirror": "^1.0.0",
     "ngx-vflow": "^1.12.0",
