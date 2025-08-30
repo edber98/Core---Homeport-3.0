@@ -67,9 +67,9 @@ function systemPrompt() {
   // Tools-only planner: reflect first, then build via tools.
   return [
     'Tu es un concepteur expert de formulaires Dynamic Form. Tu utilises UNIQUEMENT les tools fournis (pas de JSON final dans ta sortie).',
-    "Processus: 1) fetch_input_catalog pour connaître toutes les options disponibles, 2) list_tree pour voir l’état, 3) set_form pour fixer le title et l’UI (layout, labelsOnTop), 4) crée les sections/steps et champs avec descriptions, placeholders, validators, options, conditions, 5) ajuste la grille (set_col) et set_at pour des updates précis, 6) emit_snapshot à la fin (et à chaque étape importante).",
+    "Processus: 1) fetch_input_catalog pour connaître toutes les options disponibles, et les types respect bien ces informations le type email N'EXISTE PAS c'est text avec validators 2) list_tree pour voir l’état, 3) set_form pour fixer le title et l’UI (layout, labelsOnTop), 4) crée les sections/steps et champs avec descriptions, placeholders, validators, options, conditions, 5) ajuste la grille (set_col) et set_at pour des updates précis, 6) emit_snapshot à la fin (et à chaque étape importante).",
     'Toujours réfléchir au besoin utilisateur, regrouper par thèmes, et documenter les sections avec une description claire résumant le but des champs inclus.',
-    'Tu dois privilégier des formulaires détaillés: pour chaque champ, envisager placeholder, description, default, validators (required, min/max, minLength/maxLength, pattern) selon le type; pour select/radio, fournir des options sous forme de paires label/value lisibles; ajouter visibleIf/requiredIf/disabledIf pertinents; renseigner col.xs=24 par défaut et adapter si nécessaire.',
+    `Tu dois privilégier des formulaires détaillés: pour chaque champ, envisager placeholder, description, default, validators (required, min/max, minLength/maxLength, pattern) selon le type; pour select et radio, fournir des "options" sous forme de paires label/value en json en tableau dans options pour le field tu dois pas oublié !!, ne pas oublié pour les select OBLIGATOIRE; et respecter bien les types et informations fourni par le tool fetch_input_catalog, ajouter visibleIf/requiredIf/disabledIf pertinents; renseigner col.xs=24 par défaut et adapter si nécessaire.`,
     "UI par défaut: layout='vertical', labelsOnTop=true; steps uniquement lorsque plusieurs sujets distincts; ajouter summary si utile. Grille responsive: xs=24, sm=24; en vertical, privilégie la division sur grands écrans: md≈12 (2 colonnes), lg≈8–12 (2–3 colonnes), xl≈6–8 (3–4 colonnes) selon la densité. Conserve 24 pour les champs larges (textarea, descriptions longues) et les blocs critiques. Applique set_col après chaque ajout pour refléter cette répartition.",
     "Chemins UI-style STRICTS: racine sections='fields', ex: 'fields[0]' (première section), 'fields[0].fields[1]' (2e champ de la 1re section). Avec steps: 'steps[0]' (1re step), 'steps[0].fields[0]' (1re section de la step), 'steps[0].fields[0].fields[1]' (2e champ). Si l’index n’existe pas, tu le crées. AUCUN JSON Pointer ('/…') et AUCUN 'sections' dans les paths.",
     'Exemples (format manifest plugins) — inspiration uniquement:',
@@ -94,6 +94,7 @@ async function runFormAgentWithTools({ prompt, history = [], seedSchema = null, 
     const tools = await buildToolsLC({ DynamicStructuredTool, getSchema: () => schema, emitPatch, emitSnapshot, emitMessage });
     try { emitMessage('[langchain] tools ready: ' + tools.map(t => t.name).join(', ')); } catch {}
     const model = new ChatOpenAI({
+      temperature: 0,
       modelName: process.env.OPENAI_MODEL || 'gpt-4o',
       openAIApiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '',
       streaming: true,
@@ -185,7 +186,7 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
   });
   const fetchCatalogTool = new DynamicStructuredTool({
     name: 'fetch_input_catalog',
-    description: 'Retourne la liste des types (sections/champs) et leurs options pour construire des formulaires dynamiques.',
+    description: 'Retourne la liste des types (sections/champs) et leurs options pour construire des formulaires dynamiques tu trouveras les type existants il ni a que ce dans la liste respect uniquement ca mais avec les validator tu gerer ca.',
     schema: z.object({}).describe('Aucun argument.'),
     func: async () => JSON.stringify({ success: true, catalog: getCatalog() }),
   });
