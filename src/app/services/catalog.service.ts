@@ -140,7 +140,8 @@ export class CatalogService {
       return this.saveFlow(doc);
     }
     const payload = { name, description, status, enabled, graph: { nodes, edges } } as any;
-    return this.flowsApi.create(wsId, payload, false).pipe(map((f: any) => ({
+    // If user requested enabled at creation time, pass force=1 so backend honors enabled even for empty/invalid graphs
+    return this.flowsApi.create(wsId, payload, !!enabled).pipe(map((f: any) => ({
       id: String((f && (f.id || f._id)) || ''),
       name: f?.name || name,
       description: (f as any)?.description || description || '',
@@ -357,8 +358,7 @@ export class CatalogService {
   }
   deleteCredential(id: string): Observable<boolean> {
     if (environment.useBackend) {
-      // Pas d’endpoint delete explicite dans le Swagger pour /credentials/{id}; si ajouté, remplacer ci-dessous
-      return of(true).pipe(delay(CatalogService.LATENCY));
+      return this.credsApi.delete(id).pipe(map(() => true));
     }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
     const next = list.filter(x => x.id !== id);

@@ -145,6 +145,40 @@ async function runFormAgentWithTools({ prompt, history = [], seedSchema = null, 
 }
 
 async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitSnapshot, emitMessage }) {
+  function normalizeFieldOptions(field){
+    try {
+      if (!field || typeof field !== 'object') return;
+      const t = String(field.type || '').toLowerCase();
+      if (t !== 'select' && t !== 'radio') return;
+      let opts = field.options;
+      if (opts == null) return;
+      const toTitle = (s) => { try { const x = String(s || '').trim(); return x.slice(0,1).toUpperCase() + x.slice(1); } catch { return String(s); } };
+      let out = [];
+      if (Array.isArray(opts)) {
+        if (opts.length && typeof opts[0] === 'string') out = opts.map(v => ({ label: toTitle(v), value: String(v) }));
+        else if (opts.length && typeof opts[0] === 'object') {
+          out = opts.map(o => {
+            if (o && typeof o === 'object') {
+              if (o.label != null && o.value != null) return { label: String(o.label), value: String(o.value) };
+              if (o.text != null && o.value != null) return { label: String(o.text), value: String(o.value) };
+              const k = Object.keys(o)[0]; if (k) return { label: toTitle(k), value: String(o[k]) };
+            }
+            return null;
+          }).filter(Boolean);
+        }
+      } else if (typeof opts === 'object') {
+        out = Object.entries(opts).map(([k, v]) => ({ label: toTitle(k), value: String(v) }));
+      } else if (typeof opts === 'string') {
+        out = opts.split(',').map(s => s.trim()).filter(Boolean).map(v => ({ label: toTitle(v), value: v }));
+      }
+      if (out.length === 0) out = [{ label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' }];
+      field.options = out;
+      if (field.default != null) {
+        const dv = String(field.default);
+        if (!out.find(o => String(o.value) === dv)) out.push({ label: toTitle(dv), value: dv });
+      }
+    } catch {}
+  }
   const ensureUiPath = (path) => {
     const s = String(path || '').trim();
     if (!s || s.startsWith('/')) throw new Error('path_must_be_ui_style');

@@ -19,5 +19,5 @@ export class CredentialsBackendService {
   get(id: string): Observable<BackendCredentialSummary> { return this.api.get<BackendCredentialSummary>(`/api/credentials/${encodeURIComponent(id)}`); }
   update(id: string, body: BackendCredentialUpdate): Observable<any> { return this.api.put<any>(`/api/credentials/${encodeURIComponent(id)}`, body); }
   values(id: string, reveal: '0'|'1' = '0'): Observable<any> { return this.api.get<any>(`/api/credentials/${encodeURIComponent(id)}/values`, { reveal }); }
+  delete(id: string): Observable<any> { return this.api.delete<any>(`/api/credentials/${encodeURIComponent(id)}`); }
 }
-

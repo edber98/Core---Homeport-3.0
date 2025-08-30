@@ -843,11 +843,12 @@ export class FlowBuilderComponent {
       if (target) {
         const edge: Edge = {
           type: 'template',
-          id: `${newId}->${target.id}:out:`,
+          id: `${newId}->${target.id}:out:in`,
           source: newId,
           target: target.id as any,
           sourceHandle: 'out',
-          targetHandle: null,
+          // Target of a start/start_form is a regular node input
+          targetHandle: 'in' as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -1055,11 +1056,11 @@ export class FlowBuilderComponent {
       if (target) {
         const edge: Edge = {
           type: 'template',
-          id: `${newId}->${target.id}:out:`,
+          id: `${newId}->${target.id}:out:in`,
           source: newId,
           target: target.id as any,
           sourceHandle: 'out',
-          targetHandle: null,
+          targetHandle: 'in' as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -1194,25 +1195,29 @@ export class FlowBuilderComponent {
       let msgIn = this.advancedInjectedInput;
       const isEmpty = (v: any) => v == null || (typeof v === 'object' && Object.keys(v).length === 0);
       if (isStart && m?.startFormEnabled && isEmpty(msgIn)) {
-        // Ouvrir une modale avec le Dynamic Form pour saisir l'entrée
-        import('./start-form-modal.component').then(mod => {
-          const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
-          const inst: any = ref.getContentComponent();
-          try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
-          const sub = inst.submitted.subscribe((val: any) => {
-            try { sub.unsubscribe(); } catch {}
-            ref.close();
-            this.advancedInjectedInput = val; this.advancedCtx = val || {};
-            this._doTestNodeBackend(m, isStart, this.advancedInjectedInput || {});
+        const openForm = () => {
+          import('./start-form-modal.component').then(mod => {
+            const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
+            const inst: any = ref.getContentComponent();
+            try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+            const sub = inst.submitted.subscribe((val: any) => {
+              try { sub.unsubscribe(); } catch {}
+              ref.close();
+              this.advancedInjectedInput = val; this.advancedCtx = val || {};
+              // Après saisie, exécuter directement (la sauvegarde a déjà été confirmée en amont)
+              this._doTestNodeBackend(m, isStart, this.advancedInjectedInput || {});
+            });
           });
-        });
+        };
+        // Demande de sauvegarde avant d'ouvrir la dialog si nécessaire
+        if (environment.useBackend && this.currentFlowId && this.hasUnsavedChanges()) this._saveIfNeededThen(() => openForm()); else openForm();
         return;
       }
       if (isEmpty(msgIn)) {
-        this.modal.confirm({ nzTitle: 'Exécuter sans entrée ?', nzContent: 'Aucune entrée détectée pour ce nœud. Voulez-vous exécuter quand même ?', nzOnOk: () => this._doTestNodeBackend(m, isStart, msgIn || {}) });
+        this.modal.confirm({ nzTitle: 'Exécuter sans entrée ?', nzContent: 'Aucune entrée détectée pour ce nœud. Voulez-vous exécuter quand même ?', nzOnOk: () => this._saveIfNeededThen(() => this._doTestNodeBackend(m, isStart, msgIn || {})) });
         return;
       }
-      this._doTestNodeBackend(m, isStart, msgIn);
+      this._saveIfNeededThen(() => this._doTestNodeBackend(m, isStart, msgIn));
     } catch {}
   }
   private _doTestNode(m: any, isStart: boolean, input: any) {
@@ -1231,9 +1236,9 @@ export class FlowBuilderComponent {
       if (isStart) {
         this.advancedInjectedOutput = this.getStartPayload().payload || {};
       } else {
-        const flowOut = (this.lastRun && this.lastRun.finalPayload) ? this.lastRun.finalPayload : null;
+        // Show the node's own result, not the flow final payload
         const nodeOut = last?.result;
-        this.advancedInjectedOutput = flowOut ?? nodeOut ?? null;
+        this.advancedInjectedOutput = nodeOut ?? null;
       }
       this.advancedCtx = this.advancedInjectedInput || {};
       this.testDurationMs = Math.round(t1 - t0);
@@ -1318,23 +1323,26 @@ export class FlowBuilderComponent {
       const nodeId = this.selectedModel?.id;
       if (!nodeId) return;
       if (environment.useBackend && this.currentFlowId) {
-        const p = this.getStartPayload().payload;
-        this.previewLoading = true;
-        this.runsApi.preview(this.currentFlowId, nodeId, p).subscribe({
-          next: (resp) => {
-            this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
-            this.advancedCtx = this.advancedInjectedInput || {};
-            try { this.cdr.detectChanges(); } catch {}
-          },
-          error: () => {
-            // Fallback to local simulation
-            const injected = this.runPredecessorsAndGetResult(nodeId);
-            this.advancedInjectedInput = injected;
-            this.advancedCtx = this.advancedInjectedInput || {};
-            try { this.cdr.detectChanges(); } catch {}
-          },
-          complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
-        });
+        const runPreview = () => {
+          const p = this.getStartPayload().payload;
+          this.previewLoading = true;
+          this.runsApi.preview(this.currentFlowId!, nodeId, p).subscribe({
+            next: (resp) => {
+              this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
+              this.advancedCtx = this.advancedInjectedInput || {};
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            error: () => {
+              // Fallback to local simulation
+              const injected = this.runPredecessorsAndGetResult(nodeId);
+              this.advancedInjectedInput = injected;
+              this.advancedCtx = this.advancedInjectedInput || {};
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+          });
+        };
+        this._saveIfNeededThen(runPreview);
       } else {
         const injected = this.runPredecessorsAndGetResult(nodeId);
         this.advancedInjectedInput = injected;
@@ -1342,6 +1350,33 @@ export class FlowBuilderComponent {
         try { this.cdr.detectChanges(); } catch {}
       }
     } catch {}
+  }
+
+  // Ask to save when using backend and flow has unsaved changes, then run the action
+  private _saveIfNeededThen(action: () => void) {
+    if (!(environment.useBackend && this.currentFlowId && this.hasUnsavedChanges())) { action(); return; }
+    this.modal.confirm({
+      nzTitle: 'Changements non sauvegardés',
+      nzContent: 'Le flow a des modifications non sauvegardées. Il sera sauvegardé avant exécution. Confirmer ?',
+      nzOkText: 'Sauvegarder et exécuter',
+      nzCancelText: 'Annuler',
+      nzOnOk: () => new Promise<void>((resolve) => {
+        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({
+          next: () => {
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+            action();
+            resolve();
+          },
+          error: (e) => {
+            const err = this.normalizeApiError(e);
+            try { this.message.error(err?.message || 'Échec de la sauvegarde'); } catch { this.showToast(err?.message || 'Échec de la sauvegarde'); }
+            resolve();
+          }
+        });
+      })
+    });
   }
 
   private runPredecessorsAndGetResult(nodeId: string): any {
@@ -1994,7 +2029,8 @@ export class FlowBuilderComponent {
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
-        if (isStart) this.advancedInjectedOutput = this.getStartPayload().payload || {};
+        // Important: clear any stale output when opening on a non-start node (no attempt yet)
+        this.advancedInjectedOutput = isStart ? (this.getStartPayload().payload || {}) : null;
         this.advancedAttemptEvents = [];
         this.advancedAttemptExecs = [];
         this.advancedExecCount = null;
@@ -2105,7 +2141,7 @@ export class FlowBuilderComponent {
         const tmpl = n?.data?.model?.templateObj || {};
         const ty = String(tmpl?.type || '').toLowerCase();
         // target must accept an input (not start-like/end)
-        if (ty === 'start' || ty === 'event' || ty === 'endpoint' || ty === 'end') continue;
+        if (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint' || ty === 'end') continue;
         const p = n?.point || { x: 0, y: 0 };
         const dx = (p.x - wx);
         const dy = (p.y - wy);
@@ -2337,26 +2373,34 @@ export class FlowBuilderComponent {
         // Skip the prompt once (we just collected values); reset flag and proceed to launch
         this.skipStartFormPromptOnce = false;
       } else {
-        try {
-          import('./start-form-modal.component').then(mod => {
-            const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
-            const inst: any = ref.getContentComponent();
-            try { inst.schema = startInfo.schema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
-            const sub = inst.submitted.subscribe((val: any) => {
-              try { sub.unsubscribe(); } catch {}
-              ref.close();
-              try { this.setStartPayload(val || {}); } catch {}
-              // On next call, continue without reopening the modal
-              this.skipStartFormPromptOnce = true;
-              this.runFlow();
+        const openStartForm = () => {
+          try {
+            import('./start-form-modal.component').then(mod => {
+              const ref = this.modal.create({ nzTitle: 'Remplir le formulaire de démarrage', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 780 });
+              const inst: any = ref.getContentComponent();
+              try { inst.schema = startInfo.schema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+              const sub = inst.submitted.subscribe((val: any) => {
+                try { sub.unsubscribe(); } catch {}
+                ref.close();
+                try { this.setStartPayload(val || {}); } catch {}
+                // On next call, continue without reopening the modal
+                this.skipStartFormPromptOnce = true;
+                this.runFlow();
+              });
             });
-          });
-          return;
-        } catch {}
+          } catch {}
+        };
+        // Demander la sauvegarde avant d'ouvrir la dialog si backend actif
+        if (environment.useBackend && this.currentFlowId && this.hasUnsavedChanges()) {
+          this._saveIfNeededThen(() => openStartForm());
+        } else {
+          openStartForm();
+        }
+        return;
       }
     }
 
-    // If backend is enabled and we have a flowId, launch on backend
+    // If backend is enabled, launch an ad-hoc run using the local (editor) graph without saving
     if (environment.useBackend && this.currentFlowId) {
       // Optional: ensure we have a start-like node to avoid ambiguous entrypoint
       if (!this.hasStartLikeNode()) {
@@ -2370,7 +2414,6 @@ export class FlowBuilderComponent {
         this.runsApi.start(this.currentFlowId!, (p && (p as any).payload) ?? null).subscribe({
           next: (r: any) => {
             try { this.message.success('Exécution backend démarrée'); } catch { this.showToast('Exécution backend démarrée'); }
-            // Ouvrir le flux SSE et afficher l’état en direct dans l’éditeur (pas de redirection)
             try {
               const runId = r?.id || r?.data?.id || r?.runId;
               if (runId) this.openBackendStream(runId);
@@ -2382,23 +2425,7 @@ export class FlowBuilderComponent {
           }
         });
       };
-      // Save first if there are unsaved changes to ensure backend has the latest graph
-      if (this.hasUnsavedChanges()) {
-        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
-          next: () => {
-            // Update checksum/draft like saveFlow()
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
-            try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
-            launch();
-          },
-          error: (e) => {
-            const err = this.normalizeApiError(e);
-            try { this.message.error(err?.message || 'Échec de la sauvegarde'); } catch { this.showToast(err?.message || 'Échec de la sauvegarde'); }
-          }
-        });
-      } else {
-        launch();
-      }
+      if (this.hasUnsavedChanges()) { this._saveIfNeededThen(launch); } else { launch(); }
       return;
     }
 

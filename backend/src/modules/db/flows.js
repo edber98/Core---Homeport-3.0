@@ -99,7 +99,8 @@ module.exports = function(){
       description: String(description || ''),
       workspaceId: ws._id,
       status,
-      enabled: v.ok ? enabled : false,
+      // Allow enabling on create when force=1 even if graph is invalid (empty or WIP)
+      enabled: v.ok ? enabled : (force ? enabled : false),
       graph,
       invalid: !v.ok,
       validationErrors: v.errors || [],

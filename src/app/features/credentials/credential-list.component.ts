@@ -7,6 +7,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
@@ -18,7 +19,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'credential-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzButtonModule, NzSelectModule, NzModalModule, NzFormModule, NzInputModule, NzIconModule, DynamicForm],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzButtonModule, NzSelectModule, NzModalModule, NzFormModule, NzInputModule, NzIconModule, NzPopconfirmModule, DynamicForm],
   template: `
   <div class="list-page">
     <div class="container">
@@ -48,7 +49,20 @@ import { environment } from '../../../environments/environment';
           </div>
           <div class="trailing">
             <button class="icon-btn" (click)="duplicate(c); $event.stopPropagation()" [disabled]="!isAdmin" title="Dupliquer"><i class="fa-regular fa-copy"></i></button>
-            <button class="icon-btn" (click)="remove(c); $event.stopPropagation()" [disabled]="!isAdmin" title="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
+            <button
+              class="icon-btn"
+              nz-popconfirm
+              [nzPopconfirmTitle]="'Supprimer ' + c.name + ' ?'"
+              nzOkText="Supprimer"
+              nzCancelText="Annuler"
+              nzPopconfirmPlacement="topLeft"
+              (nzOnConfirm)="remove(c)"
+              (click)="$event.stopPropagation()"
+              [disabled]="!isAdmin"
+              title="Supprimer"
+            >
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -208,7 +222,6 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   }
   remove(c: CredentialSummary) {
     if (!this.isAdmin) return;
-    if (!confirm(`Supprimer ${c.name} ?`)) return;
     this.catalog.deleteCredential(c.id).subscribe({ next: () => { this.ui.success('Credentials supprimés'); this.reload(); }, error: () => this.ui.error('Échec de la suppression') });
   }
 

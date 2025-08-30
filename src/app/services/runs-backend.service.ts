@@ -56,22 +56,46 @@ export class RunsBackendService {
     // Basic logs for debugging SSE lifecycle
     try { console.log('[frontend][sse] open', { runId, url }); } catch {}
     const on = (cb: (ev: any) => void) => {
-      const live = (evt: MessageEvent) => {
+      const handler = (evt: MessageEvent) => {
         try {
           const parsed = JSON.parse(evt.data);
-          try { console.log('[frontend][sse] live', parsed?.type, parsed); } catch {}
+          try { console.log('[frontend][sse]', parsed?.type, parsed); } catch {}
           cb(parsed);
         } catch (e) {
           try { console.warn('[frontend][sse] bad json', evt.data); } catch {}
         }
       };
-      // New channel: 'live' events with seq and type
-      source.addEventListener('live', live);
-      // Fallback: default message
-      source.onmessage = live as any;
+      // Support both generic 'live' channel and typed events from engine
+      const types = ['live','run.status','node.started','node.status','node.done','node.result','edge.taken','run.failed','error'];
+      types.forEach(t => source.addEventListener(t, handler as any));
+      // Fallback default message
+      source.onmessage = handler as any;
     };
     source.onerror = (e) => { try { console.error('[frontend][sse] error', e); } catch {} };
     const close = () => { try { console.log('[frontend][sse] close', { runId }); } catch {} try { source.close(); } catch {} };
+    return { source, on, close };
+  }
+
+  // Ad-hoc (editor) run APIs — do not persist, run from provided graph
+  startAdhoc(graph: any, payload: any): Observable<any> {
+    return this.api.post<any>(`/api/test/runs`, { graph, payload });
+  }
+  getAdhoc(runId: string): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/test/runs/${encodeURIComponent(runId)}`); }
+  streamAdhoc(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
+    const base = environment.apiBaseUrl.replace(/\/$/, '');
+    const token = this.auth.token;
+    const url = `${base}/api/test/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+    const source = new EventSource(url);
+    const on = (cb: (ev: any) => void) => {
+      const handler = (evt: MessageEvent) => { try { const parsed = JSON.parse(evt.data); cb(parsed); } catch {} };
+      // Listen to common event types emitted by the engine
+      const types = ['run.status','node.started','node.done','node.result','edge.taken','run.failed','error'];
+      types.forEach(t => source.addEventListener(t, handler as any));
+      // Fallback default message
+      source.onmessage = handler as any;
+    };
+    source.onerror = (e) => { try { console.error('[frontend][sse][adhoc] error', e); } catch {} };
+    const close = () => { try { console.log('[frontend][sse][adhoc] close', { runId }); } catch {} try { source.close(); } catch {} };
     return { source, on, close };
   }
 }

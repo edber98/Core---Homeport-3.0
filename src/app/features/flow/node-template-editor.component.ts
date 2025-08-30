@@ -13,6 +13,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { MonacoJsonEditorComponent } from '../../features/dynamic-form/components/monaco-json-editor.component';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { CatalogService, NodeTemplate } from '../../services/catalog.service';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -263,7 +264,7 @@ export class NodeTemplateEditorComponent implements OnInit {
   ];
 
   apps: { id: string; name: string; title?: string }[] = [];
-  constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private modal: NzModalService) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -487,9 +488,40 @@ export class NodeTemplateEditorComponent implements OnInit {
     // constraints removed per new model (not used)
     this.catalog.saveNodeTemplate(tpl).subscribe({
       next: () => { this.saving = false; this.router.navigate(['/node-templates']); },
-      error: () => { this.saving = false; }
+      error: (err: any) => {
+        this.saving = false;
+        if (err && err.code === 'template_update_breaks_flows' && err.details && Array.isArray(err.details.impacted)) {
+          this.showImpactedConfirm(tpl, err.details.impacted);
+        }
+      }
     });
   }
+
+  private showImpactedConfirm(tpl: NodeTemplate, impacted: any[]) {
+    const count = impacted.length;
+    const listHtml = impacted.slice(0, 6).map((it: any) => {
+      const name = it?.name || it?.flowId;
+      const firstErr = (it?.errors && it.errors[0] && (it.errors[0].message || it.errors[0].code)) || 'Erreur de validation';
+      return `<li><strong>${this.escapeHtml(name)}</strong> — ${this.escapeHtml(firstErr)}</li>`;
+    }).join('');
+    const more = impacted.length > 6 ? `<div style=\"margin-top:6px;color:#6b7280\">… et ${impacted.length - 6} autres</div>` : '';
+    this.modal.confirm({
+      nzTitle: `Des flows deviendront invalides (${count})`,
+      nzContent: `<div>La mise à jour de ce template invalide ${count} flow(s).<br/>Détails (extraits):<ul style=\"margin-top:8px;\">${listHtml}</ul>${more}<div style=\"margin-top:10px;\">Voulez-vous forcer la mise à jour ? Les flows impactés seront désactivés et marqués en erreur.</div></div>`,
+      nzOkText: 'Forcer et invalider',
+      nzOkDanger: true,
+      nzCancelText: 'Annuler',
+      nzOnOk: () => new Promise<void>((resolve) => {
+        this.saving = true;
+        this.catalog.saveNodeTemplate(tpl, true).subscribe({
+          next: () => { this.saving = false; resolve(); this.router.navigate(['/node-templates']); },
+          error: () => { this.saving = false; resolve(); }
+        });
+      })
+    });
+  }
+
+  private escapeHtml(s: string): string { return String(s || '').replace(/[&<>"\']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c] || c); }
 
   // ===== Form Builder embedding
   openFormBuilderRoute() {

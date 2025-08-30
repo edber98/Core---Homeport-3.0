@@ -86,7 +86,13 @@ module.exports = function(){
         const Run = require('../../db/models/run.model');
         for (const it of impacted){
           const f = await Flow.findById(it.flowId);
-          if (f) { f.enabled = false; await f.save(); }
+          if (f) {
+            f.enabled = false;
+            f.invalid = true;
+            try { f.validationErrors = Array.isArray(it.errors) ? it.errors : []; } catch { f.validationErrors = []; }
+            try { f.validationWarnings = []; } catch {}
+            await f.save();
+          }
           await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
           await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
@@ -125,7 +131,13 @@ module.exports = function(){
       const Run = require('../../db/models/run.model');
       for (const it of impacted){
         const f = await Flow.findById(it.flowId);
-        if (f) { f.enabled = false; await f.save(); }
+        if (f) {
+          f.enabled = false;
+          f.invalid = true;
+          try { f.validationErrors = Array.isArray(it.errors) ? it.errors : []; } catch { f.validationErrors = []; }
+          try { f.validationWarnings = []; } catch {}
+          await f.save();
+        }
         await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
         await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow disabled due to deleted template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
       }
