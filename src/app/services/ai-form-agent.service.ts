@@ -17,6 +17,7 @@ export interface StreamParams {
   layout?: 'vertical'|'horizontal'|'inline';
   steps?: boolean;
   maxFields?: number;
+  seedSchema?: any;
 }
 
 export interface AgentStream {
@@ -37,6 +38,9 @@ export class AiFormAgentService {
     q.set('maxFields', String(params.maxFields || 20));
     const tok = this.auth.token;
     if (tok) q.set('token', tok);
+    if (params.seedSchema && typeof params.seedSchema === 'object') {
+      try { const json = JSON.stringify(params.seedSchema); const b64 = btoa(unescape(encodeURIComponent(json))); q.set('seed', b64); } catch {}
+    }
     const url = `${environment.apiBaseUrl}/api/ai/form/build/stream?${q.toString()}`;
 
     const es = new EventSource(url, { withCredentials: false });
@@ -65,4 +69,3 @@ export class AiFormAgentService {
     return { events$: subj.asObservable(), stop };
   }
 }
-
