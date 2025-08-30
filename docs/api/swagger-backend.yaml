@@ -334,6 +334,9 @@ paths:
   /api/node-templates/{key}:
     put:
       summary: Update node template (force)
+      description: |
+        When args/schema changes, impacted flows are validated. If invalid, returns 400 with details.impacted.
+        Use force=1 to apply anyway; impacted flows are disabled and marked invalid with validationErrors, and a critical notification is created.
       parameters: [ { in: path, name: key, required: true, schema: { type: string } } ]
       requestBody: { content: { application/json: { schema: { allOf: [ { $ref: '#/components/schemas/NodeTemplate' }, { type: object, properties: { force: { type: boolean } } } ] } } } }
       responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
@@ -372,6 +375,7 @@ paths:
   /api/credentials/{id}:
     get: { summary: Get credential summary, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
     put: { summary: Update credential, requestBody: { content: { application/json: { schema: { $ref: '#/components/schemas/CredentialUpdate' } } } }, responses: { '200': { $ref: '#/components/responses/Error' } } }
+    delete: { summary: Delete credential, parameters: [ { in: path, name: id, required: true, schema: { type: string } } ], responses: { '200': { $ref: '#/components/responses/Error' } } }
   /api/credentials/{id}/values:
     get:
       summary: Read credential values (masked by default; reveal=1 requires admin)

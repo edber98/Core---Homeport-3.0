@@ -102,7 +102,7 @@ type FlowItem = { id: string; name: string; description?: string };
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
-              <nz-form-label>En service</nz-form-label>
+              <nz-form-label>Activer ce flow</nz-form-label>
               <nz-form-control>
                 <nz-switch [(ngModel)]="draft.enabled" name="flow_enabled"></nz-switch>
               </nz-form-control>

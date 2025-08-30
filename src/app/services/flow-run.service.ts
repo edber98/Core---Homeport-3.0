@@ -183,8 +183,8 @@ export class FlowRunService {
       const s = String(args?.input || '');
       return { text: s.toUpperCase(), _mode: mode };
     }
-    // Default: echo args merged in
-    return { ...payload, ...args, _mode: mode };
+    // Default (function-like): return args-only (do not merge upstream payload)
+    return { ...args, _mode: mode };
   }
 
   private pushCounters() {
