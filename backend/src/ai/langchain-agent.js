@@ -63,19 +63,31 @@ function normalizeHistory(h) {
   return h.filter(m => m && typeof m === 'object' && m.role && m.content).map(m => ({ role: m.role, content: String(m.content) }));
 }
 
+function escapeForLangChain(text){
+  // Double curly braces so LangChain PromptTemplate doesn't treat them as variables
+  return String(text).replace(/\{/g, '{{').replace(/\}/g, '}}');
+}
+
 function systemPrompt() {
   // Tools-only planner: reflect first, then build via tools.
-  return [
+  const raw = [
     'Tu es un concepteur expert de formulaires Dynamic Form. Tu utilises UNIQUEMENT les tools fournis (pas de JSON final dans ta sortie).',
-    "Processus: 1) fetch_input_catalog pour connaître toutes les options disponibles, et les types respect bien ces informations le type email N'EXISTE PAS c'est text avec validators 2) list_tree pour voir l’état, 3) set_form pour fixer le title et l’UI (layout, labelsOnTop), 4) crée les sections/steps et champs avec descriptions, placeholders, validators, options, conditions, 5) ajuste la grille (set_col) et set_at pour des updates précis, 6) emit_snapshot à la fin (et à chaque étape importante).",
+    "Processus: 1) fetch_input_catalog pour connaître toutes les options disponibles, et les types — le type email N'EXISTE PAS (utilise 'text' avec validators), 2) list_tree pour voir l’état, 3) set_form pour fixer le title et l’UI (layout, labelsOnTop), 4) crée les sections/steps et champs avec descriptions, placeholders, validators, options, conditions, 5) ajuste la grille (set_col) et update_field pour des updates précis, 6) emit_snapshot à la fin (et à chaque étape importante).",
     'Toujours réfléchir au besoin utilisateur, regrouper par thèmes, et documenter les sections avec une description claire résumant le but des champs inclus.',
-    `Tu dois privilégier des formulaires détaillés: pour chaque champ, envisager placeholder, description, default, validators (required, min/max, minLength/maxLength, pattern) selon le type; pour select et radio, fournir des "options" sous forme de paires label/value en json en tableau dans options pour le field tu dois pas oublié !!, ne pas oublié pour les select OBLIGATOIRE; et respecter bien les types et informations fourni par le tool fetch_input_catalog, ajouter visibleIf/requiredIf/disabledIf pertinents; renseigner col.xs=24 par défaut et adapter si nécessaire.`,
-    "UI par défaut: layout='vertical', labelsOnTop=true; steps uniquement lorsque plusieurs sujets distincts; ajouter summary si utile. Grille responsive: xs=24, sm=24; en vertical, privilégie la division sur grands écrans: md≈12 (2 colonnes), lg≈8–12 (2–3 colonnes), xl≈6–8 (3–4 colonnes) selon la densité. Conserve 24 pour les champs larges (textarea, descriptions longues) et les blocs critiques. Applique set_col après chaque ajout pour refléter cette répartition.",
+    `Tu dois privilégier des formulaires détaillés: pour chaque champ, envisager placeholder, description, default, validators (required, min/max, minLength/maxLength, pattern) selon le type. IMPORTANT: pour les champs de type 'select' et 'radio', tu DOIS toujours fournir "options" sous la forme d’un tableau [{label, value}, …] (au minimum deux valeurs), et renseigner default si pertinent. Ajoute visibleIf/requiredIf/disabledIf lorsque c’est utile. Renseigne col.xs=24 par défaut puis adapte (md≈12, lg≈12, xl≈12 pour deux colonnes).`,
+    "UI par défaut: layout='vertical', labelsOnTop=true; steps uniquement lorsque plusieurs sujets distincts; ajouter summary si utile.",
+    "Grille responsive (toujours proposer quelque chose de correct): xs=24 par défaut; en vertical, répartis en 2 colonnes sur écrans moyens/grands: md=12, lg=12, xl=12. Pour 3 colonnes sur grands écrans: md≈12, lg≈8, xl≈8. Conserve 24 pour textarea/blocks. Applique set_col après chaque ajout et précise les valeurs choisies.",
+    "À chaque section/champ ajouté, pense au rendu responsive et décris brièvement (1–2 lignes) le rendu attendu (ex: 'Section A en 2 colonnes: champs 1/2 md=12; textarea sur 24').",
     "Chemins UI-style STRICTS: racine sections='fields', ex: 'fields[0]' (première section), 'fields[0].fields[1]' (2e champ de la 1re section). Avec steps: 'steps[0]' (1re step), 'steps[0].fields[0]' (1re section de la step), 'steps[0].fields[0].fields[1]' (2e champ). Si l’index n’existe pas, tu le crées. AUCUN JSON Pointer ('/…') et AUCUN 'sections' dans les paths.",
-    'Exemples (format manifest plugins) — inspiration uniquement:',
-    "- Sans steps: title='Formulaire', ui.layout='vertical', ui.labelsOnTop=true, fields[0].type='section', fields[0].title='Informations Générales', fields[0].fields[0] est un champ (key/label/type/col).",
-    "- Avec steps: steps[0].title='Étape 1', steps[0].fields[0].type='section', steps[0].fields[0].fields[0] est un champ (key/label/type/col).",
+    'Exemples concrets (usage des tools):',
+    "- add_field dans une section racine: location.path='fields', field={ key:'country', label:'Pays', type:'select', default:'fr', options:[{label:'France', value:'fr'},{label:'Belgique', value:'be'}], col:{xs:24,md:12,lg:12,xl:12} }",
+    "- add_field radio: field={ key:'contact_pref', label:'Préférence de contact', type:'radio', default:'email', options:[{label:'Email', value:'email'},{label:'Téléphone', value:'phone'}], col:{xs:24,md:12} }",
+    "- set_col pour répartir en deux colonnes: path='fields[0].fields[1]', col={xs:24,md:12,lg:12,xl:12}",
+    "- update_field pour compléter un select: path='fields[0].fields[2]', patch={ description:'Choisissez un service', options:[{label:'Option 1', value:'option1'},{label:'Option 2', value:'option2'}], default:'option1' }",
+    "- steps: add_step step={ title:'Étape 1', fields:[ { type:'section', title:'Infos', fields:[] } ] } puis add_field dans 'steps[0].fields[0]'",
+    "- add_select_option pour ajouter une option à un select existant: path='fields[0].fields[2]', index=1, option={ label:'Option 2', value:'option2' }",
   ].join('\n');
+  return escapeForLangChain(raw);
 }
 
 async function runFormAgentWithTools({ prompt, history = [], seedSchema = null, preferSteps = false, layout = 'vertical', maxFields = 6, send, done }) {
@@ -145,6 +157,17 @@ async function runFormAgentWithTools({ prompt, history = [], seedSchema = null, 
 }
 
 async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitSnapshot, emitMessage }) {
+  function ensureDefaultCol(field){
+    try {
+      if (!field || typeof field !== 'object') return;
+      const t = String(field.type || '').toLowerCase();
+      const isWide = (t === 'textarea' || t === 'textblock');
+      if (!field.col || typeof field.col !== 'object') {
+        field.col = isWide ? { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 } : { xs: 24, md: 12, lg: 12, xl: 12 };
+      }
+      try { field.col = clampCol(field.col); } catch {}
+    } catch {}
+  }
   function normalizeFieldOptions(field){
     try {
       if (!field || typeof field !== 'object') return;
@@ -199,7 +222,24 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
     func: async ({ title, ui }) => {
       const ops = [];
       if (typeof title === 'string') ops.push({ op: 'add', path: '/title', value: title });
-      if (ui && typeof ui === 'object') ops.push({ op: 'add', path: '/ui', value: ui });
+      // Merge UI with defaults and existing UI
+      const current = getSchema() || {};
+      const baseUi = (current.ui && typeof current.ui === 'object') ? current.ui : {};
+      const provided = (ui && typeof ui === 'object') ? ui : {};
+      const layout = provided.layout || baseUi.layout || 'vertical';
+      const defaults = {
+        layout,
+        labelAlign: 'left',
+        labelsOnTop: layout === 'vertical',
+        labelCol: { span: 8 },
+        controlCol: { span: 16 },
+        widthPx: 1040,
+        actions: { showReset: false, showCancel: false },
+      };
+      const nextUi = { ...defaults, ...baseUi, ...provided };
+      ops.push({ op: 'add', path: '/ui', value: nextUi });
+      // Ensure summary defaults exist
+      if (!current.summary) ops.push({ op: 'add', path: '/summary', value: { enabled: false, includeHidden: false, dateFormat: 'dd/MM/yyyy' } });
       if (ops.length) emitPatch(ops);
       emitSnapshot();
       return JSON.stringify({ success: true });
@@ -338,7 +378,7 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
 
   const addFieldTool = new DynamicStructuredTool({
     name: 'add_field',
-    description: "Ajoute un champ dans fields d'une section ciblée par location.path.",
+    description: "Ajoute un champ dans fields d'une section ciblée par location.path. Pour type 'select' ou 'radio', fournir toujours field.options sous forme [{label,value},…] et default si pertinent.",
     schema: z.object({
       location: z.object({
         path: z.string().describe("Chemin UI-style du conteneur (ex: 'fields' pour racine, 'fields[0]' pour la première section, ou 'steps[0]' pour la première step)."),
@@ -378,6 +418,8 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
       }
       const f = { ...(field || {}) };
       if (!f.key && f.name) { f.key = f.name; delete f.name; }
+      try { normalizeFieldOptions(f); } catch {}
+      try { ensureDefaultCol(f); } catch {}
       const parent = Array.isArray(getAt(getSchema(), containerPtr)) ? getAt(getSchema(), containerPtr) : [];
       let arr = parent.slice();
       let targetIdx = (explicitIdx !== undefined) ? explicitIdx : (typeof index === 'number' ? Math.max(0, Math.min(arr.length + 1, index|0)) : arr.length);
@@ -425,7 +467,7 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
 
   const updateFieldTool = new DynamicStructuredTool({
     name: 'update_field',
-    description: 'Patch superficiel sur un champ via path.',
+    description: "Patch superficiel sur un champ via path. Pour 'select'/'radio', tu peux définir patch.options=[{label,value},…] et patch.default.",
     schema: z.object({
       path: z.string().describe("Chemin UI-style du champ (ex: 'fields[0].fields[1]')."),
       patch: z.record(z.any()).describe('Propriétés à fusionner.'),
@@ -447,6 +489,8 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
       if (Object.keys(p).length) {
         const current = getAt(getSchema(), ptr) || {};
         const next = { ...current, ...p };
+        try { ensureDefaultCol(next); } catch {}
+        try { normalizeFieldOptions(next); } catch {}
         emitPatch([{ op: 'replace', path: ptr, value: next }]);
       }
       emitSnapshot();
@@ -505,6 +549,39 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
       const current = getAt(getSchema(), ptr) || {};
       const next = { ...current, col: clampCol(col) };
       emitPatch([{ op: 'replace', path: ptr, value: next }]); emitSnapshot();
+      return JSON.stringify({ success: true });
+    },
+  });
+
+  // Add a single option to a select/radio field at a given index
+  const addSelectOptionTool = new DynamicStructuredTool({
+    name: 'add_select_option',
+    description: "Ajoute une option à un champ 'select' (ou 'radio'). Fournir path (UI-style) vers le champ, index d'insertion (0..n) et l'option {label,value}.",
+    schema: z.object({
+      path: z.string().describe("Chemin UI-style du champ (ex: 'fields[0].fields[1]')."),
+      index: z.number().int().optional().describe("Index d'insertion (par défaut: fin)."),
+      option: z.object({ label: z.string(), value: z.string() }).describe('Option à ajouter.'),
+    }).describe('Ajout d\'option.'),
+    func: async ({ path, index, option }) => {
+      ensureUiPath(path);
+      const ptr = toPointer(path);
+      const field = getAt(getSchema(), ptr) || {};
+      const t = String(field?.type || '').toLowerCase();
+      if (t !== 'select' && t !== 'radio') return JSON.stringify({ success: false, error: 'not_select_field' });
+      let opts = Array.isArray(field.options) ? field.options.slice() : [];
+      // Normalize option
+      let opt = option && typeof option === 'object' ? { label: String(option.label || ''), value: String(option.value || '') } : null;
+      if (!opt || !opt.label || !opt.value) return JSON.stringify({ success: false, error: 'bad_option' });
+      // If same value exists, replace at its index
+      const existingIdx = opts.findIndex(o => o && String(o.value) === opt.value);
+      if (existingIdx >= 0) { opts[existingIdx] = opt; }
+      else {
+        const idx = typeof index === 'number' ? Math.max(0, Math.min(opts.length, index|0)) : opts.length;
+        opts.splice(idx, 0, opt);
+      }
+      const next = { ...field, options: opts };
+      emitPatch([{ op: 'replace', path: ptr, value: next }]);
+      emitSnapshot();
       return JSON.stringify({ success: true });
     },
   });
@@ -571,6 +648,7 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
     updateSectionTool,
     addFieldTool,
     addStepTool,
+    addSelectOptionTool,
     updateFieldTool,
     removeAtTool,
     moveItemTool,

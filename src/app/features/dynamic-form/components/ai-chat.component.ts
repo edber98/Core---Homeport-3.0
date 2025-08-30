@@ -48,6 +48,9 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
         <button nz-button nzType="primary" (click)="send()" [disabled]="!text || busy">Envoyer</button>
         <button nz-button class="ml" (click)="stop()" *ngIf="busy">Stop</button>
       </div>
+      <div class="seed">
+        <textarea nz-input [(ngModel)]="seedText" [disabled]="busy" placeholder="Schéma seed (JSON optionnel, ex: champ select avec options)" rows="3"></textarea>
+      </div>
       <div class="actions" *ngIf="finalSchema">
         <button nz-button nzType="primary" (click)="loadIntoBuilder()">Charger dans le builder</button>
         <button nz-button class="ml" (click)="resetFinal()">Effacer le schéma</button>
@@ -82,6 +85,7 @@ export class AiChatComponent implements AfterViewInit {
   streaming = false;
   streamingText = '';
   finalSchema: any = null;
+  seedText = '';
 
   layout: 'vertical'|'horizontal'|'inline' = 'vertical';
   steps = false;
@@ -102,7 +106,9 @@ export class AiChatComponent implements AfterViewInit {
     this.messages.push({ role: 'user', text: t });
     this.text = '';
     this.busy = true; this.streaming = true; this.streamingText = '';
-    const stream = this.agent.stream({ prompt: t, layout: this.layout, steps: this.steps, maxFields: this.maxFields });
+    let seedObj: any = undefined;
+    try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
+    const stream = this.agent.stream({ prompt: t, layout: this.layout, steps: this.steps, maxFields: this.maxFields, seedSchema: seedObj });
     this.stopFn = stream.stop;
     stream.events$.subscribe({
       next: (ev: AgentEvent) => this.onEvent(ev),
