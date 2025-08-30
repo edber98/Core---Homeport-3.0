@@ -346,7 +346,7 @@ async function buildToolsLC({ DynamicStructuredTool, getSchema, emitPatch, emitS
       const parent = Array.isArray(getAt(getSchema(), containerPtr)) ? getAt(getSchema(), containerPtr) : [];
       let arr = parent.slice();
       let targetIdx = (explicitIdx !== undefined) ? explicitIdx : (typeof index === 'number' ? Math.max(0, Math.min(arr.length + 1, index|0)) : arr.length);
-      while (arr.length < targetIdx) arr.push({});
+      if (targetIdx > arr.length) targetIdx = arr.length; // avoid creating placeholder holes
       if (explicitIdx === undefined) {
         const dup = arr.findIndex((it) => it && typeof it === 'object' && it.key === f.key);
         if (dup >= 0) {
