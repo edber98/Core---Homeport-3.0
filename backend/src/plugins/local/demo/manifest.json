@@ -190,7 +190,7 @@
     {
       "key": "sendmail",
       "name": "sendMail",
-      "title": "Send mail",
+      "title": "Envoyer e-mail Gmail",
       "subtitle": "Gmail",
       "type": "function",
       "category": "Email",

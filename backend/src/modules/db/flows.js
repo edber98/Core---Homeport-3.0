@@ -212,5 +212,21 @@ module.exports = function(){
     res.apiOk(f);
   });
 
+  // Delete a flow
+  r.delete('/flows/:flowId', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let f = null;
+    if (Types.ObjectId.isValid(fid)) f = await Flow.findById(fid);
+    if (!f) f = await Flow.findOne({ id: fid });
+    if (!f) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = await Workspace.findById(f.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+    if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+    await Flow.deleteOne({ _id: f._id });
+    return res.apiOk({ id: String(f._id) });
+  });
+
   return r;
 }

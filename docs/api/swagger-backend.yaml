@@ -428,6 +428,11 @@ paths:
               status: "test"
               enabled: true
       responses: { '200': { $ref: '#/components/responses/Error' }, '400': { $ref: '#/components/responses/Error' } }
+    delete:
+      summary: Delete flow
+      parameters:
+        - { in: path, name: flowId, required: true, schema: { type: string } }
+      responses: { '200': { $ref: '#/components/responses/Error' } }
 
   /api/plugin-repos/{id}/sync:
     post:

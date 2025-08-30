@@ -211,16 +211,25 @@ export class CatalogService {
   saveNodeTemplate(tpl: NodeTemplate, force = false): Observable<NodeTemplate> {
     if (!tpl?.id) return throwError(() => new Error('Missing id'));
     if (environment.useBackend) {
-      const body = {
+      const body: any = {
         key: tpl.id,
         name: tpl.name || tpl.title || tpl.id,
+        title: tpl.title,
+        subtitle: tpl.subtitle,
+        icon: tpl.icon,
+        description: tpl.description,
+        tags: tpl.tags,
+        group: tpl.group,
         type: tpl.type,
         category: tpl.category,
+        providerKey: tpl.appId,
         args: tpl.args,
         output: tpl.output,
         authorize_catch_error: tpl.authorize_catch_error,
         authorize_skip_error: tpl.authorize_skip_error,
-      } as any;
+        allowWithoutCredentials: tpl.allowWithoutCredentials,
+        output_array_field: tpl.output_array_field,
+      };
       return this.templatesApi.update(tpl.id, body, force).pipe(map(() => tpl));
     }
     const list = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
@@ -364,6 +373,18 @@ export class CatalogService {
     const next = list.filter(x => x.id !== id);
     this.save(this.CRED_LIST_KEY, next);
     try { localStorage.removeItem(this.CRED_DOC_KEY + id); } catch {}
+    return of(true).pipe(delay(CatalogService.LATENCY));
+  }
+
+  deleteFlow(id: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.flowsApi.delete(id).pipe(map(() => true));
+    }
+    // Local mode: remove from list and storage
+    const list = this.load<FlowSummary[]>(this.FLOW_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.FLOW_LIST_KEY, next);
+    try { localStorage.removeItem(this.FLOW_DOC_KEY + id); } catch {}
     return of(true).pipe(delay(CatalogService.LATENCY));
   }
 
