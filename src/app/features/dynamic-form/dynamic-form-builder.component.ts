@@ -39,6 +39,7 @@ import { InspectorSectionComponent } from './components/inspector-section.compon
 import { InspectorFieldComponent } from './components/inspector-field.component';
 import { ConditionBuilderComponent } from './components/condition-builder.component';
 import { OptionsBuilderComponent } from './components/options-builder.component';
+import { AiChatComponent } from './components/ai-chat.component';
 import { BuilderTreeService } from './services/builder-tree.service';
 import { BuilderCtxActionsService } from './services/builder-ctx-actions.service';
 import { BuilderCustomizeService } from './services/builder-customize.service';
@@ -98,6 +99,7 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     InspectorFieldComponent,
     ConditionBuilderComponent,
     OptionsBuilderComponent,
+    AiChatComponent,
 
     DynamicForm,
     JsonSchemaViewerComponent,
@@ -212,6 +214,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
   leftDrawer = false;
   rightDrawer = false;
   isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  // AI Chat popover visibility
+  aiChatOpen = false;
 
   openPanel(where: 'left'|'right', _ev?: MouseEvent) {
     if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
@@ -219,6 +223,19 @@ export class DynamicFormBuilderComponent implements OnChanges {
   mobileAddSection() { this.addSectionFromToolbar(); }
   mobileAddField() { this.addFieldFromToolbar(); }
   mobileToggleEdit() { this.toggleEditMode(); }
+
+  // Load AI-generated schema from chat
+  applyAiSchema(s: any) {
+    try {
+      this.schema = (s && typeof s === 'object') ? (s as any) : JSON.parse(String(s || '{}'));
+      this.select(this.schema);
+      this.refresh();
+      this.msg.success('Schéma chargé depuis l\'assistant IA');
+    } catch {
+      this.msg.error('Schéma IA invalide');
+    }
+    this.aiChatOpen = false;
+  }
 
   constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router, private catalog: CatalogService) {
     this.createInspector();
