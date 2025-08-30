@@ -29,6 +29,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/core')(store));
     app.use('/api', require('./modules/flows')(store));
     app.use('/api', require('./modules/runs')(store));
+    // Ad-hoc test runs (ephemeral, from request body)
+    app.use('/api', require('./modules/db/test-runs')());
     app.use('/api', require('./modules/admin')(store));
   } else {
     // Ensure DB is connected and seeded once on first request (lazy boot)
@@ -53,6 +55,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/import-manifest')());
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
+    // Ad-hoc test runs (ephemeral, from request body)
+    app.use('/api', require('./modules/db/test-runs')());
     app.use('/api', require('./modules/db/admin')());
     app.use('/api', require('./modules/db/plugins')());
     app.use('/api', require('./modules/db/plugin-repos')());

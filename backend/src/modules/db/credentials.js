@@ -100,6 +100,20 @@ module.exports = function(){
     res.apiOk({ id: String(cred._id), name: cred.name, providerKey: cred.providerKey, workspaceId: String(cred.workspaceId) });
   });
 
+  // Delete credential
+  r.delete('/credentials/:id', async (req, res) => {
+    const { Types } = require('mongoose');
+    const rawId = String(req.params.id);
+    let cred = null;
+    if (Types.ObjectId.isValid(rawId)) cred = await Credential.findById(rawId);
+    if (!cred) cred = await Credential.findOne({ id: rawId });
+    if (!cred) return res.apiError(404, 'credential_not_found', 'Credential not found');
+    const ws = await Workspace.findById(cred.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'credential_not_found', 'Credential not found');
+    await Credential.deleteOne({ _id: cred._id });
+    return res.apiOk({ id: String(cred._id) });
+  });
+
   return r;
 }
 
