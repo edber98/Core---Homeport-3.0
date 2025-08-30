@@ -5,6 +5,7 @@ import { CatalogService, FlowSummary } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -21,7 +22,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -74,6 +75,17 @@ type FlowItem = { id: string; name: string; description?: string };
             </button>
             <button class="icon-btn" (click)="openExecutions(it)" title="Exécutions">
               <i class="fa-solid fa-circle-play"></i>
+            </button>
+            <button class="icon-btn"
+                    nz-popconfirm
+                    [nzPopconfirmTitle]="'Supprimer ' + it.name + ' ?'"
+                    nzOkText="Supprimer"
+                    nzCancelText="Annuler"
+                    nzPopconfirmPlacement="topLeft"
+                    (nzOnConfirm)="removeFlow(it)"
+                    (click)="$event.stopPropagation()"
+                    title="Supprimer">
+              <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
         </div>
@@ -292,6 +304,12 @@ export class FlowListComponent implements OnInit, OnDestroy {
 
   openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
+  removeFlow(item: FlowSummary) {
+    this.catalog.deleteFlow(item.id).subscribe({
+      next: () => { this.ui.success('Flow supprimé'); this.load(); },
+      error: () => { this.ui.error('Échec de la suppression'); }
+    });
+  }
 
   openCreate() { this.createVisible = true; this.createError = null; this.draft = { name: '', description: '', status: 'draft', enabled: false }; }
   closeCreate() { if (!this.creating) this.createVisible = false; }

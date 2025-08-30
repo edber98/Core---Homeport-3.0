@@ -64,6 +64,22 @@ module.exports = function(){
       const impacted = [];
       const Provider = require('../../db/models/provider.model');
       const Credential = require('../../db/models/credential.model');
+      const { normalizeTemplateKey } = require('../../utils/validate');
+      const normKey = normalizeTemplateKey(key);
+      const flowUsesTemplate = (flow) => {
+        try {
+          const nodes = (flow?.graph?.nodes || flow?.nodes || []) || [];
+          const ids = new Set();
+          let uses = false;
+          for (const n of nodes){
+            const m = (n && (n.data && n.data.model)) ? n.data.model : (n.model || n.data || {});
+            const raw = m?.template || m?.templateObj?.template?.id || m?.templateObj?.id || m?.name || '';
+            const nk = normalizeTemplateKey(raw);
+            if (nk && nk === normKey){ uses = true; ids.add(String(n.id)); }
+          }
+          return { uses, ids };
+        } catch { return { uses: false, ids: new Set() }; }
+      };
       for (const f of flows){
         const ws = await Workspace.findById(f.workspaceId).lean();
         const loaders = {
@@ -72,11 +88,18 @@ module.exports = function(){
           getProviderByKey: async (k) => Provider.findOne({ key: k }).lean(),
           hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
         };
+        const { validateFlowGraph } = require('../../utils/validate');
         const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
+        const { uses, ids } = flowUsesTemplate(f);
+        if (!uses) continue; // skip flows that do not use this template
         if (!v.ok){
-          // restrict to errors about this template key
-          // keep all errors; FE can filter by node if needed
-          impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: v.errors });
+          const filtered = (v.errors || []).filter(e => {
+            const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
+            return nid ? ids.has(nid) : false;
+          });
+          if (filtered.length){
+            impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: filtered });
+          }
         }
       }
       if (impacted.length && !force){
@@ -112,6 +135,22 @@ module.exports = function(){
     const flows = await Flow.find();
     const Provider = require('../../db/models/provider.model');
     const Credential = require('../../db/models/credential.model');
+    const { normalizeTemplateKey, validateFlowGraph } = require('../../utils/validate');
+    const normKey = normalizeTemplateKey(key);
+    const flowUsesTemplate = (flow) => {
+      try {
+        const nodes = (flow?.graph?.nodes || flow?.nodes || []) || [];
+        const ids = new Set();
+        let uses = false;
+        for (const n of nodes){
+          const m = (n && (n.data && n.data.model)) ? n.data.model : (n.model || n.data || {});
+          const raw = m?.template || m?.templateObj?.template?.id || m?.templateObj?.id || m?.name || '';
+          const nk = normalizeTemplateKey(raw);
+          if (nk && nk === normKey){ uses = true; ids.add(String(n.id)); }
+        }
+        return { uses, ids };
+      } catch { return { uses: false, ids: new Set() }; }
+    };
     const impacted = [];
     for (const f of flows){
       const ws = await Workspace.findById(f.workspaceId).lean();
@@ -122,7 +161,15 @@ module.exports = function(){
         hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
       };
       const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
-      if (!v.ok) impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: v.errors });
+      const { uses, ids } = flowUsesTemplate(f);
+      if (!uses) continue;
+      if (!v.ok){
+        const filtered = (v.errors || []).filter(e => {
+          const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
+          return nid ? ids.has(nid) : false;
+        });
+        if (filtered.length) impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: filtered });
+      }
     }
     if (impacted.length && !force){
       return res.apiError(400, 'template_delete_breaks_flows', 'Deleting template invalidates flows', { impacted });

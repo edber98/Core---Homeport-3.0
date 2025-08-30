@@ -24,4 +24,5 @@ export class FlowsBackendService {
     const params: any = {}; if (force || (body as any).force) params.force = '1';
     return this.api.put<any>(`/api/flows/${encodeURIComponent(flowId)}`, body, params);
   }
+  delete(flowId: string): Observable<any> { return this.api.delete<any>(`/api/flows/${encodeURIComponent(flowId)}`); }
 }
