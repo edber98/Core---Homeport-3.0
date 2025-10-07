@@ -31,12 +31,13 @@ import { FlowPathHighlightService } from '../../services/flow-path-highlight.ser
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
+import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -86,6 +87,8 @@ export class FlowBuilderComponent {
   private backendAttemptSeq: string[] = [];
   private lastOverlayPairs = new Set<string>();
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
+  // AI Chat popover visibility
+  aiChatOpen = false;
   // Derived pairs builder for overlay (does not mutate base edges)
   private buildOverlayPairs(): Set<string> {
     const pairs = new Set<string>();
@@ -146,6 +149,25 @@ export class FlowBuilderComponent {
   private startPayloadKey(): string {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.startPayload.${fid}`;
+  }
+
+  // Load AI-generated graph from chat
+  applyAiGraph(g: any) {
+    try {
+      try { console.log('[ai-flow][applyAiGraph][received]', g); } catch {}
+      const nodes = Array.isArray(g?.nodes) ? g.nodes : [];
+      const edges = Array.isArray(g?.edges) ? g.edges : [];
+      this.nodes = nodes as any[];
+      this.edges = edges as any[];
+      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+      this.updateSharedGraph();
+      this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
+      this.recomputeValidation();
+      try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
+    } catch {
+      try { this.message.error('Graphe IA invalide'); } catch {}
+    }
+    this.aiChatOpen = false;
   }
   private getStartPayload(): { payload: any } {
     try {

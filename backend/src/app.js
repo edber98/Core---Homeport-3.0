@@ -64,6 +64,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/users')());
     // AI Form (SSE) module
     app.use('/api', require('./modules/db/ai-form')());
+    // AI Flow (SSE) module
+    app.use('/api', require('./modules/db/ai-flow')());
   }
 
   // API docs (Swagger UI)

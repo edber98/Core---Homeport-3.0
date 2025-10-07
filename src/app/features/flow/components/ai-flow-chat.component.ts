@@ -1,0 +1,103 @@
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { AiFlowAgentService, FlowAgentEvent } from '../../../services/ai-flow-agent.service';
+
+type Msg = { role: 'user'|'assistant'|'system'; text: string };
+
+@Component({
+  selector: 'flow-ai-chat',
+  standalone: true,
+  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzIconModule],
+  template: `
+  <div class="chat-root">
+    <div class="chat-header">
+      <div class="title">Assistant Workflow</div>
+      <button nz-button nzType="default" nzSize="small" class="close-btn" (click)="close.emit()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-body" #scroller>
+      <div class="bubble" *ngFor="let m of messages" [class.me]="m.role==='user'" [class.assistant]="m.role==='assistant'">
+        <div class="txt">{{ m.text }}</div>
+      </div>
+      <div class="bubble assistant" *ngIf="streaming"><div class="txt">{{ streamingText }}</div></div>
+    </div>
+    <div class="chat-footer">
+      <div class="composer">
+        <input nz-input [(ngModel)]="text" [disabled]="busy" placeholder="Décrivez le workflow (ex: Lire emails, filtrer, notifier)…" (keyup.enter)="send()"/>
+        <button nz-button nzType="primary" (click)="send()" [disabled]="!text || busy">Envoyer</button>
+        <button nz-button class="ml" (click)="stop()" *ngIf="busy">Stop</button>
+      </div>
+      <div class="seed">
+        <textarea nz-input [(ngModel)]="seedText" [disabled]="busy" placeholder="Graphe seed (JSON optionnel: {nodes,edges})" rows="3"></textarea>
+      </div>
+      <div class="actions" *ngIf="finalGraph">
+        <button nz-button nzType="primary" (click)="loadIntoBuilder()">Charger dans l'éditeur</button>
+        <button nz-button class="ml" (click)="resetFinal()">Effacer</button>
+      </div>
+    </div>
+  </div>
+  `,
+  styles: [`
+    .chat-root { width: 420px; height: 520px; display:flex; flex-direction:column; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'; }
+    .chat-header { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid #eee; }
+    .title { font-weight: 600; }
+    .close-btn { border:none; }
+    .chat-body { flex:1; overflow:auto; padding: 12px; display:flex; flex-direction:column; gap:10px; background: #f8fafc; }
+    .bubble { max-width: 80%; padding: 10px 12px; border-radius: 18px; line-height: 1.25; font-size: 14px; box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+    .bubble.me { align-self: flex-end; background: #0a84ff; color: #fff; border-bottom-right-radius: 6px; }
+    .bubble.assistant { align-self: flex-start; background: #e9ecef; color: #111827; border-bottom-left-radius: 6px; }
+    .chat-footer { border-top: 1px solid #eee; padding: 10px; display:flex; flex-direction:column; gap:8px; background:#fff; }
+    .composer { display:flex; gap:8px; }
+    .ml { margin-left: 6px; }
+  `]
+})
+export class FlowAiChatComponent implements AfterViewInit {
+  @Input() seedGraph: any = null;
+  @Output() close = new EventEmitter<void>();
+  @Output() graphGenerated = new EventEmitter<any>();
+
+  messages: Msg[] = [];
+  text = '';
+  busy = false;
+  streaming = false;
+  streamingText = '';
+  finalGraph: any = null; // only set on 'final'
+  previewGraph: any = null; // set on 'snapshot' for live preview/log
+  seedText = '';
+
+  private stopFn?: () => void;
+  @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
+
+  constructor(private agent: AiFlowAgentService, private cdr: ChangeDetectorRef) {}
+  ngAfterViewInit(): void { this.scrollToBottom(); }
+
+  send() {
+    const t = (this.text || '').trim();
+    if (!t || this.busy) return;
+    this.messages.push({ role: 'user', text: t });
+    this.text = '';
+    this.busy = true; this.streaming = true; this.streamingText = '';
+    let seedObj: any = undefined;
+    try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
+    const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
+    this.stopFn = stream.stop;
+    stream.events$.subscribe({ next: (ev: FlowAgentEvent) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
+  }
+  stop() { try { this.stopFn?.(); } catch {} this.busy = false; this.streaming = false; }
+
+  private onEvent(evt: FlowAgentEvent) {
+    if (!evt) return;
+    if (evt.type === 'message' && evt.text) { this.streamingText += evt.text; this.scrollToBottom(); return; }
+    if (evt.type === 'snapshot' && (evt as any).graph) { this.previewGraph = (evt as any).graph; try { console.log('[ai-flow][snapshot]', this.previewGraph); } catch {} }
+    if (evt.type === 'final' && (evt as any).graph) { this.finalGraph = (evt as any).graph; try { console.log('[ai-flow][final]', this.finalGraph); } catch {} this.busy = false; this.streaming = false; this.streamingText=''; }
+    if (evt.type === 'error') { this.onError(evt.message || 'Erreur'); }
+    try { this.cdr.detectChanges(); } catch {}
+  }
+  private onError(msg: string) { this.messages.push({ role: 'assistant', text: msg }); this.busy = false; this.streaming = false; this.streamingText=''; try { this.cdr.detectChanges(); } catch {} }
+  private scrollToBottom(){ try { const el = this.scroller?.nativeElement; if (el) setTimeout(()=> el.scrollTop = el.scrollHeight, 0); } catch {} }
+  loadIntoBuilder(){ if (this.finalGraph) { try { console.log('[ai-flow][loadIntoBuilder]', this.finalGraph); } catch {} this.graphGenerated.emit(this.finalGraph); } }
+  resetFinal(){ this.finalGraph = null; }
+}

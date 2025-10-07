@@ -117,6 +117,13 @@
 .right-panel .flow-meta .exec-controls .status.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 .right-panel .flow-meta .btn.primary { background:#1677ff; color:#fff; border:1px solid #1677ff; border-radius:10px; padding:6px 10px; }
 
+/* AI Chat styles (parité avec Dynamic Form builder) */
+.ai-chat-fab { position: fixed; right: 20px; bottom: 24px; z-index: 2100; border-radius: 9999px; height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+.ai-chat-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 180ms ease; z-index: 2098; }
+.ai-chat-backdrop.open { opacity: 1; pointer-events: auto; }
+.ai-chat-popover { position: fixed; right: 20px; bottom: 76px; z-index: 2099; background: #fff; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); transform: translateY(8px); opacity: 0; pointer-events: none; transition: transform 200ms ease, opacity 200ms ease; }
+.ai-chat-popover.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
 /* New nz-form layout for inspector meta */
 .inspector-meta .meta-form { font-size: 12px; }
 .inspector-meta .exec-row { display:flex; gap: 8px; align-items:center; }
