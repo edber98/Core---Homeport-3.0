@@ -81,7 +81,8 @@ function systemPrompt() {
   const raw = [
     'Tu es un agent de génération de workflows Homeport (Flow Builder).',
     'Tu utilises UNIQUEMENT les tools fournis. N’écris jamais le JSON final directement.',
-    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers, 4) add_node pour les fonctions et conditions, 5) set_node_params selon les args des templates, 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) finalize (emit_snapshot).',
+    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers (ne crée JAMAIS plus d’un nœud de départ: start/start_form/trigger/event/endpoint), 4) add_node pour les fonctions et conditions, 5) pour CHAQUE nœud non-start: has_node_args → si count>0 alors get_node_args_schema (reçoit le schéma + l’instruction utilisateur) puis set_node_params en fournissant le MAXIMUM de champs du schéma (pas seulement les requis), 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) validate_node_params pour vérifier les requis (s’il manque: compléter via set_node_params), 9) finalize (emit_snapshot).',
+    'Important: si emit_snapshot renvoie code=args_missing, tu DOIS appeler validate_node_params pour connaître les clés manquantes, puis compléter via set_node_params. Ne rappelle pas emit_snapshot tant que missing>0.',
     'Rappels: un seul nœud "start-like". Évite la sortie err sauf si catch_error activé et pertinent. Respecte paramsSchema/args. Préfère des chaînes simples et exemples concrets pour les valeurs par défaut.',
     'Exemples de séquences:',
     '- Webhook → HTTP → Log: add_node(trigger.http), add_node(http.request), connect(trigger->http:ok), add_node(util.log), connect(http->log:ok), set_node_params(http,{url:"https://...",method:"GET"}), finalize.',
@@ -107,7 +108,8 @@ function generateNodeId(tpl, used = new Set()){
 function computeNewNodePosition(source, center){
   if (!source) return { x: center.x - 90, y: center.y - 60 };
   const p = source.point || { x: center.x - 90, y: center.y - 60 };
-  return { x: p.x + 240, y: p.y + 40 };
+  // Place below the source (frontend palette-like behavior)
+  return { x: p.x, y: p.y + 200 };
 }
 
 function findBestSourceNode(nodes, wx, wy){
@@ -139,7 +141,8 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
     const { DynamicStructuredTool, ChatOpenAI, createOpenAIToolsAgent, AgentExecutor, ChatPromptTemplate } = await importLC();
 
     // Tools
-    const tools = await buildTools({ DynamicStructuredTool, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId });
+    const instruction = String(prompt || '').trim();
+    const tools = await buildTools({ DynamicStructuredTool, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
     try { emitMessage('[langchain] tools ready: ' + tools.map(t => t.name).join(', ')); } catch {}
 
     const model = new ChatOpenAI({
@@ -160,7 +163,6 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
     const executor = new AgentExecutor({ agent, tools });
 
     emitMessage('Agent Flow initialisé. Démarrage du streaming…');
-    const instruction = String(prompt || '').trim();
     const stream = await executor.streamEvents({ input: instruction, chat_history: (Array.isArray(history)?history:[]) }, { version: 'v2' });
     for await (const event of stream) {
       try {
@@ -174,23 +176,47 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
         }
       } catch {}
     }
-    // Safety: ensure a start-like node exists and layout before final snapshot
+    // Safety: ensure a start-like node exists; if missing, add it and auto-connect to a likely first node
     try {
       const g = graph || { nodes: [], edges: [] };
-      const startLike = (g.nodes||[]).some(n => ['start','start_form','trigger'].includes(String(n?.data?.model?.templateObj?.type||'').toLowerCase()));
-      if (!startLike) {
-        const { DynamicStructuredTool: T } = await importLC();
-        const tmpTools = await buildTools({ DynamicStructuredTool: T, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId });
-        const ensure = tmpTools.find(t => t.name === 'ensure_start');
-        if (ensure) await ensure.func({ prefer: 'start' });
+      const { DynamicStructuredTool: T } = await importLC();
+        const tmpTools = await buildTools({ DynamicStructuredTool: T, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+      const ensure = tmpTools.find(t => t.name === 'ensure_start');
+      const list = tmpTools.find(t => t.name === 'list_graph');
+      const connect = tmpTools.find(t => t.name === 'connect');
+      if (ensure && list) {
+        const snap = JSON.parse(await list.func({})).graph || g;
+        const hasStart = (snap.nodes || []).some(n => {
+          const ty = String(n?.data?.model?.templateObj?.type || '').toLowerCase();
+          return ty === 'start' || ty === 'start_form' || ty === 'trigger' || ty === 'event' || ty === 'endpoint';
+        });
+        if (!hasStart) {
+          const res = JSON.parse(await ensure.func({ prefer: 'start' }));
+          const startId = res?.nodeId || (graph.nodes.find(n => String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'start')?.id);
+          try { emitMessage(`[start] ensured id=${startId || 'unknown'}`); } catch {}
+          // Auto-connect start->first node without incoming if present
+          if (connect && startId) {
+            const snap2 = JSON.parse(await list.func({})).graph || graph;
+            const nodes = Array.isArray(snap2.nodes) ? snap2.nodes : [];
+            const edges = Array.isArray(snap2.edges) ? snap2.edges : [];
+            const hasIncoming = (id) => edges.some(e => String(e.target) === String(id));
+            const candidates = nodes.filter(n => String(n.id) !== String(startId) && !hasIncoming(n.id));
+            if (candidates.length) {
+              const target = candidates[0];
+              try { await connect.func({ sourceId: startId, targetId: target.id, sourceHandle: 'out', targetHandle: 'in' }); emitMessage(`[start] auto-connect to ${target.id}`); } catch (e) { try { emitMessage(`[start][warn] auto-connect failed: ${e?.message || e}`); } catch {} }
+            }
+          }
+        }
       }
-      // Global layout pass
-      try {
-        const { DynamicStructuredTool: T2 } = await importLC();
-        const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId });
-        const layout = tmp2.find(t => t.name === 'auto_layout');
-        if (layout) await layout.func({});
-      } catch {}
+      // Optional global layout pass (only when explicitly enabled)
+      if (String(process.env.AI_FLOW_AUTOLAYOUT || '').toLowerCase() === '1') {
+        try {
+          const { DynamicStructuredTool: T2 } = await importLC();
+          const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+          const layout = tmp2.find(t => t.name === 'auto_layout');
+          if (layout) await layout.func({});
+        } catch {}
+      }
     } catch {}
     emitSnapshot();
     try { console.log('[ai-flow][final_graph]', JSON.stringify(graph)); } catch {}
@@ -202,11 +228,35 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
   }
 }
 
-async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId }){
+async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history }){
+  // Helper: find first credential id for a provider in current workspace
+  const firstCredentialIdFor = async (providerKey) => {
+    try {
+      if (!providerKey) return null;
+      const Credential = require('../db/models/credential.model');
+      const Workspace = require('../db/models/workspace.model');
+      let ws = null; if (workspaceId) ws = await Workspace.findOne({ id: String(workspaceId) }).lean();
+      const q = {};
+      if (ws && ws._id) q.workspaceId = ws._id;
+      q.providerKey = String(providerKey);
+      const cred = await Credential.findOne(q).lean();
+      return cred ? (cred.id || String(cred._id)) : null;
+    } catch { return null; }
+  };
+  // Basic NLP helpers from instruction
+  const textInstruction = String(instruction || '');
+  const extractEmails = () => {
+    try { const re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig; return (textInstruction.match(re) || []).map(s => s.trim()); } catch { return []; }
+  };
+  const extractUrls = () => {
+    try { const re = /(https?:\/\/[^\s]+)/ig; return (textInstruction.match(re) || []).map(s => s.trim()); } catch { return []; }
+  };
+  const firstEmail = () => extractEmails()[0] || null;
+  const firstUrl = () => extractUrls()[0] || null;
   // Helpers start-like
   const isStartLike = (tpl) => {
     const t = String(tpl?.type || '').toLowerCase();
-    return t === 'start' || t === 'start_form' || t === 'trigger';
+    return t === 'start' || t === 'start_form' || t === 'trigger' || t === 'event' || t === 'endpoint';
   };
   const hasStartLike = (g) => { try { return (g.nodes||[]).some(n => isStartLike(n?.data?.model?.templateObj)); } catch { return false; } };
 
@@ -244,13 +294,42 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     }
   };
 
+  // Backend mirror of FlowGraphService.computeEdgeLabel
   function computeEdgeLabelFrom(srcModel, handle){
     try {
-      const tpl = srcModel?.templateObj;
-      if (!tpl) return String(handle || '');
-      if (tpl.type === 'condition') return String(handle || '');
-      if (handle === 'err') return 'Error';
-      return 'OK';
+      const model = srcModel || {};
+      const tpl = model?.templateObj || {};
+      const names = Array.isArray(tpl.output) && tpl.output.length ? tpl.output : ['Succes'];
+      if (String(handle) === 'err') return 'Error';
+      const t = String(tpl.type || '').toLowerCase();
+      if (t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint') return 'Succes';
+      // Condition: resolve by index or by stable _id
+      if (t === 'condition') {
+        const field = tpl.output_array_field || 'items';
+        const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+        const hs = String(handle ?? '');
+        const isIdx = /^\d+$/.test(hs);
+        if (isIdx) {
+          const i = parseInt(hs, 10);
+          const it = arr[i];
+          if (it == null) return '';
+          if (typeof it === 'string') return it;
+          if (typeof it === 'object') return (it.name ?? '');
+          return '';
+        }
+        const it = arr.find(x => x && typeof x === 'object' && String(x._id) === hs);
+        if (!it) return '';
+        return (typeof it === 'object') ? (it.name ?? '') : '';
+      }
+      // Function-like: map index to output name
+      const hs = String(handle ?? '');
+      const isIdx = /^\d+$/.test(hs);
+      if (Array.isArray(names) && isIdx) {
+        const i = parseInt(hs, 10);
+        if (i >= 0 && i < names.length) return names[i];
+      }
+      if (Array.isArray(names) && names.length === 1) return names[0] || 'Succes';
+      return '';
     } catch { return String(handle || ''); }
   }
 
@@ -259,6 +338,173 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     description: 'Retourne la liste des Node Templates disponibles avec leurs sorties et arguments.',
     schema: z.object({}).describe('Sans argument.'),
     func: async () => JSON.stringify({ success: true, templates: await getTemplates() }),
+  });
+
+  // Provide normalized args schema of a node to the agent so it can populate values itself (no provider-specific logic)
+  const getNodeArgsSchemaTool = new DynamicStructuredTool({
+    name: 'get_node_args_schema',
+    description: 'Retourne le schéma d’Arguments (fields/steps), les options et les contraintes du nœud pour permettre à l’agent de proposer des valeurs cohérentes.',
+    schema: z.object({ nodeId: z.string() }).describe('Lecture du schéma de paramètres.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {};
+        const tpl = model?.templateObj || {};
+        const args = tpl?.args || {};
+        const normalizeOptions = (opts) => {
+          if (!Array.isArray(opts)) return [];
+          return opts.map(o => {
+            if (o && typeof o === 'object') { return { label: o.label ?? o.name ?? String(o.value ?? o.id ?? o.key ?? ''), value: o.value ?? o.id ?? o.key ?? o.name ?? null }; }
+            return { label: String(o), value: o };
+          });
+        };
+        const normalizeField = (f) => {
+          try {
+            return {
+              key: f.key ?? f.name ?? null,
+              type: f.type ?? 'text',
+              label: f.label ?? null,
+              placeholder: f.placeholder ?? null,
+              required: !!f.required,
+              default: f.default ?? null,
+              options: normalizeOptions(f.options),
+              min: f.min ?? undefined,
+              max: f.max ?? undefined,
+              pattern: f.pattern ?? undefined,
+              description: f.description ?? f.help ?? null
+            };
+          } catch { return null; }
+        };
+        const fields = Array.isArray(args.fields) ? args.fields.map(normalizeField).filter(Boolean) : [];
+        const steps = Array.isArray(args.steps) ? args.steps.map(s => ({
+          title: s?.title ?? null,
+          fields: Array.isArray(s?.fields) ? s.fields.map(normalizeField).filter(Boolean) : []
+        })) : [];
+        const totalFields = (fields?.length || 0) + (Array.isArray(steps) ? steps.reduce((a, s) => a + (s.fields?.length || 0), 0) : 0);
+        // Build a neutral skeleton object for convenience (no business heuristics)
+        const coerceDefault = (f) => {
+          if (f.default != null) return f.default;
+          const t = String(f.type || '').toLowerCase();
+          if (t === 'number' || t === 'integer') return 0;
+          if (t === 'boolean' || t === 'checkbox' || t === 'switch') return false;
+          if (t === 'select' || t === 'radio') return (Array.isArray(f.options) && f.options.length) ? (f.options[0].value ?? null) : null;
+          if (t === 'multiselect' || t === 'tags') return [];
+          if (t === 'json' || t === 'code' || t === 'object') return {};
+          return '';
+        };
+        const skeleton = {};
+        for (const f of fields) { if (f && f.key) skeleton[f.key] = coerceDefault(f); }
+        for (const st of steps) { for (const f of (st.fields || [])) { if (f && f.key && !(f.key in skeleton)) skeleton[f.key] = coerceDefault(f); } }
+        const keys = Object.keys(skeleton); keys.sort();
+        const instr = String(instruction || '');
+        const recent = Array.isArray(history) ? history.slice(-4) : [];
+        const summary = { fields, steps, template: { id: tpl.id, name: tpl.name, title: tpl.title, type: tpl.type }, skeleton, instruction: instr, recentHistory: recent };
+        try {
+          const snip = instr.length > 60 ? (instr.slice(0,60) + '…') : instr;
+          emitMessage(`[schema] nodeId=${nodeId} template=${tpl.id || tpl.name} fields=${totalFields} keys=${keys.slice(0,6).join(',')}${keys.length>6?',…':''} prompt="${snip}"`);
+        } catch {}
+        return JSON.stringify({ success: true, nodeId, schema: summary });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Lightweight check to know if a node has arguments to configure
+  const hasNodeArgsTool = new DynamicStructuredTool({
+    name: 'has_node_args',
+    description: 'Indique si le nœud possède des arguments (fields/steps) et retourne un aperçu (clés/required).',
+    schema: z.object({ nodeId: z.string() }).describe('Vérifier la présence d’arguments.'),
+    func: async ({ nodeId }) => {
+      try {
+        console.log("ARGUMENTS")
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {}; const args = tpl?.args || {};
+        const list = [];
+        const scan = (arr) => {
+          for (const f of (arr || [])) {
+            if (!f || typeof f !== 'object') continue;
+            const key = f.key || f.name; if (!key) continue;
+            const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => (v && (v.type === 'required' || v.name === 'required'))));
+            list.push({ key: String(key), required: !!req, type: f.type || 'text' });
+          }
+        };
+        scan(args.fields);
+        for (const s of (args.steps || [])) scan(s?.fields);
+        try { emitMessage(`[args] has nodeId=${nodeId} count=${list.length}`); } catch {}
+        return JSON.stringify({ success: true, nodeId, count: list.length, items: list });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // List credentials for current workspace (id, name, providerKey)
+  const listCredentialsTool = new DynamicStructuredTool({
+    name: 'list_credentials',
+    description: 'Liste les credentials du workspace courant (id, name, providerKey).',
+    schema: z.object({ providerKey: z.string().optional() }).describe('Filtre optionnel par providerKey.'),
+    func: async ({ providerKey }) => {
+      try {
+        const Credential = require('../db/models/credential.model');
+        const Workspace = require('../db/models/workspace.model');
+        let ws = null;
+        if (workspaceId) ws = await Workspace.findOne({ id: String(workspaceId) }).lean();
+        const q = {};
+        if (ws && ws._id) q.workspaceId = ws._id;
+        if (providerKey) q.providerKey = String(providerKey);
+        const list = await Credential.find(q).lean();
+        const out = list.map(c => ({ id: c.id || String(c._id), name: c.name, providerKey: c.providerKey }));
+        return JSON.stringify({ success: true, credentials: out });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    },
+  });
+
+  // Attach a credential to a node (by id or by name/providerKey)
+  const attachCredentialTool = new DynamicStructuredTool({
+    name: 'attach_credential',
+    description: 'Associe un credential à un nœud (nodeId). Utiliser credentialId si connu, sinon name/providerKey pour sélectionner.',
+    schema: z.object({
+      nodeId: z.string(),
+      credentialId: z.string().optional(),
+      name: z.string().optional(),
+      providerKey: z.string().optional(),
+    }).describe('Liaison credential.'),
+    func: async ({ nodeId, credentialId, name, providerKey }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
+        if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const node = JSON.parse(JSON.stringify(nodes[idx]));
+        const tmpl = node?.data?.model?.templateObj || {};
+        const expectedProvider = providerKey || tmpl.providerKey || tmpl.appId || '';
+        const Credential = require('../db/models/credential.model');
+        const Workspace = require('../db/models/workspace.model');
+        let ws = null; if (workspaceId) ws = await Workspace.findOne({ id: String(workspaceId) }).lean();
+        const q = {};
+        if (ws && ws._id) q.workspaceId = ws._id;
+        if (credentialId) q.id = String(credentialId);
+        if (!credentialId && expectedProvider) q.providerKey = String(expectedProvider);
+        try { console.log('[ai-flow][cred] attach query', { nodeId, expectedProvider, q }); } catch {}
+        const list = await Credential.find(q).lean();
+        const ids = (list||[]).map(c => c.id || String(c._id));
+        try { console.log('[ai-flow][cred] attach found', { count: (list||[]).length, ids }); } catch {}
+        try { emitMessage(`[cred] attach candidates nodeId=${nodeId} providerKey=${expectedProvider||'-'} count=${(list||[]).length} ids=${ids.join(',')}`); } catch {}
+        let cred = null;
+        if (credentialId) cred = list.find(c => (c.id === credentialId || String(c._id) === credentialId));
+        else if (name) cred = list.find(c => String(c.name).toLowerCase() === String(name).toLowerCase()) || list[0];
+        else cred = list[0] || null;
+        if (!cred) { try { console.warn('[ai-flow][cred] attach none found', { nodeId, expectedProvider }); emitMessage(`[cred] attach none found nodeId=${nodeId} providerKey=${expectedProvider||'-'}`); } catch {}; return JSON.stringify({ success: false, error: 'credential_not_found', providerKey: expectedProvider }); }
+        node.data.model.credentialId = cred.id || String(cred._id);
+        nodes[idx] = node;
+        try { console.log('[ai-flow][cred] attached', { nodeId, credentialId: node.data.model.credentialId }); emitMessage(`[cred] attached nodeId=${nodeId} cid=${node.data.model.credentialId}`); } catch {}
+        emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+        return JSON.stringify({ success: true, nodeId, credentialId: node.data.model.credentialId });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    },
   });
 
   // Ensure start-like node exists
@@ -280,8 +526,15 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const usedIds = new Set((g.nodes||[]).map(n => String(n.id)));
       const id = generateNodeId(tpl, usedIds);
       const point = { x: 400, y: 240 };
-      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
+      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
       const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: {}, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };
+      // Auto-attach first credential if available for this provider
+      try {
+        const pk = templateObj.providerKey || templateObj.appId || '';
+        const cid = await firstCredentialIdFor(pk);
+        try { console.log('[ai-flow][cred] autoAttach add_node', { nodeId: id, providerKey: pk, attached: !!cid, credentialId: cid || null }); } catch {}
+        if (cid) (model).credentialId = cid;
+      } catch (e) { try { console.warn('[ai-flow][cred] autoAttach error', e?.message || e); } catch {} }
       const node = { id, point, type: 'html-template', data: { model } };
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
       nodes.push(node);
@@ -310,13 +563,43 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const tpl = templates.find(t => normalizeTemplateKey(t.key) === normalizeTemplateKey(templateKey));
       if (!tpl) return JSON.stringify({ success: false, error: 'template_not_found' });
       const g = getGraph();
+      // Prevent multiple start-like nodes
+      try {
+        const isSL = isStartLike(tpl);
+        if (isSL && hasStartLike(g)) {
+          const existing = (g.nodes||[]).find(n => isStartLike(n?.data?.model?.templateObj));
+          try { emitMessage(`[start][skip] already exists id=${existing?.id}`); } catch {}
+          return JSON.stringify({ success: false, error: 'start_already_exists', existingId: existing?.id || null });
+        }
+      } catch {}
       const usedIds = new Set((g.nodes||[]).map(n => String(n.id)));
       const id = generateNodeId(tpl, usedIds);
       const center = { x: 400, y: 300 };
       const near = (g.nodes||[]).find(n => String(n.id) === String(nearNodeId));
-      const point = computeNewNodePosition(near, center);
-      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
+      let point = computeNewNodePosition(near, center);
+      try {
+        const fieldCount = (() => { try { const a = tpl.args || {}; const f = Array.isArray(a.fields) ? a.fields.length : 0; const s = Array.isArray(a.steps) ? a.steps.reduce((acc, st) => acc + (Array.isArray(st?.fields) ? st.fields.length : 0), 0) : 0; return f + s; } catch { return 0; } })();
+        console.log('[ai-flow][node] add_node', { nodeId: id, templateKey, providerKey: tpl.providerKey || null, nearNodeId: nearNodeId || null, argsFields: fieldCount });
+        try { emitMessage(`[node] add template=${templateKey} argsFields=${fieldCount}`); } catch {}
+      } catch {}
+      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
       const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: {}, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };
+      // Auto-attach first credential if available for this provider
+      try {
+        const pk = templateObj.providerKey || templateObj.appId || '';
+        const cid = await firstCredentialIdFor(pk);
+        try { console.log('[ai-flow][cred] autoAttach add_node', { nodeId: id, providerKey: pk, attached: !!cid, credentialId: cid || null }); } catch {}
+        if (cid) (model).credentialId = cid;
+      } catch (e) { try { console.warn('[ai-flow][cred] autoAttach error', e?.message || e); } catch {} }
+      // Prevent overlaps: if too close to an existing node, push right/down
+      try {
+        const exists = Array.isArray(g.nodes) ? g.nodes : [];
+        let tries = 0;
+        while (exists.some(n => Math.abs((n?.point?.x ?? 0) - point.x) < 80 && Math.abs((n?.point?.y ?? 0) - point.y) < 60) && tries < 6) {
+          point = { x: point.x + 240, y: point.y + 40 };
+          tries++;
+        }
+      } catch {}
       const node = { id, point, type: 'html-template', data: { model } };
       const ops = [];
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
@@ -338,11 +621,68 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
       const node = JSON.parse(JSON.stringify(nodes[idx]));
       const cur = (node?.data?.model?.context && typeof node.data.model.context === 'object') ? node.data.model.context : {};
-      node.data.model.context = { ...cur, ...(params || {}) };
+      const next = { ...cur, ...(params || {}) };
+      // Stabilize condition items ids like frontend ensureStableConditionIds
+      try {
+        const tpl = node?.data?.model?.templateObj || {};
+        if (String(tpl.type || '').toLowerCase() === 'condition') {
+          const field = tpl.output_array_field || 'items';
+          const oldArr = Array.isArray(cur[field]) ? cur[field] : [];
+          const newArr = Array.isArray(next[field]) ? next[field] : [];
+          const used = new Set((newArr || []).map(it => (it && typeof it === 'object' && it._id) ? String(it._id) : '').filter(Boolean));
+          for (let i = 0; i < Math.min(oldArr.length, newArr.length); i++) {
+            const oldIt = oldArr[i]; const newIt = newArr[i];
+            if (!(newIt && typeof newIt === 'object')) continue;
+            const oldId = oldIt && typeof oldIt === 'object' ? String(oldIt._id || '') : '';
+            if (!newIt._id && oldId && !used.has(oldId)) { newIt._id = oldId; used.add(oldId); }
+          }
+          for (const it of newArr) { if (it && typeof it === 'object' && !it._id) { let id = ''; do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id)); it._id = id; used.add(id); } }
+          next[field] = newArr;
+        }
+      } catch {}
+      node.data.model.context = next;
       nodes[idx] = node;
+      try {
+        const keys = Object.keys(params || {});
+        const head = keys.slice(0, 6).join(',');
+        emitMessage(`[args] set nodeId=${nodeId} keys=${keys.length} (${head}${keys.length>6?',…':''})`);
+      } catch {}
       emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
       return JSON.stringify({ success: true });
     },
+  });
+
+  // Validate required args missing for a node (for agent guidance & logs)
+  const validateNodeParamsTool = new DynamicStructuredTool({
+    name: 'validate_node_params',
+    description: 'Retourne les champs requis manquants pour un nœud donné selon son schéma d’Arguments.',
+    schema: z.object({ nodeId: z.string() }).describe('Validation des paramètres.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {};
+        const ctx = model?.context || {};
+        const tpl = model?.templateObj || {};
+        const args = tpl?.args || {};
+        const collect = [];
+        const scanFields = (arr) => {
+          for (const f of (arr || [])) {
+            if (!f || typeof f !== 'object') continue;
+            const key = f.key || f.name; if (!key) continue;
+            const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => (v && (v.type === 'required' || v.name === 'required'))));
+            if (!req) continue;
+            if (ctx[key] == null || ctx[key] === '') collect.push(String(key));
+          }
+        };
+        scanFields(args.fields);
+        for (const step of (args.steps || [])) scanFields(step?.fields);
+        try { emitMessage(`[args] validate nodeId=${nodeId} missing=${collect.length}`); } catch {}
+        return JSON.stringify({ success: true, nodeId, missing: collect });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
   });
 
   const connectTool = new DynamicStructuredTool({
@@ -354,44 +694,96 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const src = (g.nodes||[]).find(n => String(n.id) === String(sourceId));
       const dst = (g.nodes||[]).find(n => String(n.id) === String(targetId));
       if (!src || !dst) return JSON.stringify({ success: false, error: 'node_not_found' });
-      // Choose sensible default handle per template type
-      const srcT = String(src?.data?.model?.templateObj?.type || '').toLowerCase();
+      const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
+
+      // Decide default source handle using frontend-like logic and avoid reusing handles when possible
+      const model = src?.data?.model || {};
+      const tpl = model?.templateObj || {};
+      const srcT = String(tpl?.type || '').toLowerCase();
       let sh = sourceHandle;
       if (!sh) {
-        if (srcT === 'start' || srcT === 'start_form' || srcT === 'event' || srcT === 'endpoint') sh = 'out';
-        else if (srcT === 'condition') {
-          // Try first condition item by index 0
-          sh = '0';
+        if (srcT === 'start' || srcT === 'start_form' || srcT === 'event' || srcT === 'endpoint') {
+          sh = 'out';
+        } else if (srcT === 'condition') {
+          // Prefer first available condition item by index 0 or existing _id if present
+          const field = tpl.output_array_field || 'items';
+          const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          if (arr.length) {
+            const h0 = (arr[0] && typeof arr[0] === 'object' && arr[0]._id) ? String(arr[0]._id) : '0';
+            sh = h0;
+          } else {
+            sh = '0';
+          }
         } else {
-          // Functions: default to first output index '0'
-          sh = '0';
+          // Function-like: choose first free non-error handle among indices
+          const outs = Array.isArray(tpl.output) && tpl.output.length ? tpl.output.length : 1;
+          const enableErr = !!tpl.authorize_catch_error && !!model?.catch_error;
+          const used = new Set(edges.filter(e => String(e.source) === String(sourceId)).map(e => String(e.sourceHandle ?? '')));
+          let candidate = null;
+          for (let i = 0; i < outs; i++) {
+            const h = String(i);
+            if (!used.has(h)) { candidate = h; break; }
+          }
+          sh = candidate != null ? candidate : '0';
+          if (enableErr && !used.has('err') && !sourceHandle && String(targetHandle || '') === 'err') sh = 'err';
         }
       }
       const th = targetHandle || 'in';
-      const label = computeEdgeLabelFrom(src?.data?.model, sh);
-      const newEdge = { type: 'template', id: makeEdgeId(sourceId, targetId, sh, th), source: sourceId, target: targetId, sourceHandle: sh, targetHandle: th, edgeLabels: { center: { type: 'html-template', data: { text: label } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } };
-      const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
+
+      // Compute label and error styling identical to frontend
+      const label = computeEdgeLabelFrom(model, sh);
+      const isErr = String(sh) === 'err';
+      const edgeColor = isErr ? '#f759ab' : '#b1b1b7';
+      const newEdge = {
+        type: 'template',
+        id: makeEdgeId(sourceId, targetId, sh, th),
+        source: sourceId,
+        target: targetId,
+        sourceHandle: sh,
+        targetHandle: th,
+        edgeLabels: { center: { type: 'html-template', data: { text: label } } },
+        data: isErr ? { error: true, strokeWidth: 1, color: edgeColor } : { strokeWidth: 2, color: edgeColor },
+        markers: { end: { type: 'arrow-closed', color: edgeColor } }
+      };
+
+      // Do not reposition here; placement is handled in auto_place to match frontend sequencing
+
+      try { console.log('[ai-flow][edge] connect', { id: newEdge.id, sh, th }); } catch {}
       edges.push(newEdge);
-      // Optionally reposition target relative to source for a clean layout
+      emitPatch([{ op: 'replace', path: '/edges', value: edges }]);
+
+      // Auto-place the target like the frontend does visually (under source; branches side-by-side)
       try {
         const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
-        const si = nodes.findIndex(n => String(n.id) === String(sourceId));
-        const ti = nodes.findIndex(n => String(n.id) === String(targetId));
-        if (si >= 0 && ti >= 0) {
-          const proposed = computeNewNodePosition(nodes[si], { x: 400, y: 300 });
-          const cur = nodes[ti];
-          // If target overlaps source too much, move it
-          const dx = Math.abs((cur?.point?.x ?? 0) - (nodes[si]?.point?.x ?? 0));
-          const dy = Math.abs((cur?.point?.y ?? 0) - (nodes[si]?.point?.y ?? 0));
-          if (dx < 60 && dy < 60) {
-            const next = JSON.parse(JSON.stringify(cur));
-            next.point = proposed;
-            nodes[ti] = next;
-            emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]);
+        const di = nodes.findIndex(n => String(n.id) === String(targetId));
+        if (di >= 0) {
+          const srcModel2 = src?.data?.model || {};
+          const tpl2 = srcModel2?.templateObj || {};
+          const srcPt2 = src?.point || { x: 400, y: 300 };
+          const gx = 260, gy = 200;
+          let index = 0;
+          const sh2 = String(sh);
+          const srcT2 = String(tpl2?.type || '').toLowerCase();
+          if (srcT2 === 'condition') {
+            const field = tpl2.output_array_field || 'items';
+            const arr = (srcModel2?.context && Array.isArray(srcModel2.context[field])) ? srcModel2.context[field] : [];
+            if (/^\d+$/.test(sh2)) index = parseInt(sh2, 10) || 0; else {
+              const idxById = arr.findIndex(x => x && typeof x === 'object' && String(x._id) === sh2);
+              index = idxById >= 0 ? idxById : 0;
+            }
+          } else if (/^\d+$/.test(sh2)) index = parseInt(sh2, 10) || 0; else index = 0;
+          let targetPoint = { x: srcPt2.x + (index * gx), y: srcPt2.y + gy };
+          let tries = 0;
+          while (nodes.some(n => String(n.id) !== String(targetId) && Math.abs((n?.point?.x ?? 0) - targetPoint.x) < 80 && Math.abs((n?.point?.y ?? 0) - targetPoint.y) < 60) && tries < 6) {
+            targetPoint = { x: targetPoint.x + 40, y: targetPoint.y + 20 };
+            tries++;
           }
+          const nn = JSON.parse(JSON.stringify(nodes[di]));
+          nn.point = targetPoint; nodes[di] = nn;
+          emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]);
+          try { emitMessage(`[place] target=${targetId} under=${sourceId} index=${index} point=(${targetPoint.x},${targetPoint.y})`); } catch {}
         }
       } catch {}
-      emitPatch([{ op: 'replace', path: '/edges', value: edges }]);
       emitSnapshot();
       return JSON.stringify({ success: true });
     },
@@ -399,21 +791,55 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
 
   const autoPlaceTool = new DynamicStructuredTool({
     name: 'auto_place',
-    description: 'Repositionne un nœud (simple heuristique: sous le plus proche).',
-    schema: z.object({ nodeId: z.string() }).describe('Placement.'),
-    func: async ({ nodeId }) => {
+    description: 'Repositionne un nœud selon sa première arête entrante (branches côte à côte sous la source).',
+    schema: z.object({ nodeId: z.string(), gapX: z.number().optional(), gapY: z.number().optional() }).describe('Placement.'),
+    func: async ({ nodeId, gapX, gapY }) => {
       const g = getGraph();
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+      const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
       const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
       if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
-      const current = nodes[idx];
-      const best = findBestSourceNode(nodes.filter(n => String(n.id) !== String(nodeId)), current?.point?.x ?? 400, current?.point?.y ?? 300);
-      const nextPoint = computeNewNodePosition(best, { x: 400, y: 300 });
-      const next = JSON.parse(JSON.stringify(current));
-      next.point = nextPoint;
-      nodes[idx] = next;
+      const target = nodes[idx];
+      const incoming = edges.filter(e => String(e.target) === String(nodeId));
+      if (!incoming.length) {
+        // Fallback: place below nearest source
+        const best = findBestSourceNode(nodes.filter(n => String(n.id) !== String(nodeId)), target?.point?.x ?? 400, target?.point?.y ?? 300);
+        const nextPoint = computeNewNodePosition(best, { x: 400, y: 300 });
+        const next = JSON.parse(JSON.stringify(target));
+        next.point = nextPoint; nodes[idx] = next;
+        emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+        return JSON.stringify({ success: true, mode: 'nearest' });
+      }
+      const e = incoming[0];
+      const src = nodes.find(n => String(n.id) === String(e.source));
+      if (!src) return JSON.stringify({ success: false, error: 'source_not_found' });
+      const srcModel = src?.data?.model || {};
+      const tpl = srcModel?.templateObj || {};
+      const srcPt = src?.point || { x: 400, y: 300 };
+      const gx = Number.isFinite(gapX) ? Number(gapX) : 260; const gy = Number.isFinite(gapY) ? Number(gapY) : 200;
+      // Determine branch index from sourceHandle
+      let index = 0;
+      const sh = String(e.sourceHandle ?? '');
+      const srcT = String(tpl?.type || '').toLowerCase();
+      if (srcT === 'condition') {
+        const field = tpl.output_array_field || 'items';
+        const arr = (srcModel?.context && Array.isArray(srcModel.context[field])) ? srcModel.context[field] : [];
+        if (/^\d+$/.test(sh)) index = parseInt(sh, 10) || 0; else {
+          const idxById = arr.findIndex(x => x && typeof x === 'object' && String(x._id) === sh);
+          index = idxById >= 0 ? idxById : 0;
+        }
+      } else if (/^\d+$/.test(sh)) index = parseInt(sh, 10) || 0; else index = 0;
+      let targetPoint = { x: srcPt.x + (index * gx), y: srcPt.y + gy };
+      // Avoid overlaps by nudging
+      let tries = 0;
+      while (nodes.some(n => String(n.id) !== String(nodeId) && Math.abs((n?.point?.x ?? 0) - targetPoint.x) < 80 && Math.abs((n?.point?.y ?? 0) - targetPoint.y) < 60) && tries < 6) {
+        targetPoint = { x: targetPoint.x + 40, y: targetPoint.y + 20 };
+        tries++;
+      }
+      const next = JSON.parse(JSON.stringify(target));
+      next.point = targetPoint; nodes[idx] = next;
       emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
-      return JSON.stringify({ success: true });
+      return JSON.stringify({ success: true, mode: 'incoming' });
     },
   });
 
@@ -490,11 +916,44 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     name: 'emit_snapshot',
     description: 'Envoie un snapshot complet du graphe.',
     schema: z.object({}).describe('Sans argument.'),
-    func: async () => { emitSnapshot(); return JSON.stringify({ success: true }); },
+    func: async () => {
+      // Validate that required args are set before finalizing; do not autofill (the agent must set params)
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const missingPerNode = [];
+        for (const n of nodes) {
+          const m = n?.data?.model || {}; const t = m?.templateObj || {}; const a = t?.args || {}; const ctx = m?.context || {};
+          const collect = [];
+          const scanFields = (arr) => {
+            for (const f of (arr || [])) {
+              if (!f || typeof f !== 'object') continue;
+              const key = f.key || f.name; if (!key) continue;
+              const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => (v && (v.type === 'required' || v.name === 'required'))));
+              if (req && (ctx[key] == null || ctx[key] === '')) collect.push(String(key));
+            }
+          };
+          scanFields(a.fields);
+          for (const step of (a.steps || [])) scanFields(step?.fields);
+          if (collect.length) missingPerNode.push({ nodeId: String(n.id), missing: collect });
+        }
+        if (missingPerNode.length) {
+          try { const details = missingPerNode.map(x => `${x.nodeId}:{${x.missing.join(',')}}`).join(' '); emitMessage(`[args][missing] nodes=${missingPerNode.length} ${details}`); } catch {}
+          return JSON.stringify({ success: false, code: 'args_missing', nodes: missingPerNode });
+        }
+      } catch {}
+      emitSnapshot();
+      return JSON.stringify({ success: true });
+    },
   });
 
   return [
     getTemplatesTool,
+    hasNodeArgsTool,
+    getNodeArgsSchemaTool,
+    validateNodeParamsTool,
+    listCredentialsTool,
+    attachCredentialTool,
     ensureStartTool,
     listGraphTool,
     addNodeTool,
