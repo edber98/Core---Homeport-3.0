@@ -81,7 +81,8 @@ function systemPrompt() {
   const raw = [
     'Tu es un agent de génération de workflows Homeport (Flow Builder).',
     'Tu utilises UNIQUEMENT les tools fournis. N’écris jamais le JSON final directement.',
-    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers (ne crée JAMAIS plus d’un nœud de départ: start/start_form/trigger/event/endpoint), 4) add_node pour les fonctions et conditions, 5) pour CHAQUE nœud non-start: has_node_args → si count>0 alors get_node_args_schema (reçoit le schéma + l’instruction utilisateur) puis set_node_params en fournissant le MAXIMUM de champs du schéma (pas seulement les requis), 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) validate_node_params pour vérifier les requis (s’il manque: compléter via set_node_params), 9) finalize (emit_snapshot).',
+    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers (ne crée JAMAIS plus d’un nœud de départ: start/start_form/trigger), 4) add_node pour les fonctions et conditions, 5) pour CHAQUE nœud non-start avec args: has_node_args → get_node_context_inputs (le schéma complet + description + outputs + prompt + nœuds précédents et leur contexte) → génère un JSON context complet puis apply_node_params (ou set_node_params) → validate_node_params (répète jusqu’à missing=0), 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) finalize (emit_snapshot).',
+    'Interdictions: ne pas appeler emit_snapshot si validate_node_params signale des requis manquants; ne pas créer de context partiel — remplir le maximum de champs du schéma.',
     'Important: si emit_snapshot renvoie code=args_missing, tu DOIS appeler validate_node_params pour connaître les clés manquantes, puis compléter via set_node_params. Ne rappelle pas emit_snapshot tant que missing>0.',
     'Rappels: un seul nœud "start-like". Évite la sortie err sauf si catch_error activé et pertinent. Respecte paramsSchema/args. Préfère des chaînes simples et exemples concrets pour les valeurs par défaut.',
     'Exemples de séquences:',
@@ -256,7 +257,8 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
   // Helpers start-like
   const isStartLike = (tpl) => {
     const t = String(tpl?.type || '').toLowerCase();
-    return t === 'start' || t === 'start_form' || t === 'trigger' || t === 'event' || t === 'endpoint';
+    // Aligne-toi sur l’éditeur: on considère uniquement start/start_form/trigger comme nœuds de départ
+    return t === 'start' || t === 'start_form' || t === 'trigger';
   };
   const hasStartLike = (g) => { try { return (g.nodes||[]).some(n => isStartLike(n?.data?.model?.templateObj)); } catch { return false; } };
 
@@ -292,6 +294,27 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       emitMessage('[get_templates][error] ' + (e?.message || e));
       return [];
     }
+  };
+
+  // Build an empty context object from args schema (structure only; no semantic autofill)
+  const makeEmptyContextFromArgs = (args) => {
+    try {
+      const out = {};
+      const coerce = (f) => {
+        const t = String(f?.type || '').toLowerCase();
+        if (f && f.default != null) return f.default;
+        if (t === 'number' || t === 'integer') return 0;
+        if (t === 'boolean' || t === 'checkbox' || t === 'switch') return false;
+        if (t === 'multiselect' || t === 'tags') return [];
+        if (t === 'json' || t === 'code' || t === 'object') return {};
+        // text/textarea/string/select/radio or unknown → empty string
+        return '';
+      };
+      const add = (arr) => { for (const f of (arr || [])) { const key = f && (f.key || f.name); if (key && !(key in out)) out[String(key)] = coerce(f); } };
+      add(args?.fields);
+      for (const s of (args?.steps || [])) add(s?.fields);
+      return out;
+    } catch { return {}; }
   };
 
   // Backend mirror of FlowGraphService.computeEdgeLabel
@@ -408,6 +431,206 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
         } catch {}
         return JSON.stringify({ success: true, nodeId, schema: summary });
       } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Aggregate everything the model needs to generate a complete context:
+  // - Template metadata (id/name/title/type/category/providerKey/description/subtitle)
+  // - Full args schema (fields/steps with validators/options/default/description)
+  // - Outputs list
+  // - Instruction (prompt) and recent history
+  // - Upstream (predecessor) nodes already connected to this node (id/template/context/sourceHandle)
+  // - Current skeleton (structure-only)
+  const getNodeContextInputsTool = new DynamicStructuredTool({
+    name: 'get_node_context_inputs',
+    description: 'Retourne un paquet complet pour générer le context: schéma Args, métadonnées template, outputs, prompt, nœuds précédents (et leur contexte), squelette.',
+    schema: z.object({ nodeId: z.string() }).describe('Préparer les entrées pour la génération du context.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {};
+        const tpl = model?.templateObj || {};
+        const args = tpl?.args || {};
+        const normalizeOptions = (opts) => {
+          if (!Array.isArray(opts)) return [];
+          return opts.map(o => {
+            if (o && typeof o === 'object') { return { label: o.label ?? o.name ?? String(o.value ?? o.id ?? o.key ?? ''), value: o.value ?? o.id ?? o.key ?? o.name ?? null }; }
+            return { label: String(o), value: o };
+          });
+        };
+        const normalizeField = (f) => {
+          try {
+            return {
+              key: f.key ?? f.name ?? null,
+              type: f.type ?? 'text',
+              label: f.label ?? null,
+              placeholder: f.placeholder ?? null,
+              required: !!f.required,
+              default: f.default ?? null,
+              options: normalizeOptions(f.options),
+              min: f.min ?? undefined,
+              max: f.max ?? undefined,
+              pattern: f.pattern ?? undefined,
+              description: f.description ?? f.help ?? null
+            };
+          } catch { return null; }
+        };
+        const fields = Array.isArray(args.fields) ? args.fields.map(normalizeField).filter(Boolean) : [];
+        const steps = Array.isArray(args.steps) ? args.steps.map(s => ({ title: s?.title ?? null, fields: Array.isArray(s?.fields) ? s.fields.map(normalizeField).filter(Boolean) : [] })) : [];
+        const skeleton = makeEmptyContextFromArgs(args);
+        const outputs = Array.isArray(tpl.output) ? tpl.output.slice() : [];
+        // Upstream nodes connected to this node
+        const incoming = edges.filter(e => String(e.target) === String(nodeId));
+        const preds = incoming.map(e => {
+          const src = nodes.find(n => String(n.id) === String(e.source));
+          const sm = src?.data?.model || {};
+          const st = sm?.templateObj || {};
+          return { id: src?.id, template: st?.id || sm?.template, name: sm?.name || null, type: st?.type || null, providerKey: st?.providerKey || st?.appId || null, context: sm?.context || {}, sourceHandle: e?.sourceHandle || null };
+        });
+        const instr = String(instruction || '');
+        const recent = Array.isArray(history) ? history.slice(-4) : [];
+        const meta = { id: tpl.id, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, subtitle: tpl.subtitle, description: tpl.description };
+        const out = { template: meta, args: { fields, steps }, outputs, instruction: instr, recentHistory: recent, predecessors: preds, skeleton };
+        try { emitMessage(`[context.inputs] nodeId=${nodeId} fields=${fields.length + steps.reduce((a,s)=>a+(s.fields?.length||0),0)} preds=${preds.length}`); } catch {}
+        return JSON.stringify({ success: true, nodeId, data: out });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Build a Zod schema from node args, and return as string (for model guidance)
+  const getNodeArgsZodTool = new DynamicStructuredTool({
+    name: 'get_node_args_zod',
+    description: 'Retourne un schéma Zod (string) dérivé des Arguments du nœud, pour guider la génération des params JSON (aucun autofill).',
+    schema: z.object({ nodeId: z.string() }).describe('Zod schema pour set_node_params.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {}; const args = tpl?.args || {};
+        const fields = Array.isArray(args.fields) ? args.fields : [];
+        const steps = Array.isArray(args.steps) ? args.steps : [];
+        const all = [];
+        const push = (f) => { if (f && typeof f === 'object' && (f.key || f.name)) all.push(f); };
+        for (const f of fields) push(f);
+        for (const s of steps) for (const f of (s?.fields || [])) push(f);
+        const enumVals = (opts) => {
+          try { return (Array.isArray(opts) ? opts : []).map(o => (o && typeof o === 'object') ? (o.value ?? o.id ?? o.key ?? o.name) : o).filter(v => v != null).map(v => String(v)); } catch { return []; }
+        };
+        const lines = [];
+        lines.push('z.object({');
+        for (const f of all) {
+          const key = String(f.key || f.name);
+          const t = String(f.type || '').toLowerCase();
+          const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => v && (v.type === 'required' || v.name === 'required')));
+          let zt = 'z.any()';
+          if (t === 'text' || t === 'textarea' || t === 'string') zt = 'z.string()';
+          else if (t === 'number' || t === 'integer') zt = 'z.number()';
+          else if (t === 'boolean' || t === 'checkbox' || t === 'switch') zt = 'z.boolean()';
+          else if (t === 'select' || t === 'radio') {
+            const ev = enumVals(f.options);
+            zt = ev.length ? `z.enum([${ev.map(v => JSON.stringify(v)).join(',')}])` : 'z.string()';
+          } else if (t === 'multiselect' || t === 'tags') {
+            const ev = enumVals(f.options);
+            const base = ev.length ? `z.enum([${ev.map(v => JSON.stringify(v)).join(',')}])` : 'z.string()';
+            zt = `z.array(${base})`;
+          } else if (t === 'json' || t === 'code' || t === 'object') zt = 'z.any()';
+          lines.push(`  ${JSON.stringify(key)}: ${zt}${req ? '' : '.optional()'},`);
+        }
+        lines.push('})');
+        const zodStr = lines.join('\n');
+        try { emitMessage(`[schema][zod] nodeId=${nodeId} keys=${all.length}`); } catch {}
+        return JSON.stringify({ success: true, nodeId, zod: zodStr });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Validate + apply params object using dynamic Zod from node args (no autofill)
+  const applyNodeParamsTool = new DynamicStructuredTool({
+    name: 'apply_node_params',
+    description: 'Valide et applique un objet params pour un nœud à partir de son schéma Args (requis/options). Échoue si invalides ou requis manquants.',
+    schema: z.object({ nodeId: z.string(), params: z.record(z.any()) }).describe('Appliquer des paramètres déjà générés par le modèle.'),
+    func: async ({ nodeId, params }) => {
+      try {
+        console.log('paramssssss',params)
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
+        if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const node = JSON.parse(JSON.stringify(nodes[idx]));
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {}; const args = tpl?.args || {};
+        const fields = Array.isArray(args.fields) ? args.fields : [];
+        const steps = Array.isArray(args.steps) ? args.steps : [];
+        const all = [];
+        const push = (f) => { if (f && typeof f === 'object' && (f.key || f.name)) all.push(f); };
+        for (const f of fields) push(f);
+        for (const s of steps) for (const f of (s?.fields || [])) push(f);
+        // Build runtime zod
+        const enumVals = (opts) => {
+          try { return (Array.isArray(opts) ? opts : []).map(o => (o && typeof o === 'object') ? (o.value ?? o.id ?? o.key ?? o.name) : o).filter(v => v != null).map(v => String(v)); } catch { return []; }
+        };
+        const shape = {};
+        for (const f of all) {
+          const key = String(f.key || f.name);
+          const t = String(f.type || '').toLowerCase();
+          const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => v && (v.type === 'required' || v.name === 'required')));
+          let zt = z.any();
+          if (t === 'text' || t === 'textarea' || t === 'string') zt = z.string();
+          else if (t === 'number' || t === 'integer') zt = z.number();
+          else if (t === 'boolean' || t === 'checkbox' || t === 'switch') zt = z.boolean();
+          else if (t === 'select' || t === 'radio') {
+            const ev = enumVals(f.options);
+            zt = ev.length ? z.enum([...(ev)]) : z.string();
+          } else if (t === 'multiselect' || t === 'tags') {
+            const ev = enumVals(f.options);
+            zt = ev.length ? z.array(z.enum([...(ev)])) : z.array(z.string());
+          } else if (t === 'json' || t === 'code' || t === 'object') zt = z.any();
+          shape[key] = req ? zt : zt.optional();
+        }
+        const schema = z.object(shape);
+        // Raw log for debugging
+        try { console.log('[args][apply][raw]', nodeId, JSON.stringify(params)); } catch {}
+        const check = schema.safeParse(params || {});
+        if (!check.success) {
+          try { emitMessage(`[args][invalid] nodeId=${nodeId} issues=${check.error.issues?.length || 0}`); } catch {}
+          return JSON.stringify({ success: false, error: 'invalid_params', issues: (check.error.issues || []).map(i => ({ path: i.path, message: i.message })) });
+        }
+        const cur = (model.context && typeof model.context === 'object') ? model.context : {};
+        node.data.model.context = { ...cur, ...(params || {}) };
+        nodes[idx] = node;
+        emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+        try {
+          const keys = Object.keys(params || {});
+          const preview = (() => { try { const o = params || {}; const pick = ['to','subject','from','text']; const sel = {}; pick.forEach(k => { if (o[k] != null) sel[k] = o[k]; }); return JSON.stringify(sel); } catch { return '{}'; } })();
+          emitMessage(`[args] applied nodeId=${nodeId} keys=${keys.length} preview=${preview}`);
+        } catch {}
+        return JSON.stringify({ success: true });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Alias: inject_node_context → same behavior as apply_node_params (kept for agent phrasing)
+  const injectNodeContextTool = new DynamicStructuredTool({
+    name: 'inject_node_context',
+    description: 'Alias: valide et applique un objet context (mêmes règles que apply_node_params).',
+    schema: z.object({ nodeId: z.string(), context: z.record(z.any()) }).describe('Injecter un context validé.'),
+    func: async ({ nodeId, context }) => {
+      return applyNodeParamsTool.func({ nodeId, params: context });
+    }
+  });
+
+  // Alias: text_inputs → same data as get_node_context_inputs (shorter name some agents prefer)
+  const textInputsTool = new DynamicStructuredTool({
+    name: 'text_inputs',
+    description: 'Alias: identique à get_node_context_inputs (schéma + prompt + prédécesseurs + skeleton).',
+    schema: z.object({ nodeId: z.string() }).describe('Entrées complètes pour générer le context.'),
+    func: async ({ nodeId }) => {
+      return getNodeContextInputsTool.func({ nodeId });
     }
   });
 
@@ -550,6 +773,41 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     func: async () => JSON.stringify({ success: true, graph: getGraph() }),
   });
 
+  // Find nodes with optional filters (templateKey/type/provider), and report required-missing keys
+  const findNodesTool = new DynamicStructuredTool({
+    name: 'find_nodes',
+    description: 'Liste les nœuds existants avec filtres optionnels (templateKey, type, providerKey) et les champs requis manquants.',
+    schema: z.object({ templateKey: z.string().optional(), type: z.string().optional(), providerKey: z.string().optional() }).describe('Filtrer les nœuds.'),
+    func: async ({ templateKey, type, providerKey }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const out = [];
+        for (const n of nodes) {
+          const m = n?.data?.model || {}; const t = m?.templateObj || {};
+          if (templateKey && String(t.id || m.template || '').toLowerCase() !== String(templateKey).toLowerCase()) continue;
+          if (type && String(t.type || '').toLowerCase() !== String(type).toLowerCase()) continue;
+          if (providerKey && String(t.providerKey || t.appId || '').toLowerCase() !== String(providerKey).toLowerCase()) continue;
+          // Compute required-missing keys
+          const args = t?.args || {}; const ctx = m?.context || {};
+          const missing = [];
+          const scan = (arr) => {
+            for (const f of (arr || [])) {
+              if (!f || typeof f !== 'object') continue;
+              const key = f.key || f.name; if (!key) continue;
+              const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => v && (v.type === 'required' || v.name === 'required')));
+              if (req && (ctx[key] == null || ctx[key] === '')) missing.push(String(key));
+            }
+          };
+          scan(args.fields); for (const s of (args.steps || [])) scan(s?.fields);
+          out.push({ id: n.id, name: m?.name || null, templateKey: t.id || m.template || null, type: t.type || null, providerKey: t.providerKey || t.appId || null, missing });
+        }
+        try { emitMessage(`[nodes] found=${out.length} filtered by tpl=${templateKey||'-'} type=${type||'-'} prov=${providerKey||'-'}`); } catch {}
+        return JSON.stringify({ success: true, nodes: out });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
   const addNodeTool = new DynamicStructuredTool({
     name: 'add_node',
     description: 'Ajoute un nœud à partir d’un templateKey. Placement auto, id généré.',
@@ -583,7 +841,9 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
         try { emitMessage(`[node] add template=${templateKey} argsFields=${fieldCount}`); } catch {}
       } catch {}
       const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
-      const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: {}, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };
+      // Initialize context with structural skeleton if args exist (no semantic values)
+      const initCtx = (() => { try { const a = tpl.args || {}; const has = (Array.isArray(a.fields) && a.fields.length) || (Array.isArray(a.steps) && a.steps.some(s => Array.isArray(s?.fields) && s.fields.length)); return has ? makeEmptyContextFromArgs(a) : {}; } catch { return {}; } })();
+      const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: initCtx, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };
       // Auto-attach first credential if available for this provider
       try {
         const pk = templateObj.providerKey || templateObj.appId || '';
@@ -606,6 +866,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       nodes.push(node);
       ops.push({ op: 'replace', path: '/nodes', value: nodes });
       emitPatch(ops); emitSnapshot();
+      try { const kc = Object.keys(initCtx || {}).length; if (kc) emitMessage(`[args] init nodeId=${id} keys=${kc}`); } catch {}
       return JSON.stringify({ success: true, nodeId: id });
     },
   });
@@ -938,7 +1199,16 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           if (collect.length) missingPerNode.push({ nodeId: String(n.id), missing: collect });
         }
         if (missingPerNode.length) {
-          try { const details = missingPerNode.map(x => `${x.nodeId}:{${x.missing.join(',')}}`).join(' '); emitMessage(`[args][missing] nodes=${missingPerNode.length} ${details}`); } catch {}
+          try {
+            const gById = new Map((getGraph().nodes||[]).map(n => [String(n.id), n]));
+            const details = missingPerNode.map(x => {
+              const n = gById.get(String(x.nodeId));
+              const name = n?.data?.model?.name || n?.data?.model?.template || 'node';
+              const tpl = n?.data?.model?.templateObj?.id || n?.data?.model?.template || '-';
+              return `${x.nodeId}(${name}/${tpl}):{${x.missing.join(',')}}`;
+            }).join(' ');
+            emitMessage(`[args][missing] nodes=${missingPerNode.length} ${details}`);
+          } catch {}
           return JSON.stringify({ success: false, code: 'args_missing', nodes: missingPerNode });
         }
       } catch {}
@@ -949,8 +1219,14 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
 
   return [
     getTemplatesTool,
+    findNodesTool,
     hasNodeArgsTool,
+    textInputsTool,
+    getNodeContextInputsTool,
     getNodeArgsSchemaTool,
+    getNodeArgsZodTool,
+    applyNodeParamsTool,
+    injectNodeContextTool,
     validateNodeParamsTool,
     listCredentialsTool,
     attachCredentialTool,
