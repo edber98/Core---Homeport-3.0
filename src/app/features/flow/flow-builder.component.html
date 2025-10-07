@@ -317,6 +317,15 @@
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
 
+  <!-- Floating AI Chat Popover Trigger + persistent popover -->
+  <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
+    <i class="fa-solid fa-message"></i>
+  </button>
+  <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
+  <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
+    <flow-ai-chat [seedGraph]="{ nodes: nodes, edges: edges }" (close)="aiChatOpen=false" (graphGenerated)="applyAiGraph($event)"></flow-ai-chat>
+  </div>
+
 </div>
 
 <!-- Responsive drawers (mobile/tablet) -->

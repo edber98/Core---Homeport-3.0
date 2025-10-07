@@ -1,6 +1,31 @@
 # Codex Build & Fix Report — 2025-08-27
 Homeport — Production Build Report (Codex)
 # Codex Build Report — Homeport
+Rapport de build — Homeport (production)
+
+1) Résumé du style appliqué
+- Framework: Angular 20 (standalone components), TypeScript.
+- Styles: SCSS + thème Less importé via `src/theme.less` (NG Zorro).
+- UI: NG Zorro (`ng-zorro-antd`), usage de la grille (`nz-row`/`nz-col`) et trackBy.
+- Architecture: routing-first, features lazy (`src/app/features/*`), modules réutilisables (`src/app/modules/*`, dont `dynamic-form`).
+- Conventions: fichiers en kebab-case, classes en PascalCase, inputs/outputs en tête, respect de `.editorconfig` et Prettier (HTML parser Angular).
+- Assets: `public/` copiés en build; CommonJS autorisé: `nunjucks`.
+
+2) Changements effectués durant cette exécution
+- Exécution de `ng build --configuration production`.
+- Aucune erreur détectée; aucune modification de code nécessaire.
+- Génération de ce rapport.
+
+3) Fichiers modifiés
+- `codex-report.md` (mise à jour avec ce rapport).
+
+4) Message simulé (Conventional Commits)
+build(angular): production build ok, aucun fix requis
+
+Notes de build
+- Angular CLI: 20.1.2, Angular: 20.1.3, Node: 24.4.1.
+- Sortie: `dist/homeport`.
+- Budgets respectés; bundle initial estimé ~399 kB transfer (gzip).
 
 Date: 2025-08-30
 
