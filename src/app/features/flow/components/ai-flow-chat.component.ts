@@ -6,15 +6,15 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
+import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
+import { RichPart } from '../../../shared/chat/chat-types';
 import { AiFlowAgentService, FlowAgentEvent } from '../../../services/ai-flow-agent.service';
-
-type RichPart = { kind: 'text'|'tool'|'log'|'ai-form'; text?: string; tag?: string; name?: string; badge?: 'FLOW'|'AI FORM'|'TOOL'; status?: 'running'|'success'|'error'|'warn'|'info' };
 type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[] };
 
 @Component({
   selector: 'flow-ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzIconModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzIconModule, ChatRendererComponent],
   template: `
   <div class="chat-root">
     <div class="chat-header">
@@ -27,41 +27,11 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
           <div class="txt">{{ m.text }}</div>
         </ng-container>
         <ng-template #richMsg>
-          <div class="txt rich">
-            <div class="line" *ngFor="let p of (m.parts||[])" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'">
-              <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
-              <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
-              <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
-              <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
-              <span class="name" *ngIf="p.name">{{ p.name }}</span>
-              <span class="tag" *ngIf="p.tag">[{{ p.tag }}]</span>
-              <ng-container *ngIf="isMessagePart(p); else plain1">
-                <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
-              </ng-container>
-              <ng-template #plain1>
-                <span class="text">{{ p.text }}</span>
-              </ng-template>
-            </div>
-          </div>
+          <div class="txt rich"><chat-renderer [parts]="m.parts || []"></chat-renderer></div>
         </ng-template>
       </div>
       <div class="bubble assistant" *ngIf="streaming">
-        <div class="txt rich">
-          <div class="line" *ngFor="let p of streamingParts" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'">
-            <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
-            <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
-            <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
-            <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
-            <span class="name" *ngIf="p.name">{{ p.name }}</span>
-            <span class="tag" *ngIf="p.tag">[{{ p.tag }}]</span>
-            <ng-container *ngIf="isMessagePart(p); else plain2">
-              <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
-            </ng-container>
-            <ng-template #plain2>
-              <span class="text">{{ p.text }}</span>
-            </ng-template>
-          </div>
-        </div>
+        <div class="txt rich"><chat-renderer [parts]="streamingParts"></chat-renderer></div>
       </div>
     </div>
     <div class="chat-footer">
@@ -94,18 +64,6 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .composer { display:flex; gap:8px; }
     .ml { margin-left: 6px; }
     .txt.rich { white-space: pre-wrap; word-break: break-word; }
-    .line { display:flex; align-items:baseline; gap:8px; padding:1px 0; }
-    .badge { background:#e5e7eb; color:#111827; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; }
-    .badge.aiform { background:#fdba74; color:#7c2d12; }
-    .badge.flow { background:#dbeafe; color:#1e3a8a; }
-    .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; }
-    .st.run { color:#2563eb; }
-    .st.ok { color:#16a34a; }
-    .st.err { color:#ef4444; }
-    .st.warn { color:#d97706; }
-    .tag { color:#6b7280; }
-    /* Ne pas avoir de marges de <p> rendus par Markdown dans les lignes outils */
-    .line.tool .text p { margin: 0; display: inline; }
     /* De manière générale, supprime la marge par défaut des <p> dans les bulles */
     .txt.rich p { margin: 0; }
   `]

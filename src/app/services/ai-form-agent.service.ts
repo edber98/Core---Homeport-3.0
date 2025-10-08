@@ -8,6 +8,8 @@ export type AgentEvent =
   | { type: 'patch'; ops: Array<{ op: 'add'|'replace'|'remove'; path: string; value?: any }> }
   | { type: 'snapshot'; schema: any }
   | { type: 'final'; schema: any }
+  | { type: 'tool.start'; name?: string; args?: any }
+  | { type: 'tool.end'; name?: string; ok?: boolean }
   | { type: 'warning'; code?: string; message?: string }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' };
@@ -61,6 +63,8 @@ export class AiFormAgentService {
     es.addEventListener('snapshot', handle('snapshot'));
     es.addEventListener('final', handle('final'));
     es.addEventListener('warning', handle('warning'));
+    es.addEventListener('tool.start', handle('tool.start'));
+    es.addEventListener('tool.end', handle('tool.end'));
     es.addEventListener('error', handle('error'));
     es.addEventListener('done', () => { this.zone.run(() => subj.next({ type: 'done' })); try { es.close(); } catch {} subj.complete(); });
     es.onerror = () => { this.zone.run(() => subj.next({ type: 'error', code: 'eventsource_error', message: 'Connection failed' })); };
