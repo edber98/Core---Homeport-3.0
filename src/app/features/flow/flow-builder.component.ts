@@ -163,6 +163,11 @@ export class FlowBuilderComponent {
       this.updateSharedGraph();
       this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
       this.recomputeValidation();
+      // Center the viewport on the loaded graph (like frontend initial centering)
+      try {
+        // Delay to allow DOM to render node sizes before centering
+        setTimeout(() => this.centerFlow(), 0);
+      } catch {}
       try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
     } catch {
       try { this.message.error('Graphe IA invalide'); } catch {}

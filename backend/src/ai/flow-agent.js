@@ -347,7 +347,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const nodeH = Number(process.env.AI_FLOW_NODE_HEIGHT || 100);
       // Frontend top-left gaps: gx=260, gy=200 → border gaps = 260 - width, 200 - height
       const topLeftGapX = Number.isFinite(gapX) ? gapX : 260;
-      const topLeftGapY = Number.isFinite(gapY) ? gapY : 200;
+      const topLeftGapY = Number.isFinite(gapY) ? gapY : 160;
       const borderGapX = Math.max(0, topLeftGapX - nodeW);
       const borderGapY = Math.max(0, topLeftGapY - nodeH);
       const child = nodes.map(n => ({ id: String(n.id), width: nodeW, height: nodeH }));
@@ -1015,7 +1015,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
       // Re-layout with ELK to keep consistent placement
       try {
-        const laid = await elkLayoutCurrentGraph({ nodes, edges: Array.isArray(getGraph().edges)?getGraph().edges.slice():[] }, 260, 200);
+        const laid = await elkLayoutCurrentGraph({ nodes, edges: Array.isArray(getGraph().edges)?getGraph().edges.slice():[] }, 260, 160);
         if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][ensure_start]'); }
       } catch {}
       return JSON.stringify({ success: true, nodeId: id, templateKey: tpl.key });
@@ -1125,7 +1125,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       // Re-layout with ELK after node addition for consistency
       try {
         const g2 = getGraph();
-        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 200);
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 160);
         if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][add_node]'); }
       } catch {}
       try { const kc = Object.keys(initCtx || {}).length; if (kc) emitMessage(`[args] init nodeId=${id} keys=${kc}`); } catch {}
@@ -1336,7 +1336,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       // ELK layout for consistent placement after each connect
       try {
         const g2 = getGraph();
-        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 200);
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 160);
         if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][connect]'); }
         else emitSnapshot();
       } catch { emitSnapshot(); }
@@ -1352,7 +1352,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       // Delegate to ELK layout for consistent placement
       try {
         const g = getGraph();
-        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g.nodes)?g.nodes.slice():[], edges: Array.isArray(g.edges)?g.edges.slice():[] }, Number.isFinite(gapX)?gapX:260, Number.isFinite(gapY)?gapY:200);
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g.nodes)?g.nodes.slice():[], edges: Array.isArray(g.edges)?g.edges.slice():[] }, Number.isFinite(gapX)?gapX:260, Number.isFinite(gapY)?gapY:160);
         if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage(`[layout.elk][auto_place] nodeId=${nodeId}`); return JSON.stringify({ success: true, engine: 'elk' }); }
       } catch (e) {
         try { emitMessage('[layout.elk][auto_place][error] ' + (e?.message || e)); } catch {}
