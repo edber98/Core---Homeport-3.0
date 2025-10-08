@@ -81,13 +81,18 @@ function systemPrompt() {
   const raw = [
     'Tu es un agent de génération de workflows Homeport (Flow Builder).',
     'Tu utilises UNIQUEMENT les tools fournis. N’écris jamais le JSON final directement.',
-    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers (ne crée JAMAIS plus d’un nœud de départ: start/start_form/trigger), 4) add_node pour les fonctions et conditions, 5) pour CHAQUE nœud non-start avec args: has_node_args → get_node_context_inputs (le schéma complet + description + outputs + prompt + nœuds précédents et leur contexte) → génère un JSON context complet puis apply_node_params (ou set_node_params) → validate_node_params (répète jusqu’à missing=0), 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) finalize (emit_snapshot).',
-    'Interdictions: ne pas appeler emit_snapshot si validate_node_params signale des requis manquants; ne pas créer de context partiel — remplir le maximum de champs du schéma.',
-    'Important: si emit_snapshot renvoie code=args_missing, tu DOIS appeler validate_node_params pour connaître les clés manquantes, puis compléter via set_node_params. Ne rappelle pas emit_snapshot tant que missing>0.',
+    'Processus: 1) get_templates pour connaître les nœuds disponibles (type, outputs, args), 2) list_graph, 3) add_node pour Start/Triggers (ne crée JAMAIS plus d’un nœud de départ: start/start_form/trigger), 4) add_node pour les fonctions et conditions, 5) pour CHAQUE nœud non-start qui possède des arguments: has_node_args → get_node_context_inputs (args complets + meta + outputs + prompt + prédécesseurs + squelette) → GÉNÈRE un objet context COMPLET puis APPELLE create_node_context({ nodeId, context }) (ou inject_node_context/apply_node_params) → validate_node_params (répète jusqu’à missing=0), 6) connect avec le handle de sortie approprié (préfère ok), 7) auto_place pour un placement cohérent, 8) finalize (emit_snapshot).',
+    'Règle stricte: si un nœud a des arguments (args>0), tu DOIS appeler create_node_context pour ce nœud avant de finaliser. Ne laisse JAMAIS un context vide ou seulement squelette.',
+    'Sorties & labels: les nœuds function ont outputs = tableau; tu dois connecter sur l’index ("0", "1", …) et le label de l’arête est la string du tableau à cet index. Exemple: output=["Success","Retry"], handle="1" → label="Retry".',
+    'Erreur/try-catch: si on te demande de brancher la sortie Erreur (try/catch), et uniquement si le template l’autorise, appelle d’abord set_node_flags({catch_error:true}) sur le nœud source, puis connecte avec sourceHandle="err" (label="Error"). Les options catch/skip sont mutuellement exclusives.',
+    'Connexion par nom: si l’utilisateur demande une sortie nommée (ex: "Retry"), appelle get_output_options pour lister {handle,label} puis connecte sur le handle correspondant, ou utilise connect_by_output_name({ sourceId, targetId, outputName }).',
+    'Ne modifie JAMAIS le tableau output dans templateObj: les labels de sorties viennent du template canonique; utilise uniquement les handles valides (indices numériques ou "err" si catch activé).',
+    'Interdictions: ne pas créer de context partiel — remplis autant de champs que possible depuis le prompt et le schéma; n’invente pas de valeurs hors schéma.',
+    'Important: s’il manque des requis (validate_node_params), complète et réapplique via create_node_context/inject_node_context jusqu’à résolution.',
     'Rappels: un seul nœud "start-like". Évite la sortie err sauf si catch_error activé et pertinent. Respecte paramsSchema/args. Préfère des chaînes simples et exemples concrets pour les valeurs par défaut.',
     'Exemples de séquences:',
-    '- Webhook → HTTP → Log: add_node(trigger.http), add_node(http.request), connect(trigger->http:ok), add_node(util.log), connect(http->log:ok), set_node_params(http,{url:"https://...",method:"GET"}), finalize.',
-    '- Start_Form → Transform → Endpoint: add_node(start_form), set_node_params, add_node(data.transform), connect, add_node(endpoint.http), connect, finalize.',
+    '- Webhook → HTTP → Log: add_node(trigger.http), add_node(http.request), get_node_context_inputs(http), create_node_context({nodeId:http, context:{url:"https://...", method:"GET"}}), connect(trigger->http:ok), add_node(util.log), connect(http->log:ok), finalize.',
+    '- Start_Form → Transform → Endpoint: add_node(start_form), add_node(data.transform), get_node_context_inputs(transform), create_node_context({nodeId:transform, context:{mapping:"..."}}), connect, add_node(endpoint.http), get_node_context_inputs(endpoint), create_node_context({nodeId:endpoint, context:{url:"https://..."}}), connect, finalize.',
   ].join('\n');
   return escapeForLangChain(raw);
 }
@@ -177,6 +182,94 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
         }
       } catch {}
     }
+
+    // Post-pass: ensure every node that has args gets a generated context from prompt + schema + predecessors
+    // This runs even if the primary agent forgot to call the context tools.
+    async function autoHydrateContexts() {
+      try {
+        const { DynamicStructuredTool: T } = await importLC();
+        const tools2 = await buildTools({ DynamicStructuredTool: T, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+        const list = tools2.find(t => t.name === 'list_graph');
+        const hasArgs = tools2.find(t => t.name === 'has_node_args');
+        const getInputs = tools2.find(t => t.name === 'get_node_context_inputs');
+        const createCtx = tools2.find(t => t.name === 'create_node_context') || tools2.find(t => t.name === 'inject_node_context') || tools2.find(t => t.name === 'apply_node_params');
+        const validate = tools2.find(t => t.name === 'validate_node_params');
+        if (!list || !hasArgs || !getInputs || !createCtx || !validate) return;
+        let changed = false;
+        const maxRounds = 2;
+        for (let round = 0; round < maxRounds; round++) {
+          const snap = JSON.parse(await list.func({})).graph || graph;
+          const nodes = Array.isArray(snap?.nodes) ? snap.nodes : [];
+          let roundChanged = false;
+          for (const n of nodes) {
+            const id = String(n?.id || ''); if (!id) continue;
+            const has = JSON.parse(await hasArgs.func({ nodeId: id }));
+            if (!(has && has.success && has.count > 0)) continue;
+            // Check required missing
+            const vres = JSON.parse(await validate.func({ nodeId: id }));
+            const missing = (vres && vres.success) ? (vres.missing || []) : [];
+            // Also consider empty or skeleton-only context
+            const inputResp = JSON.parse(await getInputs.func({ nodeId: id }));
+            const skeleton = (inputResp && inputResp.success) ? (inputResp.data?.skeleton || {}) : {};
+            const curCtx = (((n||{}).data||{}).model||{}).context || {};
+            const isSame = stableStringify(curCtx) === stableStringify({ ...curCtx, ...skeleton }) && Object.keys(curCtx||{}).length <= Object.keys(skeleton||{}).length;
+            if (missing.length === 0 && !isSame) continue;
+            // Build a context-only prompt for the small LLM pass
+            const data = inputResp?.data || {};
+            const meta = data.template || {};
+            const fields = (Array.isArray(data.args?.fields) ? data.args.fields : []).concat(...(Array.isArray(data.args?.steps) ? data.args.steps.map(s => s.fields || []) : []));
+            const preds = Array.isArray(data.predecessors) ? data.predecessors : [];
+            const userInstruction = String(data.instruction || instruction || '');
+            const describeField = (f) => {
+              const opt = Array.isArray(f.options) && f.options.length ? ` options=[${f.options.map(o => (o && typeof o==='object') ? (o.label+':'+o.value) : o).join(', ')}]` : '';
+              const req = f.required ? ' required' : '';
+              return `- ${f.key} (${f.type}${req}): ${f.label || ''}${opt}`;
+            };
+            const fieldsTxt = (fields || []).filter(f=>f&&f.key).map(describeField).join('\n');
+            const predsTxt = preds.map(p => `- ${p.id} ${p.template}/${p.name || ''} ctx=${stableStringify(p.context||{})}`).join('\n');
+            const sys = [
+              'Tu construis un objet JSON "context" pour paramétrer un nœud de workflow.',
+              'Contraintes:',
+              '- Utilise uniquement les clés définies par le schéma.',
+              '- Respecte les types: string/number/boolean/array/object.',
+              '- Remplis tous les champs requis; exploite au maximum le prompt utilisateur et le contexte des prédécesseurs.',
+              '- Ne crée pas de clés inconnues; n’ajoute pas de méta.',
+              '- Réponds EXCLUSIVEMENT par le JSON de l’objet (pas de texte autour).'
+            ].join('\n');
+            const user = [
+              `Template: ${meta?.id || meta?.name || meta?.title || ''} (type=${meta?.type || ''})`,
+              `Champs:`,
+              fieldsTxt || '(aucun)',
+              `Prompt utilisateur: ${userInstruction}`,
+              `Prédécesseurs:`,
+              predsTxt || '(aucun)',
+              `Squelette par défaut (pour référence): ${stableStringify(skeleton)}`,
+              'Produis le JSON du context.'
+            ].join('\n');
+            let jsonOut = null;
+            try {
+              const mini = new ChatOpenAI({ temperature: 0, modelName: process.env.OPENAI_MODEL || 'gpt-4o', openAIApiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '', streaming: false });
+              const promptOnly = ChatPromptTemplate.fromMessages([[ 'system', sys ], [ 'human', '{input}' ]]);
+              const chain = await promptOnly.pipe(mini);
+              const resp = await chain.invoke({ input: user });
+              const text = String(resp?.content || '').trim();
+              // Try parse strict JSON
+              try { jsonOut = JSON.parse(text); } catch {
+                const m = text.match(/\{[\s\S]*\}/);
+                if (m) { try { jsonOut = JSON.parse(m[0]); } catch {} }
+              }
+            } catch {}
+            if (!jsonOut || typeof jsonOut !== 'object') { try { emitMessage(`[context.auto][skip] nodeId=${id} no_json`); } catch {} ; continue; }
+            // Apply
+            const created = JSON.parse(await createCtx.func({ nodeId: id, context: jsonOut }));
+            if (created && created.success) { roundChanged = true; changed = true; try { emitMessage(`[context.auto] nodeId=${id} keys=${Object.keys(jsonOut||{}).length}`); } catch {} }
+          }
+          if (!roundChanged) break;
+        }
+        if (!changed) { try { emitMessage('[context.auto] none'); } catch {} }
+      } catch (e) { try { emitMessage('[context.auto][error] ' + (e?.message || e)); } catch {} }
+    }
+    await autoHydrateContexts();
     // Safety: ensure a start-like node exists; if missing, add it and auto-connect to a likely first node
     try {
       const g = graph || { nodes: [], edges: [] };
@@ -219,6 +312,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
         } catch {}
       }
     } catch {}
+
     emitSnapshot();
     try { console.log('[ai-flow][final_graph]', JSON.stringify(graph)); } catch {}
     done();
@@ -230,6 +324,16 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
 }
 
 async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history }){
+  // Cache templates to enforce canonical outputs (prevent any mutation of templateObj.output)
+  let _templatesCache = null;
+  const loadTemplatesCache = async () => { if (!_templatesCache) _templatesCache = await getTemplates(); return _templatesCache; };
+  const canonicalOutputsFor = async (templateKey) => {
+    try {
+      const list = await loadTemplatesCache();
+      const t = (list || []).find(x => String(x.key) === String(templateKey));
+      return (t && Array.isArray(t.output) && t.output.length) ? t.output.slice() : [];
+    } catch { return []; }
+  };
   // Helper: find first credential id for a provider in current workspace
   const firstCredentialIdFor = async (providerKey) => {
     try {
@@ -447,6 +551,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     schema: z.object({ nodeId: z.string() }).describe('Préparer les entrées pour la génération du context.'),
     func: async ({ nodeId }) => {
       try {
+        
         const g = getGraph();
         const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
         const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
@@ -621,6 +726,69 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     schema: z.object({ nodeId: z.string(), context: z.record(z.any()) }).describe('Injecter un context validé.'),
     func: async ({ nodeId, context }) => {
       return applyNodeParamsTool.func({ nodeId, params: context });
+    }
+  });
+
+  // Friendly tool to create/set a node context from the template args schema
+  // Validates against the same dynamic Zod as apply_node_params.
+  const createNodeContextTool = new DynamicStructuredTool({
+    name: 'create_node_context',
+    description: 'Crée et applique un context pour un nœud (validé selon le schéma Args du template). À appeler juste après add_node.',
+    schema: z.object({ nodeId: z.string(), context: z.record(z.any()) }).describe('Appliquer un context généré par le modèle.'),
+    func: async ({ nodeId, context }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
+        if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const node = JSON.parse(JSON.stringify(nodes[idx]));
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {}; const args = tpl?.args || {};
+        const fields = Array.isArray(args.fields) ? args.fields : [];
+        const steps = Array.isArray(args.steps) ? args.steps : [];
+        const all = [];
+        const push = (f) => { if (f && typeof f === 'object' && (f.key || f.name)) all.push(f); };
+        for (const f of fields) push(f);
+        for (const s of steps) for (const f of (s?.fields || [])) push(f);
+        // Build runtime zod
+        const enumVals = (opts) => {
+          try { return (Array.isArray(opts) ? opts : []).map(o => (o && typeof o === 'object') ? (o.value ?? o.id ?? o.key ?? o.name) : o).filter(v => v != null).map(v => String(v)); } catch { return []; }
+        };
+        const shape = {};
+        for (const f of all) {
+          const key = String(f.key || f.name);
+          const t = String(f.type || '').toLowerCase();
+          const req = !!f.required || (Array.isArray(f.validators) && f.validators.some(v => v && (v.type === 'required' || v.name === 'required')));
+          let zt = z.any();
+          if (t === 'text' || t === 'textarea' || t === 'string') zt = z.string();
+          else if (t === 'number' || t === 'integer') zt = z.number();
+          else if (t === 'boolean' || t === 'checkbox' || t === 'switch') zt = z.boolean();
+          else if (t === 'select' || t === 'radio') {
+            const ev = enumVals(f.options);
+            zt = ev.length ? z.enum([...(ev)]) : z.string();
+          } else if (t === 'multiselect' || t === 'tags') {
+            const ev = enumVals(f.options);
+            zt = ev.length ? z.array(z.enum([...(ev)])) : z.array(z.string());
+          } else if (t === 'json' || t === 'code' || t === 'object') zt = z.any();
+          shape[key] = req ? zt : zt.optional();
+        }
+        const schema = z.object(shape);
+        // Validate provided context
+        try { console.log('[context][create][raw]', nodeId, JSON.stringify(context)); } catch {}
+        const check = schema.safeParse(context || {});
+        if (!check.success) {
+          try { emitMessage(`[context][create][invalid] nodeId=${nodeId} issues=${check.error.issues?.length || 0}`); } catch {}
+          return JSON.stringify({ success: false, error: 'invalid_context', issues: (check.error.issues || []).map(i => ({ path: i.path, message: i.message })) });
+        }
+        const cur = (model.context && typeof model.context === 'object') ? model.context : {};
+        node.data.model.context = { ...cur, ...(context || {}) };
+        nodes[idx] = node;
+        emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+        try {
+          const keys = Object.keys(context || {});
+          emitMessage(`[context][create] nodeId=${nodeId} keys=${keys.length}`);
+        } catch {}
+        return JSON.stringify({ success: true });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
     }
   });
 
@@ -991,9 +1159,67 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       }
       const th = targetHandle || 'in';
 
-      // Compute label and error styling identical to frontend
-      const label = computeEdgeLabelFrom(model, sh);
+      // Validate numeric handle against outputs length (do not allow out-of-range indexes)
+      // Use canonical outputs from templates DB, not the possibly mutated model.templateObj.output
+      const canonical = await canonicalOutputsFor(String(tpl.id || model.template || ''));
+      const outsCount = (Array.isArray(canonical) && canonical.length) ? canonical.length : 1;
+      const shStr = String(sh ?? '');
+      const isNumericHandle = /^\d+$/.test(shStr);
+      if (isNumericHandle) {
+        const idx = parseInt(shStr, 10);
+        if (!(idx >= 0 && idx < outsCount)) {
+          try { emitMessage(`[edge][invalid_output_index] sourceId=${sourceId} handle=${shStr} outs=${outsCount}`); } catch {}
+          return JSON.stringify({ success: false, error: 'invalid_output_index', index: idx, outputs: outsCount });
+        }
+      }
+      // For function-like nodes: enforce numeric handle or 'err'
+      const isFuncLike = !(srcT === 'start' || srcT === 'start_form' || srcT === 'event' || srcT === 'endpoint' || srcT === 'condition');
+      if (isFuncLike && !isNumericHandle && String(shStr) !== 'err') {
+        try { emitMessage(`[edge][invalid_output_handle] sourceId=${sourceId} handle=${shStr} type=${srcT}`); } catch {}
+        return JSON.stringify({ success: false, error: 'invalid_output_handle' });
+      }
+      // Warn if model.templateObj.output differs from canonical
+      try {
+        const modelOut = Array.isArray(tpl.output) ? tpl.output : [];
+        if (stableStringify(modelOut) !== stableStringify(canonical)) {
+          emitMessage(`[template.output_mismatch] nodeId=${sourceId} template=${String(tpl.id||model.template||'')} model=${JSON.stringify(modelOut)} canonical=${JSON.stringify(canonical)}`);
+        }
+      } catch {}
+
+      // For condition: if handle is non-numeric, ensure it matches a known _id; otherwise error
+      if (srcT === 'condition' && !/^\d+$/.test(String(sh))) {
+        const field = tpl.output_array_field || 'items';
+        const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+        const ok = arr.some(x => x && typeof x === 'object' && String(x._id) === String(sh));
+        if (!ok) {
+          try { emitMessage(`[edge][invalid_condition_handle] sourceId=${sourceId} handle=${String(sh)}`); } catch {}
+          return JSON.stringify({ success: false, error: 'invalid_condition_handle' });
+        }
+      }
+
+      // Compute label and error styling identical to frontend; ensure 'err' is allowed only when enabled
       const isErr = String(sh) === 'err';
+      if (isErr) {
+        const tplAllow = !!tpl.authorize_catch_error;
+        const enabled = !!model?.catch_error;
+        if (!tplAllow || !enabled) {
+          try { emitMessage(`[edge][error_output_disabled] sourceId=${sourceId}`); } catch {}
+          return JSON.stringify({ success: false, error: 'error_output_disabled' });
+        }
+      }
+      // Prefer canonical outputs to derive label for function-like nodes
+      let label = '';
+      if (srcT === 'condition') {
+        label = computeEdgeLabelFrom(model, sh);
+      } else if (isErr) {
+        label = 'Error';
+      } else if (isNumericHandle) {
+        const idx = parseInt(String(sh), 10);
+        label = (canonical && Array.isArray(canonical) && canonical[idx] != null) ? String(canonical[idx]) : computeEdgeLabelFrom(model, sh);
+      } else {
+        label = computeEdgeLabelFrom(model, sh);
+      }
+      try { emitMessage(`[edge][label] sourceId=${sourceId} handle=${String(sh)} label=${label}`); } catch {}
       const edgeColor = isErr ? '#f759ab' : '#b1b1b7';
       const newEdge = {
         type: 'template',
@@ -1173,6 +1399,159 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     },
   });
 
+  // List static outputs for a node (function-like); for condition, returns dynamic items names
+  const getNodeOutputsTool = new DynamicStructuredTool({
+    name: 'get_node_outputs',
+    description: 'Retourne les sorties d’un nœud: pour les fonctions, le tableau template.output; pour les conditions, les noms des items du champ output_array_field.',
+    schema: z.object({ nodeId: z.string() }).describe('Lister les sorties.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {};
+        const t = String(tpl?.type || '').toLowerCase();
+        if (t === 'condition') {
+          const field = tpl.output_array_field || 'items';
+          const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          const names = arr.map((it, i) => (it && typeof it === 'object' && (it.name != null)) ? String(it.name) : (typeof it === 'string' ? it : String(i)));
+          try { emitMessage(`[outputs] nodeId=${nodeId} type=condition names=${JSON.stringify(names)}`); } catch {}
+          return JSON.stringify({ success: true, type: 'condition', outputs: names });
+        }
+        const outs = Array.isArray(tpl.output) && tpl.output.length ? tpl.output.slice() : ['Success'];
+        try { emitMessage(`[outputs] nodeId=${nodeId} type=${t||'function'} names=${JSON.stringify(outs)}`); } catch {}
+        return JSON.stringify({ success: true, type: t || 'function', outputs: outs });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Return concrete handles with labels for a node (indices for functions; ids or indices for conditions; 'err' if allowed/enabled)
+  const getOutputOptionsTool = new DynamicStructuredTool({
+    name: 'get_output_options',
+    description: 'Retourne les couples {handle,label} pour chaque sortie disponible du nœud (inclut "err" si catch activé et autorisé).',
+    schema: z.object({ nodeId: z.string() }).describe('Lister les handles utilisables.'),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const node = nodes.find(n => String(n.id) === String(nodeId));
+        if (!node) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {};
+        const t = String(tpl?.type || '').toLowerCase();
+        const res = [];
+        if (t === 'condition') {
+          const field = tpl.output_array_field || 'items';
+          const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          arr.forEach((it, i) => {
+            if (it && typeof it === 'object') {
+              const h = (it._id != null) ? String(it._id) : String(i);
+              const name = (it.name != null) ? String(it.name) : String(i);
+              res.push({ handle: h, label: name });
+            } else {
+              res.push({ handle: String(i), label: String(it) });
+            }
+          });
+        } else {
+          const outs = Array.isArray(tpl.output) && tpl.output.length ? tpl.output.slice() : ['Success'];
+          outs.forEach((name, i) => res.push({ handle: String(i), label: String(name) }));
+          if (tpl.authorize_catch_error && model?.catch_error) res.push({ handle: 'err', label: 'Error' });
+        }
+        try { emitMessage(`[outputs.options] nodeId=${nodeId} options=${JSON.stringify(res)}`); } catch {}
+        return JSON.stringify({ success: true, options: res });
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Connect by output label/name; resolves to correct handle (enables catch if needed and authorized)
+  const connectByOutputNameTool = new DynamicStructuredTool({
+    name: 'connect_by_output_name',
+    description: 'Connecte deux nœuds en choisissant la sortie par son nom/label (ou "Error"). Active catch si nécessaire et autorisé.',
+    schema: z.object({ sourceId: z.string(), targetId: z.string(), outputName: z.string() }).describe('Connexion guidée par nom.'),
+    func: async ({ sourceId, targetId, outputName }) => {
+      try {
+        const g = getGraph();
+        const src = (g.nodes||[]).find(n => String(n.id) === String(sourceId));
+        const dst = (g.nodes||[]).find(n => String(n.id) === String(targetId));
+        if (!src || !dst) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const idx = nodes.findIndex(n => String(n.id) === String(sourceId));
+        const model = src?.data?.model || {}; const tpl = model?.templateObj || {};
+        const t = String(tpl?.type || '').toLowerCase();
+        const nameLc = String(outputName || '').trim().toLowerCase();
+        const doConnect = async (handle) => {
+          const connect = (await buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history })).find(t => t.name === 'connect');
+          if (!connect) return JSON.stringify({ success: false, error: 'connect_tool_unavailable' });
+          return await connect.func({ sourceId, targetId, sourceHandle: String(handle), targetHandle: 'in' });
+        };
+        if (nameLc === 'error' || nameLc === 'err') {
+          if (!tpl.authorize_catch_error) return JSON.stringify({ success: false, error: 'catch_not_authorized' });
+          if (!model.catch_error) {
+            const setFlags = (await buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history })).find(t => t.name === 'set_node_flags');
+            if (setFlags) {
+              const resp = JSON.parse(await setFlags.func({ nodeId: sourceId, catch_error: true }));
+              if (!(resp && resp.success)) return JSON.stringify({ success: false, error: 'catch_enable_failed' });
+            }
+          }
+          try { emitMessage(`[edge][resolve_by_name] sourceId=${sourceId} name=${outputName} handle=err`); } catch {}
+          return await doConnect('err');
+        }
+        if (t === 'condition') {
+          const field = tpl.output_array_field || 'items';
+          const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          let handle = null;
+          for (let i = 0; i < arr.length; i++) {
+            const it = arr[i];
+            const label = (it && typeof it === 'object' && (it.name != null)) ? String(it.name) : (typeof it === 'string' ? it : String(i));
+            if (String(label).trim().toLowerCase() === nameLc) { handle = (it && typeof it === 'object' && it._id != null) ? String(it._id) : String(i); break; }
+          }
+          if (handle == null) return JSON.stringify({ success: false, error: 'output_not_found' });
+          try { emitMessage(`[edge][resolve_by_name] sourceId=${sourceId} name=${outputName} handle=${handle}`); } catch {}
+          return await doConnect(handle);
+        }
+        const outs = Array.isArray(tpl.output) && tpl.output.length ? tpl.output.slice() : ['Success'];
+        const idxMatch = outs.findIndex(n => String(n).trim().toLowerCase() === nameLc);
+        if (idxMatch < 0) return JSON.stringify({ success: false, error: 'output_not_found' });
+        try { emitMessage(`[edge][resolve_by_name] sourceId=${sourceId} name=${outputName} handle=${idxMatch}`); } catch {}
+        return await doConnect(String(idxMatch));
+      } catch (e) { return JSON.stringify({ success: false, error: String(e?.message||e) }); }
+    }
+  });
+
+  // Toggle node flags (catch_error / skip_error) when template authorizes them
+  const setNodeFlagsTool = new DynamicStructuredTool({
+    name: 'set_node_flags',
+    description: 'Active/désactive catch_error ou skip_error si le template le permet (mutuellement exclusifs).',
+    schema: z.object({ nodeId: z.string(), catch_error: z.boolean().optional(), skip_error: z.boolean().optional() }).describe('Configurer les options du nœud.'),
+    func: async ({ nodeId, catch_error, skip_error }) => {
+      const g = getGraph();
+      const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+      const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
+      if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
+      const node = JSON.parse(JSON.stringify(nodes[idx]));
+      const model = node?.data?.model || {}; const tpl = model?.templateObj || {};
+      const allowCatch = !!tpl.authorize_catch_error; const allowSkip = !!tpl.authorize_skip_error;
+      // Enforce authorizations
+      if (catch_error != null && catch_error && !allowCatch) return JSON.stringify({ success: false, error: 'catch_not_authorized' });
+      if (skip_error != null && skip_error && !allowSkip) return JSON.stringify({ success: false, error: 'skip_not_authorized' });
+      // Apply with mutual exclusivity: enabling one disables the other
+      let next = { ...model };
+      if (catch_error != null) {
+        next.catch_error = !!catch_error;
+        if (next.catch_error) next.skip_error = false;
+      }
+      if (skip_error != null) {
+        next.skip_error = !!skip_error;
+        if (next.skip_error) next.catch_error = false;
+      }
+      node.data.model = next;
+      nodes[idx] = node;
+      emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+      try { emitMessage(`[flags] nodeId=${nodeId} catch=${!!next.catch_error} skip=${!!next.skip_error}`); } catch {}
+      return JSON.stringify({ success: true, nodeId, catch_error: !!next.catch_error, skip_error: !!next.skip_error });
+    }
+  });
+
   const emitSnapshotTool = new DynamicStructuredTool({
     name: 'emit_snapshot',
     description: 'Envoie un snapshot complet du graphe.',
@@ -1222,11 +1601,16 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     findNodesTool,
     hasNodeArgsTool,
     textInputsTool,
+    getNodeOutputsTool,
+    getOutputOptionsTool,
+    connectByOutputNameTool,
     getNodeContextInputsTool,
     getNodeArgsSchemaTool,
     getNodeArgsZodTool,
     applyNodeParamsTool,
     injectNodeContextTool,
+    createNodeContextTool,
+    setNodeFlagsTool,
     validateNodeParamsTool,
     listCredentialsTool,
     attachCredentialTool,
