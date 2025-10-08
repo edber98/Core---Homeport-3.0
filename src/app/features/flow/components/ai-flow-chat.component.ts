@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { AiFlowAgentService, FlowAgentEvent } from '../../../services/ai-flow-agent.service';
 
 type RichPart = { kind: 'text'|'tool'|'log'|'ai-form'; text?: string; tag?: string; name?: string; badge?: 'FLOW'|'AI FORM'|'TOOL'; status?: 'running'|'success'|'error'|'warn'|'info' };
@@ -33,7 +35,12 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
               <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
               <span class="name" *ngIf="p.name">{{ p.name }}</span>
               <span class="tag" *ngIf="p.tag">[{{ p.tag }}]</span>
-              <span class="text">{{ p.text }}</span>
+              <ng-container *ngIf="isMessagePart(p); else plain1">
+                <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
+              </ng-container>
+              <ng-template #plain1>
+                <span class="text">{{ p.text }}</span>
+              </ng-template>
             </div>
           </div>
         </ng-template>
@@ -47,7 +54,12 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
             <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
             <span class="name" *ngIf="p.name">{{ p.name }}</span>
             <span class="tag" *ngIf="p.tag">[{{ p.tag }}]</span>
-            <span class="text">{{ p.text }}</span>
+            <ng-container *ngIf="isMessagePart(p); else plain2">
+              <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
+            </ng-container>
+            <ng-template #plain2>
+              <span class="text">{{ p.text }}</span>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -92,6 +104,10 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .st.err { color:#ef4444; }
     .st.warn { color:#d97706; }
     .tag { color:#6b7280; }
+    /* Ne pas avoir de marges de <p> rendus par Markdown dans les lignes outils */
+    .line.tool .text p { margin: 0; display: inline; }
+    /* De manière générale, supprime la marge par défaut des <p> dans les bulles */
+    .txt.rich p { margin: 0; }
   `]
 })
 export class FlowAiChatComponent implements AfterViewInit {
@@ -207,7 +223,7 @@ export class FlowAiChatComponent implements AfterViewInit {
       }
     }
       try { this.cdr.detectChanges(); } catch {}
-    }
+    
     // FLOW tool events -> lignes TOOL avec badge FLOW
     if (evt.type === 'flow.tool.start') {
       const name = String((evt as any).name || 'tool');
@@ -223,6 +239,7 @@ export class FlowAiChatComponent implements AfterViewInit {
       try { this.cdr.detectChanges(); } catch {}
       return;
     }
+  }
   private onError(msg: string) {
     // Flush any partial assistant content on error to avoid losing context
     if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
@@ -326,28 +343,49 @@ export class FlowAiChatComponent implements AfterViewInit {
   }
   // Fusionne deux morceaux de texte en supprimant les doublons consécutifs de mots
   private mergeText(base: string, add: string): string {
+    // Concatène tel quel, puis supprime les duplications de mots consécutifs simples
     const combined = (base || '') + add;
-    // Séparer mots et espaces pour conserver la mise en forme
-    const parts = combined.split(/(\s+)/);
-    const out: string[] = [];
-    let prevWord = '';
-    for (const p of parts) {
-      if (!p) continue;
-      if (/^\s+$/.test(p)) { out.push(p); continue; }
-      const cur = p;
-      const curKey = cur.toLocaleLowerCase();
-      const prevKey = prevWord.toLocaleLowerCase();
-      if (curKey && curKey === prevKey) { /* skip duplicate word */ continue; }
-      out.push(cur);
-      prevWord = cur;
-    }
-    return out.join('');
+    return combined.replace(/(\b)(\w+)(\s+\2\b)/gi, '$1$2');
+  }
+  // Markdown via marked + DOMPurify — garde la police/size par défaut
+  renderMarkdown(src: string): string {
+    try {
+      const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
+      return DOMPurify.sanitize(html);
+    } catch { return src; }
   }
   private isFlowTag(tag?: string): boolean {
     const t = (tag || '').toLowerCase();
     return !!(['ai-flow','edge','layout','outputs','context','args','flags','start','condition','template','schema','node','graph','elk','connect','layout.elk'].find(k => t.includes(k)));
   }
+  // Détecte si une part correspond à un vrai message à rendre en Markdown
+  isMessagePart(p: RichPart): boolean {
+    try {
+      if (!p) return false;
+      // paragraphes fusionnés: texte brut
+      if (p.kind === 'text') return true;
+      // Assistant formulaire (msg) sans statut
+      if (p.kind === 'ai-form' && p.badge === 'AI FORM' && p.name === 'Assistant formulaire:' && !p.status) return true;
+      // Assistant workflow (msg) sans statut
+      if (p.kind === 'log' && p.badge === 'FLOW' && p.name === 'Assistant workflow:' && !p.status) return true;
+      return false;
+    } catch { return false; }
+  }
   private scrollToBottom(){ try { const el = this.scroller?.nativeElement; if (el) setTimeout(()=> el.scrollTop = el.scrollHeight, 0); } catch {} }
   loadIntoBuilder(){ if (this.finalGraph) { try { console.log('[ai-flow][loadIntoBuilder]', this.finalGraph); } catch {} this.graphGenerated.emit(this.finalGraph); } }
   resetFinal(){ this.finalGraph = null; }
+
+  private renderInline(s: string, escape: (x: string) => string): string {
+    let x = escape(s);
+    // Code inline `...`
+    x = x.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Liens [text](url)
+    x = x.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Gras **text** (après code/liens)
+    x = x.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Italique *text* ou _text_
+    x = x.replace(/(^|\s)\*([^*]+)\*(?=\s|$)/g, '$1<em>$2</em>');
+    x = x.replace(/(^|\s)_([^_]+)_(?=\s|$)/g, '$1<em>$2</em>');
+    return x;
+  }
 }
