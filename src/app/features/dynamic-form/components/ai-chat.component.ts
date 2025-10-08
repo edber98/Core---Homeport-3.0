@@ -5,13 +5,15 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AiFormAgentService, AgentEvent } from '../../../services/ai-form-agent.service';
+import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
+import { RichPart, mergeText } from '../../../shared/chat/chat-types';
 
-type Msg = { role: 'user'|'assistant'|'system'; text: string };
+type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[] };
 
 @Component({
   selector: 'df-ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzIconModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzIconModule, ChatRendererComponent],
   template: `
   <div class="chat-root">
     <div class="chat-header">
@@ -22,10 +24,15 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
     </div>
     <div class="chat-body" #scroller>
       <div class="bubble" *ngFor="let m of messages" [class.me]="m.role==='user'" [class.assistant]="m.role==='assistant'">
-        <div class="txt">{{ m.text }}</div>
+        <ng-container *ngIf="!m.parts; else richMsg">
+          <div class="txt">{{ m.text }}</div>
+        </ng-container>
+        <ng-template #richMsg>
+          <div class="txt rich"><chat-renderer [parts]="m.parts || []"></chat-renderer></div>
+        </ng-template>
       </div>
       <div class="bubble assistant" *ngIf="streaming">
-        <div class="txt">{{ streamingText }}</div>
+        <div class="txt rich"><chat-renderer [parts]="streamingParts"></chat-renderer></div>
       </div>
     </div>
     <div class="chat-footer">
@@ -72,6 +79,7 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
     .opts { display:flex; align-items:center; gap:10px; color:#475569; font-size:12px; margin-bottom:4px; }
     .opts select { margin-left:6px; }
     .ml { margin-left: 6px; }
+    .txt.rich p { margin: 0; }
   `]
 })
 export class AiChatComponent implements AfterViewInit {
@@ -84,6 +92,8 @@ export class AiChatComponent implements AfterViewInit {
   busy = false;
   streaming = false;
   streamingText = '';
+  streamingParts: RichPart[] = [];
+  private recent = new Set<string>();
   finalSchema: any = null;
   seedText = '';
 
@@ -106,14 +116,13 @@ export class AiChatComponent implements AfterViewInit {
     this.messages.push({ role: 'user', text: t });
     this.text = '';
     this.busy = true; this.streaming = true; this.streamingText = '';
+    this.streamingParts = [];
+    try { this.recent.clear(); } catch {}
     let seedObj: any = undefined;
     try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
     const stream = this.agent.stream({ prompt: t, layout: this.layout, steps: this.steps, maxFields: this.maxFields, seedSchema: seedObj });
     this.stopFn = stream.stop;
-    stream.events$.subscribe({
-      next: (ev: AgentEvent) => this.onEvent(ev),
-      error: () => this.onError('Erreur de flux')
-    });
+    stream.events$.subscribe({ next: (ev: AgentEvent) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
   }
 
   stop() {
@@ -122,37 +131,74 @@ export class AiChatComponent implements AfterViewInit {
   }
 
   private onEvent(evt: AgentEvent) {
+    if (!evt) return;
+    // Structured tool events → AI FORM badge
+    if (evt.type === 'tool.start') {
+      const name = (evt as any).name || 'tool';
+      const args = (evt as any).args;
+      const key = `tool:start:${name}:${JSON.stringify(args||{})}`;
+      if (!this.recent.has(key)) {
+        this.streamingParts.push({ kind: 'ai-form', name, status: 'running', text: '', badge: 'AI FORM' });
+        this.recent.add(key);
+      }
+      this.detectAndScroll();
+      return;
+    }
+    if (evt.type === 'tool.end') {
+      const name = (evt as any).name || 'tool';
+      for (let i = this.streamingParts.length - 1; i >= 0; i--) {
+        const it = this.streamingParts[i];
+        if ((it.kind === 'ai-form' || it.kind === 'tool') && it.name === name && it.status === 'running') { it.status = 'success'; break; }
+      }
+      // Also append a success line
+      const key = `tool:ok:${name}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', name, status: 'success', text: 'ok', badge: 'AI FORM' }); this.recent.add(key); }
+      this.detectAndScroll();
+      return;
+    }
+    if (evt.type === 'patch') {
+      const ops = Array.isArray((evt as any).ops) ? (evt as any).ops.length : 0;
+      const key = `ai-form:patch:${ops}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', status: 'info', text: `patch ops=${ops}`, badge: 'AI FORM' }); this.recent.add(key); }
+      this.detectAndScroll();
+      return;
+    }
+    if (evt.type === 'snapshot') {
+      const key = 'ai-form:snapshot';
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', status: 'info', text: 'snapshot', badge: 'AI FORM' }); this.recent.add(key); }
+      this.detectAndScroll();
+      return;
+    }
     if (evt.type === 'message') {
-      const s = (evt.text || '').toString();
-      this.streaming = true; this.streamingText += (this.streamingText ? '' : '') + s;
+      const t = (evt.text || '').toString();
+      this.appendAssistantParagraph(t);
       this.detectAndScroll();
       return;
     }
     if (evt.type === 'final') {
       let s: any = (evt as any).schema;
-      if (typeof s === 'string') { try { s = JSON.parse(s); } catch { /* ignore */ } }
+      if (typeof s === 'string') { try { s = JSON.parse(s); } catch {} }
       this.finalSchema = s || {};
-      // Push the assistant summary message
-      const text = 'Schéma généré. Prêt à charger dans le builder.';
-      if (this.streamingText) {
-        this.messages.push({ role: 'assistant', text: this.streamingText });
-        this.streamingText = '';
-      }
-      this.messages.push({ role: 'assistant', text });
+      if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
+      this.streamingParts = [];
+      this.messages.push({ role: 'assistant', text: 'Schéma généré. Prêt à charger dans le builder.' });
       this.streaming = false; this.busy = false;
       this.detectAndScroll();
       return;
     }
     if (evt.type === 'warning') {
-      this.messages.push({ role: 'assistant', text: (evt.message || 'Avertissement') });
+      this.streamingParts.push({ kind: 'ai-form', status: 'warn', text: (evt.message || 'Avertissement'), badge: 'AI FORM' });
       this.detectAndScroll();
       return;
     }
     if (evt.type === 'error') {
+      this.streamingParts.push({ kind: 'ai-form', status: 'error', text: (evt.message || 'Erreur'), badge: 'AI FORM' });
       this.onError(evt.message || 'Erreur');
       return;
     }
     if (evt.type === 'done') {
+      if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
+      this.streamingParts = [];
       this.streaming = false; this.busy = false;
       this.detectAndScroll();
       return;
@@ -161,6 +207,8 @@ export class AiChatComponent implements AfterViewInit {
 
   private onError(msg: string) {
     this.streaming = false; this.busy = false;
+    if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
+    this.streamingParts = [];
     if (this.streamingText) { this.messages.push({ role: 'assistant', text: this.streamingText }); this.streamingText = ''; }
     this.messages.push({ role: 'assistant', text: '✖ ' + msg });
     this.detectAndScroll();
@@ -180,5 +228,19 @@ export class AiChatComponent implements AfterViewInit {
       const el = this.scroller?.nativeElement; if (!el) return;
       el.scrollTop = el.scrollHeight;
     } catch {}
+  }
+
+  // Merge assistant paragraph as unified AI Form message block
+  private appendAssistantParagraph(token: string) {
+    const t = String(token || ''); if (!t) return;
+    // Use a dedicated AI FORM paragraph label like Flow chat
+    for (let i = this.streamingParts.length - 1; i >= 0; i--) {
+      const p = this.streamingParts[i];
+      if (p && p.kind === 'ai-form' && p.badge === 'AI FORM' && p.name === 'Assistant formulaire:' && !p.status) {
+        p.text = mergeText(p.text || '', t);
+        return;
+      }
+    }
+    this.streamingParts.push({ kind: 'ai-form', badge: 'AI FORM', name: 'Assistant formulaire:', text: mergeText('', t) });
   }
 }
