@@ -184,8 +184,31 @@
       "subtitle": "Multi-branch",
       "type": "condition",
       "category": "Logic",
+      "icon": "fa-solid fa-code-branch",
       "output_array_field": "items",
-      "description": "Branche selon une condition"
+      "description": "Branche selon une condition",
+      "args": {
+        "title": "Conditions",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "section",
+            "title": "Branches",
+            "key": "items",
+            "mode": "array",
+            "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } },
+            "fields": [
+              { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+              { "type": "text", "key": "condition", "label": "Condition", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+            ],
+            "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 },
+            "grid": { "gutter": 16 },
+            "ui": { "layout": "vertical" }
+          }
+        ]
+      },
+      "authorize_catch_error": false,
+      "authorize_skip_error": false
     },
     {
       "key": "sendmail",

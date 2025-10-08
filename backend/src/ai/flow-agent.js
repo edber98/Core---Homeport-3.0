@@ -489,6 +489,8 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const out = {};
       const coerce = (f) => {
         const t = String(f?.type || '').toLowerCase();
+        // Section arrays (for condition items) → default to []
+        if (t === 'section' && (f?.mode === 'array' || f?.array)) return [];
         if (f && f.default != null) return f.default;
         if (t === 'number' || t === 'integer') return 0;
         if (t === 'boolean' || t === 'checkbox' || t === 'switch') return false;
@@ -789,7 +791,27 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           return JSON.stringify({ success: false, error: 'invalid_params', issues: (check.error.issues || []).map(i => ({ path: i.path, message: i.message })) });
         }
         const cur = (model.context && typeof model.context === 'object') ? model.context : {};
-        node.data.model.context = { ...cur, ...(params || {}) };
+        const merged = { ...cur, ...(params || {}) };
+        // Stabilize condition items ids so edges by _id remain valid
+        try {
+          const t = model?.templateObj || {};
+          if (String(t.type || '').toLowerCase() === 'condition') {
+            const field = t.output_array_field || 'items';
+            const oldArr = Array.isArray(cur[field]) ? cur[field] : [];
+            const newArr = Array.isArray(merged[field]) ? merged[field] : [];
+            const used = new Set((newArr || []).map(it => (it && typeof it === 'object' && it._id) ? String(it._id) : '').filter(Boolean));
+            for (let i = 0; i < Math.min(oldArr.length, newArr.length); i++) {
+              const oldIt = oldArr[i]; const nu = newArr[i];
+              if (!(nu && typeof nu === 'object')) continue;
+              const oldId = oldIt && typeof oldIt === 'object' ? String(oldIt._id || '') : '';
+              if (!nu._id && oldId && !used.has(oldId)) { nu._id = oldId; used.add(oldId); }
+            }
+            for (const it of newArr) { if (it && typeof it === 'object' && !it._id) { let id=''; do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id)); it._id = id; used.add(id); } }
+            merged[field] = newArr;
+            try { emitMessage(`[condition.ids] nodeId=${nodeId} items=${newArr.length}`); } catch {}
+          }
+        } catch {}
+        node.data.model.context = merged;
         nodes[idx] = node;
         emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
         try {
@@ -863,7 +885,27 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           return JSON.stringify({ success: false, error: 'invalid_context', issues: (check.error.issues || []).map(i => ({ path: i.path, message: i.message })) });
         }
         const cur = (model.context && typeof model.context === 'object') ? model.context : {};
-        node.data.model.context = { ...cur, ...(context || {}) };
+        const merged = { ...cur, ...(context || {}) };
+        // Stabilize condition items ids like frontend to support handles by _id
+        try {
+          const t = model?.templateObj || {};
+          if (String(t.type || '').toLowerCase() === 'condition') {
+            const field = t.output_array_field || 'items';
+            const oldArr = Array.isArray(cur[field]) ? cur[field] : [];
+            const newArr = Array.isArray(merged[field]) ? merged[field] : [];
+            const used = new Set((newArr || []).map(it => (it && typeof it === 'object' && it._id) ? String(it._id) : '').filter(Boolean));
+            for (let i = 0; i < Math.min(oldArr.length, newArr.length); i++) {
+              const oldIt = oldArr[i]; const nu = newArr[i];
+              if (!(nu && typeof nu === 'object')) continue;
+              const oldId = oldIt && typeof oldIt === 'object' ? String(oldIt._id || '') : '';
+              if (!nu._id && oldId && !used.has(oldId)) { nu._id = oldId; used.add(oldId); }
+            }
+            for (const it of newArr) { if (it && typeof it === 'object' && !it._id) { let id='cid_' + Math.random().toString(36).slice(2); while (used.has(id)) id = 'cid_' + Math.random().toString(36).slice(2); it._id = id; used.add(id); } }
+            merged[field] = newArr;
+            try { emitMessage(`[condition.ids] nodeId=${nodeId} items=${newArr.length}`); } catch {}
+          }
+        } catch {}
+        node.data.model.context = merged;
         nodes[idx] = node;
         emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
         try {

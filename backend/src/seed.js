@@ -64,6 +64,8 @@ async function seedMongoIfEmpty(){
   await NodeTemplate.create({ key: 'website_open', name: 'OpenWebsite', title: 'Open Website', subtitle: 'Website', description: 'Open an URL in a browser', icon: 'fa-solid fa-globe', type: 'function', category: 'website', providerKey: 'http', args: { title: 'Open Website', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'url', label: 'URL', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true }, validators: [{ type: 'required' }] } ] }, output: ['Success'], authorize_catch_error: true, authorize_skip_error: true });
   await NodeTemplate.create({ key: 'form_submit', name: 'SubmitForm', title: 'Submit Form', subtitle: 'Form', description: 'Submit a form with data', icon: 'fa-solid fa-table', type: 'function', category: 'form', providerKey: 'http', args: { title: 'Form Submit', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'formId', label: 'Form ID', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true }, validators: [{ type: 'required' }] }, { type: 'object', key: 'data', label: 'Data', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true } } ] }, output: ['Success','Retry'], authorize_catch_error: true, authorize_skip_error: false });
 
+  // Condition template is provided via plugins, not seeded here.
+
   // Workspace memberships: add all users to both default and testing workspaces of their company
   const users = await User.find();
   for (const u of users){
