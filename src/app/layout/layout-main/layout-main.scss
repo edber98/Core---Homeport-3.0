@@ -141,6 +141,9 @@ nz-footer {
 .cmd-modal { display:flex; flex-direction:column; gap:14px; }
 .cmd-modal .section { background:#fff; border:0px solid #e5e7eb; border-radius:12px; padding:10px 12px; }
 .cmd-modal .section-title { font-weight:600; color:#6b7280; margin-bottom:8px; }
+.cmd-modal .chat-box { margin-top:8px; max-height: 240px; overflow:auto; background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:8px; }
+.cmd-modal .bubble.assistant { background: #e9ecef; color: #111827; border-bottom-left-radius: 6px; border-radius: 12px; padding:8px; }
+.cmd-modal .txt.rich p { margin: 0; }
 .cmd-modal .activity { display:flex; align-items:center; gap:8px; padding:6px 0; }
 .cmd-modal .activity .dot { width:8px; height:8px; border-radius:50%; background:#d1d5db; }
 .cmd-modal .activity .dot.success { background:#16a34a; }

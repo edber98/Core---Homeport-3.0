@@ -10,6 +10,7 @@ export type FlowAgentEvent =
   | { type: 'patch'; ops: Array<{ op: 'add'|'replace'|'remove'; path: string; value?: any }> }
   | { type: 'snapshot'; graph: any }
   | { type: 'final'; graph: any }
+  | { type: 'meta'; name?: string; description?: string }
   | { type: 'warning'; code?: string; message?: string }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' }
@@ -55,7 +56,7 @@ export class AiFlowAgentService {
       zone: this.zone,
       url,
       eventTypes: [
-        'message','patch','snapshot','final','warning','error',
+        'message','patch','snapshot','final','meta','warning','error',
         'ai-form.start','ai-form.message','ai-form.patch','ai-form.snapshot','ai-form.final','ai-form.error','ai-form.attach','ai-form.tool.start','ai-form.tool.end',
         'flow.tool.start','flow.tool.end'
       ],

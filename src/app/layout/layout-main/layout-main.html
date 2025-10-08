@@ -165,6 +165,17 @@
   <ng-container *nzModalContent>
   <div class="cmd-modal">
     <div class="section">
+      <div class="section-title">Créer un workflow par IA</div>
+      <textarea nz-input [(ngModel)]="ccPrompt" [disabled]="ccBusy" rows="3" placeholder="Décrivez le workflow (ex: Lire emails entrants, filtrer par sujet, envoyer une notification)…"></textarea>
+      <div class="btn-row" style="margin-top:8px;">
+        <button nz-button nzType="primary" (click)="startQuickFlow()" [disabled]="!ccPrompt || ccBusy"><i class="fa-solid fa-wand-magic-sparkles"></i> Générer</button>
+        <button nz-button (click)="stopQuickFlow()" *ngIf="ccBusy">Stop</button>
+      </div>
+      <div class="chat-box" #ccScroller *ngIf="ccBusy || (ccStreamingParts && ccStreamingParts.length)">
+        <div class="bubble assistant"><div class="txt rich"><chat-renderer [parts]="ccStreamingParts"></chat-renderer></div></div>
+      </div>
+    </div>
+    <div class="section">
       <div class="section-title">Activité récente</div>
       <div class="activity" *ngFor="let a of activities">
         <span class="dot" [class.success]="a.state==='success'" [class.running]="a.state==='running'"></span>

@@ -302,7 +302,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
     } catch { return 'Flow invalide'; }
   }
 
-  openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id } }); }
+  openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id, center: '1' } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
   removeFlow(item: FlowSummary) {
     this.catalog.deleteFlow(item.id).subscribe({
