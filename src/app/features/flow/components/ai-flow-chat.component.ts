@@ -41,6 +41,15 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
           <span class="msg" *ngIf="e.msg">· {{ e.msg }}</span>
         </div>
       </div>
+      <!-- Exec logs panel: tools and tagged logs parsed from assistant messages -->
+      <div class="exec-panel" *ngIf="execLogs.length">
+        <div class="row" *ngFor="let r of execLogs">
+          <span class="st" [class.run]="r.status==='running'" [class.ok]="r.status==='success'" [class.err]="r.status==='error'" [class.warn]="r.status==='warn'">{{ r.status || 'info' }}</span>
+          <span class="tool" *ngIf="r.kind==='tool'">{{ r.name }}</span>
+          <span class="tag" *ngIf="r.kind==='log'">[{{ r.tag }}]</span>
+          <span class="txt">{{ r.text }}</span>
+        </div>
+      </div>
       <div class="actions" *ngIf="finalGraph">
         <button nz-button nzType="primary" (click)="loadIntoBuilder()">Charger dans l'éditeur</button>
         <button nz-button class="ml" (click)="resetFinal()">Effacer</button>
@@ -63,6 +72,15 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
     .ai-form-panel { max-height: 120px; overflow:auto; background:#fff7ed; border:1px solid #fed7aa; border-radius: 6px; padding:6px 8px; font-size:12px; color:#7c2d12; }
     .ai-form-panel .row { display:flex; align-items:center; gap:8px; padding:2px 0; }
     .ai-form-panel .badge { background:#fdba74; color:#7c2d12; border-radius: 4px; padding:0 6px; font-weight:600; }
+    .exec-panel { max-height: 140px; overflow:auto; background:#f8fafc; border:1px solid #e5e7eb; border-radius:6px; padding:6px 8px; font-size:12px; color:#111827; }
+    .exec-panel .row { display:flex; align-items:center; gap:8px; padding:1px 0; }
+    .exec-panel .tool { font-weight:600; }
+    .exec-panel .tag { color:#6b7280; }
+    .exec-panel .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; }
+    .exec-panel .st.run { color:#2563eb; }
+    .exec-panel .st.ok { color:#16a34a; }
+    .exec-panel .st.err { color:#ef4444; }
+    .exec-panel .st.warn { color:#d97706; }
   `]
 })
 export class FlowAiChatComponent implements AfterViewInit {
@@ -80,6 +98,7 @@ export class FlowAiChatComponent implements AfterViewInit {
   previewGraph: any = null; // set on 'snapshot' for live preview/log
   seedText = '';
   aiFormEvents: Array<{ t: string; msg?: string }> = [];
+  execLogs: Array<{ kind: 'tool'|'log'; tag?: string; name?: string; status?: 'running'|'success'|'error'|'warn'|'info'; text?: string; at: number }> = [];
 
   private stopFn?: () => void;
   @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
@@ -95,6 +114,7 @@ export class FlowAiChatComponent implements AfterViewInit {
     this.busy = true; this.streaming = true; this.streamingText = '';
     this.assistantBuf = '';
     this.aiFormEvents = [];
+    this.execLogs = [];
     let seedObj: any = undefined;
     try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
     const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
@@ -111,9 +131,15 @@ export class FlowAiChatComponent implements AfterViewInit {
   private onEvent(evt: FlowAgentEvent) {
     if (!evt) return;
     if (evt.type === 'message' && evt.text) {
-      // Merge tokens into a single assistant bubble while streaming
-      this.streamingText += evt.text;
-      this.assistantBuf += evt.text;
+      const raw = String(evt.text);
+      const lines = raw.split(/\r?\n/);
+      for (const line of lines) {
+        if (!line) continue;
+        if (!this.tryParseExecLine(line)) {
+          this.streamingText += line + '\n';
+          this.assistantBuf += line + '\n';
+        }
+      }
       this.scrollToBottom();
       return;
     }
@@ -145,6 +171,43 @@ export class FlowAiChatComponent implements AfterViewInit {
     this.messages.push({ role: 'assistant', text: msg });
     this.busy = false; this.streaming = false; this.streamingText='';
     try { this.cdr.detectChanges(); } catch {}
+  }
+  // Detect tool/log lines and push structured entries; returns true if consumed
+  private tryParseExecLine(line: string): boolean {
+    const at = Date.now();
+    const s = line.trim();
+    // Tool start
+    if (s.startsWith('>>> tool ')) {
+      const rest = s.slice(9).trim();
+      const name = rest.split(/\s+/)[0] || 'tool';
+      this.execLogs.push({ kind: 'tool', name, status: 'running', text: rest, at });
+      if (this.execLogs.length > 200) this.execLogs.shift();
+      return true;
+    }
+    // Tool end success
+    if (s.startsWith('✓ ')) {
+      const rest = s.slice(2).trim();
+      const name = rest.split(/\s+/)[0] || 'tool';
+      for (let i = this.execLogs.length - 1; i >= 0; i--) {
+        const it = this.execLogs[i];
+        if (it.kind === 'tool' && it.name === name && it.status === 'running') { it.status = 'success'; break; }
+      }
+      this.execLogs.push({ kind: 'tool', name, status: 'success', text: rest, at });
+      if (this.execLogs.length > 200) this.execLogs.shift();
+      return true;
+    }
+    // Tagged logs: [tag] message
+    const m = s.match(/^\[([^\]]+)\]\s*(.*)$/);
+    if (m) {
+      const tag = m[1];
+      const text = m[2] || '';
+      const low = s.toLowerCase();
+      const status: 'error'|'warn'|'success'|'info' = (low.includes('error')||low.includes('[error]')) ? 'error' : (low.includes('warn') ? 'warn' : (low.includes('ok')||low.includes('success')) ? 'success' : 'info');
+      this.execLogs.push({ kind: 'log', tag, text, status, at });
+      if (this.execLogs.length > 200) this.execLogs.shift();
+      return true;
+    }
+    return false;
   }
   private scrollToBottom(){ try { const el = this.scroller?.nativeElement; if (el) setTimeout(()=> el.scrollTop = el.scrollHeight, 0); } catch {} }
   loadIntoBuilder(){ if (this.finalGraph) { try { console.log('[ai-flow][loadIntoBuilder]', this.finalGraph); } catch {} this.graphGenerated.emit(this.finalGraph); } }
