@@ -181,7 +181,7 @@ export class AiChatComponent implements AfterViewInit {
       this.finalSchema = s || {};
       if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
       this.streamingParts = [];
-      this.messages.push({ role: 'assistant', text: 'Schéma généré. Prêt à charger dans le builder.' });
+      this.messages.push({ role: 'assistant', text: 'Formulaire généré. Prêt à charger dans le builder.' });
       this.streaming = false; this.busy = false;
       this.detectAndScroll();
       return;

@@ -1,8 +1,9 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AccessControlService } from './access-control.service';
 import { AuthTokenService } from './auth-token.service';
+import { openSse, SseStream } from '../shared/chat/sse-client';
 
 export type FlowAgentEvent =
   | { type: 'message'; role?: string; text?: string }
@@ -40,7 +41,6 @@ export class AiFlowAgentService {
   constructor(private zone: NgZone, private acl: AccessControlService, private auth: AuthTokenService) {}
 
   stream(params: FlowStreamParams): FlowAgentStream {
-    const subj = new Subject<FlowAgentEvent>();
     const q = new URLSearchParams();
     if (params.prompt) q.set('prompt', params.prompt);
     const wsId = this.acl.currentWorkspaceId?.();
@@ -51,39 +51,16 @@ export class AiFlowAgentService {
       try { const json = JSON.stringify(params.seedGraph); const b64 = btoa(unescape(encodeURIComponent(json))); q.set('seed', b64); } catch {}
     }
     const url = `${environment.apiBaseUrl}/api/ai/flow/build/stream?${q.toString()}`;
-    const es = new EventSource(url, { withCredentials: false });
-    const handle = (type: string) => (ev: MessageEvent) => {
-      try {
-        const data = (ev as any).data as string;
-        const parsed = JSON.parse(data);
-        parsed.type = parsed.type || type;
-        this.zone.run(() => subj.next(parsed));
-      } catch {
-        this.zone.run(() => subj.next({ type: 'message', text: `[${type}] ${(ev as any).data}` } as any));
-      }
-    };
-    es.addEventListener('message', handle('message'));
-    es.addEventListener('patch', handle('patch'));
-    es.addEventListener('snapshot', handle('snapshot'));
-    es.addEventListener('final', handle('final'));
-    es.addEventListener('warning', handle('warning'));
-    es.addEventListener('error', handle('error'));
-    // Namespaced AI Form events (forwarded from Flow Agent)
-    es.addEventListener('ai-form.start', handle('ai-form.start'));
-    es.addEventListener('ai-form.message', handle('ai-form.message'));
-    es.addEventListener('ai-form.patch', handle('ai-form.patch'));
-    es.addEventListener('ai-form.snapshot', handle('ai-form.snapshot'));
-    es.addEventListener('ai-form.final', handle('ai-form.final'));
-    es.addEventListener('ai-form.error', handle('ai-form.error'));
-    es.addEventListener('ai-form.attach', handle('ai-form.attach'));
-    es.addEventListener('ai-form.tool.start', handle('ai-form.tool.start'));
-    es.addEventListener('ai-form.tool.end', handle('ai-form.tool.end'));
-    es.addEventListener('flow.tool.start', handle('flow.tool.start'));
-    es.addEventListener('flow.tool.end', handle('flow.tool.end'));
-    es.addEventListener('done', () => { this.zone.run(() => subj.next({ type: 'done' } as any)); try { es.close(); } catch {} subj.complete(); });
-    es.onerror = () => { this.zone.run(() => subj.next({ type: 'error', code: 'eventsource_error', message: 'Connection failed' } as any)); };
-
-    const stop = () => { try { es.close(); } catch {} subj.complete(); };
-    return { events$: subj.asObservable(), stop };
+    const stream: SseStream<FlowAgentEvent> = openSse<FlowAgentEvent>({
+      zone: this.zone,
+      url,
+      eventTypes: [
+        'message','patch','snapshot','final','warning','error',
+        'ai-form.start','ai-form.message','ai-form.patch','ai-form.snapshot','ai-form.final','ai-form.error','ai-form.attach','ai-form.tool.start','ai-form.tool.end',
+        'flow.tool.start','flow.tool.end'
+      ],
+      coerce: (raw, fallbackType) => ({ ...(raw || {}), type: (raw?.type || fallbackType) as FlowAgentEvent['type'] }) as FlowAgentEvent,
+    });
+    return stream;
   }
 }
