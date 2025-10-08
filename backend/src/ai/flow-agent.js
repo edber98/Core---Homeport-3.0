@@ -3,6 +3,38 @@
 
 let z;
 try { ({ z } = require('zod')); } catch { z = undefined; }
+// Fallback meta index to differentiate default titles when LLM is unavailable
+let _fallbackMetaIndex = 1;
+
+async function computeDefaultMeta(workspaceId){
+  let idx = _fallbackMetaIndex++;
+  try {
+    const { Types } = require('mongoose');
+    const Workspace = require('../db/models/workspace.model');
+    const Flow = require('../db/models/flow.model');
+    const raw = String(workspaceId || '').trim();
+    let ws = null;
+    if (raw) {
+      ws = Types.ObjectId.isValid(raw) ? await Workspace.findById(raw).lean() : await Workspace.findOne({ id: raw }).lean();
+      const wsOid = ws ? ws._id : (Types.ObjectId.isValid(raw) ? raw : null);
+      if (wsOid) idx = (await Flow.countDocuments({ workspaceId: wsOid }).exec()) + 1;
+    }
+  } catch (e) { try { console.warn('[ai-flow][meta][fallback][count_error]', e?.message || e); } catch {} }
+  const name = `Workflow #${idx}`;
+  const description = 'Automatise un processus.';
+  return { name, description, idx };
+}
+
+function sentenceCase(str){
+  try {
+    const s = String(str || '').trim();
+    if (!s) return s;
+    const lower = s.toLowerCase();
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  } catch { return str; }
+}
+// Fallback meta index to differentiate default titles when LLM is unavailable
+// removed duplicate declaration
 
 async function importLC() {
   const coreTools = await import('@langchain/core/tools');
@@ -305,19 +337,90 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
           }
         }
       }
-      // Optional global layout pass (only when explicitly enabled)
-      if (String(process.env.AI_FLOW_AUTOLAYOUT || '').toLowerCase() === '1') {
-        try {
-          const { DynamicStructuredTool: T2 } = await importLC();
-          const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history });
-          const layout = tmp2.find(t => t.name === 'auto_layout');
-          if (layout) await layout.func({});
-        } catch {}
-      }
+      // Always run a global layout pass to align nodes neatly for the builder
+      try {
+        const { DynamicStructuredTool: T2 } = await importLC();
+        const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history });
+        const layout = tmp2.find(t => t.name === 'auto_layout');
+        if (layout) await layout.func({});
+      } catch {}
     } catch {}
 
     emitSnapshot();
     try { console.log('[ai-flow][final_graph]', JSON.stringify(graph)); } catch {}
+    // Suggest concise name/description for Launch Control consumers
+    if (process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY) {
+      try { console.log('[ai-flow][meta] LLM key detected'); } catch {}
+      const meta = await (async function suggestMeta(promptText){
+        function sanitizeInstruction(s){
+          try {
+            let x = String(s || '');
+            x = x.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, ''); // emails
+            x = x.replace(/https?:\/\/\S+/gi, ''); // urls
+            x = x.replace(/\s{2,}/g, ' ').trim();
+            return x;
+          } catch { return String(s||''); }
+        }
+        // LLM-only: derive a concise business title/desc from the instruction (no technical terms, no prompt copying)
+        try {
+          const sysRaw = [
+            'Tu rédiges un titre COURT et une description CONCISE pour un workflow.',
+            'Contraintes:',
+            "- N’UTILISE JAMAIS le prompt mot à mot et ne le paraphrase pas.",
+            "- NE CITE AUCUN terme technique (nœuds, templates, providers, marques, API).",
+            "- Décris l'objectif MÉTIER: ce que FAIT le workflow et sa subtilité (règle/condition) qui le rend unique.",
+            "- Titre: 3–6 mots, ≤ 50 caractères, simple, parlant, sans deux-points ni guillemets, ne pas écrire le mot 'workflow'.",
+            "- Capitalisation du titre: une seule majuscule initiale (phrase), sauf noms propres; n’écris pas Chaque Mot En Majuscule.",
+            "- Description: ≤ 160 caractères, une seule phrase claire et actionnable, sans détails techniques, sans emails/URLs.",
+            "- Varie naturellement les formulations (synonymes légers), reste professionnel.",
+            'Réponds uniquement en JSON STRICT: {"name":"...","description":"..."}.'
+          ].join('\n');
+          // Escape curly braces so LangChain doesn't treat JSON example as variables
+          const sys = escapeForLangChain(sysRaw);
+          const user = [
+            'BESOIN UTILISATEUR (résumer en concepts):', sanitizeInstruction(promptText).slice(0, 800)
+          ].join('\n');
+          const modelName = process.env.OPENAI_MODEL || 'gpt-4o';
+          const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '';
+          try { console.log('[ai-flow][meta][env]', { model: modelName, key_len: apiKey ? apiKey.length : 0 }); } catch {}
+          const mini = new ChatOpenAI({ temperature: 0, modelName, openAIApiKey: apiKey, streaming: false });
+          const promptT = ChatPromptTemplate.fromMessages([[ 'system', sys ], [ 'human', '{input}' ]]);
+          const chain = await promptT.pipe(mini);
+          let resp;
+          try {
+            resp = await chain.invoke({ input: user });
+          } catch (e) {
+            try { console.error('[ai-flow][meta][invoke_error]', e?.response?.status || '', e?.response?.data || e?.message || e); } catch {}
+            throw e;
+          }
+          const txt = String(resp?.content || '').trim();
+          let obj = null;
+          try { obj = JSON.parse(txt); } catch { const m = txt.match(/\{[\s\S]*\}/); if (m) { try { obj = JSON.parse(m[0]); } catch {} } }
+          let name = (obj && typeof obj.name === 'string' && obj.name.trim()) ? obj.name.trim().slice(0,50) : 'Workflow';
+          const descriptionRaw = (obj && typeof obj.description === 'string' && obj.description.trim()) ? obj.description.trim() : 'Automatise un processus.';
+          const description = descriptionRaw.slice(0,160);
+          name = sentenceCase(name);
+          try { console.log('[ai-flow][meta][llm]', { name, descriptionLen: description.length }); } catch {}
+          try { send({ type: 'message', role: 'assistant', text: `[ai-flow][meta][llm] name="${name}" desc.len=${description.length}` }); } catch {}
+          send({ type: 'meta', name, description });
+        } catch (e) {
+          try { console.warn('[ai-flow][meta][llm_failed]', e?.message || e); } catch {}
+          try { send({ type: 'message', role: 'assistant', text: `[ai-flow][meta][llm_error] ${(e && e.message) ? e.message : String(e)}` }); } catch {}
+          // LLM generation failed: emit a minimal default meta with an incremental index based on DB count
+          const def = await computeDefaultMeta(workspaceId);
+          try { console.warn('[ai-flow][meta][llm_failed] fallback', { idx: def.idx }); } catch {}
+          try { send({ type: 'message', role: 'assistant', text: `[ai-flow][meta][fallback] idx=${def.idx}` }); } catch {}
+          send({ type: 'meta', name: def.name, description: def.description });
+        }
+      })(instruction);
+      void meta;
+    } else {
+      // No LLM key: emit a minimal default meta with an incremental index based on DB count
+      const def = await computeDefaultMeta(workspaceId);
+      try { console.warn('[ai-flow][meta][no_key] fallback', { idx: def.idx }); } catch {}
+      try { send({ type: 'message', role: 'assistant', text: `[ai-flow][meta][no_key] idx=${def.idx}` }); } catch {}
+      send({ type: 'meta', name: def.name, description: def.description });
+    }
     done();
   } catch (err) {
     const msg = (err && err.stack) ? err.stack : (err?.message || String(err));

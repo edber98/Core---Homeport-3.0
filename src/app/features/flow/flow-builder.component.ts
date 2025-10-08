@@ -400,6 +400,8 @@ export class FlowBuilderComponent {
     try {
       const flowId = this.route.snapshot.queryParamMap.get('flow');
       const focusNode = this.route.snapshot.queryParamMap.get('node');
+      const centerParam = this.route.snapshot.queryParamMap.get('center');
+      const centerActive = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
       if (flowId) {
         this.currentFlowId = flowId;
         this.loadingFlowDoc = true;
@@ -412,6 +414,7 @@ export class FlowBuilderComponent {
               this.currentFlowEnabled = !!(doc as any).enabled;
               // Suppress Vflow transient events while swapping graph
               this.suppressGraphEventsUntil = Date.now() + 1200;
+              this.suppressNodesRemovedUntil = Date.now() + 1500;
               this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
               this.nodes = (doc.nodes || []) as any[];
               this.edges = (doc.edges || []) as any;
@@ -423,7 +426,14 @@ export class FlowBuilderComponent {
             }
           } finally {
             this.loadingFlowDoc = false;
+            // Extend suppression window a bit after render to avoid initial remove glitches
+            this.suppressNodesRemovedUntil = Math.max(this.suppressNodesRemovedUntil, Date.now() + 1200);
             try { this.cdr.detectChanges(); } catch { }
+            // Center the view (not a node) if requested or if no saved zoom exists
+            try {
+              const hasSavedZoom = !!localStorage.getItem('flow.zoom');
+              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
+            } catch { if (centerActive) setTimeout(() => this.centerFlow(), 0); }
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
@@ -441,9 +451,9 @@ export class FlowBuilderComponent {
             } catch {}
             // If we are opening a specific run, re-apply backend highlights after any flow swap
             try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
-            // Deep-link: focus a specific node if requested
+            // Deep-link: focus a specific node if requested (unless center view param is active)
             try {
-              if (focusNode) {
+              if (focusNode && !centerActive) {
                 const id = String(focusNode);
                 const node = this.nodes.find(n => String(n.id) === id);
                 if (node) {
@@ -486,6 +496,13 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
+            // Center the view (not a node) if requested or if no saved zoom exists
+            try {
+              const centerParam = this.route.snapshot.queryParamMap.get('center');
+              const centerActive = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
+              const hasSavedZoom = !!localStorage.getItem('flow.zoom');
+              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
+            } catch {}
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
@@ -3056,6 +3073,7 @@ export class FlowBuilderComponent {
     if (this.isIgnoring()) { return; }
     try {
       if (Date.now() < (this.suppressGraphEventsUntil || 0)) { this.log('nodes.removed.suppressed', { until: this.suppressGraphEventsUntil }); return; }
+      if (Date.now() < (this.suppressNodesRemovedUntil || 0)) { this.log('nodes.removed.suppressed.window', { until: this.suppressNodesRemovedUntil }); return; }
       const ids = new Set((changes || []).map(c => c?.id).filter(Boolean));
       if (Date.now() < this.suppressNodesRemovedUntil) { this.log('nodes.removed.ignored.window', { until: this.suppressNodesRemovedUntil }); return; }
       if (!ids.size) return;

@@ -1,4 +1,4 @@
-import { Component, HostListener, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, HostListener, ChangeDetectorRef, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -15,6 +15,10 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { ChatRendererComponent } from '../../shared/chat/chat-renderer.component';
+import { RichPart, mergeText } from '../../shared/chat/chat-types';
+import { AiFlowAgentService, FlowAgentEvent } from '../../services/ai-flow-agent.service';
+import { FlowsBackendService } from '../../services/flows-backend.service';
 import { FormsModule } from '@angular/forms';
 import { AccessControlService, User } from '../../services/access-control.service';
 import { AuthService } from '../../services/auth.service';
@@ -47,7 +51,8 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzPopoverModule,
     NzInputModule,
     NzModalModule,
-    NzSelectModule
+    NzSelectModule,
+    ChatRendererComponent
   ],
   templateUrl: './layout-main.html',
   styleUrl: './layout-main.scss'
@@ -75,8 +80,16 @@ export class LayoutMain implements OnInit {
   // User & workspace switchers
   selectedUserId: string | null = null;
   selectedWorkspaceId: string | null = null;
+  // Command Center — AI Flow quick create
+  ccPrompt = '';
+  ccBusy = false;
+  ccStreamingParts: RichPart[] = [];
+  private ccRecent = new Set<string>();
+  private ccStop?: () => void;
+  @ViewChild('ccScroller') ccScroller?: ElementRef<HTMLDivElement>;
+  private ccMeta: { name?: string; description?: string } = {};
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService, private flowAgent: AiFlowAgentService, private flowsApi: FlowsBackendService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
@@ -299,4 +312,139 @@ export class LayoutMain implements OnInit {
   openLaunch() { if (!this.showSider) this.showLaunch = true; }
   closeLaunch() { this.showLaunch = false; }
   toggleMobileSearch() { if (!this.showSider) this.mobileSearchOpen = !this.mobileSearchOpen; }
+
+  // Generate workflow from prompt in Command Center
+  startQuickFlow() {
+    const t = (this.ccPrompt || '').trim();
+    if (!t || this.ccBusy) return;
+    this.ccBusy = true; this.ccStreamingParts = []; this.ccMeta = {}; try { this.ccRecent.clear(); } catch {}
+    const stream = this.flowAgent.stream({ prompt: t });
+    this.ccStop = stream.stop;
+    stream.events$.subscribe({ next: (ev) => this.onCcEvent(ev), error: () => this.onCcError('Erreur de flux') });
+  }
+  stopQuickFlow() { try { this.ccStop?.(); } catch {} this.ccBusy = false; }
+
+  private onCcError(msg: string) {
+    this.ccBusy = false;
+    this.ccStreamingParts.push({ kind: 'log', badge: 'FLOW', status: 'error', text: msg });
+    try { this.cdr.detectChanges(); } catch {}
+    this.ccScrollToBottom();
+  }
+  private onCcEvent(evt: FlowAgentEvent) {
+    if (!evt) return;
+    if (evt.type === 'message' && evt.text) {
+      const raw = String(evt.text);
+      const norm = raw.replace(/(>>>\s*tool\s+)/g, '\n$1').replace(/(\u2713|✓)\s+/g, '\n$&').replace(/(\[ai-form\])/gi, '\n$1').replace(/(\[ai-flow\])/gi, '\n$1');
+      const lines = norm.split(/\r?\n/);
+      for (const seg of lines) {
+        if (!seg) continue; const s = seg.trim(); if (!s) continue;
+        if (this.tryCcParseExecLine(s)) continue;
+        this.ccAppendText(seg);
+      }
+      try { this.cdr.detectChanges(); } catch {}
+      this.ccScrollToBottom();
+      return;
+    }
+    if (evt.type === 'final' && (evt as any).graph) {
+      const graph = (evt as any).graph;
+      // Create the flow in current workspace
+      const wsId = this.acl.currentWorkspaceId();
+      if (!wsId) { this.ui.error('Aucun workspace'); this.ccBusy = false; return; }
+      const meta = (this.ccMeta && (this.ccMeta.name || this.ccMeta.description)) ? (this.ccMeta as any) : { name: 'Nouveau workflow', description: '' };
+      // Create even if graph is not yet valid (force) and start disabled
+      this.flowsApi.create(wsId, { name: meta.name, description: meta.description, status: 'draft', enabled: false, graph, force: true }, true).subscribe({
+        next: (res) => {
+          try { this.ui.success('Workflow créé'); } catch {}
+          const id = (res && (res.data?.id || res.id)) || null;
+          this.ccBusy = false; this.cmdVisible = false;
+          if (id) this.router.navigate(['/flow-builder','editor'], { queryParams: { flow: id, center: '1' } });
+        },
+        error: () => { this.ccBusy = false; this.ui.error('Création du workflow échouée'); }
+      });
+      return;
+    }
+    if (evt.type === 'meta') {
+      const name = (evt as any).name ? String((evt as any).name) : undefined;
+      const description = (evt as any).description ? String((evt as any).description) : undefined;
+      this.ccMeta = { name, description };
+      // also show a compact line in the stream for transparency
+      const line = [name ? `name=“${name}”` : '', description ? `desc=“${description}”` : ''].filter(Boolean).join(' · ');
+      if (line) this.ccStreamingParts.push({ kind: 'log', badge: 'FLOW', status: 'info', text: `meta ${line}` });
+      try { this.cdr.detectChanges(); } catch {}
+      this.ccScrollToBottom();
+      return;
+    }
+    // forward key events for context
+    if (evt.type === 'ai-form.tool.start') {
+      const name = String((evt as any).name || 'tool');
+      const args = (evt as any).args ? JSON.stringify((evt as any).args) : '';
+      const key = `tool:start:${name}:${args}`;
+      if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'tool', name, status: 'running', text: args, badge: 'AI FORM' }); this.ccRecent.add(key); }
+    } else if (evt.type === 'ai-form.tool.end') {
+      const name = String((evt as any).name || 'tool');
+      const key = `tool:ok:${name}:ok`;
+      if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'tool', name, status: 'success', text: 'ok', badge: 'AI FORM' }); this.ccRecent.add(key); }
+    } else if (evt.type === 'ai-form.patch') {
+      const ops = Array.isArray((evt as any).ops)?(evt as any).ops.length:0; const key = `ai-form:patch:${ops}`;
+      if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'ai-form', status: 'info', text: `patch ops=${ops}`, badge: 'AI FORM' }); this.ccRecent.add(key); }
+    } else if (evt.type === 'ai-form.snapshot') {
+      const key = 'ai-form:snapshot'; if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'ai-form', status: 'info', text: 'snapshot', badge: 'AI FORM' }); this.ccRecent.add(key); }
+    }
+    try { this.cdr.detectChanges(); } catch {}
+    this.ccScrollToBottom();
+  }
+  private ccAppendText(token: string) {
+    const t = String(token || ''); if (!t) return;
+    const last = this.ccStreamingParts[this.ccStreamingParts.length - 1];
+    if (last && last.kind === 'text' && !last.badge) last.text = mergeText(last.text || '', t);
+    else this.ccStreamingParts.push({ kind: 'text', text: mergeText('', t) });
+  }
+  private tryCcParseExecLine(s: string): boolean {
+    const mMsgAiForm = s.match(/^\[ai-form\]\s*\[msg\]\s*(.*)$/i); if (mMsgAiForm) { this.ccAppendAiFormMsg(mMsgAiForm[1] || ''); return true; }
+    const mMsgFlow = s.match(/^\[ai-flow\]\s*\[msg\]\s*(.*)$/i); if (mMsgFlow) { this.ccAppendFlowMsg(mMsgFlow[1] || ''); return true; }
+    if (s.startsWith('>>> tool ')) {
+      const rest = s.slice(9).trim(); const m = rest.match(/^(\S+)\s*(.*)$/); const name = m ? m[1] : (rest.split(/\s+/)[0] || 'tool'); const args = m ? m[2] : '';
+      const key = `tool:start:${name}:${args}`; if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'tool', name, status: 'running', text: (args || rest), badge: 'TOOL' }); this.ccRecent.add(key); }
+      return true;
+    }
+    if (s.startsWith('✓ ')) {
+      const rest = s.slice(2).trim(); const m = rest.match(/^(\S+)\s*(.*)$/); const name = m ? m[1] : (rest.split(/\s+/)[0] || 'tool'); const tail = m ? m[2] : '';
+      const key = `tool:ok:${name}:${tail || 'ok'}`; if (!this.ccRecent.has(key)) { this.ccStreamingParts.push({ kind: 'tool', name, status: 'success', text: (tail || 'ok'), badge: 'TOOL' }); this.ccRecent.add(key); }
+      return true;
+    }
+    const m = s.match(/^\[([^\]]+)\]\s*(.*)$/); if (m) {
+      const tag = m[1]; const text = m[2] || ''; const low = s.toLowerCase(); const status: 'error'|'warn'|'success'|'info' = (low.includes('error')||low.includes('[error]')) ? 'error' : (low.includes('warn') ? 'warn' : (low.includes('ok')||low.includes('success')) ? 'success' : 'info');
+      const isFlow = this.ccIsFlowTag(tag);
+      this.ccStreamingParts.push({ kind: 'log', tag, text, status, badge: isFlow ? 'FLOW' : undefined });
+      return true;
+    }
+    return false;
+  }
+  private ccAppendAiFormMsg(text: string) {
+    const t = String(text || ''); if (!t.trim()) return;
+    for (let i = this.ccStreamingParts.length - 1; i >= 0; i--) {
+      const p = this.ccStreamingParts[i];
+      if (p && p.kind === 'ai-form' && p.badge === 'AI FORM' && p.name === 'Assistant formulaire:') { p.text = mergeText(p.text || '', t); return; }
+    }
+    this.ccStreamingParts.push({ kind: 'ai-form', badge: 'AI FORM', name: 'Assistant formulaire:', text: mergeText('', t) });
+  }
+  private ccAppendFlowMsg(text: string) {
+    const t = String(text || ''); if (!t.trim()) return;
+    for (let i = this.ccStreamingParts.length - 1; i >= 0; i--) {
+      const p = this.ccStreamingParts[i];
+      if (p && p.kind === 'log' && p.badge === 'FLOW' && p.name === 'Assistant workflow:') { p.text = mergeText(p.text || '', t); return; }
+    }
+    this.ccStreamingParts.push({ kind: 'log', badge: 'FLOW', name: 'Assistant workflow:', text: mergeText('', t) });
+  }
+  private ccIsFlowTag(tag?: string): boolean { const t = (tag || '').toLowerCase(); return !!(['ai-flow','edge','layout','outputs','context','args','flags','start','condition','template','schema','node','graph','elk','connect','layout.elk'].find(k => t.includes(k))); }
+  private ccSuggestMeta(prompt: string): { name: string; description: string } {
+    const p = (prompt || '').trim().replace(/[\r\n]+/g, ' ').replace(/\s{2,}/g, ' ');
+    const clean = p.replace(/["'`]/g, '').replace(/[\[\](){}]/g, '').replace(/[.,;:!?]+$/,'');
+    let name = clean.split(/\.|;|:|,|\s-\s/)[0].trim();
+    name = name.replace(/^[a-z]/, m => m.toUpperCase()).slice(0, 60);
+    if (name.length < 6) name = 'Workflow — ' + (clean.slice(0, 40) || 'Sans titre');
+    const description = clean.slice(0, 240);
+    return { name, description };
+  }
+  private ccScrollToBottom(){ try { const el = this.ccScroller?.nativeElement; if (el) setTimeout(()=> el.scrollTop = el.scrollHeight, 0); } catch {} }
 }
