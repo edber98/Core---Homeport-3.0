@@ -11,7 +11,15 @@ export type FlowAgentEvent =
   | { type: 'final'; graph: any }
   | { type: 'warning'; code?: string; message?: string }
   | { type: 'error'; code?: string; message?: string }
-  | { type: 'done' };
+  | { type: 'done' }
+  // AI Form namespaced events forwarded by the Flow Agent during generation
+  | { type: 'ai-form.start'; at?: number; nodeId?: string }
+  | { type: 'ai-form.message'; text?: string }
+  | { type: 'ai-form.patch'; ops?: any[] }
+  | { type: 'ai-form.snapshot'; schema?: any }
+  | { type: 'ai-form.final'; schema?: any }
+  | { type: 'ai-form.error'; code?: string; message?: string }
+  | { type: 'ai-form.attach'; nodeId?: string; parts?: number };
 
 export interface FlowStreamParams {
   prompt: string;
@@ -56,6 +64,14 @@ export class AiFlowAgentService {
     es.addEventListener('final', handle('final'));
     es.addEventListener('warning', handle('warning'));
     es.addEventListener('error', handle('error'));
+    // Namespaced AI Form events (forwarded from Flow Agent)
+    es.addEventListener('ai-form.start', handle('ai-form.start'));
+    es.addEventListener('ai-form.message', handle('ai-form.message'));
+    es.addEventListener('ai-form.patch', handle('ai-form.patch'));
+    es.addEventListener('ai-form.snapshot', handle('ai-form.snapshot'));
+    es.addEventListener('ai-form.final', handle('ai-form.final'));
+    es.addEventListener('ai-form.error', handle('ai-form.error'));
+    es.addEventListener('ai-form.attach', handle('ai-form.attach'));
     es.addEventListener('done', () => { this.zone.run(() => subj.next({ type: 'done' } as any)); try { es.close(); } catch {} subj.complete(); });
     es.onerror = () => { this.zone.run(() => subj.next({ type: 'error', code: 'eventsource_error', message: 'Connection failed' } as any)); };
 

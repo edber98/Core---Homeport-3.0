@@ -93,6 +93,8 @@ function systemPrompt() {
     'Exemples de séquences:',
     '- Webhook → HTTP → Log: add_node(trigger.http), add_node(http.request), get_node_context_inputs(http), create_node_context({nodeId:http, context:{url:"https://...", method:"GET"}}), connect(trigger->http:ok), add_node(util.log), connect(http->log:ok), finalize.',
     '- Start_Form → Transform → Endpoint: add_node(start_form), add_node(data.transform), get_node_context_inputs(transform), create_node_context({nodeId:transform, context:{mapping:"..."}}), connect, add_node(endpoint.http), get_node_context_inputs(endpoint), create_node_context({nodeId:endpoint, context:{url:"https://..."}}), connect, finalize.',
+    'Formulaires (important): si l’intention utilisateur implique la création d’un formulaire (ex: "formulaire de maintenance"), après add_node(start_form), appelle ai_generate_form_schema({ nodeId:<id_start_form>, prompt:"<résumé court du besoin>" }) pour attacher le schéma au nœud start_form (champ startFormSchema). Ensuite, ajoute les actions (ex: sendmail) et connecte en sortie ok. N’insère pas de JSON du formulaire toi-même: utilise le tool.',
+    'Exemple formulaire: add_node(start_form) → ai_generate_form_schema({ nodeId, prompt:"Formulaire de maintenance" }) → add_node(sendmail) → get_node_context_inputs(sendmail) → create_node_context({ nodeId:sendmail, context:{ to:"support@exemple.com", subject:"{{ \"Demande maintenance - \" + (payload?.titre||\"\") }}", body:"Nouvelle demande — Description: {{ payload.description }}" } }) → connect(start_form→sendmail).',
   ].join('\n');
   return escapeForLangChain(raw);
 }
@@ -141,6 +143,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
   const emitMessage = (text) => { try { console.log('[ai-flow][langchain]', text); } catch {} ; send({ type: 'message', role: 'assistant', text }); };
   const emitPatch = (ops) => { try { applyPatch(graph, ops); } catch {} ; send({ type: 'patch', ops }); };
   const emitSnapshot = () => send({ type: 'snapshot', graph });
+  const emitEvent = (obj) => { try { if (obj && typeof obj === 'object' && obj.type) send(obj); } catch {} };
 
   try {
     if (!z) throw new Error('zod_not_available');
@@ -148,7 +151,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
 
     // Tools
     const instruction = String(prompt || '').trim();
-    const tools = await buildTools({ DynamicStructuredTool, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+    const tools = await buildTools({ DynamicStructuredTool, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history });
     try { emitMessage('[langchain] tools ready: ' + tools.map(t => t.name).join(', ')); } catch {}
 
     const model = new ChatOpenAI({
@@ -274,7 +277,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
     try {
       const g = graph || { nodes: [], edges: [] };
       const { DynamicStructuredTool: T } = await importLC();
-        const tmpTools = await buildTools({ DynamicStructuredTool: T, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+        const tmpTools = await buildTools({ DynamicStructuredTool: T, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history });
       const ensure = tmpTools.find(t => t.name === 'ensure_start');
       const list = tmpTools.find(t => t.name === 'list_graph');
       const connect = tmpTools.find(t => t.name === 'connect');
@@ -306,7 +309,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
       if (String(process.env.AI_FLOW_AUTOLAYOUT || '').toLowerCase() === '1') {
         try {
           const { DynamicStructuredTool: T2 } = await importLC();
-          const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+          const tmp2 = await buildTools({ DynamicStructuredTool: T2, getGraph: () => graph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history });
           const layout = tmp2.find(t => t.name === 'auto_layout');
           if (layout) await layout.func({});
         } catch {}
@@ -323,7 +326,7 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
   }
 }
 
-async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history }){
+async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, emitEvent, workspaceId, instruction, history }){
   // Cache templates to enforce canonical outputs (prevent any mutation of templateObj.output)
   let _templatesCache = null;
   const loadTemplatesCache = async () => { if (!_templatesCache) _templatesCache = await getTemplates(); return _templatesCache; };
@@ -740,6 +743,114 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     }
   });
 
+  // Generate a Dynamic Form schema via the AI Form Agent and attach it to a start_form node
+  const aiGenerateFormSchemaTool = new DynamicStructuredTool({
+    name: 'ai_generate_form_schema',
+    description: 'Génère un schéma Dynamic Form via l’agent AI Form puis l’attache au nœud start_form dans model.startFormSchema. À utiliser quand l’intention est de créer un formulaire (ex: demande de maintenance).',
+    schema: z.object({
+      nodeId: z.string(),
+      prompt: z.string().optional(),
+      options: z.object({ layout: z.enum(['vertical','horizontal','inline']).optional(), steps: z.boolean().optional(), maxFields: z.number().optional() }).optional()
+    }).describe('Créer un formulaire attaché au nœud start_form.'),
+    func: async ({ nodeId, prompt, options }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+        const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
+        if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const node = JSON.parse(JSON.stringify(nodes[idx]));
+        const model = node?.data?.model || {}; const tpl = model?.templateObj || {};
+        const t = String(tpl?.type || '').toLowerCase();
+        if (!(t === 'start_form' || t === 'start')) {
+          try { emitMessage(`[ai-form][error] node ${nodeId} type=${t} is not start_form/start`); } catch {}
+          return JSON.stringify({ success: false, error: 'invalid_node_type' });
+        }
+        const instructionGlobal = String(instruction || '').trim();
+        const basePrompt = (prompt && String(prompt).trim()) ? String(prompt).trim() : instructionGlobal;
+        const userNeed = basePrompt || 'Formulaire';
+        // Build a concise, actionable prompt specialized for the AI Form Agent
+        const regen = [
+          `Construis un formulaire complet: ${userNeed}.`,
+          "Objectifs: sections claires (Demandeur, Détails, Localisation), champs requis pertinents, validateurs (required, minLength/min, pattern si email/téléphone), options concises pour listes (priorité, type).",
+          "UI: layout='vertical', labelsOnTop=true, 1 à 2 colonnes selon champs; limite le nombre de champs à un ensemble utile.",
+          "Ajoute des conditions simples si pertinent (ex: montrer email si 'contacter par email').",
+          "Prévoir des champs utiles à des actions suivantes (ex: envoi d’email): un titre/résumé, des coordonnées, et les détails nécessaires à un sujet clair.",
+          "N'utilise que les types supportés (texte, textarea, number, select, radio, checkbox, date).",
+        ].join(' ');
+
+        const layout = (options && options.layout) || 'vertical';
+        const preferSteps = !!(options && options.steps);
+        const maxFields = Math.max(1, Math.min(100, Number((options && options.maxFields) || 20)));
+        try { emitMessage(`[ai-form][call] nodeId=${nodeId} prompt.len=${regen.length} layout=${layout} steps=${preferSteps} maxFields=${maxFields}`); } catch {}
+
+        let finalSchema = null;
+        // Run the AI Form Agent inline and collect final schema
+        try {
+          const { runFormAgentWithTools } = require('./langchain-agent');
+          emitMessage('[ai-form][start]');
+          // Also emit a dedicated SSE event so the frontend can display real-time progress from the AI Form generator while inside AI Workflow
+          try { emitEvent({ type: 'ai-form.start', at: Date.now(), nodeId }); } catch {}
+          const local = { schema: null };
+          const send = (obj) => {
+            try {
+              // Forward as namespaced SSE events to avoid being processed as Flow patches/snapshots
+              const t = String(obj?.type || '').toLowerCase();
+              if (t === 'message') {
+                emitMessage(`[ai-form][msg] ${String(obj.text || obj.content || '')}`);
+                emitEvent({ type: 'ai-form.message', text: String(obj.text || obj.content || '') });
+              } else if (t === 'patch') {
+                emitMessage(`[ai-form][patch] ops=${Array.isArray(obj.ops)?obj.ops.length:0}`);
+                try { local.schema = local.schema || {}; if (Array.isArray(obj.ops)) applyPatch(local.schema, obj.ops); } catch (e) { emitMessage(`[ai-form][patch][error] ${e?.message||e}`); emitEvent({ type: 'ai-form.patch.error', message: String(e?.message||e) }); }
+                emitEvent({ type: 'ai-form.patch', ops: obj.ops || [] });
+              } else if (t === 'snapshot') {
+                try { local.schema = obj.schema; } catch {}
+                emitEvent({ type: 'ai-form.snapshot', schema: obj.schema || null });
+              } else if (t === 'error') {
+                emitMessage(`[ai-form][error] ${obj.code||''} ${obj.message||''}`);
+                emitEvent({ type: 'ai-form.error', code: obj.code || 'unknown', message: obj.message || '' });
+              } else if (t === 'final') {
+                local.schema = obj.schema;
+                emitMessage('[ai-form][final]');
+                emitEvent({ type: 'ai-form.final', schema: obj.schema || null });
+              }
+            } catch {}
+          };
+          await new Promise((resolve) => {
+            runFormAgentWithTools({ prompt: regen, history: [], seedSchema: null, preferSteps, layout, maxFields, send, done: resolve }).catch((e) => { try { emitMessage(`[ai-form][agent][error] ${e?.message || e}`); } catch {}; resolve(); });
+          });
+          finalSchema = local.schema;
+        } catch (e) {
+          try { emitMessage(`[ai-form][invoke.error] ${e?.message || e}`); } catch {}
+        }
+
+        if (!finalSchema || typeof finalSchema !== 'object') {
+          return JSON.stringify({ success: false, error: 'schema_generation_failed' });
+        }
+
+          // Attach schema under model.startFormSchema (preferred by frontend)
+          try {
+            node.data.model = model || {};
+            node.data.model.startFormEnabled = true; // always enable Start Form when a schema is generated
+            node.data.model.startFormSchema = finalSchema;
+            nodes[idx] = node;
+            emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]);
+            emitSnapshot();
+            const fCount = Array.isArray(finalSchema.fields) ? finalSchema.fields.length : (Array.isArray(finalSchema.steps) ? finalSchema.steps.length : 0);
+            emitMessage(`[ai-form][attach] nodeId=${nodeId} parts=${fCount}`);
+            // Also forward SSE event for the attachment
+            try { emitEvent({ type: 'ai-form.attach', nodeId, parts: fCount }); } catch {}
+          } catch (e) {
+            try { emitMessage(`[ai-form][attach.error] ${e?.message || e}`); } catch {}
+            return JSON.stringify({ success: false, error: 'attach_failed' });
+          }
+
+        return JSON.stringify({ success: true });
+      } catch (e) {
+        return JSON.stringify({ success: false, error: String(e?.message||e) });
+      }
+    }
+  });
+
   // Validate + apply params object using dynamic Zod from node args (no autofill)
   const applyNodeParamsTool = new DynamicStructuredTool({
     name: 'apply_node_params',
@@ -926,6 +1037,8 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       return getNodeContextInputsTool.func({ nodeId });
     }
   });
+
+  // Register the new tool in the returned tools list by appending it
 
   // Lightweight check to know if a node has arguments to configure
   const hasNodeArgsTool = new DynamicStructuredTool({
@@ -1708,6 +1821,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     addNodeTool,
     setNodeParamsTool,
     connectTool,
+    aiGenerateFormSchemaTool,
     autoPlaceTool,
     autoLayoutTool,
     emitSnapshotTool,

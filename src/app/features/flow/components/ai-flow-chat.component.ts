@@ -33,6 +33,14 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
       <div class="seed">
         <textarea nz-input [(ngModel)]="seedText" [disabled]="busy" placeholder="Graphe seed (JSON optionnel: {nodes,edges})" rows="3"></textarea>
       </div>
+      <!-- Inline AI Form events panel (forwarded from Flow Agent) -->
+      <div class="ai-form-panel" *ngIf="aiFormEvents.length">
+        <div class="row" *ngFor="let e of aiFormEvents">
+          <span class="badge">AI Form</span>
+          <span class="evt">{{ e.t }}</span>
+          <span class="msg" *ngIf="e.msg">· {{ e.msg }}</span>
+        </div>
+      </div>
       <div class="actions" *ngIf="finalGraph">
         <button nz-button nzType="primary" (click)="loadIntoBuilder()">Charger dans l'éditeur</button>
         <button nz-button class="ml" (click)="resetFinal()">Effacer</button>
@@ -52,6 +60,9 @@ type Msg = { role: 'user'|'assistant'|'system'; text: string };
     .chat-footer { border-top: 1px solid #eee; padding: 10px; display:flex; flex-direction:column; gap:8px; background:#fff; }
     .composer { display:flex; gap:8px; }
     .ml { margin-left: 6px; }
+    .ai-form-panel { max-height: 120px; overflow:auto; background:#fff7ed; border:1px solid #fed7aa; border-radius: 6px; padding:6px 8px; font-size:12px; color:#7c2d12; }
+    .ai-form-panel .row { display:flex; align-items:center; gap:8px; padding:2px 0; }
+    .ai-form-panel .badge { background:#fdba74; color:#7c2d12; border-radius: 4px; padding:0 6px; font-weight:600; }
   `]
 })
 export class FlowAiChatComponent implements AfterViewInit {
@@ -64,9 +75,11 @@ export class FlowAiChatComponent implements AfterViewInit {
   busy = false;
   streaming = false;
   streamingText = '';
+  private assistantBuf = '';
   finalGraph: any = null; // only set on 'final'
   previewGraph: any = null; // set on 'snapshot' for live preview/log
   seedText = '';
+  aiFormEvents: Array<{ t: string; msg?: string }> = [];
 
   private stopFn?: () => void;
   @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
@@ -80,23 +93,59 @@ export class FlowAiChatComponent implements AfterViewInit {
     this.messages.push({ role: 'user', text: t });
     this.text = '';
     this.busy = true; this.streaming = true; this.streamingText = '';
+    this.assistantBuf = '';
+    this.aiFormEvents = [];
     let seedObj: any = undefined;
     try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
     const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
     this.stopFn = stream.stop;
     stream.events$.subscribe({ next: (ev: FlowAgentEvent) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
   }
-  stop() { try { this.stopFn?.(); } catch {} this.busy = false; this.streaming = false; }
+  stop() {
+    try { this.stopFn?.(); } catch {}
+    if (this.assistantBuf && this.assistantBuf.trim()) this.messages.push({ role: 'assistant', text: this.assistantBuf });
+    this.assistantBuf = '';
+    this.busy = false; this.streaming = false; this.streamingText='';
+  }
 
   private onEvent(evt: FlowAgentEvent) {
     if (!evt) return;
-    if (evt.type === 'message' && evt.text) { this.streamingText += evt.text; this.scrollToBottom(); return; }
+    if (evt.type === 'message' && evt.text) {
+      // Merge tokens into a single assistant bubble while streaming
+      this.streamingText += evt.text;
+      this.assistantBuf += evt.text;
+      this.scrollToBottom();
+      return;
+    }
     if (evt.type === 'snapshot' && (evt as any).graph) { this.previewGraph = (evt as any).graph; try { console.log('[ai-flow][snapshot]', this.previewGraph); } catch {} }
-    if (evt.type === 'final' && (evt as any).graph) { this.finalGraph = (evt as any).graph; try { console.log('[ai-flow][final]', this.finalGraph); } catch {} this.busy = false; this.streaming = false; this.streamingText=''; }
+    if (evt.type === 'final' && (evt as any).graph) {
+      this.finalGraph = (evt as any).graph; try { console.log('[ai-flow][final]', this.finalGraph); } catch {}
+      // Persist the streamed assistant text as a single bubble
+      if (this.assistantBuf && this.assistantBuf.trim()) this.messages.push({ role: 'assistant', text: this.assistantBuf });
+      this.assistantBuf = ''; this.streamingText=''; this.busy = false; this.streaming = false;
+    }
     if (evt.type === 'error') { this.onError(evt.message || 'Erreur'); }
+    if ((evt.type as any)?.startsWith && (evt.type as any).startsWith('ai-form.')) {
+      const t = String(evt.type).replace('ai-form.', '');
+      if (t === 'message') this.aiFormEvents.push({ t, msg: (evt as any).text || '' });
+      else if (t === 'error') this.aiFormEvents.push({ t, msg: (evt as any).message || (evt as any).code || 'error' });
+      else if (t === 'attach') this.aiFormEvents.push({ t, msg: `attach parts=${(evt as any).parts ?? '-'}` });
+      else if (t === 'patch') this.aiFormEvents.push({ t, msg: `ops=${Array.isArray((evt as any).ops)?(evt as any).ops.length:0}` });
+      else this.aiFormEvents.push({ t });
+      if (this.aiFormEvents.length > 50) this.aiFormEvents.shift();
+      // Hide sub-panel when AI Form generation signals completion
+      if (t === 'final') this.aiFormEvents = [];
+    }
     try { this.cdr.detectChanges(); } catch {}
   }
-  private onError(msg: string) { this.messages.push({ role: 'assistant', text: msg }); this.busy = false; this.streaming = false; this.streamingText=''; try { this.cdr.detectChanges(); } catch {} }
+  private onError(msg: string) {
+    // Flush any partial assistant text on error to avoid losing context
+    if (this.assistantBuf && this.assistantBuf.trim()) this.messages.push({ role: 'assistant', text: this.assistantBuf });
+    this.assistantBuf = '';
+    this.messages.push({ role: 'assistant', text: msg });
+    this.busy = false; this.streaming = false; this.streamingText='';
+    try { this.cdr.detectChanges(); } catch {}
+  }
   private scrollToBottom(){ try { const el = this.scroller?.nativeElement; if (el) setTimeout(()=> el.scrollTop = el.scrollHeight, 0); } catch {} }
   loadIntoBuilder(){ if (this.finalGraph) { try { console.log('[ai-flow][loadIntoBuilder]', this.finalGraph); } catch {} this.graphGenerated.emit(this.finalGraph); } }
   resetFinal(){ this.finalGraph = null; }
