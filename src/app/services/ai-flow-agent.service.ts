@@ -19,7 +19,9 @@ export type FlowAgentEvent =
   | { type: 'ai-form.snapshot'; schema?: any }
   | { type: 'ai-form.final'; schema?: any }
   | { type: 'ai-form.error'; code?: string; message?: string }
-  | { type: 'ai-form.attach'; nodeId?: string; parts?: number };
+  | { type: 'ai-form.attach'; nodeId?: string; parts?: number }
+  | { type: 'ai-form.tool.start'; name?: string; args?: any }
+  | { type: 'ai-form.tool.end'; name?: string; ok?: boolean };
 
 export interface FlowStreamParams {
   prompt: string;
@@ -72,6 +74,8 @@ export class AiFlowAgentService {
     es.addEventListener('ai-form.final', handle('ai-form.final'));
     es.addEventListener('ai-form.error', handle('ai-form.error'));
     es.addEventListener('ai-form.attach', handle('ai-form.attach'));
+    es.addEventListener('ai-form.tool.start', handle('ai-form.tool.start'));
+    es.addEventListener('ai-form.tool.end', handle('ai-form.tool.end'));
     es.addEventListener('done', () => { this.zone.run(() => subj.next({ type: 'done' } as any)); try { es.close(); } catch {} subj.complete(); });
     es.onerror = () => { this.zone.run(() => subj.next({ type: 'error', code: 'eventsource_error', message: 'Connection failed' } as any)); };
 
