@@ -147,6 +147,10 @@ export class FlowAiChatComponent implements AfterViewInit {
       // Persist the streamed assistant text as a single bubble
       if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
       this.assistantBuf = ''; this.streamingText=''; this.busy = false; this.streaming = false; this.streamingParts = [];
+      // Add a final confirmation bubble like AI Form
+      this.messages.push({ role: 'assistant', text: "Workflow généré. Prêt à charger dans l'éditeur." });
+      this.scrollToBottom();
+      try { this.cdr.detectChanges(); } catch {}
     }
     if (evt.type === 'error') { this.onError(evt.message || 'Erreur'); }
     if ((evt.type as any)?.startsWith && (evt.type as any).startsWith('ai-form.')) {

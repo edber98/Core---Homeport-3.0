@@ -37,8 +37,11 @@ Reusable Components
 - `ChatRendererComponent`: renders `RichPart[]` (tools/logs/messages) consistently across chats.
 - `chat-types.ts`: shared `RichPart` type and `mergeText()` utility for anti-duplication.
 
+Shared SSE Client
+- `shared/chat/sse-client.ts` centralizes EventSource wiring and JSON parsing.
+- Both `AiFormAgentService` and `AiFlowAgentService` use `openSse()` to expose the same `events$`/`stop` API and consistent error handling.
+
 Integration Notes
 - Replace `ngx-markdown` with `marked` + `dompurify` to avoid Angular 20 peer conflicts.
 - Keep change detection simple: push to arrays, call `detectChanges()` then auto-scroll.
 - When stopping or on error, flush the current `streamingParts` into the transcript to preserve context.
-
