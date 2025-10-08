@@ -178,19 +178,19 @@ export class FlowAiChatComponent implements AfterViewInit {
     if ((evt.type as any)?.startsWith && (evt.type as any).startsWith('ai-form.')) {
       const t = String(evt.type).replace('ai-form.', '');
       if (t === 'message') {
-        const txt = String((evt as any).text || '').replace(/\s+/g, ' ').trim();
-        if (txt) this.appendToAiFormMsg(txt);
+        const txt = String((evt as any).text || '');
+        if (txt && txt.length) this.appendToAiFormMsg(txt);
       } else if (t === 'error') {
         this.streamingParts.push({ kind: 'ai-form', status: 'error', text: (evt as any).message || (evt as any).code || 'error', badge: 'AI FORM' });
       } else if (t === 'tool.start') {
         const name = String((evt as any).name || 'tool');
         const args = (evt as any).args ? JSON.stringify((evt as any).args) : '';
         const key = `tool:start:${name}:${args}`;
-        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'running', text: args, badge: 'TOOL' }); this.recent.add(key); }
+        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'running', text: args, badge: 'AI FORM' }); this.recent.add(key); }
       } else if (t === 'tool.end') {
         const name = String((evt as any).name || 'tool');
         const key = `tool:ok:${name}:ok`;
-        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'success', text: 'ok', badge: 'TOOL' }); this.recent.add(key); }
+        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'success', text: 'ok', badge: 'AI FORM' }); this.recent.add(key); }
       } else if (t === 'attach') {
         const key = `ai-form:attach:${(evt as any).parts ?? '-'}`;
         if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', status: 'success', text: `attach parts=${(evt as any).parts ?? '-'}`, badge: 'AI FORM' }); this.recent.add(key); }
@@ -206,8 +206,23 @@ export class FlowAiChatComponent implements AfterViewInit {
         if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', status: 'running', text: 'start', badge: 'AI FORM' }); this.recent.add(key); }
       }
     }
-    try { this.cdr.detectChanges(); } catch {}
-  }
+      try { this.cdr.detectChanges(); } catch {}
+    }
+    // FLOW tool events -> lignes TOOL avec badge FLOW
+    if (evt.type === 'flow.tool.start') {
+      const name = String((evt as any).name || 'tool');
+      const key = `flowtool:start:${name}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'running', text: '', badge: 'FLOW' }); this.recent.add(key); }
+      try { this.cdr.detectChanges(); } catch {}
+      return;
+    }
+    if (evt.type === 'flow.tool.end') {
+      const name = String((evt as any).name || 'tool');
+      const key = `flowtool:ok:${name}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'success', text: 'ok', badge: 'FLOW' }); this.recent.add(key); }
+      try { this.cdr.detectChanges(); } catch {}
+      return;
+    }
   private onError(msg: string) {
     // Flush any partial assistant content on error to avoid losing context
     if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
