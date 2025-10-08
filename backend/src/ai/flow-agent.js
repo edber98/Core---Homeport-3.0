@@ -796,8 +796,12 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
               // Forward as namespaced SSE events to avoid being processed as Flow patches/snapshots
               const t = String(obj?.type || '').toLowerCase();
               if (t === 'message') {
-                emitMessage(`[ai-form][msg] ${String(obj.text || obj.content || '')}`);
+                // Ne pas réémettre en 'message' générique pour éviter les doublons côté chat
                 emitEvent({ type: 'ai-form.message', text: String(obj.text || obj.content || '') });
+              } else if (t === 'tool.start') {
+                emitEvent({ type: 'ai-form.tool.start', name: obj.name || '', args: obj.args || {} });
+              } else if (t === 'tool.end') {
+                emitEvent({ type: 'ai-form.tool.end', name: obj.name || '', ok: obj.ok !== false });
               } else if (t === 'patch') {
                 emitMessage(`[ai-form][patch] ops=${Array.isArray(obj.ops)?obj.ops.length:0}`);
                 try { local.schema = local.schema || {}; if (Array.isArray(obj.ops)) applyPatch(local.schema, obj.ops); } catch (e) { emitMessage(`[ai-form][patch][error] ${e?.message||e}`); emitEvent({ type: 'ai-form.patch.error', message: String(e?.message||e) }); }

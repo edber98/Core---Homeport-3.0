@@ -129,6 +129,7 @@ export class FlowAiChatComponent implements AfterViewInit {
     this.aiFormEvents = [];
     this.execLogs = [];
     this.streamingParts = [];
+    try { this.recent.clear(); } catch {}
     let seedObj: any = undefined;
     try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
     const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
@@ -146,14 +147,21 @@ export class FlowAiChatComponent implements AfterViewInit {
     if (!evt) return;
     if (evt.type === 'message' && evt.text) {
       const raw = String(evt.text);
-      const lines = raw.split(/\r?\n/);
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-        if (!this.tryParseExecLine(trimmed)) {
-          // Fusionne dans un paragraphe unique (pas de saut par token)
-          this.appendToLastTextPart(trimmed);
-        }
+      // Pré-découper les segments mixtes pour isoler tools et tags au milieu d’une même ligne
+      const norm = raw
+        .replace(/(>>>\s*tool\s+)/g, '\n$1')
+        .replace(/(\u2713|✓)\s+/g, '\n$&')
+        .replace(/(\[ai-form\])/gi, '\n$1')
+        .replace(/(\[ai-flow\])/gi, '\n$1');
+      const lines = norm.split(/\r?\n/);
+      for (const seg of lines) {
+        if (!seg) continue;
+        const s = seg.trim();
+        if (!s) continue;
+        // Si c’est un tool/tag reconnu, on le traite comme ligne distincte
+        if (this.tryParseExecLine(s)) continue;
+        // Sinon on fusionne le texte brut au paragraphe courant (aucun espace ajouté)
+        this.appendToLastTextPart(seg);
       }
       this.scrollToBottom();
       try { this.cdr.detectChanges(); } catch {}
@@ -174,6 +182,15 @@ export class FlowAiChatComponent implements AfterViewInit {
         if (txt) this.appendToAiFormMsg(txt);
       } else if (t === 'error') {
         this.streamingParts.push({ kind: 'ai-form', status: 'error', text: (evt as any).message || (evt as any).code || 'error', badge: 'AI FORM' });
+      } else if (t === 'tool.start') {
+        const name = String((evt as any).name || 'tool');
+        const args = (evt as any).args ? JSON.stringify((evt as any).args) : '';
+        const key = `tool:start:${name}:${args}`;
+        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'running', text: args, badge: 'TOOL' }); this.recent.add(key); }
+      } else if (t === 'tool.end') {
+        const name = String((evt as any).name || 'tool');
+        const key = `tool:ok:${name}:ok`;
+        if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'success', text: 'ok', badge: 'TOOL' }); this.recent.add(key); }
       } else if (t === 'attach') {
         const key = `ai-form:attach:${(evt as any).parts ?? '-'}`;
         if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'ai-form', status: 'success', text: `attach parts=${(evt as any).parts ?? '-'}`, badge: 'AI FORM' }); this.recent.add(key); }
@@ -203,25 +220,31 @@ export class FlowAiChatComponent implements AfterViewInit {
   // Détecte outils/logs et insère des parts structurées dans la bulle courante; retourne true si consommé
   private tryParseExecLine(line: string): boolean {
     const s = line.trim();
-    // Cas spécial: [ai-form][msg] … → merge en paragraphe "Assistant formulaire: …"
-    const mMsg = s.match(/^\[ai-flow\]\s*\[msg\]\s*(.*)$/i) || s.match(/^\[ai-form\]\s*\[msg\]\s*(.*)$/i);
-    if (mMsg) { this.appendToAiFormMsg(mMsg[1] || ''); return true; }
+    // Cas spécial: [ai-form][msg] … ou [ai-flow][msg] … → merge paragraphe
+    const mMsgAiForm = s.match(/^\[ai-form\]\s*\[msg\]\s*(.*)$/i);
+    if (mMsgAiForm) { this.appendToAiFormMsg(mMsgAiForm[1] || ''); return true; }
+    const mMsgFlow = s.match(/^\[ai-flow\]\s*\[msg\]\s*(.*)$/i);
+    if (mMsgFlow) { this.appendToFlowMsg(mMsgFlow[1] || ''); return true; }
     // Tool start
     if (s.startsWith('>>> tool ')) {
       const rest = s.slice(9).trim();
-      const name = rest.split(/\s+/)[0] || 'tool';
-      this.streamingParts.push({ kind: 'tool', name, status: 'running', text: rest, badge: 'TOOL' });
+      const m = rest.match(/^(\S+)\s*(.*)$/); const name = m ? m[1] : (rest.split(/\s+/)[0] || 'tool');
+      const args = m ? m[2] : '';
+      const key = `tool:start:${name}:${args}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'running', text: (args || rest), badge: 'TOOL' }); this.recent.add(key); }
       return true;
     }
     // Tool end success
     if (s.startsWith('✓ ')) {
       const rest = s.slice(2).trim();
-      const name = rest.split(/\s+/)[0] || 'tool';
+      const m = rest.match(/^(\S+)\s*(.*)$/); const name = m ? m[1] : (rest.split(/\s+/)[0] || 'tool');
+      const tail = m ? m[2] : '';
       for (let i = this.streamingParts.length - 1; i >= 0; i--) {
         const it = this.streamingParts[i];
         if (it.kind === 'tool' && it.name === name && it.status === 'running') { it.status = 'success'; break; }
       }
-      this.streamingParts.push({ kind: 'tool', name, status: 'success', text: rest, badge: 'TOOL' });
+      const key = `tool:ok:${name}:${tail || 'ok'}`;
+      if (!this.recent.has(key)) { this.streamingParts.push({ kind: 'tool', name, status: 'success', text: (tail || 'ok'), badge: 'TOOL' }); this.recent.add(key); }
       return true;
     }
     // Tagged logs: [tag] message
@@ -232,6 +255,21 @@ export class FlowAiChatComponent implements AfterViewInit {
       const low = s.toLowerCase();
       const status: 'error'|'warn'|'success'|'info' = (low.includes('error')||low.includes('[error]')) ? 'error' : (low.includes('warn') ? 'warn' : (low.includes('ok')||low.includes('success')) ? 'success' : 'info');
       const isFlow = this.isFlowTag(tag);
+      // Dédup avec événements ai-form.* déjà traités
+      const tagLc = String(tag || '').toLowerCase();
+      const txLc = String(text || '').toLowerCase();
+      if (tagLc === 'ai-form') {
+        if (txLc.startsWith('[patch') || txLc.startsWith('patch')) {
+          const mOps = txLc.match(/ops\s*=\s*(\d+)/); const ops = mOps ? Number(mOps[1]) : NaN;
+          const k = `ai-form:patch:${isNaN(ops)?'na':ops}`;
+          if (this.recent.has(k)) return true; else this.recent.add(k);
+        } else if (txLc.startsWith('snapshot')) {
+          const k = 'ai-form:snapshot'; if (this.recent.has(k)) return true; else this.recent.add(k);
+        } else if (txLc.startsWith('attach')) {
+          const mParts = txLc.match(/parts\s*=\s*(\d+)/); const parts = mParts ? Number(mParts[1]) : NaN;
+          const k = `ai-form:attach:${isNaN(parts)?'na':parts}`; if (this.recent.has(k)) return true; else this.recent.add(k);
+        }
+      }
       this.streamingParts.push({ kind: 'log', tag, text, status, badge: isFlow ? 'FLOW' : undefined });
       return true;
     }
@@ -239,24 +277,56 @@ export class FlowAiChatComponent implements AfterViewInit {
   }
   // Merge texte brut dans la dernière part texte (paragraphe normal)
   private appendToLastTextPart(token: string) {
-    const t = token.replace(/\s+/g, ' ').trim(); if (!t) return;
+    // Concaténer tel quel puis éliminer les doublons de mots consécutifs
+    const t = String(token || ''); if (!t) return;
     const last = this.streamingParts[this.streamingParts.length - 1];
-    if (last && last.kind === 'text' && !last.badge) last.text = ((last.text || '') + ' ' + t).trim();
-    else this.streamingParts.push({ kind: 'text', text: t });
-    this.streamingText += t + ' ';
-    this.assistantBuf += t + ' ';
+    if (last && last.kind === 'text' && !last.badge) last.text = this.mergeText(last.text || '', t);
+    else this.streamingParts.push({ kind: 'text', text: this.mergeText('', t) });
+    this.streamingText = this.mergeText(this.streamingText, t);
+    this.assistantBuf = this.mergeText(this.assistantBuf, t);
   }
   // Merge paragraphe AI FORM "Assistant formulaire: …"
   private appendToAiFormMsg(text: string) {
-    const t = String(text || '').replace(/\s+/g, ' ').trim(); if (!t) return;
+    const t = String(text || ''); if (!t.trim()) return;
     for (let i = this.streamingParts.length - 1; i >= 0; i--) {
       const p = this.streamingParts[i];
       if (p && p.kind === 'ai-form' && p.badge === 'AI FORM' && p.name === 'Assistant formulaire:') {
-        p.text = ((p.text || '') + ' ' + t).trim();
+        p.text = this.mergeText(p.text || '', t);
         return;
       }
     }
-    this.streamingParts.push({ kind: 'ai-form', badge: 'AI FORM', name: 'Assistant formulaire:', text: t });
+    this.streamingParts.push({ kind: 'ai-form', badge: 'AI FORM', name: 'Assistant formulaire:', text: this.mergeText('', t) });
+  }
+  // Merge paragraphe FLOW "Assistant workflow: …"
+  private appendToFlowMsg(text: string) {
+    const t = String(text || ''); if (!t.trim()) return;
+    for (let i = this.streamingParts.length - 1; i >= 0; i--) {
+      const p = this.streamingParts[i];
+      if (p && p.kind === 'log' && p.badge === 'FLOW' && p.name === 'Assistant workflow:') {
+        p.text = this.mergeText(p.text || '', t);
+        return;
+      }
+    }
+    this.streamingParts.push({ kind: 'log', badge: 'FLOW', name: 'Assistant workflow:', text: this.mergeText('', t) });
+  }
+  // Fusionne deux morceaux de texte en supprimant les doublons consécutifs de mots
+  private mergeText(base: string, add: string): string {
+    const combined = (base || '') + add;
+    // Séparer mots et espaces pour conserver la mise en forme
+    const parts = combined.split(/(\s+)/);
+    const out: string[] = [];
+    let prevWord = '';
+    for (const p of parts) {
+      if (!p) continue;
+      if (/^\s+$/.test(p)) { out.push(p); continue; }
+      const cur = p;
+      const curKey = cur.toLocaleLowerCase();
+      const prevKey = prevWord.toLocaleLowerCase();
+      if (curKey && curKey === prevKey) { /* skip duplicate word */ continue; }
+      out.push(cur);
+      prevWord = cur;
+    }
+    return out.join('');
   }
   private isFlowTag(tag?: string): boolean {
     const t = (tag || '').toLowerCase();

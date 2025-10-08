@@ -139,9 +139,14 @@ async function runFormAgentWithTools({ prompt, history = [], seedSchema = null, 
             if (typeof tc.args === 'string') toolArgs[idx].args += tc.args;
           }
         } else if (event.event === 'on_tool_start') {
-          emitMessage(`>>> tool ${event.name} args=${JSON.stringify(event.data?.input?.input || {})}`);
+          try {
+            const args = event.data?.input?.input || {};
+            send({ type: 'tool.start', name: event.name, args });
+          } catch { /* noop */ }
         } else if (event.event === 'on_tool_end') {
-          emitMessage(`✓ ${event.name} ok`);
+          try {
+            send({ type: 'tool.end', name: event.name, ok: true });
+          } catch { /* noop */ }
         }
       } catch {}
     }
