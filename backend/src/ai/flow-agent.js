@@ -334,6 +334,47 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       return (t && Array.isArray(t.output) && t.output.length) ? t.output.slice() : [];
     } catch { return []; }
   };
+
+  // ELK layout integration (layered DAG layout)
+  async function elkLayoutCurrentGraph(g, gapX, gapY) {
+    try {
+      const ELK = (await import('elkjs')).default;
+      const elk = new ELK();
+      const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
+      const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
+      const child = nodes.map(n => ({ id: String(n.id), width: 180, height: 72 }));
+      const eds = edges.map(e => ({ id: String(e.id || (String(e.source)+'->'+String(e.target))), sources: [String(e.source)], targets: [String(e.target)] }));
+      const graph = {
+        id: 'root',
+        layoutOptions: {
+          'elk.algorithm': 'layered',
+          'elk.direction': 'DOWN',
+          'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+          'elk.layered.mergeEdges': 'true',
+          'elk.layered.crossingMinimization.semiInteractive': 'true',
+          'elk.layered.spacing.nodeNodeBetweenLayers': String(Number.isFinite(gapY) ? gapY : 200),
+          'elk.spacing.nodeNode': String(Number.isFinite(gapX) ? Math.max(40, gapX - 100) : 40),
+          'elk.edgeRouting': 'ORTHOGONAL'
+        },
+        children: child,
+        edges: eds
+      };
+      const res = await elk.layout(graph);
+      const byId = new Map(nodes.map(n => [String(n.id), JSON.parse(JSON.stringify(n))]));
+      for (const c of (res.children || [])) {
+        const n = byId.get(String(c.id));
+        if (n) {
+          // ELK x,y is top-left; use directly as point
+          n.point = { x: Math.round(c.x || 0), y: Math.round(c.y || 0) };
+          byId.set(String(c.id), n);
+        }
+      }
+      return Array.from(byId.values());
+    } catch (e) {
+      try { emitMessage('[layout.elk][error] ' + (e?.message || e)); } catch {}
+      return null;
+    }
+  }
   // Helper: find first credential id for a provider in current workspace
   const firstCredentialIdFor = async (providerKey) => {
     try {
@@ -1339,6 +1380,20 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const g = getGraph();
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
       const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
+
+      // Try ELK if available or if requested via env var
+      try {
+        const useElk = String(process.env.AI_FLOW_USE_ELK || '1') === '1';
+        if (useElk) {
+          const laid = await elkLayoutCurrentGraph({ nodes, edges }, gapX, gapY);
+          if (laid && Array.isArray(laid) && laid.length === nodes.length) {
+            try { emitMessage(`[layout.elk] nodes=${laid.length} edges=${edges.length}`); } catch {}
+            emitPatch([{ op: 'replace', path: '/nodes', value: laid }]);
+            emitSnapshot();
+            return JSON.stringify({ success: true, engine: 'elk' });
+          }
+        }
+      } catch {}
       const byId = new Map(nodes.map(n => [String(n.id), n]));
       const incoming = new Map(); const outgoing = new Map();
       for (const n of nodes) { incoming.set(String(n.id), []); outgoing.set(String(n.id), []); }
@@ -1393,9 +1448,11 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           i++;
         }
       }
-      emitPatch([{ op: 'replace', path: '/nodes', value: Array.from(newById.values()) }]);
+      const outNodes = Array.from(newById.values());
+      try { emitMessage(`[layout.bfs] nodes=${outNodes.length} edges=${edges.length}`); } catch {}
+      emitPatch([{ op: 'replace', path: '/nodes', value: outNodes }]);
       emitSnapshot();
-      return JSON.stringify({ success: true });
+      return JSON.stringify({ success: true, engine: 'bfs' });
     },
   });
 
