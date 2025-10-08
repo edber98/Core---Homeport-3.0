@@ -179,9 +179,9 @@ async function runFlowAgentWithTools({ prompt, history = [], seedGraph = null, w
           const chunk = event.data?.chunk;
           if (chunk?.content) emitMessage(chunk.content);
         } else if (event.event === 'on_tool_start') {
-          emitMessage(`>>> tool ${event.name}`);
+          try { emitEvent({ type: 'flow.tool.start', name: event.name || '' }); } catch {}
         } else if (event.event === 'on_tool_end') {
-          emitMessage(`✓ ${event.name} ok`);
+          try { emitEvent({ type: 'flow.tool.end', name: event.name || '', ok: true }); } catch {}
         }
       } catch {}
     }
