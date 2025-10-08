@@ -342,7 +342,15 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const elk = new ELK();
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
       const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
-      const child = nodes.map(n => ({ id: String(n.id), width: 180, height: 72 }));
+      // Match frontend visual size: ~250x100 top-left placement
+      const nodeW = Number(process.env.AI_FLOW_NODE_WIDTH || 250);
+      const nodeH = Number(process.env.AI_FLOW_NODE_HEIGHT || 100);
+      // Frontend top-left gaps: gx=260, gy=200 → border gaps = 260 - width, 200 - height
+      const topLeftGapX = Number.isFinite(gapX) ? gapX : 260;
+      const topLeftGapY = Number.isFinite(gapY) ? gapY : 200;
+      const borderGapX = Math.max(0, topLeftGapX - nodeW);
+      const borderGapY = Math.max(0, topLeftGapY - nodeH);
+      const child = nodes.map(n => ({ id: String(n.id), width: nodeW, height: nodeH }));
       const eds = edges.map(e => ({ id: String(e.id || (String(e.source)+'->'+String(e.target))), sources: [String(e.source)], targets: [String(e.target)] }));
       const graph = {
         id: 'root',
@@ -352,8 +360,10 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
           'elk.layered.mergeEdges': 'true',
           'elk.layered.crossingMinimization.semiInteractive': 'true',
-          'elk.layered.spacing.nodeNodeBetweenLayers': String(Number.isFinite(gapY) ? gapY : 200),
-          'elk.spacing.nodeNode': String(Number.isFinite(gapX) ? Math.max(40, gapX - 100) : 40),
+          // Vertical gap between layers (border to border)
+          'elk.layered.spacing.nodeNodeBetweenLayers': String(borderGapY),
+          // Horizontal minimal gap (border to border)
+          'elk.spacing.nodeNode': String(borderGapX),
           'elk.edgeRouting': 'ORTHOGONAL'
         },
         children: child,
@@ -369,6 +379,38 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
           byId.set(String(c.id), n);
         }
       }
+      // Optional vertical gap normalization to match exact frontend spacing between top-lefts
+      try {
+        const wantGapY = topLeftGapY; // e.g., 200
+        // Longest-path layering from sources
+        const ids = Array.from(byId.keys());
+        const incoming = new Map(ids.map(id => [id, 0]));
+        const outs = new Map(ids.map(id => [id, []]));
+        for (const e of (edges || [])) {
+          const s = String(e.source), t = String(e.target);
+          if (!byId.has(s) || !byId.has(t)) continue;
+          incoming.set(t, (incoming.get(t) || 0) + 1);
+          outs.get(s).push(t);
+        }
+        const q = [];
+        const level = new Map(ids.map(id => [id, 0]));
+        for (const id of ids) if ((incoming.get(id) || 0) === 0) q.push(id);
+        while (q.length) {
+          const u = q.shift();
+          for (const v of (outs.get(u) || [])) {
+            level.set(v, Math.max(level.get(v) || 0, (level.get(u) || 0) + 1));
+            incoming.set(v, (incoming.get(v) || 0) - 1);
+            if ((incoming.get(v) || 0) === 0) q.push(v);
+          }
+        }
+        // Apply normalized Y per level
+        for (const [id, n] of byId.entries()) {
+          const lv = level.get(id) || 0;
+          n.point = { x: n.point?.x || 0, y: lv * wantGapY };
+        }
+        emitMessage(`[layout.elk][normalize] gapY=${wantGapY}`);
+      } catch {}
+      try { emitMessage(`[layout.elk][apply] nodeW=${nodeW} nodeH=${nodeH} gapX=${topLeftGapX} gapY=${topLeftGapY} borderGapX=${borderGapX} borderGapY=${borderGapY}`); } catch {}
       return Array.from(byId.values());
     } catch (e) {
       try { emitMessage('[layout.elk][error] ' + (e?.message || e)); } catch {}
@@ -971,6 +1013,11 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
       nodes.push(node);
       emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
+      // Re-layout with ELK to keep consistent placement
+      try {
+        const laid = await elkLayoutCurrentGraph({ nodes, edges: Array.isArray(getGraph().edges)?getGraph().edges.slice():[] }, 260, 200);
+        if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][ensure_start]'); }
+      } catch {}
       return JSON.stringify({ success: true, nodeId: id, templateKey: tpl.key });
     },
   });
@@ -1075,6 +1122,12 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       nodes.push(node);
       ops.push({ op: 'replace', path: '/nodes', value: nodes });
       emitPatch(ops); emitSnapshot();
+      // Re-layout with ELK after node addition for consistency
+      try {
+        const g2 = getGraph();
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 200);
+        if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][add_node]'); }
+      } catch {}
       try { const kc = Object.keys(initCtx || {}).length; if (kc) emitMessage(`[args] init nodeId=${id} keys=${kc}`); } catch {}
       return JSON.stringify({ success: true, nodeId: id });
     },
@@ -1280,39 +1333,13 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       edges.push(newEdge);
       emitPatch([{ op: 'replace', path: '/edges', value: edges }]);
 
-      // Auto-place the target like the frontend does visually (under source; branches side-by-side)
+      // ELK layout for consistent placement after each connect
       try {
-        const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
-        const di = nodes.findIndex(n => String(n.id) === String(targetId));
-        if (di >= 0) {
-          const srcModel2 = src?.data?.model || {};
-          const tpl2 = srcModel2?.templateObj || {};
-          const srcPt2 = src?.point || { x: 400, y: 300 };
-          const gx = 260, gy = 200;
-          let index = 0;
-          const sh2 = String(sh);
-          const srcT2 = String(tpl2?.type || '').toLowerCase();
-          if (srcT2 === 'condition') {
-            const field = tpl2.output_array_field || 'items';
-            const arr = (srcModel2?.context && Array.isArray(srcModel2.context[field])) ? srcModel2.context[field] : [];
-            if (/^\d+$/.test(sh2)) index = parseInt(sh2, 10) || 0; else {
-              const idxById = arr.findIndex(x => x && typeof x === 'object' && String(x._id) === sh2);
-              index = idxById >= 0 ? idxById : 0;
-            }
-          } else if (/^\d+$/.test(sh2)) index = parseInt(sh2, 10) || 0; else index = 0;
-          let targetPoint = { x: srcPt2.x + (index * gx), y: srcPt2.y + gy };
-          let tries = 0;
-          while (nodes.some(n => String(n.id) !== String(targetId) && Math.abs((n?.point?.x ?? 0) - targetPoint.x) < 80 && Math.abs((n?.point?.y ?? 0) - targetPoint.y) < 60) && tries < 6) {
-            targetPoint = { x: targetPoint.x + 40, y: targetPoint.y + 20 };
-            tries++;
-          }
-          const nn = JSON.parse(JSON.stringify(nodes[di]));
-          nn.point = targetPoint; nodes[di] = nn;
-          emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]);
-          try { emitMessage(`[place] target=${targetId} under=${sourceId} index=${index} point=(${targetPoint.x},${targetPoint.y})`); } catch {}
-        }
-      } catch {}
-      emitSnapshot();
+        const g2 = getGraph();
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g2.nodes)?g2.nodes.slice():[], edges: Array.isArray(g2.edges)?g2.edges.slice():[] }, 260, 200);
+        if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage('[layout.elk][connect]'); }
+        else emitSnapshot();
+      } catch { emitSnapshot(); }
       return JSON.stringify({ success: true });
     },
   });
@@ -1322,52 +1349,15 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     description: 'Repositionne un nœud selon sa première arête entrante (branches côte à côte sous la source).',
     schema: z.object({ nodeId: z.string(), gapX: z.number().optional(), gapY: z.number().optional() }).describe('Placement.'),
     func: async ({ nodeId, gapX, gapY }) => {
-      const g = getGraph();
-      const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
-      const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
-      const idx = nodes.findIndex(n => String(n.id) === String(nodeId));
-      if (idx < 0) return JSON.stringify({ success: false, error: 'node_not_found' });
-      const target = nodes[idx];
-      const incoming = edges.filter(e => String(e.target) === String(nodeId));
-      if (!incoming.length) {
-        // Fallback: place below nearest source
-        const best = findBestSourceNode(nodes.filter(n => String(n.id) !== String(nodeId)), target?.point?.x ?? 400, target?.point?.y ?? 300);
-        const nextPoint = computeNewNodePosition(best, { x: 400, y: 300 });
-        const next = JSON.parse(JSON.stringify(target));
-        next.point = nextPoint; nodes[idx] = next;
-        emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
-        return JSON.stringify({ success: true, mode: 'nearest' });
+      // Delegate to ELK layout for consistent placement
+      try {
+        const g = getGraph();
+        const laid = await elkLayoutCurrentGraph({ nodes: Array.isArray(g.nodes)?g.nodes.slice():[], edges: Array.isArray(g.edges)?g.edges.slice():[] }, Number.isFinite(gapX)?gapX:260, Number.isFinite(gapY)?gapY:200);
+        if (laid) { emitPatch([{ op: 'replace', path: '/nodes', value: laid }]); emitSnapshot(); emitMessage(`[layout.elk][auto_place] nodeId=${nodeId}`); return JSON.stringify({ success: true, engine: 'elk' }); }
+      } catch (e) {
+        try { emitMessage('[layout.elk][auto_place][error] ' + (e?.message || e)); } catch {}
       }
-      const e = incoming[0];
-      const src = nodes.find(n => String(n.id) === String(e.source));
-      if (!src) return JSON.stringify({ success: false, error: 'source_not_found' });
-      const srcModel = src?.data?.model || {};
-      const tpl = srcModel?.templateObj || {};
-      const srcPt = src?.point || { x: 400, y: 300 };
-      const gx = Number.isFinite(gapX) ? Number(gapX) : 260; const gy = Number.isFinite(gapY) ? Number(gapY) : 200;
-      // Determine branch index from sourceHandle
-      let index = 0;
-      const sh = String(e.sourceHandle ?? '');
-      const srcT = String(tpl?.type || '').toLowerCase();
-      if (srcT === 'condition') {
-        const field = tpl.output_array_field || 'items';
-        const arr = (srcModel?.context && Array.isArray(srcModel.context[field])) ? srcModel.context[field] : [];
-        if (/^\d+$/.test(sh)) index = parseInt(sh, 10) || 0; else {
-          const idxById = arr.findIndex(x => x && typeof x === 'object' && String(x._id) === sh);
-          index = idxById >= 0 ? idxById : 0;
-        }
-      } else if (/^\d+$/.test(sh)) index = parseInt(sh, 10) || 0; else index = 0;
-      let targetPoint = { x: srcPt.x + (index * gx), y: srcPt.y + gy };
-      // Avoid overlaps by nudging
-      let tries = 0;
-      while (nodes.some(n => String(n.id) !== String(nodeId) && Math.abs((n?.point?.x ?? 0) - targetPoint.x) < 80 && Math.abs((n?.point?.y ?? 0) - targetPoint.y) < 60) && tries < 6) {
-        targetPoint = { x: targetPoint.x + 40, y: targetPoint.y + 20 };
-        tries++;
-      }
-      const next = JSON.parse(JSON.stringify(target));
-      next.point = targetPoint; nodes[idx] = next;
-      emitPatch([{ op: 'replace', path: '/nodes', value: nodes }]); emitSnapshot();
-      return JSON.stringify({ success: true, mode: 'incoming' });
+      return JSON.stringify({ success: false, error: 'elk_failed' });
     },
   });
 
