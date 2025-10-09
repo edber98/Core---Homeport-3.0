@@ -66,9 +66,10 @@ import { UiMessageService } from '../../services/ui-message.service';
     .card { display:flex; align-items:center; gap:14px; padding:12px; border-radius:12px; background:#fff; border:1px solid #ececec; cursor:pointer; }
     .content { flex:1; min-width:0; }
     .title-row { display:flex; align-items:center; gap:8px; }
-    .name { font-weight:600; }
+    .name { font-weight:600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .trailing .icon-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; }
+    .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .empty { color:#6b7280; }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
     .skeleton-card { height: 72px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }

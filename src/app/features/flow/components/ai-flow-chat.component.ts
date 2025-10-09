@@ -66,6 +66,11 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .txt.rich { white-space: pre-wrap; word-break: break-word; }
     /* De manière générale, supprime la marge par défaut des <p> dans les bulles */
     .txt.rich p { margin: 0; }
+    /* Mobile responsiveness: make overlay adapt to screen */
+    @media (max-width: 640px) {
+      .chat-root { width: calc(100vw - 24px); max-width: 100%; height: min(80vh, 640px); }
+      .bubble { max-width: 100%; }
+    }
   `]
 })
 export class FlowAiChatComponent implements AfterViewInit {

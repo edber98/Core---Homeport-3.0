@@ -80,6 +80,11 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .opts select { margin-left:6px; }
     .ml { margin-left: 6px; }
     .txt.rich p { margin: 0; }
+    /* Mobile responsiveness: make overlay adapt to screen */
+    @media (max-width: 640px) {
+      .chat-root { width: calc(100vw - 24px); max-width: 100%; height: min(80vh, 640px); }
+      .bubble { max-width: 100%; }
+    }
   `]
 })
 export class AiChatComponent implements AfterViewInit {

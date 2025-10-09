@@ -61,6 +61,10 @@ type FlowItem = { id: string; name: string; description?: string };
           <div class="content">
             <div class="title-row">
               <div class="name">{{ it.name }}</div>
+              <div class="mobile-dots" [attr.title]="statusLabel(it.status) + (it.enabled ? ' • activé' : ' • désactivé')">
+                <span class="dot" [ngClass]="statusClass(it.status)"></span>
+                <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
+              </div>
               <span class="chip" *ngIf="it.status" [ngClass]="statusClass(it.status)">{{ statusLabel(it.status) }}</span>
               <span class="chip on" *ngIf="it.enabled">Activé</span>
               <span class="chip off" *ngIf="!it.enabled">Désactivé</span>
@@ -164,8 +168,8 @@ type FlowItem = { id: string; name: string; description?: string };
 
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
 
-    .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
-    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer;
+    .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
+    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; min-width: 0;
             background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
             border: 1px solid #ececec;
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
@@ -178,18 +182,32 @@ type FlowItem = { id: string; name: string; description?: string };
                            background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
                            border: 1px solid #e5e7eb; color:#111; }
     .leading .icon-badge i { font-size: 18px; }
-    .content { flex:1; min-width:0; }
-    .title-row { display:flex; align-items:center; gap:8px; }
+    .content { flex:1 1 auto; min-width:0; }
+    .title-row { display:flex; align-items:center; gap:8px; min-width: 0; overflow: hidden; }
     .title-row .warn { color:#b42318; }
-    .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title-row .name { flex: 1 1 auto; min-width: 0; max-width: 100%; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title-row .chip { flex: 0 0 auto; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .chip.on { background:#eefcef; border-color:#dcfce7; color:#166534; }
     .chip.off { background:#fef2f2; border-color:#fee2e2; color:#991b1b; }
     .chip.status-draft { background:#f5f3ff; border-color:#e9d5ff; color:#5b21b6; }
     .chip.status-test { background:#eff6ff; border-color:#dbeafe; color:#1e3a8a; }
     .chip.status-production { background:#ecfdf5; border-color:#d1fae5; color:#065f46; }
-    .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    /* Mobile status dots */
+    .mobile-dots { display:none; align-items:center; gap:6px; margin-left: 6px; }
+    .mobile-dots .dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; flex: 0 0 auto; }
+    .mobile-dots .dot.status-draft { background:#5b21b6; }
+    .mobile-dots .dot.status-test { background:#1e3a8a; }
+    .mobile-dots .dot.status-production { background:#065f46; }
+    .mobile-dots .dot.on { background:#166534; }
+    .mobile-dots .dot.off { background:#991b1b; }
+    @media (max-width: 640px) {
+      .title-row .chip { display: none; }
+      .mobile-dots { display: inline-flex; }
+    }
+    .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
     .trailing { display:flex; align-items:center; gap:8px; }
+    .trailing { flex: 0 0 auto; }
     .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
     .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
