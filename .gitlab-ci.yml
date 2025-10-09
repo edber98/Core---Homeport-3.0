@@ -2,24 +2,32 @@ stages:
   - build
   - deploy
 
-
 variables:
-  IMAGE_NAME: homeport_kinn
-  IMAGE_FILE: homeport_kinn.tar
+  BACK_IMAGE: kinn-backend:$CI_COMMIT_REF_NAME
+  FRONT_IMAGE: homeport_kinn:$CI_COMMIT_REF_NAME
+  BACK_FILE: kinn-backend.tar
+  FRONT_FILE: homeport_kinn.tar
+  GIT_CLEAN_FLAGS: -ffdx -e API/uploads/ -e API/logs/ -e mongo -e letsencrypt
+
 build:
   stage: build
   tags: 
     - c4rbon_runner
   before_script:
-    - sh ./scripts/docker-delete.sh homeport_kinn homeport_kinn
+    - sh ./scripts/docker-delete.sh kinn-backend homeport_kinn
   script:
-    - echo "Construction de l'image Docker"
-    - docker build -t $IMAGE_NAME .
-    - docker save $IMAGE_NAME -o $IMAGE_FILE
+    - echo "🚀 Construction du backend"
+    - docker build -t $BACK_IMAGE -f API/Dockerfile .
+    - docker save $BACK_IMAGE -o $BACK_FILE
+
+    - echo "🚀 Construction du homeport"
+    - docker build -t $FRONT_IMAGE -f Homeport/Dockerfile .
+    - docker save $FRONT_IMAGE -o $FRONT_FILE
   artifacts:
     paths:
-      - $IMAGE_FILE
-  only:
+      - $BACK_FILE
+      - $FRONT_FILE
+  only: 
     - production
 
 deploy:
@@ -27,9 +35,11 @@ deploy:
   tags: 
     - c4rbon_runner
   script:
-    - echo "Chargement de l'image Docker pour le déploiement"
-    - docker load -i $IMAGE_FILE
-    - echo "Déploiement de l'APP avec Docker Compose"
-    - docker compose up -d 
+    - echo "📦 Chargement des images Docker"
+    - docker load -i $BACK_FILE
+    - docker load -i $FRONT_FILE
+
+    - echo "🚀 Déploiement avec Docker Compose"
+    - docker compose --file docker-compose.yaml up -d
   only:
-    - production
+    - production 

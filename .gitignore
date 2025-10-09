@@ -1,15 +1,18 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
 
+
+dist
+tmp
+out-tsc
+bazel-out
+
+node_modules
 # Node
 /node_modules
 node_modules
-/backend/node_modules
+/Homeport/node_modules
+/API/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -40,11 +43,9 @@ testem.log
 /typings
 
 .env
-backend/.env
+
 
 # System files
 .DS_Store
 Thumbs.db
-backend/.env
-backend/.env
-backend/.env
+

@@ -1,20 +1,60 @@
-version: "3.8"
-
 services:
-  kinn-homeport:
-    build: .
-    container_name: kinn_homeport
-    restart: always
+  api:
+    image: kinn-backend:${CI_COMMIT_REF_NAME}
+    container_name: kinn-backend
+    volumes:
+      - ./API:/app
+      - ./API/mongo-data:/mongo-data
+      - ./API/redis-data:/redis-data
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=development
+      - HMAC_SECRET=${HMAC_SECRET}
+      - TOKEN_TTL_SEC=${TOKEN_TTL_SEC}
+      - ENC_KEY=${ENC_KEY}
+      - MONGO_URL=${MONGO_URL}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - SEED=${SEED}
+      - SEED_COMPANIES=${SEED_COMPANIES}
+      - DEFAULT_COMPANY=${DEFAULT_COMPANY}
+      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
+      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
+      - DEFAULT_WORKSPACE_NAME=${DEFAULT_WORKSPACE_NAME}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - HOST=0.0.0.0
     labels:
-      - "traefik.enable=true"  # Activer le service dans Traefik
-      - "traefik.docker.network=traeffik-web"
-      - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)"
-      - "traefik.http.routers.kinn-homeport.entrypoints=websecure,web"
-      - "traefik.http.routers.kinn-homeport.tls=true"
-      - "traefik.http.routers.kinn-homeport.tls.certresolver=myresolver"
-      - "traefik.http.services.kinn-homeport.loadbalancer.server.port=80"
+      - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && PathPrefix(`/api`) && !PathPrefix(`/onlyoffice`)"
+      - "traefik.http.routers.kinn-backend.priority=20"
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-web"
+      - "traefik.http.services.kinn-backend.loadbalancer.server.port=3000"
+      - "traefik.http.routers.kinn-backend.tls=true"
+      - "traefik.http.routers.kinn-backend.entrypoints=websecure,web"
+      - "traefik.http.routers.kinn-backend.tls.certresolver=myresolver"
+    restart: always
     networks:
       - traefik-web
+  
+  homeport:
+    container_name: kinn_homeport
+    image: kinn_homeport:${CI_COMMIT_REF_NAME}
+    restart: always
+    labels:
+      - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)  && PathPrefix(`/`) && !PathPrefix(`/api`)"
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-web"
+      - "traefik.http.services.kinn-homeport.loadbalancer.server.port=80"
+      - "traefik.http.routers.kinn-homeport.tls=true"
+      - "traefik.http.routers.kinn-homeport.entrypoints=websecure,web"
+      - "traefik.http.routers.kinn-homeport.tls.certresolver=myresolver"
+
+    depends_on:
+      - api
+    networks:
+      - traefik-web
+
+
 
 networks:
   traefik-web:
