@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Demo — Mobile</title>
+  <style>
+    :root { --bg:#ffffff; --muted:#6b7280; --border:#ececec; --ink:#111; --brand:#1d4ed8; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system; }
+    .page { max-width: 390px; margin: 0 auto; padding: 0 12px; }
+    .header { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--border); }
+    .navbar { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+    .brand { display:flex; align-items:center; gap:8px; font-weight:700; }
+    .nav { display:flex; gap:6px; }
+    .nav-item { padding:6px 8px; border-radius:8px; border:1px solid #e5e7eb; }
+    .nav-item.active { background:#eef2ff; color:var(--brand); }
+    .card { border:1px solid var(--border); border-radius:12px; background:#fff; padding:12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+    .title { font-weight:600; font-size:18px; letter-spacing:-0.02em; margin-bottom:4px; }
+    .subtitle { color:var(--muted); font-size:12px; margin-bottom:8px; }
+    .row { display:flex; align-items:center; gap:8px; }
+    .btn { display:inline-block; padding:8px 12px; background:#fff; color:#111; border-radius:10px; border:1px solid #e5e7eb; }
+    .btn.primary { background:#111; color:#fff; border-color:#111; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#f5f5f5; border:1px solid rgba(0,0,0,0.06); margin-right:6px; }
+    .tag.blue { background:#eaf4ff; color:#1d4ed8; }
+    .tag.warn { background:#fef9c3; color:#92400e; }
+    .form-control { border:1px solid #e5e7eb; border-radius:8px; padding:8px; width:100%; }
+    .list { display:flex; flex-direction:column; gap:8px; }
+    .list .item { display:flex; gap:10px; }
+    .muted { color:var(--muted); }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; color:#111; background:#f8fafc; border:1px solid #eef2f7; border-radius:6px; padding:2px 6px; }
+    .spacer { height: 10px; }
+  </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="page">
+        <div class="navbar">
+          <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#111"/><path d="M7 12h10" stroke="#fff" stroke-width="2"/></svg>
+            <span>Homeport</span>
+          </div>
+          <nav class="nav">
+            <span class="nav-item active">Accueil</span>
+            <span class="nav-item">Produits</span>
+            <span class="nav-item">Tarifs</span>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div class="page" style="padding:12px 12px;">
+      <section class="card">
+        <div class="title">Mobile preview</div>
+        <div class="subtitle">Tous les éléments à portée de pouce</div>
+        <div class="row" style="gap:6px; flex-wrap:wrap;">
+          <button class="btn primary">Action</button>
+          <button class="btn">Secondaire</button>
+          <span class="tag blue">blue</span>
+          <span class="tag warn">warn</span>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section class="card">
+        <div class="title">Listes détaillées</div>
+        <div class="list">
+          <div class="item">
+            <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#eef2ff"/><path d="M8 12h8" stroke="#1d4ed8" stroke-width="2"/></svg>
+            <div>
+              <div class="row" style="justify-content:space-between; gap:6px;"><strong>Webhook Listener</strong><span class="tag blue">network</span></div>
+              <div class="muted">Reçoit des appels externes via HTTP et déclenche un flot. <span class="code">POST</span></div>
+            </div>
+          </div>
+          <div class="item">
+            <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="#ecfdf5"/><path d="M8 12h8M12 8v8" stroke="#16a34a" stroke-width="2"/></svg>
+            <div>
+              <div class="row" style="justify-content:space-between; gap:6px;"><strong>JSON Merge</strong><span class="tag warn">beta</span></div>
+              <div class="muted">Fusionne deux objets JSON avec des stratégies configurables.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section class="card">
+        <div class="title">Formulaire</div>
+        <label for="n">Nom</label>
+        <input id="n" class="form-control" placeholder="Votre nom" />
+        <div style="height:8px"></div>
+        <label for="e">Email</label>
+        <input id="e" class="form-control" placeholder="email@exemple.com" />
+        <div style="height:8px"></div>
+        <label for="m">Message</label>
+        <textarea id="m" class="form-control" rows="4" placeholder="Votre message"></textarea>
+        <div style="height:8px"></div>
+        <button class="btn primary" style="width:100%">Envoyer</button>
+      </section>
+    </div>
+  </body>
+  </html>
+

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Demo — Responsive</title>
+  <style>
+    :root { --bg:#ffffff; --muted:#6b7280; --border:#ececec; --ink:#111; --brand:#1d4ed8; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system; color:var(--ink); background:#f7f7f9; }
+    .page { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    .header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid var(--border); z-index: 10; }
+    .navbar { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; }
+    .nav { display:flex; align-items:center; gap:10px; }
+    .nav-item { padding: 6px 10px; border-radius:8px; color:#374151; }
+    .nav-item.active { background:#eef2ff; color:var(--brand); border:1px solid #e5e7eb; }
+    .layout { display:grid; grid-template-columns: 1fr 280px; gap: 16px; margin-top: 16px; }
+    .rightbar { position: sticky; top: 62px; border:1px solid var(--border); border-radius: 12px; background:#fff; padding:12px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); height: fit-content; }
+    .card { border:1px solid var(--border); border-radius:14px; background:#fff; padding:16px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .title { font-weight:600; font-size: 20px; letter-spacing:-0.02em; margin-bottom: 4px; }
+    .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .row { display:flex; align-items:center; gap:12px; }
+    .col { flex:1 1 0; min-width:0; }
+    .grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .btn { display:inline-block; padding:8px 12px; background:#fff; color:#111; border-radius:10px; border:1px solid #e5e7eb; margin-right:8px; cursor:pointer; text-decoration:none; }
+    .btn.primary { background:#111; color:#fff; border-color:#111; }
+    .tag { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #f5f5f5; color:#111; border:1px solid rgba(0,0,0,0.06); margin-right:6px; }
+    .tag.blue { background:#eaf4ff; color:#1d4ed8; }
+    .tag.warn { background:#fef9c3; color:#92400e; }
+    .table { width:100%; border-collapse: collapse; font-size: 14px; }
+    .th { text-align:left; padding:8px; border-bottom:1px solid #e5e7eb; background:#fafafa; }
+    .td { padding:8px; border-bottom:1px solid #f0f0f0; }
+    .form-control { border:1px solid #e5e7eb; border-radius:8px; padding:8px; width:100%; }
+    .hero { padding: 24px; text-align: center; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border:1px solid var(--border); border-radius: 14px; }
+    .muted { color: var(--muted); }
+    .spacer { height: 12px; }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .rightbar { position: static; order: -1; }
+      .grid { grid-template-columns: 1fr; }
+      .nav { gap:6px; }
+      .nav-item { border:1px solid #e5e7eb; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="page">
+      <div class="navbar">
+        <div class="brand">
+          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#111"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Homeport</span>
+        </div>
+        <nav class="nav">
+          <a class="nav-item active" href="#intro">Accueil</a>
+          <a class="nav-item" href="#products">Produits</a>
+          <a class="nav-item" href="#table">Tableau</a>
+          <a class="nav-item" href="#forms">Formulaire</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="page layout">
+    <main>
+      <section class="hero" id="intro" style="margin-top:16px;">
+        <div class="title">Responsive preview</div>
+        <div class="subtitle">Resize pour voir les points de rupture</div>
+        <div class="row" style="justify-content:center; margin-top: 8px;">
+          <button class="btn primary">Commencer</button>
+          <a class="btn" href="#">Documentation</a>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="products" class="card">
+        <div class="title">Produits</div>
+        <div class="row" style="margin-bottom:8px;">
+          <input class="form-control" placeholder="Rechercher..." style="max-width:260px;" />
+          <button class="btn">Filtrer</button>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit A</div>
+              <span class="tag blue">new</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description du produit A.</p>
+            <div class="row"><button class="btn primary">Acheter</button><button class="btn">Détails</button></div>
+          </article>
+          <article class="card">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit B</div>
+              <span class="tag">stock</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description du produit B.</p>
+            <div class="row"><button class="btn">Détails</button></div>
+          </article>
+          <article class="card">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit C</div>
+              <span class="tag warn">warn</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description du produit C.</p>
+            <div class="row"><button class="btn">Détails</button></div>
+          </article>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="table" class="card">
+        <div class="title">Tableau</div>
+        <table class="table">
+          <thead>
+            <tr><th class="th">Nom</th><th class="th">Tags</th><th class="th">Statut</th><th class="th" style="text-align:right;">Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td">Item 1</td>
+              <td class="td"><span class="tag blue">blue</span><span class="tag">default</span></td>
+              <td class="td"><span class="tag" style="background:#ecfdf5; color:#065f46; border-color:#d1fae5;">actif</span></td>
+              <td class="td" style="text-align:right;"><button class="btn">Détails</button><button class="btn primary">Action</button></td>
+            </tr>
+            <tr>
+              <td class="td">Item 2</td>
+              <td class="td"><span class="tag warn">warn</span></td>
+              <td class="td"><span class="tag" style="background:#fef2f2; color:#b42318; border-color:#fee2e2;">erreur</span></td>
+              <td class="td" style="text-align:right;"><button class="btn">Détails</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="forms" class="card">
+        <div class="title">Formulaire</div>
+        <div class="row">
+          <div class="col"><label for="name">Nom</label><input id="name" class="form-control" placeholder="Votre nom" /></div>
+          <div class="col"><label for="email">Email</label><input id="email" class="form-control" placeholder="email@exemple.com" /></div>
+        </div>
+        <div class="row" style="margin-top:8px;"><div class="col"><label for="msg">Message</label><textarea id="msg" class="form-control" rows="4"></textarea></div></div>
+        <div class="row" style="margin-top:8px;"><button class="btn primary">Envoyer</button><button class="btn">Annuler</button></div>
+      </section>
+    </main>
+
+    <aside class="rightbar">
+      <div class="title" style="font-size:16px;">Sections</div>
+      <nav class="nav" style="flex-direction:column; gap:6px;">
+        <a class="nav-item" href="#intro">Intro</a>
+        <a class="nav-item" href="#products">Produits</a>
+        <a class="nav-item" href="#table">Tableau</a>
+        <a class="nav-item" href="#forms">Formulaire</a>
+      </nav>
+    </aside>
+  </div>
+</body>
+</html>
+

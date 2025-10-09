@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Demo — Desktop</title>
+  <style>
+    :root { --bg:#ffffff; --muted:#6b7280; --border:#ececec; --ink:#111; --brand:#1d4ed8; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji; color: var(--ink); background: #f7f7f9; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    .header { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--border); }
+    .navbar { display:flex; align-items:center; justify-content:space-between; padding: 10px 0; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:-0.02em; }
+    .nav { display:flex; align-items:center; gap:10px; }
+    .nav-item { padding: 6px 10px; border-radius: 8px; color:#374151; cursor:pointer; }
+    .nav-item.active { background:#eef2ff; color:var(--brand); border:1px solid #e5e7eb; }
+    .layout { display:grid; grid-template-columns: 1fr 280px; gap: 16px; margin-top: 16px; }
+    .rightbar { position: sticky; top: 62px; height: fit-content; border:1px solid var(--border); border-radius: 12px; background:#fff; padding: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .rightbar .nav { flex-direction: column; align-items: stretch; gap:6px; }
+    .card { border:1px solid var(--border); border-radius:14px; background:#fff; padding:16px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .title { font-weight:600; font-size: 20px; letter-spacing:-0.02em; margin-bottom: 4px; }
+    .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .row { display:flex; align-items:center; gap:12px; }
+    .col { flex:1 1 0; min-width: 0; }
+    .grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .btn { display:inline-block; padding:8px 12px; background:#fff; color:#111; border-radius:10px; border:1px solid #e5e7eb; margin-right:8px; cursor:pointer; text-decoration:none; }
+    .btn.primary { background:#111; color:#fff; border-color:#111; }
+    .tag { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #f5f5f5; color:#111; border:1px solid rgba(0,0,0,0.06); margin-right:6px; }
+    .tag.blue { background:#eaf4ff; color:#1d4ed8; }
+    .tag.warn { background:#fef9c3; color:#92400e; }
+    .table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .th { text-align:left; padding:8px; border-bottom:1px solid #e5e7eb; background:#fafafa; }
+    .td { padding: 8px; border-bottom: 1px solid #f0f0f0; }
+    .form-control { border:1px solid #e5e7eb; border-radius: 8px; padding: 8px; width: 100%; }
+    .hero { padding: 24px; text-align: center; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border:1px solid var(--border); border-radius: 14px; }
+    .muted { color: var(--muted); }
+    .spacer { height: 12px; }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace; font-size:12px; color:#111; background:#f8fafc; border:1px solid #eef2f7; border-radius:6px; padding:2px 6px; }
+    .logo { display:inline-block; vertical-align: middle; }
+    /* Demo boxes */
+    .box { border:1px dashed #e5e7eb; border-radius: 10px; padding:10px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="page">
+      <div class="navbar" role="navigation" aria-label="Navigation principale">
+        <div class="brand" id="brand-id" data-tag="brand">
+          <!-- SVG Logo -->
+          <svg class="logo" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo">
+            <rect x="2" y="2" width="20" height="20" rx="6" fill="#111"/>
+            <path d="M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 7v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Homeport</span>
+        </div>
+        <nav class="nav" aria-label="Lien rapides">
+          <a class="nav-item active" href="#">Accueil</a>
+          <a class="nav-item" href="#products">Produits</a>
+          <a class="nav-item" href="#pricing">Tarifs</a>
+          <a class="nav-item" href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="page layout">
+    <main>
+      <section class="hero" id="intro" data-variant="default" style="margin-top: 16px;">
+        <div class="title">Construisez des interfaces élégantes</div>
+        <div class="subtitle">Un système de design simple et expressif.</div>
+        <div class="row" style="justify-content:center; margin-top: 8px;">
+          <button class="btn primary" aria-label="Commencer">Commencer</button>
+          <a class="btn" href="#docs" aria-label="Documentation">Documentation</a>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="products" class="card" aria-labelledby="products-title">
+        <div class="title" id="products-title">Produits</div>
+        <div class="subtitle">Grille responsive de cartes produit</div>
+        <div class="row" style="margin-bottom:8px;">
+          <input class="form-control" placeholder="Rechercher..." aria-label="Rechercher un produit" style="max-width:260px;" />
+          <button class="btn">Filtrer</button>
+        </div>
+        <div class="grid">
+          <article class="card" aria-label="Produit A">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit A</div>
+              <span class="tag blue">nouveau</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description brève du produit A avec une <span class="code">code</span> inline.</p>
+            <div class="row">
+              <button class="btn primary">Acheter</button>
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+          <article class="card" aria-label="Produit B">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit B</div>
+              <span class="tag">stock</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description brève du produit B.</p>
+            <div class="row">
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+          <article class="card" aria-label="Produit C">
+            <div class="row" style="justify-content:space-between; align-items:flex-start;">
+              <div class="title">Produit C</div>
+              <span class="tag warn">attention</span>
+            </div>
+            <p class="muted" style="margin:6px 0 10px;">Description brève du produit C.</p>
+            <div class="row">
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="lists" class="card" aria-labelledby="lists-title">
+        <div class="title" id="lists-title">Listes enrichies</div>
+        <div class="subtitle">Comme l’aperçu des templates de nœuds</div>
+        <div class="box" role="list">
+          <div class="row" role="listitem" style="align-items:flex-start; gap:10px; padding:8px 0;">
+            <svg class="logo" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#eef2ff"/><path d="M8 12h8" stroke="#1d4ed8" stroke-width="2"/></svg>
+            <div class="col">
+              <div class="row" style="align-items:center; justify-content:space-between;">
+                <strong>Webhook Listener</strong>
+                <span><span class="tag blue">network</span><span class="tag">http</span></span>
+              </div>
+              <div class="muted" style="margin-top:4px;">Reçoit des appels externes via HTTP et déclenche un flot.
+                <span style="color:#155e75; background:#ecfeff; border:1px solid #cffafe; border-radius:6px; padding:1px 6px;">POST</span>
+              </div>
+            </div>
+            <div>
+              <button class="btn">Détails</button>
+            </div>
+          </div>
+          <div class="row" role="listitem" style="align-items:flex-start; gap:10px; padding:8px 0; border-top:1px solid #f0f0f0;">
+            <svg class="logo" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="#ecfdf5"/><path d="M8 12h8M12 8v8" stroke="#16a34a" stroke-width="2"/></svg>
+            <div class="col">
+              <div class="row" style="align-items:center; justify-content:space-between;">
+                <strong>JSON Merge</strong>
+                <span><span class="tag">utils</span><span class="tag warn">beta</span></span>
+              </div>
+              <div class="muted" style="margin-top:4px;">Fusionne deux objets JSON avec des stratégies configurables. Très utile pour enrichir des payloads.</div>
+            </div>
+            <div>
+              <button class="btn primary">Utiliser</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="table" class="card" aria-labelledby="table-title">
+        <div class="title" id="table-title">Tableau avec tags et actions</div>
+        <table class="table" role="table" aria-label="Items">
+          <thead>
+            <tr>
+              <th class="th">Nom</th>
+              <th class="th">Tags</th>
+              <th class="th">Statut</th>
+              <th class="th" style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td">Item 1</td>
+              <td class="td"><span class="tag blue">blue</span><span class="tag">default</span></td>
+              <td class="td"><span class="tag" style="background:#ecfdf5; color:#065f46; border-color:#d1fae5;">actif</span></td>
+              <td class="td" style="text-align:right;"><button class="btn">Détails</button><button class="btn primary">Action</button></td>
+            </tr>
+            <tr>
+              <td class="td">Item 2</td>
+              <td class="td"><span class="tag warn">warn</span></td>
+              <td class="td"><span class="tag" style="background:#fef2f2; color:#b42318; border-color:#fee2e2;">erreur</span></td>
+              <td class="td" style="text-align:right;"><button class="btn">Détails</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section id="forms" class="card" aria-labelledby="forms-title">
+        <div class="title" id="forms-title">Formulaire</div>
+        <div class="row">
+          <div class="col">
+            <label for="name">Nom</label>
+            <input id="name" class="form-control" placeholder="Votre nom" />
+          </div>
+          <div class="col">
+            <label for="email">Email</label>
+            <input id="email" class="form-control" placeholder="email@exemple.com" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <div class="col">
+            <label for="msg">Message</label>
+            <textarea id="msg" class="form-control" rows="4" placeholder="Votre message"></textarea>
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn primary">Envoyer</button>
+          <button class="btn">Annuler</button>
+        </div>
+      </section>
+    </main>
+
+    <aside class="rightbar" aria-label="Navigation secondaire">
+      <div class="title" style="font-size:16px;">Sections</div>
+      <nav class="nav">
+        <a class="nav-item" href="#intro">Intro</a>
+        <a class="nav-item" href="#products">Produits</a>
+        <a class="nav-item" href="#lists">Listes</a>
+        <a class="nav-item" href="#table">Tableau</a>
+        <a class="nav-item" href="#forms">Formulaire</a>
+      </nav>
+    </aside>
+  </div>
+
+</body>
+</html>
+

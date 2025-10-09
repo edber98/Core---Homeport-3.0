@@ -1,0 +1,11 @@
+.card-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+}
+.card-title .t { font-weight: 600; font-size: 14px; }
+.card-title .s { font-size: 12px; color: #64748b; }
+.ins-section-header { display:flex; justify-content:center; padding:6px 12px 8px; margin:8px 0; border-bottom:1px solid #E2E1E4; }

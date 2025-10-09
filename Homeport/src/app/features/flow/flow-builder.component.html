@@ -1,0 +1,356 @@
+<div class="flow-builder" cdkDropListGroup>
+  <!-- Reusable left panel content (desktop + drawer) -->
+  <ng-template #leftPanelContent let-mode="mode">
+    <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
+      [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
+      [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
+      [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
+      (queryChange)="onPaletteQueryChange($event)" (itemClick)="onPaletteClick($event)"
+      (dragStart)="onDragStart($event.item, $event.$event)"
+      (dragEnd)="onDragEnd($event.item, $event.$event)"></flow-palette-panel>
+  </ng-template>
+
+  <!-- Desktop left panel -->
+  <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="leftPanelContent"
+    [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+
+  <section class="canvas">
+    <!-- Removed canvas-shield interceptors to avoid event conflicts on mobile -->
+    <!-- Floating buttons (mobile/tablet) -->
+    <div class="fb-fab-left">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('left')"
+        (touchstart)="openMobilePanel('left'); $event.preventDefault(); $event.stopPropagation()" nz-tooltip
+        [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+    <div class="fb-fab-right">
+      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('right')"
+        (touchstart)="openMobilePanel('right'); $event.preventDefault(); $event.stopPropagation()"
+        [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null"
+        [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+        <i class="fa-solid fa-sliders"></i>
+      </button>
+    </div>
+    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes"
+      [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
+      (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
+      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
+      <!-- Loading overlay during flow document fetch -->
+      <div class="loading-overlay" *ngIf="loadingFlowDoc">
+        <div class="spinner"></div>
+        <div class="text">Chargement du flow…</div>
+      </div>
+      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodes"
+        [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
+        (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
+        (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
+        (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
+        <ng-template let-ctx edge>
+          <svg:g customTemplateEdge>
+            <svg:path fill="none" [attr.d]="ctx.path()"
+              [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
+              [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
+              [attr.marker-end]="ctx.markerEnd()" />
+          </svg:g>
+        </ng-template>
+        <ng-template let-ctx edgeLabelHtml>
+          <div class="edge-labels"
+            [ngClass]="{ error: ctx.edge.data?.error || (getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }">
+            <div class="badge label" *ngIf="(getEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) as txt"
+              [ngClass]="{ error: ctx.edge.data?.error || txt === 'Error' }">{{ txt }}</div>
+            <button class="badge delete" title="Supprimer" type="button" *ngIf="!isEdgeDeleteDisabled(ctx.edge)"
+              (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
+              (touchstart)="$event.stopPropagation()" (click)="onDeleteEdgeClick($event, ctx.edge)">
+              <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+          </div>
+        </ng-template>
+        <ng-template let-ctx nodeHtml>
+          <div class="node-card" [attr.data-node-id]="ctx.node.id"
+            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id) }"
+            (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+            (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
+            (touchend)="onNodeTouchEnd()">
+            <div class="header">
+              <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <i *ngIf="ctx.node.data.model.templateObj?.icon" [class]="ctx.node.data.model.templateObj?.icon"
+                class="icon"></i>
+              <div class="meta">
+                <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
+                <div class="subtitle">
+                  {{ ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category ||
+                  ctx.node.data.model.templateObj?.type }}
+                  <i class="type-badge" [class]="typeIconClass(ctx.node.data.model.templateObj)" nz-tooltip
+                    [nzTooltipTitle]="ctx.node.data.model.templateObj?.type" style="margin-left:6px"></i>
+                  <span *ngIf="appLabelOf(ctx.node.data.model.templateObj) as appLbl"
+                    style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+              <ng-template #handleInTpl let-hctx>
+                <svg:g>
+                  <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                    [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
+                    stroke-width="1"></svg:circle>
+                </svg:g>
+              </ng-template>
+              <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+            </ng-container>
+            <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
+              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
+                [ngClass]="{ error: out === 'err' }">
+                <ng-template #hTpl let-hctx>
+                  <svg:g>
+                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                      [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                      [attr.stroke]="'#ffffff'" stroke-width="1"
+                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onHandleLeave()"></svg:circle>
+                  </svg:g>
+                </ng-template>
+                <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+              </div>
+            </div>
+            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
+              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')" title="Etat dernière exécution"></i>
+              <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-ctx connectionTemplate>
+          <div class="edge-labels">
+            <div class="badge label"
+              [ngClass]="{ error: (computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) || '') === 'Error' }"
+              *ngIf="computeEdgeLabel(ctx.connection?.source, ctx.connection?.sourceHandle) as txt">{{ txt }}</div>
+          </div>
+        </ng-template>
+      </vflow>
+      <!-- lightweight tooltip overlay -->
+      <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY"
+        [ngClass]="{ error: tipError }">{{ tipText }}</div>
+    </div>
+  </section>
+
+
+  <!-- Reusable right panel content (desktop + drawer) -->
+  <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
+  <div class="right-panel" *ngIf="!isMobile">
+    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedModel]="selectedModel"
+      [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+      (saveJson)="saveSelectedJson()"></flow-inspector-panel>
+    <div class="inspector-meta" style="padding: 8px; overflow: auto;">
+      <form nz-form nzLayout="vertical" class="meta-form">
+        <nz-form-item>
+          <nz-form-label>Nom</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="onMetaChange()" name="flowName" placeholder="Nom du flow" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Description</nz-form-label>
+          <nz-form-control>
+            <input nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="onMetaChange()" name="flowDesc" placeholder="Description" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Exécution</nz-form-label>
+          <nz-form-control>
+            <div class="exec-row">
+              <nz-select [(ngModel)]="builderMode" name="builderMode" nzPlaceHolder="Mode">
+                <nz-option nzValue="test" nzLabel="test"></nz-option>
+                <nz-option nzValue="prod" nzLabel="prod"></nz-option>
+              </nz-select>
+              <button nz-button class="apple-btn icon-only" nzType="primary" type="button" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <button nz-button class="apple-btn icon-only" type="button" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+                <i class="fa-solid fa-stop"></i>
+              </button>
+            </div>
+            <div class="status mono" title="Dernier / En cours">
+              <div>Dernier: {{ lastRun?.status || '—' }}</div>
+              <div>En cours: {{ currentRun?.status || '—' }}</div>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Publication</nz-form-label>
+          <nz-form-control>
+            <div class="pub-row">
+              <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="onMetaChange()" name="flowStatus" nzPlaceHolder="Statut">
+                <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
+                <nz-option nzValue="test" nzLabel="test"></nz-option>
+                <nz-option nzValue="production" nzLabel="production"></nz-option>
+              </nz-select>
+              <button nz-button class="apple-btn icon-only" nzType="default" type="button" (click)="saveFlow()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </button>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>En service</nz-form-label>
+          <nz-form-control>
+            <label class="enabled single-line">
+              <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="onMetaChange()" name="flowEnabled" />
+              <span>Activer ce flow</span>
+            </label>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+
+      <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
+        (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
+        (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
+        (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
+    </div>
+  </div>
+  <div class="import-overlay" *ngIf="isImporting">
+    <div class="spinner"></div>
+    <div>Import du flow…</div>
+  </div>
+  <!-- Left vertical floating actions (responsive only) -->
+  <div class="left-bar">
+    <div class="actions">
+      <button class="icon-btn" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+      <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <button class="icon-btn" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
+        <i class="fa-solid fa-flask"></i>
+      </button>
+      <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </button>
+      <label class="icon-btn import-btn" title="Importer" aria-label="Importer">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
+      </label>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="actions">
+      <!-- Left side actions are now shown in the vertical left bar on all sizes -->
+      <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+      <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
+        <i class="fa-regular fa-object-group"></i>
+      </button>
+      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
+        [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'
+        " [nzPopoverContent]="issuesTpl" title="Problèmes">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
+      </button>
+      <ng-template #issuesTpl>
+        <div style="max-width:320px; max-height: 260px; overflow:auto;">
+          <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;"
+            *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
+            <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
+            <span> {{ it.message }}</span>
+          </button>
+        </div>
+      </ng-template>
+      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode"
+        title="Centrer sur le nœud sélectionné">
+        <i class="fa-solid fa-crosshairs"></i>
+      </button>
+      <button class="icon-btn desktop-only" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <div class="zoom-control" *ngIf="!isMobile">
+        <span class="label">Zoom</span>
+        <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
+        <span class="value">{{ zoomPercent }}%</span>
+      </div>
+      <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
+
+      <!-- Desktop: show Import/Export and Save as icon-only on the right of the group -->
+      <label class="icon-btn import-btn desktop-only" title="Importer" aria-label="Importer">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
+      </label>
+      <button class="icon-btn desktop-only" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </button>
+      <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Context menu overlay -->
+  <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
+  <div class="ctx-menu" *ngIf="ctxMenuVisible" [style.left.px]="ctxMenuX" [style.top.px]="ctxMenuY">
+    <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
+    <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
+    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Ouvrir l’éditeur +
+      Inspector</button>
+    <button class="danger" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
+  </div>
+  <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel" [flowId]="currentFlowId"
+    [disableForChecksum]="hasTemplateMismatch(selectedModel)"
+    [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
+    [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"
+    [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
+    [attemptOptions]="advancedAttemptOptions" [selectedAttemptIdx]="advancedSelectedAttemptIdx"
+    (selectedAttemptIdxChange)="onDialogAttemptIdxChange($event)"
+    (injectedInputChange)="onDialogInputChange($event)"
+    (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
+    (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
+    (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
+
+  <!-- Floating AI Chat Popover Trigger + persistent popover -->
+  <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
+    <i class="fa-solid fa-message"></i>
+  </button>
+  <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
+  <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
+    <flow-ai-chat [seedGraph]="{ nodes: nodes, edges: edges }" (close)="aiChatOpen=false" (graphGenerated)="applyAiGraph($event)"></flow-ai-chat>
+  </div>
+
+</div>
+
+<!-- Responsive drawers (mobile/tablet) -->
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
+  <ng-container *nzDrawerContent>
+    <ng-container [ngTemplateOutlet]="leftPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
+  </ng-container>
+</nz-drawer>
+
+<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
+  <ng-container *nzDrawerContent>
+    <div class="right-panel drawer-mode">
+      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedModel]="selectedModel"
+        [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+        (saveJson)="saveSelectedJson()"></flow-inspector-panel>
+      <div style="padding: 8px; overflow: auto;">
+
+        <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
+          (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
+          (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
+          (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
+      </div>
+    </div>
+  </ng-container>
+</nz-drawer>

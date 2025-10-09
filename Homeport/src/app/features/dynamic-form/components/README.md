@@ -1,0 +1,64 @@
+README — src/app/features/dynamic-form/components
+
+Contenu du dossier:
+
+- README.md
+- condition-builder.component.html
+- condition-builder.component.scss
+- condition-builder.component.ts
+  - Component: selector='condition-builder', standalone=True
+  - Classes: ConditionBuilderComponent
+  - Méthodes: subItemsAt, subItemsAtNested, onChangeKind
+- context-panel.component.html
+- context-panel.component.scss
+- context-panel.component.ts
+  - Component: selector='df-context-panel', standalone=True
+  - Classes: ContextPanelComponent
+  - Méthodes: onTreeClick, onTreeDrop, onTreeExpand, openTreeMenu, setTimeout, onCtxAddStep, onCtxAddFieldRoot, onCtxAddSectionRoot, onCtxAddFieldRootTyped, onCtxAddSectionRootArray, onCtxStepAddSection, onCtxStepAddField, onCtxStepAddFieldTyped, onCtxStepDelete, onCtxStepAddSectionArray, onCtxSectionAddSection, onCtxSectionAddField, onCtxSectionAddFieldTyped, onCtxSectionDelete, onCtxSectionAddSectionArray, onCtxFieldDelete, onCtxSectionDuplicate, onCtxSectionInsertBefore, onCtxSectionInsertAfter, onCtxFieldDuplicate, onCtxFieldInsertBefore, onCtxFieldInsertAfter
+- customize-dialog.component.ts
+  - Component: selector='app-customize-dialog', standalone=True
+  - Classes: CustomizeDialogComponent
+  - Méthodes: hasSpacing
+- inspector-field.component.scss
+- inspector-field.component.ts
+  - Component: selector='inspector-field', standalone=True
+  - Classes: InspectorFieldComponent
+  - Méthodes: ngOnChanges, onValidatorsChanged, safeParseArray, applyValidatorArray, numOrUndef, strOrUndef
+- inspector-form-settings.component.html
+- inspector-form-settings.component.scss
+- inspector-form-settings.component.ts
+  - Component: selector='inspector-form-settings', standalone=True
+  - Classes: InspectorFormSettingsComponent
+  - Méthodes: ngOnInit, ngOnDestroy, createSpacingGroup, bindSpacing
+- inspector-section.component.scss
+- inspector-section.component.ts
+  - Component: selector='inspector-section', standalone=True
+  - Classes: InspectorSectionComponent
+- inspector-step.component.scss
+- inspector-step.component.ts
+  - Component: selector='inspector-step', standalone=True
+  - Classes: InspectorStepComponent
+- json-editor.component.ts
+  - Component: selector='json-editor', standalone=True
+  - Classes: JsonEditorComponent
+  - Méthodes: onChange, format, minify
+- monaco-json-editor.component.ts
+  - Component: selector='monaco-json-editor', standalone=True
+  - Classes: MonacoJsonEditorComponent
+  - Méthodes: ngAfterViewInit, ngOnDestroy, ensureMonaco, createEditor, format, minify, ngOnChanges
+- options-builder.component.ts
+  - Component: selector='options-builder', standalone=True
+  - Classes: OptionsBuilderComponent
+- prefixed-spacing-editor.component.html
+- prefixed-spacing-editor.component.ts
+  - Component: selector='app-prefixed-spacing-editor', standalone=True
+  - Classes: PrefixedSpacingEditorComponent
+  - Méthodes: ctrl
+- spacing-editor.component.html
+- spacing-editor.component.scss
+- spacing-editor.component.ts
+  - Component: selector='app-spacing-editor', standalone=True
+  - Classes: SpacingEditorComponent
+- style-editor.component.ts
+  - Component: selector='app-style-editor', standalone=True
+  - Classes: StyleEditorComponent

@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Demo — Responsive Plus (No JS)</title>
+  <style>
+    /* THEME */
+    :root{
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --ink:#0f172a;           /* slate-900 */
+      --ink-2:#334155;         /* slate-700 */
+      --muted:#64748b;         /* slate-500 */
+      --border:#e5e7eb;        /* gray-200 */
+      --brand:#1d4ed8;         /* blue-700 */
+      --brand-2:#2563eb;       /* blue-600 */
+      --accent:#0ea5e9;        /* sky-500 */
+      --success:#10b981;       /* emerald-500 */
+      --warn:#f59e0b;          /* amber-500 */
+      --danger:#ef4444;        /* red-500 */
+      --radius:14px;
+      --radius-sm:10px;
+      --shadow:0 10px 30px rgba(2,6,23,.06), 0 2px 8px rgba(2,6,23,.04);
+      --shadow-soft:0 6px 18px rgba(2,6,23,.05);
+      --ring:0 0 0 3px rgba(29,78,216,.14);
+      --grad:linear-gradient(180deg,#ffffff 0%,#fafbff 100%);
+    }
+
+    /* RESET */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font:14px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--ink); background:var(--bg)}
+    a{color:inherit; text-decoration:none}
+    img,svg{display:block}
+    button{font:inherit}
+
+    /* APP SHELL */
+    .page{max-width:1200px; margin:0 auto; padding:0 16px}
+    .layout{display:grid; grid-template-columns:1fr 300px; gap:16px; margin-top:16px}
+
+    /* HEADER */
+    .header{position:sticky; top:0; z-index:50; background:var(--surface); border-bottom:1px solid var(--border)}
+    .navbar{display:flex; align-items:center; justify-content:space-between; padding:10px 0}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.02em}
+    .brand .logo rect{fill:var(--ink)}
+
+    /* TOP NAV */
+    .nav{display:flex; align-items:center; gap:6px}
+    .nav-item{position:relative; padding:8px 12px; border-radius:999px; color:var(--ink-2); border:1px solid transparent; transition:all .18s ease}
+    .nav-item:hover{background:rgba(2,6,23,.04)}
+    .nav-item:focus-visible{outline:none; box-shadow:var(--ring)}
+    .nav-item.active{background:linear-gradient(180deg, rgba(29,78,216,.10), rgba(29,78,216,.06)); color:var(--brand); border-color:rgba(29,78,216,.18)}
+
+    /* MOBILE BOTTOM BAR (no JS) */
+    .mobile-bar{position:sticky; bottom:0; z-index:40; display:none; background:var(--surface); border-top:1px solid var(--border)}
+    .mobile-bar .bar{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:8px}
+    .mobile-bar a{display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 8px; border-radius:10px; color:var(--ink-2)}
+    .mobile-bar a[aria-current="page"]{background:#eef2ff; color:var(--brand)}
+
+    /* RIGHTBAR */
+    .rightbar{position:sticky; top:62px; height:fit-content; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px; box-shadow:var(--shadow)}
+    .rightbar .title{font-size:16px}
+    .rightbar .nav{flex-direction:column; align-items:stretch}
+
+    /* CARDS */
+    .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)}
+    .title{font-weight:700; font-size:20px; letter-spacing:-.02em; margin-bottom:6px}
+    .subtitle{color:var(--muted); font-size:12px; margin-bottom:12px}
+
+    .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+    .row{display:flex; align-items:center; gap:12px}
+    .col{flex:1 1 0; min-width:0}
+
+    /* HERO */
+    .hero{padding:24px; background:var(--grad); border:1px solid var(--border); border-radius:var(--radius)}
+
+    /* KPI CARDS */
+    .kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
+    .kpi{padding:14px; border:1px solid var(--border); border-radius:12px; background:#fff}
+    .kpi .label{font-size:12px; color:var(--muted)}
+    .kpi .value{font-weight:800; font-size:22px; letter-spacing:-.02em}
+
+    /* BUTTONS */
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:9px 14px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; color:var(--ink); cursor:pointer; transition:transform .05s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease}
+    .btn:hover{box-shadow:var(--shadow-soft)}
+    .btn:active{transform:translateY(1px)}
+    .btn:focus-visible{outline:none; box-shadow:var(--ring)}
+    .btn.primary{background:var(--ink); color:#fff; border-color:var(--ink)}
+    .btn.primary:hover{background:#0b1220}
+    .btn.ghost{background:transparent; border-color:transparent}
+    .btn.ghost:hover{background:rgba(2,6,23,.05)}
+    .btn.soft{background:rgba(29,78,216,.08); border-color:rgba(29,78,216,.18); color:var(--brand)}
+    .btn.icon{padding:8px 10px}
+
+    /* TAGS */
+    .tag{display:inline-flex; align-items:center; gap:6px; padding:3px 10px; font-size:12px; border-radius:999px; border:1px solid rgba(2,6,23,.06); background:#f7f8fb}
+    .tag.blue{background:#eaf4ff; color:var(--brand)}
+    .tag.warn{background:#fff7e6; color:#92400e}
+
+    /* TABLE */
+    .table{width:100%; border-collapse:collapse; font-size:14px}
+    .th{text-align:left; padding:10px; border-bottom:1px solid #eef0f4; background:#fafafa}
+    .td{padding:10px; border-bottom:1px solid #f1f3f7}
+    /* Table -> Cards on small screens */
+    @media (max-width:700px){
+      table.table{display:block}
+      .table thead{display:none}
+      .table tbody{display:grid; gap:10px}
+      .table tr{display:grid; border:1px solid var(--border); border-radius:12px; background:#fff; padding:10px}
+      .table .td{border:none; padding:6px}
+      .table .td[data-label]::before{content:attr(data-label)" : "; color:var(--muted); font-size:12px}
+    }
+
+    /* FORMS */
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:4px}
+    .form-control{width:100%; border:1px solid #e5e7eb; border-radius:10px; padding:9px 10px; background:#fff; transition:border-color .15s ease, box-shadow .15s ease}
+    .form-control:focus{outline:none; border-color:#93c5fd; box-shadow:0 0 0 4px rgba(147,197,253,.35)}
+
+    /* LISTS */
+    .list{display:flex; flex-direction:column}
+    .list-item{display:grid; grid-template-columns:40px 1fr auto; align-items:start; gap:12px; padding:12px 0}
+    .list-item + .list-item{border-top:1px solid #f0f2f6}
+    .avatar{width:40px; height:40px; border-radius:50%; background:linear-gradient(180deg,#eef2ff,#e0e7ff); display:grid; place-items:center; color:var(--brand); font-weight:700; border:1px solid #e5e7eb}
+    .item-title{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:2px; margin-bottom:6px}
+
+    /* TABS */
+    .tabs{display:flex; gap:6px; background:#fff; border:1px solid var(--border); border-radius:12px; padding:6px; width:max-content}
+    .tab{padding:8px 12px; border-radius:10px; color:var(--ink-2); cursor:pointer}
+    .tab[aria-selected="true"]{background:rgba(29,78,216,.08); color:var(--brand); border:1px solid rgba(29,78,216,.18)}
+
+    /* SWITCH */
+    .switch{display:inline-flex; align-items:center; gap:10px}
+    .switch input{appearance:none; width:44px; height:26px; background:#e5e7eb; border-radius:999px; position:relative; outline:none; transition:background .2s}
+    .switch input::after{content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; background:#fff; border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.15); transition:transform .2s}
+    .switch input:checked{background:#93c5fd}
+    .switch input:checked::after{transform:translateX(18px)}
+
+    /* PROGRESS */
+    .progress{height:8px; background:#eef2f7; border-radius:999px; overflow:hidden; border:1px solid #e5e7eb}
+    .progress > i{display:block; height:100%; width:55%; background:linear-gradient(90deg,#93c5fd,#2563eb)}
+
+    /* CSS-ONLY CHARTS (responsive, no JS) */
+    /* 1) Bars: set --v1..--vN as 0..100; auto scales */
+    .chart-bars{--bars:8; --gap:8px; --max:100; display:grid; grid-template-columns:repeat(var(--bars),minmax(0,1fr)); gap:var(--gap); align-items:end; height:160px; padding:12px; border:1px solid var(--border); border-radius:12px; background:#fff}
+    .chart-bars i{display:block; height:calc((var(--v,50)/var(--max))*100%); background:linear-gradient(180deg,#93c5fd,#2563eb); border-radius:8px 8px 4px 4px; box-shadow:inset 0 -1px 0 rgba(255,255,255,.4)}
+    .chart-bars i::after{content:attr(data-v) '%'; display:block; text-align:center; font-size:11px; color:var(--muted); margin-top:6px}
+
+    /* helper to pass values via custom props on children */
+    .chart-bars i[data-v]{--v: attr(data-v number)}
+
+    /* 2) Donut with conic-gradient: use --p as 0..100 */
+    .chart-donut{--p:62; width:160px; aspect-ratio:1/1; border-radius:50%; background:conic-gradient(#2563eb calc(var(--p)*1%), #e5e7eb 0); position:relative}
+    .chart-donut::before{content:""; position:absolute; inset:12%; background:#fff; border-radius:50%; box-shadow:inset 0 0 0 1px var(--border)}
+    .chart-donut::after{content: attr(aria-label); position:absolute; inset:0; display:grid; place-items:center; font-weight:800; letter-spacing:-.02em}
+
+    /* 3) Tiny spark bars using gradients */
+    .spark{--h:24px; --bg:#eef2ff; height:var(--h); border-radius:8px; border:1px solid var(--border); background:var(--bg); position:relative; overflow:hidden}
+    /* encode values as multiple linear-gradients stacks */
+    .spark[data-bars]{
+      background:
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 0 0/10% 60% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 12% 0/10% 30% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 24% 0/10% 85% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 36% 0/10% 50% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 48% 0/10% 70% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 60% 0/10% 40% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 72% 0/10% 65% no-repeat,
+        linear-gradient(0deg, rgba(37,99,235,.28), rgba(37,99,235,.28)) 84% 0/10% 35% no-repeat,
+        linear-gradient(180deg,#ffffff,#fafbff);
+    }
+
+    /* UTILS */
+    .muted{color:var(--muted)}
+    .spacer{height:14px}
+    .code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:12px; color:var(--ink); background:#f8fafc; border:1px solid #eef2f7; border-radius:6px; padding:2px 6px}
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 1100px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .layout{grid-template-columns:1fr 280px}
+    }
+    @media (max-width: 860px){
+      .layout{grid-template-columns:1fr}
+      .rightbar{position:static; order:-1}
+      .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns:1fr}
+      .kpis{grid-template-columns:1fr}
+      .nav{display:none}
+      .mobile-bar{display:block}
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="page">
+      <div class="navbar" role="navigation" aria-label="Navigation principale">
+        <div class="brand">
+          <svg class="logo" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo">
+            <rect x="2" y="2" width="20" height="20" rx="6"/>
+            <path d="M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 7v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Homeport</span>
+        </div>
+        <nav class="nav" aria-label="Liens rapides">
+          <a class="nav-item active" href="#intro">Accueil</a>
+          <a class="nav-item" href="#products">Produits</a>
+          <a class="nav-item" href="#analytics">Analytics</a>
+          <a class="nav-item" href="#table">Tableau</a>
+          <a class="nav-item" href="#forms">Formulaire</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE BOTTOM BAR -->
+  <div class="mobile-bar" role="navigation" aria-label="Navigation mobile">
+    <div class="bar page">
+      <a href="#intro" aria-current="page">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5Z" stroke="currentColor" stroke-width="1.6"/></svg>
+        <small>Accueil</small>
+      </a>
+      <a href="#products">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.6"/></svg>
+        <small>Catalogue</small>
+      </a>
+      <a href="#analytics">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 20V10m6 10V4m6 16v-8m6 8V7" stroke="currentColor" stroke-width="1.6"/></svg>
+        <small>Stats</small>
+      </a>
+      <a href="#forms">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4zM8 9h8M8 13h8" stroke="currentColor" stroke-width="1.6"/></svg>
+        <small>Form</small>
+      </a>
+    </div>
+  </div>
+
+  <div class="page layout">
+    <main>
+      <!-- HERO -->
+      <section class="hero" id="intro" style="margin-top:16px">
+        <div class="title">Responsive complet — no JS</div>
+        <div class="subtitle">Breakpoints, table → cartes, barre mobile, et charts 100% CSS.</div>
+        <div class="row" style="justify-content:center; margin-top:8px">
+          <button class="btn primary">Commencer</button>
+          <a class="btn ghost" href="#analytics">Voir analytics</a>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- KPIs -->
+      <section class="kpis" aria-label="Indicateurs">
+        <div class="kpi">
+          <div class="label">Revenus</div>
+          <div class="value">€ 24 800</div>
+          <div class="spark" data-bars title="last 8"></div>
+        </div>
+        <div class="kpi">
+          <div class="label">Conversions</div>
+          <div class="value">3,8%</div>
+          <div class="progress" aria-hidden="true"><i style="width:38%"></i></div>
+        </div>
+        <div class="kpi">
+          <div class="label">Tickets ouverts</div>
+          <div class="value">12</div>
+          <span class="tag warn">+3</span>
+        </div>
+        <div class="kpi">
+          <div class="label">Disponibilité</div>
+          <div class="value">99.96%</div>
+          <span class="tag blue">OK</span>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- PRODUCTS GRID -->
+      <section id="products" class="card" aria-labelledby="products-title">
+        <div class="title" id="products-title">Produits</div>
+        <div class="subtitle">Grille responsive de cartes produit</div>
+        <div class="row" style="margin-bottom:10px; flex-wrap:wrap">
+          <input class="form-control" placeholder="Rechercher..." aria-label="Rechercher un produit" style="max-width:260px" />
+          <button class="btn soft">Filtrer</button>
+          <div class="tabs" role="tablist" aria-label="Catégories">
+            <button class="tab" role="tab" aria-selected="true">Tous</button>
+            <button class="tab" role="tab">Nouveaux</button>
+            <button class="tab" role="tab">Populaires</button>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="card" aria-label="Produit A">
+            <div class="row" style="justify-content:space-between; align-items:flex-start; margin-bottom:6px">
+              <div class="title" style="font-size:18px">Produit A</div>
+              <span class="tag blue">nouveau</span>
+            </div>
+            <p class="muted" style="margin:6px 0 12px">Description brève du produit A avec une <span class="code">code</span> inline.</p>
+            <div class="row">
+              <button class="btn primary">Acheter</button>
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+          <article class="card" aria-label="Produit B">
+            <div class="row" style="justify-content:space-between; align-items:flex-start; margin-bottom:6px">
+              <div class="title" style="font-size:18px">Produit B</div>
+              <span class="tag">stock</span>
+            </div>
+            <p class="muted" style="margin:6px 0 12px">Description brève du produit B.</p>
+            <div class="row">
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+          <article class="card" aria-label="Produit C">
+            <div class="row" style="justify-content:space-between; align-items:flex-start; margin-bottom:6px">
+              <div class="title" style="font-size:18px">Produit C</div>
+              <span class="tag warn">attention</span>
+            </div>
+            <p class="muted" style="margin:6px 0 12px">Description brève du produit C.</p>
+            <div class="row">
+              <button class="btn">Détails</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- ANALYTICS / CHARTS 100% CSS -->
+      <section id="analytics" class="card" aria-labelledby="analytics-title">
+        <div class="title" id="analytics-title">Analytics (CSS only)</div>
+        <div class="subtitle">Barres dynamiques (custom props), donut conic-gradient, spark-bars.</div>
+        <div class="row" style="align-items:center; gap:20px; flex-wrap:wrap">
+          <div class="chart-donut" style="--p:72" aria-label="72%"></div>
+          <div class="chart-bars" style="--bars:8">
+            <i data-v="48"></i>
+            <i data-v="22"></i>
+            <i data-v="90"></i>
+            <i data-v="55"></i>
+            <i data-v="70"></i>
+            <i data-v="40"></i>
+            <i data-v="65"></i>
+            <i data-v="35"></i>
+          </div>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- LISTS -->
+      <section id="lists" class="card" aria-labelledby="lists-title">
+        <div class="title" id="lists-title">Listes enrichies</div>
+        <div class="subtitle">Plus d'espace + avatars + actions</div>
+        <div class="list" role="list">
+          <div class="list-item" role="listitem">
+            <div class="avatar" aria-hidden="true">W</div>
+            <div class="col">
+              <div class="item-title">
+                <strong>Webhook Listener</strong>
+                <span><span class="tag blue">network</span><span class="tag">http</span></span>
+              </div>
+              <div class="muted">Reçoit des appels externes via HTTP et déclenche un flot. <span style="color:#155e75; background:#ecfeff; border:1px solid #cffafe; border-radius:6px; padding:1px 6px">POST</span></div>
+            </div>
+            <div><button class="btn">Détails</button></div>
+          </div>
+
+          <div class="list-item" role="listitem">
+            <div class="avatar" aria-hidden="true">J</div>
+            <div class="col">
+              <div class="item-title">
+                <strong>JSON Merge</strong>
+                <span><span class="tag">utils</span><span class="tag warn">beta</span></span>
+              </div>
+              <div class="muted">Fusionne deux objets JSON avec des stratégies configurables. Très utile pour enrichir des payloads.</div>
+            </div>
+            <div><button class="btn primary">Utiliser</button></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- TABLE (responsive) -->
+      <section id="table" class="card" aria-labelledby="table-title">
+        <div class="title" id="table-title">Tableau (passe en cartes sur mobile)</div>
+        <table class="table" role="table" aria-label="Items">
+          <thead>
+            <tr>
+              <th class="th">Nom</th>
+              <th class="th">Tags</th>
+              <th class="th">Statut</th>
+              <th class="th" style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td" data-label="Nom">Item 1</td>
+              <td class="td" data-label="Tags"><span class="tag blue">blue</span><span class="tag">default</span></td>
+              <td class="td" data-label="Statut"><span class="tag" style="background:#ecfdf5; color:#065f46; border-color:#d1fae5">actif</span></td>
+              <td class="td" data-label="Actions" style="text-align:right"><button class="btn">Détails</button><button class="btn primary">Action</button></td>
+            </tr>
+            <tr>
+              <td class="td" data-label="Nom">Item 2</td>
+              <td class="td" data-label="Tags"><span class="tag warn">warn</span></td>
+              <td class="td" data-label="Statut"><span class="tag" style="background:#fef2f2; color:#b42318; border-color:#fee2e2">erreur</span></td>
+              <td class="td" data-label="Actions" style="text-align:right"><button class="btn">Détails</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- FORM + EXTRAS -->
+      <section id="forms" class="card" aria-labelledby="forms-title">
+        <div class="title" id="forms-title">Formulaire</div>
+        <div class="row" style="flex-wrap:wrap">
+          <div class="col">
+            <label for="name">Nom</label>
+            <input id="name" class="form-control" placeholder="Votre nom" />
+          </div>
+          <div class="col">
+            <label for="email">Email</label>
+            <input id="email" class="form-control" placeholder="email@exemple.com" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <label for="msg">Message</label>
+            <textarea id="msg" class="form-control" rows="4" placeholder="Votre message"></textarea>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px; align-items:center; justify-content:space-between; flex-wrap:wrap">
+          <div class="switch"><input id="subscribe" type="checkbox" /><label for="subscribe" style="margin:0">S'abonner aux updates</label></div>
+          <div>
+            <button class="btn">Annuler</button>
+            <button class="btn primary">Envoyer</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <!-- TIMELINE (pure CSS) -->
+      <section class="card" aria-labelledby="timeline-title">
+        <div class="title" id="timeline-title">Timeline</div>
+        <div class="subtitle">Exemple visuel d'événements</div>
+        <div style="position:relative; padding-left:24px">
+          <div style="position:absolute; top:0; bottom:0; left:8px; width:2px; background:#e5e7eb"></div>
+          <div class="row" style="align-items:flex-start; gap:10px; margin:10px 0">
+            <div style="width:18px; height:18px; border-radius:50%; background:#1d4ed8; box-shadow:0 0 0 3px #eaf2ff"></div>
+            <div>
+              <div><strong>12:10</strong> — Build PROD exporté</div>
+              <div class="muted">Tag: v2.3.1</div>
+            </div>
+          </div>
+          <div class="row" style="align-items:flex-start; gap:10px; margin:10px 0">
+            <div style="width:18px; height:18px; border-radius:50%; background:#10b981; box-shadow:0 0 0 3px #e8fff5"></div>
+            <div>
+              <div><strong>12:25</strong> — Tests E2E OK</div>
+              <div class="muted">Durée: 2m 17s</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHTBAR -->
+    <aside class="rightbar" aria-label="Navigation secondaire">
+      <div class="title">Sections</div>
+      <nav class="nav">
+        <a class="nav-item" href="#intro">Intro</a>
+        <a class="nav-item" href="#products">Produits</a>
+        <a class="nav-item" href="#analytics">Analytics</a>
+        <a class="nav-item" href="#lists">Listes</a>
+        <a class="nav-item" href="#table">Tableau</a>
+        <a class="nav-item" href="#forms">Formulaire</a>
+      </nav>
+    </aside>
+  </div>
+</body>
+</html>

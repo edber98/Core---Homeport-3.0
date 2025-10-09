@@ -1,0 +1,51 @@
+# Intégration Backend ⇄ Frontend — Progression
+
+Date: 2025-08-25
+
+## Résumé
+
+- Environnements frontend ajoutés (`apiBaseUrl`, `apiDocsUrl`, `useBackend`).
+- Intercepteurs HTTP: Authorization (Bearer), gestion d’erreurs 401 + toasts, indicateur de chargement global.
+- Client API unifié: désempaquetage `{ success, data }` + `page/limit/q/sort`.
+- Services reliés backend: workspaces, providers, node-templates, credentials, flows, runs, notifications.
+- Synchronisation workspaces en backend; supprime les données de démo (localStorage) en backend.
+- Flow Builder: sauvegarde du graph + status/enabled (PUT `/api/flows/{id}`).
+- Exécutions: lancement backend + historique (flow/workspace) + annulation.
+- Notifications: popover header (liste, ack, suppression), page dédiée avec filtres.
+- Back-end tolérant: résout `:wsId` en ObjectId ou par champ `id` string; évite les casts invalides.
+
+## Points corrigés
+
+- Cast ObjectId côté backend pour `workspaceId` et `:wsId` (flows, runs, credentials, notifications) avec fallback `findOne({ id })` ou ignore filtre si invalide.
+- Frontend: n’envoie `workspaceId` qu’en ObjectId valide pour les notifications.
+- ACL UI: en mode backend, l’UI ne bloque pas; l’API reste l’autorité (membership + roles).
+
+## Étapes restantes
+
+- Runs: vue “Historique workspace” — enrichir navigation vers le détail/par flow, filtres supplémentaires et pagination.
+- Flows: exposer status/enabled dans la liste (édition rapide); validation UI des changements.
+- Notifications: page dédiée — ajout de navigation par `link` et filtres supplémentaires (pagination).
+- Prod: budgets Angular — relevés; option d’optimisation CSS ciblée.
+- SSE runs: brancher `/api/runs/{id}/stream` dans l’UI (optionnel).
+
+## Liens
+
+- Docs backend (Swagger UI): http://localhost:5055/api-docs
+- JSON/YAML: http://localhost:5055/api-docs.json · http://localhost:5055/api-docs.yaml
+- Styles de chargement unifiés: skeleton grids sur pages listes (flows, credentials, notifications, runs, node-templates, users), message "Aucun élément trouvé." si liste vide hors erreur.
+
+## Styles de chargement (listes)
+
+- Structure:
+  - Conteneur: `<div class="loading"><div class="skeleton-grid">…</div></div>` rendu quand `loading === true`.
+  - Carte: `<div class="skeleton-card"></div>` répétée (5–6 éléments) selon la grille.
+- CSS commun:
+  - `.loading .skeleton-grid` : grille responsive (colonnes selon la page: 1, 2, 3 ou 4 colonnes).
+  - `.skeleton-card` : hauteur 56–96px selon contexte, `border-radius: 12–14px`, fond dégradé clair, bordure #ececec.
+  - Animation shimmer:
+    - `.skeleton-card:after { inset:0; transform: translateX(-100%); background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.05) 50%, transparent 100%); animation: shimmer 1.2s infinite; }`
+    - `@keyframes shimmer { 100% { transform: translateX(100%); } }`
+- État vide et erreur:
+  - Erreur: `.error` (fond #fee4e2, bordure #fecaca, texte #b42318), affichée si `!loading && error`.
+  - Vide: `.empty` (texte #6b7280), affichée si `!loading && !error && items.length===0`.
+
