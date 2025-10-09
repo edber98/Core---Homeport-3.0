@@ -14,7 +14,7 @@ COPY --chown=node:node ./API/ ./
 COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
 # Attribution des droits d'exécution au script
 RUN chmod +x /usr/local/bin/install-docker.sh
-EXPOSE 3000
+EXPOSE 5055
 ENTRYPOINT [ "install-docker.sh" ]
 CMD ["npm", "run", "dev"]
 FROM dependencies AS production
@@ -23,6 +23,6 @@ COPY --chown=node:node ./API/ ./
 COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
 # Attribution des droits d'exécution au script
 RUN chmod +x /usr/local/bin/install-docker.sh
-EXPOSE 3000
+EXPOSE 5055
 ENTRYPOINT [ "install-docker.sh" ]
 CMD ["npm", "start"]
