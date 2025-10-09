@@ -72,6 +72,15 @@
   transition: transform .18s ease, opacity .18s ease;
 }
 .ai-chat-popover.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+/* Mobile: make chat overlay fit the viewport width with safe margins */
+@media (max-width: 640px) {
+  .ai-chat-popover {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
 /* Add a subtle right border to the preview (center) card to separate from inspector */
 .center .ant-card.no-chrome { border-right: 1px solid #E2E1E4 !important; /* reserve space for history bar */ --hb-space: 52px; }
 .center .ant-card.no-chrome .ant-card-body { padding: 8px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
