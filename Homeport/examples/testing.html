@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Showroom HTML+CSS — Entreprise (sans JS, sans charts)</title>
+<style>
+/* ===== RESET COURT ===== */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial;color:#111;background:#f7f7f9}
+
+/* ===== TOKENS ===== */
+:root{
+  --border:#ececec; --muted:#6b7280; --bg:#fff; --brand:#111;
+  --shadow:0 6px 18px rgba(17,24,39,.06);
+  --blue-50:#eaf4ff; --blue-600:#2563eb;
+  --amber-50:#fef9c3; --amber-800:#92400e;
+  --green-600:#10b981; --red-600:#ef4444;
+}
+
+/* ===== STYLE “APP” (exigé) ===== */
+/* Conteneurs */
+.page{max-width:1080px;margin-inline:auto;padding:20px}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1 1 0;min-width:260px}
+@media (max-width:768px){.row{flex-direction:column}}
+
+/* Boutons & tags */
+.btn{display:inline-flex;align-items:center;gap:.5rem;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:.6rem .9rem;cursor:pointer;transition:border-color .15s ease,transform .08s ease}
+.btn:hover{border-color:#d1d5db}.btn:active{transform:translateY(1px)}
+.btn.primary{background:#111;color:#fff;border-color:#111}
+.btn.ghost{background:transparent}
+.tag{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .55rem;border-radius:9999px;background:#f3f4f6;font-size:12px}
+.tag.blue{background:var(--blue-50);color:#1d4ed8}
+.tag.warn{background:var(--amber-50);color:var(--amber-800)}
+.pill-group{display:inline-flex;background:#f3f4f6;border:1px solid var(--border);border-radius:9999px;padding:4px;gap:4px}
+.pill{padding:.35rem .7rem;border-radius:9999px;font-size:12px}
+.pill.active{background:#fff;border:1px solid var(--border)}
+.badge{display:inline-block;padding:.25rem .55rem;border-radius:9999px;background:#dbeafe;color:#1e3a8a;font-size:12px}
+
+/* Titres */
+.title{font-weight:600;font-size:20px;letter-spacing:-.02em;margin:0 0 .35rem}
+.subtitle{font-size:12px;color:var(--muted)}
+
+/* Grilles & listes */
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.feature-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.feature{display:flex;gap:.6rem;align-items:baseline}
+.feature .dot{width:.5rem;height:.5rem;border-radius:50%;background:#D1D5DB;margin-top:.5rem;flex:0 0 auto}
+
+/* Table */
+.table-wrap{border:1px solid var(--border);border-radius:12px;background:#fff;overflow:auto;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:.8rem .9rem;white-space:nowrap}
+th{text-align:left;color:#374151;background:#fafafa;border-bottom:1px solid var(--border);position:sticky;top:0}
+tr+tr td{border-top:1px solid var(--border)}
+
+/* Form & nav */
+.form-control{width:100%;border:1px solid #e5e7eb;border-radius:10px;padding:.6rem .8rem;font:inherit;background:#fff}
+select.form-control{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#9ca3af 50%),linear-gradient(135deg,#9ca3af 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 12px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+textarea.form-control{min-height:84px;resize:vertical}
+.navbar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--border)}
+.navbar .inner{display:flex;align-items:center;gap:12px;padding:10px 20px;max-width:1080px;margin:auto}
+.brand{font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:.6rem}
+.brand .dot{width:10px;height:10px;border-radius:2px;background:#111;display:inline-block}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav-item{display:inline-flex;padding:.45rem .7rem;border-radius:9999px;border:1px solid transparent}
+.nav-item:hover{background:#f7f7f9;border-color:var(--border)}
+.nav-item.active{background:#111;color:#fff}
+
+/* Media & meta */
+.img{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.img::before{content:"";display:block;padding-top:56%;background:linear-gradient(135deg,#f3f4f6,#e5e7eb)}
+.avatar{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:#eef2f7;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#374151}
+.avatar.lg{width:40px;height:40px;font-size:14px}
+.meta{color:var(--muted);font-size:12px}
+.price{font-size:28px;font-weight:700;letter-spacing:-.02em}
+
+/* Helpers */
+.between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}
+.mb-0{margin-bottom:0}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}
+.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}
+
+/* List items */
+.list-item{display:flex;align-items:center;gap:.75rem;padding:.5rem 0}
+.list-item+.list-item{border-top:1px solid var(--border)}
+
+/* Progress & états (sans charts) */
+.progress{height:8px;background:#f3f4f6;border-radius:9999px;overflow:hidden}
+.progress>span{display:block;height:100%;background:#111;width:60%}
+.state.success{color:var(--green-600)} .state.danger{color:var(--red-600)} .state.warn{color:var(--amber-800)}
+
+/* Timeline (verticale) */
+.timeline{position:relative;padding-left:18px}
+.timeline::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:2px;background:#e5e7eb;border-radius:2px}
+.tl-item{position:relative;padding:.4rem 0}
+.tl-item::before{content:"";position:absolute;left:0;top:.6rem;width:12px;height:12px;border-radius:50%;background:#111;border:2px solid #fff;box-shadow:0 0 0 2px #e5e7eb}
+
+/* Kanban (statique) */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kan-col{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:10px}
+.ticket{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;margin:8px 0}
+
+/* Cards produit */
+.product{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
+.product .thumb{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+.product .thumb svg{display:block;width:100%;height:auto}
+
+/* Badges “livraison / promo ” */
+.badge-row{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Tabs CSS (ancre :target, pas de JS) */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs a{padding:.45rem .7rem;border-radius:9999px;border:1px solid var(--border)}
+.tabs a[aria-current="page"], .tabs a:hover{background:#fff}
+
+/* Bannières */
+.banner{border:1px solid var(--border);background:#fff;border-left:4px solid #111;border-radius:12px;padding:10px 12px}
+
+/* Footer simple */
+.footer{color:var(--muted);font-size:12px;padding:20px 0}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="inner">
+    <div class="brand">
+      <span class="dot" aria-hidden="true"></span>
+      <span aria-label="Marque">
+        <!-- Logo SVG inline (exemple carré “i55”) -->
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#111"/>
+          <text x="12" y="15" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">i55</text>
+        </svg>
+      </span>
+      Suite Entreprise
+    </div>
+    <nav class="nav" aria-label="Principale">
+      <a class="nav-item active" href="#">Aperçu</a>
+      <a class="nav-item" href="#catalogue">Catalogue</a>
+      <a class="nav-item" href="#commandes">Commandes</a>
+      <a class="nav-item" href="#equipe">Équipe</a>
+      <a class="nav-item" href="#faq">FAQ</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <input class="form-control" placeholder="Recherche…" style="max-width:220px" />
+      <span class="avatar lg">P</span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- Breadcrumb -->
+  <nav class="mb-3" aria-label="Fil d’Ariane">
+    <span class="meta">Accueil</span> /
+    <span class="meta">Aperçu</span>
+  </nav>
+
+  <!-- Bandeau info -->
+  <div class="banner mb-3 between">
+    <div>
+      <strong>Mise à jour</strong> — Nouveaux modèles de fiche produit & tableau de spécifications.
+    </div>
+    <span class="badge">Nouveau</span>
+  </div>
+
+  <!-- KPI (numériques, sans charts) -->
+  <section class="row mb-3">
+    <article class="card col">
+      <div class="between">
+        <div>
+          <div class="subtitle">Revenu (M)</div>
+          <div class="price">€ 128 000</div>
+          <div class="state success">▲ +8.2% vs. mois-1</div>
+        </div>
+        <div style="min-width:160px">
+          <div class="meta mb-1">Objectif 200k</div>
+          <div class="progress"><span style="width:64%"></span></div>
+        </div>
+      </div>
+    </article>
+    <article class="card col">
+      <div class="between">
+        <div>
+          <div class="subtitle">Commandes</div>
+          <div class="price">842</div>
+          <div class="meta">Taux retour: 1.1%</div>
+        </div>
+        <div style="min-width:160px">
+          <div class="meta mb-1">SLA expédition</div>
+          <div class="progress"><span style="width:92%"></span></div>
+        </div>
+      </div>
+    </article>
+    <article class="card col">
+      <div class="between">
+        <div>
+          <div class="subtitle">Tickets ouverts</div>
+          <div class="price">17</div>
+          <div class="state warn">• stable</div>
+        </div>
+        <div style="min-width:160px">
+          <div class="meta mb-1">Résolution 24h</div>
+          <div class="progress"><span style="width:78%"></span></div>
+        </div>
+      </div>
+    </article>
+    <article class="card col">
+      <div class="between">
+        <div>
+          <div class="subtitle">Satisfaction</div>
+          <div class="price">4.6/5</div>
+          <div class="meta">1 243 avis</div>
+        </div>
+        <div class="badge-row">
+          <span class="tag blue">Premium</span>
+          <span class="tag">ISO 27001</span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- Onglets (ancre) -->
+  <div class="between mb-3">
+    <div class="tabs" role="tablist">
+      <a href="#catalogue" aria-current="page">Catalogue</a>
+      <a href="#fiche">Fiche produit</a>
+      <a href="#fichiers">Fichiers</a>
+      <a href="#kanban">Kanban</a>
+      <a href="#timeline">Timeline</a>
+    </div>
+    <div class="pill-group">
+      <span class="pill active">Mensuel</span><span class="pill">Annuel</span>
+    </div>
+  </div>
+
+  <!-- ============ CATALOGUE (grille cartes produit) ============ -->
+  <section id="catalogue" class="grid mb-3">
+    <!-- Carte produit -->
+    <article class="card">
+      <div class="img" aria-hidden="true"></div>
+      <div class="between mt-2">
+        <div class="title mb-0">Routeur Industriel XR-200</div>
+        <span class="badge">En stock</span>
+      </div>
+      <div class="subtitle">Gigabit | OPC UA | -20°C / +60°C</div>
+      <div class="between mt-2">
+        <div class="price">€ 1 290</div>
+        <div class="gap-2" style="display:flex">
+          <span class="tag">PoE</span><span class="tag blue">Nouveau</span>
+        </div>
+      </div>
+      <div class="mt-2 feature-list">
+        <div class="feature"><span class="dot"></span> Redondance double SIM</div>
+        <div class="feature"><span class="dot"></span> VPN, pare-feu intégré</div>
+      </div>
+      <div class="mt-2">
+        <button class="btn primary">Ajouter</button>
+        <button class="btn">Détails</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="img"></div>
+      <div class="between mt-2">
+        <div class="title mb-0">Capteur Temp. TX-18</div>
+        <span class="tag warn">Rupture</span>
+      </div>
+      <div class="subtitle">PT1000 | IP67 | 4–20 mA</div>
+      <div class="between mt-2">
+        <div class="price">€ 159</div>
+        <span class="meta">Réassort: 12/09</span>
+      </div>
+      <div class="mt-2">
+        <button class="btn">Alerter</button>
+        <button class="btn">Comparer</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="img"></div>
+      <div class="between mt-2">
+        <div class="title mb-0">Switch 8p L2 Pro</div>
+        <span class="tag">PoE+</span>
+      </div>
+      <div class="subtitle">8× RJ45 2.5G | 2× SFP</div>
+      <div class="between mt-2">
+        <div class="price">€ 349</div>
+        <div class="gap-2" style="display:flex">
+          <span class="tag blue">Promo</span><span class="tag">Garantie 5 ans</span>
+        </div>
+      </div>
+      <div class="mt-2">
+        <button class="btn primary">Ajouter</button>
+        <button class="btn">Détails</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ FICHE PRODUIT (détaillée) ============ -->
+  <section id="fiche" class="card mb-3">
+    <div class="between">
+      <div>
+        <h2 class="title mb-0">XR-200 — Fiche produit</h2>
+        <div class="subtitle">Réf. XR-200-OPCUA</div>
+      </div>
+      <div class="badge-row">
+        <span class="tag blue">Best-seller</span>
+        <span class="tag">CE</span>
+        <span class="tag">RoHS</span>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <!-- Galerie -->
+      <div class="col" style="min-width:280px">
+        <div class="thumb card">
+          <!-- Illustration SVG du produit -->
+          <svg viewBox="0 0 400 240" role="img" aria-label="Router XR-200">
+            <rect x="20" y="60" width="360" height="120" rx="14" fill="#111"/>
+            <rect x="20" y="180" width="360" height="14" rx="4" fill="#333"/>
+            <!-- voyants -->
+            <circle cx="60" cy="96" r="6" fill="#10b981"/>
+            <circle cx="80" cy="96" r="6" fill="#10b981"/>
+            <circle cx="100" cy="96" r="6" fill="#f59e0b"/>
+            <!-- ports -->
+            <rect x="220" y="96" width="24" height="32" rx="2" fill="#e5e7eb"/>
+            <rect x="250" y="96" width="24" height="32" rx="2" fill="#e5e7eb"/>
+            <rect x="280" y="96" width="24" height="32" rx="2" fill="#e5e7eb"/>
+            <rect x="310" y="96" width="24" height="32" rx="2" fill="#e5e7eb"/>
+            <!-- logo -->
+            <text x="40" y="150" fill="#fff" font-weight="700" font-size="20">i55 XR</text>
+          </svg>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <div class="thumb">
+              <svg viewBox="0 0 160 100" aria-hidden="true">
+                <rect x="10" y="25" width="140" height="50" rx="10" fill="#111"/>
+              </svg>
+            </div>
+          </div>
+          <div class="col">
+            <div class="thumb">
+              <svg viewBox="0 0 160 100" aria-hidden="true">
+                <rect x="10" y="25" width="140" height="50" rx="6" fill="#333"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détails -->
+      <div class="col">
+        <div class="between">
+          <div class="price">€ 1 290</div>
+          <div class="meta">Livraison 48 h</div>
+        </div>
+        <p class="mt-2">Routeur industriel Haute dispo, supporte <strong>OPC UA</strong>, profils VLAN, VPN &amp; pare-feu.</p>
+
+        <!-- Spécifications (table légère) -->
+        <div class="table-wrap mt-2">
+          <table aria-label="Spécifications XR-200">
+            <tbody>
+              <tr><th>CPU</th><td>Quad 1.4 GHz</td></tr>
+              <tr><th>RAM</th><td>2 Go</td></tr>
+              <tr><th>Température</th><td>-20°C à +60°C</td></tr>
+              <tr><th>Réseau</th><td>4× RJ45 1G, 2× SFP</td></tr>
+              <tr><th>Certifications</th><td>CE, RoHS, ISO 9001</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Avantages -->
+        <ul class="feature-list mt-2">
+          <li class="feature"><span class="dot"></span> Redondance SIM / WAN</li>
+          <li class="feature"><span class="dot"></span> Gestion CLI & Web</li>
+          <li class="feature"><span class="dot"></span> Monitoring SNMP</li>
+        </ul>
+
+        <div class="mt-3">
+          <button class="btn primary">Ajouter au panier</button>
+          <button class="btn">Télécharger la fiche PDF</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LISTES avec icônes SVG (services, logos) ============ -->
+  <section class="grid mb-3">
+    <article class="card">
+      <h2 class="title mb-0">Services managés</h2>
+      <div class="subtitle">Ce que nous opérons pour vous</div>
+      <div class="mt-2 feature-list">
+        <div class="feature">
+          <!-- icône bouclier -->
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" fill="#111"/></svg>
+          Sécurité &amp; WAF <span class="tag">24/7</span>
+        </div>
+        <div class="feature">
+          <!-- icône cloud -->
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18h11a4 4 0 0 0 0-8h-.5A6.5 6.5 0 0 0 4 10.5 4.5 4.5 0 0 0 6 18z" fill="#111"/></svg>
+          Hébergement Docker <span class="tag blue">Traefik</span>
+        </div>
+        <div class="feature">
+          <!-- icône graph (logo-like, décoratif) -->
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="4" height="8" fill="#111"/><rect x="10" y="7" width="4" height="12" fill="#111"/><rect x="17" y="4" width="4" height="15" fill="#111"/></svg>
+          Observabilité &amp; SLA
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2 class="title mb-0">Partenaires</h2>
+      <div class="subtitle">Logos SVG inline</div>
+      <div class="row mt-2">
+        <div class="col">
+          <div class="thumb">
+            <svg viewBox="0 0 160 80" role="img" aria-label="Logo Alpha">
+              <rect x="10" y="10" width="140" height="60" rx="8" fill="#111"/>
+              <text x="80" y="50" text-anchor="middle" fill="#fff" font-size="22" font-weight="700">ALPHA</text>
+            </svg>
+          </div>
+        </div>
+        <div class="col">
+          <div class="thumb">
+            <svg viewBox="0 0 160 80" role="img" aria-label="Logo Beta">
+              <rect x="10" y="10" width="140" height="60" rx="8" fill="#e5e7eb"/>
+              <text x="80" y="50" text-anchor="middle" fill="#111" font-size="22" font-weight="700">BETA</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2 class="title mb-0">Alertes</h2>
+      <div class="subtitle">Notifications produit & système</div>
+      <div class="mt-2">
+        <div class="list-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#10b981"/></svg>
+          <div style="flex:1">Déploiement terminé <span class="meta">— 09:31</span></div>
+          <span class="tag">CI</span>
+        </div>
+        <div class="list-item">
+          <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#f59e0b"/></svg>
+          <div style="flex:1">Stock faible TX-18 <span class="meta">— 10:12</span></div>
+          <span class="tag warn">Stock</span>
+        </div>
+        <div class="list-item">
+          <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ef4444"/></svg>
+          <div style="flex:1">Incident réseau #4211 <span class="meta">— 10:47</span></div>
+          <span class="tag">Urgent</span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ FICHIERS (icônes SVG) ============ -->
+  <section id="fichiers" class="card mb-3">
+    <div class="between">
+      <h2 class="title mb-0">Documents produit</h2>
+      <div class="gap-2" style="display:flex">
+        <button class="btn">Uploader</button>
+        <button class="btn">Exporter ZIP</button>
+      </div>
+    </div>
+    <div class="grid mt-2">
+      <div class="card">
+        <div class="between">
+          <div class="title mb-0" style="font-size:16px">XR-200_Brochure.pdf</div>
+          <span class="tag blue">PDF</span>
+        </div>
+        <div class="mt-1 list-item">
+          <!-- Icône fichier PDF -->
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#e11d48"/>
+            <path d="M14 2v4h4" fill="#fff" opacity=".5"/>
+          </svg>
+          <div style="flex:1">
+            <div>PDF — 2.1 Mo</div>
+            <div class="meta">MAJ 02/08</div>
+          </div>
+          <button class="btn">Ouvrir</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="between">
+          <div class="title mb-0" style="font-size:16px">XR-200_Specs.xlsx</div>
+          <span class="tag">XLSX</span>
+        </div>
+        <div class="mt-1 list-item">
+          <!-- Icône fichier tableur -->
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#111"/>
+            <rect x="8" y="8" width="8" height="8" fill="#e5e7eb"/>
+            <path d="M8 12h8M12 8v8" stroke="#111" stroke-width="1"/>
+          </svg>
+          <div style="flex:1">
+            <div>Tableur — 420 Ko</div>
+            <div class="meta">MAJ 28/07</div>
+          </div>
+          <button class="btn">Télécharger</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="between">
+          <div class="title mb-0" style="font-size:16px">Photos XR-200</div>
+          <span class="tag">Dossier</span>
+        </div>
+        <div class="mt-1 list-item">
+          <!-- Icône dossier -->
+          <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H3z" fill="#e5e7eb" stroke="#111"/>
+          </svg>
+          <div style="flex:1">
+            <div>12 éléments</div>
+            <div class="meta">MAJ 01/08</div>
+          </div>
+          <button class="btn">Ouvrir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KANBAN (statique) ============ -->
+  <section id="kanban" class="kanban mb-3">
+    <div class="kan-col">
+      <div class="between mb-1"><strong>À faire</strong><span class="tag">3</span></div>
+      <div class="ticket">
+        <div class="between"><div>Intégrer fiche XR-200</div><span class="avatar">AL</span></div>
+        <div class="meta">Priorité: Haute</div>
+      </div>
+      <div class="ticket">
+        <div class="between"><div>Photo produit retouches</div><span class="avatar">MB</span></div>
+        <div class="meta">Priorité: Moyenne</div>
+      </div>
+      <div class="ticket">
+        <div class="between"><div>Traduction EN</div><span class="avatar">XS</span></div>
+        <div class="meta">Priorité: Basse</div>
+      </div>
+    </div>
+    <div class="kan-col">
+      <div class="between mb-1"><strong>En cours</strong><span class="tag blue">2</span></div>
+      <div class="ticket">
+        <div class="between"><div>Refonte page “Catalogue”</div><span class="avatar">AL</span></div>
+        <div class="progress mt-1"><span style="width:45%"></span></div>
+      </div>
+      <div class="ticket">
+        <div class="between"><div>Contrats maintenance</div><span class="avatar">MB</span></div>
+        <div class="progress mt-1"><span style="width:70%"></span></div>
+      </div>
+    </div>
+    <div class="kan-col">
+      <div class="between mb-1"><strong>Fait</strong><span class="tag">4</span></div>
+      <div class="ticket">
+        <div class="between"><div>Template facture</div><span class="avatar">XS</span></div>
+        <div class="meta">Clôturé 12/08</div>
+      </div>
+      <div class="ticket">
+        <div class="between"><div>Procédure SAV</div><span class="avatar">AL</span></div>
+        <div class="meta">Clôturé 09/08</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE (activités) ============ -->
+  <section id="timeline" class="card mb-3">
+    <h2 class="title mb-0">Activités récentes</h2>
+    <div class="subtitle">Journal système & métiers</div>
+    <div class="timeline mt-2">
+      <div class="tl-item">
+        <div class="between">
+          <div><strong>Commande #10241</strong> — statut <span class="tag blue">Payé</span></div>
+          <div class="meta">09:40</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="between">
+          <div><strong>CI</strong> — pipeline “catalogue” <span class="state success">succès</span></div>
+          <div class="meta">09:31</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="between">
+          <div>Stock TX-18 <span class="state warn">faible</span></div>
+          <div class="meta">09:12</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TABLEAU COMMANDES ============ -->
+  <section id="commandes" class="mb-3">
+    <div class="between mb-2">
+      <div>
+        <h2 class="title mb-0">Commandes récentes</h2>
+        <div class="subtitle">30 derniers jours</div>
+      </div>
+      <div class="gap-2" style="display:flex">
+        <button class="btn">Filtrer</button>
+        <button class="btn">Exporter CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table aria-label="Commandes récentes">
+        <thead>
+          <tr>
+            <th>Commande</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th><th>Commercial</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#10241</td><td>Acme SAS</td><td>12/08</td><td>€ 12 400</td>
+            <td><span class="tag">En cours</span></td><td><span class="avatar">AL</span></td>
+            <td class="table-actions"><span class="btn">Voir</span><span class="btn">PDF</span></td>
+          </tr>
+          <tr>
+            <td>#10238</td><td>Globex</td><td>10/08</td><td>€ 7 980</td>
+            <td><span class="tag blue">Payé</span></td><td><span class="avatar">MB</span></td>
+            <td class="table-actions"><span class="btn">Voir</span><span class="btn">PDF</span></td>
+          </tr>
+          <tr>
+            <td>#10233</td><td>Innotech</td><td>08/08</td><td>€ 22 150</td>
+            <td><span class="tag warn">En attente</span></td><td><span class="avatar">XS</span></td>
+            <td class="table-actions"><span class="btn">Voir</span><span class="btn">PDF</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="between mt-2">
+      <div class="meta">3 / 24</div>
+      <div class="gap-2" style="display:flex">
+        <button class="btn">Préc.</button>
+        <button class="btn">Suiv.</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ÉQUIPE ============ -->
+  <section id="equipe" class="grid mb-3">
+    <article class="card">
+      <h2 class="title mb-0">Équipe</h2>
+      <div class="subtitle">Commerciaux</div>
+      <div class="mt-2">
+        <div class="list-item">
+          <span class="avatar lg">AL</span>
+          <div style="flex:1">
+            <div class="between">
+              <div>Amélie Laurent</div>
+              <div class="meta">TJM: € 650</div>
+            </div>
+            <div class="meta">Île-de-France</div>
+          </div>
+          <span class="tag">Senior</span>
+        </div>
+        <div class="list-item">
+          <span class="avatar lg">MB</span>
+          <div style="flex:1">
+            <div class="between">
+              <div>Marc Bouchet</div>
+              <div class="meta">TJM: € 540</div>
+            </div>
+            <div class="meta">AURA</div>
+          </div>
+          <span class="tag blue">Key</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Carte média / actualité -->
+    <article class="card">
+      <h2 class="title mb-0">Actualités</h2>
+      <div class="subtitle">Blog & produits</div>
+      <div class="grid mt-2">
+        <div>
+          <div class="img"></div>
+          <div class="between mt-2"><div>Guide OPC UA</div><span class="meta">8 min</span></div>
+        </div>
+        <div>
+          <div class="img"></div>
+          <div class="between mt-2"><div>Étude logistique</div><span class="meta">4 min</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Pricing -->
+    <article class="card">
+      <div class="between">
+        <h2 class="title mb-0">Plan Entreprise</h2>
+        <div class="pill-group"><span class="pill active">Mensuel</span><span class="pill">Annuel</span></div>
+      </div>
+      <div class="mt-2">
+        <div class="price">€ 679 <span class="subtitle">/mois</span></div>
+        <ul class="feature-list mt-2">
+          <li class="feature"><span class="dot"></span> Conseil stratégie SI</li>
+          <li class="feature"><span class="dot"></span> Audits récurrents</li>
+          <li class="feature"><span class="dot"></span> Reco matériel & Apps</li>
+        </ul>
+        <div class="mt-3">
+          <button class="btn primary">Choisir</button>
+          <button class="btn">Détails</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ FORMULAIRE & FAQ ============ -->
+  <section class="row mb-3">
+    <article class="card col">
+      <h2 class="title mb-0">Création client</h2>
+      <div class="subtitle">Formulaire simple</div>
+      <div class="mt-2" style="display:grid;gap:10px">
+        <label>Nom de la société
+          <input class="form-control mt-1" placeholder="Ex: i55" />
+        </label>
+        <label>Contact
+          <input class="form-control mt-1" placeholder="Nom Prénom" />
+        </label>
+        <label>Email
+          <input class="form-control mt-1" type="email" placeholder="nom@domaine.tld" />
+        </label>
+        <label>Statut
+          <select class="form-control mt-1">
+            <option>Prospect</option><option>Client</option><option>À valider</option>
+          </select>
+        </label>
+        <label>Notes
+          <textarea class="form-control mt-1" placeholder="Informations complémentaires..."></textarea>
+        </label>
+        <div class="between mt-2">
+          <div class="gap-2" style="display:flex">
+            <span class="tag">Prospect</span><span class="tag blue">Client</span><span class="tag warn">À valider</span>
+          </div>
+          <div class="gap-2" style="display:flex">
+            <button class="btn">Annuler</button><button class="btn primary">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article id="faq" class="card col">
+      <h2 class="title mb-0">FAQ</h2>
+      <div class="subtitle">Questions fréquentes</div>
+      <div class="mt-2">
+        <details class="mb-2">
+          <summary><strong>Comment demander un devis ?</strong></summary>
+          <div class="mt-1">Depuis la fiche produit, cliquez sur <em>“Détails”</em> puis <em>“Demander un devis”</em>.</div>
+        </details>
+        <details class="mb-2">
+          <summary><strong>Quels délais de livraison ?</strong></summary>
+          <div class="mt-1">48 h en France métropolitaine pour les produits en stock.</div>
+        </details>
+        <details>
+          <summary><strong>Comment accéder aux documents ?</strong></summary>
+          <div class="mt-1">Section “Fichiers” — brochures, spécifications et photos.</div>
+        </details>
+      </div>
+    </article>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="between">
+      <div class="meta">© 2025 i55 — Tous droits réservés.</div>
+      <div class="nav">
+        <a class="nav-item" href="#">Mentions</a>
+        <a class="nav-item" href="#">Confidentialité</a>
+        <a class="nav-item" href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+</body>
+</html>
