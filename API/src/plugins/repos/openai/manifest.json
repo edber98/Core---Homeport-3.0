@@ -1,0 +1,89 @@
+{
+  "providers": [
+    {
+      "key": "openai",
+      "name": "OpenAI",
+      "title": "OpenAI",
+      "iconClass": "fa-brands fa-openai",
+      "color": "#10A37F",
+      "tags": ["ai", "llm"],
+      "categories": ["AI"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants OpenAI",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "apiKey", "label": "API Key", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "baseUrl", "label": "Base URL (optionnel)", "col": { "xs": 24 } },
+          { "type": "text", "key": "organization", "label": "Organization (optionnel)", "col": { "xs": 24 } },
+          { "type": "text", "key": "defaultModel", "label": "Modèle par défaut", "col": { "xs": 24 }, "default": "gpt-4o-mini" }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "openai_chat_completion",
+      "name": "openaiChatCompletion",
+      "title": "Chat Completion",
+      "type": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "output": ["Success"],
+      "description": "Générer une complétion de chat (messages System/User)",
+      "args": {
+        "title": "Chat Completion",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
+          { "type": "textarea", "key": "system", "label": "Système", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "temperature", "label": "Température", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "openai_embeddings",
+      "name": "openaiEmbeddings",
+      "title": "Embeddings",
+      "type": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "output": ["Success"],
+      "description": "Générer des vecteurs d’embedding",
+      "args": {
+        "title": "Embeddings",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "text-embedding-3-small" },
+          { "type": "textarea", "key": "input", "label": "Texte (ou JSON array)", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+        ]
+      }
+    },
+    {
+      "key": "openai_image_generate",
+      "name": "openaiImageGenerate",
+      "title": "Image Generate",
+      "type": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "output": ["Success"],
+      "description": "Générer une image à partir d’un prompt",
+      "args": {
+        "title": "Image Generate",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-image-1" },
+          { "type": "textarea", "key": "prompt", "label": "Prompt", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "select", "key": "size", "label": "Taille", "col": { "xs": 24 }, "options": [
+            { "label": "256x256", "value": "256x256" },
+            { "label": "512x512", "value": "512x512" },
+            { "label": "1024x1024", "value": "1024x1024" }
+          ], "default": "1024x1024" }
+        ]
+      }
+    }
+  ]
+}
+

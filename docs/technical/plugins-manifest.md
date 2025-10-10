@@ -37,3 +37,4 @@ Examples
   - API/src/plugins/local/demo/manifest.json and functions (demo set aligned with frontend)
   - API/src/plugins/repos/github (simulated external repo) with a multi-handler file at functions/functions.js
   - API/src/plugins/local/crm (another local plugin with UI args forms in manifest and multi-handler file)
+  - API/src/plugins/repos/openai (real OpenAI provider and nodes: chat, embeddings, images)
