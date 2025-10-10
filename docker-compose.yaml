@@ -24,7 +24,7 @@ services:
       - OPENAI_MODEL=${OPENAI_MODEL}
       - HOST=0.0.0.0
     labels:
-      - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && PathPrefix(`/api`) && !PathPrefix(`/onlyoffice`)"
+      - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && PathPrefix(`/api`)&& PathPrefix(`/auth`) && !PathPrefix(`/onlyoffice`)"
       - "traefik.http.routers.kinn-backend.priority=20"
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-web"
@@ -41,7 +41,7 @@ services:
     image: kinn_homeport:${CI_COMMIT_REF_NAME}
     restart: always
     labels:
-      - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)  && PathPrefix(`/`) && !PathPrefix(`/api`)"
+      - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)  && PathPrefix(`/`) && !PathPrefix(`/api`) && !PathPrefix(`/auth`)"
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-web"
       - "traefik.http.services.kinn-homeport.loadbalancer.server.port=80"
