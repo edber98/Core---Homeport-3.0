@@ -14,7 +14,8 @@ build:
   tags: 
     - c4rbon_runner
   before_script:
-    - sh ./scripts/docker-delete.sh kinn-backend kinn_homeport
+    - sh ./scripts/docker-delete.sh kinn_homeport kinn_homeport
+    - sh ./scripts/docker-delete.sh kinn-backend kinn-backend
   script:
     - echo "🚀 Construction du backend"
     - docker build -t $BACK_IMAGE -f API/Dockerfile .
