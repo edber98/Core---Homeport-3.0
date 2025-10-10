@@ -160,7 +160,7 @@ Example SSE Sequence:
 1) Rules evaluation (compatible with frontend DynamicFormService.evalRule):
 
 ```ts
-// backend/src/ai/rules.ts (example)
+// API/src/ai/rules.ts (example)
 export type Rule = any;
 
 export function evalRule(rule: Rule, ctx: Record<string, any>): any {
@@ -189,7 +189,7 @@ export function evalRule(rule: Rule, ctx: Record<string, any>): any {
 2) JSON Patch validation & apply:
 
 ```ts
-// backend/src/ai/patch.ts (example)
+// API/src/ai/patch.ts (example)
 import { applyPatch, Operation } from 'fast-json-patch';
 import Ajv from 'ajv';
 
@@ -319,7 +319,7 @@ SSE Client:
 
 ## Provider Abstraction
 
-Module: `backend/src/ai/provider.ts` (plan)
+Module: `API/src/ai/provider.ts` (plan)
 - `generateStream({ prompt, seedSchema, constraints }): AsyncGenerator<AgentEvent>`
 - Implementation `openai-provider.ts` uses Chat Completions with function-like patterns; in local dev we can stub a heuristic generator.
 

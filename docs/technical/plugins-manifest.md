@@ -4,7 +4,7 @@ Goal
 - Dynamically import providers/apps and node templates into the backend and register function handlers executed by the flow engine.
 
 Repo Structure
-- Each repo folder under backend/src/plugins/local/* or backend/src/plugins/repos/* has:
+- Each repo folder under API/src/plugins/local/* or API/src/plugins/repos/* has:
   - manifest.json: describes providers and nodeTemplates with full UI metadata.
   - functions/*.js: CommonJS files exporting handler functions for templates.
 
@@ -34,6 +34,6 @@ Import Mechanism
 
 Examples
 - See:
-  - backend/src/plugins/local/demo/manifest.json and functions (demo set aligned with frontend)
-  - backend/src/plugins/repos/github (simulated external repo) with a multi-handler file at functions/functions.js
-  - backend/src/plugins/local/crm (another local plugin with UI args forms in manifest and multi-handler file)
+  - API/src/plugins/local/demo/manifest.json and functions (demo set aligned with frontend)
+  - API/src/plugins/repos/github (simulated external repo) with a multi-handler file at functions/functions.js
+  - API/src/plugins/local/crm (another local plugin with UI args forms in manifest and multi-handler file)

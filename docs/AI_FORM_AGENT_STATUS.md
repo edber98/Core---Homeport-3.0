@@ -9,21 +9,21 @@ Ce document synthétise ce qui a été mis en place pour l’agent IA de génér
 
 ## Backend — Implémentation actuelle
 - Endpoint SSE protégé JWT: `POST /api/ai/form/build`
-  - Fichier: `backend/src/modules/db/ai-form.js`
+  - Fichier: `API/src/modules/db/ai-form.js`
   - Comportement:
     - Auth requise via header `Authorization: Bearer <jwt>` (pas de query token côté frontend désormais).
     - Émet des événements SSE: `message` (commentary/steps/RAW), `snapshot` (schéma complet), `done`. En cas d’erreur provider: `error`.
     - Logs: `[ai-form][request]`, `[ai-form][sse]`, et logs d’erreurs provider.
     - Fallback: si la réponse ne contient pas `schema`, tentative d’utiliser l’objet complet s’il ressemble à un FormSchema.
 - Provider OpenAI (direct)
-  - Fichier: `backend/src/ai/openai.js`
+  - Fichier: `API/src/ai/openai.js`
   - Appel API Chat Completions (model configurable via `OPENAI_MODEL`, défaut `gpt-4o-mini`).
   - Prompt « strict »: décrit exhaustivement le format Dynamic Form (FormUI, Steps, Sections, Inputs, validators, règles JSON minimalistes, sémantique disabledIf>required), avec exemples validés (flat, section_array, steps). Sortie attendue: `{ commentary, steps, schema }`.
   - Parsing robuste de la réponse du modèle:
     - Cherche un bloc ```json …```, sinon JSON direct, sinon heuristique entre `{ … }`.
     - Log du RAW (début) via `[openai][raw]` pour diagnostiquer.
 - Loader `.env` (clé OpenAI)
-  - Fichier: `backend/src/config/load-env.js`
+  - Fichier: `API/src/config/load-env.js`
   - Recherche `backend/.env` et logue `[env] loaded .env OPENAI_KEY: present/absent`.
 
 ## Frontend — Implémentation actuelle
@@ -69,9 +69,9 @@ Ce document synthétise ce qui a été mis en place pour l’agent IA de génér
 
 ## Fichiers modifiés/ajoutés (liste)
 - Backend
-  - `backend/src/modules/db/ai-form.js` — endpoint SSE agent
-  - `backend/src/ai/openai.js` — provider OpenAI
-  - `backend/src/config/load-env.js` — loader .env robuste + log clé OpenAI
+  - `API/src/modules/db/ai-form.js` — endpoint SSE agent
+  - `API/src/ai/openai.js` — provider OpenAI
+  - `API/src/config/load-env.js` — loader .env robuste + log clé OpenAI
 - Frontend
   - `src/app/features/debug/ai-form-agent-debug.component.ts` — page Debug SSE + logs + preview
   - `src/app/app.routes.ts` — route `/debug/ai-form-agent`

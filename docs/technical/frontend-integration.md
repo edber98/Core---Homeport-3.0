@@ -67,7 +67,7 @@ Plugins (Repo-like)
 - Directory structure per repo:
   - manifest.json: providers[] and nodeTemplates[] (full UI metadata)
   - functions/*.js: exports.key and exports.run(node, msg, inputs)
-- Loader scans backend/src/plugins/local/* and backend/src/plugins/repos/*
+- Loader scans API/src/plugins/local/* and API/src/plugins/repos/*
 - API:
   - GET /api/plugins
   - POST /api/plugins/reload (admin)

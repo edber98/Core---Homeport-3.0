@@ -45,11 +45,11 @@ Ce document explique, étape par étape, le cheminement complet lorsqu’on lanc
 ## Backend — parcours détaillé (mémoire et Mongo)
 
 Fichiers principaux:
-- Mémoire: `backend/src/modules/runs.js`
-- Mongo: `backend/src/modules/db/runs.js`
-- Auth: `backend/src/auth/jwt.js` (supporte `?token=` pour SSE/WS)
-- SSE/WS: `backend/src/realtime/ws.js`, `backend/src/realtime/socketio.js`
-- Moteur: `backend/src/engine/index.js` (`runFlow`)
+- Mémoire: `API/src/modules/runs.js`
+- Mongo: `API/src/modules/db/runs.js`
+- Auth: `API/src/auth/jwt.js` (supporte `?token=` pour SSE/WS)
+- SSE/WS: `API/src/realtime/ws.js`, `API/src/realtime/socketio.js`
+- Moteur: `API/src/engine/index.js` (`runFlow`)
 
 ### 1) POST /api/flows/:flowId/runs
 
@@ -122,6 +122,6 @@ Logs ajoutés:
 ## Annexes
 
 - Environments: `src/environments/environment*.ts` → `apiBaseUrl`, `useBackend`
-- Auth SSE: `backend/src/auth/jwt.js` accepte `?token=`
-- Moteur: `backend/src/engine/index.js` (`runFlow`)
+- Auth SSE: `API/src/auth/jwt.js` accepte `?token=`
+- Moteur: `API/src/engine/index.js` (`runFlow`)
 
