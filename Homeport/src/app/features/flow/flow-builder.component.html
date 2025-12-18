@@ -90,17 +90,33 @@
                 </div>
               </div>
             </div>
-            <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
-              <ng-template #handleInTpl let-hctx>
-                <svg:g>
-                  <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                    [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
-                    stroke-width="1"></svg:circle>
-                </svg:g>
-              </ng-template>
-              <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+            <ng-container *ngIf="(ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
+              <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
+                <div class="in" *ngFor="let ih of ins">
+                  <ng-template #ihTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
+                </div>
+              </div>
             </ng-container>
+            <ng-template #singleIn>
+              <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+                <ng-template #handleInTpl let-hctx>
+                  <svg:g>
+                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                      [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
+                      stroke-width="1"></svg:circle>
+                  </svg:g>
+                </ng-template>
+                <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+              </ng-container>
+            </ng-template>
             <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
               <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
                 [ngClass]="{ error: out === 'err' }">
@@ -115,6 +131,20 @@
                   </svg:g>
                 </ng-template>
                 <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+              </div>
+            </div>
+            <!-- Link handles (targets on the right) for v2 -->
+            <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
+              <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                <div class="link-label">{{ lh.name }}</div>
+                <ng-template #linkTpl let-hctx>
+                  <svg:g>
+                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                      [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                  </svg:g>
+                </ng-template>
+                <handle position="right" type="target" [id]="lh.id" [template]="linkTpl" />
               </div>
             </div>
             <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">

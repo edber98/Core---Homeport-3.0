@@ -12,6 +12,12 @@ export class FlowGraphService {
       case 'start_form':
       case 'event':
       case 'endpoint':
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          // Only real outputs (exclude link handles which declare accepts/arrayField)
+          return (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any) => String(h.id));
+        }
         return ['out'];
       case 'loop': return ['loop_start', 'loop_end', 'end'];
       case 'condition': {
@@ -28,8 +34,14 @@ export class FlowGraphService {
           return ids;
         }
       }
-      case 'function':
       default: {
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          const ids = (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any) => String(h.id));
+          const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
+          return enableCatch ? ['err', ...ids] : ids;
+        }
         const outs: string[] | undefined = Array.isArray(tmpl.output) ? tmpl.output : undefined;
         const n = (outs && outs.length) ? outs.length : 1;
         const base = Array.from({ length: n }, (_, i) => String(i));
@@ -43,9 +55,15 @@ export class FlowGraphService {
   getOutputName(model: any, idxOrId: number | string): string {
     try {
       const tmpl = model?.templateObj || {};
-      const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
       if (typeof idxOrId === 'string' && idxOrId === 'err') return 'Error';
-      if ((tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') && String(idxOrId) === 'out') return 'Succes';
+      if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        const h = (tmpl.outputHandles as any[])
+          .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
+          .find((hh:any) => String(hh.id) === String(idxOrId));
+        return h?.name || '';
+      }
+      const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Success'];
+      if ((tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') && String(idxOrId) === 'out') return 'Success';
       const idx = (typeof idxOrId === 'string' && /^\d+$/.test(idxOrId)) ? parseInt(idxOrId, 10) : (typeof idxOrId === 'number' ? idxOrId : NaN);
       if (tmpl.type === 'condition') {
         const field = tmpl.output_array_field || 'items';
@@ -72,9 +90,16 @@ export class FlowGraphService {
       const src = (nodes || []).find(n => String(n.id) === String(sourceId));
       const model = src?.data?.model;
       const tmpl = model?.templateObj || {};
-      const names: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
+      if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        if (sourceHandle === 'err') return 'Error';
+        const h = (tmpl.outputHandles as any[])
+          .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
+          .find((hh:any) => String(hh.id) === String(sourceHandle));
+        return h?.name || '';
+      }
+      const names: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Success'];
       if (sourceHandle === 'err') return 'Error';
-      if (tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') return 'Succes';
+      if (tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') return 'Success';
       const idx = sourceHandle != null && /^\d+$/.test(String(sourceHandle)) ? parseInt(String(sourceHandle), 10) : NaN;
       if (tmpl.type === 'condition') {
         const field = tmpl.output_array_field || 'items';

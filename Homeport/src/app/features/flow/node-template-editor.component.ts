@@ -63,6 +63,11 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <nz-option nzValue="loop" nzLabel="loop"></nz-option>
               <nz-option nzValue="end" nzLabel="end"></nz-option>
               <nz-option nzValue="flow" nzLabel="flow"></nz-option>
+              <nz-option nzValue="agent" nzLabel="agent"></nz-option>
+              <nz-option nzValue="tool_ai" nzLabel="tool_ai"></nz-option>
+              <nz-option nzValue="memory" nzLabel="memory"></nz-option>
+              <nz-option nzValue="router" nzLabel="router"></nz-option>
+              <nz-option nzValue="choice" nzLabel="choice"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -111,7 +116,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         </nz-form-item>
       </div>
 
-      <!-- Function-specific options -->
+      <!-- Function-specific options (legacy v1 outputs kept for back-compat UI, but v2 handles sont recommandés) -->
       <div class="grid cols-2" *ngIf="form.get('type')?.value==='function'">
         <div>
           <div class="sub-header">
@@ -136,7 +141,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         </div>
         <div>
           <div class="sub-header">
-            <div class="card-title left"><span class="t">Sorties</span><span class="s">Liste des labels</span></div>
+            <div class="card-title left"><span class="t">Sorties (v1, obsolète)</span><span class="s">Préférez les handles v2 ci-dessous</span></div>
           </div>
           <div class="outputs" cdkDropList (cdkDropListDropped)="dropOutput($event)">
             <div class="row" *ngFor="let ctrl of outputs.controls; let i=index" [formGroup]="ctrl" cdkDrag>
@@ -145,6 +150,60 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <button nz-button nzDanger (click)="removeOutput(i)"><i nz-icon nzType="delete"></i></button>
             </div>
             <button nz-button class="apple-btn" (click)="addOutput()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- v2 Handles Editor -->
+      <div class="ins-section-header">
+        <div class="card-title"><span class="t">Handles v2</span><span class="s">Entrées / Sorties typées</span></div>
+      </div>
+      <div class="grid cols-2">
+        <div>
+          <div class="sub-header"><div class="card-title left"><span class="t">Entrées</span><span class="s">inputHandles</span></div></div>
+          <div class="outputs">
+            <div class="row" *ngFor="let ctrl of inputHandles.controls; let i=index" [formGroup]="ctrl">
+              <input nz-input formControlName="id" placeholder="id (ex: in, tools)" style="max-width:140px"/>
+              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
+              <input nz-input formControlName="type" placeholder="Type (ex: any, ai_tool)" style="max-width:160px"/>
+              <input nz-input formControlName="accepts" placeholder="Accepts (CSV)" style="max-width:160px"/>
+              <label nz-checkbox formControlName="multiple">multiple</label>
+              <button nz-button nzDanger (click)="removeInputHandle(i)"><i nz-icon nzType="delete"></i></button>
+            </div>
+            <button nz-button class="apple-btn" (click)="addInputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une entrée</span></button>
+          </div>
+        </div>
+        <div>
+          <div class="sub-header"><div class="card-title left"><span class="t">Sorties</span><span class="s">outputHandles</span></div></div>
+          <div class="outputs">
+            <div class="row" *ngFor="let ctrl of outputHandles.controls; let i=index" [formGroup]="ctrl">
+              <input nz-input formControlName="id" placeholder="id (ex: ok, memory)" style="max-width:140px"/>
+              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
+              <input nz-input formControlName="type" placeholder="Type (ex: any, ai_memory)" style="max-width:160px"/>
+              <label nz-checkbox formControlName="multiple">multiple</label>
+              <button nz-button nzDanger (click)="removeOutputHandle(i)"><i nz-icon nzType="delete"></i></button>
+            </div>
+            <button nz-button class="apple-btn" (click)="addOutputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Linked Handles (cibles) -->
+      <div class="ins-section-header">
+        <div class="card-title"><span class="t">Linked Handles</span><span class="s">Cibles typées (ex: Tools, Memory)</span></div>
+      </div>
+      <div class="grid cols-1">
+        <div>
+          <div class="outputs">
+            <div class="row" *ngFor="let ctrl of linkedHandles.controls; let i=index" [formGroup]="ctrl">
+              <input nz-input formControlName="id" placeholder="id (ex: tools)" style="max-width:140px"/>
+              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
+              <input nz-input formControlName="type" placeholder="Type accepté (ex: ai_tool)" style="max-width:160px"/>
+              <input nz-input formControlName="accepts" placeholder="Accepts (CSV)" style="max-width:160px"/>
+              <label nz-checkbox formControlName="multiple">multiple</label>
+              <button nz-button nzDanger (click)="removeLinkedHandle(i)"><i nz-icon nzType="delete"></i></button>
+            </div>
+            <button nz-button class="apple-btn" (click)="addLinkedHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter un link</span></button>
           </div>
         </div>
       </div>
@@ -285,6 +344,9 @@ export class NodeTemplateEditorComponent implements OnInit {
       allow_without_credentials: new FormControl<boolean>(false, { nonNullable: true }),
       output_array_field: new FormControl<string>('items'),
       output: this.fb.array<FormGroup<any>>([]),
+      inputHandles: this.fb.array<FormGroup<any>>([]),
+      outputHandles: this.fb.array<FormGroup<any>>([]),
+      linkedHandles: this.fb.array<FormGroup<any>>([]),
       fb_preset_tpl: new FormControl<boolean>(true, { nonNullable: true }),
       show_args_json: new FormControl<boolean>(false, { nonNullable: true })
     });
@@ -348,6 +410,22 @@ export class NodeTemplateEditorComponent implements OnInit {
   addOutput(v: string = '') { this.outputs.push(this.fb.group({ value: this.fb.control(v, { nonNullable: true }) })); }
   removeOutput(i: number) { this.outputs.removeAt(i); }
 
+  get inputHandles(): FormArray<FormGroup<any>> { return this.form.get('inputHandles') as any; }
+  get outputHandles(): FormArray<FormGroup<any>> { return this.form.get('outputHandles') as any; }
+  get linkedHandles(): FormArray<FormGroup<any>> { return this.form.get('linkedHandles') as any; }
+  addInputHandle(v: any = { id: '', name: '', type: 'any', accepts: '', multiple: false }) {
+    this.inputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), accepts: this.fb.control(v.accepts), multiple: this.fb.control(!!v.multiple) }));
+  }
+  removeInputHandle(i: number) { this.inputHandles.removeAt(i); }
+  addOutputHandle(v: any = { id: '', name: '', type: 'any', multiple: false }) {
+    this.outputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  }
+  removeOutputHandle(i: number) { this.outputHandles.removeAt(i); }
+  addLinkedHandle(v: any = { id: '', name: '', type: 'any', accepts: '', multiple: true }) {
+    this.linkedHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), accepts: this.fb.control(v.accepts), multiple: this.fb.control(!!v.multiple) }));
+  }
+  removeLinkedHandle(i: number) { this.linkedHandles.removeAt(i); }
+
   dropOutput(ev: CdkDragDrop<any>) {
     const prev = this.outputs.at(ev.previousIndex);
     if (!prev) return;
@@ -401,6 +479,12 @@ export class NodeTemplateEditorComponent implements OnInit {
       this.outputs.clear();
       (t.output || []).forEach(o => this.addOutput(o));
     }
+    // v2 handles
+    try {
+      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
+      this.outputHandles.clear(); (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple }));
+      this.linkedHandles.clear(); (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
+    } catch {}
     this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
       // @ts-ignore
@@ -462,6 +546,10 @@ export class NodeTemplateEditorComponent implements OnInit {
     let args: any = {};
     try { args = this.argsJson && this.argsJson.trim().length ? JSON.parse(this.argsJson) : {}; } catch { args = {}; }
     const generated = v.id || this.makeIdFromName(v.name);
+    // Build v2 handles
+    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: (String(h.accepts||'').split(',').map((s:string)=>s.trim()).filter(Boolean)) }))
+    const outHs = (this.outputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'ok', name: h.name || h.id || 'Ok', type: h.type || 'any', multiple: !!h.multiple }))
+    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: (String(h.accepts||'').split(',').map((s:string)=>s.trim()).filter(Boolean)) }))
     const tpl: NodeTemplate = {
       id: generated,
       // also store _id for external systems expecting it
@@ -479,7 +567,10 @@ export class NodeTemplateEditorComponent implements OnInit {
       authorize_catch_error: v.type === 'function' ? !!v.authorize_catch_error : undefined,
       authorize_skip_error: v.type === 'function' ? !!v.authorize_skip_error : undefined,
       allowWithoutCredentials: v.type === 'function' ? !!v.allow_without_credentials : undefined,
-      output: v.type === 'function' ? (this.outputs.value || []).map((x:any)=>x.value).filter((s:string)=>!!s && s.trim().length) : undefined,
+      inputHandles: inHs.length ? inHs : undefined,
+      outputHandles: outHs.length ? outHs : undefined,
+      linkedHandles: linkHs.length ? linkHs : undefined,
+      output: undefined,
       output_array_field: v.type === 'condition' ? (v.output_array_field || 'items') : undefined,
       args
     } as any;

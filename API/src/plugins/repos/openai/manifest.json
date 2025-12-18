@@ -27,9 +27,11 @@
       "name": "openaiChatCompletion",
       "title": "Chat Completion",
       "type": "function",
+      "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "output": ["Success"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "json" }],
       "description": "Générer une complétion de chat (messages System/User)",
       "args": {
         "title": "Chat Completion",
@@ -44,13 +46,53 @@
       }
     },
     {
+      "key": "openai_memory_static",
+      "name": "openaiMemoryStatic",
+      "title": "Memory (Static)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "outputHandles": [ { "id": "memory", "name": "Memory", "type": "ai_memory" } ],
+      "description": "Définir une mémoire statique (texte)",
+      "args": {
+        "title": "Memory (Static)",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "textarea", "key": "text", "label": "Texte de mémoire", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] }
+        ]
+      }
+    },
+    {
+      "key": "openai_tool_define",
+      "name": "openaiToolDefine",
+      "title": "Tool (LangChain)",
+      "type": "tool_ai",
+      "nodeKind": "tool_ai",
+      "category": "AI",
+      "providerKey": "openai",
+      "outputHandles": [ { "id": "tool", "name": "Tool", "type": "ai_tool" } ],
+      "description": "Définir un outil LangChain (nom, description, schéma)",
+      "args": {
+        "title": "Tool (LangChain)",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom de l'outil", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "parameters", "label": "Paramètres (JSON Schema)", "col": { "xs": 24 }, "default": "{}" }
+        ]
+      }
+    },
+    {
       "key": "openai_embeddings",
       "name": "openaiEmbeddings",
       "title": "Embeddings",
       "type": "function",
+      "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "output": ["Success"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_vector" }],
       "description": "Générer des vecteurs d’embedding",
       "args": {
         "title": "Embeddings",
@@ -66,9 +108,11 @@
       "name": "openaiImageGenerate",
       "title": "Image Generate",
       "type": "function",
+      "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "output": ["Success"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_image" }],
       "description": "Générer une image à partir d’un prompt",
       "args": {
         "title": "Image Generate",
@@ -84,6 +128,58 @@
         ]
       }
     }
+    ,
+    {
+      "key": "openai_memory_embed",
+      "name": "openaiMemoryEmbed",
+      "title": "Memory (Embeddings)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        { "id": "in", "name": "Text", "type": "text" }
+      ],
+      "outputHandles": [
+        { "id": "memory", "name": "Memory", "type": "ai_memory" }
+      ],
+      "description": "Indexer un texte en vecteurs (embeddings)",
+      "args": {
+        "title": "Memory Embeddings",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "textarea", "key": "text", "label": "Texte (si non fourni en entrée)", "col": { "xs": 24 } },
+          { "type": "text", "key": "model", "label": "Modèle d'embeddings", "col": { "xs": 24 }, "default": "text-embedding-3-small" }
+        ]
+      }
+    }
+    ,
+    {
+      "key": "openai_agent",
+      "name": "openaiAgent",
+      "title": "Agent OpenAI",
+      "type": "agent",
+      "nodeKind": "agent",
+      "category": "AI",
+      "providerKey": "openai",
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "linkedHandles": [
+        { "id": "tools", "name": "Tools", "type": "ai_tool", "multiple": true, "accepts": ["ai_tool"] },
+        { "id": "memory", "name": "Memory", "type": "ai_memory", "multiple": true, "accepts": ["ai_memory"] }
+      ],
+      "description": "Agent OpenAI consommant Memory/Tools",
+      "args": {
+        "title": "Agent OpenAI",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
+          { "type": "textarea", "key": "system", "label": "Système", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "temperature", "label": "Température", "col": { "xs": 24 }, "default": 0.7 }
+        ]
+      }
+    }
   ]
 }
-

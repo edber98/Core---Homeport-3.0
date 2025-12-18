@@ -42,8 +42,8 @@ const builtinRegistry = {
   pdf: async (node, msg, inputs) => ({ pdfGenerated: true, meta: { nodeId: node.id } }),
 };
 
-function buildGraph(flow){ const nodesById = new Map(); const outEdges = new Map(); for (const n of (flow.nodes||[])){ n.model = n.data?.model || n.model || n.data || {}; nodesById.set(n.id, n); outEdges.set(n.id, []); } for (const e of (flow.edges||[])){ const src = e.source, tgt = e.target; if (!nodesById.has(src) || !nodesById.has(tgt)) continue; const labelText = e.edgeLabels?.center?.data?.text ?? e.label ?? ''; outEdges.get(src).push({ target: tgt, labelText: String(labelText).trim(), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }); } return { nodesById, outEdges }; }
-function findStartNode(nodesById){ for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'start') return n; } for (const n of nodesById.values()){ if (String(n.id).toLowerCase().includes('start')) return n; } return [...nodesById.values()][0] || null; }
+function buildGraph(flow){ const nodesById = new Map(); const outEdges = new Map(); const inEdges = new Map(); for (const n of (flow.nodes||[])){ n.model = n.data?.model || n.model || n.data || {}; nodesById.set(n.id, n); outEdges.set(n.id, []); inEdges.set(n.id, []); } for (const e of (flow.edges||[])){ const src = e.source, tgt = e.target; if (!nodesById.has(src) || !nodesById.has(tgt)) continue; const labelText = e.edgeLabels?.center?.data?.text ?? e.label ?? ''; const obj = { target: tgt, labelText: String(labelText).trim(), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle, source: src }; outEdges.get(src).push(obj); inEdges.get(tgt).push(obj); } return { nodesById, outEdges, inEdges }; }
+function findStartNode(nodesById){ for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.nodeKind) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'start') return n; } for (const n of nodesById.values()){ if (String(n.id).toLowerCase().includes('start')) return n; } return [...nodesById.values()][0] || null; }
 
 function evaluateCondition(node, initialContext, msg){
   const ctx = node.model?.context || {};
@@ -74,7 +74,7 @@ function evaluateCondition(node, initialContext, msg){
 
 // Optionally, initialContext may provide an async getCredentials(node) => { values: object } | object | null
 async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
-  const { nodesById, outEdges } = buildGraph(flow);
+  const { nodesById, outEdges, inEdges } = buildGraph(flow);
   if (nodesById.size === 0) throw new Error('Flow vide');
   const start = findStartNode(nodesById); if (!start) throw new Error('Nœud start introuvable');
 
@@ -85,8 +85,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
     const node = nodesById.get(curId); if (!node) return;
     if (seen.has(curId)) return; seen.add(curId);
     const tObj = node.model?.templateObj || {};
-    const kindFromName = normalizeNodeKind(tObj.name);
-    const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(node.model?.type) || normalizeNodeKind(node.type);
+    const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name);
+    const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(node.model?.nodeKind) || normalizeNodeKind(node.model?.type) || normalizeNodeKind(node.type);
     let rawKey = '';
     if (nType === 'function'){
       rawKey = node.model?.template || tObj?.template?.id || tObj?.template?.name || (String(tObj.id||'').toLowerCase() !== 'function' ? tObj.id : '') || node.model?.kind || node.model?.name || '';
@@ -126,7 +126,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const outs = outEdges.get(node.id) || [];
       if (chosen != null){
         const picks = Array.isArray(chosen) ? chosen : [chosen];
-        const targets = picks.map((pick, idx) => ({ next: outs.find(o => o.labelText === String(pick)), idx })).filter(x => !!x.next).map(x => ({ target: x.next.target, idx: x.idx }));
+        // Prefer v2 routing by sourceHandle id; no legacy label routing
+        const targets = picks.map((pick, idx) => ({ next: outs.find(o => String(o.sourceHandle || '').trim() === String(pick)), idx })).filter(x => !!x.next).map(x => ({ target: x.next.target, idx: x.idx }));
         // Emit edges taken for visualization
         for (const t of targets){ await send({ type: 'edge.taken', sourceId: node.id, targetId: t.target }); }
         if (targets.length === 1) {
@@ -136,7 +137,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
         }
       }
       return;
-    } else if (nType === 'function'){
+    } else if (nType === 'function' || nType === 'agent' || nType === 'tool' || nType === 'tool_ai' || nType === 'memory'){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const evalCtx = buildEvalContext(initialContext, msg);
@@ -163,6 +164,21 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
               metaForFn = { credentials: values };
             }
           }
+        } catch {}
+        // Gather incoming results by target handle id (v2 graph)
+        try {
+          const incoming = { byHandle: {}, flat: [] };
+          const arr = inEdges.get(node.id) || [];
+          for (const ie of arr){
+            const srcId = ie.source; const res = msg && msg[srcId] ? msg[srcId] : undefined;
+            if (res !== undefined){
+              incoming.flat.push({ sourceId: srcId, sourceHandle: ie.sourceHandle, targetHandle: ie.targetHandle, result: res });
+              const th = String(ie.targetHandle || '');
+              if (!incoming.byHandle[th]) incoming.byHandle[th] = [];
+              incoming.byHandle[th].push(res);
+            }
+          }
+          metaForFn = { ...(metaForFn || {}), incoming };
         } catch {}
         try {
           try { console.log('[engine] fn opts', { node: node.id, hasCredentials: !!metaForFn }); } catch {}

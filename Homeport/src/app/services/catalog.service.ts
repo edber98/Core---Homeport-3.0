@@ -16,7 +16,7 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 
 export type NodeTemplate = {
   id: string;
-  type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
+  type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow' | 'agent' | 'tool_ai' | 'memory' | 'router' | 'choice';
   name: string;           // technical identifier (no spaces)
   // UI/metadata
   title?: string;         // display title on node
@@ -29,6 +29,11 @@ export type NodeTemplate = {
   description?: string;
   // Behavior and configuration
   args?: any;
+  // v2 handles
+  inputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
+  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string }>;
+  linkedHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
+  // legacy v1 (deprecated)
   output?: string[];
   authorize_catch_error?: boolean;
   // New: allows a node to expose a "skip error" behavior (runtime will ignore errors)
@@ -177,7 +182,7 @@ export class CatalogService {
         const nameNoSpace = sanitize(t.name || t.key);
         const tpl: NodeTemplate = {
           id: t.key,
-          type: t.type as any,
+          type: ((t.nodeKind || t.type) as any),
           // technical identifier used by runtime (no spaces)
           name: nameNoSpace,
           // UI metadata
@@ -190,6 +195,9 @@ export class CatalogService {
           tags: t.tags || [],
           group: t.group,
           args: t.args,
+          inputHandles: t.inputHandles as any,
+          outputHandles: t.outputHandles as any,
+          linkedHandles: (t as any).linkedHandles as any,
           output: t.output,
           authorize_catch_error: t.authorize_catch_error,
           authorize_skip_error: t.authorize_skip_error,
@@ -221,10 +229,15 @@ export class CatalogService {
         tags: tpl.tags,
         group: tpl.group,
         type: tpl.type,
+        nodeKind: tpl.type,
+        schemaVersion: 2,
         category: tpl.category,
         providerKey: tpl.appId,
         args: tpl.args,
-        output: tpl.output,
+        inputHandles: tpl.inputHandles,
+        outputHandles: tpl.outputHandles,
+        linkedHandles: (tpl as any).linkedHandles,
+        output: undefined,
         authorize_catch_error: tpl.authorize_catch_error,
         authorize_skip_error: tpl.authorize_skip_error,
         allowWithoutCredentials: tpl.allowWithoutCredentials,

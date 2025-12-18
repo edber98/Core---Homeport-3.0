@@ -57,6 +57,13 @@ import { Subscription } from 'rxjs';
                   <handle position="bottom" type="source" [id]="out" [template]="hTpl"></handle>
                 </div>
               </div>
+              <!-- Linked handles (targets on right) -->
+              <div class="links" *ngIf="(ctx.node.data.model.templateObj?.linkedHandles || []).length as lnkCount">
+                <div class="link" *ngFor="let lh of ctx.node.data.model.templateObj.linkedHandles">
+                  <div class="link-label">{{ lh.name }}</div>
+                  <handle position="right" type="target" [id]="lh.id"></handle>
+                </div>
+              </div>
               <div class="exec-badge" *ngIf="ctx.node.data.execStatus as st">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
@@ -193,13 +200,19 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
     } catch { return this.nodes || []; }
   }
 
-  inputId(tmpl: any): string | null { if (!tmpl) return null; return (tmpl.type === 'start' || tmpl.type === 'start_form') ? null : 'in'; }
+  inputId(tmpl: any): string | null {
+    if (!tmpl) return null;
+    if (tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') return null;
+    if (Array.isArray(tmpl.inputHandles) && tmpl.inputHandles.length) return String(tmpl.inputHandles[0].id || 'in');
+    return 'in';
+  }
   outputIds(model: any): string[] {
     const tmpl = model?.templateObj || {};
     switch (tmpl.type) {
       case 'end': return [];
       case 'start':
       case 'start_form':
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) return (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
         return ['out'];
       case 'loop': return ['loop_start', 'loop_end', 'end'];
       case 'condition': {
@@ -209,6 +222,11 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
       }
       case 'function':
       default: {
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          const ids = (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
+          const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
+          return enableCatch ? ['err', ...ids] : ids;
+        }
         const outs: string[] | undefined = Array.isArray(tmpl.output) ? tmpl.output : undefined;
         const n = (outs && outs.length) ? outs.length : 1;
         const base = Array.from({ length: n }, (_, i) => String(i));

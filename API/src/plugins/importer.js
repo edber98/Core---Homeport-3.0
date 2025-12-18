@@ -64,19 +64,41 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
   for (const t of (m.nodeTemplates || [])){
     const key = t.key; if (!key) continue;
     const argsWithExpr = enableExpressionsOnSchema(t.args || {});
+    // v2 detection: presence of handles or nodeKind
+    const isV2 = Array.isArray(t.inputHandles) || Array.isArray(t.outputHandles) || Array.isArray(t.linkedHandles) || !!t.nodeKind || t.schemaVersion === 2;
+    // Convert v1 outputs to v2 handles if needed
+    const toV2Handles = (tpl) => {
+      const outs = Array.isArray(tpl.output) ? tpl.output : [];
+      const mkId = (s) => String((s || '').toString().trim().toLowerCase().replace(/[^a-z0-9_]+/g,'_') || 'ok');
+      const oHandles = outs.length ? outs.map(n => ({ id: mkId(n), name: n, type: 'any' })) : [{ id: 'ok', name: 'Success', type: 'any' }];
+      // Carry over array_field if present
+      if (tpl.output_array_field && oHandles[0]) oHandles[0].arrayField = tpl.output_array_field;
+      return { inputHandles: [{ id: 'in', name: 'In', type: 'any' }], outputHandles: oHandles, nodeKind: tpl.type };
+    };
+    // Normalize v2 fields and split any legacy link-like entries from outputHandles into linkedHandles
+    let v2;
+    if (isV2) {
+      const inHs = Array.isArray(t.inputHandles) ? t.inputHandles : undefined;
+      const rawOut = Array.isArray(t.outputHandles) ? t.outputHandles : [];
+      const outHs = rawOut.filter((h) => !(Array.isArray(h?.accepts) || h?.arrayField));
+      const linkHs = (t.linkedHandles && Array.isArray(t.linkedHandles)) ? t.linkedHandles : rawOut.filter((h) => (Array.isArray(h?.accepts) || h?.arrayField)).map((h) => ({ id: h.id, name: h.name, type: h.type, multiple: h.multiple, accepts: h.accepts }));
+      v2 = { inputHandles: inHs || undefined, outputHandles: outHs.length ? outHs : undefined, linkedHandles: linkHs.length ? linkHs : undefined, nodeKind: t.nodeKind || t.type, schemaVersion: 2 };
+    } else {
+      v2 = { ...toV2Handles(t), linkedHandles: undefined, schemaVersion: 2 };
+    }
     const checksumArgs = checksumJSON(argsWithExpr || {});
-    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, output: t.output || [], allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || null });
+    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, nodeKind: v2.nodeKind, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles });
     const existing = await NodeTemplate.findOne({ key });
     // Normalize name/title/description
     const normName = toCamelCase(t.name || key);
     const normTitle = t.title || humanizeTitle(normName);
     const normDesc = t.description || `${normTitle} node`;
-    const base = { key, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, output: t.output || [], authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || null, checksumArgs, checksumFeature };
+    const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, checksumArgs, checksumFeature };
     if (!existing){
       if (!dryRun){ await NodeTemplate.create({ ...base, repoId: repo && repo.id || undefined, repoName: repo && repo.name || undefined }); }
       summary.nodeTemplates.created++;
     } else {
-      const eq = existing.checksumArgs === checksumArgs && existing.checksumFeature === checksumFeature && existing.providerKey === base.providerKey && existing.appName === base.appName && existing.title === base.title && existing.subtitle === base.subtitle && existing.icon === base.icon && existing.description === base.description && (existing.tags || []).join(',') === (base.tags || []).join(',') && existing.group === base.group && JSON.stringify(existing.args || {}) === JSON.stringify(base.args || {});
+      const eq = existing.checksumArgs === checksumArgs && existing.checksumFeature === checksumFeature && existing.providerKey === base.providerKey && existing.appName === base.appName && existing.title === base.title && existing.subtitle === base.subtitle && existing.icon === base.icon && existing.description === base.description && (existing.tags || []).join(',') === (base.tags || []).join(',') && existing.group === base.group && JSON.stringify(existing.args || {}) === JSON.stringify(base.args || {}) && JSON.stringify(existing.inputHandles || []) === JSON.stringify(base.inputHandles || []) && JSON.stringify(existing.outputHandles || []) === JSON.stringify(base.outputHandles || []) && JSON.stringify(existing.linkedHandles || []) === JSON.stringify(base.linkedHandles || []);
       if (!eq){ if (!dryRun){ Object.assign(existing, base); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } await existing.save(); } summary.nodeTemplates.updated++; } else { summary.nodeTemplates.skipped++; }
     }
   }

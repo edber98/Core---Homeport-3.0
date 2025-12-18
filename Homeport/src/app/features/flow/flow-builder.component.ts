@@ -52,7 +52,9 @@ export class FlowBuilderComponent {
 
   nodes: any[] = [];
   edges: Edge[] = [];
-  connectionSettings: ConnectionSettings = {};
+  connectionSettings: ConnectionSettings = {
+    validator: (c) => this.validateConnection(c)
+  };
   private errorNodes = new Set<string>();
 
   @ViewChild('flowHost', { static: false }) flowHost?: ElementRef<HTMLElement>;
@@ -818,11 +820,30 @@ export class FlowBuilderComponent {
   inputId(tmpl: any): string | null {
     if (!tmpl) return null;
     const ty = String(tmpl.type || '').toLowerCase();
-    return (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint') ? null : 'in';
+    if (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint') return null;
+    if (Array.isArray(tmpl.inputHandles) && tmpl.inputHandles.length) return String(tmpl.inputHandles[0].id || 'in');
+    return 'in';
   }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
+  private _linkCache = new Map<string, { sig: string; links: Array<{ id: string; name: string; type: string }> }>();
+  linkHandlesForNode(nodeId: string, model: any): Array<{ id: string; name: string; type: string }> {
+    try {
+      const tmpl = model?.templateObj || {};
+      const linksArr: any[] = Array.isArray((tmpl as any).linkedHandles) ? (tmpl as any).linkedHandles : [];
+      const arr: any[] = linksArr.length ? linksArr : (Array.isArray(tmpl.outputHandles) ? (tmpl.outputHandles as any[]).filter((h:any)=> Array.isArray(h?.accepts)) : []);
+      const sig = JSON.stringify(arr);
+      const key = String(nodeId);
+      const cached = this._linkCache.get(key);
+      if (cached && cached.sig === sig) return cached.links;
+      const links = arr
+        .filter((h:any) => Array.isArray(h?.accepts))
+        .map((h:any) => ({ id: String(h.id), name: h.name || h.id, type: h.type || 'any' }));
+      this._linkCache.set(key, { sig, links });
+      return links;
+    } catch { return []; }
+  }
   hasPredecessor(nodeId?: string | null): boolean {
     try { const id = String(nodeId || ''); if (!id) return false; return (this.edges || []).some(e => String(e.target) === id); } catch { return false; }
   }
@@ -3317,5 +3338,45 @@ export class FlowBuilderComponent {
       if (input) input.value = '';
     };
     reader.readAsText(file);
+  }
+  // v2 typing — validate connections by handle types
+  private getHandleType(nodeId: string, handleId: string, direction: 'source'|'target'): string | null {
+    try {
+      const n = this.nodes.find((nn: any) => String(nn.id) === String(nodeId));
+      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const arr = direction === 'source' ? (tpl.outputHandles || []) : (tpl.inputHandles || []);
+      const h = (arr as any[]).find((hh: any) => String(hh?.id) === String(handleId));
+      // Fallbacks: default handles when none are declared in template
+      if (!h) {
+        // Default source handle (e.g., start/out): assume any
+        if (direction === 'source') return 'any';
+        // Default target handle 'in' when no inputHandles defined
+        if (direction === 'target' && String(handleId) === 'in') return 'any';
+      }
+      return h?.type || 'any';
+    } catch { return null; }
+  }
+  private validateConnection(c: Connection): boolean {
+    try {
+      const sType = this.getHandleType(String(c.source), String(c.sourceHandle || ''), 'source') || 'any';
+      const tType = this.getHandleType(String(c.target), String(c.targetHandle || ''), 'target') || 'any';
+      // If either side is 'any', allow
+      if (sType === 'any' || tType === 'any') return true;
+      if (sType === tType) return true;
+      // Accepts list on input
+      const n = this.nodes.find((nn: any) => String(nn.id) === String(c.target));
+      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      let accepts: string[] = [];
+      const ih = (tpl.inputHandles || []).find((hh: any) => String(hh?.id) === String(c.targetHandle));
+      if (ih && Array.isArray((ih as any)?.accepts)) accepts = (ih as any).accepts;
+      if (!accepts.length) {
+        // Try linkedHandles (v2): explicit target slots
+        const links = Array.isArray((tpl as any).linkedHandles) ? (tpl as any).linkedHandles : [];
+        const lh = links.find((hh:any) => String(hh?.id) === String(c.targetHandle));
+        if (lh && Array.isArray(lh.accepts)) accepts = lh.accepts;
+      }
+      if (accepts.includes(sType)) return true;
+      return false;
+    } catch { return false; }
   }
 }
