@@ -778,16 +778,34 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // Réagir au changement de layout pour gérer labelsOnTop et disponibilités
     const layoutCtrl = this.inspector.get('ui_layout');
     const labelsOnTopCtrl = this.inspector.get('ui_labelsOnTop');
+    const labelSpanCtrl = this.inspector.get('ui_labelColSpan');
+    const controlSpanCtrl = this.inspector.get('ui_controlColSpan');
     let lastLayout: 'horizontal'|'vertical'|'inline'|null = null;
+    let lastHorizontalLabelSpan: number | null = null;
+    let lastHorizontalControlSpan: number | null = null;
     layoutCtrl?.valueChanges.subscribe((layout: 'horizontal'|'vertical'|'inline') => {
       this.patching = true;
       try {
         if (layout === 'vertical') {
           // En vertical, labelsOnTop toujours true (option non affichée)
+          if (lastLayout !== 'vertical') {
+            lastHorizontalLabelSpan = labelSpanCtrl?.value ?? null;
+            lastHorizontalControlSpan = controlSpanCtrl?.value ?? null;
+          }
           labelsOnTopCtrl?.setValue(true, { emitEvent: false });
+          labelSpanCtrl?.setValue(24, { emitEvent: false });
+          controlSpanCtrl?.setValue(24, { emitEvent: false });
         } else if (lastLayout === 'vertical') {
           // Quand on quitte le vertical, rétablir un comportement horizontal par défaut
           labelsOnTopCtrl?.setValue(false, { emitEvent: false });
+          if (labelSpanCtrl) {
+            const nextLabel = (lastHorizontalLabelSpan != null && lastHorizontalLabelSpan !== 24) ? lastHorizontalLabelSpan : 8;
+            labelSpanCtrl.setValue(nextLabel, { emitEvent: false });
+          }
+          if (controlSpanCtrl) {
+            const nextControl = (lastHorizontalControlSpan != null && lastHorizontalControlSpan !== 24) ? lastHorizontalControlSpan : 16;
+            controlSpanCtrl.setValue(nextControl, { emitEvent: false });
+          }
         }
         if (layout === 'inline' && this.hasSections) {
           this.msg.error("Le layout 'inline' est indisponible car des sections existent.");
@@ -797,6 +815,53 @@ export class DynamicFormBuilderComponent implements OnChanges {
         lastLayout = layout;
         this.patching = false;
       }
+      // Propager les valeurs ajustées (labels/spans) dans le schema
+      queueMicrotask(() => { try { this.inspector.updateValueAndValidity({ emitEvent: true }); } catch {} });
+      this.recomputeIssues();
+    });
+
+    const secLayoutCtrl = this.inspector.get('sec_ui_layout');
+    const secLabelsOnTopCtrl = this.inspector.get('sec_ui_labelsOnTop');
+    const secLabelSpanCtrl = this.inspector.get('sec_ui_labelColSpan');
+    const secControlSpanCtrl = this.inspector.get('sec_ui_controlColSpan');
+    let lastSecLayout: 'horizontal'|'vertical'|'inline'|''|null = null;
+    let lastSecLabelSpan: number | null = null;
+    let lastSecControlSpan: number | null = null;
+    secLayoutCtrl?.valueChanges.subscribe((layout: 'horizontal'|'vertical'|'inline'|'') => {
+      this.patching = true;
+      try {
+        if (layout === 'vertical') {
+          if (lastSecLayout !== 'vertical') {
+            lastSecLabelSpan = secLabelSpanCtrl?.value ?? null;
+            lastSecControlSpan = secControlSpanCtrl?.value ?? null;
+          }
+          secLabelsOnTopCtrl?.setValue(true, { emitEvent: false });
+          secLabelSpanCtrl?.setValue(24, { emitEvent: false });
+          secControlSpanCtrl?.setValue(24, { emitEvent: false });
+        } else if (lastSecLayout === 'vertical') {
+          secLabelsOnTopCtrl?.setValue(false, { emitEvent: false });
+          if (secLabelSpanCtrl) {
+            const nextLabel = (lastSecLabelSpan != null && lastSecLabelSpan !== 24) ? lastSecLabelSpan : 8;
+            secLabelSpanCtrl.setValue(nextLabel, { emitEvent: false });
+          }
+          if (secControlSpanCtrl) {
+            const nextControl = (lastSecControlSpan != null && lastSecControlSpan !== 24) ? lastSecControlSpan : 16;
+            secControlSpanCtrl.setValue(nextControl, { emitEvent: false });
+          }
+        }
+      } finally {
+        lastSecLayout = layout;
+        this.patching = false;
+      }
+      queueMicrotask(() => {
+        try {
+          this.inspector.patchValue({
+            sec_ui_labelsOnTop: secLabelsOnTopCtrl?.value ?? null,
+            sec_ui_labelColSpan: secLabelSpanCtrl?.value ?? null,
+            sec_ui_controlColSpan: secControlSpanCtrl?.value ?? null,
+          }, { emitEvent: true });
+        } catch {}
+      });
       this.recomputeIssues();
     });
   }
