@@ -10,7 +10,9 @@ function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().to
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
 function isTemplateLike(s){ return typeof s === 'string' && /\{\{[\s\S]*?\}\}/.test(s); }
 function isTruthyText(s){ if (s == null) return false; const t = String(s).trim(); if (t === '') return false; const low = t.toLowerCase(); if (low==='false'||low==='0'||low==='null'||low==='undefined'||low==='nan') return false; return true; }
-function buildEvalContext(initialContext, msg){ return { ...initialContext, msg, payload: msg.payload }; }
+function buildEvalContext(initialContext, msg){
+  return { ...initialContext, msg, payload: msg.payload, _nodes: msg._nodes };
+}
 function renderTemplate(value, evalCtx){ if (typeof value !== 'string') return value; return evaluateTemplateDetailed(value, evalCtx).text; }
 function deepRender(obj, evalCtx){
   if (obj == null) return obj;
@@ -101,11 +103,13 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString();
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null, msgIn: msgBefore });
-      // Start-like node: take current msg.payload as the node result and ensure msg.payload is the authoritative input for downstream nodes
+      // Start-like node: take current msg.payload as the node result and keep it in payload
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = null;
       nodeLog.result = (msg && typeof msg.payload !== 'undefined') ? JSON.parse(JSON.stringify(msg.payload)) : null;
-      // Ensure payload is set to the result value (form or external payload) and do not inject result under msg[nodeId]
+      // Expose trigger output under node id like functions for template access
+      try { msg[node.id] = nodeLog.result; } catch {}
+      // Ensure payload is set to the result value (form or external payload)
       try { msg.payload = (msg && typeof msg.payload !== 'undefined') ? msg.payload : null; } catch {}
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);

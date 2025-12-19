@@ -388,7 +388,7 @@ module.exports = function(){
       if (!node) return res.apiError(404, 'node_not_found', 'Node not found');
       const tObj = (node.data && node.data.model && node.data.model.templateObj) || node.model?.templateObj || {};
       const tmplKey = String(node.data?.model?.template || tObj?.template?.id || tObj?.template?.name || tObj?.id || '').replace(/^tmpl_/,'');
-      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload });
+      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload, _nodes: msgObj._nodes });
       const deepRender = (obj, evalCtx) => {
         if (obj == null) return obj;
         if (typeof obj === 'string') return evaluateTemplateDetailed(obj, evalCtx).text;
