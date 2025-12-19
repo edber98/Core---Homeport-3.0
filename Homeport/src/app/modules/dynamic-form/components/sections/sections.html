@@ -1,4 +1,4 @@
- <div *ngIf="visible" [ngStyle]="section.itemStyle">
+ <div *ngIf="visible" [ngStyle]="sectionStyle">
     <h3 *ngIf="section.title" [ngStyle]="section.titleStyle || { margin: '16px 0 6px' }">{{ section.title }}</h3>
     <p *ngIf="section.description" [ngStyle]="section.descriptionStyle || { margin: '0 0 12px', color: '#6b7280' }">{{ section.description }}</p>
 
@@ -26,7 +26,7 @@
                   [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
                   [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null">
 
-                  <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
+                  <div class="df-edit-item" [ngStyle]="dfs.fieldContainerStyle(f, sectionUi)" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
                        (click)="onClickField(j, $event)">
                     <ng-container [ngSwitch]="f.type">
                       <ng-container *ngSwitchCase="'section'">
@@ -109,7 +109,7 @@
     </ng-container>
 
     <ng-template #normalSection>
-    <div style="margin-bottom:16px">
+    <div>
       <nz-row [nzGutter]="section.grid?.gutter || 16">
         <ng-container *ngFor="let f of section.fields; let i = index">
           <ng-container *ngIf="dfs.isFieldVisible(f, form)">
@@ -121,7 +121,7 @@
             [nzXl]="!forceBp ? dfs.getFieldSpans(f).xl : null"
             [style.max-width.%]="forceBp ? fieldPercentFor(f, forceBp) : null"
             [style.flex-basis.%]="forceBp ? fieldPercentFor(f, forceBp) : null">
-              <div class="df-edit-item" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
+              <div class="df-edit-item" [ngStyle]="dfs.fieldContainerStyle(f, sectionUi)" [class.df-edit]="editMode" [class.df-edit-selected]="f.type!=='section' && f.type!=='section_array' && isSelected(f)"
                    (click)="onClickField(i, $event)">
                 <ng-container [ngSwitch]="f.type">
                   <!-- Nested Section: show proper section overlay (Select, arrows, delete, +Add) -->

@@ -162,7 +162,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
               <monaco-json-editor [value]="$any(group.controls['options'].value)" (valueChange)="group.get('options')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-              <button nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
+              <button type="button" nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
             </div>
           </nz-form-control>
         </nz-form-item>
@@ -245,7 +245,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
               <div class="title">visibleIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>
@@ -255,7 +255,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire (JSON)">
               <div class="title">requiredIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>
@@ -265,7 +265,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ (JSON)">
               <div class="title">disabledIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>

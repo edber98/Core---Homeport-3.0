@@ -211,7 +211,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       <div class="editor-block">
         <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
           <div class="title">visibleIf (JSON)</div>
-          <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
+          <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
             <i nz-icon nzType="build"></i>
             <span style="margin-left:6px">Builder</span>
           </button>
@@ -255,11 +255,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       </div>
       <app-spacing-editor [group]="group"></app-spacing-editor>
       <div class="btn-row" style="margin-top:8px;">
-        <button nz-button nzSize="small" class="apple-btn" (click)="openTitleStyle.emit()">
+        <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openTitleStyle.emit()">
           <i nz-icon nzType="highlight"></i>
           <span class="label">Configurer style Titre…</span>
         </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="openDescStyle.emit()">
+        <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openDescStyle.emit()">
           <i nz-icon nzType="bg-colors"></i>
           <span class="label">Configurer style Description…</span>
         </button>

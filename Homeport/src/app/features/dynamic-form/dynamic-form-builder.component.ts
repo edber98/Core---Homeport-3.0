@@ -778,18 +778,23 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // Réagir au changement de layout pour gérer labelsOnTop et disponibilités
     const layoutCtrl = this.inspector.get('ui_layout');
     const labelsOnTopCtrl = this.inspector.get('ui_labelsOnTop');
+    let lastLayout: 'horizontal'|'vertical'|'inline'|null = null;
     layoutCtrl?.valueChanges.subscribe((layout: 'horizontal'|'vertical'|'inline') => {
       this.patching = true;
       try {
         if (layout === 'vertical') {
           // En vertical, labelsOnTop toujours true (option non affichée)
           labelsOnTopCtrl?.setValue(true, { emitEvent: false });
+        } else if (lastLayout === 'vertical') {
+          // Quand on quitte le vertical, rétablir un comportement horizontal par défaut
+          labelsOnTopCtrl?.setValue(false, { emitEvent: false });
         }
         if (layout === 'inline' && this.hasSections) {
           this.msg.error("Le layout 'inline' est indisponible car des sections existent.");
           layoutCtrl?.setValue('horizontal', { emitEvent: true });
         }
       } finally {
+        lastLayout = layout;
         this.patching = false;
       }
       this.recomputeIssues();
@@ -1224,8 +1229,9 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (this.selected && this.isStep(this.selected)) {
       this.addSection(this.selected);
     } else if (this.selected && this.isSection(this.selected)) {
-      this.addSection(undefined); // ajouter à la racine si flat; sinon, on passe par ctxAddSectionInside via menu
-      // en mode steps et sélection section, préférer l'ajout via menu contexte dans la section
+      const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
+      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionInside(); return; }
+      if (!this.isStepsMode) { this.addSection(undefined); return; }
     } else if (!this.isStepsMode) {
       this.addSection();
     } else {
@@ -1958,6 +1964,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         title: this.schema.title ?? '',
         ui_layout: this.schema.ui?.layout ?? 'horizontal',
         ui_labelAlign: this.schema.ui?.labelAlign ?? 'left',
+        ui_labelsOnTop: !!this.schema.ui?.labelsOnTop,
         ui_labelColSpan: this.schema.ui?.labelCol?.span ?? 8,
         ui_controlColSpan: this.schema.ui?.controlCol?.span ?? 16,
         ui_widthPx: this.schema.ui?.widthPx ?? 1040,

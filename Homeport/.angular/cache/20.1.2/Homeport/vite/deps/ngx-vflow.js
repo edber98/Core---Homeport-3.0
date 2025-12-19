@@ -87,12 +87,12 @@ import {
   ɵɵtextInterpolate1,
   ɵɵviewQuerySignal
 } from "./chunk-773N7WSB.js";
-import "./chunk-AKIDERDD.js";
 import {
   animationFrameScheduler,
   fromEvent,
   merge
 } from "./chunk-4HUDV5O3.js";
+import "./chunk-AKIDERDD.js";
 import {
   Observable,
   Subject,

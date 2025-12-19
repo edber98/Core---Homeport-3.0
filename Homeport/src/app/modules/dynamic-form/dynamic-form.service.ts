@@ -161,6 +161,43 @@ export class DynamicFormService {
 
     constructor(private fb: FormBuilder) { }
 
+    normalizeSpacing(style?: Record<string, any>): Record<string, any> {
+        const out: Record<string, any> = { ...(style || {}) };
+        const toPx = (v: any) => (typeof v === 'number' && !isNaN(v)) ? `${v}px` : v;
+        const keys = ['margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'];
+        keys.forEach((k) => {
+            if (out[k] != null && out[k] !== '') out[k] = toPx(out[k]);
+        });
+        return out;
+    }
+
+    fieldContainerStyle(field: FieldConfig, ui?: FormUI): Record<string, any> {
+        const fromUi = (ui as any)?.itemStyle ?? {};
+        const fromField = (field as any)?.itemStyle ?? {};
+        const merged = this.normalizeSpacing({ ...fromUi, ...fromField });
+        const out: Record<string, any> = {};
+        if (!('margin' in merged) && !('marginBottom' in merged)) out['marginBottom'] = '16px';
+        if (!('padding' in merged) && !('paddingTop' in merged)) out['paddingTop'] = '4px';
+        if (!('padding' in merged) && !('paddingBottom' in merged)) out['paddingBottom'] = '4px';
+        const style = { ...out, ...merged };
+        if (field.type === 'textblock') {
+            return {
+                ...style,
+                margin: 0,
+                marginTop: 0,
+                marginRight: 0,
+                marginBottom: 0,
+                marginLeft: 0,
+                padding: 0,
+                paddingTop: 0,
+                paddingRight: 0,
+                paddingBottom: 0,
+                paddingLeft: 0
+            };
+        }
+        return style;
+    }
+
     buildForm(schema: FormSchema, initialValue?: Record<string, any>): FormGroup {
         const controls: Record<string, FormControl> = {};
         for (const f of this.collectFields(schema)) {

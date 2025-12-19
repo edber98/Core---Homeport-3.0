@@ -107,15 +107,4 @@ export class Fields implements OnInit, OnDestroy {
   get labelOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.labelCol?.offset ?? 0); }
   get controlSpan(): number { return this.labelsOnTop ? 24 : (this.ui?.controlCol?.span ?? 16); }
   get controlOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.controlCol?.offset ?? 0); }
-
-  /** styles marge/padding : fusion ui.itemStyle + field.itemStyle ; textblock => no margin/padding */
-  get itemStyle(): Record<string, any> {
-    const fromUi = (this.ui as any)?.itemStyle ?? {};
-    const fromField = (this.field as any)?.itemStyle ?? {};
-    const merged = { ...fromUi, ...fromField };
-    if (this.field.type === 'textblock') {
-      return { ...merged, margin: 0, padding: 0 };
-    }
-    return merged;
-  }
 }
