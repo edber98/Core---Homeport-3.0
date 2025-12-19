@@ -186,6 +186,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
         } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
       }
       // Store function result under msg[nodeId] and mirror to payload
+      const isError = !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+      nodeLog.error = isError ? (result && result.error ? String(result.error) : 'error') : undefined;
       nodeLog.result = result;
       msg[node.id] = result;
       msg.payload = result;
@@ -196,12 +198,33 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       await send({ type: 'node.skipped', nodeId: node.id, branchId });
     }
     const outs = outEdges.get(curId) || [];
-    if (outs.length === 1){
-      await send({ type: 'edge.taken', sourceId: node.id, targetId: outs[0].target });
-      await runBranch(outs[0].target, msg, seen, `${branchId}:0`);
-    } else if (outs.length > 1){
-      for (let i=0;i<outs.length;i++){ const o = outs[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
-      await Promise.all(outs.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
+    let nextOuts = outs;
+    const err = nodeLog && nodeLog.error ? String(nodeLog.error) : '';
+    if (err) {
+      if (node?.model?.skip_error) return;
+      if (node?.model?.catch_error) {
+        const errOuts = outs.filter(o => {
+          const h = String(o.sourceHandle || '').toLowerCase();
+          return h === 'err' || h === 'error';
+        });
+        if (errOuts.length) nextOuts = errOuts;
+        else return;
+      } else {
+        throw new Error(err);
+      }
+    } else {
+      const okOuts = outs.filter(o => {
+        const h = String(o.sourceHandle || '').toLowerCase();
+        return h !== 'err' && h !== 'error';
+      });
+      if (okOuts.length) nextOuts = okOuts;
+    }
+    if (nextOuts.length === 1){
+      await send({ type: 'edge.taken', sourceId: node.id, targetId: nextOuts[0].target });
+      await runBranch(nextOuts[0].target, msg, seen, `${branchId}:0`);
+    } else if (nextOuts.length > 1){
+      for (let i=0;i<nextOuts.length;i++){ const o = nextOuts[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
+      await Promise.all(nextOuts.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
     }
   };
 

@@ -38,7 +38,8 @@ class PluginRegistry {
     for (const ent of entries){
       const plugDir = path.join(dir, ent.name);
       const manifestPath = path.join(plugDir, 'manifest.json');
-      if (fs.existsSync(manifestPath)){
+      const allowImport = process.env.PLUGIN_IMPORT_ENABLED === '1';
+      if (fs.existsSync(manifestPath) && allowImport){
         try {
           const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
           // Import providers/nodeTemplates into DB

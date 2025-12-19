@@ -64,7 +64,13 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "email_send", "name": "emailSend", "title": "Envoyer un e-mail", "type": "function", "category": "E-mail", "providerKey": "smtp_imap", "output": ["Success"],
+    { "key": "email_send", "name": "emailSend", "title": "Envoyer un e-mail", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "any" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
       "description": "Envoyer un e-mail avec pièces jointes", "args": { "title": "Envoyer un e-mail", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"from","label":"De","col":{"xs":24}},
         {"type":"text","key":"to","label":"À","col":{"xs":24},"validators":[{"type":"required"}]},

@@ -2663,11 +2663,18 @@ export class FlowBuilderComponent {
         const nid = String(ev.nodeId || '');
         if (nid) {
           const exec = (ev as any)?.exec ?? ev?.data?.exec;
+          const result = (ev?.data?.result ?? (ev as any)?.result) as any;
+          const explicitStatus = String((ev as any)?.data?.status || (ev as any)?.status || '').toLowerCase();
+          const nextStatus = explicitStatus === 'error'
+            ? 'error'
+            : (explicitStatus === 'success'
+              ? 'success'
+              : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
           // Update per-node attempt I/O and status for this exec
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
           if (!at) { at = { exec }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
-          at.status = 'success';
+          at.status = nextStatus;
           at.input = ev.data?.input ?? at.input;
           at.argsPre = ev.data?.argsPre ?? at.argsPre;
           at.argsPost = ev.data?.argsPost ?? at.argsPost;
@@ -2691,7 +2698,7 @@ export class FlowBuilderComponent {
               type: 'node.result',
               nodeId: nid,
               exec,
-              status: 'success',
+              status: nextStatus,
               createdAt: ev?.data?.finishedAt || new Date().toISOString(),
               data: { result: ev?.result ?? ev?.data?.result, msgOut: ev?.data?.msgOut, durationMs: ev?.data?.durationMs }
             });
@@ -2699,7 +2706,7 @@ export class FlowBuilderComponent {
           // Update quick stats (count is attempts length)
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.count = (this.backendNodeAttempts.get(nid)?.length || 0);
-          cur.lastStatus = 'success';
+          cur.lastStatus = nextStatus;
           this.backendNodeStats.set(nid, cur);
           this.updateNodeVisual(nid);
           if (this.selectedModel && String(this.selectedModel.id) === nid) {
@@ -2722,7 +2729,7 @@ export class FlowBuilderComponent {
               // Prefer attempt timestamps for badge
               try { this.testStartedAt = at?.startedAt ? Date.parse(at.startedAt as any) : this.testStartedAt; } catch {}
               this.testDurationMs = Number.isFinite(dur) ? dur : (at?.durationMs != null ? Number(at.durationMs) : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null));
-              this.testStatus = 'success';
+              this.testStatus = nextStatus as any;
             }
             // Regardless of exec filter, the node finished; ensure loader is off
             this.outputLoading = false;

@@ -637,9 +637,16 @@ export class FlowExecutionComponent {
       if (t === 'node.result') {
         const nodeId = String(ev.nodeId || '');
         const exec = (ev as any)?.exec ?? ev?.data?.exec;
+        const result = (ev?.data?.result ?? (ev as any)?.result) as any;
+        const explicitStatus = String((ev as any)?.data?.status || (ev as any)?.status || '').toLowerCase();
+        const nextStatus = explicitStatus === 'error'
+          ? 'error'
+          : (explicitStatus === 'success'
+            ? 'success'
+            : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
         const cur = this.backendAttempts.find(a => a.nodeId === nodeId && a.exec === exec);
         if (cur) {
-          if (!cur.status || cur.status === 'running') cur.status = 'success';
+          if (!cur.status || cur.status === 'running') cur.status = nextStatus;
           cur.input = ev.data?.input ?? cur.input;
           cur.argsPre = ev.data?.argsPre ?? cur.argsPre;
           cur.result = (ev.result ?? ev.data?.result) ?? cur.result;
@@ -650,7 +657,7 @@ export class FlowExecutionComponent {
           cur.startedAt = ev.data?.startedAt ?? cur.startedAt;
           cur.finishedAt = ev.data?.finishedAt ?? cur.finishedAt;
         } else {
-          this.backendAttempts.push({ nodeId, exec, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
+          this.backendAttempts.push({ nodeId, exec, status: nextStatus, input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
       }

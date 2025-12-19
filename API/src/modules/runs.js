@@ -5,6 +5,10 @@ const { randomUUID } = require('crypto');
 const { broadcast } = require('../realtime/ws');
 const { broadcastRun } = require('../realtime/socketio');
 
+function isResultError(result){
+  return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+}
+
 module.exports = function(store){
   const r = express.Router();
   // Public route to start a run if Start Form is public
@@ -111,9 +115,12 @@ module.exports = function(store){
               const nid = String(ev.nodeId || '');
               const last = run.attempts.slice().reverse().find(a => String(a.nodeId) === nid && !a.finishedAt);
               if (last){
-                last.status = 'success'; last.finishedAt = ev.finishedAt || new Date().toISOString(); last.durationMs = ev.durationMs; last.argsPost = ev.argsPost; last.input = ev.input; last.result = ev.result;
+                last.status = isResultError(ev.result) ? 'error' : 'success';
+                last.finishedAt = ev.finishedAt || new Date().toISOString();
+                last.durationMs = ev.durationMs; last.argsPost = ev.argsPost; last.input = ev.input; last.result = ev.result;
               } else {
-                run.attempts.push({ runId, nodeId: nid, attempt: 1, status: 'success', startedAt: ev.startedAt, finishedAt: ev.finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result });
+                const status = isResultError(ev.result) ? 'error' : 'success';
+                run.attempts.push({ runId, nodeId: nid, attempt: 1, status, startedAt: ev.startedAt, finishedAt: ev.finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result });
               }
             }
           } catch {}

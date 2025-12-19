@@ -298,7 +298,15 @@ export class PublicFormStartComponent {
         if (s === 'running') st = 'running';
         if (s === 'success') st = 'success';
         if (s === 'error') st = 'error';
-      } else if (type === 'node.result' || type === 'node.done') st = 'success';
+      } else if (type === 'node.result' || type === 'node.done') {
+        const result = ev?.data?.result ?? ev?.result;
+        const explicitStatus = String(ev?.data?.status || ev?.status || '').toLowerCase();
+        st = explicitStatus === 'error'
+          ? 'error'
+          : (explicitStatus === 'success'
+            ? 'success'
+            : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
+      }
       else if (type === 'node.started') st = 'running';
       if (!st) return;
       if (!this.flowNodeTitleMap && this.auth.token) {
