@@ -2401,6 +2401,10 @@ export class FlowBuilderComponent {
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
   runFlow() {
+    if (!this.currentFlowEnabled) {
+      try { this.message.error('Flow désactivé. Activez-le avant de lancer.'); } catch { this.showToast('Flow désactivé'); }
+      return;
+    }
     const snap = this.snapshot();
     // Always update the shared graph snapshot (used by the executions page)
     this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });

@@ -99,7 +99,7 @@ type FlowItem = { id: string; name: string; description?: string };
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
-        <form nz-form nzLayout="vertical">
+        <form nz-form nzLayout="vertical" (ngSubmit)="createFlow()">
           <nz-form-item>
             <nz-form-label>Titre</nz-form-label>
             <nz-form-control>
@@ -131,8 +131,8 @@ type FlowItem = { id: string; name: string; description?: string };
             </nz-form-control>
           </nz-form-item>
           <div class="modal-actions">
-            <button nz-button (click)="closeCreate()">Annuler</button>
-            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createFlow()">Créer</button>
+            <button nz-button type="button" (click)="closeCreate()">Annuler</button>
+            <button nz-button type="submit" nzType="primary" [disabled]="!canCreate() || creating">Créer</button>
           </div>
           <div class="error" *ngIf="createError">{{ createError }}</div>
         </form>
