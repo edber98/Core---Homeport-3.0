@@ -98,6 +98,27 @@ export class LayoutMain implements OnInit {
     try {
       // Global confirm bridge: show styled NzModal for guard-originated confirmations
       this.confirm.requests$.subscribe((req: ConfirmRequest) => {
+        if (req.extraText) {
+          let ref: any;
+          const closeAndResolve = (v: boolean | 'extra') => {
+            this.confirm.resolve(req.id, v);
+            try { ref?.close(); } catch {}
+          };
+          ref = this.modal.create({
+            nzTitle: req.title,
+            nzContent: req.content,
+            nzCentered: req.centered ?? true,
+            nzWidth: req.width ?? 480,
+            nzClassName: req.className || 'unsaved-leave-modal',
+            nzOnCancel: () => closeAndResolve(false),
+            nzFooter: [
+              { label: req.cancelText || 'Annuler', onClick: () => closeAndResolve(false) },
+              { label: req.extraText, type: 'primary', onClick: () => closeAndResolve('extra') },
+              { label: req.okText || 'OK', danger: true, type: 'primary', onClick: () => closeAndResolve(true) }
+            ]
+          });
+          return;
+        }
         const ref = this.modal.confirm({
           nzTitle: req.title,
           nzContent: req.content,

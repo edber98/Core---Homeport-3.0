@@ -1659,6 +1659,39 @@ export class DynamicFormBuilderComponent implements OnChanges {
     }
   }
 
+  saveForLeave(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      try {
+        this.updateLastChecksum();
+        this.leavingAfterSave = true;
+        if (this.sessionKey) {
+          try { localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+        }
+        if (this.currentFormId) {
+          this.catalog.saveForm({ id: this.currentFormId, name: this.currentFormName || (this.schema.title || 'Formulaire'), description: this.currentFormDesc, schema: this.schema } as any).subscribe({
+            next: () => {
+              try { this.msg.success('Formulaire sauvegardé'); } catch {}
+              this.updateLastChecksum();
+              this.purgeDraft();
+              resolve(true);
+            },
+            error: () => {
+              this.leavingAfterSave = false;
+              this.msg.error('Échec de la sauvegarde');
+              resolve(false);
+            }
+          });
+          return;
+        }
+        resolve(true);
+      } catch {
+        this.leavingAfterSave = false;
+        this.msg.error('Échec de la sauvegarde');
+        resolve(false);
+      }
+    });
+  }
+
   // ---------- Helpers ----------
   // Conditions: extraction + simulation
   get conditionEntries(): Array<{ targetType: 'step'|'section'|'field'; target: any; targetLabel: string; kind: 'visibleIf'|'requiredIf'|'disabledIf'; rule: any; arrayKey?: string; arrayTitle?: string }> {

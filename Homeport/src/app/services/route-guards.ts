@@ -76,10 +76,23 @@ export const unsavedChangesGuard: CanDeactivateFn<any> = (
         content: 'Vous avez des modifications non enregistrées qui seront perdues si vous quittez cette page.',
         okText: 'Quitter',
         cancelText: 'Rester',
+        extraText: 'Sauvegarder et quitter',
         className: 'unsaved-leave-modal',
         centered: true,
         width: 480,
-      }).then(ok => { if (ok) purgeDraft(); return ok; });
+      }).then(async (res) => {
+        if (res === true) { purgeDraft(); return true; }
+        if (res === 'extra') {
+          try {
+            if (component && typeof component.saveForLeave === 'function') {
+              const ok = await component.saveForLeave();
+              if (ok) purgeDraft();
+              return !!ok;
+            }
+          } catch {}
+        }
+        return false;
+      });
     } else {
       // No unsaved changes: still clean any residual draft for this flow when leaving the builder
       purgeDraft();

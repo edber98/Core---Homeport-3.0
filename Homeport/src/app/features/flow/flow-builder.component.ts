@@ -2346,6 +2346,76 @@ export class FlowBuilderComponent {
   }
 
   // Placeholder actions for save and run
+  saveForLeave(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      try {
+        if (!this.currentFlowId) {
+          try { this.message.warning('Aucun flow associé'); } catch { this.showToast('Aucun flow associé'); }
+          resolve(false);
+          return;
+        }
+        const doc = { id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any;
+        this.catalog.saveFlow(doc).subscribe({
+          next: () => {
+            try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            try {
+              this.updateSharedGraph();
+              this.saveDraft();
+              this.persistHistory();
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+            resolve(true);
+          },
+          error: (e) => {
+            const apiErr = this.normalizeApiError(e);
+            const code = String(apiErr?.code || '');
+            if (code === 'flow_invalid') {
+              const errors = Array.isArray(apiErr?.details?.errors) ? apiErr.details.errors : [];
+              const warnings = Array.isArray(apiErr?.details?.warnings) ? apiErr.details.warnings : [];
+              const fmt = (it: any) => {
+                const c = it?.code || 'error';
+                const msg = it?.message ? `: ${it.message}` : '';
+                const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                const detEdge = it?.details?.edge ? ` (arête ${it.details.edge})` : '';
+                const detProv = it?.details?.providerKey ? ` [${it.details.providerKey}]` : '';
+                const detKey = it?.details?.key ? ` [${it.details.key}]` : '';
+                const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                return `• ${c}${msg}${detNode}${detEdge}${detProv}${detKey}${detField}`;
+              };
+              const listErr = errors.map(fmt).join('<br/>') || '• Erreurs inconnues';
+              const listWarn = warnings.length ? ('<br/><br/><b>Avertissements</b><br/>' + warnings.map(fmt).join('<br/>')) : '';
+              this.modal.confirm({
+                nzTitle: 'Flow invalide',
+                nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
+                nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+                nzOnOk: () => this.catalog.saveFlow(doc, true).subscribe({
+                  next: () => {
+                    try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
+                    this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+                    try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                    resolve(true);
+                  },
+                  error: () => {
+                    try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+                    resolve(false);
+                  }
+                }),
+                nzOnCancel: () => resolve(false)
+              });
+            } else {
+              try { this.message.error(apiErr?.message || 'Échec de la sauvegarde'); } catch { this.showToast(apiErr?.message || 'Échec de la sauvegarde'); }
+              resolve(false);
+            }
+          },
+        });
+      } catch {
+        try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+        resolve(false);
+      }
+    });
+  }
+
   saveFlow() {
     try {
       if (this.currentFlowId) {
