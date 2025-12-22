@@ -51,7 +51,9 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
         </label>
       </div>
       <div class="composer">
-        <input nz-input [(ngModel)]="text" [disabled]="busy" placeholder="Décrivez le formulaire (ex: Inscription, adresse, paiement)…" (keyup.enter)="send()"/>
+        <textarea #composerInput nz-input class="composer-input" [(ngModel)]="text" [disabled]="busy"
+          placeholder="Décrivez le formulaire (ex: Inscription, adresse, paiement)…" rows="1"
+          (input)="onComposerInput()" (keydown.enter)="onComposerEnter($event)"></textarea>
         <button nz-button nzType="primary" (click)="send()" [disabled]="!text || busy">Envoyer</button>
         <button nz-button class="ml" (click)="stop()" *ngIf="busy">Stop</button>
       </div>
@@ -75,7 +77,8 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .bubble.me { align-self: flex-end; background: #0a84ff; color: #fff; border-bottom-right-radius: 6px; }
     .bubble.assistant { align-self: flex-start; background: #e9ecef; color: #111827; border-bottom-left-radius: 6px; }
     .chat-footer { border-top: 1px solid #eee; padding: 10px; display:flex; flex-direction:column; gap:8px; background:#fff; }
-    .composer { display:flex; gap:8px; }
+    .composer { display:flex; gap:8px; align-items:flex-end; }
+    .composer-input { flex: 1 1 auto; min-height: 36px; max-height: 140px; resize: none; overflow-y: hidden; }
     .opts { display:flex; align-items:center; gap:10px; color:#475569; font-size:12px; margin-bottom:4px; }
     .opts select { margin-left:6px; }
     .ml { margin-left: 6px; }
@@ -108,11 +111,13 @@ export class AiChatComponent implements AfterViewInit {
   private stopFn?: () => void;
 
   @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
+  @ViewChild('composerInput') composerInput?: ElementRef<HTMLTextAreaElement>;
 
   constructor(private agent: AiFormAgentService, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.scrollToBottom();
+    setTimeout(() => this.onComposerInput(), 0);
   }
 
   send() {
@@ -120,6 +125,7 @@ export class AiChatComponent implements AfterViewInit {
     if (!t || this.busy) return;
     this.messages.push({ role: 'user', text: t });
     this.text = '';
+    this.onComposerInput();
     this.busy = true; this.streaming = true; this.streamingText = '';
     this.streamingParts = [];
     try { this.recent.clear(); } catch {}
@@ -233,6 +239,25 @@ export class AiChatComponent implements AfterViewInit {
       const el = this.scroller?.nativeElement; if (!el) return;
       el.scrollTop = el.scrollHeight;
     } catch {}
+  }
+
+  onComposerInput() {
+    const el = this.composerInput?.nativeElement;
+    if (!el) return;
+    el.style.height = 'auto';
+    const max = 140;
+    const next = Math.min(max, el.scrollHeight || 0);
+    el.style.height = `${Math.max(36, next)}px`;
+    const shouldScroll = (el.scrollHeight || 0) > max;
+    el.style.overflowY = shouldScroll ? 'auto' : 'hidden';
+    if (shouldScroll) el.scrollTop = el.scrollHeight;
+  }
+
+  onComposerEnter(ev: Event) {
+    const keyEv = ev as KeyboardEvent;
+    if (keyEv.shiftKey) return;
+    keyEv.preventDefault();
+    this.send();
   }
 
   // Merge assistant paragraph as unified AI Form message block

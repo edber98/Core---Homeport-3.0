@@ -36,7 +36,9 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     </div>
     <div class="chat-footer">
       <div class="composer">
-        <input nz-input [(ngModel)]="text" [disabled]="busy" placeholder="Décrivez le workflow (ex: Lire emails, filtrer, notifier)…" (keyup.enter)="send()"/>
+        <textarea #composerInput nz-input class="composer-input" [(ngModel)]="text" [disabled]="busy"
+          placeholder="Décrivez le workflow (ex: Lire emails, filtrer, notifier)…" rows="1"
+          (input)="onComposerInput()" (keydown.enter)="onComposerEnter($event)"></textarea>
         <button nz-button nzType="primary" (click)="send()" [disabled]="!text || busy">Envoyer</button>
         <button nz-button class="ml" (click)="stop()" *ngIf="busy">Stop</button>
       </div>
@@ -61,7 +63,8 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
     .bubble.me { align-self: flex-end; background: #0a84ff; color: #fff; border-bottom-right-radius: 6px; }
     .bubble.assistant { align-self: flex-start; background: #e9ecef; color: #111827; border-bottom-left-radius: 6px; }
     .chat-footer { border-top: 1px solid #eee; padding: 10px; display:flex; flex-direction:column; gap:8px; background:#fff; }
-    .composer { display:flex; gap:8px; }
+    .composer { display:flex; gap:8px; align-items:flex-end; }
+    .composer-input { flex: 1 1 auto; min-height: 36px; max-height: 140px; resize: none; overflow-y: hidden; }
     .ml { margin-left: 6px; }
     .txt.rich { white-space: pre-wrap; word-break: break-word; }
     /* De manière générale, supprime la marge par défaut des <p> dans les bulles */
@@ -94,15 +97,20 @@ export class FlowAiChatComponent implements AfterViewInit {
 
   private stopFn?: () => void;
   @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
+  @ViewChild('composerInput') composerInput?: ElementRef<HTMLTextAreaElement>;
 
   constructor(private agent: AiFlowAgentService, private cdr: ChangeDetectorRef) {}
-  ngAfterViewInit(): void { this.scrollToBottom(); }
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
+    setTimeout(() => this.onComposerInput(), 0);
+  }
 
   send() {
     const t = (this.text || '').trim();
     if (!t || this.busy) return;
     this.messages.push({ role: 'user', text: t });
     this.text = '';
+    this.onComposerInput();
     this.busy = true; this.streaming = true; this.streamingText = '';
     this.assistantBuf = '';
     this.aiFormEvents = [];
@@ -120,6 +128,25 @@ export class FlowAiChatComponent implements AfterViewInit {
     if (this.streamingParts.length) this.messages.push({ role: 'assistant', parts: [...this.streamingParts] });
     this.streamingParts = []; this.assistantBuf = '';
     this.busy = false; this.streaming = false; this.streamingText='';
+  }
+
+  onComposerInput() {
+    const el = this.composerInput?.nativeElement;
+    if (!el) return;
+    el.style.height = 'auto';
+    const max = 140;
+    const next = Math.min(max, el.scrollHeight || 0);
+    el.style.height = `${Math.max(36, next)}px`;
+    const shouldScroll = (el.scrollHeight || 0) > max;
+    el.style.overflowY = shouldScroll ? 'auto' : 'hidden';
+    if (shouldScroll) el.scrollTop = el.scrollHeight;
+  }
+
+  onComposerEnter(ev: Event) {
+    const keyEv = ev as KeyboardEvent;
+    if (keyEv.shiftKey) return;
+    keyEv.preventDefault();
+    this.send();
   }
 
   private onEvent(evt: FlowAgentEvent) {
