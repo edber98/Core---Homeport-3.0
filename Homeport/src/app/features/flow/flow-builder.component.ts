@@ -2908,13 +2908,19 @@ export class FlowBuilderComponent {
     const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (target?.isContentEditable ?? false);
     if (isInput) return;
     const cmd = ev.metaKey || ev.ctrlKey;
-    if (!cmd) return;
-    if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
+    if (cmd) {
+      if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
+        ev.preventDefault();
+        this.undo();
+      } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
+        ev.preventDefault();
+        this.redo();
+      }
+      return;
+    }
+    if ((ev.key === 'Delete' || ev.key === 'Backspace') && this.selection) {
       ev.preventDefault();
-      this.undo();
-    } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
-      ev.preventDefault();
-      this.redo();
+      this.deleteSelected();
     }
   }
 
@@ -3236,20 +3242,17 @@ export class FlowBuilderComponent {
         const meta = metas[origIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, Number(index) || 0);
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.undo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
+      const snap = this.history.getPastAt(origIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = steps > 0 ? `Snapshot chargé (undo ×${steps})` : 'Snapshot courant';
+        if (!loadedMsg) loadedMsg = uiIndex > 0 ? `Snapshot chargé (undo ×${uiIndex})` : 'Snapshot courant';
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }
@@ -3267,20 +3270,16 @@ export class FlowBuilderComponent {
         const meta = metas[uiIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, index + 1); // index 0 = next redo
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.redo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const snap = this.history.getFutureAt(uiIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${steps})`;
+        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${uiIndex + 1})`;
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }
