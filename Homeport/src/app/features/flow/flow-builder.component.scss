@@ -3,9 +3,10 @@
 .flow-builder > flow-inspector-panel { min-height: 0; }
 .flow-builder > .canvas { min-height: 0; }
 .flow-builder > .inspector { min-height: 0; }
-.flow-builder > .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: auto; }
+.flow-builder > .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: hidden; }
 .flow-builder > .right-panel flow-history-timeline { flex: 0 0 auto; margin-bottom: 8px; }
-.flow-builder > .right-panel flow-inspector-panel { flex: 1 1 auto; min-height: 0; }
+.flow-builder > .right-panel flow-inspector-panel { flex: 0 0 auto; min-height: 0; z-index: 1; }
+.flow-builder > .right-panel .inspector-meta { flex: 1 1 auto; min-height: 0; overflow: auto; }
 /* Padding for Snapshots in drawer to match panel spacing */
 .right-panel.drawer-mode { padding: 0 12px 12px 12px; }
 .right-panel.drawer-mode flow-history-timeline { margin-top: 8px; }
