@@ -1964,6 +1964,29 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.updateAutoBp();
     this.isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobile;
   }
+  @HostListener('wheel', ['$event']) onPanelWheel(ev: WheelEvent) {
+    const target = ev.target as HTMLElement | null;
+    if (!target) return;
+    const isTextarea = target.tagName === 'TEXTAREA';
+    const isEditor = !!target.closest('.cm-editor, .monaco-editor');
+    if (!isTextarea && !isEditor) return;
+    const panel = target.closest('.left, .right') as HTMLElement | null;
+    if (!panel) return;
+    const scroller = this.findPanelScroller(target, panel);
+    if (!scroller) return;
+    scroller.scrollTop += ev.deltaY;
+    ev.preventDefault();
+  }
+
+  private findPanelScroller(target: HTMLElement, panel: HTMLElement): HTMLElement | null {
+    let el: HTMLElement | null = target;
+    while (el) {
+      if (el.scrollHeight > el.clientHeight) return el;
+      if (el === panel) break;
+      el = el.parentElement;
+    }
+    return panel.scrollHeight > panel.clientHeight ? panel : null;
+  }
 
   // ====== Dépendances: champs impactés par une clé (utilisés dans visibleIf/requiredIf/disabledIf)
   dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }

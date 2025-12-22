@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, OnDestroy, DoCheck, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { SpacingEditorComponent } from './spacing-editor.component';
 import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'inspector-field',
@@ -350,7 +351,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
   `,
   styleUrls: ['./inspector-field.component.scss']
 })
-export class InspectorFieldComponent implements OnChanges {
+export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   @Input({ required: true }) group!: FormGroup;
   @Input() keyDuplicateMessage: string | null = null;
   @Output() openOptions = new EventEmitter<void>();
@@ -367,6 +368,9 @@ export class InspectorFieldComponent implements OnChanges {
   v_dateMin?: string;
   v_dateMax?: string;
 
+  private validatorsSub?: Subscription;
+  private lastValidatorsRaw: any = undefined;
+
   ngOnChanges(_c: SimpleChanges) {
     // Initialize UI from current validators JSON when field/type changes
     try {
@@ -374,6 +378,21 @@ export class InspectorFieldComponent implements OnChanges {
       const arr = this.safeParseArray(raw);
       this.applyValidatorArray(arr);
     } catch {}
+    this.bindValidators();
+  }
+
+  ngDoCheck(): void {
+    const ctrl = this.group?.get('validators');
+    if (!ctrl) return;
+    const raw = ctrl.value;
+    if (raw === this.lastValidatorsRaw) return;
+    this.lastValidatorsRaw = raw;
+    const arr = this.safeParseArray(raw);
+    this.applyValidatorArray(arr);
+  }
+
+  ngOnDestroy(): void {
+    try { this.validatorsSub?.unsubscribe(); } catch {}
   }
 
   onValidatorsChanged() {
@@ -418,4 +437,14 @@ export class InspectorFieldComponent implements OnChanges {
   }
   private numOrUndef(v: any): number | undefined { return typeof v === 'number' && !Number.isNaN(v) ? v : undefined; }
   private strOrUndef(v: any): string | undefined { return typeof v === 'string' && v.length ? v : undefined; }
+
+  private bindValidators() {
+    try { this.validatorsSub?.unsubscribe(); } catch {}
+    const ctrl = this.group?.get('validators');
+    if (!ctrl) return;
+    this.validatorsSub = ctrl.valueChanges.subscribe((raw) => {
+      const arr = this.safeParseArray(raw);
+      this.applyValidatorArray(arr);
+    });
+  }
 }
