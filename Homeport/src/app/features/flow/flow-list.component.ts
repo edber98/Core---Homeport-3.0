@@ -54,7 +54,7 @@ type FlowItem = { id: string; name: string; description?: string };
 
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }">
+        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (dblclick)="openEditor(it)">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>

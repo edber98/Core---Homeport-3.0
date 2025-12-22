@@ -1286,7 +1286,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.ensureStepperMode();
     const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
+    this.selectedField = null;
+    this.select(step);
     this.refresh();
+    try {
+      const list = this.df?.visibleSteps || [];
+      const vi = list.findIndex(s => s === step);
+      if (vi >= 0) this.df?.go(vi, true);
+    } catch {}
   }
 
   // Toolbar helpers to avoid complex template expressions
@@ -1295,7 +1302,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.addSection(this.selected);
     } else if (this.selected && this.isSection(this.selected)) {
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
-      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionInside(); return; }
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInside(); return; }
       if (!this.isStepsMode) { this.addSection(undefined); return; }
     } else if (!this.isStepsMode) {
       this.addSection();
@@ -1308,14 +1315,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (this.selected && this.isStep(this.selected)) {
       // Ajouter dans le step sélectionné
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
-      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionArray(); return; }
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionArray(); return; }
     } else if (this.selected && this.isSection(this.selected)) {
       // Ajouter comme sous-section de la section sélectionnée
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
-      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionInsideArray(); return; }
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInsideArray(); return; }
       // sinon, à la racine si flat
-      if (!this.isStepsMode) { this.ctxAddSectionRootArray(); return; }
+      if (!this.isStepsMode) { this.selectedField = null; this.ctxAddSectionRootArray(); return; }
     } else if (!this.isStepsMode) {
+      this.selectedField = null;
       this.ctxAddSectionRootArray();
       return;
     }
@@ -1368,6 +1376,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.schema.fields = this.schema.fields || [];
       this.schema.fields.push(section as any);
     }
+    this.selectedField = null;
+    this.select(section as any);
     this.refresh();
   }
 
@@ -1380,6 +1390,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.ensureFlatMode();
       this.schema.fields!.push(f);
     }
+    this.selectedField = f;
+    this.select(f);
     this.refresh();
   }
 
@@ -1387,6 +1399,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
     const f = this.newField('text');
     step.fields = step.fields || [];
     step.fields.push(f);
+    this.selectedField = f;
+    this.select(f);
     this.refresh();
   }
 
@@ -1539,7 +1553,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.ensureStepperMode();
     const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
+    this.selectedField = null;
+    this.select(step);
     this.refresh();
+    try {
+      const list = this.df?.visibleSteps || [];
+      const vi = list.findIndex(s => s === step);
+      if (vi >= 0) this.df?.go(vi, true);
+    } catch {}
   }
   onEditAddSection(e: { stepIndex: number }) {
     if (!this.schema.steps) this.ensureStepperMode();
@@ -2230,6 +2251,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (key === 'root') { this.select(this.schema); return; }
     const ctx = this.treeSvc.ctxFromKey(this.schema, key);
     if (!ctx) return;
+    const parsed = this.treeSvc.parseKey(key);
     const obj = ctx.obj;
     // si step sélectionné → synchroniser l'aperçu
     if (this.isStep(obj)) {
@@ -2240,6 +2262,17 @@ export class DynamicFormBuilderComponent implements OnChanges {
         if (vi >= 0) this.df?.go(vi, true);
       } catch {}
       return;
+    }
+    // si field/section dans une autre étape → afficher l'étape correspondante
+    if (parsed?.type === 'fieldPath' && this.schema.steps?.length) {
+      const step = this.schema.steps?.[parsed.stepIndex];
+      if (step) {
+        try {
+          const list = this.df?.visibleSteps || [];
+          const vi = list.findIndex(s => s === step);
+          if (vi >= 0) this.df?.go(vi, true);
+        } catch {}
+      }
     }
     if (obj) this.toggleSelect(obj);
   }
