@@ -509,8 +509,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       ui_form_p_top: [null], ui_form_p_right: [null], ui_form_p_bottom: [null], ui_form_p_left: [null],
       // Actions/buttons options
       ui_showReset: [false],
-      ui_showCancel: [false],
-      ui_submitText: [''], ui_cancelText: [''], ui_resetText: [''],
+      ui_submitText: [''], ui_resetText: [''],
       ui_actions_m_top: [null], ui_actions_m_right: [null], ui_actions_m_bottom: [null], ui_actions_m_left: [null],
       ui_actions_p_top: [null], ui_actions_p_right: [null], ui_actions_p_bottom: [null], ui_actions_p_left: [null],
       ui_button_m_top: [null], ui_button_m_right: [null], ui_button_m_bottom: [null], ui_button_m_left: [null],
@@ -560,9 +559,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
           containerStyle: mkStyle('ui_form_'),
           actions: {
             showReset: !!v.ui_showReset,
-            showCancel: !!v.ui_showCancel,
             submitText: v.ui_submitText || undefined,
-            cancelText: v.ui_cancelText || undefined,
             resetText: v.ui_resetText || undefined,
             actionsStyle: mkStyle('ui_actions_'),
             buttonStyle: mkStyle('ui_button_')
@@ -1085,9 +1082,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         ui_form_p_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingBottom']),
         ui_form_p_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingLeft']),
         ui_showReset: !!this.schema.ui?.actions?.showReset,
-        ui_showCancel: !!this.schema.ui?.actions?.showCancel,
         ui_submitText: this.schema.ui?.actions?.submitText ?? '',
-        ui_cancelText: this.schema.ui?.actions?.cancelText ?? '',
         ui_resetText: this.schema.ui?.actions?.resetText ?? '',
         ui_actions_m_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginTop']),
         ui_actions_m_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginRight']),
