@@ -952,6 +952,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.issues = issues;
   }
 
+  duplicateKeyMessage(): string | null {
+    if (!this.selected || !this.isField(this.selected)) return null;
+    const key = String((this.selected as any)?.key || '').trim();
+    if (!key) return null;
+    const dup = this.issuesSvc.findDuplicates(this.schema).find(d => d.key === key && d.objs.includes(this.selected));
+    if (!dup) return null;
+    return `Clé déjà utilisée (${dup.objs.length} occurrences)`;
+  }
+
   private fieldTypeDefaults(type: FieldType): { placeholder?: string; defaultValue: any; optionsJson?: string; optionsArr?: any[] } {
     switch (type) {
       case 'text': return { placeholder: 'Saisir un texte', defaultValue: '' };
@@ -2041,6 +2050,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     const wasSchemaSelected = this.selected === this.schema;
     const old = this.schema;
     this.schema = { ...this.schema };
+    this.normalizeDuplicateKeys();
     // si on avait sélectionné le schéma, réaligner sur la nouvelle ref
     if (wasSchemaSelected) {
       this.selected = this.schema;
@@ -2089,6 +2099,57 @@ export class DynamicFormBuilderComponent implements OnChanges {
     try { this.modelChange.emit(this.schema); } catch {}
     // If in session mode, persist current schema so caller can pick it up
     try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+  }
+
+  private normalizeDuplicateKeys(): void {
+    const used = new Set<string>();
+    let selectedKey: string | null = null;
+    let selectedSecKey: string | null = null;
+    const uniq = (baseKey: string | null | undefined) => {
+      const key = String(baseKey || '').trim();
+      if (!key) return key;
+      if (!used.has(key)) { used.add(key); return key; }
+      let i = 1;
+      let next = `${key}${i}`;
+      while (used.has(next)) { i += 1; next = `${key}${i}`; }
+      used.add(next);
+      return next;
+    };
+    const walk = (arr?: FieldConfig[]) => {
+      for (const f of (arr || [])) {
+        if (!f) continue;
+        const isSection = (f as any).type === 'section' || (f as any).type === 'section_array';
+        if (isSection) {
+          if (((f as any).mode === 'array' || (f as any).type === 'section_array') && (f as any).key) {
+            const before = String((f as any).key || '');
+            const next = uniq(before);
+            if (next && next !== before) {
+              (f as any).key = next;
+              if (this.selected === f) selectedSecKey = next;
+            }
+          }
+          walk((f as any).fields || []);
+        } else if ((f as any).type !== 'textblock' && (f as any).key) {
+          const before = String((f as any).key || '');
+          const next = uniq(before);
+          if (next && next !== before) {
+            (f as any).key = next;
+            if (this.selected === f) selectedKey = next;
+          }
+        }
+      }
+    };
+    if (this.schema.steps?.length) this.schema.steps.forEach(st => walk(st.fields as any));
+    else walk(this.schema.fields as any);
+    if (selectedKey || selectedSecKey) {
+      this.patching = true;
+      try {
+        if (selectedKey) this.inspector.patchValue({ key: selectedKey }, { emitEvent: false });
+        if (selectedSecKey) this.inspector.patchValue({ sec_key: selectedSecKey }, { emitEvent: false });
+      } finally {
+        this.patching = false;
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

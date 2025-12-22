@@ -39,7 +39,10 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
       <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
         <nz-form-item>
           <nz-form-label nzFor="fld_key" nzTooltipTitle="Clé unique pour référencer la valeur"><span>Clé</span></nz-form-label>
-          <nz-form-control><input nz-input id="fld_key" formControlName="key"/></nz-form-control>
+          <nz-form-control [nzValidateStatus]="keyDuplicateMessage ? 'error' : ''">
+            <input nz-input id="fld_key" formControlName="key"/>
+            <div class="key-error" *ngIf="keyDuplicateMessage">{{ keyDuplicateMessage }}</div>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="fld_label" nzTooltipTitle="Libellé affiché à l’utilisateur"><span>Libellé</span></nz-form-label>
@@ -349,6 +352,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 })
 export class InspectorFieldComponent implements OnChanges {
   @Input({ required: true }) group!: FormGroup;
+  @Input() keyDuplicateMessage: string | null = null;
   @Output() openOptions = new EventEmitter<void>();
   @Output() openCondition = new EventEmitter<'visibleIf'|'requiredIf'|'disabledIf'>();
 

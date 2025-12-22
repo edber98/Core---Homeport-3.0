@@ -376,7 +376,7 @@
 
             <!-- FIELD -->
             <ng-container *ngIf="isField(selected)">
-              <inspector-field [group]="inspector" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
+              <inspector-field [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
             </ng-container>
           </form>
         </nz-tab>
