@@ -1,4 +1,4 @@
-<div class="flow-builder" cdkDropListGroup>
+<div class="flow-builder" cdkDropListGroup [class.right-panel-open]="!isMobile && rightPanelOpen">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
     <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
@@ -170,7 +170,7 @@
 
   <!-- Reusable right panel content (desktop + drawer) -->
   <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
-  <div class="right-panel" *ngIf="!isMobile">
+  <div class="right-panel" *ngIf="!isMobile" [class.closed]="!rightPanelOpen">
     <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedModel]="selectedModel"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
@@ -246,6 +246,10 @@
         (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
     </div>
   </div>
+  <button nz-button nzSize="small" class="panel-toggle-fab" *ngIf="!isMobile" type="button"
+    (click)="rightPanelOpen = !rightPanelOpen" aria-label="Ouvrir ou fermer le panneau droit">
+    <i class="fa-solid fa-bars"></i>
+  </button>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>
     <div>Import du flow…</div>
