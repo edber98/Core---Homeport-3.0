@@ -1,4 +1,5 @@
-<div class="flow-builder" cdkDropListGroup [class.right-panel-open]="!isMobile && rightPanelOpen">
+<div class="flow-builder" cdkDropListGroup [class.right-panel-open]="!isMobile && rightPanelOpen"
+  [class.left-panel-open]="!isMobile && leftPanelOpen">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
     <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
@@ -11,8 +12,10 @@
   </ng-template>
 
   <!-- Desktop left panel -->
-  <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="leftPanelContent"
-    [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+  <div class="left-panel" *ngIf="!isMobile" [class.closed]="!leftPanelOpen">
+    <ng-container [ngTemplateOutlet]="leftPanelContent"
+      [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+  </div>
 
   <section class="canvas">
     <!-- Removed canvas-shield interceptors to avoid event conflicts on mobile -->
@@ -248,7 +251,27 @@
   </div>
   <button nz-button nzSize="small" class="panel-toggle-fab" *ngIf="!isMobile" type="button"
     (click)="rightPanelOpen = !rightPanelOpen" aria-label="Ouvrir ou fermer le panneau droit">
-    <i class="fa-solid fa-bars"></i>
+    <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
+        <path d="M41.5 10H35.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 6V14" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 10L5.5 10" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13.5 24H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.5 20V28" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M43.5 24H21.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M41.5 38H35.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 34V42" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+  </button>
+  <button nz-button nzSize="small" class="panel-toggle-fab left" *ngIf="!isMobile" type="button"
+    (click)="leftPanelOpen = !leftPanelOpen" aria-label="Ouvrir ou fermer le panneau gauche">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" id="sidebar">
+      <g fill="none" fill-rule="evenodd" stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)">
+        <rect width="16" height="16" rx="2"></rect>
+        <path d="M6 0v18"></path>
+      </g>
+    </svg>
   </button>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>

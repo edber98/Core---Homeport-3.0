@@ -91,7 +91,8 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // AI Chat popover visibility
   aiChatOpen = false;
-  rightPanelOpen = true;
+  rightPanelOpen = false;
+  leftPanelOpen = false;
   // Derived pairs builder for overlay (does not mutate base edges)
   private buildOverlayPairs(): Set<string> {
     const pairs = new Set<string>();
