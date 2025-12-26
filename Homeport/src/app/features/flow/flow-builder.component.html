@@ -68,7 +68,7 @@
         </ng-template>
         <ng-template let-ctx nodeHtml>
           <div class="node-card" [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id) }"
+            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
             (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
@@ -100,7 +100,7 @@
                         [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
                     </svg:g>
                   </ng-template>
-                  <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
+                  <handle [position]="portOrientation === 'vertical' ? 'top' : 'left'" type="target" [id]="ih.id" [template]="ihTpl" />
                 </div>
               </div>
             </ng-container>
@@ -114,7 +114,7 @@
                       stroke-width="1"></svg:circle>
                   </svg:g>
                 </ng-template>
-                <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+                <handle [position]="portOrientation === 'vertical' ? 'top' : 'left'" type="target" [id]="inId" [template]="handleInTpl" />
               </ng-container>
             </ng-template>
             <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
@@ -130,7 +130,7 @@
                       (mouseleave)="onHandleLeave()"></svg:circle>
                   </svg:g>
                 </ng-template>
-                <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+                <handle [position]="portOrientation === 'vertical' ? 'bottom' : 'right'" type="source" [id]="out" [template]="hTpl" />
               </div>
             </div>
             <!-- Link handles (targets on the right) for v2 -->
@@ -144,7 +144,7 @@
                       [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
                   </svg:g>
                 </ng-template>
-                <handle position="right" type="target" [id]="lh.id" [template]="linkTpl" />
+                <handle [position]="portOrientation === 'vertical' ? 'right' : 'bottom'" type="target" [id]="lh.id" [template]="linkTpl" />
               </div>
             </div>
             <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
@@ -283,6 +283,9 @@
       </button>
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
+      </button>
+      <button class="icon-btn" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+        <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
       </button>
       <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
         [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'

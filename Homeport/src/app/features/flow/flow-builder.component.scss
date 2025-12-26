@@ -102,6 +102,8 @@
 .node-card .meta .title { font-weight: 600; }
 .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
 .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
+.node-card.horizontal .outputs { flex-direction: column; align-items:center; }
+.node-card.horizontal .outputs .out { width:auto; }
 .node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
 .right-panel .flow-meta { border:0; border-radius:0; padding: 6px 2px; background:transparent; margin-bottom:8px; }
 .right-panel .flow-meta.apple .row { display:flex; align-items:center; gap:8px; margin:6px 0; }

@@ -91,6 +91,13 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // AI Chat popover visibility
   aiChatOpen = false;
+  // Ports orientation (inputs/outputs placement)
+  portOrientation: 'vertical' | 'horizontal' = 'vertical';
+
+  togglePortOrientation() {
+    this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';
+    try { this.message.info(`Orientation: ${this.portOrientation}`); } catch {}
+  }
   // Derived pairs builder for overlay (does not mutate base edges)
   private buildOverlayPairs(): Set<string> {
     const pairs = new Set<string>();
