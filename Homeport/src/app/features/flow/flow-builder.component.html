@@ -75,23 +75,17 @@
             (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
-            <div class="header">
-              <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-              </div>
-              <i *ngIf="ctx.node.data.model.templateObj?.icon" [class]="ctx.node.data.model.templateObj?.icon"
-                class="icon"></i>
-              <div class="meta">
-                <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
-                <div class="subtitle">
-                  {{ ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category ||
-                  ctx.node.data.model.templateObj?.type }}
-                  <i class="type-badge" [class]="typeIconClass(ctx.node.data.model.templateObj)" nz-tooltip
-                    [nzTooltipTitle]="ctx.node.data.model.templateObj?.type" style="margin-left:6px"></i>
-                  <span *ngIf="appLabelOf(ctx.node.data.model.templateObj) as appLbl"
-                    style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
-                </div>
-              </div>
+            <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="center-wrap">
+              <node-card-header
+                [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
+                [subtitle]="ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category || ctx.node.data.model.templateObj?.type"
+                [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
+                [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
+                [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
+              ></node-card-header>
             </div>
             <ng-container *ngIf="(ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
               <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">

@@ -96,7 +96,9 @@
   background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px;
   box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
 .flow-tooltip.error { background:#f759ab; color:#fff; }
-.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-width: 180px; position: relative; }
+.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; position: relative; }
+.node-card .center-wrap { position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align:left; pointer-events:none; }
+.node-card .center-wrap node-card-header { pointer-events:auto; }
 .node-card.select-node { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.15); }
 .node-card.error-branch { border-color: rgba(247,89,171,0.63); box-shadow: none; }
 .node-card.select-node.error-branch { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.35); }

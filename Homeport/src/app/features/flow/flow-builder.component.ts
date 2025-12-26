@@ -33,11 +33,12 @@ import { FlowSharedStateService } from '../../services/flow-shared-state.service
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { environment } from '../../../environments/environment';
+import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent, NodeCardHeaderComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -754,6 +755,10 @@ export class FlowBuilderComponent {
       const app = this.appsMap.get(appId);
       return app ? (app.title || app.name || '') : '';
     } catch { return ''; }
+  }
+
+  getAppById(id?: string|null): AppProvider | undefined {
+    try { const key = String(id || '').trim(); return key ? this.appsMap.get(key) : undefined; } catch { return undefined; }
   }
 
   // Map NodeTemplate list to palette display items
