@@ -109,7 +109,7 @@ export class CatalogService {
         enabled: !!f.enabled,
         nodes: (f as any).graph?.nodes || [],
         edges: (f as any).graph?.edges || [],
-        meta: {}
+        meta: (f as any).settings || (f as any).meta || {}
       } as FlowDoc)));
     }
     const doc = this.load<FlowDoc | null>(this.FLOW_DOC_KEY + id, null);
@@ -118,7 +118,7 @@ export class CatalogService {
   saveFlow(doc: FlowDoc, force = false): Observable<FlowDoc> {
     if (environment.useBackend) {
       if (!doc?.id) return throwError(() => new Error('Missing id'));
-      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] } } as any;
+      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, settings: (doc as any).meta || {} } as any;
       return this.flowsApi.update(doc.id, payload, force).pipe(map(() => doc));
     }
     if (!doc?.id) return throwError(() => new Error('Missing id'));

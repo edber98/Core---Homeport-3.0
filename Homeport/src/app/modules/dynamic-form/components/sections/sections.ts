@@ -45,6 +45,18 @@ export class Sections implements OnChanges {
     const over = (this.section as any).ui || {};
     return { ...base, ...over, labelCol: over.labelCol ?? base.labelCol, controlCol: over.controlCol ?? base.controlCol };
   }
+  get sectionStyle(): Record<string, any> {
+    const merged = this.dfs.normalizeSpacing((this.section as any)?.itemStyle);
+    const hasMarginBottom = ('margin' in merged) || ('marginBottom' in merged);
+    if (!this.isArraySection(this.section) && !hasMarginBottom) {
+      return { marginBottom: '16px', ...merged };
+    }
+    return merged;
+  }
+
+  private isArraySection(section?: SectionConfig): boolean {
+    return !!section && (((section as any).mode === 'array') || ((section as any).type === 'section_array'));
+  }
 
   fieldSpanFor(field: FieldConfig, bp: 'xs'|'sm'|'md'|'lg'|'xl'): number {
     const spans = this.dfs.getFieldSpans(field) as any;

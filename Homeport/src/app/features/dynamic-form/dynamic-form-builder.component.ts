@@ -509,8 +509,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       ui_form_p_top: [null], ui_form_p_right: [null], ui_form_p_bottom: [null], ui_form_p_left: [null],
       // Actions/buttons options
       ui_showReset: [false],
-      ui_showCancel: [false],
-      ui_submitText: [''], ui_cancelText: [''], ui_resetText: [''],
+      ui_submitText: [''], ui_resetText: [''],
       ui_actions_m_top: [null], ui_actions_m_right: [null], ui_actions_m_bottom: [null], ui_actions_m_left: [null],
       ui_actions_p_top: [null], ui_actions_p_right: [null], ui_actions_p_bottom: [null], ui_actions_p_left: [null],
       ui_button_m_top: [null], ui_button_m_right: [null], ui_button_m_bottom: [null], ui_button_m_left: [null],
@@ -560,9 +559,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
           containerStyle: mkStyle('ui_form_'),
           actions: {
             showReset: !!v.ui_showReset,
-            showCancel: !!v.ui_showCancel,
             submitText: v.ui_submitText || undefined,
-            cancelText: v.ui_cancelText || undefined,
             resetText: v.ui_resetText || undefined,
             actionsStyle: mkStyle('ui_actions_'),
             buttonStyle: mkStyle('ui_button_')
@@ -778,20 +775,90 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // Réagir au changement de layout pour gérer labelsOnTop et disponibilités
     const layoutCtrl = this.inspector.get('ui_layout');
     const labelsOnTopCtrl = this.inspector.get('ui_labelsOnTop');
+    const labelSpanCtrl = this.inspector.get('ui_labelColSpan');
+    const controlSpanCtrl = this.inspector.get('ui_controlColSpan');
+    let lastLayout: 'horizontal'|'vertical'|'inline'|null = null;
+    let lastHorizontalLabelSpan: number | null = null;
+    let lastHorizontalControlSpan: number | null = null;
     layoutCtrl?.valueChanges.subscribe((layout: 'horizontal'|'vertical'|'inline') => {
       this.patching = true;
       try {
         if (layout === 'vertical') {
           // En vertical, labelsOnTop toujours true (option non affichée)
+          if (lastLayout !== 'vertical') {
+            lastHorizontalLabelSpan = labelSpanCtrl?.value ?? null;
+            lastHorizontalControlSpan = controlSpanCtrl?.value ?? null;
+          }
           labelsOnTopCtrl?.setValue(true, { emitEvent: false });
+          labelSpanCtrl?.setValue(24, { emitEvent: false });
+          controlSpanCtrl?.setValue(24, { emitEvent: false });
+        } else if (lastLayout === 'vertical') {
+          // Quand on quitte le vertical, rétablir un comportement horizontal par défaut
+          labelsOnTopCtrl?.setValue(false, { emitEvent: false });
+          if (labelSpanCtrl) {
+            const nextLabel = (lastHorizontalLabelSpan != null && lastHorizontalLabelSpan !== 24) ? lastHorizontalLabelSpan : 8;
+            labelSpanCtrl.setValue(nextLabel, { emitEvent: false });
+          }
+          if (controlSpanCtrl) {
+            const nextControl = (lastHorizontalControlSpan != null && lastHorizontalControlSpan !== 24) ? lastHorizontalControlSpan : 16;
+            controlSpanCtrl.setValue(nextControl, { emitEvent: false });
+          }
         }
         if (layout === 'inline' && this.hasSections) {
           this.msg.error("Le layout 'inline' est indisponible car des sections existent.");
           layoutCtrl?.setValue('horizontal', { emitEvent: true });
         }
       } finally {
+        lastLayout = layout;
         this.patching = false;
       }
+      // Propager les valeurs ajustées (labels/spans) dans le schema
+      queueMicrotask(() => { try { this.inspector.updateValueAndValidity({ emitEvent: true }); } catch {} });
+      this.recomputeIssues();
+    });
+
+    const secLayoutCtrl = this.inspector.get('sec_ui_layout');
+    const secLabelsOnTopCtrl = this.inspector.get('sec_ui_labelsOnTop');
+    const secLabelSpanCtrl = this.inspector.get('sec_ui_labelColSpan');
+    const secControlSpanCtrl = this.inspector.get('sec_ui_controlColSpan');
+    let lastSecLayout: 'horizontal'|'vertical'|'inline'|''|null = null;
+    let lastSecLabelSpan: number | null = null;
+    let lastSecControlSpan: number | null = null;
+    secLayoutCtrl?.valueChanges.subscribe((layout: 'horizontal'|'vertical'|'inline'|'') => {
+      this.patching = true;
+      try {
+        if (layout === 'vertical') {
+          if (lastSecLayout !== 'vertical') {
+            lastSecLabelSpan = secLabelSpanCtrl?.value ?? null;
+            lastSecControlSpan = secControlSpanCtrl?.value ?? null;
+          }
+          secLabelsOnTopCtrl?.setValue(true, { emitEvent: false });
+          secLabelSpanCtrl?.setValue(24, { emitEvent: false });
+          secControlSpanCtrl?.setValue(24, { emitEvent: false });
+        } else if (lastSecLayout === 'vertical') {
+          secLabelsOnTopCtrl?.setValue(false, { emitEvent: false });
+          if (secLabelSpanCtrl) {
+            const nextLabel = (lastSecLabelSpan != null && lastSecLabelSpan !== 24) ? lastSecLabelSpan : 8;
+            secLabelSpanCtrl.setValue(nextLabel, { emitEvent: false });
+          }
+          if (secControlSpanCtrl) {
+            const nextControl = (lastSecControlSpan != null && lastSecControlSpan !== 24) ? lastSecControlSpan : 16;
+            secControlSpanCtrl.setValue(nextControl, { emitEvent: false });
+          }
+        }
+      } finally {
+        lastSecLayout = layout;
+        this.patching = false;
+      }
+      queueMicrotask(() => {
+        try {
+          this.inspector.patchValue({
+            sec_ui_labelsOnTop: secLabelsOnTopCtrl?.value ?? null,
+            sec_ui_labelColSpan: secLabelSpanCtrl?.value ?? null,
+            sec_ui_controlColSpan: secControlSpanCtrl?.value ?? null,
+          }, { emitEvent: true });
+        } catch {}
+      });
       this.recomputeIssues();
     });
   }
@@ -880,6 +947,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
       issues.push({ level: 'error', message: `${it.kind} « ${title} »: ${p} référence ${it.missing.join(', ')} (inexistants)`, actions: [ { label: 'Effacer la condition', run: () => this.clearCondition(it.obj, p) }, { label: 'Éditer', run: () => { this.selectEntity(it.obj); this.openConditionBuilder(p); } } ] });
     }
     this.issues = issues;
+  }
+
+  duplicateKeyMessage(): string | null {
+    if (!this.selected || !this.isField(this.selected)) return null;
+    const key = String((this.selected as any)?.key || '').trim();
+    if (!key) return null;
+    const dup = this.issuesSvc.findDuplicates(this.schema).find(d => d.key === key && d.objs.includes(this.selected));
+    if (!dup) return null;
+    return `Clé déjà utilisée (${dup.objs.length} occurrences)`;
   }
 
   private fieldTypeDefaults(type: FieldType): { placeholder?: string; defaultValue: any; optionsJson?: string; optionsArr?: any[] } {
@@ -1006,9 +1082,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         ui_form_p_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingBottom']),
         ui_form_p_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingLeft']),
         ui_showReset: !!this.schema.ui?.actions?.showReset,
-        ui_showCancel: !!this.schema.ui?.actions?.showCancel,
         ui_submitText: this.schema.ui?.actions?.submitText ?? '',
-        ui_cancelText: this.schema.ui?.actions?.cancelText ?? '',
         ui_resetText: this.schema.ui?.actions?.resetText ?? '',
         ui_actions_m_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginTop']),
         ui_actions_m_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginRight']),
@@ -1216,7 +1290,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.ensureStepperMode();
     const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
+    this.selectedField = null;
+    this.select(step);
     this.refresh();
+    try {
+      const list = this.df?.visibleSteps || [];
+      const vi = list.findIndex(s => s === step);
+      if (vi >= 0) this.df?.go(vi, true);
+    } catch {}
   }
 
   // Toolbar helpers to avoid complex template expressions
@@ -1224,8 +1305,9 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (this.selected && this.isStep(this.selected)) {
       this.addSection(this.selected);
     } else if (this.selected && this.isSection(this.selected)) {
-      this.addSection(undefined); // ajouter à la racine si flat; sinon, on passe par ctxAddSectionInside via menu
-      // en mode steps et sélection section, préférer l'ajout via menu contexte dans la section
+      const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInside(); return; }
+      if (!this.isStepsMode) { this.addSection(undefined); return; }
     } else if (!this.isStepsMode) {
       this.addSection();
     } else {
@@ -1237,14 +1319,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (this.selected && this.isStep(this.selected)) {
       // Ajouter dans le step sélectionné
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
-      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionArray(); return; }
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionArray(); return; }
     } else if (this.selected && this.isSection(this.selected)) {
       // Ajouter comme sous-section de la section sélectionnée
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
-      if (ctx) { this.dropdownKey = ctx; this.ctxAddSectionInsideArray(); return; }
+      if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInsideArray(); return; }
       // sinon, à la racine si flat
-      if (!this.isStepsMode) { this.ctxAddSectionRootArray(); return; }
+      if (!this.isStepsMode) { this.selectedField = null; this.ctxAddSectionRootArray(); return; }
     } else if (!this.isStepsMode) {
+      this.selectedField = null;
       this.ctxAddSectionRootArray();
       return;
     }
@@ -1297,6 +1380,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.schema.fields = this.schema.fields || [];
       this.schema.fields.push(section as any);
     }
+    this.selectedField = null;
+    this.select(section as any);
     this.refresh();
   }
 
@@ -1309,6 +1394,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.ensureFlatMode();
       this.schema.fields!.push(f);
     }
+    this.selectedField = f;
+    this.select(f);
     this.refresh();
   }
 
@@ -1316,6 +1403,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
     const f = this.newField('text');
     step.fields = step.fields || [];
     step.fields.push(f);
+    this.selectedField = f;
+    this.select(f);
     this.refresh();
   }
 
@@ -1468,7 +1557,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.ensureStepperMode();
     const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
+    this.selectedField = null;
+    this.select(step);
     this.refresh();
+    try {
+      const list = this.df?.visibleSteps || [];
+      const vi = list.findIndex(s => s === step);
+      if (vi >= 0) this.df?.go(vi, true);
+    } catch {}
   }
   onEditAddSection(e: { stepIndex: number }) {
     if (!this.schema.steps) this.ensureStepperMode();
@@ -1561,6 +1657,39 @@ export class DynamicFormBuilderComponent implements OnChanges {
     } catch (e) {
       this.msg.error('Échec de la sauvegarde');
     }
+  }
+
+  saveForLeave(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      try {
+        this.updateLastChecksum();
+        this.leavingAfterSave = true;
+        if (this.sessionKey) {
+          try { localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+        }
+        if (this.currentFormId) {
+          this.catalog.saveForm({ id: this.currentFormId, name: this.currentFormName || (this.schema.title || 'Formulaire'), description: this.currentFormDesc, schema: this.schema } as any).subscribe({
+            next: () => {
+              try { this.msg.success('Formulaire sauvegardé'); } catch {}
+              this.updateLastChecksum();
+              this.purgeDraft();
+              resolve(true);
+            },
+            error: () => {
+              this.leavingAfterSave = false;
+              this.msg.error('Échec de la sauvegarde');
+              resolve(false);
+            }
+          });
+          return;
+        }
+        resolve(true);
+      } catch {
+        this.leavingAfterSave = false;
+        this.msg.error('Échec de la sauvegarde');
+        resolve(false);
+      }
+    });
   }
 
   // ---------- Helpers ----------
@@ -1863,6 +1992,29 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.updateAutoBp();
     this.isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobile;
   }
+  @HostListener('wheel', ['$event']) onPanelWheel(ev: WheelEvent) {
+    const target = ev.target as HTMLElement | null;
+    if (!target) return;
+    const isTextarea = target.tagName === 'TEXTAREA';
+    const isEditor = !!target.closest('.cm-editor, .monaco-editor');
+    if (!isTextarea && !isEditor) return;
+    const panel = target.closest('.left, .right') as HTMLElement | null;
+    if (!panel) return;
+    const scroller = this.findPanelScroller(target, panel);
+    if (!scroller) return;
+    scroller.scrollTop += ev.deltaY;
+    ev.preventDefault();
+  }
+
+  private findPanelScroller(target: HTMLElement, panel: HTMLElement): HTMLElement | null {
+    let el: HTMLElement | null = target;
+    while (el) {
+      if (el.scrollHeight > el.clientHeight) return el;
+      if (el === panel) break;
+      el = el.parentElement;
+    }
+    return panel.scrollHeight > panel.clientHeight ? panel : null;
+  }
 
   // ====== Dépendances: champs impactés par une clé (utilisés dans visibleIf/requiredIf/disabledIf)
   dependentsForKey(key: string) { return this.depsSvc.dependentsForKey(this.schema, key); }
@@ -1949,6 +2101,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     const wasSchemaSelected = this.selected === this.schema;
     const old = this.schema;
     this.schema = { ...this.schema };
+    this.normalizeDuplicateKeys();
     // si on avait sélectionné le schéma, réaligner sur la nouvelle ref
     if (wasSchemaSelected) {
       this.selected = this.schema;
@@ -1958,6 +2111,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
         title: this.schema.title ?? '',
         ui_layout: this.schema.ui?.layout ?? 'horizontal',
         ui_labelAlign: this.schema.ui?.labelAlign ?? 'left',
+        ui_labelsOnTop: !!this.schema.ui?.labelsOnTop,
         ui_labelColSpan: this.schema.ui?.labelCol?.span ?? 8,
         ui_controlColSpan: this.schema.ui?.controlCol?.span ?? 16,
         ui_widthPx: this.schema.ui?.widthPx ?? 1040,
@@ -1996,6 +2150,57 @@ export class DynamicFormBuilderComponent implements OnChanges {
     try { this.modelChange.emit(this.schema); } catch {}
     // If in session mode, persist current schema so caller can pick it up
     try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+  }
+
+  private normalizeDuplicateKeys(): void {
+    const used = new Set<string>();
+    let selectedKey: string | null = null;
+    let selectedSecKey: string | null = null;
+    const uniq = (baseKey: string | null | undefined) => {
+      const key = String(baseKey || '').trim();
+      if (!key) return key;
+      if (!used.has(key)) { used.add(key); return key; }
+      let i = 1;
+      let next = `${key}${i}`;
+      while (used.has(next)) { i += 1; next = `${key}${i}`; }
+      used.add(next);
+      return next;
+    };
+    const walk = (arr?: FieldConfig[]) => {
+      for (const f of (arr || [])) {
+        if (!f) continue;
+        const isSection = (f as any).type === 'section' || (f as any).type === 'section_array';
+        if (isSection) {
+          if (((f as any).mode === 'array' || (f as any).type === 'section_array') && (f as any).key) {
+            const before = String((f as any).key || '');
+            const next = uniq(before);
+            if (next && next !== before) {
+              (f as any).key = next;
+              if (this.selected === f) selectedSecKey = next;
+            }
+          }
+          walk((f as any).fields || []);
+        } else if ((f as any).type !== 'textblock' && (f as any).key) {
+          const before = String((f as any).key || '');
+          const next = uniq(before);
+          if (next && next !== before) {
+            (f as any).key = next;
+            if (this.selected === f) selectedKey = next;
+          }
+        }
+      }
+    };
+    if (this.schema.steps?.length) this.schema.steps.forEach(st => walk(st.fields as any));
+    else walk(this.schema.fields as any);
+    if (selectedKey || selectedSecKey) {
+      this.patching = true;
+      try {
+        if (selectedKey) this.inspector.patchValue({ key: selectedKey }, { emitEvent: false });
+        if (selectedSecKey) this.inspector.patchValue({ sec_key: selectedSecKey }, { emitEvent: false });
+      } finally {
+        this.patching = false;
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -2158,6 +2363,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     if (key === 'root') { this.select(this.schema); return; }
     const ctx = this.treeSvc.ctxFromKey(this.schema, key);
     if (!ctx) return;
+    const parsed = this.treeSvc.parseKey(key);
     const obj = ctx.obj;
     // si step sélectionné → synchroniser l'aperçu
     if (this.isStep(obj)) {
@@ -2168,6 +2374,17 @@ export class DynamicFormBuilderComponent implements OnChanges {
         if (vi >= 0) this.df?.go(vi, true);
       } catch {}
       return;
+    }
+    // si field/section dans une autre étape → afficher l'étape correspondante
+    if (parsed?.type === 'fieldPath' && this.schema.steps?.length) {
+      const step = this.schema.steps?.[parsed.stepIndex];
+      if (step) {
+        try {
+          const list = this.df?.visibleSteps || [];
+          const vi = list.findIndex(s => s === step);
+          if (vi >= 0) this.df?.go(vi, true);
+        } catch {}
+      }
     }
     if (obj) this.toggleSelect(obj);
   }

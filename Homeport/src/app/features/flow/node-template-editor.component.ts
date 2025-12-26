@@ -155,10 +155,10 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       </div>
 
       <!-- v2 Handles Editor -->
-      <div class="ins-section-header">
+      <div class="ins-section-header" *ngIf="form.get('type')?.value!=='condition'">
         <div class="card-title"><span class="t">Handles v2</span><span class="s">Entrées / Sorties typées</span></div>
       </div>
-      <div class="grid cols-2">
+      <div class="grid cols-2" *ngIf="form.get('type')?.value!=='condition'">
         <div>
           <div class="sub-header"><div class="card-title left"><span class="t">Entrées</span><span class="s">inputHandles</span></div></div>
           <div class="outputs">
@@ -189,10 +189,10 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       </div>
 
       <!-- Linked Handles (cibles) -->
-      <div class="ins-section-header">
+      <div class="ins-section-header" *ngIf="form.get('type')?.value!=='condition'">
         <div class="card-title"><span class="t">Linked Handles</span><span class="s">Cibles typées (ex: Tools, Memory)</span></div>
       </div>
-      <div class="grid cols-1">
+      <div class="grid cols-1" *ngIf="form.get('type')?.value!=='condition'">
         <div>
           <div class="outputs">
             <div class="row" *ngFor="let ctrl of linkedHandles.controls; let i=index" [formGroup]="ctrl">
@@ -482,8 +482,10 @@ export class NodeTemplateEditorComponent implements OnInit {
     // v2 handles
     try {
       this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
-      this.outputHandles.clear(); (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple }));
-      this.linkedHandles.clear(); (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
+      this.outputHandles.clear();
+      if (t.type !== 'condition') (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple }));
+      this.linkedHandles.clear();
+      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
     } catch {}
     this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
@@ -568,8 +570,8 @@ export class NodeTemplateEditorComponent implements OnInit {
       authorize_skip_error: v.type === 'function' ? !!v.authorize_skip_error : undefined,
       allowWithoutCredentials: v.type === 'function' ? !!v.allow_without_credentials : undefined,
       inputHandles: inHs.length ? inHs : undefined,
-      outputHandles: outHs.length ? outHs : undefined,
-      linkedHandles: linkHs.length ? linkHs : undefined,
+      outputHandles: v.type === 'condition' ? undefined : (outHs.length ? outHs : undefined),
+      linkedHandles: v.type === 'condition' ? undefined : (linkHs.length ? linkHs : undefined),
       output: undefined,
       output_array_field: v.type === 'condition' ? (v.output_array_field || 'items') : undefined,
       args

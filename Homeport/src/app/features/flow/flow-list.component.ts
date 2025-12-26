@@ -11,6 +11,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
@@ -22,7 +24,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule, NzDropDownModule, NzMenuModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -54,7 +56,7 @@ type FlowItem = { id: string; name: string; description?: string };
 
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }">
+        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (dblclick)="openEditor(it)">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>
@@ -65,9 +67,36 @@ type FlowItem = { id: string; name: string; description?: string };
                 <span class="dot" [ngClass]="statusClass(it.status)"></span>
                 <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
               </div>
-              <span class="chip" *ngIf="it.status" [ngClass]="statusClass(it.status)">{{ statusLabel(it.status) }}</span>
-              <span class="chip on" *ngIf="it.enabled">Activé</span>
-              <span class="chip off" *ngIf="!it.enabled">Désactivé</span>
+              <span class="chip" *ngIf="it.status"
+                    [ngClass]="statusClass(it.status)"
+                    nz-dropdown
+                    [nzDropdownMenu]="statusMenu"
+                    nzTrigger="click"
+                    [nzDisabled]="updatingIds.has(it.id)"
+                    (click)="$event.stopPropagation()">
+                {{ statusLabel(it.status) }}
+              </span>
+              <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="setStatus(it, 'draft'); $event.stopPropagation()">Brouillon</li>
+                  <li nz-menu-item (click)="setStatus(it, 'test'); $event.stopPropagation()">Test</li>
+                  <li nz-menu-item (click)="setStatus(it, 'production'); $event.stopPropagation()">Production</li>
+                </ul>
+              </nz-dropdown-menu>
+              <span class="chip" [ngClass]="it.enabled ? 'on' : 'off'"
+                    nz-dropdown
+                    [nzDropdownMenu]="enabledMenu"
+                    nzTrigger="click"
+                    [nzDisabled]="updatingIds.has(it.id)"
+                    (click)="$event.stopPropagation()">
+                {{ it.enabled ? 'Activé' : 'Désactivé' }}
+              </span>
+              <nz-dropdown-menu #enabledMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="setEnabled(it, true); $event.stopPropagation()">Activé</li>
+                  <li nz-menu-item (click)="setEnabled(it, false); $event.stopPropagation()">Désactivé</li>
+                </ul>
+              </nz-dropdown-menu>
               <i *ngIf="it.invalid" class="fa-solid fa-triangle-exclamation warn"
                  nz-tooltip [nzTooltipTitle]="errorTooltip(it)" aria-label="Flow invalide"></i>
             </div>
@@ -99,7 +128,7 @@ type FlowItem = { id: string; name: string; description?: string };
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
-        <form nz-form nzLayout="vertical">
+        <form nz-form nzLayout="vertical" (ngSubmit)="createFlow()">
           <nz-form-item>
             <nz-form-label>Titre</nz-form-label>
             <nz-form-control>
@@ -131,8 +160,8 @@ type FlowItem = { id: string; name: string; description?: string };
             </nz-form-control>
           </nz-form-item>
           <div class="modal-actions">
-            <button nz-button (click)="closeCreate()">Annuler</button>
-            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createFlow()">Créer</button>
+            <button nz-button type="button" (click)="closeCreate()">Annuler</button>
+            <button nz-button type="submit" nzType="primary" [disabled]="!canCreate() || creating">Créer</button>
           </div>
           <div class="error" *ngIf="createError">{{ createError }}</div>
         </form>
@@ -250,6 +279,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
   createError: string | null = null;
   draft: { name: string; description?: string; status?: 'draft'|'test'|'production'; enabled?: boolean } = { name: '', description: '', status: 'draft', enabled: false };
   doSearch() { this.q = (this.q || '').trim(); }
+  updatingIds = new Set<string>();
 
   private changesSub?: Subscription;
   constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) { }
@@ -322,6 +352,45 @@ export class FlowListComponent implements OnInit, OnDestroy {
 
   openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id, center: '1' } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
+  setStatus(item: FlowSummary, status: string) {
+    const prev = { status: item.status, enabled: item.enabled };
+    if (prev.status === status) return;
+    item.status = status as any;
+    this.updateFlowMeta(item, prev);
+  }
+  setEnabled(item: FlowSummary, enabled: boolean) {
+    const prev = { status: item.status, enabled: item.enabled };
+    if (prev.enabled === enabled) return;
+    item.enabled = !!enabled;
+    this.updateFlowMeta(item, prev);
+  }
+  private updateFlowMeta(item: FlowSummary, prev: { status: any; enabled: any }) {
+    if (this.updatingIds.has(item.id)) return;
+    this.updatingIds.add(item.id);
+    this.catalog.getFlow(item.id).subscribe({
+      next: (doc) => {
+        const updated: any = { ...doc, status: item.status, enabled: item.enabled };
+        this.catalog.saveFlow(updated).subscribe({
+          next: () => {
+            this.updatingIds.delete(item.id);
+            try { this.ui.success('Flow mis à jour'); } catch {}
+          },
+          error: () => {
+            item.status = prev.status;
+            item.enabled = prev.enabled;
+            this.updatingIds.delete(item.id);
+            this.ui.error('Échec de la mise à jour');
+          }
+        });
+      },
+      error: () => {
+        item.status = prev.status;
+        item.enabled = prev.enabled;
+        this.updatingIds.delete(item.id);
+        this.ui.error('Échec de la mise à jour');
+      }
+    });
+  }
   removeFlow(item: FlowSummary) {
     this.catalog.deleteFlow(item.id).subscribe({
       next: () => { this.ui.success('Flow supprimé'); this.load(); },

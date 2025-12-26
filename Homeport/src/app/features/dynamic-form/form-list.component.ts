@@ -45,7 +45,7 @@ type FormItem = { id: string; name: string; description?: string };
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of filtered">
+        <div class="card" *ngFor="let it of filtered" (dblclick)="openBuilder(it)">
           <div class="leading"><div class="icon-badge"><i class="fa-regular fa-rectangle-list"></i></div></div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div></div>

@@ -8,7 +8,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
+import { CatalogService, AppProvider, CredentialSummary, CredentialDoc, FormSummary, FormDoc } from '../../../services/catalog.service';
 import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
@@ -51,6 +51,23 @@ import { FormsModule } from '@angular/forms';
                       <nz-switch [(ngModel)]="model.startFormPublic" (ngModelChange)="startFormPublic = $event" [nzDisabled]="!startFormEnabled"></nz-switch>
                     </label>
                   </div>
+                </div>
+                <div class="start-form-import" *ngIf="startFormEnabled">
+                  <div class="row">
+                    <div class="label">Ou choisir un formulaire existant</div>
+                    <button nz-button nzSize="small" class="apple-btn icon-only" (click)="loadForms()" [disabled]="formsLoading" nz-tooltip nzTooltipTitle="Actualiser">
+                      <i nz-icon nzType="reload"></i>
+                    </button>
+                  </div>
+                  <div class="row">
+                    <nz-select class="form-select" [(ngModel)]="selectedFormId" nzShowSearch nzAllowClear nzPlaceHolder="Sélectionner un formulaire">
+                      <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+                    </nz-select>
+                    <button nz-button nzSize="small" class="apple-btn" (click)="applySelectedForm()" [disabled]="!selectedFormId || formsLoading">
+                      Importer
+                    </button>
+                  </div>
+                  <div class="hint">Importer remplace le formulaire actuel.</div>
                 </div>
                 <div *ngIf="startFormEnabled && flowId" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
                   <input nz-input [readonly]="true" [value]="formUrl || ''" placeholder="URL publique" style="flex:1 1 auto; min-width: 260px;" />
@@ -188,6 +205,11 @@ import { FormsModule } from '@angular/forms';
     .cred-box .control-row .cred-select { flex: 1 1 auto; min-width: 0; }
     .cred-add-btn { display:inline-flex; align-items:center; justify-content:center; height: 32px; padding: 0 12px; border-radius: 6px; }
     .apple-btn.icon-only .label { display: none; }
+    .start-form-import { margin-top: 10px; padding: 8px 10px; border: 1px dashed #e5e7eb; border-radius: 10px; background: #fafafa; display:flex; flex-direction:column; gap:6px; }
+    .start-form-import .row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .start-form-import .label { font-weight:600; font-size:12px; color:#111; }
+    .start-form-import .hint { font-size:12px; color:#6b7280; }
+    .start-form-import .form-select { flex: 1 1 auto; min-width: 0; }
     /* Error style when credentials required but missing */
     :host ::ng-deep .cred-select.error .ant-select-selector { border-color: #ff4d4f !important; box-shadow: 0 0 0 2px rgba(255,77,79,0.12) !important; }
     /* Make tabs fill available height and allow inner scrolling */
@@ -237,6 +259,9 @@ export class FlowAdvancedCenterPanelComponent {
   private lastJson = '';
   private commitTimer: any = null;
   private pendingContext: any = null;
+  forms: FormSummary[] = [];
+  formsLoading = false;
+  selectedFormId: string | null = null;
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
@@ -284,6 +309,9 @@ export class FlowAdvancedCenterPanelComponent {
       } catch {}
       // Refresh credentials UI based on provider
       this.refreshCredentialsState();
+    }
+    if (needReset && this.isStartForm(this.model)) {
+      this.loadForms();
     }
     // Always refresh logs view when attemptEvents changes (even without node/template reset)
     if ('attemptEvents' in changes) {
@@ -360,6 +388,33 @@ export class FlowAdvancedCenterPanelComponent {
       this.router.navigate(['/dynamic-form'], { queryParams: query });
     } catch {}
   }
+  loadForms() {
+    if (this.formsLoading) return;
+    this.formsLoading = true;
+    this.catalog.listForms().subscribe({
+      next: (list) => {
+        this.forms = Array.isArray(list) ? list : [];
+        if (this.selectedFormId && !this.forms.some(f => f.id === this.selectedFormId)) {
+          this.selectedFormId = null;
+        }
+      },
+      error: () => { this.forms = []; },
+      complete: () => { this.formsLoading = false; try { this.cdr.detectChanges(); } catch {} }
+    });
+  }
+  applySelectedForm() {
+    const id = this.selectedFormId;
+    if (!id) return;
+    this.catalog.getForm(id).subscribe({
+      next: (doc: FormDoc) => {
+        const schema = (doc as any)?.schema || { title: doc?.name || 'Formulaire', fields: [] };
+        this.patchModel({ context: schema, startFormEnabled: true });
+        try { this.cdr.detectChanges(); } catch {}
+      },
+      error: () => {}
+    });
+  }
+  trackForm(i: number, f: FormSummary) { return f?.id || i; }
   trackIdx(i: number, v: number) { return v; }
 
   trackEvent(i: number, ev: any) { try { return ev?.createdAt + ':' + (ev?.type || '') + ':' + (ev?.exec ?? '') + ':' + (ev?.nodeId || '') + ':' + i; } catch { return i; } }

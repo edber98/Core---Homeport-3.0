@@ -42,6 +42,7 @@ import { environment } from '../../../environments/environment';
   styleUrl: './flow-builder.component.scss'
 })
 export class FlowBuilderComponent {
+  
   // Palette configurable (peut évoluer vers un service)
   private DRAFT_KEY_PREFIX = 'flow.draft.';
   private lastSavedChecksum: string | null = null;
@@ -91,13 +92,57 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // AI Chat popover visibility
   aiChatOpen = false;
+  rightPanelOpen = false;
+  leftPanelOpen = false;
   // Ports orientation (inputs/outputs placement)
-  portOrientation: 'vertical' | 'horizontal' = 'vertical';
+  portOrientation: 'vertical' | 'horizontal' = 'horizontal';
 
   togglePortOrientation() {
     this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';
     try { this.message.info(`Orientation: ${this.portOrientation}`); } catch {}
+    
+    // Persist and refresh placement/viewport
+    try { this.updateSharedGraph(); this.saveDraft(); } catch {}
+    // Force UI refresh so handles reposition without user interaction
+    try {
+      this.forceViewRefresh('toggle-orientation');
+    } catch {}
+    try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('toggle-orientation-post-center'); }, 0); } catch {}
   }
+
+  // Compute vertical offset (px) for horizontal handles so that multiple are centered
+  horizHandleTop(index: number, count: number): number {
+    try {
+      const center = 35; // px (middle of a 70px visual height)
+      const gap = 16;    // px between handles
+      const start = center - ((count - 1) * gap) / 2;
+      return Math.round(start + index * gap);
+    } catch { return 23; }
+  }
+  
+  get nodesView(): any[] {
+    try {
+ /*      if (this.portOrientation === 'horizontal') {
+        // Force a fixed visual height for anchoring handles: 70 units
+        return (this.nodes || []).map(n => ({ ...n, height: 70 }));
+      } */
+      return this.nodes || [];
+    } catch { return this.nodes || []; }
+  }
+  private forceViewRefresh(_reason: string) {
+    try {
+      // Bump inputs for Vflow (new array refs)
+      this.nodes = [...(this.nodes || [])];
+      this.edges = [...(this.edges || [])];
+      // Kick Angular CD
+      try { this.cdr.detectChanges(); } catch {}
+      // Nudge viewport listeners so internals recalc
+      const vs: any = this.flow?.viewportService;
+      try { this.suppressNodesRemovedUntil = Date.now() + 400; } catch {}
+      try { vs?.triggerViewportChangeEvent?.('end'); } catch {}
+    } catch { }
+  }
+  // (Horizontal handle vertical centering uses ngx-vflow hctx.point().y)
   // Derived pairs builder for overlay (does not mutate base edges)
   private buildOverlayPairs(): Set<string> {
     const pairs = new Set<string>();
@@ -168,7 +213,7 @@ export class FlowBuilderComponent {
       const edges = Array.isArray(g?.edges) ? g.edges : [];
       this.nodes = nodes as any[];
       this.edges = edges as any[];
-      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
       this.updateSharedGraph();
       this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
       this.recomputeValidation();
@@ -203,6 +248,20 @@ export class FlowBuilderComponent {
     try {
       const wrapped = (v && typeof v === 'object' && 'payload' in v) ? { payload: (v as any).payload } : { payload: v };
       localStorage.setItem(this.startPayloadKey(), JSON.stringify(wrapped));
+    } catch {}
+  }
+
+  private applyFlowMeta(meta: any) {
+    try {
+      const ui = meta && typeof meta === 'object' ? ((meta as any).ui || (meta as any).builder || (meta as any).flow || {}) : {};
+      const ori = String((ui as any).portOrientation || (ui as any).portsOrientation || '').toLowerCase();
+      if (ori === 'horizontal' || ori === 'vertical') {
+        this.portOrientation = ori as any;
+        
+        // Ensure UI updates immediately when meta applies
+        try { this.forceViewRefresh('apply-flow-meta'); } catch {}
+        try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('apply-flow-meta-post-center'); }, 0); } catch {}
+      }
     } catch {}
   }
   private toastTimer: any;
@@ -372,7 +431,9 @@ export class FlowBuilderComponent {
               this.currentFlowName = doc?.name || this.currentFlowName;
               this.currentFlowDesc = doc?.description || this.currentFlowDesc;
               this.nodes = (doc?.nodes || []);
+              
               this.edges = (doc?.edges || []);
+              this.applyFlowMeta((doc as any).meta || {});
               this.loadingFlowDoc = false;
               if (runId) this.openRunSnapshotInEditor(runId);
               try { this.cdr.detectChanges(); } catch {}
@@ -426,8 +487,10 @@ export class FlowBuilderComponent {
               this.suppressNodesRemovedUntil = Date.now() + 1500;
               this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
               this.nodes = (doc.nodes || []) as any[];
+              
               this.edges = (doc.edges || []) as any;
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.applyFlowMeta((doc as any).meta || {});
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(flowId);
               const hydrated = this.tryHydrateHistory();
@@ -496,7 +559,8 @@ export class FlowBuilderComponent {
               this.currentFlowEnabled = !!(doc as any).enabled;
               this.nodes = (doc.nodes || []) as any[];
               this.edges = (doc.edges || []) as any;
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.applyFlowMeta((doc as any).meta || {});
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(fid);
               const hydrated = this.tryHydrateHistory();
@@ -585,10 +649,10 @@ export class FlowBuilderComponent {
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
     // Keep draft only if it differs from backend; otherwise clear it to avoid noise
     if (current !== (this.lastSavedChecksum || '')) {
-      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
+      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
       try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
     } else {
       try { localStorage.removeItem(this.draftKey(fid)); } catch {}
@@ -610,12 +674,13 @@ export class FlowBuilderComponent {
       this.currentFlowDesc = draft.desc || this.currentFlowDesc;
       this.currentFlowStatus = draft.status || this.currentFlowStatus;
       this.currentFlowEnabled = !!draft.enabled;
+      if (draft.portOrientation === 'horizontal' || draft.portOrientation === 'vertical') this.portOrientation = draft.portOrientation;
       this.nodes = (draft.nodes || []) as any[];
       this.edges = (draft.edges || []) as any;
     } catch {}
   }
   hasUnsavedChanges(): boolean {
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
     return current !== (this.lastSavedChecksum || '');
   }
   get canSave(): boolean { return !!this.currentFlowId && this.hasUnsavedChanges(); }
@@ -909,6 +974,8 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
+    
     // If start-like, auto-connect to best target
     if (isStartLike) {
       const target = this.findBestTargetNodeForStart(point.x, point.y + 200) || this.findBestTargetNodeForStart(point.x + 1, point.y + 200);
@@ -1122,6 +1189,7 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     // Auto-connect logic
     if (isStartLike) {
       const target = this.findBestTargetNodeForStart(pos.x, pos.y + 200) || this.findBestTargetNodeForStart(worldCenter.x, worldCenter.y);
@@ -1433,9 +1501,9 @@ export class FlowBuilderComponent {
       nzOkText: 'Sauvegarder et exécuter',
       nzCancelText: 'Annuler',
       nzOnOk: () => new Promise<void>((resolve) => {
-        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any, true).subscribe({
           next: () => {
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
             try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
             try { this.cdr.detectChanges(); } catch {}
             action();
@@ -1810,6 +1878,7 @@ export class FlowBuilderComponent {
       } catch { }
       const vNode = { id: newId, point: newPoint, type: node.type, data: { ...node.data, model } };
       this.nodes = [...this.nodes, vNode];
+      try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
       this.selection = vNode as any;
       this.history.push(this.snapshot());
       this.recomputeValidation();
@@ -2353,14 +2422,84 @@ export class FlowBuilderComponent {
   }
 
   // Placeholder actions for save and run
+  saveForLeave(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      try {
+        if (!this.currentFlowId) {
+          try { this.message.warning('Aucun flow associé'); } catch { this.showToast('Aucun flow associé'); }
+          resolve(false);
+          return;
+        }
+        const doc = { id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any;
+        this.catalog.saveFlow(doc).subscribe({
+          next: () => {
+            try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+            try {
+              this.updateSharedGraph();
+              this.saveDraft();
+              this.persistHistory();
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+            resolve(true);
+          },
+          error: (e) => {
+            const apiErr = this.normalizeApiError(e);
+            const code = String(apiErr?.code || '');
+            if (code === 'flow_invalid') {
+              const errors = Array.isArray(apiErr?.details?.errors) ? apiErr.details.errors : [];
+              const warnings = Array.isArray(apiErr?.details?.warnings) ? apiErr.details.warnings : [];
+              const fmt = (it: any) => {
+                const c = it?.code || 'error';
+                const msg = it?.message ? `: ${it.message}` : '';
+                const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                const detEdge = it?.details?.edge ? ` (arête ${it.details.edge})` : '';
+                const detProv = it?.details?.providerKey ? ` [${it.details.providerKey}]` : '';
+                const detKey = it?.details?.key ? ` [${it.details.key}]` : '';
+                const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                return `• ${c}${msg}${detNode}${detEdge}${detProv}${detKey}${detField}`;
+              };
+              const listErr = errors.map(fmt).join('<br/>') || '• Erreurs inconnues';
+              const listWarn = warnings.length ? ('<br/><br/><b>Avertissements</b><br/>' + warnings.map(fmt).join('<br/>')) : '';
+              this.modal.confirm({
+                nzTitle: 'Flow invalide',
+                nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
+                nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+                nzOnOk: () => this.catalog.saveFlow({ ...(doc as any), meta: { ...(doc as any).meta, ui: { ...(doc as any)?.meta?.ui, portOrientation: this.portOrientation } } }, true).subscribe({
+                  next: () => {
+                    try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
+                    this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+                    try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                    resolve(true);
+                  },
+                  error: () => {
+                    try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+                    resolve(false);
+                  }
+                }),
+                nzOnCancel: () => resolve(false)
+              });
+            } else {
+              try { this.message.error(apiErr?.message || 'Échec de la sauvegarde'); } catch { this.showToast(apiErr?.message || 'Échec de la sauvegarde'); }
+              resolve(false);
+            }
+          },
+        });
+      } catch {
+        try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+        resolve(false);
+      }
+    });
+  }
+
   saveFlow() {
     try {
       if (this.currentFlowId) {
-        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any).subscribe({
           next: () => {
             try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
             // Mettre à jour la référence serveur (checksum) pour refléter l’état sauvegardé
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
             // Mettre à jour le snapshot partagé et le draft local afin que le bouton Sauvegarder se désactive
             try {
               this.updateSharedGraph();
@@ -2391,9 +2530,9 @@ export class FlowBuilderComponent {
                 nzTitle: 'Flow invalide',
                 nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
-                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({ next: () => {
+                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any, true).subscribe({ next: () => {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
-                  this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+                  this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
                   try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
                 } })
               });
@@ -2408,6 +2547,10 @@ export class FlowBuilderComponent {
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
   runFlow() {
+    if (!this.currentFlowEnabled) {
+      try { this.message.error('Flow désactivé. Activez-le avant de lancer.'); } catch { this.showToast('Flow désactivé'); }
+      return;
+    }
     const snap = this.snapshot();
     // Always update the shared graph snapshot (used by the executions page)
     this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });
@@ -2670,11 +2813,18 @@ export class FlowBuilderComponent {
         const nid = String(ev.nodeId || '');
         if (nid) {
           const exec = (ev as any)?.exec ?? ev?.data?.exec;
+          const result = (ev?.data?.result ?? (ev as any)?.result) as any;
+          const explicitStatus = String((ev as any)?.data?.status || (ev as any)?.status || '').toLowerCase();
+          const nextStatus = explicitStatus === 'error'
+            ? 'error'
+            : (explicitStatus === 'success'
+              ? 'success'
+              : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
           // Update per-node attempt I/O and status for this exec
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
           if (!at) { at = { exec }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
-          at.status = 'success';
+          at.status = nextStatus;
           at.input = ev.data?.input ?? at.input;
           at.argsPre = ev.data?.argsPre ?? at.argsPre;
           at.argsPost = ev.data?.argsPost ?? at.argsPost;
@@ -2698,7 +2848,7 @@ export class FlowBuilderComponent {
               type: 'node.result',
               nodeId: nid,
               exec,
-              status: 'success',
+              status: nextStatus,
               createdAt: ev?.data?.finishedAt || new Date().toISOString(),
               data: { result: ev?.result ?? ev?.data?.result, msgOut: ev?.data?.msgOut, durationMs: ev?.data?.durationMs }
             });
@@ -2706,7 +2856,7 @@ export class FlowBuilderComponent {
           // Update quick stats (count is attempts length)
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.count = (this.backendNodeAttempts.get(nid)?.length || 0);
-          cur.lastStatus = 'success';
+          cur.lastStatus = nextStatus;
           this.backendNodeStats.set(nid, cur);
           this.updateNodeVisual(nid);
           if (this.selectedModel && String(this.selectedModel.id) === nid) {
@@ -2729,7 +2879,7 @@ export class FlowBuilderComponent {
               // Prefer attempt timestamps for badge
               try { this.testStartedAt = at?.startedAt ? Date.parse(at.startedAt as any) : this.testStartedAt; } catch {}
               this.testDurationMs = Number.isFinite(dur) ? dur : (at?.durationMs != null ? Number(at.durationMs) : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null));
-              this.testStatus = 'success';
+              this.testStatus = nextStatus as any;
             }
             // Regardless of exec filter, the node finished; ensure loader is off
             this.outputLoading = false;
@@ -2908,13 +3058,19 @@ export class FlowBuilderComponent {
     const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (target?.isContentEditable ?? false);
     if (isInput) return;
     const cmd = ev.metaKey || ev.ctrlKey;
-    if (!cmd) return;
-    if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
+    if (cmd) {
+      if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
+        ev.preventDefault();
+        this.undo();
+      } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
+        ev.preventDefault();
+        this.redo();
+      }
+      return;
+    }
+    if ((ev.key === 'Delete' || ev.key === 'Backspace') && this.selection) {
       ev.preventDefault();
-      this.undo();
-    } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
-      ev.preventDefault();
-      this.redo();
+      this.deleteSelected();
     }
   }
 
@@ -3202,7 +3358,9 @@ export class FlowBuilderComponent {
     try {
       if (!this.previewBaseline) this.previewBaseline = this.snapshot();
       this.beginApplyingHistory(400);
-      this.suppressGraphEventsUntil = Date.now() + 800;
+      const now = Date.now();
+      this.suppressGraphEventsUntil = now + 800;
+      this.suppressNodesRemovedUntil = now + 1200;
       this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
       this.edges = JSON.parse(JSON.stringify(s.edges || []));
       this.recomputeErrorPropagation();
@@ -3214,7 +3372,9 @@ export class FlowBuilderComponent {
     try {
       const s = this.previewBaseline; this.previewBaseline = null;
       this.beginApplyingHistory(200);
-      this.suppressGraphEventsUntil = Date.now() + 600;
+      const now = Date.now();
+      this.suppressGraphEventsUntil = now + 600;
+      this.suppressNodesRemovedUntil = now + 900;
       this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
       this.edges = JSON.parse(JSON.stringify(s.edges || []));
       this.recomputeErrorPropagation();
@@ -3236,20 +3396,17 @@ export class FlowBuilderComponent {
         const meta = metas[origIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, Number(index) || 0);
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.undo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
+      const snap = this.history.getPastAt(origIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = steps > 0 ? `Snapshot chargé (undo ×${steps})` : 'Snapshot courant';
+        if (!loadedMsg) loadedMsg = uiIndex > 0 ? `Snapshot chargé (undo ×${uiIndex})` : 'Snapshot courant';
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }
@@ -3267,20 +3424,16 @@ export class FlowBuilderComponent {
         const meta = metas[uiIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, index + 1); // index 0 = next redo
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.redo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const snap = this.history.getFutureAt(uiIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${steps})`;
+        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${uiIndex + 1})`;
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }

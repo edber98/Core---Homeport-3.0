@@ -10,7 +10,9 @@ function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().to
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
 function isTemplateLike(s){ return typeof s === 'string' && /\{\{[\s\S]*?\}\}/.test(s); }
 function isTruthyText(s){ if (s == null) return false; const t = String(s).trim(); if (t === '') return false; const low = t.toLowerCase(); if (low==='false'||low==='0'||low==='null'||low==='undefined'||low==='nan') return false; return true; }
-function buildEvalContext(initialContext, msg){ return { ...initialContext, msg, payload: msg.payload }; }
+function buildEvalContext(initialContext, msg){
+  return { ...initialContext, msg, payload: msg.payload, _nodes: msg._nodes };
+}
 function renderTemplate(value, evalCtx){ if (typeof value !== 'string') return value; return evaluateTemplateDetailed(value, evalCtx).text; }
 function deepRender(obj, evalCtx){
   if (obj == null) return obj;
@@ -101,11 +103,13 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString();
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null, msgIn: msgBefore });
-      // Start-like node: take current msg.payload as the node result and ensure msg.payload is the authoritative input for downstream nodes
+      // Start-like node: take current msg.payload as the node result and keep it in payload
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = null;
       nodeLog.result = (msg && typeof msg.payload !== 'undefined') ? JSON.parse(JSON.stringify(msg.payload)) : null;
-      // Ensure payload is set to the result value (form or external payload) and do not inject result under msg[nodeId]
+      // Expose trigger output under node id like functions for template access
+      try { msg[node.id] = nodeLog.result; } catch {}
+      // Ensure payload is set to the result value (form or external payload)
       try { msg.payload = (msg && typeof msg.payload !== 'undefined') ? msg.payload : null; } catch {}
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
@@ -186,6 +190,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
         } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
       }
       // Store function result under msg[nodeId] and mirror to payload
+      const isError = !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+      nodeLog.error = isError ? (result && result.error ? String(result.error) : 'error') : undefined;
       nodeLog.result = result;
       msg[node.id] = result;
       msg.payload = result;
@@ -196,12 +202,33 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
       await send({ type: 'node.skipped', nodeId: node.id, branchId });
     }
     const outs = outEdges.get(curId) || [];
-    if (outs.length === 1){
-      await send({ type: 'edge.taken', sourceId: node.id, targetId: outs[0].target });
-      await runBranch(outs[0].target, msg, seen, `${branchId}:0`);
-    } else if (outs.length > 1){
-      for (let i=0;i<outs.length;i++){ const o = outs[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
-      await Promise.all(outs.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
+    let nextOuts = outs;
+    const err = nodeLog && nodeLog.error ? String(nodeLog.error) : '';
+    if (err) {
+      if (node?.model?.skip_error) return;
+      if (node?.model?.catch_error) {
+        const errOuts = outs.filter(o => {
+          const h = String(o.sourceHandle || '').toLowerCase();
+          return h === 'err' || h === 'error';
+        });
+        if (errOuts.length) nextOuts = errOuts;
+        else return;
+      } else {
+        throw new Error(err);
+      }
+    } else {
+      const okOuts = outs.filter(o => {
+        const h = String(o.sourceHandle || '').toLowerCase();
+        return h !== 'err' && h !== 'error';
+      });
+      if (okOuts.length) nextOuts = okOuts;
+    }
+    if (nextOuts.length === 1){
+      await send({ type: 'edge.taken', sourceId: node.id, targetId: nextOuts[0].target });
+      await runBranch(nextOuts[0].target, msg, seen, `${branchId}:0`);
+    } else if (nextOuts.length > 1){
+      for (let i=0;i<nextOuts.length;i++){ const o = nextOuts[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
+      await Promise.all(nextOuts.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
     }
   };
 

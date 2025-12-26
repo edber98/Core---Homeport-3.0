@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, OnDestroy, DoCheck, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { SpacingEditorComponent } from './spacing-editor.component';
 import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'inspector-field',
@@ -39,7 +40,10 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
       <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
         <nz-form-item>
           <nz-form-label nzFor="fld_key" nzTooltipTitle="Clé unique pour référencer la valeur"><span>Clé</span></nz-form-label>
-          <nz-form-control><input nz-input id="fld_key" formControlName="key"/></nz-form-control>
+          <nz-form-control [nzValidateStatus]="keyDuplicateMessage ? 'error' : ''">
+            <input nz-input id="fld_key" formControlName="key"/>
+            <div class="key-error" *ngIf="keyDuplicateMessage">{{ keyDuplicateMessage }}</div>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzFor="fld_label" nzTooltipTitle="Libellé affiché à l’utilisateur"><span>Libellé</span></nz-form-label>
@@ -162,7 +166,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <nz-form-control>
             <div style="display:flex; gap:6px; align-items:center;">
               <monaco-json-editor [value]="$any(group.controls['options'].value)" (valueChange)="group.get('options')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-              <button nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
+              <button type="button" nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
             </div>
           </nz-form-control>
         </nz-form-item>
@@ -245,7 +249,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
               <div class="title">visibleIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>
@@ -255,7 +259,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire (JSON)">
               <div class="title">requiredIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>
@@ -265,7 +269,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
           <div class="editor-block span-2">
             <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ (JSON)">
               <div class="title">disabledIf (JSON)</div>
-              <button nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
+              <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
                 <i nz-icon nzType="build"></i>
                 <span style="margin-left:6px">Builder</span>
               </button>
@@ -347,8 +351,9 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
   `,
   styleUrls: ['./inspector-field.component.scss']
 })
-export class InspectorFieldComponent implements OnChanges {
+export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   @Input({ required: true }) group!: FormGroup;
+  @Input() keyDuplicateMessage: string | null = null;
   @Output() openOptions = new EventEmitter<void>();
   @Output() openCondition = new EventEmitter<'visibleIf'|'requiredIf'|'disabledIf'>();
 
@@ -363,6 +368,9 @@ export class InspectorFieldComponent implements OnChanges {
   v_dateMin?: string;
   v_dateMax?: string;
 
+  private validatorsSub?: Subscription;
+  private lastValidatorsRaw: any = undefined;
+
   ngOnChanges(_c: SimpleChanges) {
     // Initialize UI from current validators JSON when field/type changes
     try {
@@ -370,6 +378,21 @@ export class InspectorFieldComponent implements OnChanges {
       const arr = this.safeParseArray(raw);
       this.applyValidatorArray(arr);
     } catch {}
+    this.bindValidators();
+  }
+
+  ngDoCheck(): void {
+    const ctrl = this.group?.get('validators');
+    if (!ctrl) return;
+    const raw = ctrl.value;
+    if (raw === this.lastValidatorsRaw) return;
+    this.lastValidatorsRaw = raw;
+    const arr = this.safeParseArray(raw);
+    this.applyValidatorArray(arr);
+  }
+
+  ngOnDestroy(): void {
+    try { this.validatorsSub?.unsubscribe(); } catch {}
   }
 
   onValidatorsChanged() {
@@ -414,4 +437,14 @@ export class InspectorFieldComponent implements OnChanges {
   }
   private numOrUndef(v: any): number | undefined { return typeof v === 'number' && !Number.isNaN(v) ? v : undefined; }
   private strOrUndef(v: any): string | undefined { return typeof v === 'string' && v.length ? v : undefined; }
+
+  private bindValidators() {
+    try { this.validatorsSub?.unsubscribe(); } catch {}
+    const ctrl = this.group?.get('validators');
+    if (!ctrl) return;
+    this.validatorsSub = ctrl.valueChanges.subscribe((raw) => {
+      const arr = this.safeParseArray(raw);
+      this.applyValidatorArray(arr);
+    });
+  }
 }

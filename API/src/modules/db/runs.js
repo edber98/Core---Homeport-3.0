@@ -11,6 +11,10 @@ const { runFlow } = require('../../engine');
 const { broadcast } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
 
+function isResultError(result){
+  return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+}
+
 module.exports = function(){
   const r = express.Router();
   // Public: start a run if the Start node exposes a public form
@@ -83,11 +87,13 @@ module.exports = function(){
             const branchId = String(ev.branchId || '');
             let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            const status = isResultError(ev.result) ? 'error' : 'success';
+            const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
-              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
               att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
               await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
           if (ev.type === 'edge.taken'){
@@ -231,11 +237,13 @@ module.exports = function(){
             const branchId = String(ev.branchId || '');
             let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            const status = isResultError(ev.result) ? 'error' : 'success';
+            const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
-              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
               att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
               await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             } else {
               // fallback: create completed attempt
               const ctr = await AttemptCounter.findOneAndUpdate(
@@ -246,11 +254,11 @@ module.exports = function(){
               const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: nextAttempt },
-                { $setOnInsert: { status: 'success', branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, msgIn: ev.msgIn, msgOut: ev.msgOut, result: ev.result } },
+                { $setOnInsert: { status, branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, msgIn: ev.msgIn, msgOut: ev.msgOut, result: ev.result } },
                 { upsert: true, new: true }
               );
               await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
           if (ev.type === 'node.skipped'){
@@ -287,8 +295,10 @@ module.exports = function(){
             try {
               const nodeId = String(ev.nodeId || '');
               const att = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
+              const status = isResultError(ev.result) ? 'error' : 'success';
+              const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
               livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
-              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status: 'success', finishedAt: ev.finishedAt, durationMs: ev.durationMs } });
+              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status, finishedAt: ev.finishedAt, durationMs: ev.durationMs, error: errMsg } });
             } catch {
               livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
             }
@@ -378,7 +388,7 @@ module.exports = function(){
       if (!node) return res.apiError(404, 'node_not_found', 'Node not found');
       const tObj = (node.data && node.data.model && node.data.model.templateObj) || node.model?.templateObj || {};
       const tmplKey = String(node.data?.model?.template || tObj?.template?.id || tObj?.template?.name || tObj?.id || '').replace(/^tmpl_/,'');
-      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload });
+      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload, _nodes: msgObj._nodes });
       const deepRender = (obj, evalCtx) => {
         if (obj == null) return obj;
         if (typeof obj === 'string') return evaluateTemplateDetailed(obj, evalCtx).text;

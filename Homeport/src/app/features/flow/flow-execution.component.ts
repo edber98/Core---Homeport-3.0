@@ -118,12 +118,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             <span *ngIf="br.durationMs != null"> · {{ br.durationMs }} ms</span>
             <span *ngIf="br.nodesExecuted != null"> · {{ br.nodesExecuted }} nœuds</span>
           </div>
-          <div class="attempt" *ngFor="let a of backendAttempts; let i = index">
+          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
             <div class="hdr">
               <span class="nid">{{ a.nodeId }}</span>
               <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+            </div>
+            <div class="sub">
               <span class="dur">{{ a.durationMs || 0 }} ms</span>
-              <span class="when" *ngIf="a.startedAt"> · {{ a.startedAt | date:'shortTime' }}</span>
+              <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
               <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
             </div>
             <div class="io" *ngIf="expanded[i]">
@@ -190,15 +192,20 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .exec-list li.sel { border-color:#1677ff; }
     .attempts { margin-top: 10px; }
     .attempts h5 { margin: 8px 0; }
-    .attempt { border:1px solid #e5e7eb; border-radius:10px; padding:8px; margin-bottom:8px; }
-    .attempt .hdr { display:flex; gap:8px; align-items:center; font-size:12px; }
-    .attempt .hdr .nid { font-weight:600; }
+    .attempt { border:1px solid #e5e7eb; border-radius:10px; padding:8px; margin-bottom:8px; min-width: 0; }
+    .attempt .hdr { display:flex; gap:8px; align-items:center; font-size:12px; flex-wrap: wrap; }
+    .attempt .hdr .nid { font-weight:600; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .attempt .sub { display:flex; gap:8px; align-items:center; font-size:12px; color:#8c8c8c; margin-top:4px; flex-wrap: wrap; }
     .attempt .hdr .st { padding:2px 6px; border-radius:6px; border:1px solid #e5e7eb; }
     .attempt .hdr .st.success { color:#0f5132; background:#d1e7dd; border-color:#badbcc; }
     .attempt .hdr .st.error { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
-    .attempt .hdr .dur { margin-left:auto; color:#8c8c8c; }
-    .attempt .hdr .when { color:#8c8c8c; }
+    .attempt .hdr .dur { margin-left:auto; color:#8c8c8c; white-space: nowrap; }
+    .attempt .hdr .when { color:#8c8c8c; white-space: nowrap; }
     .attempt .hdr .toggle { margin-left:8px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
+    .attempt .sub .dur { white-space: nowrap; }
+    .attempt .sub .when { white-space: nowrap; }
+    .attempt .sub .toggle { margin-left:auto; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
+    .backend-attempt .hdr .st { margin-left:auto; }
     .attempt .io { display:grid; grid-template-columns: 1fr; gap:8px; margin-top:6px; }
     .attempt .io .k { font-size:12px; color:#8c8c8c; margin-bottom:4px; }
     pre { background:#fafafa; border:1px solid #eee; border-radius:6px; padding:6px; font-size:11px; overflow:auto; }
@@ -207,10 +214,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .viewer-layout.show-details { grid-template-columns: 1fr 380px; }
     .viewer-canvas-wrap { height:100%; }
     .viewer-canvas { height: 100%; display:block; }
-    .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:10px; }
-    .panel-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:10px; min-width: 0; }
+    .details-panel h6 { margin: 12px 0 6px; }
+    .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; }
+    .panel-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
     .panel-header .title { font-weight:600; }
     .panel-header .spacer { flex:1 1 auto; }
+    .panel-header .apple-btn { padding:20px 10px; }
     .loading-overlay { position:absolute; inset:0; background: rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index: 10; }
     .loading-overlay .spinner { width:28px; height:28px; border:3px solid #e5e7eb; border-top-color:#111827; border-radius:50%; animation: spin .8s linear infinite; }
     .loading-overlay .text { margin-top:10px; color:#374151; font-weight:500; }
@@ -637,9 +647,16 @@ export class FlowExecutionComponent {
       if (t === 'node.result') {
         const nodeId = String(ev.nodeId || '');
         const exec = (ev as any)?.exec ?? ev?.data?.exec;
+        const result = (ev?.data?.result ?? (ev as any)?.result) as any;
+        const explicitStatus = String((ev as any)?.data?.status || (ev as any)?.status || '').toLowerCase();
+        const nextStatus = explicitStatus === 'error'
+          ? 'error'
+          : (explicitStatus === 'success'
+            ? 'success'
+            : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
         const cur = this.backendAttempts.find(a => a.nodeId === nodeId && a.exec === exec);
         if (cur) {
-          if (!cur.status || cur.status === 'running') cur.status = 'success';
+          if (!cur.status || cur.status === 'running') cur.status = nextStatus;
           cur.input = ev.data?.input ?? cur.input;
           cur.argsPre = ev.data?.argsPre ?? cur.argsPre;
           cur.result = (ev.result ?? ev.data?.result) ?? cur.result;
@@ -650,7 +667,7 @@ export class FlowExecutionComponent {
           cur.startedAt = ev.data?.startedAt ?? cur.startedAt;
           cur.finishedAt = ev.data?.finishedAt ?? cur.finishedAt;
         } else {
-          this.backendAttempts.push({ nodeId, exec, status: 'success', input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
+          this.backendAttempts.push({ nodeId, exec, status: nextStatus, input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
       }

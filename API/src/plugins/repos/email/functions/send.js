@@ -1,8 +1,12 @@
-const nodemailer = require("nodemailer");
-
 module.exports = {
   async email_send(node, msg, inputs, opts) {
     try {
+      let nodemailer;
+      try {
+        nodemailer = require("nodemailer");
+      } catch (e) {
+        return { ok: false, error: "Missing dependency: nodemailer" };
+      }
       // Récupérer les credentials
       const { smtpHost, smtpPort, smtpSecure, username, password } =
         opts.credentials || {};

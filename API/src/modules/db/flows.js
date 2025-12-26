@@ -6,6 +6,7 @@ const Flow = require('../../db/models/flow.model');
 const NodeTemplate = require('../../db/models/node-template.model');
 const Notification = require('../../db/models/notification.model');
 const { validateFlowGraph, normalizeTemplateKey } = require('../../utils/validate');
+const { normalizeGraphFormSchemas } = require('../../utils/form-schema');
 
 module.exports = function(){
   const r = express.Router();
@@ -78,6 +79,7 @@ module.exports = function(){
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
     const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] } } = req.body || {};
     if (!name || String(name).trim() === '') return res.apiError(400, 'name_required', 'Flow name is required');
+    normalizeGraphFormSchemas(graph);
     const Provider = require('../../db/models/provider.model');
     const Credential = require('../../db/models/credential.model');
     const loaders = {
@@ -156,6 +158,7 @@ module.exports = function(){
     const patch = req.body || {};
     const force = (String(req.query.force || '').toLowerCase() === '1' || String(req.query.force || '').toLowerCase() === 'true' || !!patch.force);
     if (patch.graph){
+      normalizeGraphFormSchemas(patch.graph);
       const Provider = require('../../db/models/provider.model');
       const Credential = require('../../db/models/credential.model');
       const loaders = {

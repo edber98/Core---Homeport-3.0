@@ -1,0 +1,211 @@
+{
+  "providers": [
+    {
+      "key": "openproject",
+      "name": "OpenProject",
+      "title": "OpenProject",
+      "iconClass": "fa-solid fa-diagram-project",
+      "color": "#1f6feb",
+      "tags": ["openproject", "project", "tasks"],
+      "categories": ["Project Management"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants OpenProject",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "baseUrl", "label": "Base URL", "col": { "xs": 24 }, "default": "https://openproject.c4rbon.group/api/v3", "validators": [{"type":"required"}] },
+          { "type": "text", "key": "apiKey", "label": "API Key", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "create_openproject_project",
+      "name": "createOpenProjectProject",
+      "title": "Creer un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Cree un projet dans OpenProject.",
+      "args": {
+        "title": "Creer un projet",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom du projet", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "list_openproject_projects",
+      "name": "listOpenProjectProjects",
+      "title": "Lister les projets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les projets disponibles sur OpenProject.",
+      "args": {
+        "title": "Lister les projets",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "add_openproject_task",
+      "name": "addOpenProjectTask",
+      "title": "Ajouter une tache",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute une nouvelle tache a un projet OpenProject.",
+      "args": {
+        "title": "Ajouter une tache",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } },
+          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "col": { "xs": 24 } },
+          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "col": { "xs": 24 } },
+          { "type": "number", "key": "type_id", "label": "Type ID", "col": { "xs": 24 }, "default": 1 },
+          { "type": "number", "key": "status_id", "label": "Statut ID", "col": { "xs": 24 }, "default": 1 },
+          { "type": "number", "key": "priority_id", "label": "Priorite ID", "col": { "xs": 24 }, "default": 8 },
+          { "type": "number", "key": "project_id", "label": "Projet ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+        ]
+      }
+    },
+    {
+      "key": "search_many_openproject_users",
+      "name": "searchManyOpenProjectUsers",
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs OpenProject.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "list_openproject_tasks",
+      "name": "listOpenProjectTasks",
+      "title": "Lister les taches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les taches OpenProject, avec filtres optionnels.",
+      "args": {
+        "title": "Lister les taches",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "project_id", "label": "Projet ID", "col": { "xs": 24 } },
+          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "list_openproject_task_statuses",
+      "name": "listOpenProjectTaskStatuses",
+      "title": "Lister les statuts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les statuts de taches OpenProject.",
+      "args": {
+        "title": "Lister les statuts",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "list_openproject_task_types",
+      "name": "listOpenProjectTaskTypes",
+      "title": "Lister les types",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les types de taches OpenProject.",
+      "args": {
+        "title": "Lister les types",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "update_openproject_task",
+      "name": "updateOpenProjectTask",
+      "title": "Modifier une tache",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "json" }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une tache existante dans OpenProject.",
+      "args": {
+        "title": "Modifier une tache",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "task_id", "label": "Tache ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } },
+          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "col": { "xs": 24 } },
+          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "col": { "xs": 24 } },
+          { "type": "number", "key": "type_id", "label": "Type ID", "col": { "xs": 24 } },
+          { "type": "number", "key": "status_id", "label": "Statut ID", "col": { "xs": 24 } },
+          { "type": "number", "key": "priority_id", "label": "Priorite ID", "col": { "xs": 24 } },
+          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ]
+}

@@ -46,12 +46,12 @@ import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-
   styles: [`
     :host { display:block; min-height: 0; }
     /* Default (outside): let parent control height/scroll */
-    .inspector { border: none; border-radius: 0; padding: 10px 10px 8px 10px; background: #fff; padding-top: 0 !important; height: auto; overflow: visible; }
+    .inspector { border: none; border-radius: 0; padding: 0 16px 4px 16px; background: #fff; padding-top: 0 !important; height: auto; overflow: visible; }
     /* Drawer mode: reduce padding and avoid overflow */
     .inspector.drawer-mode { height: 100%; overflow: auto; padding: 8px 8px; }
     .inspector .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 6px; border-bottom: 1px solid #E2E1E4; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
-    .panel-heading .card-title .t { font-weight:600; font-size:13px; }
+    .panel-heading .card-title .t { font-weight:600; font-size:18px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
     .inspector .tabs { display:flex; gap:6px; margin: 2px 0 8px; }
     .inspector .tabs button { border:1px solid #e5e7eb; background:#fff; border-radius:8px; padding:4px 8px; font-size:12px; cursor:pointer; }

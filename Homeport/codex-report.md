@@ -26,3 +26,24 @@ Notes de build
 - Commande: `ng build --configuration production`.
 - Sortie: `dist/homeport`.
 - Budgets respectés; bundle initial estimé ~399 kB transfer (gzip), chunks lazy par feature.
+
+---
+
+Ajout fonctionnalité — Orientation horizontale des ports (Flow Builder)
+
+- Résumé: possibilité d’afficher les handles d’entrée/sortie à l’horizontale.
+- Usage UI: bouton dans la barre du bas (icône flèches). Alterne Vertical ↔ Horizontal.
+- Comportement:
+  - Inputs: `top` en vertical, `left` en horizontal.
+  - Outputs: `bottom` en vertical, `right` en horizontal.
+  - Link handles: `right` en vertical, `bottom` en horizontal.
+- Implémentation:
+  - `flow-builder.component.ts`: ajout `portOrientation: 'vertical'|'horizontal'` + `togglePortOrientation()`.
+  - `flow-builder.component.html`: `[position]` dynamique sur `<handle>`; classe `horizontal` sur `.node-card`.
+  - `flow-builder.component.scss`: ajustement minimal pour `.node-card.horizontal .outputs`.
+- Fichiers modifiés: 
+  - `src/app/features/flow/flow-builder.component.ts`
+  - `src/app/features/flow/flow-builder.component.html`
+  - `src/app/features/flow/flow-builder.component.scss`
+- Commit simulé:
+  - feat(flow): add horizontal ports orientation toggle in builder
