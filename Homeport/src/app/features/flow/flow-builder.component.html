@@ -46,7 +46,7 @@
       </div>
       <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
-        (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
+        (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)" (onNodesChange.position.many)="onNodesPositionMany($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
         (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
         <ng-template let-ctx edge>
@@ -70,8 +70,8 @@
           </div>
         </ng-template>
         <ng-template let-ctx nodeHtml>
-          <div class="node-card" selectable [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': ctx.selected(), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
+          <div class="node-card" [attr.data-node-id]="ctx.node.id"
+            [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
             (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">

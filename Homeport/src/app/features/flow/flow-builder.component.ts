@@ -123,13 +123,13 @@ export class FlowBuilderComponent {
     if (!this.alignmentHelper) return false;
     if (typeof this.alignmentHelper === 'object') return this.alignmentHelper;
     // default settings when enabled via boolean
-    return { tolerance: 6, lineColor: '#D1D5DB' };
+    return { tolerance: 35, lineColor: '#D1D5DB' };
   }
 
   toggleAlignmentHelper() {
     try {
       const enabled = !!this.alignmentHelper;
-      this.alignmentHelper = enabled ? false : { tolerance: 6, lineColor: '#D1D5DB' };
+      this.alignmentHelper = enabled ? false : { tolerance: 35, lineColor: '#D1D5DB' };
       try { this.message.info(this.alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'); } catch {}
       this.updateSharedGraph();
       this.saveDraft();
@@ -1169,6 +1169,7 @@ export class FlowBuilderComponent {
       'edges.removed': { type: 'Cleanup', color: '#9ca3af' },
       'edges.detached.final': { type: 'Detach', color: '#f59e0b' },
       'node.position.final': { type: 'Move', color: '#f59e0b' },
+      'nodes.position.final': { type: 'Move', color: '#f59e0b' },
       'inspector.saveJson': { type: 'Edit', color: '#8b5cf6' },
       'dialog.modelCommit.final': { type: 'Edit', color: '#8b5cf6' },
     };
@@ -2181,6 +2182,7 @@ export class FlowBuilderComponent {
   }
 
   onSelected(ev: any) {
+    console.log(ev, 'ok')
     // Vflow may emit single entity or array of entities
     const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
     this.selectionList = list;
@@ -2215,7 +2217,7 @@ export class FlowBuilderComponent {
       const has = (this.selectionList || []).some(n => String(n?.id) === id);
       const shift = !!(ev.shiftKey);
       if (shift) {
-        // Toggle in selection list
+        // Toggle selection in our app state
         if (has) {
           this.selectionList = (this.selectionList || []).filter(n => String(n?.id) !== id);
           if (this.selection && String(this.selection.id) === id) {
@@ -2231,6 +2233,8 @@ export class FlowBuilderComponent {
         this.selection = node;
       }
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      // Sync selection to vflow so multi-drag works and emits .many
+      try { this.setVflowSelectedIds((this.selectionList || []).map(n => n.id)); } catch {}
       ev.stopPropagation();
     } catch {}
   }
@@ -2262,27 +2266,15 @@ export class FlowBuilderComponent {
     } catch {}
   }
 
-  onInspectorOpenSingle(nodeId: string) {
+    onInspectorOpenSingle(nodeId: string) {
     try {
-      // Simulate a normal click on the node-card to let Vflow select only this node (deselect others)
-      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
-      if (!host) return;
-      const el = host.querySelector(`.node-card[data-node-id="${CSS.escape(String(nodeId))}"]`) as HTMLElement | null;
-      if (el) {
-        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-      }
-      // Update our selection pointers and open the advanced editor a tick later
-      setTimeout(() => {
-        try {
-          const sel = (this.nodes || []).find(n => String(n.id) === String(nodeId));
-          if (sel) {
-            this.selection = sel;
-            this.selectionList = [sel];
-            try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
-            this.openAdvancedEditor();
-          }
-        } catch {}
-      }, 0);
+      const sel = (this.nodes || []).find(n => String(n.id) === String(nodeId));
+      if (!sel) return;
+      this.selection = sel;
+      this.selectionList = [sel];
+      try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds([nodeId]); } catch {}
+      this.openAdvancedEditor();
     } catch {}
   }
 
@@ -3377,6 +3369,24 @@ export class FlowBuilderComponent {
   private draggingNodes = new Set<string>();
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
+  isSelected(id: any): boolean { try { const sid = String(id); return (this.selectionList || []).some(n => String(n?.id) === sid); } catch { return false; } }
+
+  // Force vflow to reflect our app-managed selection (so multi-drag works and emits .many)
+  private setVflowSelectedIds(ids: string[]) {
+    try {
+      const flowAny: any = this.flow as any;
+      const nodeModels = flowAny?.nodeModels?.();
+      if (!Array.isArray(nodeModels)) return;
+      const want = new Set((ids || []).map(id => String(id)));
+      for (const m of nodeModels) {
+        try {
+          const id = String(m?.rawNode?.id ?? '');
+          const sel = want.has(id);
+          if (m?.selected && typeof m.selected.set === 'function') m.selected.set(sel);
+        } catch {}
+      }
+    } catch {}
+  }
   
   onNodePositionChange(change: any) {
     if (this.isIgnoring()) { return; }
@@ -3393,7 +3403,24 @@ export class FlowBuilderComponent {
     } catch {}
   }
 
-  // (multi-position handler removed)
+  // Many nodes moved at once (multi-select drag, helper alignment moves)
+  onNodesPositionMany(changes: any[]) {
+    if (this.isIgnoring()) { return; }
+    if (!Array.isArray(changes) || !changes.length) return;
+    for (const c of changes) {
+      try {
+        const id = String(c?.id || '');
+        const pt = c?.to?.point || c?.point || c?.to;
+        if (!id || !pt) continue;
+        this.pendingPositions[id] = { x: pt.x, y: pt.y };
+        this.draggingNodes.add(id);
+      } catch {}
+    }
+    try {
+      const debug = changes.map(c => ({ id: String(c?.id), x: c?.to?.point?.x ?? c?.point?.x ?? c?.to?.x, y: c?.to?.point?.y ?? c?.point?.y ?? c?.to?.y }));
+      console.log('[vflow][pos.many]', debug);
+    } catch {}
+  }
 
   onWheel(_ev: WheelEvent) {
     try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch { }
@@ -3421,7 +3448,7 @@ export class FlowBuilderComponent {
       for (const id of ids) {
         
         if (/* !updated[id] && */ this.pendingPositions[id]) {
-          console.log('ok')
+
           updated[id] = { ...this.pendingPositions[id] };
       
         }
@@ -3447,7 +3474,8 @@ export class FlowBuilderComponent {
       }
       this.draggingNodes.clear();
       this.pendingPositions = {} as any;
-      this.pushState('node.position.final');
+      const reason = ids.length > 1 ? 'nodes.position.final' : 'node.position.final';
+      this.pushState(reason);
       this.suppressNodesRemovedUntil = Date.now() + 400;
     }, 240);
   }
