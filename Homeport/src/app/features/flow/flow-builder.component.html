@@ -205,7 +205,7 @@
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
       [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
-      (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()"
+      [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
       [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
       (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
     ></flow-right-panel>
@@ -374,7 +374,7 @@
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
       [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
-      (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()"
+      [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
       [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
       (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
     ></flow-right-panel>

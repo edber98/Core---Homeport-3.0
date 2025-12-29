@@ -44,7 +44,7 @@ import { NzTimelineModule } from 'ng-zorro-antd/timeline';
     .panel-heading .card-title .t { font-weight:600; font-size:14px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
     /* Content container: no borders, scroll only */
-    .history-container { max-height: 540px; overflow:auto; background:#fff; padding:0 4px; padding-top: 11px; }
+    .history-container { overflow:auto; background:#fff; padding:0 4px; padding-top: 11px; }
     .row { display:flex; gap:8px; align-items:center; font-size:12px; cursor: pointer; }
     .row:hover { cursor: pointer; }
     .row:active { cursor: progress; }

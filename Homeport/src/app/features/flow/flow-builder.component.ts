@@ -94,6 +94,16 @@ export class FlowBuilderComponent {
   private backendAttemptSeq: string[] = [];
   private lastOverlayPairs = new Set<string>();
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
+  // Control whether exec badges are shown on nodes
+  private showExecBadges = false;
+  // Snapshot of selected run (from backend) for right panel
+  currentRunMeta: { id?: string; status?: string; startedAt?: string; finishedAt?: string } | null = null;
+  // Recent local runs (fallback list)
+  recentRuns: Array<{ id?: string; status?: string; startedAt?: string; finishedAt?: string }> = [];
+  private runsPage = 1;
+  private runsLimit = 20;
+  runsHasMore = true;
+  private runsLoading = false;
   // AI Chat popover visibility
   aiChatOpen = false;
   rightPanelOpen = false;
@@ -421,7 +431,7 @@ export class FlowBuilderComponent {
     this.prepOpenDrawer = true;
     try { this.cdr.detectChanges(); } catch { }
     setTimeout(() => {
-      if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
+      if (where === 'left') this.leftDrawer = true; else { this.rightDrawer = true; if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true); }
       this.updateGlobalBlockers();
       this.prepOpenDrawer = false;
       try { this.cdr.detectChanges(); } catch { }
@@ -483,6 +493,7 @@ export class FlowBuilderComponent {
       (this.runner as any).runs$?.subscribe((rs: any[]) => {
         this.lastRun = rs && rs.length ? rs[0] : null;
         this.currentRun = rs.find(r => r.status === 'running') || null;
+        // Keep backend list managed by fetchRuns(); runner list used only for last/current
       });
     } catch {}
     this.updateIsMobile();
@@ -1009,10 +1020,90 @@ export class FlowBuilderComponent {
       if (this.isTabletOrBelow) {
         this.leftPanelOpen = false; this.rightPanelOpen = false; // ensure desktop panels are closed
         this.openMobilePanel('right');
+        if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true);
       } else {
         this.rightPanelOpen = !this.rightPanelOpen;
+        if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true);
       }
     } catch {}
+  }
+
+  // Right panel advanced actions from consolidated component
+  onClearRun() {
+    try {
+      // Stop and clear UI references; backend may still keep history
+      this.stopLastRun();
+      this.backendRunId = null;
+      this.backendRunStatus = 'idle';
+      this.showExecBadges = false;
+      this.backendNodeStats = new Map();
+      this.backendNodeAttempts = new Map();
+      this.backendEdgesTaken.clear();
+      this.backendAttemptSeq = [];
+      this.lastRun = null;
+      this.currentRun = null;
+      this.currentRunMeta = null;
+      // Clear node badges
+      try {
+        (this.nodes || []).forEach(n => {
+          if (n?.data) { delete (n.data as any).execStatus; delete (n.data as any).execCount; }
+        });
+      } catch {}
+      // Remove run from URL
+      try {
+        const qp = this.route.snapshot.queryParamMap;
+        const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+        delete q.run;
+        this.router.navigate([], { queryParams: q, replaceUrl: true });
+      } catch {}
+      this.forceViewRefresh('clear-run');
+      try { this.message.info('Exécution effacée'); } catch {}
+    } catch {}
+  }
+  onRestartRun() {
+    try {
+      this.onClearRun();
+      // Relaunch with current builderMode
+      this.showExecBadges = true;
+      this.runFlow();
+    } catch {}
+  }
+  onSelectRun(runId: string) {
+    try {
+      if (!runId) return;
+      this.showExecBadges = true;
+      // Update URL with ?run= and open snapshot
+      const qp = this.route.snapshot.queryParamMap;
+      const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+      this.router.navigate([], { queryParams: q, replaceUrl: true });
+      this.openRunSnapshotInEditor(runId);
+    } catch {}
+  }
+  reloadFlowOnly() {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid) return;
+      this.loadingFlowDoc = true;
+      this.catalog.getFlow(fid).subscribe({
+        next: (doc) => {
+          this.nodes = (doc?.nodes || []);
+          this.edges = (doc?.edges || []);
+          this.applyFlowMeta((doc as any).meta || {});
+          this.loadingFlowDoc = false;
+          // Do not select any run; clear backend state
+          this.currentRunMeta = null;
+          this.backendRunId = null;
+          this.backendRunStatus = 'idle';
+          this.showExecBadges = false;
+          this.backendNodeStats = new Map();
+          this.backendNodeAttempts = new Map();
+          this.backendEdgesTaken.clear();
+          this.backendAttemptSeq = [];
+          try { this.cdr.detectChanges(); } catch {}
+        },
+        error: () => { this.loadingFlowDoc = false; }
+      });
+    } catch { this.loadingFlowDoc = false; }
   }
 
 
@@ -1034,6 +1125,7 @@ export class FlowBuilderComponent {
   // Execution stats: expose last status/count for badges
   nodeExecStatus(id: string): { count: number; lastStatus?: string } | null {
     try {
+      if (!this.showExecBadges) return null;
       // Prefer backend overlay attempts if present
       const arr = this.backendNodeAttempts.get(String(id));
       if (arr && arr.length) {
@@ -3299,9 +3391,11 @@ export class FlowBuilderComponent {
     this.openingRunId = runId;
     this.backendRunId = runId; // allow dialogs to read attempts even without SSE
     this.backendRunStatus = 'idle';
+    this.showExecBadges = true;
     // Load attempts + events snapshot (for historic runs) and open SSE if still running
     this.runsApi.getWith(runId, ['attempts','events']).subscribe({
       next: (r: any) => {
+        this.currentRunMeta = { id: runId, status: (r?.status || 'idle'), startedAt: (r?.startedAt || r?.createdAt || null), finishedAt: (r?.finishedAt || null) } as any;
         // Reset state
         this.backendNodeStats = new Map();
         this.backendNodeAttempts = new Map();
@@ -3366,6 +3460,27 @@ export class FlowBuilderComponent {
       error: () => { this.openBackendStream(runId); }
     });
   }
+  private fetchRuns(reset = false) {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid || this.runsLoading) return;
+      if (reset) { this.runsPage = 1; this.recentRuns = []; this.runsHasMore = true; }
+      this.runsLoading = true;
+      this.runsApi.listByFlow(fid, { page: this.runsPage, limit: this.runsLimit, sort: '-startedAt' }).subscribe({
+        next: (list) => this.zone.run(() => {
+          const arr = Array.isArray(list) ? list : [];
+          const mapped = arr.map(r => ({ id: (r as any).id, status: (r as any).status, startedAt: (r as any).startedAt, finishedAt: (r as any).finishedAt }));
+          this.recentRuns = [...this.recentRuns, ...mapped];
+          this.runsHasMore = arr.length >= this.runsLimit;
+          if (arr.length >= this.runsLimit) this.runsPage += 1;
+          this.runsLoading = false;
+        }),
+        error: () => this.zone.run(() => { this.runsLoading = false; })
+      });
+    } catch { this.runsLoading = false; }
+  }
+  onLoadMoreRuns() { this.fetchRuns(false); }
+  // no search field per request
   stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
 
 
