@@ -201,6 +201,8 @@
   <div class="right-panel" *ngIf="!isMobile" [class.closed]="!rightPanelOpen">
     <flow-right-panel [mode]="'outside'"
       [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+      [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
+      [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
@@ -370,6 +372,8 @@
   <ng-container *nzDrawerContent>
     <flow-right-panel [mode]="'drawer'"
       [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+      [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
+      [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
