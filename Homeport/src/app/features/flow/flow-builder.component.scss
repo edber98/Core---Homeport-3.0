@@ -82,7 +82,10 @@
 .inspector .inspector-actions .open-advanced { background:#111; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
 .inspector .inspector-actions .danger { background:#b91c1c; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; margin-left:6px; }
 /* removed row undo/redo from inspector */
-.canvas { border: 1px solid #e5e7eb; border-radius: 0; overflow: hidden; }
+.canvas { border-style: solid; border-color: #e5e7eb; border-width: 0 1px 1px 1px; border-radius: 0; overflow: hidden; transition: border-color 180ms ease; }
+/* Borders sync with side panels: hide side border when panel is closed */
+.flow-builder:not(.left-panel-open) .canvas { border-left-color: transparent; }
+.flow-builder:not(.right-panel-open) .canvas { border-right-color: transparent; }
 .canvas { position: relative; }
 .canvas-host { height: 100%; width: 100%; }
 .canvas-host.disabled { pointer-events: none; }

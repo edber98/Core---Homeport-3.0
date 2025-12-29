@@ -35,7 +35,7 @@
         <i class="fa-solid fa-sliders"></i>
       </button>
     </div>
-    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes"
+    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" (click)="onCanvasClick($event)"
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
       (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
@@ -44,9 +44,9 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput"
+      <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
-        (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
+        (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
         (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
         <ng-template let-ctx edge>
@@ -70,9 +70,9 @@
           </div>
         </ng-template>
         <ng-template let-ctx nodeHtml>
-          <div class="node-card"  [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
-            (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+          <div class="node-card" selectable [attr.data-node-id]="ctx.node.id"
+            [ngClass]="{ 'select-node': ctx.selected(), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
+            (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
             <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
@@ -198,9 +198,9 @@
   <!-- Reusable right panel content (desktop + drawer) -->
   <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
   <div class="right-panel" *ngIf="!isMobile" [class.closed]="!rightPanelOpen">
-    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedModel]="selectedModel"
+    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()"
       (saveJson)="saveSelectedJson()"></flow-inspector-panel>
     <div class="inspector-meta" style="padding: 8px; overflow: auto;">
       <form nz-form nzLayout="vertical" class="meta-form">
@@ -430,9 +430,9 @@
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
     <div class="right-panel drawer-mode">
-      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedModel]="selectedModel"
+      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
         [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
+        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()"
         (saveJson)="saveSelectedJson()"></flow-inspector-panel>
       <div style="padding: 8px; overflow: auto;">
 

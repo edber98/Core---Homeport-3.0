@@ -64,6 +64,7 @@ export class FlowBuilderComponent {
   // Drop zone host is the canvas host element
 
   selection: any = null;
+  selectionList: any[] = [];
   inspectorTab: 'settings' | 'json' = 'settings';
   get selectedNode() { return this.selection; }
   get selectedModel() { return this.selection?.data?.model || null; }
@@ -2180,10 +2181,22 @@ export class FlowBuilderComponent {
   }
 
   onSelected(ev: any) {
-    // ngx-vflow peut renvoyer une entité ou une liste; on normalise
-    const item = Array.isArray(ev) ? ev[0] : ev;
-    this.selection = item || null;
+    // Vflow may emit single entity or array of entities
+    const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
+    this.selectionList = list;
+    this.selection = list.length ? list[0] : null;
     try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+  }
+
+  onComponentNodeEvent(ev: any) {
+    try {
+      const arr = (ev && (ev.selected || ev.selection || ev.nodes)) ? (ev.selected || ev.selection || ev.nodes) : null;
+      if (Array.isArray(arr)) {
+        this.selectionList = arr as any[];
+        this.selection = this.selectionList[0] || null;
+        try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      }
+    } catch {}
   }
 
   selectItem(changes: any) {
@@ -2192,6 +2205,85 @@ export class FlowBuilderComponent {
       this.selection = changes;
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
     }
+  }
+
+  onNodeClick(ev: MouseEvent, ctx: any) {
+    try {
+      const node = ctx?.node;
+      if (!node) return;
+      const id = String(node.id);
+      const has = (this.selectionList || []).some(n => String(n?.id) === id);
+      const shift = !!(ev.shiftKey);
+      if (shift) {
+        // Toggle in selection list
+        if (has) {
+          this.selectionList = (this.selectionList || []).filter(n => String(n?.id) !== id);
+          if (this.selection && String(this.selection.id) === id) {
+            this.selection = this.selectionList[0] || null;
+          }
+        } else {
+          this.selectionList = [...(this.selectionList || []), node];
+          this.selection = this.selection || node;
+        }
+      } else {
+        // Single select
+        this.selectionList = [node];
+        this.selection = node;
+      }
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      ev.stopPropagation();
+    } catch {}
+  }
+  onCanvasClick(ev: MouseEvent) {
+    try {
+      const target = ev.target as HTMLElement;
+      // Ignore clicks originating from node cards
+      if (target && target.closest && target.closest('.node-card')) return;
+      this.selectionList = [];
+      this.selection = null;
+      this.editJson = '';
+    } catch {}
+  }
+
+  onDeleteMany() {
+    try {
+      const ids = new Set((this.selectionList || []).map(x => String(x?.id)).filter(Boolean));
+      if (!ids.size) return;
+      // Avoid deleting start nodes via batch
+      const safeIds = new Set(Array.from(ids).filter(id => !this.isStartLike(this.nodes.find(n => String(n.id)===id)?.data?.model?.templateObj)));
+      if (!safeIds.size) return;
+      this.nodes = this.nodes.filter(n => !safeIds.has(String(n.id)));
+      this.edges = this.edges.filter(e => !safeIds.has(String(e.source)) && !safeIds.has(String(e.target)));
+      safeIds.forEach(id => this.errorNodes.delete(id));
+      this.selection = null; this.selectionList = [];
+      this.pushState('nodes.removed.many');
+      this.recomputeErrorPropagation();
+      this.recomputeValidation();
+    } catch {}
+  }
+
+  onInspectorOpenSingle(nodeId: string) {
+    try {
+      // Simulate a normal click on the node-card to let Vflow select only this node (deselect others)
+      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
+      if (!host) return;
+      const el = host.querySelector(`.node-card[data-node-id="${CSS.escape(String(nodeId))}"]`) as HTMLElement | null;
+      if (el) {
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      }
+      // Update our selection pointers and open the advanced editor a tick later
+      setTimeout(() => {
+        try {
+          const sel = (this.nodes || []).find(n => String(n.id) === String(nodeId));
+          if (sel) {
+            this.selection = sel;
+            this.selectionList = [sel];
+            try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+            this.openAdvancedEditor();
+          }
+        } catch {}
+      }, 0);
+    } catch {}
   }
 
   openAdvancedEditor() {
@@ -3285,6 +3377,7 @@ export class FlowBuilderComponent {
   private draggingNodes = new Set<string>();
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
+  
   onNodePositionChange(change: any) {
     if (this.isIgnoring()) { return; }
     const id = change?.id;
@@ -3294,7 +3387,13 @@ export class FlowBuilderComponent {
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
     this.draggingNodes.add(String(id));
+    try {
+      const cur = this.nodes.find(n => String(n.id) === String(id))?.point || { x: undefined, y: undefined };
+      console.log('[vflow][pos.single]', { id: String(id), from: { x: cur.x, y: cur.y }, to: { x: pt.x, y: pt.y } });
+    } catch {}
   }
+
+  // (multi-position handler removed)
 
   onWheel(_ev: WheelEvent) {
     try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch { }
@@ -3312,7 +3411,7 @@ export class FlowBuilderComponent {
       const updated: Record<string, { x: number; y: number }> = {};
       for (const id of ids) {
         try {
-          const node = this.flow?.getNode?.(id);
+          const node = this.flow?.getNode?.(id) || (isFinite(Number(id)) ? this.flow?.getNode?.(Number(id) as any) : null);
           if (node && node.point && typeof node.point.x === 'number' && typeof node.point.y === 'number') {
             updated[id] = { x: node.point.x, y: node.point.y };
           }
@@ -3320,9 +3419,14 @@ export class FlowBuilderComponent {
       }
       // Fallback to pending cache for any id we couldn't read from Vflow
       for (const id of ids) {
-        if (!updated[id] && this.pendingPositions[id]) {
+        
+        if (/* !updated[id] && */ this.pendingPositions[id]) {
+          console.log('ok')
           updated[id] = { ...this.pendingPositions[id] };
+      
         }
+        else 
+          console.log(updated[id], this.pendingPositions[id])
       }
       // Apply only if there is an actual change to limit re-renders that may block clicks
       let changed = false;
@@ -3345,8 +3449,10 @@ export class FlowBuilderComponent {
       this.pendingPositions = {} as any;
       this.pushState('node.position.final');
       this.suppressNodesRemovedUntil = Date.now() + 400;
-    }, 24);
+    }, 240);
   }
+
+  
 
   onNodesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }

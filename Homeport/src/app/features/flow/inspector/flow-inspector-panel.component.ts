@@ -15,6 +15,22 @@ import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-
           <span class="s">Inspecteur</span>
         </div>
       </div>
+      <ng-container *ngIf="(selectedList?.length || 0) > 1; else singleSel">
+        <div class="multi">
+          <div class="summary">{{ selectedList.length }} nœuds sélectionnés</div>
+          <div class="hint">Cliquez un nœud pour ouvrir son éditeur (déselectionnera les autres).</div>
+          <div class="list">
+            <button class="item" *ngFor="let it of selectedList" (click)="openSingle.emit(it?.id)">
+              <span class="name">{{ it?.data?.model?.templateObj?.title || it?.data?.model?.name || it?.id }}</span>
+              <span class="id mono">{{ it?.id }}</span>
+            </button>
+          </div>
+          <div class="actions-line">
+            <button class="btn danger" (click)="deleteMany.emit()" title="Supprimer">Supprimer la sélection</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #singleSel>
       <ng-container *ngIf="selected; else noSel">
         <div class="tabs">
           <button [class.active]="inspectorTab==='settings'" (click)="inspectorTabChange.emit('settings')">Settings</button>
@@ -38,6 +54,7 @@ import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-
           </div>
         </div>
       </ng-container>
+      </ng-template>
       <ng-template #noSel>
         <p>Sélectionnez un nœud.</p>
       </ng-template>
@@ -57,6 +74,14 @@ import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-
     .inspector .tabs button { border:1px solid #e5e7eb; background:#fff; border-radius:8px; padding:4px 8px; font-size:12px; cursor:pointer; }
     .inspector .tabs button.active { border-color:#1677ff; color:#1677ff; }
     .inspector .rows { display:flex; flex-direction:column; gap:8px; }
+    .inspector .multi { padding: 8px 0; }
+    .inspector .multi .summary { font-weight:600; color:#111; }
+    .inspector .multi .hint { color:#8c8c8c; font-size:12px; margin:6px 0; }
+    .inspector .multi .list { display:flex; flex-direction:column; gap:6px; margin: 8px 0; }
+    .inspector .multi .item { display:flex; justify-content:space-between; align-items:center; border:1px solid #e5e7eb; background:#fff; border-radius:8px; padding:6px 8px; font-size:12px; cursor:pointer; }
+    .inspector .multi .item:hover { background:#f5f5f6; }
+    .inspector .multi .item .name { font-weight:600; color:#111; }
+    .inspector .multi .item .id { color:#6b7280; }
     .inspector .row { display:flex; align-items:center; justify-content:space-between; border-bottom: 1px solid #f2f2f2; padding: 6px 0; }
     .inspector .row .k { color:#6b7280; font-size:12px; }
     .inspector .row .v { color:#111; font-size:12px; max-width: 55%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
@@ -74,6 +99,7 @@ import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-
 export class FlowInspectorPanelComponent {
   @Input() mode: 'drawer' | 'outside' = 'outside';
   @Input() selected: any;
+  @Input() selectedList: any[] = [];
   @Input() selectedModel: any;
   @Input() inspectorTab: 'settings' | 'json' = 'settings';
   @Output() inspectorTabChange = new EventEmitter<'settings' | 'json'>();
@@ -81,5 +107,7 @@ export class FlowInspectorPanelComponent {
   @Output() editJsonChange = new EventEmitter<string>();
   @Output() openAdvanced = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+  @Output() openSingle = new EventEmitter<string>();
+  @Output() deleteMany = new EventEmitter<void>();
   @Output() saveJson = new EventEmitter<void>();
 }
