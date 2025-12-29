@@ -317,6 +317,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   onNodePositionChange(change: any) {
+
+    console.log(change)
     if (!(this.allowDrag && this.move)) return;
     try {
       const id = change?.id;

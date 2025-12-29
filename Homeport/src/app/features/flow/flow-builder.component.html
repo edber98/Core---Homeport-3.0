@@ -44,7 +44,7 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView"
+      <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
@@ -337,6 +337,12 @@
       </button>
       <button class="icon-btn" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
         <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
+      </button>
+      <button class="icon-btn" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+        <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
+      </button>
+      <button class="icon-btn" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+        <i class="fa-solid fa-border-all"></i>
       </button>
       <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
         [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
@@ -97,6 +97,13 @@ export class FlowBuilderComponent {
   leftPanelOpen = false;
   // Ports orientation (inputs/outputs placement)
   portOrientation: 'vertical' | 'horizontal' = 'horizontal';
+  // Alignment helper guidelines (visual lines)
+  alignmentHelper: boolean | { tolerance: number; lineColor: string } = false;
+  // Optional grid snapping (magnetic)
+  snapGrid: [number, number] | null = null;
+  get snapGridInput(): [number, number] { return (this.snapGrid || [0, 0]) as any; }
+  // Dots background, light grey
+  flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
 
   togglePortOrientation() {
     this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';
@@ -109,6 +116,34 @@ export class FlowBuilderComponent {
       this.forceViewRefresh('toggle-orientation');
     } catch {}
     try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('toggle-orientation-post-center'); }, 0); } catch {}
+  }
+
+  get alignmentHelperInput(): any {
+    if (!this.alignmentHelper) return false;
+    if (typeof this.alignmentHelper === 'object') return this.alignmentHelper;
+    // default settings when enabled via boolean
+    return { tolerance: 6, lineColor: '#D1D5DB' };
+  }
+
+  toggleAlignmentHelper() {
+    try {
+      const enabled = !!this.alignmentHelper;
+      this.alignmentHelper = enabled ? false : { tolerance: 6, lineColor: '#D1D5DB' };
+      try { this.message.info(this.alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'); } catch {}
+      this.updateSharedGraph();
+      this.saveDraft();
+      this.forceViewRefresh('toggle-alignment-helper');
+    } catch {}
+  }
+
+  toggleSnapGrid() {
+    try {
+      this.snapGrid = this.snapGrid ? null : [8, 8];
+      try { this.message.info(this.snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'); } catch {}
+      this.updateSharedGraph();
+      this.saveDraft();
+      this.forceViewRefresh('toggle-snap-grid');
+    } catch {}
   }
 
   // Compute vertical offset (px) for horizontal handles so that multiple are centered
@@ -263,6 +298,31 @@ export class FlowBuilderComponent {
         try { this.forceViewRefresh('apply-flow-meta'); } catch {}
         try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('apply-flow-meta-post-center'); }, 0); } catch {}
       }
+      // alignmentHelper (boolean | string | settings)
+      try {
+        const ah = (ui as any).alignmentHelper;
+        if (ah && typeof ah === 'object') {
+          const tol = Number(ah.tolerance);
+          const col = String(ah.lineColor || '#D1D5DB');
+          this.alignmentHelper = { tolerance: isFinite(tol) && tol > 0 ? tol : 6, lineColor: col };
+        } else if (typeof ah === 'boolean') {
+          this.alignmentHelper = ah ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+        } else if (typeof ah === 'string') {
+          const s = ah.toLowerCase();
+          const on = ['1','true','yes','on'].includes(s);
+          this.alignmentHelper = on ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+        }
+      } catch {}
+      // snapGrid ([x,y] or disabled)
+      try {
+        const sg = (ui as any).snapGrid;
+        if (Array.isArray(sg) && sg.length === 2) {
+          const x = Number(sg[0]); const y = Number(sg[1]);
+          if (isFinite(x) && isFinite(y) && x > 0 && y > 0) this.snapGrid = [x, y];
+        } else {
+          this.snapGrid = null;
+        }
+      } catch {}
     } catch {}
   }
   private toastTimer: any;
@@ -650,10 +710,10 @@ export class FlowBuilderComponent {
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
     // Keep draft only if it differs from backend; otherwise clear it to avoid noise
     if (current !== (this.lastSavedChecksum || '')) {
-      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
+      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
       try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
     } else {
       try { localStorage.removeItem(this.draftKey(fid)); } catch {}
@@ -676,12 +736,14 @@ export class FlowBuilderComponent {
       this.currentFlowStatus = draft.status || this.currentFlowStatus;
       this.currentFlowEnabled = !!draft.enabled;
       if (draft.portOrientation === 'horizontal' || draft.portOrientation === 'vertical') this.portOrientation = draft.portOrientation;
+      if (typeof draft.alignmentHelper === 'boolean') this.alignmentHelper = !!draft.alignmentHelper;
+      if (Array.isArray(draft.snapGrid) && draft.snapGrid.length === 2) this.snapGrid = [Number(draft.snapGrid[0]), Number(draft.snapGrid[1])] as any;
       this.nodes = (draft.nodes || []) as any[];
       this.edges = (draft.edges || []) as any;
     } catch {}
   }
   hasUnsavedChanges(): boolean {
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
     return current !== (this.lastSavedChecksum || '');
   }
   get canSave(): boolean { return !!this.currentFlowId && this.hasUnsavedChanges(); }
@@ -1506,9 +1568,9 @@ export class FlowBuilderComponent {
       nzOkText: 'Sauvegarder et exécuter',
       nzCancelText: 'Annuler',
       nzOnOk: () => new Promise<void>((resolve) => {
-        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any, true).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any, true).subscribe({
           next: () => {
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
             try { this.cdr.detectChanges(); } catch {}
             action();
@@ -2435,11 +2497,11 @@ export class FlowBuilderComponent {
           resolve(false);
           return;
         }
-        const doc = { id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any;
+        const doc = { id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any;
         this.catalog.saveFlow(doc).subscribe({
           next: () => {
             try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             try {
               this.updateSharedGraph();
               this.saveDraft();
@@ -2470,10 +2532,10 @@ export class FlowBuilderComponent {
                 nzTitle: 'Flow invalide',
                 nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
-                nzOnOk: () => this.catalog.saveFlow({ ...(doc as any), meta: { ...(doc as any).meta, ui: { ...(doc as any)?.meta?.ui, portOrientation: this.portOrientation } } }, true).subscribe({
+                nzOnOk: () => this.catalog.saveFlow({ ...(doc as any), meta: { ...(doc as any).meta, ui: { ...(doc as any)?.meta?.ui, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } }, true).subscribe({
                   next: () => {
                     try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
-                    this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+                    this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
                     try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
                     resolve(true);
                   },
@@ -2500,11 +2562,11 @@ export class FlowBuilderComponent {
   saveFlow() {
     try {
       if (this.currentFlowId) {
-        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any).subscribe({
           next: () => {
             try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
             // Mettre à jour la référence serveur (checksum) pour refléter l’état sauvegardé
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             // Mettre à jour le snapshot partagé et le draft local afin que le bouton Sauvegarder se désactive
             try {
               this.updateSharedGraph();
@@ -2535,7 +2597,7 @@ export class FlowBuilderComponent {
                 nzTitle: 'Flow invalide',
                 nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
-                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation } } } as any, true).subscribe({ next: () => {
+                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any, true).subscribe({ next: () => {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
                   this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
                   try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
@@ -3224,13 +3286,10 @@ export class FlowBuilderComponent {
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
   onNodePositionChange(change: any) {
-    // logs disabled
     if (this.isIgnoring()) { return; }
     const id = change?.id;
     const pt = change?.to?.point || change?.point || change?.to;
     if (!id || !pt) { return; }
-    const before = this.nodes.find(n => n.id === id);
-
     // Cache the last known point; do not mutate nodes during drag
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
@@ -3248,14 +3307,45 @@ export class FlowBuilderComponent {
     if (this.isIgnoring()) return;
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
-    // logs disabled
-    const posMap = this.pendingPositions;
-    this.nodes = this.nodes.map(n => (posMap[n.id] ? ({ ...n, point: { x: posMap[n.id].x, y: posMap[n.id].y } }) : n));
-    this.draggingNodes.clear();
-    this.pendingPositions = {} as any;
-    this.pushState('node.position.final');
-    // Suppress spurious nodes.removed events that may follow a move
-    this.suppressNodesRemovedUntil = Date.now() + 400;
+    // Delay a bit so Vflow can finalize helper adjustments before we read positions
+    setTimeout(() => {
+      const updated: Record<string, { x: number; y: number }> = {};
+      for (const id of ids) {
+        try {
+          const node = this.flow?.getNode?.(id);
+          if (node && node.point && typeof node.point.x === 'number' && typeof node.point.y === 'number') {
+            updated[id] = { x: node.point.x, y: node.point.y };
+          }
+        } catch {}
+      }
+      // Fallback to pending cache for any id we couldn't read from Vflow
+      for (const id of ids) {
+        if (!updated[id] && this.pendingPositions[id]) {
+          updated[id] = { ...this.pendingPositions[id] };
+        }
+      }
+      // Apply only if there is an actual change to limit re-renders that may block clicks
+      let changed = false;
+      const next = this.nodes.map(n => {
+        const u = updated[n.id];
+        if (!u) return n;
+        const cx = Number(n?.point?.x ?? NaN);
+        const cy = Number(n?.point?.y ?? NaN);
+        if (!isFinite(cx) || !isFinite(cy) || u.x !== cx || u.y !== cy) {
+          changed = true;
+          return { ...n, point: { x: u.x, y: u.y } };
+        }
+        return n;
+      });
+      if (changed) {
+        this.nodes = next;
+        try { this.cdr.detectChanges(); } catch {}
+      }
+      this.draggingNodes.clear();
+      this.pendingPositions = {} as any;
+      this.pushState('node.position.final');
+      this.suppressNodesRemovedUntil = Date.now() + 400;
+    }, 24);
   }
 
   onNodesRemoved(changes: any[]) {
