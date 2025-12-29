@@ -87,7 +87,9 @@
 .flow-builder:not(.left-panel-open) .canvas { border-left-color: transparent; }
 .flow-builder:not(.right-panel-open) .canvas { border-right-color: transparent; }
 .canvas { position: relative; }
-.canvas-host { height: 100%; width: 100%; }
+.canvas-host { height: 100%; width: 100%; position: relative; }
+.selection-capture { position: absolute; inset: 0; z-index: 9998; pointer-events: all; cursor: crosshair; background: transparent; }
+.selection-box { position: fixed; border: 1px dashed #1677ff; background: rgba(22,119,255,0.08); pointer-events: none; z-index: 9999; }
 .canvas-host.disabled { pointer-events: none; }
 /* Floating action buttons on small screens */
 .fb-fab-left, .fb-fab-right { position: absolute; top: 8px; z-index: 22; display: none; }

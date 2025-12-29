@@ -688,6 +688,12 @@ export class FlowBuilderComponent {
     try { this.viewportSub?.unsubscribe(); } catch { }
     // If leaving builder without unsaved changes, clear persisted snapshots/drafts
     try { if (!this.hasUnsavedChanges()) this.purgeDraft(); } catch {}
+    // Remove marquee global capture listeners
+    try {
+      if (this.canvasGlobalDown) document.removeEventListener('pointerdown', this.canvasGlobalDown as any, true as any);
+      if (this.canvasGlobalMove) document.removeEventListener('pointermove', this.canvasGlobalMove as any, true as any);
+      if (this.canvasGlobalUp) document.removeEventListener('pointerup', this.canvasGlobalUp as any, true as any);
+    } catch {}
   }
 
   private loadFlowsForWorkspace(){
@@ -837,6 +843,111 @@ export class FlowBuilderComponent {
     } catch { }
     // Initial update
     this.updateZoomDisplay();
+
+    // Attach global capture listeners for marquee selection to preempt vflow pan/zoom
+    try {
+      const host = this.flowHost?.nativeElement;
+      if (host) {
+        this.canvasGlobalDown = (ev: PointerEvent) => {
+          try {
+            const inside = host.contains(ev.target as Node);
+            const ctrl = !!ev.ctrlKey, meta = !!ev.metaKey, alt = !!ev.altKey;
+            const isRight = ev.button === 2;
+            // debug logs removed
+            if (!inside) return;
+            if (!(ctrl || meta || alt || isRight)) return;
+            const target = ev.target as HTMLElement;
+            if (!ctrl && !meta && !alt && target?.closest && target.closest('.node-card')) return;
+            ev.preventDefault(); ev.stopPropagation();
+            this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+            this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        };
+        this.canvasGlobalMove = (ev: PointerEvent) => {
+          try {
+            if (!this.selectionBoxStart) return;
+            if (!host.contains(ev.target as Node)) return;
+            ev.preventDefault(); ev.stopPropagation();
+            const sx = this.selectionBoxStart.x, sy = this.selectionBoxStart.y;
+            const cx = ev.clientX, cy = ev.clientY;
+            const left = Math.min(sx, cx), top = Math.min(sy, cy);
+            const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+            this.selectionBoxRect = { left, top, width, height };
+            // debug logs removed
+            // Live-update selection while dragging when rect has a visible size
+            try {
+              if (width >= 2 && height >= 2) {
+                const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+                const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+                if (tl && br) {
+                  const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+                  const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+                  const models: any[] = this.flow?.nodeModels?.() || [];
+                  const ids: string[] = [];
+                  for (const m of models) {
+                    try {
+                      const gp = m?.globalPoint?.();
+                      const sz = m?.size?.();
+                      const id = String(m?.rawNode?.id ?? '');
+                      if (!gp || !sz || !id) continue;
+                      const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                      const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                      if (overlap) ids.push(id);
+                    } catch {}
+                  }
+                  const idsSet = new Set(ids);
+                  this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+                  this.selection = this.selectionList[0] || null;
+                  try { this.setVflowSelectedIds(ids); } catch {}
+                }
+              }
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        };
+        this.canvasGlobalUp = (ev: PointerEvent) => {
+          try {
+            const hadStart = !!this.selectionBoxStart;
+            if (!hadStart) return;
+            if (!host.contains(ev.target as Node)) return;
+            ev.preventDefault(); ev.stopPropagation();
+            const rect = this.selectionBoxRect;
+            this.selectionBoxStart = null;
+            this.selectionBoxRect = null;
+            if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+            const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+            const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+            if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+            // debug logs removed
+            try { this.setVflowSelectedIds(ids); } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        };
+        document.addEventListener('pointerdown', this.canvasGlobalDown as any, { capture: true } as any);
+        document.addEventListener('pointermove', this.canvasGlobalMove as any, { capture: true } as any);
+        document.addEventListener('pointerup', this.canvasGlobalUp as any, { capture: true } as any);
+      }
+    } catch {}
   }
 
   @HostListener('window:resize') onResize() { this.updateIsMobile(); }
@@ -2182,7 +2293,6 @@ export class FlowBuilderComponent {
   }
 
   onSelected(ev: any) {
-    console.log(ev, 'ok')
     // Vflow may emit single entity or array of entities
     const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
     this.selectionList = list;
@@ -3370,7 +3480,14 @@ export class FlowBuilderComponent {
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
   isSelected(id: any): boolean { try { const sid = String(id); return (this.selectionList || []).some(n => String(n?.id) === sid); } catch { return false; } }
+  // Selection box UI state (viewport coords)
+  selectionBoxStart: { x: number; y: number } | null = null;
+  selectionBoxRect: { left: number; top: number; width: number; height: number } | null = null;
 
+  // Global capture listeners to beat d3-zoom
+  private canvasGlobalDown?: (ev: PointerEvent) => void;
+  private canvasGlobalMove?: (ev: PointerEvent) => void;
+  private canvasGlobalUp?: (ev: PointerEvent) => void;
   // Force vflow to reflect our app-managed selection (so multi-drag works and emits .many)
   private setVflowSelectedIds(ids: string[]) {
     try {
@@ -3397,10 +3514,7 @@ export class FlowBuilderComponent {
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
     this.draggingNodes.add(String(id));
-    try {
-      const cur = this.nodes.find(n => String(n.id) === String(id))?.point || { x: undefined, y: undefined };
-      console.log('[vflow][pos.single]', { id: String(id), from: { x: cur.x, y: cur.y }, to: { x: pt.x, y: pt.y } });
-    } catch {}
+    // debug logs removed
   }
 
   // Many nodes moved at once (multi-select drag, helper alignment moves)
@@ -3416,15 +3530,98 @@ export class FlowBuilderComponent {
         this.draggingNodes.add(id);
       } catch {}
     }
-    try {
-      const debug = changes.map(c => ({ id: String(c?.id), x: c?.to?.point?.x ?? c?.point?.x ?? c?.to?.x, y: c?.to?.point?.y ?? c?.point?.y ?? c?.to?.y }));
-      console.log('[vflow][pos.many]', debug);
-    } catch {}
+    // debug logs removed
   }
 
   onWheel(_ev: WheelEvent) {
     try { if (this.zoomUpdateTimer) clearTimeout(this.zoomUpdateTimer); } catch { }
     this.zoomUpdateTimer = setTimeout(() => this.zone.run(() => this.updateZoomDisplay()), 80);
+  }
+
+  // Right-click drag selection box on canvas (outside nodes)
+  onCanvasMouseDown(ev: MouseEvent) {
+    try {
+      const ctrl = !!ev.ctrlKey;
+      const isRight = ev.button === 2;
+      if (!ctrl && !isRight) return;
+      const target = ev.target as HTMLElement;
+      if (!ctrl && target && target.closest && target.closest('.node-card')) return;
+      ev.preventDefault(); ev.stopPropagation();
+      this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+      this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+    } catch {}
+  }
+  onCanvasMouseMove(ev: MouseEvent) {
+    try {
+      if (!this.selectionBoxStart) return;
+      const sx = this.selectionBoxStart.x, sy = this.selectionBoxStart.y;
+      const cx = ev.clientX, cy = ev.clientY;
+      const left = Math.min(sx, cx), top = Math.min(sy, cy);
+      const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+      this.selectionBoxRect = { left, top, width, height };
+      // Live selection for the local path as well
+      try {
+        if (width >= 2 && height >= 2) {
+          const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+          const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+          if (tl && br) {
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.setVflowSelectedIds(ids); } catch {}
+          }
+        }
+      } catch {}
+    } catch {}
+  }
+  onCanvasMouseUp(ev: MouseEvent) {
+    try {
+      if (!this.selectionBoxStart) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const rect = this.selectionBoxRect;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+      const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+      if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+      const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+      const models: any[] = this.flow?.nodeModels?.() || [];
+      const ids: string[] = [];
+      for (const m of models) {
+        try {
+          const gp = m?.globalPoint?.();
+          const sz = m?.size?.();
+          const id = String(m?.rawNode?.id ?? '');
+          if (!gp || !sz || !id) continue;
+          const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+          const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+          if (overlap) ids.push(id);
+        } catch {}
+      }
+      const idsSet = new Set(ids);
+      this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+      this.selection = this.selectionList[0] || null;
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds(ids); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
   }
 
   @HostListener('document:pointerup')
@@ -3452,8 +3649,9 @@ export class FlowBuilderComponent {
           updated[id] = { ...this.pendingPositions[id] };
       
         }
-        else 
-          console.log(updated[id], this.pendingPositions[id])
+        else {
+          // debug logs removed
+        }
       }
       // Apply only if there is an actual change to limit re-renders that may block clicks
       let changed = false;

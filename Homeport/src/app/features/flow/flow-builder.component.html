@@ -38,7 +38,8 @@
     <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" (click)="onCanvasClick($event)"
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
-      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
+      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)"
+      (contextmenu)="$event.preventDefault()" (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)">
       <!-- Loading overlay during flow document fetch -->
       <div class="loading-overlay" *ngIf="loadingFlowDoc">
         <div class="spinner"></div>
@@ -188,6 +189,15 @@
           </div>
         </ng-template>
       </vflow>
+      <!-- Capture overlay to block pan/zoom while dragging selection -->
+      <div class="selection-capture" *ngIf="selectionBoxStart"
+           (contextmenu)="$event.preventDefault()"
+           (mousedown)="$event.preventDefault(); $event.stopPropagation()"
+           (mousemove)="onCanvasMouseMove($event)"
+           (mouseup)="onCanvasMouseUp($event)"></div>
+      <!-- Selection rectangle overlay (fixed to viewport) -->
+      <div class="selection-box" *ngIf="selectionBoxRect as r"
+        [style.left.px]="r.left" [style.top.px]="r.top" [style.width.px]="r.width" [style.height.px]="r.height"></div>
       <!-- lightweight tooltip overlay -->
       <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY"
         [ngClass]="{ error: tipError }">{{ tipText }}</div>
