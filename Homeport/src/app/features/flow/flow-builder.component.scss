@@ -1,4 +1,9 @@
-.flow-builder { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 0; height: 100%; overflow-x: hidden; }
+.flow-builder { position: relative; display: block; gap: 0; height: 100%; overflow-x: hidden; }
+/* Desktop-only: controlled by class from component */
+.flow-builder.desktop { display: grid; grid-template-columns: auto 1fr auto; }
+/* On non-desktop (tablet/mobile), hide desktop side panels and ensure canvas fills width */
+.flow-builder:not(.desktop) > .left-panel, .flow-builder:not(.desktop) > .right-panel { display: none !important; width: 0 !important; height: 0 !important; }
+.flow-builder:not(.desktop) > .canvas { width: 100% !important; }
 .flow-builder > flow-palette-panel { min-height: 0; }
 .flow-builder > .left-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: hidden; width: 320px; transition: width 180ms ease, opacity 180ms ease; will-change: width, opacity; }
 .flow-builder > .left-panel.closed { width: 0; opacity: 0; transform: none; pointer-events: none; }
@@ -82,12 +87,14 @@
 .inspector .inspector-actions .open-advanced { background:#111; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
 .inspector .inspector-actions .danger { background:#b91c1c; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; margin-left:6px; }
 /* removed row undo/redo from inspector */
-.canvas { border-style: solid; border-color: #e5e7eb; border-width: 0 1px 1px 1px; border-radius: 0; overflow: hidden; transition: border-color 180ms ease; }
+.canvas {  border-style: solid; border-color: #e5e7eb; border-width: 0 1px 1px 1px; border-radius: 0; overflow: hidden; transition: border-color 180ms ease; }
 /* Borders sync with side panels: hide side border when panel is closed */
-.flow-builder:not(.left-panel-open) .canvas { border-left-color: transparent; }
-.flow-builder:not(.right-panel-open) .canvas { border-right-color: transparent; }
-.canvas { position: relative; }
+.flow-builder:not(.left-panel-open) .canvas { border-left: 0; }
+.flow-builder:not(.right-panel-open) .canvas { border-right: 0; }
+.canvas { position: relative; height: 100%; }
 .canvas-host { height: 100%; width: 100%; position: relative; }
+
+
 .selection-capture { position: absolute; inset: 0; z-index: 9998; pointer-events: all; cursor: crosshair; background: transparent; }
 .selection-box { position: fixed; border: 1px dashed #1677ff; background: rgba(22,119,255,0.08); pointer-events: none; z-index: 9999; }
 .canvas-host.disabled { pointer-events: none; }
@@ -101,8 +108,11 @@
   background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px;
   box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
 .flow-tooltip.error { background:#f759ab; color:#fff; }
-.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; position: relative; }
-.node-card .center-wrap { position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align:left; pointer-events:none; }
+
+
+.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }
+
+.node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
 .node-card .center-wrap node-card-header { pointer-events:auto; }
 .node-card.select-node { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.15); }
 .node-card.error-branch { border-color: rgba(247,89,171,0.63); box-shadow: none; }
@@ -112,7 +122,7 @@
 .node-card.select-node.hard-error { border-color:#ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.35); }
 /* If both error-branch (try/catch) and hard-error are present, prefer the try/catch pink ring */
 .node-card.select-node.error-branch.hard-error { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.35); }
-.node-card .error-badge { position:absolute; right:6px; top:6px; color:#ef4444; background:#fff; border:1px solid #fca5a5; border-radius:999px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.node-card .error-badge { grid-column: 2; grid-row: 1; align-self: start; justify-self: end; color:#ef4444; background:#fff; border:1px solid #fca5a5; border-radius:999px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; }
 .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
 .node-card .icon { width: 20px; height: 20px; display:inline-block; }
 .node-card .meta .title { font-weight: 600; }
@@ -121,7 +131,10 @@
 .node-card.horizontal .outputs { position: absolute; top: -200px; display:flex; flex-direction: column; justify-content:center; gap: 17px;
 }
 
+
+
 .node-card .outputs .out {display:flex; align-items:center; justify-content:center; width:16px; }
+
 .right-panel .flow-meta { border:0; border-radius:0; padding: 6px 2px; background:transparent; margin-bottom:8px; }
 .right-panel .flow-meta.apple .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
 .right-panel .flow-meta.apple .row.exec { align-items: flex-start; }
@@ -212,9 +225,12 @@ nz-drawer { display: contents; }
 
 /* Tablet and below: hide side panels and show header; hide right rail */
 @media (max-width: 1280px) {
-  .flow-builder { grid-template-columns: 1fr; }
+  /* Force non-grid layout on tablet/mobile to avoid 3-column grid */
+  .flow-builder { display: block !important; grid-template-columns: none !important; }
   /* Hide only the desktop side panels, not the same classes inside drawer overlay */
   .flow-builder > .palette, .flow-builder > .inspector { display: none; }
+  /* Also hide the desktop panel wrappers so the grid stays single-row */
+  .flow-builder > .left-panel, .flow-builder > .right-panel { display: none !important; width: 0 !important; height: 0 !important; }
   .fb-fab-left, .fb-fab-right { display: inline-flex; }
   .canvas-host { height: 100%; }
   .left-bar { display: block; }
@@ -226,11 +242,13 @@ nz-drawer { display: contents; }
 .bottom-bar .icon-btn, .bottom-bar .import-btn { width: 36px; height: 36px; padding: 0; display:inline-flex; align-items:center; justify-content:center; }
 .bottom-bar .import-btn input[type=file] { display: none; }
 
-.node-card .exec-badge { position:absolute; right:8px; bottom:6px; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+
+.node-card .exec-badge { grid-column: 2; grid-row: 1; align-self: end; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
 .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
 .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
+
 .loading-overlay {
   position: absolute;
   inset: 0;
@@ -248,5 +266,7 @@ nz-drawer { display: contents; }
   border-radius: 50%;
   animation: fb-spin .8s linear infinite;
 }
+
+
 .loading-overlay .text { margin-top: 10px; color: #374151; font-weight: 500; }
 @keyframes fb-spin { to { transform: rotate(360deg); } }

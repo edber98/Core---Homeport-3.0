@@ -1,8 +1,9 @@
-<div class="flow-builder" cdkDropListGroup [class.right-panel-open]="!isMobile && rightPanelOpen"
-  [class.left-panel-open]="!isMobile && leftPanelOpen">
+<div class="flow-builder" cdkDropListGroup [class.desktop]="!isTabletOrBelow"
+  [class.right-panel-open]="!isTabletOrBelow && rightPanelOpen"
+  [class.left-panel-open]="!isTabletOrBelow && leftPanelOpen">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
-    <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
+    <flow-palette-panel [mode]="'outside'" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
       [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
       [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
       [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
@@ -19,22 +20,7 @@
 
   <section class="canvas">
     <!-- Removed canvas-shield interceptors to avoid event conflicts on mobile -->
-    <!-- Floating buttons (mobile/tablet) -->
-    <div class="fb-fab-left">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('left')"
-        (touchstart)="openMobilePanel('left'); $event.preventDefault(); $event.stopPropagation()" nz-tooltip
-        [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
-    <div class="fb-fab-right">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('right')"
-        (touchstart)="openMobilePanel('right'); $event.preventDefault(); $event.stopPropagation()"
-        [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null"
-        [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
-        <i class="fa-solid fa-sliders"></i>
-      </button>
-    </div>
+    <!-- Desktop-style panel toggle FABs: visible on all sizes; open drawers on narrow screens -->
     <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" (click)="onCanvasClick($event)"
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
@@ -70,91 +56,95 @@
             </button>
           </div>
         </ng-template>
-        <ng-template let-ctx nodeHtml>
-          <div class="node-card" [attr.data-node-id]="ctx.node.id"
+        <ng-template  let-ctx nodeHtml>
+
+          <div class="node-card"  [attr.data-node-id]="ctx.node.id"
             [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal' }"
             (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
-            <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <div class="center-wrap">
-              <node-card-header
-                [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
-                [subtitle]="ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category || ctx.node.data.model.templateObj?.type"
-                [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
-                [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
-                [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
-              ></node-card-header>
-            </div>
-            <ng-container *ngIf="(ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
-              <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
-                <div class="in" *ngFor="let ih of ins; let i = index">
-                  <ng-template #ihTpl let-hctx>
-                  <svg:g>
-                    
-                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
-                  </svg:g>
-                  </ng-template>
-                  <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">
-                    <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
-                  </ng-container>
-                  <ng-template #horizInputMulti>
-                  <div style="position: absolute; left: 0;" [style.top.px]="horizHandleTop(i, ins.length)">
-                      <handle position="left" type="target" [id]="ih.id" [template]="ihTpl" />
-                  </div>
-                  </ng-template>
-                </div>
+   
+              <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
+                <i class="fa-solid fa-triangle-exclamation"></i>
               </div>
-            </ng-container>
-            <ng-template #singleIn>
-              <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
-                <ng-template #handleInTpl let-hctx>
-                  <svg:g>
-                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
-                      stroke-width="1"></svg:circle>
-                  </svg:g>
-                </ng-template>
-                <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
-              
-                  <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
-                </ng-container>
-                <ng-template #horizInputSingle>
-                  <div style="position: absolute; left: 0; top: 23px">
-                    <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
+          
+              <div class="center-wrap">
+                <node-card-header
+                  [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
+                  [subtitle]="ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category || ctx.node.data.model.templateObj?.type"
+                  [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
+                  [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
+                  [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
+                ></node-card-header>
+              </div>
+          
+              <ng-container *ngIf="(ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
+                <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
+                  <div class="in" *ngFor="let ih of ins; let i = index">
+                    <ng-template #ihTpl let-hctx>
+                    <svg:g>
+                      
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                    </svg:g>
+                    </ng-template>
+                    <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">
+                      <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
+                    </ng-container>
+                    <ng-template #horizInputMulti>
+                    <div style="position: absolute; left: 0;" [style.top.px]="horizHandleTop(i, ins.length)">
+                        <handle position="left" type="target" [id]="ih.id" [template]="ihTpl" />
+                    </div>
+                    </ng-template>
                   </div>
-                </ng-template>
+                </div>
               </ng-container>
-            </ng-template>
-            <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
-              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
-                [ngClass]="{ error: out === 'err' }">
-        
-                <ng-template #hTpl let-hctx>
-                  <svg:g>
-                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
-                      [attr.stroke]="'#ffffff'" stroke-width="1"
-                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
-                      (mouseleave)="onHandleLeave()"></svg:circle>
-                  </svg:g>
-                </ng-template>
-                <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
-                  <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+              <ng-template #singleIn>
+                <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+                  <ng-template #handleInTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
+                        stroke-width="1"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
+              
+                    <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+                  </ng-container>
+                  <ng-template #horizInputSingle>
+                    <div style="position: absolute; left: 0; top: 23px">
+                      <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
+                    </div>
+                  </ng-template>
                 </ng-container>
+              </ng-template>
+              <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
+                <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
+                  [ngClass]="{ error: out === 'err' }">
+        
+                  <ng-template #hTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                        [attr.stroke]="'#ffffff'" stroke-width="1"
+                        (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
+                    <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+                  </ng-container>
                 <ng-template #horizOutput>
                   <div style="position: absolute; right: 0;" [style.top.px]="horizHandleTop(i, outs)">
                     <handle position="right" type="source" [id]="out" [template]="hTpl" />
                   </div>
                 </ng-template>
-              </div>
-            </div>
+               </div>
+          </div>
             <!-- Link handles (targets on the right) for v2 -->
             <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
               <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
@@ -179,7 +169,8 @@
               <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')" title="Etat dernière exécution"></i>
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
             </div>
-          </div>
+            </div>
+     
         </ng-template>
         <ng-template let-ctx connectionTemplate>
           <div class="edge-labels">
@@ -283,8 +274,9 @@
         (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
     </div>
   </div>
-  <button nz-button nzSize="small" class="panel-toggle-fab" *ngIf="!isMobile" type="button"
-    (click)="rightPanelOpen = !rightPanelOpen" aria-label="Ouvrir ou fermer le panneau droit">
+  <button nz-button nzSize="small" class="panel-toggle-fab" type="button"
+    (click)="toggleRightPanel()"
+    aria-label="Ouvrir ou fermer le panneau droit">
     <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
         <path d="M41.5 10H35.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -298,8 +290,9 @@
         <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
   </button>
-  <button nz-button nzSize="small" class="panel-toggle-fab left" *ngIf="!isMobile" type="button"
-    (click)="leftPanelOpen = !leftPanelOpen" aria-label="Ouvrir ou fermer le panneau gauche">
+  <button nz-button nzSize="small" class="panel-toggle-fab left" type="button"
+    (click)="toggleLeftPanel()"
+    aria-label="Ouvrir ou fermer le panneau gauche">
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" id="sidebar">
       <g fill="none" fill-rule="evenodd" stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)">
         <rect width="16" height="16" rx="2"></rect>

@@ -111,7 +111,7 @@
 .preview-extra-mobile .flex-spacer { flex: 1 1 auto; }
 .preview-extra-mobile .sep { display: none; }
 @media (max-width: 1280px) {
-  .preview-extra-mobile { background: transparent; border: 0; box-shadow: none; width: 100%; }
+  .preview-extra-mobile { display: inline-flex; background: transparent; border: 0; box-shadow: none; width: 100%; }
 }
 
 /* Ensure left-panel cards inside drawers have no outer chrome, keep header separator */
@@ -122,11 +122,12 @@
 /* Tablet and below: use drawer layout */
 @media (max-width: 1280px) {
   .left, .right { display: none;  }
-  .preview-extra-mobile { display: inline-flex; }
   .mobile-only { display: block; }
   /* Remove subtle right border on preview card in responsive */
   .center .ant-card.no-chrome { border-right: 0 !important; }
 }
+
+/* remove desktop overlay artifacts */
 /* Desktop: make preview column fill the viewport and let inner preview scroll */
 @media (min-width: 1281px) {
   .center { height: 100%; display: flex; flex-direction: column; }

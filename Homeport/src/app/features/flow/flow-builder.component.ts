@@ -34,11 +34,12 @@ import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.co
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { environment } from '../../../environments/environment';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
+import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent, NodeCardHeaderComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent, NodeCardHeaderComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -374,6 +375,7 @@ export class FlowBuilderComponent {
   zoomDisplay = 1;
   private viewportSub?: Subscription;
   zoomPercent = 100;
+  
 
 
   // Context menu state
@@ -402,6 +404,9 @@ export class FlowBuilderComponent {
     private pathSvc: FlowPathHighlightService,
   ) { }
   isMobile = false;
+  // Width-based responsive flag (<= 1280px): use drawers and single-column grid
+  isTabletOrBelow = false;
+  private lastTabletFlag = false;
   // Apps map for provider grouping/logo
   private appsMap = new Map<string, AppProvider>();
   // Responsive drawers (mobile/tablet)
@@ -456,6 +461,9 @@ export class FlowBuilderComponent {
   private lpFired = false;
   private readonly lpDelay = 520; // ms
   private readonly lpMoveThresh = 10; // px
+  // Double-tap detection for opening config dialog on mobile
+  private lastTapAt = 0;
+  private readonly dtThresh = 350; // ms between taps
   private allTemplates: any[] = [];
   private allowedTplIds = new Set<string>();
   private allFlows: { id: string; name: string; description?: string }[] = [];
@@ -843,13 +851,20 @@ export class FlowBuilderComponent {
     } catch { }
     // Initial update
     this.updateZoomDisplay();
+    // iOS/Safari: ensure first paint applies HTML transforms
+    try { setTimeout(() => { this.forceViewRefresh('afterViewInit'); }, 0); } catch {}
 
     // Attach global capture listeners for marquee selection to preempt vflow pan/zoom
     try {
       const host = this.flowHost?.nativeElement;
-      if (host) {
+      // Skip installing global capture listeners on touch/coarse pointers (mobile/tablet)
+      const isCoarse = (() => { try { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch { return false; } })();
+      if (host && !isCoarse) {
         this.canvasGlobalDown = (ev: PointerEvent) => {
           try {
+            // Handle mouse only; ignore touch/pen to avoid mobile interference
+            const pt: any = (ev as any).pointerType;
+            if (pt && pt !== 'mouse') return;
             const inside = host.contains(ev.target as Node);
             const ctrl = !!ev.ctrlKey, meta = !!ev.metaKey, alt = !!ev.altKey;
             const isRight = ev.button === 2;
@@ -866,6 +881,7 @@ export class FlowBuilderComponent {
         };
         this.canvasGlobalMove = (ev: PointerEvent) => {
           try {
+            const pt: any = (ev as any).pointerType; if (pt && pt !== 'mouse') return;
             if (!this.selectionBoxStart) return;
             if (!host.contains(ev.target as Node)) return;
             ev.preventDefault(); ev.stopPropagation();
@@ -908,6 +924,7 @@ export class FlowBuilderComponent {
         };
         this.canvasGlobalUp = (ev: PointerEvent) => {
           try {
+            const pt: any = (ev as any).pointerType; if (pt && pt !== 'mouse') return;
             const hadStart = !!this.selectionBoxStart;
             if (!hadStart) return;
             if (!host.contains(ev.target as Node)) return;
@@ -955,9 +972,46 @@ export class FlowBuilderComponent {
     try {
       // Consider coarse pointer or small viewport as mobile
       const coarse = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
-      const small = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
+      const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
+      const small = width <= 768;
       this.isMobile = coarse || small;
+      // Treat widths below a "large desktop" as tablet-or-below to avoid grid on 1281..1535px tablets
+      const isDesktop = (width >= 1536) && !coarse;
+      const flag = !isDesktop;
+      this.isTabletOrBelow = flag;
+      // Normalize panel states when crossing the breakpoint to avoid double-tap feeling
+      if (flag !== this.lastTabletFlag) {
+        if (flag) { this.leftPanelOpen = false; this.rightPanelOpen = false; }
+        // Always close drawers when leaving small to large to reset UX
+        if (!flag) { this.leftDrawer = false; this.rightDrawer = false; }
+        this.lastTabletFlag = flag;
+      }
+      if (this.isMobile) {
+        try { setTimeout(() => this.forceViewRefresh('mobile-viewport-change'), 0); } catch {}
+      }
     } catch { this.isMobile = false; }
+  }
+
+  // Unified toggle handlers for FABs
+  toggleLeftPanel() {
+    try {
+      if (this.isTabletOrBelow) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false; // ensure desktop panels are closed
+        this.openMobilePanel('left');
+      } else {
+        this.leftPanelOpen = !this.leftPanelOpen;
+      }
+    } catch {}
+  }
+  toggleRightPanel() {
+    try {
+      if (this.isTabletOrBelow) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false; // ensure desktop panels are closed
+        this.openMobilePanel('right');
+      } else {
+        this.rightPanelOpen = !this.rightPanelOpen;
+      }
+    } catch {}
   }
 
 
@@ -1176,6 +1230,8 @@ export class FlowBuilderComponent {
     }
     this.pushState('drop.node');
     this.recomputeValidation();
+    // Mobile fix: force refresh to apply HTML node transform after drop
+    try { if (this.isMobile) setTimeout(() => this.forceViewRefresh('drop-node-mobile'), 0); } catch {}
   }
   private normalizeTemplate(t: any) { return this.fbUtils.normalizeTemplate(t); }
   private computeDropPoint(ev: any) {
@@ -1426,6 +1482,8 @@ export class FlowBuilderComponent {
       this.pushState('palette.click.add');
       this.recomputeValidation();
     }
+    // Mobile fix: nudge Vflow HTML node positioning after node insertion
+    try { if (this.isMobile) setTimeout(() => this.forceViewRefresh('palette-add-mobile'), 0); } catch {}
   }
   // (removed) delegation handler
   // findBestSourceNode now provided by FlowBuilderUtilsService
@@ -1768,7 +1826,27 @@ export class FlowBuilderComponent {
   onNodeTouchEnd() {
     if (!this.isMobile) return;
     try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch { }
-    this.lpTimer = null; this.lpTarget = null; this.lpFired = false;
+    this.lpTimer = null;
+    // If long-press already fired, do nothing further
+    const now = Date.now();
+    const dx = Math.abs(this.lpCurX - this.lpStartX);
+    const dy = Math.abs(this.lpCurY - this.lpStartY);
+    const isTap = dx <= this.lpMoveThresh && dy <= this.lpMoveThresh;
+    if (!this.lpFired && isTap) {
+      if (now - this.lastTapAt <= this.dtThresh) {
+        const node = this.lpTarget;
+        this.lastTapAt = 0;
+        this.lpTarget = null; this.lpFired = false;
+        if (node) {
+          // Open configuration dialog on double-tap
+          try { this.zone.run(() => { this.selectItem(node); this.openAdvancedEditor(); }); } catch {}
+          return;
+        }
+      } else {
+        this.lastTapAt = now;
+      }
+    }
+    this.lpTarget = null; this.lpFired = false;
   }
   onNodeDoubleClick(ev: MouseEvent, node: any) {
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
@@ -3541,6 +3619,8 @@ export class FlowBuilderComponent {
   // Right-click drag selection box on canvas (outside nodes)
   onCanvasMouseDown(ev: MouseEvent) {
     try {
+      // Only start marquee via mouse on desktop (ignore touch)
+      const anyEv: any = ev as any; if (anyEv?.pointerType && anyEv.pointerType !== 'mouse') return;
       const ctrl = !!ev.ctrlKey;
       const isRight = ev.button === 2;
       if (!ctrl && !isRight) return;
