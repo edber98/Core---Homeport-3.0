@@ -199,80 +199,16 @@
   <!-- Reusable right panel content (desktop + drawer) -->
   <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
   <div class="right-panel" *ngIf="!isMobile" [class.closed]="!rightPanelOpen">
-    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+    <flow-right-panel [mode]="'outside'"
+      [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()"
-      (saveJson)="saveSelectedJson()"></flow-inspector-panel>
-    <div class="inspector-meta" style="padding: 8px; overflow: auto;">
-      <form nz-form nzLayout="vertical" class="meta-form">
-        <nz-form-item>
-          <nz-form-label>Nom</nz-form-label>
-          <nz-form-control>
-            <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="onMetaChange()" name="flowName" placeholder="Nom du flow" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Description</nz-form-label>
-          <nz-form-control>
-            <input nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="onMetaChange()" name="flowDesc" placeholder="Description" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Exécution</nz-form-label>
-          <nz-form-control>
-            <div class="exec-row">
-              <nz-select [(ngModel)]="builderMode" name="builderMode" nzPlaceHolder="Mode">
-                <nz-option nzValue="test" nzLabel="test"></nz-option>
-                <nz-option nzValue="prod" nzLabel="prod"></nz-option>
-              </nz-select>
-              <button nz-button class="apple-btn icon-only" nzType="primary" type="button" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-                <i class="fa-solid fa-play"></i>
-              </button>
-              <button nz-button class="apple-btn icon-only" type="button" (click)="stopLastRun()" title="Stop" aria-label="Stop">
-                <i class="fa-solid fa-stop"></i>
-              </button>
-            </div>
-            <div class="status mono" title="Dernier / En cours">
-              <div>Dernier: {{ lastRun?.status || '—' }}</div>
-              <div>En cours: {{ currentRun?.status || '—' }}</div>
-            </div>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Publication</nz-form-label>
-          <nz-form-control>
-            <div class="pub-row">
-              <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="onMetaChange()" name="flowStatus" nzPlaceHolder="Statut">
-                <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
-                <nz-option nzValue="test" nzLabel="test"></nz-option>
-                <nz-option nzValue="production" nzLabel="production"></nz-option>
-              </nz-select>
-              <button nz-button class="apple-btn icon-only" nzType="default" type="button" (click)="saveFlow()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
-                <i class="fa-solid fa-floppy-disk"></i>
-              </button>
-            </div>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>En service</nz-form-label>
-          <nz-form-control>
-            <label class="enabled single-line">
-              <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="onMetaChange()" name="flowEnabled" />
-              <span>Activer ce flow</span>
-            </label>
-          </nz-form-control>
-        </nz-form-item>
-      </form>
-
-      <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
-        (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
-        (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
-        (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
-    </div>
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
+      [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
+      (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()"
+      [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
+      (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
+    ></flow-right-panel>
   </div>
   <button nz-button nzSize="small" class="panel-toggle-fab" type="button"
     (click)="toggleRightPanel()"
@@ -432,18 +368,15 @@
 <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <div class="right-panel drawer-mode">
-      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
-        [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()"
-        (saveJson)="saveSelectedJson()"></flow-inspector-panel>
-      <div style="padding: 8px; overflow: auto;">
-
-        <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
-          (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
-          (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
-          (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
-      </div>
-    </div>
+    <flow-right-panel [mode]="'drawer'"
+      [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+      [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
+      [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
+      (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()"
+      [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
+      (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
+    ></flow-right-panel>
   </ng-container>
 </nz-drawer>

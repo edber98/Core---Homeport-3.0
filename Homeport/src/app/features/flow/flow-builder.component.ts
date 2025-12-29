@@ -31,6 +31,7 @@ import { FlowPathHighlightService } from '../../services/flow-path-highlight.ser
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
+import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { environment } from '../../../environments/environment';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
@@ -39,7 +40,7 @@ import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent, NodeCardHeaderComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
