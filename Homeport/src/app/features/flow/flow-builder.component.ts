@@ -2390,7 +2390,8 @@ export class FlowBuilderComponent {
       // After duplicate (single), select only the new node and clear any previous selection
       this.selectionList = [vNode as any];
       this.selection = vNode as any;
-      try { setTimeout(() => this.setVflowSelectedIds([newId]), 0); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry([newId]); } catch {}
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
       this.history.push(this.snapshot());
       this.recomputeValidation();
@@ -2493,7 +2494,8 @@ export class FlowBuilderComponent {
       // Select newly created nodes
       this.selectionList = newNodes;
       this.selection = newNodes[0] || null;
-      try { setTimeout(() => this.setVflowSelectedIds(newNodes.map(n => n.id)), 0); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry(newNodes.map(n => n.id)); } catch {}
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
       this.pushState('duplicate.group');
       this.recomputeValidation();
@@ -4023,10 +4025,22 @@ export class FlowBuilderComponent {
     if (isInput) return;
     const cmd = ev.metaKey || ev.ctrlKey;
     if (cmd) {
-      if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
+      const key = ev.key.toLowerCase();
+      if (key === 'c') {
+        if (this.hasSelection()) { ev.preventDefault(); this.copySelection(false); }
+        return;
+      }
+      if (key === 'x') {
+        if (this.hasSelection()) { ev.preventDefault(); this.copySelection(true); }
+        return;
+      }
+      if (key === 'v') {
+        ev.preventDefault(); this.pasteFromClipboard(); return;
+      }
+      if (key === 'z' && !ev.shiftKey) {
         ev.preventDefault();
         this.undo();
-      } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
+      } else if ((key === 'z' && ev.shiftKey) || key === 'y') {
         ev.preventDefault();
         this.redo();
       }
@@ -4035,6 +4049,11 @@ export class FlowBuilderComponent {
     // Non-modifier shortcuts when canvas is hot/focused
     const k = ev.key.toLowerCase();
     if (this.canvasHot) {
+      // Alignment shortcuts for multi-selection
+      if ((this.selectionList?.length || 0) > 1) {
+        if (k === 'h') { ev.preventDefault(); try { this.ctxAlignSelection('horizontal'); } catch {} return; }
+        if (k === 'v') { ev.preventDefault(); try { this.ctxAlignSelection('vertical'); } catch {} return; }
+      }
       if (k === 'p') {
         ev.preventDefault();
         try {
@@ -4063,6 +4082,131 @@ export class FlowBuilderComponent {
       if ((this.selectionList || []).length > 1) { this.onDeleteMany(); }
       else { this.deleteSelected(); }
     }
+  }
+
+  private hasSelection(): boolean {
+    try { return !!(this.selection || (this.selectionList && this.selectionList.length)); } catch { return false; }
+  }
+  private selectionIds(): string[] {
+    try {
+      const list = Array.isArray(this.selectionList) && this.selectionList.length ? this.selectionList : (this.selection ? [this.selection] : []);
+      return list.map(n => String(n?.id)).filter(Boolean);
+    } catch { return []; }
+  }
+  private buildClipboardPayload(ids: string[]) {
+    const idSet = new Set(ids);
+    const nodes = (this.nodes || []).filter(n => idSet.has(String(n.id)));
+    const edges = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target)));
+    // Normalize payload to be portable between flows
+    const out = {
+      kind: 'homeport.flow.selection',
+      version: 1,
+      createdAt: Date.now(),
+      nodes: nodes.map(n => ({ id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data: n.data })),
+      edges: edges.map((e: any) => ({ id: String(e.id||''), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }))
+    } as any;
+    return out;
+  }
+  private async writeClipboardText(text: string) {
+    try { await navigator.clipboard.writeText(text); return true; } catch { try { localStorage.setItem('flow.clipboard', text); return true; } catch { return false; } }
+  }
+  private async readClipboardText(): Promise<string|null> {
+    try { const t = await navigator.clipboard.readText(); if (t && t.trim()) return t; } catch {}
+    try { const t = localStorage.getItem('flow.clipboard'); if (t && t.trim()) return t; } catch {}
+    return null;
+  }
+  async copySelection(cut = false) {
+    try {
+      const ids = this.selectionIds(); if (!ids.length) return;
+      const payload = this.buildClipboardPayload(ids);
+      const ok = await this.writeClipboardText(JSON.stringify(payload));
+      if (ok) {
+        try { this.message.success(cut ? 'Sélection coupée' : 'Sélection copiée'); } catch { this.showToast(cut ? 'Coupé' : 'Copié'); }
+        if (cut) {
+          if (ids.length > 1) this.onDeleteMany(); else this.deleteSelected();
+        }
+      } else {
+        try { this.message.error('Impossible de copier'); } catch { this.showToast('Copie impossible'); }
+      }
+    } catch {}
+  }
+  async pasteFromClipboard() {
+    try {
+      const text = await this.readClipboardText();
+      if (!text) { try { this.message.warning('Presse-papiers vide'); } catch {} return; }
+      let data: any = null; try { data = JSON.parse(text); } catch {}
+      if (!data || data.kind !== 'homeport.flow.selection' || !Array.isArray(data.nodes)) { try { this.message.warning('Contenu presse-papiers non reconnu'); } catch {} return; }
+      const srcNodes: any[] = data.nodes || [];
+      const srcEdges: any[] = Array.isArray(data.edges) ? data.edges : [];
+      // Compute offset: shift pasted selection by 60,60 or center if empty canvas
+      const dx = 60, dy = 60;
+      // Build id map and create nodes
+      const idMap = new Map<string,string>();
+      const usedCondIds = this.collectAllConditionHandleIds();
+      const condHandleMap = new Map<string, Map<string,string>>();
+      const newNodes: any[] = [];
+      for (const n of srcNodes) {
+        const tpl = n?.data?.model?.templateObj;
+        if (this.isStartLike(tpl)) continue; // never paste start-like duplicates
+        const newId = this.generateNodeId(tpl, n?.data?.model?.name || tpl?.name || tpl?.title);
+        idMap.set(String(n.id), newId);
+        const oldM = n?.data?.model || {};
+        const m = JSON.parse(JSON.stringify(oldM || {}));
+        m.id = newId;
+        // Condition branch id remap
+        try {
+          const tt = m?.templateObj?.type;
+          if (tt === 'condition') {
+            const field = m?.templateObj?.output_array_field || 'items';
+            const arr = (m?.context && Array.isArray(m.context[field])) ? m.context[field] : [];
+            const oldArr = (oldM?.context && Array.isArray(oldM.context[field])) ? oldM.context[field] : [];
+            const map = new Map<string,string>();
+            for (const it of arr) {
+              if (it && typeof it === 'object') {
+                let cid = '';
+                do { cid = 'cid_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(cid));
+                const idx = arr.indexOf(it);
+                const old = String(oldArr?.[idx]?._id || ''); if (old) map.set(old, cid);
+                it._id = cid; usedCondIds.add(cid);
+              }
+            }
+            if (m?.context?.else && m.context.else._id) {
+              let eid = '';
+              do { eid = 'else_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(eid));
+              const oldElse = (oldM?.context?.else && oldM.context.else._id) ? String(oldM.context.else._id) : '';
+              if (oldElse) map.set(oldElse, eid);
+              m.context.else._id = eid; usedCondIds.add(eid);
+            }
+            condHandleMap.set(String(n.id), map);
+          }
+        } catch {}
+        const p = n?.point || { x:0, y:0 };
+        const vNode = { id: newId, point: { x: p.x + dx, y: p.y + dy }, type: n.type, data: { ...n.data, model: m } };
+        newNodes.push(vNode);
+      }
+      if (newNodes.length) this.nodes = [...this.nodes, ...newNodes];
+      // Edges
+      const newEdges: any[] = [];
+      for (const e of srcEdges) {
+        const s = String(e.source||''); const t = String(e.target||'');
+        const ns = idMap.get(s); const nt = idMap.get(t);
+        if (!ns || !nt) continue;
+        const ne = JSON.parse(JSON.stringify(e));
+        ne.source = ns; ne.target = nt;
+        const map = condHandleMap.get(s);
+        if (map && ne.sourceHandle && map.get(String(ne.sourceHandle))) ne.sourceHandle = map.get(String(ne.sourceHandle));
+        try { const sh = String(ne.sourceHandle||''); const th = String(ne.targetHandle||''); ne.id = `${ne.source}->${ne.target}:${sh}:${th}`; } catch {}
+        newEdges.push(ne);
+      }
+      if (newEdges.length) this.edges = [...this.edges, ...newEdges];
+      // Select pasted nodes and push history
+      this.selectionList = newNodes; this.selection = newNodes[0] || null;
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry(newNodes.map(n => n.id)); } catch {}
+      this.pushState('paste.group');
+      this.recomputeValidation();
+      try { this.message.success(`Collé (${newNodes.length} nœuds)`); } catch { this.showToast('Collé'); }
+    } catch {}
   }
 
   private snapshot() {
@@ -4329,6 +4473,16 @@ export class FlowBuilderComponent {
         } catch {}
       }
     } catch {}
+  }
+  // Ensure Vflow reflects selection even if view updates are pending
+  private selectIdsWithRetry(ids: string[], attempts = 4, delay = 50) {
+    try { this.setVflowSelectedIds(ids); } catch {}
+    let left = Math.max(0, attempts - 1);
+    const tick = () => {
+      try { this.setVflowSelectedIds(ids); } catch {}
+      if (left-- > 0) setTimeout(tick, delay);
+    };
+    setTimeout(tick, delay);
   }
   toggleMarqueeMode() {
     try {
