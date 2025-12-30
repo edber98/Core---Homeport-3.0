@@ -21,7 +21,9 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "zoom_create_meeting", "name": "zoomCreateMeeting", "title": "Créer une réunion", "type": "function", "category": "Zoom", "providerKey": "zoom", "output": ["Success"],
+    { "key": "zoom_create_meeting", "name": "zoomCreateMeeting", "title": "Créer une réunion", "type": "function", "nodeKind": "function", "category": "Zoom", "providerKey": "zoom",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer une réunion Zoom", "args": { "title": "Créer une réunion", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"topic","label":"Sujet","col":{"xs":24}},
         {"type":"select","key":"type","label":"Type","col":{"xs":24},"options":[{"label":"Planifiée","value":2},{"label":"Instantanée","value":1}]},

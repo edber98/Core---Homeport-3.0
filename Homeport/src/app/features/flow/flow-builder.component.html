@@ -78,7 +78,7 @@
                 ></node-card-header>
               </div>
           
-              <ng-container *ngIf="(ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
+              <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
                 <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
                   <div class="in" *ngFor="let ih of ins; let i = index">
                     <ng-template #ihTpl let-hctx>
@@ -86,7 +86,13 @@
                       
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
+                        [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, ih.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
+                        [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        (mouseenter)="onTargetEnter($event, hctx.state() === 'valid')"
+                        (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                        (mouseleave)="onTargetLeave()"
+                      ></svg:circle>
                     </svg:g>
                     </ng-template>
                     <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">
@@ -101,13 +107,19 @@
                 </div>
               </ng-container>
               <ng-template #singleIn>
-                <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+                <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj)">
+                  <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
                   <ng-template #handleInTpl let-hctx>
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
-                        stroke-width="1"></svg:circle>
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" 
+                        [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, inId) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
+                        [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        (mouseenter)="onTargetEnter($event, hctx.state() === 'valid')"
+                        (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                        (mouseleave)="onTargetLeave()"
+                      ></svg:circle>
                     </svg:g>
                   </ng-template>
                   <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
@@ -119,6 +131,7 @@
                       <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
                     </div>
                   </ng-template>
+                  </ng-container>
                 </ng-container>
               </ng-template>
               <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
@@ -127,12 +140,13 @@
         
                   <ng-template #hTpl let-hctx>
                     <svg:g>
-                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
-                        [attr.stroke]="'#ffffff'" stroke-width="1"
-                        (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
-                        (mouseleave)="onHandleLeave()"></svg:circle>
+                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                      [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                      [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                      (pointerdown)="onConnectStartFrom(ctx.node.id, out)"
+                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onHandleLeave()"></svg:circle>
                     </svg:g>
                   </ng-template>
                   <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
@@ -153,7 +167,11 @@
                   <svg:g>
                     <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                       [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                      [attr.fill]="'#111'" [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, lh.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                      (mouseenter)="onTargetEnter($event, hctx.state() === 'valid')"
+                      (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                      (mouseleave)="onTargetLeave()"
+                    ></svg:circle>
                   </svg:g>
                 </ng-template>
                 <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
@@ -192,6 +210,9 @@
       <!-- lightweight tooltip overlay -->
       <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY"
         [ngClass]="{ error: tipError }">{{ tipText }}</div>
+      <div class="ban-overlay" *ngIf="banVisible" [style.left.px]="banX" [style.top.px]="banY" title="Connexion invalide">
+        <i class="fa-solid fa-ban" style="color:#ef4444;"></i>
+      </div>
     </div>
   </section>
 

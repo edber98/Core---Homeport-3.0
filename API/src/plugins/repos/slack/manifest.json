@@ -21,19 +21,25 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "slack_post_message", "name": "slackPostMessage", "title": "Publier un message", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+    { "key": "slack_post_message", "name": "slackPostMessage", "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Publier un message dans un canal ou DM", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channel","label":"Canal/DM","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}},
         {"type":"textarea","key":"blocks","label":"Blocs (JSON)","col":{"xs":24},"default":"[]"}
       ] } },
-    { "key": "slack_reply_in_thread", "name": "slackReplyInThread", "title": "Répondre dans un fil", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+    { "key": "slack_reply_in_thread", "name": "slackReplyInThread", "title": "Répondre dans un fil", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Répondre dans un fil", "args": { "title": "Fil", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channel","label":"Canal","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"threadTs","label":"TS du fil","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}}
       ] } },
-    { "key": "slack_upload_file", "name": "slackUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "Slack", "providerKey": "slack", "output": ["Success"],
+    { "key": "slack_upload_file", "name": "slackUploadFile", "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Téléverser un fichier sur Slack", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channels","label":"Canaux (séparés par des virgules)","col":{"xs":24}},
         {"type":"text","key":"filename","label":"Nom de fichier","col":{"xs":24}},

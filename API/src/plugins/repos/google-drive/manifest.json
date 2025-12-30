@@ -10,23 +10,31 @@
     { "key": "googleSheets", "name": "Google Sheets", "title": "Google Sheets", "iconClass": "fa-brands fa-google", "color": "#34A853", "tags": ["sheets"], "categories": ["Docs & Drive"], "hasCredentials": true }
   ],
   "nodeTemplates": [
-    { "key": "gdrive_upload_file", "name": "gdriveUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "Google Drive", "providerKey": "googleDrive", "output": ["Success"],
+    { "key": "gdrive_upload_file", "name": "gdriveUploadFile", "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "Google Drive", "providerKey": "googleDrive",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any","file"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Téléverser un fichier vers Drive", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"name","label":"Nom","col":{"xs":24}},
         {"type":"text","key":"mimeType","label":"Type MIME","col":{"xs":24},"default":"application/octet-stream"},
         {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
       ] } },
-    { "key": "gdrive_share_link", "name": "gdriveShareLink", "title": "Créer un lien de partage", "type": "function", "category": "Google Drive", "providerKey": "googleDrive", "output": ["Success"],
+    { "key": "gdrive_share_link", "name": "gdriveShareLink", "title": "Créer un lien de partage", "type": "function", "nodeKind": "function", "category": "Google Drive", "providerKey": "googleDrive",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any","file"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer ou récupérer un lien partageable", "args": { "title": "Partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"fileId","label":"ID du fichier","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"select","key":"role","label":"Rôle","col":{"xs":24},"options":[{"label":"lecteur","value":"reader"},{"label":"éditeur","value":"writer"}],"default":"reader"}
       ] } },
-    { "key": "gdocs_create_doc", "name": "gdocsCreateDoc", "title": "Créer un document", "type": "function", "category": "Google Docs", "providerKey": "googleDocs", "output": ["Success"],
+    { "key": "gdocs_create_doc", "name": "gdocsCreateDoc", "title": "Créer un document", "type": "function", "nodeKind": "function", "category": "Google Docs", "providerKey": "googleDocs",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer un document Google", "args": { "title": "Créer un document", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"title","label":"Titre","col":{"xs":24}},
         {"type":"textarea","key":"body","label":"Corps (texte brut)","col":{"xs":24}}
       ] } },
-    { "key": "gsheets_append_rows", "name": "gsheetsAppendRows", "title": "Ajouter des lignes", "type": "function", "category": "Google Sheets", "providerKey": "googleSheets", "output": ["Success"],
+    { "key": "gsheets_append_rows", "name": "gsheetsAppendRows", "title": "Ajouter des lignes", "type": "function", "nodeKind": "function", "category": "Google Sheets", "providerKey": "googleSheets",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Ajouter des lignes à une feuille", "args": { "title": "Ajout", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"spreadsheetId","label":"ID du classeur","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"range","label":"Plage (ex. Feuille1!A1)","col":{"xs":24}},

@@ -164,7 +164,7 @@
       "type": "start_form",
       "category": "Core",
       "icon": "fa-solid fa-clipboard-list",
-      "output": [],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
       "description": "Démarre le flow via un formulaire public ou authentifié"
     },
     {
@@ -174,7 +174,7 @@
       "subtitle": "Trigger",
       "type": "start",
       "category": "Core",
-      "output": [],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
       "description": "Point d'entrée du flow"
     },
     {
@@ -204,7 +204,8 @@
             "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 },
             "grid": { "gutter": 16 },
             "ui": { "layout": "vertical" }
-          }
+          },
+          { "type": "checkbox", "key": "else_enabled", "label": "Activer Else", "col": { "xs": 24 }, "default": false }
         ]
       },
       "authorize_catch_error": false,

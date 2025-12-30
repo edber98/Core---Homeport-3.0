@@ -46,9 +46,8 @@
       "type": "function",
       "category": "GitHub",
       "providerKey": "github",
-      "output": [
-        "Success"
-      ],
+      "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
       "description": "Créer une issue GitHub",
       "args": {
         "title": "Créer une issue",
@@ -143,9 +142,8 @@
       "type": "function",
       "category": "GitHub",
       "providerKey": "github",
-      "output": [
-        "Success"
-      ],
+      "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
       "description": "Ajouter un commentaire à une issue GitHub",
       "args": {
         "title": "Ajouter un commentaire",

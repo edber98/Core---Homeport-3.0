@@ -40,7 +40,9 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "gcal_create_event", "name": "gcalCreateEvent", "title": "Créer un événement", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
+    { "key": "gcal_create_event", "name": "gcalCreateEvent", "title": "Créer un événement", "type": "function", "nodeKind": "function", "category": "Google Agenda", "providerKey": "googleCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer un événement d’agenda (Google)", "args": { "title": "Créer un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"summary","label":"Titre","col":{"xs":24}},
@@ -48,13 +50,17 @@
         {"type":"datetime","key":"end","label":"Fin","col":{"xs":24}},
         {"type":"checkbox","key":"meetLink","label":"Ajouter un lien Google Meet","col":{"xs":24},"default":true}
       ] } },
-    { "key": "gcal_update_event", "name": "gcalUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
+    { "key": "gcal_update_event", "name": "gcalUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "nodeKind": "function", "category": "Google Agenda", "providerKey": "googleCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Mettre à jour un événement d’agenda", "args": { "title": "Mettre à jour un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"patch","label":"Patch (JSON)","col":{"xs":24},"default":"{}"}
       ] } },
-    { "key": "gcal_rsvp_event", "name": "gcalRsvpEvent", "title": "RSVP", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
+    { "key": "gcal_rsvp_event", "name": "gcalRsvpEvent", "title": "RSVP", "type": "function", "nodeKind": "function", "category": "Google Agenda", "providerKey": "googleCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Répondre (RSVP) à un événement", "args": { "title": "RSVP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
@@ -65,7 +71,9 @@
         {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/gcal"}
       ] } },
 
-    { "key": "outlook_create_event", "name": "outlookCreateEvent", "title": "Créer un événement", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
+    { "key": "outlook_create_event", "name": "outlookCreateEvent", "title": "Créer un événement", "type": "function", "nodeKind": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer un événement Outlook", "args": { "title": "Créer un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"subject","label":"Sujet","col":{"xs":24}},
@@ -73,13 +81,17 @@
         {"type":"datetime","key":"end","label":"Fin","col":{"xs":24}},
         {"type":"checkbox","key":"teamsMeeting","label":"Ajouter une réunion Teams","col":{"xs":24},"default":true}
       ] } },
-    { "key": "outlook_update_event", "name": "outlookUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
+    { "key": "outlook_update_event", "name": "outlookUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "nodeKind": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Mettre à jour un événement Outlook", "args": { "title": "Mettre à jour un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"patch","label":"Patch (JSON)","col":{"xs":24},"default":"{}"}
       ] } },
-    { "key": "outlook_rsvp_event", "name": "outlookRsvpEvent", "title": "RSVP", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
+    { "key": "outlook_rsvp_event", "name": "outlookRsvpEvent", "title": "RSVP", "type": "function", "nodeKind": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Répondre (RSVP) à un événement Outlook", "args": { "title": "RSVP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
         {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},

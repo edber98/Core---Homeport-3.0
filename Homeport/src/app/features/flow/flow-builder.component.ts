@@ -761,7 +761,12 @@ export class FlowBuilderComponent {
       this.currentFlowStatus = draft.status || this.currentFlowStatus;
       this.currentFlowEnabled = !!draft.enabled;
       if (draft.portOrientation === 'horizontal' || draft.portOrientation === 'vertical') this.portOrientation = draft.portOrientation;
-      if (typeof draft.alignmentHelper === 'boolean') this.alignmentHelper = !!draft.alignmentHelper;
+      if (typeof draft.alignmentHelper === 'boolean') this.alignmentHelper = draft.alignmentHelper ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+      else if (draft.alignmentHelper && typeof draft.alignmentHelper === 'object') {
+        const tol = Number((draft.alignmentHelper as any).tolerance);
+        const col = String((draft.alignmentHelper as any).lineColor || '#D1D5DB');
+        this.alignmentHelper = { tolerance: isFinite(tol) && tol > 0 ? tol : 6, lineColor: col };
+      }
       if (Array.isArray(draft.snapGrid) && draft.snapGrid.length === 2) this.snapGrid = [Number(draft.snapGrid[0]), Number(draft.snapGrid[1])] as any;
       this.nodes = (draft.nodes || []) as any[];
       this.edges = (draft.edges || []) as any;
@@ -935,6 +940,8 @@ export class FlowBuilderComponent {
         this.canvasGlobalUp = (ev: PointerEvent) => {
           try {
             const pt: any = (ev as any).pointerType; if (pt && pt !== 'mouse') return;
+            // End any ongoing connect gesture
+            try { this.onConnectEnd(); } catch {}
             const hadStart = !!this.selectionBoxStart;
             if (!hadStart) return;
             if (!host.contains(ev.target as Node)) return;
@@ -1220,6 +1227,12 @@ export class FlowBuilderComponent {
     if (Array.isArray(tmpl.inputHandles) && tmpl.inputHandles.length) return String(tmpl.inputHandles[0].id || 'in');
     return 'in';
   }
+  isTriggerTemplate(tmpl: any): boolean {
+    try {
+      const ty = String((tmpl && tmpl.type) || '').toLowerCase();
+      return ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint';
+    } catch { return false; }
+  }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
@@ -1292,7 +1305,22 @@ export class FlowBuilderComponent {
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: preCtx ? { ...preCtx } : {},
+      context: (() => {
+        const base = preCtx ? { ...preCtx } : {};
+        try {
+          const ty = String(templateObj?.type || '').toLowerCase();
+          if (ty === 'condition') {
+            const field = String((templateObj as any)?.output_array_field || 'items');
+            const arr = Array.isArray((base as any)[field]) ? (base as any)[field] : [];
+            if (arr.length === 0) {
+              // Initialize with a single default branch and a stable id
+              const cid = 'cid_' + Math.random().toString(36).slice(2);
+              (base as any)[field] = [{ _id: cid, name: 'Condition 1', condition: '' }];
+            }
+          }
+        } catch {}
+        return base;
+      })(),
       templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
       templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
@@ -2392,7 +2420,7 @@ export class FlowBuilderComponent {
           const currentFeat = this.fbUtils.featureChecksum(currentTpl);
           if (storedFeat && currentFeat && storedFeat !== currentFeat) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (options). Vérifier ce nœud.` });
         } catch { }
-        // Credentials and form validation
+        // Credentials and form validation + condition-specific checks
         try {
           const model: any = n?.data?.model || {};
           if (model?.invalid === true) {
@@ -2426,6 +2454,34 @@ export class FlowBuilderComponent {
               .map((f: any) => f.label || f.key || 'Champ requis');
             if (missing.length) issues.push({ kind: 'node', nodeId: id, message: `Champs requis manquants: ${missing.join(', ')}` });
           }
+          // Condition-specific validation: array of items with name + expression/condition
+          try {
+            const ttype = String(model?.templateObj?.type || '').toLowerCase();
+            if (ttype === 'condition') {
+              const field = String(model?.templateObj?.output_array_field || 'items');
+              const arr: any[] = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+              if (!Array.isArray(arr) || arr.length === 0) {
+                issues.push({ kind: 'node', nodeId: id, message: `Condition: aucune branche définie (ajoutez au moins une condition).` });
+              } else {
+                arr.forEach((it, idx) => {
+                  const num = idx + 1;
+                  if (!it || typeof it !== 'object') {
+                    issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: élément invalide` });
+                    return;
+                  }
+                  const name = String(it.name || '').trim();
+                  const expr = String((it.expression ?? it.condition) || '').trim();
+                  if (!name) issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: nom manquant` });
+                  if (!expr) issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: expression manquante` });
+                });
+              }
+              // Else optional: if present, must have an id
+              const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : '');
+              if (model?.context?.else || model?.context?.elseId) {
+                if (!elseId) issues.push({ kind: 'node', nodeId: id, message: `Condition: "Else" activé sans identifiant (_id) — impossible de le relier.` });
+              }
+            }
+          } catch {}
         } catch { }
         // TODO: required-fields validation, only after node dialog opened at least once
         // if (this.openedNodeConfig.has(id)) { ... }
@@ -2640,23 +2696,30 @@ export class FlowBuilderComponent {
   }
   closeAdvancedEditor() { this.advancedOpen = false; }
   onAdvancedModelChange(m: any) {
-    // Apply the model to the selected node and refresh
+    // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
+    // Appliquer uniquement à la clôture (onAdvancedModelCommitted) ou via saveSelectedJson.
     if (!m?.id) return;
-    const oldModel = (this.nodes.find(n => n.id === this.selection?.id)?.data?.model) || this.selectedModel;
-    this.nodes = this.nodes.map(n => n.id === this.selection?.id ? ({ ...n, data: { ...n.data, model: m } }) : n);
-    this.selection = this.nodes.find(n => n.id === m.id) || this.selection;
-    // Stabilize condition ids then reconcile edges
-    const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
-    const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
-    this.edges = res.edges as any;
-    // Ne pas pousser dans l’historique ici; on attend l’événement "committed"
-    this.recomputeValidation();
+    try { this.advancedCtx = m?.context || this.advancedCtx; } catch {}
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
     try { this.openedNodeConfig.add(String(m.id)); } catch { }
+    // Normalize else_enabled and stabilize
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
+    try {
+      const ty = String(m?.templateObj?.type || '').toLowerCase();
+      if (ty === 'condition') {
+        const en = !!(m?.context?.else_enabled);
+        if (en) {
+          const cur = (m.context || {});
+          const has = cur.else && typeof cur.else === 'object' && cur.else._id;
+          if (!has) { m.context = { ...cur, else: { _id: `else_${m.id}` } }; }
+        } else { if (m?.context) { delete m.context.else; delete (m.context as any).elseId; } }
+      }
+    } catch {}
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    // Persist stabilized model on node
+    this.nodes = this.nodes.map(n => n.id === stable.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     if (res.deletedEdgeIds?.length) {
       res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
@@ -2675,6 +2738,18 @@ export class FlowBuilderComponent {
       if (!parsed || !parsed.id) return;
       // Remplace le model du nœud dans la liste pour déclencher le re-render
       const oldModel = (this.nodes.find(n => n.id === this.selection!.id)?.data?.model) || this.selectedModel;
+      // Normalize else_enabled for conditions then stabilize
+      try {
+        const ty = String(parsed?.templateObj?.type || '').toLowerCase();
+        if (ty === 'condition') {
+          const en = !!(parsed?.context?.else_enabled);
+          if (en) {
+            const cur = (parsed.context || {});
+            const has = cur.else && typeof cur.else === 'object' && cur.else._id;
+            if (!has) { parsed.context = { ...cur, else: { _id: `else_${parsed.id}` } }; }
+          } else { if (parsed?.context) { delete parsed.context.else; delete (parsed.context as any).elseId; } }
+        }
+      } catch {}
       const stable = this.fbUtils.ensureStableConditionIds(oldModel, parsed);
       this.nodes = this.nodes.map(n => n.id === this.selection!.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
       // Met à jour la sélection en mémoire
@@ -3677,6 +3752,40 @@ export class FlowBuilderComponent {
   }
   onHandleLeave() { this.tipVisible = false; }
 
+  // Invalid-connect overlay (ban) UX
+  connectingEdge = false;
+  private connectingSource: { nodeId: string; handleId: string } | null = null;
+  banVisible = false;
+  banX = 0;
+  banY = 0;
+  onConnectStartFrom(nodeId: string, handleId: string) {
+    try { this.connectingEdge = true; this.connectingSource = { nodeId: String(nodeId), handleId: String(handleId) }; } catch {}
+  }
+  onConnectEnd() {
+    try { this.connectingEdge = false; this.connectingSource = null; this.banVisible = false; } catch {}
+  }
+  onTargetEnter(ev: MouseEvent, isValid: boolean) {
+    try { if (this.connectingEdge && !isValid) { this.banVisible = true; this.onTargetMove(ev, isValid); } } catch {}
+  }
+  onTargetMove(ev: MouseEvent, isValid: boolean) {
+    try { if (this.connectingEdge && !isValid) { this.banX = ev.clientX + 12; this.banY = ev.clientY + 12; this.banVisible = true; } else { this.banVisible = false; } } catch {}
+  }
+  onTargetLeave() { try { this.banVisible = false; } catch {} }
+
+  // Compute preview validity while dragging from a source handle
+  canConnectPreview(targetNodeId: string, targetHandleId: string): boolean {
+    try {
+      if (!this.connectingEdge || !this.connectingSource) return false;
+      const c: Connection = {
+        source: this.connectingSource.nodeId,
+        sourceHandle: this.connectingSource.handleId,
+        target: String(targetNodeId),
+        targetHandle: String(targetHandleId)
+      } as any;
+      return this.validateConnection(c);
+    } catch { return false; }
+  }
+
   // Change handlers from ngx-vflow
   private posDebounceTimer: any;
   private draggingNodes = new Set<string>();
@@ -4148,26 +4257,78 @@ export class FlowBuilderComponent {
       return h?.type || 'any';
     } catch { return null; }
   }
+  private getHandleDef(nodeId: string, handleId: string, direction: 'source'|'target'): any | null {
+    try {
+      const n = this.nodes.find((nn: any) => String(nn.id) === String(nodeId));
+      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const arr = direction === 'source' ? (tpl.outputHandles || []) : (tpl.inputHandles || []);
+      const h = (arr as any[]).find((hh: any) => String(hh?.id) === String(handleId));
+      return h || null;
+    } catch { return null; }
+  }
   private validateConnection(c: Connection): boolean {
     try {
-      const sType = this.getHandleType(String(c.source), String(c.sourceHandle || ''), 'source') || 'any';
-      const tType = this.getHandleType(String(c.target), String(c.targetHandle || ''), 'target') || 'any';
-      // If either side is 'any', allow
-      if (sType === 'any' || tType === 'any') return true;
-      if (sType === tType) return true;
-      // Accepts list on input
-      const n = this.nodes.find((nn: any) => String(nn.id) === String(c.target));
+      const sourceId = String(c.source);
+      const targetId = String(c.target);
+      const sourceHandle = String(c.sourceHandle || '');
+      const targetHandle = String(c.targetHandle || '');
+
+      const sType = this.getHandleType(sourceId, sourceHandle, 'source') || 'any';
+
+      // Resolve target template and kind
+      const n = this.nodes.find((nn: any) => String(nn.id) === targetId);
       const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const nodeKind = String(tpl?.type || tpl?.nodeKind || '').toLowerCase();
+
+      // Triggers: never accept inputs (start / event / start_form / endpoint)
+      if (nodeKind === 'start' || nodeKind === 'start_form' || nodeKind === 'event' || nodeKind === 'endpoint') return false;
+
+      // Accepts list on input handle (primary path)
       let accepts: string[] = [];
-      const ih = (tpl.inputHandles || []).find((hh: any) => String(hh?.id) === String(c.targetHandle));
+      const ih = (tpl.inputHandles || []).find((hh: any) => String(hh?.id) === targetHandle);
       if (ih && Array.isArray((ih as any)?.accepts)) accepts = (ih as any).accepts;
+
+      // If no explicit input accepts, check linkedHandles for a match
       if (!accepts.length) {
-        // Try linkedHandles (v2): explicit target slots
         const links = Array.isArray((tpl as any).linkedHandles) ? (tpl as any).linkedHandles : [];
-        const lh = links.find((hh:any) => String(hh?.id) === String(c.targetHandle));
+        const lh = links.find((hh:any) => String(hh?.id) === targetHandle);
         if (lh && Array.isArray(lh.accepts)) accepts = lh.accepts;
       }
-      if (accepts.includes(sType)) return true;
+
+      // Default target 'in' with no explicit inputHandles: treat as accepts:any
+      if (!accepts.length && targetHandle === 'in' && !(Array.isArray(tpl.inputHandles) && tpl.inputHandles.length)) {
+        accepts = ['any'];
+      }
+
+      // Decision: allow if source is any OR target accepts any OR target accepts the source type
+      if (sType === 'any') return true;
+      if (accepts.includes('any')) return true;
+      if (accepts.includes(sType)) {
+        // Enforce multiplicity (fan-out/fan-in)
+        // Source multiplicity (outputHandles)
+        let sMultiple = true;
+        try { const sDef = this.getHandleDef(sourceId, sourceHandle, 'source'); sMultiple = (sDef?.multiple !== false); } catch {}
+        if (!sMultiple) {
+          const existingOut = (this.edges || []).filter(e => String(e.source) === sourceId && String(e.sourceHandle || '') === sourceHandle).length;
+          if (existingOut >= 1) return false;
+        }
+        // Target multiplicity (inputHandles or linkedHandles)
+        let tMultiple = true;
+        try {
+          const n = this.nodes.find((nn: any) => String(nn.id) === targetId);
+          const tpl2 = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+          const ih2 = (tpl2.inputHandles || []).find((hh: any) => String(hh?.id) === targetHandle);
+          const links2 = Array.isArray((tpl2 as any).linkedHandles) ? (tpl2 as any).linkedHandles : [];
+          const lh2 = links2.find((hh:any) => String(hh?.id) === targetHandle);
+          const def = ih2 || lh2;
+          if (def && def.multiple === false) tMultiple = false;
+        } catch {}
+        if (!tMultiple) {
+          const existingIn = (this.edges || []).filter(e => String(e.target) === targetId && String(e.targetHandle || '') === targetHandle).length;
+          if (existingIn >= 1) return false;
+        }
+        return true;
+      }
       return false;
     } catch { return false; }
   }

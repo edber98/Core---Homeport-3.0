@@ -165,9 +165,9 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
             <div class="row" *ngFor="let ctrl of inputHandles.controls; let i=index" [formGroup]="ctrl">
               <input nz-input formControlName="id" placeholder="id (ex: in, tools)" style="max-width:140px"/>
               <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <input nz-input formControlName="type" placeholder="Type (ex: any, ai_tool)" style="max-width:160px"/>
-              <input nz-input formControlName="accepts" placeholder="Accepts (CSV)" style="max-width:160px"/>
-              <label nz-checkbox formControlName="multiple">multiple</label>
+              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
+              <nz-select formControlName="accepts" [nzMode]="'multiple'" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:180px; max-width:260px"></nz-select>
+              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions entrantes vers ce handle">multiple</label>
               <button nz-button nzDanger (click)="removeInputHandle(i)"><i nz-icon nzType="delete"></i></button>
             </div>
             <button nz-button class="apple-btn" (click)="addInputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une entrée</span></button>
@@ -179,8 +179,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
             <div class="row" *ngFor="let ctrl of outputHandles.controls; let i=index" [formGroup]="ctrl">
               <input nz-input formControlName="id" placeholder="id (ex: ok, memory)" style="max-width:140px"/>
               <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <input nz-input formControlName="type" placeholder="Type (ex: any, ai_memory)" style="max-width:160px"/>
-              <label nz-checkbox formControlName="multiple">multiple</label>
+              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
+              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions sortantes depuis ce handle">multiple</label>
               <button nz-button nzDanger (click)="removeOutputHandle(i)"><i nz-icon nzType="delete"></i></button>
             </div>
             <button nz-button class="apple-btn" (click)="addOutputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
@@ -198,9 +198,9 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
             <div class="row" *ngFor="let ctrl of linkedHandles.controls; let i=index" [formGroup]="ctrl">
               <input nz-input formControlName="id" placeholder="id (ex: tools)" style="max-width:140px"/>
               <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <input nz-input formControlName="type" placeholder="Type accepté (ex: ai_tool)" style="max-width:160px"/>
-              <input nz-input formControlName="accepts" placeholder="Accepts (CSV)" style="max-width:160px"/>
-              <label nz-checkbox formControlName="multiple">multiple</label>
+              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
+              <nz-select formControlName="accepts" [nzMode]="'multiple'" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:180px; max-width:260px"></nz-select>
+              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs liens vers cette cible (link handle)">multiple</label>
               <button nz-button nzDanger (click)="removeLinkedHandle(i)"><i nz-icon nzType="delete"></i></button>
             </div>
             <button nz-button class="apple-btn" (click)="addLinkedHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter un link</span></button>
@@ -326,6 +326,9 @@ export class NodeTemplateEditorComponent implements OnInit {
   constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private modal: NzModalService) {}
 
   ngOnInit(): void {
+    // Known data types used for typed handles
+    this.knownTypes = ['any','payload','text','event','message','record','ai_tool','ai_memory','ai_image','ai_context','file','vector'];
+    this.knownTypeOptions = this.knownTypes.map(t => ({ label: t, value: t }));
     this.form = this.fb.group({
       id: new FormControl<string | null>(null),
       name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
@@ -410,6 +413,8 @@ export class NodeTemplateEditorComponent implements OnInit {
   addOutput(v: string = '') { this.outputs.push(this.fb.group({ value: this.fb.control(v, { nonNullable: true }) })); }
   removeOutput(i: number) { this.outputs.removeAt(i); }
 
+  public knownTypes: string[] = [];
+  public knownTypeOptions: Array<{ label: string; value: string }>= [];
   get inputHandles(): FormArray<FormGroup<any>> { return this.form.get('inputHandles') as any; }
   get outputHandles(): FormArray<FormGroup<any>> { return this.form.get('outputHandles') as any; }
   get linkedHandles(): FormArray<FormGroup<any>> { return this.form.get('linkedHandles') as any; }
@@ -481,11 +486,11 @@ export class NodeTemplateEditorComponent implements OnInit {
     }
     // v2 handles
     try {
-      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
+      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []), multiple: !!h.multiple }));
       this.outputHandles.clear();
       if (t.type !== 'condition') (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple }));
       this.linkedHandles.clear();
-      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []).join(','), multiple: !!h.multiple }));
+      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type, accepts: (h.accepts || []), multiple: !!h.multiple }));
     } catch {}
     this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
@@ -549,9 +554,10 @@ export class NodeTemplateEditorComponent implements OnInit {
     try { args = this.argsJson && this.argsJson.trim().length ? JSON.parse(this.argsJson) : {}; } catch { args = {}; }
     const generated = v.id || this.makeIdFromName(v.name);
     // Build v2 handles
-    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: (String(h.accepts||'').split(',').map((s:string)=>s.trim()).filter(Boolean)) }))
+    const toList = (val:any) => Array.isArray(val) ? val : String(val||'').split(',').map((s:string)=>s.trim()).filter(Boolean);
+    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: toList(h.accepts) }))
     const outHs = (this.outputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'ok', name: h.name || h.id || 'Ok', type: h.type || 'any', multiple: !!h.multiple }))
-    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: (String(h.accepts||'').split(',').map((s:string)=>s.trim()).filter(Boolean)) }))
+    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: toList(h.accepts) }))
     const tpl: NodeTemplate = {
       id: generated,
       // also store _id for external systems expecting it

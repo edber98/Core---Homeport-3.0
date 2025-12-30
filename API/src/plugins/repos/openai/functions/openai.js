@@ -138,6 +138,17 @@ module.exports = {
     const text = String(inputs.text || '').trim();
     return { ok: true, type: 'ai_memory', texts: text ? [text] : [] };
   },
+  // Memory merge: pass-through with optional dedupe
+  async openai_memory_merge(node, msg, inputs, opts) {
+    const arrs = [];
+    if (Array.isArray(inputs?.texts)) arrs.push(inputs.texts);
+    if (Array.isArray(inputs?.memory?.texts)) arrs.push(inputs.memory.texts);
+    if (Array.isArray(msg?.texts)) arrs.push(msg.texts);
+    const flat = ([]).concat(...arrs);
+    const dedupe = !!(node?.context?.dedupe);
+    const texts = dedupe ? Array.from(new Set(flat)) : flat;
+    return { ok: true, type: 'ai_memory', texts };
+  },
   // Tool define (LangChain-like tool descriptor)
   async openai_tool_define(node, msg, inputs, opts) {
     const name = String(inputs.name || '').trim();

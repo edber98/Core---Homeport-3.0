@@ -30,7 +30,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Cree un projet dans OpenProject.",
@@ -54,7 +54,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Liste tous les projets disponibles sur OpenProject.",
@@ -74,7 +74,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Ajoute une nouvelle tache a un projet OpenProject.",
@@ -104,7 +104,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Liste les utilisateurs OpenProject.",
@@ -124,7 +124,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Liste les taches OpenProject, avec filtres optionnels.",
@@ -147,7 +147,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Liste les statuts de taches OpenProject.",
@@ -167,7 +167,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Liste les types de taches OpenProject.",
@@ -187,7 +187,7 @@
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "authorize_skip_error": true,
       "description": "Modifie une tache existante dans OpenProject.",

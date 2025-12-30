@@ -31,7 +31,7 @@
       "category": "AI",
       "providerKey": "openai",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "json" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Générer une complétion de chat (messages System/User)",
       "args": {
         "title": "Chat Completion",
@@ -60,6 +60,25 @@
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
           { "type": "textarea", "key": "text", "label": "Texte de mémoire", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] }
+        ]
+      }
+    },
+    {
+      "key": "openai_memory_merge",
+      "name": "openaiMemoryMerge",
+      "title": "Memory (Merge)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [ { "id": "in", "name": "Memory", "type": "ai_memory", "accepts": ["ai_memory"] } ],
+      "outputHandles": [ { "id": "memory", "name": "Memory", "type": "ai_memory" } ],
+      "description": "Fusionner ou relayer des mémoires AI",
+      "args": {
+        "title": "Memory Merge",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "checkbox", "key": "dedupe", "label": "Supprimer doublons", "col": { "xs": 24 }, "default": true }
         ]
       }
     },
@@ -162,8 +181,11 @@
       "nodeKind": "agent",
       "category": "AI",
       "providerKey": "openai",
+      "inputHandles": [
+        { "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }
+      ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "json" }
+        { "id": "ok", "name": "Success", "type": "payload" }
       ],
       "linkedHandles": [
         { "id": "tools", "name": "Tools", "type": "ai_tool", "multiple": true, "accepts": ["ai_tool"] },

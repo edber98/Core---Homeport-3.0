@@ -68,12 +68,15 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
     const isV2 = Array.isArray(t.inputHandles) || Array.isArray(t.outputHandles) || Array.isArray(t.linkedHandles) || !!t.nodeKind || t.schemaVersion === 2;
     // Convert v1 outputs to v2 handles if needed
     const toV2Handles = (tpl) => {
+      const t = String(tpl.type || '').toLowerCase();
+      const isTrigger = (t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint');
       const outs = Array.isArray(tpl.output) ? tpl.output : [];
       const mkId = (s) => String((s || '').toString().trim().toLowerCase().replace(/[^a-z0-9_]+/g,'_') || 'ok');
-      const oHandles = outs.length ? outs.map(n => ({ id: mkId(n), name: n, type: 'any' })) : [{ id: 'ok', name: 'Success', type: 'any' }];
-      // Carry over array_field if present
+      let oHandles = outs.length ? outs.map(n => ({ id: mkId(n), name: n, type: isTrigger ? 'payload' : 'any' })) : [{ id: 'ok', name: 'Success', type: isTrigger ? 'payload' : 'any' }];
+      // Carry over array_field if present (legacy conditions)
       if (tpl.output_array_field && oHandles[0]) oHandles[0].arrayField = tpl.output_array_field;
-      return { inputHandles: [{ id: 'in', name: 'In', type: 'any' }], outputHandles: oHandles, nodeKind: tpl.type };
+      const inHs = isTrigger ? undefined : [{ id: 'in', name: 'In', type: 'any' }];
+      return { inputHandles: inHs, outputHandles: oHandles, nodeKind: tpl.type };
     };
     // Normalize v2 fields and split any legacy link-like entries from outputHandles into linkedHandles
     let v2;
@@ -82,7 +85,10 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
       const rawOut = Array.isArray(t.outputHandles) ? t.outputHandles : [];
       const outHs = rawOut.filter((h) => !(Array.isArray(h?.accepts) || h?.arrayField));
       const linkHs = (t.linkedHandles && Array.isArray(t.linkedHandles)) ? t.linkedHandles : rawOut.filter((h) => (Array.isArray(h?.accepts) || h?.arrayField)).map((h) => ({ id: h.id, name: h.name, type: h.type, multiple: h.multiple, accepts: h.accepts }));
-      v2 = { inputHandles: inHs || undefined, outputHandles: outHs.length ? outHs : undefined, linkedHandles: linkHs.length ? linkHs : undefined, nodeKind: t.nodeKind || t.type, schemaVersion: 2 };
+      // Drop inputs for triggers even if present
+      const tt = String(t.nodeKind || t.type || '').toLowerCase();
+      const isTrigger = (tt === 'start' || tt === 'start_form' || tt === 'event' || tt === 'endpoint');
+      v2 = { inputHandles: isTrigger ? undefined : (inHs || undefined), outputHandles: outHs.length ? outHs : undefined, linkedHandles: linkHs.length ? linkHs : undefined, nodeKind: t.nodeKind || t.type, schemaVersion: 2 };
     } else {
       v2 = { ...toV2Handles(t), linkedHandles: undefined, schemaVersion: 2 };
     }

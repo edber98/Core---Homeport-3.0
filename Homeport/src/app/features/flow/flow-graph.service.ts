@@ -25,6 +25,10 @@ export class FlowGraphService {
         const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
         const ids = arr.map((it: any, i: number) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
         try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && !ids.includes(elseId)) ids.push(elseId);
+        } catch {}
+        try {
           const connected = (edges || [])
             .filter(e => String(e.source) === String(model.id))
             .map(e => String(e.sourceHandle ?? ''))
@@ -70,8 +74,13 @@ export class FlowGraphService {
           return String(idx);
         }
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
-        if (!it) return '';
-        return (typeof it === 'object') ? (it.name ?? '') : String(it);
+        if (it) return (typeof it === 'object') ? (it.name ?? '') : String(it);
+        // Else branch label
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && String(idxOrId) === elseId) return 'Else';
+        } catch {}
+        return '';
       }
       if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
         const h = (tmpl.outputHandles as any[])
@@ -105,8 +114,13 @@ export class FlowGraphService {
           return '';
         }
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
-        if (!it) return '';
-        return (typeof it === 'object') ? (it.name ?? '') : '';
+        if (it) return (typeof it === 'object') ? (it.name ?? '') : '';
+        // Else branch label
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && String(sourceHandle) === elseId) return 'Else';
+        } catch {}
+        return '';
       }
       if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
         const h = (tmpl.outputHandles as any[])

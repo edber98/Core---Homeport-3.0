@@ -107,6 +107,7 @@
   background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px;
   box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
 .flow-tooltip.error { background:#f759ab; color:#fff; }
+.ban-overlay { position: fixed; z-index: 201; pointer-events: none; font-size: 14px; }
 
 
 .node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }

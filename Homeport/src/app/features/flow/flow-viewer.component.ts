@@ -299,7 +299,23 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   private loadDemo() {
     const startT = { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} } as any;
     const fnT = { id: 'tmpl_sendmail', name: 'SendMail', type: 'function', icon: 'fa-solid fa-envelope', title: 'Send mail', subtitle: 'Send an email', authorize_catch_error: true, authorize_skip_error: true, output: ['Succes'], args: {} } as any;
-    const condT = { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' } as any;
+    const condT = {
+      id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', output_array_field: 'items',
+      args: {
+        title: 'Conditions', ui: { layout: 'vertical', labelsOnTop: true },
+        fields: [
+          { type: 'section', title: 'Branches', key: 'items', mode: 'array',
+            array: { initialItems: 1, minItems: 0, controls: { add: { kind: 'text', text: 'Ajouter' }, remove: { kind: 'text', text: 'Supprimer' } } },
+            fields: [
+              { type: 'text', key: 'name', label: 'Nom', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
+              { type: 'text', key: 'condition', label: 'Condition', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] }
+            ],
+            col: { xs: 24 }, grid: { gutter: 16 }, ui: { layout: 'vertical' }
+          },
+          { type: 'checkbox', key: 'else_enabled', label: 'Activer Else', col: { xs: 24 }, default: false }
+        ]
+      }
+    } as any;
 
     const startModel = { id: 'demo_start', name: startT.name, template: startT.id, templateObj: startT, context: {} };
     const fnModel = { id: 'demo_fn', name: fnT.name, template: fnT.id, templateObj: fnT, context: {}, catch_error: true } as any;
