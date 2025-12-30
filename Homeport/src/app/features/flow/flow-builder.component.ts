@@ -3995,6 +3995,9 @@ export class FlowBuilderComponent {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => { this.toastMsg = ''; }, 1800);
   }
+  // Track whether pointer is over the canvas area to scope shortcuts
+  canvasHot = false;
+  shortcutsOpen = false;
 
   // Normalize API error from either envelope unwrap or HttpErrorResponse
   private normalizeApiError(e: any): { code?: string; message?: string; details?: any } {
@@ -4028,6 +4031,32 @@ export class FlowBuilderComponent {
         this.redo();
       }
       return;
+    }
+    // Non-modifier shortcuts when canvas is hot/focused
+    const k = ev.key.toLowerCase();
+    if (this.canvasHot) {
+      if (k === 'p') {
+        ev.preventDefault();
+        try {
+          if (this.isTabletOrBelow) { this.leftDrawer ? this.onLeftDrawerClose() : this.openMobilePanel('left'); }
+          else { this.leftPanelOpen = !this.leftPanelOpen; }
+        } catch {}
+        return;
+      }
+      if (k === 'r') {
+        ev.preventDefault();
+        try {
+          if (this.isTabletOrBelow) { this.rightDrawer ? this.onRightDrawerClose() : this.openMobilePanel('right'); }
+          else { this.rightPanelOpen = !this.rightPanelOpen; }
+          if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true);
+        } catch {}
+        return;
+      }
+      if (k === 's') { ev.preventDefault(); this.saveFlow(); return; }
+      if (k === 'd') { ev.preventDefault(); this.onClearRun(); return; }
+    }
+    if (ev.key === 'Escape') {
+      if (this.advancedOpen) { ev.preventDefault(); this.closeAdvancedEditor(); return; }
     }
     if ((ev.key === 'Delete' || ev.key === 'Backspace') && (this.selection || (this.selectionList && this.selectionList.length))) {
       ev.preventDefault();

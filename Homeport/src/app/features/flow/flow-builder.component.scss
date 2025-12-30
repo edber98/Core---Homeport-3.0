@@ -17,10 +17,10 @@
 .panel-toggle-fab.left { left: 12px; right: auto; transition: left 180ms ease; }
 .flow-builder.left-panel-open .panel-toggle-fab.left { left: 332px; }
 /* Active/open states for panel buttons (icon only) */
-.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) i,
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab):not(.help-fab):not(.clear-run-fab) i,
 .flow-builder.left-panel-open .panel-toggle-fab.left i,
 .panel-toggle-fab.ai-chat-fab.open i { color:#1677ff; }
-.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) svg path,
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab):not(.help-fab):not(.clear-run-fab) svg path,
 .flow-builder.left-panel-open .panel-toggle-fab.left svg path { stroke:#1677ff; }
 .flow-builder.left-panel-open .panel-toggle-fab.left svg rect { stroke:#1677ff; }
 .flow-builder > .right-panel flow-history-timeline { flex: 0 0 auto; margin-bottom: 8px; }
@@ -166,6 +166,9 @@
 .ai-chat-fab { top: 60px; }
 .panel-toggle-fab.ai-chat-fab { z-index: 2100; }
 .panel-toggle-fab.ai-chat-fab i { color:#6b7280; }
+.panel-toggle-fab.help-fab i { color:#6b7280; }
+.panel-toggle-fab.help-fab { top: 108px; }
+.panel-toggle-fab.clear-run-fab { top: 156px; }
 .ai-chat-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 180ms ease; z-index: 2098; }
 .ai-chat-backdrop.open { opacity: 1; pointer-events: auto; }
 .ai-chat-popover { position: fixed; right: 20px; bottom: 76px; z-index: 2099; background: #fff; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); transform: translateY(8px); opacity: 0; pointer-events: none; transition: transform 200ms ease, opacity 200ms ease; }
@@ -296,3 +299,4 @@ nz-drawer { display: contents; }
 
 .loading-overlay .text { margin-top: 10px; color: #374151; font-weight: 500; }
 @keyframes fb-spin { to { transform: rotate(360deg); } }
+.panel-toggle-fab.help-fab.open i { color:#1677ff; }
