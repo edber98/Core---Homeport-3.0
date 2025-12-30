@@ -16,6 +16,13 @@
 .flow-builder.right-panel-open .panel-toggle-fab { right: 332px; }
 .panel-toggle-fab.left { left: 12px; right: auto; transition: left 180ms ease; }
 .flow-builder.left-panel-open .panel-toggle-fab.left { left: 332px; }
+/* Active/open states for panel buttons (icon only) */
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) i,
+.flow-builder.left-panel-open .panel-toggle-fab.left i,
+.panel-toggle-fab.ai-chat-fab.open i { color:#1677ff; }
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) svg path,
+.flow-builder.left-panel-open .panel-toggle-fab.left svg path { stroke:#1677ff; }
+.flow-builder.left-panel-open .panel-toggle-fab.left svg rect { stroke:#1677ff; }
 .flow-builder > .right-panel flow-history-timeline { flex: 0 0 auto; margin-bottom: 8px; }
 .flow-builder > .right-panel flow-right-panel { flex: 1 1 auto; min-height: 0; z-index: 1; }
 .flow-builder > .right-panel .inspector-meta { flex: 1 1 auto; min-height: 0; overflow: auto; }
@@ -181,6 +188,8 @@
 .bottom-bar button, .bottom-bar .import-btn { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
 .bottom-bar .icon-btn { background:transparent; color:#111; border:none; border-radius:8px; padding:6px 8px; height:32px; }.bottom-bar .icon-btn i { font-size:16px; }
 .bottom-bar .icon-btn:disabled { color:#bbb; background:transparent; cursor:not-allowed; }.bottom-bar .toast { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
+.bottom-bar .icon-btn:hover:not(:disabled), .bottom-bar .import-btn:hover:not(:disabled) { background:rgba(22,119,255,0.1); color:#1677ff; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+.bottom-bar .run-btn:hover:not(:disabled) { background:#0f66e8; box-shadow:0 6px 16px rgba(22,119,255,0.25); transform: translateY(-1px); }
 .bottom-bar .zoom-control { display:inline-flex; align-items:center; gap:8px; padding:0 8px; background:transparent; border:none; border-radius:8px; height:32px; box-sizing:border-box; }.bottom-bar .zoom-control .label { font-size:12px; color:#111; }
 .bottom-bar .zoom-control input[type=range] { width: 120px; }
 .bottom-bar .zoom-control .value { font-size:12px; color:#111; min-width: 44px; text-align:right; }

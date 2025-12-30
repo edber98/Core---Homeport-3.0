@@ -229,7 +229,7 @@
         <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
   </button>
-  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" type="button"
+  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" [class.open]="aiChatOpen" type="button"
     (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
     <i class="fa-solid fa-message"></i>
   </button>
