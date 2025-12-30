@@ -16,6 +16,13 @@
 .flow-builder.right-panel-open .panel-toggle-fab { right: 332px; }
 .panel-toggle-fab.left { left: 12px; right: auto; transition: left 180ms ease; }
 .flow-builder.left-panel-open .panel-toggle-fab.left { left: 332px; }
+/* Active/open states for panel buttons (icon only) */
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) i,
+.flow-builder.left-panel-open .panel-toggle-fab.left i,
+.panel-toggle-fab.ai-chat-fab.open i { color:#1677ff; }
+.flow-builder.right-panel-open .panel-toggle-fab:not(.left):not(.ai-chat-fab) svg path,
+.flow-builder.left-panel-open .panel-toggle-fab.left svg path { stroke:#1677ff; }
+.flow-builder.left-panel-open .panel-toggle-fab.left svg rect { stroke:#1677ff; }
 .flow-builder > .right-panel flow-history-timeline { flex: 0 0 auto; margin-bottom: 8px; }
 .flow-builder > .right-panel flow-right-panel { flex: 1 1 auto; min-height: 0; z-index: 1; }
 .flow-builder > .right-panel .inspector-meta { flex: 1 1 auto; min-height: 0; overflow: auto; }
@@ -156,7 +163,9 @@
 .right-panel .flow-meta .btn.primary { background:#1677ff; color:#fff; border:1px solid #1677ff; border-radius:10px; padding:6px 10px; }
 
 /* AI Chat styles (parité avec Dynamic Form builder) */
-.ai-chat-fab { position: fixed; right: 20px; bottom: 24px; z-index: 2100; border-radius: 9999px; height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+.ai-chat-fab { top: 60px; }
+.panel-toggle-fab.ai-chat-fab { z-index: 2100; }
+.panel-toggle-fab.ai-chat-fab i { color:#6b7280; }
 .ai-chat-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity 180ms ease; z-index: 2098; }
 .ai-chat-backdrop.open { opacity: 1; pointer-events: auto; }
 .ai-chat-popover { position: fixed; right: 20px; bottom: 76px; z-index: 2099; background: #fff; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); transform: translateY(8px); opacity: 0; pointer-events: none; transition: transform 200ms ease, opacity 200ms ease; }
@@ -181,11 +190,13 @@
 .edge-labels .badge.delete i { font-size:14px; color:#b91c1c; }
 
 .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
-.bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+.bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
 .bottom-bar .actions .spacer { flex: 1 1 auto; }
 .bottom-bar button, .bottom-bar .import-btn { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
 .bottom-bar .icon-btn { background:transparent; color:#111; border:none; border-radius:8px; padding:6px 8px; height:32px; }.bottom-bar .icon-btn i { font-size:16px; }
 .bottom-bar .icon-btn:disabled { color:#bbb; background:transparent; cursor:not-allowed; }.bottom-bar .toast { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
+.bottom-bar .icon-btn:hover:not(:disabled), .bottom-bar .import-btn:hover:not(:disabled) { background:rgba(22,119,255,0.1); color:#1677ff; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+.bottom-bar .run-btn:hover:not(:disabled) { background:#0f66e8; box-shadow:0 6px 16px rgba(22,119,255,0.25); transform: translateY(-1px); }
 .bottom-bar .zoom-control { display:inline-flex; align-items:center; gap:8px; padding:0 8px; background:transparent; border:none; border-radius:8px; height:32px; box-sizing:border-box; }.bottom-bar .zoom-control .label { font-size:12px; color:#111; }
 .bottom-bar .zoom-control input[type=range] { width: 120px; }
 .bottom-bar .zoom-control .value { font-size:12px; color:#111; min-width: 44px; text-align:right; }
@@ -199,7 +210,8 @@
 .spinner { width:28px; height:28px; border:3px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .bottom-bar .import-btn { display:inline-flex; align-items:center; height:32px; border:none; background:transparent; }
-.bottom-bar .divider { width:1px; height:28px; background:#e5e7eb; }
+.bottom-bar .divider { width:1px; height:28px; margin:0 2px; background:#e5e7eb; }
+.bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
 .bottom-bar .run-btn { display:inline-flex; align-items:center; gap:10px; height:32px; padding:0 12px; border:none; border-radius:8px; background:#1677ff; color:#fff; cursor:pointer; font-size:12px; }
 .bottom-bar .run-btn i { font-size:14px; }
 :host ::ng-deep  .ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
@@ -228,6 +240,7 @@ nz-drawer { display: contents; }
 .left-bar .actions { pointer-events:auto; display:flex; flex-direction: column; align-items:center; gap:8px; }
 .left-bar .icon-btn, .left-bar .import-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width: 36px; height: 36px; }
 .left-bar .icon-btn i, .left-bar .import-btn i { font-size:16px; }
+.left-bar .icon-btn:disabled { color:#bbb; background:#fff; cursor:not-allowed; }
 
 /* Tablet and below: hide side panels and show header; hide right rail */
 @media (max-width: 1280px) {
@@ -242,6 +255,11 @@ nz-drawer { display: contents; }
   .left-bar { display: block; }
   /* Keep bottom bar visible above iOS browser UI */
   .bottom-bar { position: fixed; left: 6px; right: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); z-index: 90; }
+  .bottom-bar .actions { gap: 4px; padding: 6px 10px; border-radius: 9px; }
+  .bottom-bar .icon-btn, .bottom-bar .import-btn { width: 34px; height: 34px; }
+  .bottom-bar .run-btn { height: 30px; padding: 0 10px; }
+  .bottom-bar .divider { height: 24px; margin: 0 2px; }
+  .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
 }
 
 /* Bottom bar buttons: consistent square size and centered icons */

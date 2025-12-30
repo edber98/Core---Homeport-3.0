@@ -259,6 +259,10 @@
         <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
   </button>
+  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" [class.open]="aiChatOpen" type="button"
+    (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
+    <i class="fa-solid fa-message"></i>
+  </button>
   <button nz-button nzSize="small" class="panel-toggle-fab left" type="button"
     (click)="toggleLeftPanel()"
     aria-label="Ouvrir ou fermer le panneau gauche">
@@ -273,16 +277,27 @@
     <div class="spinner"></div>
     <div>Import du flow…</div>
   </div>
+  <ng-template #issuesTpl>
+    <div style="max-width:320px; max-height: 260px; overflow:auto;">
+      <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;" *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
+        <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
+        <span> {{ it.message }}</span>
+      </button>
+    </div>
+  </ng-template>
   <!-- Left vertical floating actions (responsive only) -->
   <div class="left-bar">
     <div class="actions">
-      <button class="icon-btn" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
-      <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-        <i class="fa-solid fa-play"></i>
+      <button class="icon-btn" *ngIf="isMobile && validationIssues.length" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
-      <button class="icon-btn" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
+      <button class="icon-btn" *ngIf="isMobile" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
+        <i class="fa-solid fa-crosshairs"></i>
+      </button>
+      <button class="icon-btn" *ngIf="!isMobile" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
         <i class="fa-solid fa-flask"></i>
       </button>
       <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
@@ -320,18 +335,10 @@
       <button class="icon-btn" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
         <i class="fa-solid fa-border-all"></i>
       </button>
-      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
+      <button class="icon-btn" *ngIf="validationIssues.length && !isMobile" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
         <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
-      <ng-template #issuesTpl>
-        <div style="max-width:320px; max-height: 260px; overflow:auto;">
-          <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;" *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
-            <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
-            <span> {{ it.message }}</span>
-          </button>
-        </div>
-      </ng-template>
-      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
       <span class="divider" *ngIf="!isMobile" aria-hidden="true"></span>
@@ -353,11 +360,13 @@
       <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
-      <span class="spacer"></span>
-      <span class="divider" aria-hidden="true"></span>
+      <button class="icon-btn" *ngIf="isMobile" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+      <span class="divider before-run" aria-hidden="true"></span>
       <button class="run-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
-        <span>Lancer</span>
+        <span *ngIf="!isMobile">Lancer</span>
       </button>
     </div>
   </div>
@@ -394,9 +403,6 @@
     (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
 
   <!-- Floating AI Chat Popover Trigger + persistent popover -->
-  <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
-    <i class="fa-solid fa-message"></i>
-  </button>
   <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
   <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
     <flow-ai-chat [seedGraph]="{ nodes: nodes, edges: edges }" (close)="aiChatOpen=false" (graphGenerated)="applyAiGraph($event)"></flow-ai-chat>

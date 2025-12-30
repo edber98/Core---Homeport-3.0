@@ -1,16 +1,22 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
 .builder {
   display: flex;
  // gap: 12px;
   align-items: flex-start;
-  height: 100%; /* fill parent instead of min-height */
+  height: 100%;
+  min-height: 0;
 }
 .builder .route-save { position: sticky; top: 6px; right: 0; display:flex; justify-content:flex-end; width: 100%; z-index: 2; padding: 4px 0; }
-.left { flex: 0 0 380px; }
+.left { flex: 0 0 380px; min-height: 0; }
 .left { max-height: 100%; overflow: auto; padding-right: 4px; border-right: 1px solid #E2E1E4; }
 .left .ant-card { border: 0 !important; box-shadow: none !important; background: transparent;  }
 .left .ant-card-head { border-bottom: 0; background: transparent; }
 .left .ant-card-body { padding: 6px 8px; }
-.center { flex: 1 1 auto; min-width: 0; }
+.center { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .right { flex: 0 0 380px; height: 100%; overflow: auto; }
 .right .ant-card { display: flex; flex-direction: column; }
 .right .ant-card-body { overflow: auto; padding: 8px; }
@@ -34,6 +40,7 @@
 .io-actions { margin-top: 6px; display: flex; gap: 6px; }
 
 .center { overflow: hidden; }
+.center { height: 100%; display: flex; flex-direction: column; }
 .center .card { display: flex; flex-direction: column; overflow: visible; }
 .center .card { position: relative; }
 .center .ant-card.no-chrome,
@@ -57,6 +64,9 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 30px rgba(2,6,23,.12), 0 2px 6px rgba(2,6,23,.06);
+}
+@media (max-width: 1280px) {
+  .ai-chat-fab { display: none; }
 }
 
 .ai-chat-backdrop {
@@ -134,14 +144,16 @@
   .center .ant-card.no-chrome { height: 100%; display: flex; flex-direction: column; }
   .center .ant-card.no-chrome .ant-card-body { flex: 1 1 auto; min-height: 0; }
 }
+.center .ant-card.no-chrome { height: 100%; display: flex; flex-direction: column; }
+.center .ant-card.no-chrome .ant-card-body { flex: 1 1 auto; min-height: 0; }
 .history-bar {
-  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 12px;
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 8px;
   background: #fff;
-  border: 0; /* no border in edition bar */
-  border-radius: 0; /* no radius in edition bar */
-  box-shadow: 0 8px 24px rgba(0,0,0,.10);
-  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  padding: 8px 12px;
   z-index: 10; /* render above preview content */
 }
 .history-bar .hb-left { display: inline-flex; gap: 6px; }
@@ -151,6 +163,53 @@
 .history-bar .hb-bp { display: inline-flex; align-items: center; gap: 6px; }
 .history-bar .hb-bp .hb-bp-select { min-width: 130px; }
 .history-bar .hb-mode-btn .label { margin-left: 6px; }
+.history-bar .divider { width: 1px; height: 28px; margin: 0 2px; background: #e5e7eb; }
+.history-bar .icon-btn {
+  background: transparent;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  height: 36px;
+  width: 36px;
+  min-width: 36px;
+  box-shadow: none;
+}
+.history-bar .icon-btn i { font-size: 16px; }
+.history-bar .icon-btn:disabled {
+  color: #bbb;
+  background: transparent;
+  cursor: not-allowed;
+}
+.history-bar .icon-btn:hover:not(:disabled),
+.history-bar .hb-mode-btn.ant-btn-default:hover:not(:disabled) {
+  background: rgba(22,119,255,0.1);
+  color: #1677ff;
+  box-shadow: 0 4px 12px rgba(22,119,255,0.18);
+  transform: translateY(-1px);
+}
+.history-bar .hb-mode-btn {
+  border-radius: 8px;
+  height: 28px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: none;
+}
+.history-bar .hb-mode-btn.ant-btn-default {
+  background: transparent;
+  border: none;
+  color: #111;
+}
+.history-bar .hb-mode-btn.ant-btn-primary {
+  border: none;
+  background: #1677ff;
+}
+.history-bar .hb-mode-btn.ant-btn-primary:hover:not(:disabled) {
+  background: #0f66e8;
+  box-shadow: 0 6px 16px rgba(22,119,255,0.25);
+  transform: translateY(-1px);
+}
 /* Hide edit mode button on tablet/mobile (drawer context) */
 @media (max-width: 1280px) {
   .history-bar .hb-mode-btn { display: none; }

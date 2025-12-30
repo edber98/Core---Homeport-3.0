@@ -149,20 +149,17 @@
         <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddField()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter un champ' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter un champ">
           <i class="fa-solid fa-square-plus"></i>
         </button>
+        <button nz-button nzSize="small" class="apple-btn" (click)="addStep()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter une étape' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter une étape">
+          <i class="fa-solid fa-list-ol"></i>
+        </button>
         <span class="sep"></span>
-        <button nz-button nzSize="small" class="apple-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Annuler' : null" [nzTooltipTrigger]="'hover'" aria-label="Annuler">
-          ↺
-        </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="redo()" [disabled]="!canRedo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Rétablir' : null" [nzTooltipTrigger]="'hover'" aria-label="Rétablir">
-          ↻
-        </button>
         <button nz-button nzSize="small" [ngClass]="{'apple-btn': !editMode}" [nzType]="editMode ? 'primary' : 'default'" (click)="mobileToggleEdit()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Mode édition' : null" [nzTooltipTrigger]="'hover'" aria-label="Basculer édition">
           <i class="fa-solid fa-pen-to-square"></i>
         </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="saveSchema()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Sauvegarder' : null" [nzTooltipTrigger]="'hover'" aria-label="Sauvegarder">
-          <i class="fa-solid fa-floppy-disk"></i>
-        </button>
         <span class="flex-spacer"></span>
+        <button nz-button nzSize="small" class="apple-btn" (click)="aiChatOpen = !aiChatOpen" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
+          <i class="fa-solid fa-message"></i>
+        </button>
         <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
           <i class="fa-solid fa-sliders"></i>
         </button>
@@ -205,9 +202,14 @@
       <!-- History controls centered -->
       <div class="history-bar">
         <div class="hb-left">
-          <button nz-button nzSize="small" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">↺</button>
-          <button nz-button nzSize="small" (click)="redo()" [disabled]="!canRedo" nz-tooltip nzTooltipTitle="Rétablir" aria-label="Rétablir">↻</button>
+          <button nz-button nzSize="small" class="icon-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button nz-button nzSize="small" class="icon-btn" (click)="redo()" [disabled]="!canRedo" nz-tooltip nzTooltipTitle="Rétablir" aria-label="Rétablir">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
         </div>
+        <span class="divider" aria-hidden="true"></span>
         <div class="hb-mid">
           <button nz-button nzSize="small" [nzType]="editMode ? 'primary' : 'default'" class="hb-mode-btn"
                   (click)="toggleEditMode()" nz-tooltip nzTooltipTitle="Mode édition">
@@ -227,8 +229,9 @@
             </nz-select>
           </span>
         </div>
+        <span class="divider" aria-hidden="true"></span>
         <div class="hb-right">
-          <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Sauvegarder" (click)="saveSchema()" aria-label="Sauvegarder">
+          <button class="icon-btn" (click)="saveSchema()" title="Sauvegarder" aria-label="Sauvegarder">
             <i class="fa-solid fa-floppy-disk"></i>
           </button>
         </div>
@@ -342,7 +345,7 @@
     </nz-card>
 
     <!-- Floating AI Chat Popover Trigger + persistent popover -->
-    <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
+    <button nz-button nzType="primary" class="ai-chat-fab" *ngIf="!isMobile" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
       <i class="fa-solid fa-message"></i>
     </button>
     <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
