@@ -116,7 +116,7 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 .ant-tree .ant-tree-treenode-selected .ant-tree-node-content-wrapper,
 .ant-tree .ant-tree-treenode-selected .ant-tree-title,
 .ant-tree .ant-tree-node-selected .ant-tree-title {
-    color: #fff;
+    color: inherit;
 }
 
 /* (Removed complex active overrides; rely on theme variables) */
