@@ -28,7 +28,7 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
             <nz-form-label>En service</nz-form-label>
             <nz-form-control>
               <label class="enabled single-line">
-                <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="metaChange.emit()" name="flowEnabledPanelTop" />
+                <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="currentFlowEnabledChange.emit($event); metaChange.emit()" name="flowEnabledPanelTop" />
                 <span>Activer ce flow</span>
               </label>
             </nz-form-control>
@@ -36,14 +36,14 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
           <nz-form-item>
             <nz-form-label>Nom</nz-form-label>
             <nz-form-control>
-              <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="metaChange.emit()" name="flowNamePanel" placeholder="Nom du flow" />
+              <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="currentFlowNameChange.emit($event); metaChange.emit()" name="flowNamePanel" placeholder="Nom du flow" />
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
             <nz-form-label>Description</nz-form-label>
             <nz-form-control>
-              <input nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="metaChange.emit()" name="flowDescPanel" placeholder="Description" />
+              <textarea nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="currentFlowDescChange.emit($event); metaChange.emit()" name="flowDescPanel" placeholder="Description" rows="3"></textarea>
             </nz-form-control>
           </nz-form-item>
 
@@ -63,7 +63,7 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
             <nz-form-label>Publication</nz-form-label>
             <nz-form-control>
               <div class="pub-row">
-                <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="metaChange.emit()" name="flowStatusPanel" nzPlaceHolder="Statut">
+                <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="currentFlowStatusChange.emit($event); metaChange.emit()" name="flowStatusPanel" nzPlaceHolder="Statut">
                   <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
                   <nz-option nzValue="test" nzLabel="test"></nz-option>
                   <nz-option nzValue="production" nzLabel="production"></nz-option>
@@ -103,16 +103,21 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
           </form>
 
         <!-- Section Nœud / Paramètres - visible uniquement si un nœud est sélectionné -->
-        <ng-container *ngIf="selected">
+        <ng-container *ngIf="selected || (selectedList?.length||0) > 1">
           <div class="panel-heading">
             <div class="card-title left">
-              <span class="t">Nœud</span>
+              <span class="t">{{ (selectedList?.length||0) > 1 ? 'Nœuds' : 'Nœud' }}</span>
               <span class="s">Paramètres</span>
             </div>
           </div>
-          <div class="inspector-node">
+          <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+            <div class="actions-line right" *ngIf="(selectedList?.length||0) > 1" style="margin-bottom:4px;">
+              <button nz-button nzSize="small" class="icon-btn" (click)="prev()" aria-label="Précédent"><i class="fa-solid fa-chevron-left"></i></button>
+              <span style="font-size:12px; color:#6b7280;">{{ multiIndex + 1 }} / {{ selectedList.length }}</span>
+              <button nz-button nzSize="small" class="icon-btn" (click)="next()" aria-label="Suivant"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
             <div class="rows simple">
-              <div class="meta">
+              <div class="meta" *ngIf="(selectedList?.length||0) <= 1; else multiMeta">
                 <div class="kv-list">
                   <div class="kv"><span class="label">ID</span><span class="value mono">{{ selectedModel?.id }}</span></div>
                   <div class="kv"><span class="label">Nom</span><span class="value mono">{{ selectedModel?.name }}</span></div>
@@ -121,8 +126,20 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
                   <div class="kv" *ngIf="nodeHasError"><span class="label">Erreurs</span><span class="value err">{{ (nodeErrorText || 'Erreur sur ce nœud') }}</span></div>
                 </div>
               </div>
+              <ng-template #multiMeta>
+                <ng-container *ngIf="selectedList && selectedList.length">
+                  <ng-container *ngIf="selectedList[multiIndex] as it">
+                    <div class="kv-list">
+                      <div class="kv"><span class="label">ID</span><span class="value mono">{{ it?.data?.model?.id }}</span></div>
+                      <div class="kv"><span class="label">Nom</span><span class="value mono">{{ it?.data?.model?.name }}</span></div>
+                      <div class="kv"><span class="label">Type</span><span class="value mono">{{ it?.data?.model?.templateObj?.type }}</span></div>
+                      <div class="kv"><span class="label">Template</span><span class="value mono">{{ it?.data?.model?.template }}</span></div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
 
-              <div class="args" *ngIf="filledArgsAll().length > 0">
+              <div class="args" *ngIf="(selectedList?.length||0) <= 1 && filledArgsAll().length > 0">
                 <div class="args-title-row">
                   <div class="args-title">Arguments renseignés</div>
                   <div class="title-actions">
@@ -141,6 +158,18 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
                   </div>
                 </div>
               </div>
+              <div class="args" *ngIf="(selectedList?.length||0) > 1 && selectedList[multiIndex] as it; else noArgs">
+                <div class="args-title-row">
+                  <div class="args-title">Arguments renseignés ({{ it?.data?.model?.id }})</div>
+                </div>
+                <div class="args-list">
+                  <div class="arg" *ngFor="let a of filledArgsAllFor(it?.data?.model)">
+                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
+                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noArgs></ng-template>
 
               <div class="args" *ngIf="usedArgsAll().length > 0">
                 <div class="args-title-row">
@@ -329,9 +358,13 @@ export class FlowRightPanelComponent implements OnChanges {
 
   // Meta + actions
   @Input() currentFlowName = '';
+  @Output() currentFlowNameChange = new EventEmitter<string>();
   @Input() currentFlowDesc = '';
+  @Output() currentFlowDescChange = new EventEmitter<string>();
   @Input() currentFlowStatus: 'draft'|'test'|'production' = 'draft';
+  @Output() currentFlowStatusChange = new EventEmitter<'draft'|'test'|'production'>();
   @Input() currentFlowEnabled = false;
+  @Output() currentFlowEnabledChange = new EventEmitter<boolean>();
   @Input() builderMode: 'test'|'prod' = 'test';
   @Input() lastRun: any = null;
   @Input() currentRun: any = null;
@@ -380,6 +413,53 @@ export class FlowRightPanelComponent implements OnChanges {
       const id = this.selectedRunId || null;
       if (id && this.selectedRecentId !== id) this.selectedRecentId = id;
     }
+    if (changes['selectedList']) {
+      const len = Array.isArray(this.selectedList) ? this.selectedList.length : 0;
+      if (this.multiIndex >= len) this.multiIndex = Math.max(0, len - 1);
+    }
+  }
+  multiIndex = 0;
+  private swipeX = 0; private swipeY = 0; private swiping = false;
+  onTouchStart(ev: TouchEvent) { try { const t = ev.touches && ev.touches[0]; if (!t) return; this.swipeX = t.clientX; this.swipeY = t.clientY; this.swiping = true; } catch {} }
+  onTouchEnd(ev: TouchEvent) {
+    try {
+      if (!this.swiping) return; this.swiping = false;
+      const t = ev.changedTouches && ev.changedTouches[0]; if (!t) return;
+      const dx = t.clientX - this.swipeX; const dy = t.clientY - this.swipeY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) { if (dx < 0) this.next(); else this.prev(); }
+    } catch {}
+  }
+  prev() { if (this.selectedList && this.selectedList.length > 1) this.multiIndex = (this.multiIndex - 1 + this.selectedList.length) % this.selectedList.length; }
+  next() { if (this.selectedList && this.selectedList.length > 1) this.multiIndex = (this.multiIndex + 1) % this.selectedList.length; }
+
+  // Parametrized helpers for carousel nodes
+  private schemaKeysAndLabelsForModel(model: any): Array<{ key: string; label: string }> {
+    try {
+      const schema: any = model?.templateObj?.args || null;
+      const out: Array<{ key: string; label: string }> = [];
+      const seen = new Set<string>();
+      const walk = (arr?: any[]) => {
+        if (!Array.isArray(arr)) return;
+        for (const it of arr) {
+          const key = String(it?.key || '');
+          const label = String(it?.label || key);
+          if (key && !seen.has(key)) { out.push({ key, label }); seen.add(key); }
+          walk(it?.fields);
+          if (Array.isArray(it?.steps)) for (const s of it.steps as any[]) walk(s?.fields);
+        }
+      };
+      if (schema) { walk(schema.fields); if (Array.isArray(schema.steps)) for (const st of schema.steps as any[]) walk(st?.fields); }
+      return out;
+    } catch { return []; }
+  }
+  filledArgsAllFor(model: any): Array<{ key: string; label: string; value: any }> {
+    try {
+      const ctx = (model?.context && typeof model.context === 'object') ? model.context : {};
+      const entries = Object.entries(ctx).filter(([_, v]) => v != null && !(typeof v === 'string' && v.trim() === ''));
+      if (!entries.length) return [];
+      const labels = this.schemaKeysAndLabelsForModel(model).reduce((acc, it) => { acc[it.key] = it.label; return acc; }, {} as Record<string,string>);
+      return entries.map(([k, v]) => ({ key: k, label: labels[k] || k, value: v }));
+    } catch { return []; }
   }
 
   // Helpers: extract filled args with best-effort labels

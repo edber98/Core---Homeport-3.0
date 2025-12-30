@@ -103,6 +103,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
           <flow-viewer class="viewer-canvas"
             [nodes]="decoratedNodes"
             [edges]="decoratedEdges"
+            [background]="flowBackground"
+            [portOrientation]="portOrientation"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
         <aside class="details-panel" *ngIf="selectedBackendRun as br" #detailsPanel>
@@ -271,7 +273,7 @@ export class FlowExecutionComponent {
           this.loadingFlowDoc = true;
           this.catalog.getFlow(flowId).subscribe({
             next: (doc) => this.zone.run(() => {
-              if (doc) this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] };
+              if (doc) { this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: (doc as any).meta || {} }; this.enrichGraphTemplates(); }
               this.updateVisibleRuns();
               this.loadBackendRuns(flowId);
               this.loadingFlowDoc = false;
@@ -285,6 +287,16 @@ export class FlowExecutionComponent {
     } catch {}
     // Load workspace runs initially even if no ?flow param (recent runs)
     try { setTimeout(() => this.loadBackendRuns(), 0); } catch {}
+    try { this.catalog.listNodeTemplates().subscribe(list => this.zone.run(() => { (list || []).forEach(t => this.templatesMap.set(t.id, t)); this.enrichGraphTemplates(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
+  }
+  private templatesMap = new Map<string, any>();
+  // Match builder visuals
+  flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
+  get portOrientation(): 'vertical'|'horizontal' {
+    try {
+      const ori = String(this.currentGraph?.meta?.ui?.portOrientation || '').toLowerCase();
+      return (ori === 'horizontal' || ori === 'vertical') ? ori as any : 'horizontal';
+    } catch { return 'horizontal'; }
   }
   currentGraph: any = null;
   exampleGraph = {
@@ -505,7 +517,7 @@ export class FlowExecutionComponent {
     if (fid && (!this.currentGraph || String(this.currentGraph.id) !== String(fid))) {
       this.loadingFlowDoc = true;
       this.catalog.getFlow(fid).subscribe({
-        next: (doc) => { this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [] } : null; this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); },
+        next: (doc) => { this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: (doc as any).meta || {} } : null; this.enrichGraphTemplates(); this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); },
         error: () => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); }
       });
     } else if (b && b.id) {
@@ -519,6 +531,23 @@ export class FlowExecutionComponent {
     this.runsApi.getWith(runId, ['attempts','events']).subscribe({ next: (r) => {
       const attempts = (r as any)?.attempts || [];
       const events = (r as any)?.events || [];
+      // If backend provides a graph/meta snapshot for the run, prefer it
+      try {
+        const g: any = (r as any)?.graph || (r as any)?.flow || (r as any)?.flowSnapshot;
+        if (g && (Array.isArray(g.nodes) || Array.isArray(g.edges))) {
+          this.currentGraph = {
+            id: (g.id || this.currentGraph?.id || null),
+            name: (g.name || this.currentGraph?.name || ''),
+            description: (g.description || this.currentGraph?.description || ''),
+            nodes: g.nodes || [],
+            edges: g.edges || [],
+            meta: g.meta || (r as any)?.meta || this.currentGraph?.meta || {},
+          } as any;
+        } else if ((r as any)?.meta) {
+          this.currentGraph = { ...(this.currentGraph || {}), meta: (r as any).meta };
+          this.enrichGraphTemplates();
+        }
+      } catch {}
       this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut }));
       this.backendEvents = events;
       this.expanded = this.backendAttempts.map(() => false);
@@ -526,6 +555,27 @@ export class FlowExecutionComponent {
     }, complete: () => {
       if (status === 'running') this.openBackendStream(runId);
     } });
+  }
+  private enrichGraphTemplates() {
+    try {
+      const nodes = (this.currentGraph?.nodes || []);
+      if (!nodes.length || this.templatesMap.size === 0) return;
+      this.currentGraph = {
+        ...(this.currentGraph || {}),
+        nodes: nodes.map((n: any) => {
+          try {
+            const m = n?.data?.model || n?.data || n?.model || null;
+            const tplId = String(m?.template || m?.templateObj?.id || '').trim();
+            const curTpl = m?.templateObj || {};
+            const full = this.templatesMap.get(tplId);
+            if (full && (!curTpl || !curTpl.type || !curTpl.icon || !curTpl.title)) {
+              return { ...n, data: { ...n.data, model: { ...m, templateObj: full } } };
+            }
+          } catch {}
+          return n;
+        })
+      };
+    } catch {}
   }
   onViewRunClick(b: BackendRun) {
     this.selectBackendRun(b);

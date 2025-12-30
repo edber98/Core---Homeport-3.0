@@ -260,7 +260,7 @@ export class FlowBuilderComponent {
       const edges = Array.isArray(g?.edges) ? g.edges : [];
       this.nodes = nodes as any[];
       this.edges = edges as any[];
-      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
       this.updateSharedGraph();
       this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
       this.recomputeValidation();
@@ -443,7 +443,7 @@ export class FlowBuilderComponent {
   private blockersActive = false;
   private teardownBlockers: Array<() => void> = [];
   private dbgListeners: Array<() => void> = [];
-  debugGestures = true;
+  debugGestures = false;
   // Neutralize global blockers (dev page works without them). Keep API but no-op.
   private enableGlobalBlockers() { /* no-op */ }
   private disableGlobalBlockers() { /* no-op */ }
@@ -574,7 +574,7 @@ export class FlowBuilderComponent {
               
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(flowId);
               const hydrated = this.tryHydrateHistory();
@@ -644,7 +644,7 @@ export class FlowBuilderComponent {
               this.nodes = (doc.nodes || []) as any[];
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(fid);
               const hydrated = this.tryHydrateHistory();
@@ -723,8 +723,7 @@ export class FlowBuilderComponent {
         target: tgt ? { tag: tgt.tagName, cls: tgt.className } : null,
         path0: p0 && (p0 as any).tagName ? { tag: (p0 as any).tagName, cls: (p0 as any).className } : null,
       };
-      // eslint-disable-next-line no-console
-      console.log('[gesture]', info);
+      // gesture debug disabled
     } catch {}
   }
   private installGestureDebugListeners() {
@@ -752,8 +751,7 @@ export class FlowBuilderComponent {
       this.globalTouchEndDetect = (_e: TouchEvent) => { /* no-op: double-tap disabled */ };
       document.addEventListener('touchend', this.globalTouchEndDetect as any, { capture: true, passive: true } as any);
       this.dbgListeners.push(() => { try { document.removeEventListener('touchend', this.globalTouchEndDetect as any, { capture: true } as any); } catch {} });
-      // eslint-disable-next-line no-console
-      console.log('[gesture] debug listeners installed');
+      // gesture debug disabled
     } catch {}
   }
   ngOnDestroy() {
@@ -2753,6 +2751,131 @@ export class FlowBuilderComponent {
     try { this.centerOnSelection(); } catch { }
   }
 
+  ctxAlignSelection(dir: 'horizontal' | 'vertical') {
+    try {
+      this.closeCtxMenu();
+      const listRaw = Array.isArray(this.selectionList) ? this.selectionList.slice() : [];
+      if (listRaw.length < 2) return;
+      // Resolve to our canonical nodes array, preserving the original order
+      const byId = new Map((this.nodes || []).map(n => [String(n.id), n] as const));
+      const list = listRaw.map(n => byId.get(String((n as any)?.id))!).filter(Boolean);
+      if (list.length < 2) return;
+      const anchor = list[0];
+      if (!anchor || !anchor.point) return;
+
+      // Build quick lookup for node sizes via Vflow models
+      const sizes = new Map<string, { width: number; height: number }>();
+      try {
+        const models: any[] = this.flow?.nodeModels?.() || [];
+        for (const m of models) {
+          try {
+            const id = String(m?.rawNode?.id ?? '');
+            const sz = m?.size?.();
+            if (id && sz && isFinite(Number(sz.width)) && isFinite(Number(sz.height))) {
+              sizes.set(id, { width: Number(sz.width), height: Number(sz.height) });
+            }
+          } catch {}
+        }
+      } catch {}
+
+      const getSize = (id: any) => {
+        const sid = String(id);
+        return sizes.get(sid) || { width: 180, height: 100 };
+      };
+
+      // Partition relative to anchor and compute a reasonable gap (average of positive gaps)
+      const others = list.filter(n => String(n.id) !== String(anchor.id));
+      const anchorSize = getSize(anchor.id);
+      let rightOrBottom: any[] = [];
+      let leftOrTop: any[] = [];
+      if (dir === 'horizontal') {
+        rightOrBottom = others.filter(n => Number(n?.point?.x ?? 0) >= Number(anchor?.point?.x ?? 0)).sort((a,b) => (a.point?.x||0) - (b.point?.x||0));
+        leftOrTop = others.filter(n => Number(n?.point?.x ?? 0) < Number(anchor?.point?.x ?? 0)).sort((a,b) => (b.point?.x||0) - (a.point?.x||0));
+      } else {
+        rightOrBottom = others.filter(n => Number(n?.point?.y ?? 0) >= Number(anchor?.point?.y ?? 0)).sort((a,b) => (a.point?.y||0) - (b.point?.y||0));
+        leftOrTop = others.filter(n => Number(n?.point?.y ?? 0) < Number(anchor?.point?.y ?? 0)).sort((a,b) => (b.point?.y||0) - (a.point?.y||0));
+      }
+
+      // Compute average positive gap from current layout
+      const consecutive = (arr: any[], axis: 'x'|'y') => arr.map(n => ({ id: n.id, x: Number(n.point?.x||0), y: Number(n.point?.y||0), ...getSize(n.id) }));
+      let gaps: number[] = [];
+      if (dir === 'horizontal') {
+        const seq = consecutive([anchor, ...rightOrBottom].sort((a,b) => a.point.x - b.point.x), 'x');
+        for (let i=1;i<seq.length;i++) { const prev = seq[i-1]; const cur = seq[i]; const g = cur.x - (prev.x + prev.width); if (g>0) gaps.push(g); }
+        const seqL = consecutive([anchor, ...leftOrTop].sort((a,b) => a.point.x - b.point.x), 'x');
+        for (let i=1;i<seqL.length;i++) { const prev = seqL[i-1]; const cur = seqL[i]; const g = cur.x - (prev.x + prev.width); if (g>0) gaps.push(g); }
+      } else {
+        const seq = consecutive([anchor, ...rightOrBottom].sort((a,b) => a.point.y - b.point.y), 'y');
+        for (let i=1;i<seq.length;i++) { const prev = seq[i-1]; const cur = seq[i]; const g = cur.y - (prev.y + prev.height); if (g>0) gaps.push(g); }
+        const seqT = consecutive([anchor, ...leftOrTop].sort((a,b) => a.point.y - b.point.y), 'y');
+        for (let i=1;i<seqT.length;i++) { const prev = seqT[i-1]; const cur = seqT[i]; const g = cur.y - (prev.y + prev.height); if (g>0) gaps.push(g); }
+      }
+      const avg = (arr: number[]) => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
+      let gap = avg(gaps);
+      if (!isFinite(gap) || gap <= 0) gap = 60; // sensible default
+
+      const newPos: Record<string, { x: number; y: number }> = {};
+      const ax = Number(anchor?.point?.x || 0); const ay = Number(anchor?.point?.y || 0);
+      newPos[String(anchor.id)] = { x: ax, y: ay };
+      if (dir === 'horizontal') {
+        // Place to the right
+        let curX = ax + anchorSize.width + gap;
+        for (const n of rightOrBottom) {
+          const s = getSize(n.id);
+          newPos[String(n.id)] = { x: curX, y: ay };
+          curX += s.width + gap;
+        }
+        // Place to the left
+        let curLeftX = ax - gap;
+        for (const n of leftOrTop) {
+          const s = getSize(n.id);
+          const nx = curLeftX - s.width;
+          newPos[String(n.id)] = { x: nx, y: ay };
+          curLeftX = nx - gap;
+        }
+      } else {
+        // Place below
+        let curY = ay + anchorSize.height + gap;
+        for (const n of rightOrBottom) {
+          const s = getSize(n.id);
+          newPos[String(n.id)] = { x: ax, y: curY };
+          curY += s.height + gap;
+        }
+        // Place above
+        let curTopY = ay - gap;
+        for (const n of leftOrTop) {
+          const s = getSize(n.id);
+          const ny = curTopY - s.height;
+          newPos[String(n.id)] = { x: ax, y: ny };
+          curTopY = ny - gap;
+        }
+      }
+
+      const idsSet = new Set(list.map(n => String(n.id)));
+      let changed = false;
+      const next = (this.nodes || []).map(n => {
+        const id = String(n?.id ?? '');
+        if (!idsSet.has(id)) return n;
+        const p = newPos[id];
+        if (!p) return n;
+        const cx = Number(n?.point?.x ?? NaN);
+        const cy = Number(n?.point?.y ?? NaN);
+        const nx = Number.isFinite(p.x) ? p.x : cx;
+        const ny = Number.isFinite(p.y) ? p.y : cy;
+        if (!isFinite(cx) || !isFinite(cy) || nx !== cx || ny !== cy) { changed = true; return { ...n, point: { x: nx, y: ny } }; }
+        return n;
+      });
+      if (changed) {
+        // Prevent accidental node removal reactions during batch update
+        try { this.suppressNodesRemovedUntil = Date.now() + 900; } catch {}
+        this.nodes = next;
+        try { this.cdr.detectChanges(); } catch {}
+        try { this.setVflowSelectedIds(Array.from(idsSet)); } catch {}
+        this.pushState('nodes.aligned.' + dir);
+      }
+    } catch {}
+  }
+
   onSelected(ev: any) {
     // Vflow may emit single entity or array of entities
     const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
@@ -3297,7 +3420,7 @@ export class FlowBuilderComponent {
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
                 nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any, true).subscribe({ next: () => {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
-                  this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
                   try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
                 } })
               });
@@ -3872,7 +3995,7 @@ export class FlowBuilderComponent {
       description: this.currentFlowDesc || undefined,
     } as any;
     try {
-      const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+      const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
       snap.currentChecksum = current;
       snap.serverChecksum = this.lastSavedChecksum;
     } catch {}

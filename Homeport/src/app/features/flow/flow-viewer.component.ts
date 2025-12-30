@@ -2,17 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, EventEmitter, Output, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Vflow, Edge, ConnectionSettings } from 'ngx-vflow';
+import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 import { Subscription } from 'rxjs';
+import { CatalogService, AppProvider } from '../../services/catalog.service';
 
 @Component({
   selector: 'flow-viewer',
   standalone: true,
-  imports: [CommonModule, Vflow],
+  imports: [CommonModule, Vflow, NodeCardHeaderComponent],
   template: `
   <div class="flow-viewer">
     <section class="canvas ro">
       <div class="canvas-host" #flowHost (wheel)="onWheel($event)" (pointerdown)="onPointerDown($event)">
-        <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="allowDrag && move" [minZoom]="0.05" [maxZoom]="3"
+        <vflow view="auto" [background]="background" [entitiesSelectable]="allowDrag && move" [minZoom]="0.05" [maxZoom]="3"
                [nodes]="vflowNodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
                (selected)="selected.emit($event)" (onConnect)="connect.emit($event)">
           <ng-template let-ctx edge>
@@ -26,19 +28,64 @@ import { Subscription } from 'rxjs';
             </div>
           </ng-template>
           <ng-template let-ctx nodeHtml>
-            <div class="node-card ro" [class.locked]="!(allowDrag && move)">
-              <div class="header">
-                <i [class]="ctx.node.data.model.templateObj?.icon" class="icon"></i>
-                <div class="meta">
-                  <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
-                  <div class="subtitle">{{ ctx.node.data.model.templateObj?.subtitle }}</div>
-                </div>
+            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal' }">
+              <div class="center-wrap">
+                <node-card-header
+                  [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
+                  [subtitle]="ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category || ctx.node.data.model.templateObj?.type"
+                  [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
+                  [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
+                  [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
+                ></node-card-header>
               </div>
-              <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
-                <handle position="top" type="target" [id]="inId"></handle>
+              <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
+                <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
+                  <div class="in" *ngFor="let ih of ins; let i = index">
+                    <ng-template #ihTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#000000'"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                      ></svg:circle>
+                    </svg:g>
+                    </ng-template>
+                    <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">
+                      <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
+                    </ng-container>
+                    <ng-template #horizInputMulti>
+                      <div style="position: absolute; left: 0;" [style.top.px]="horizHandleTop(i, ins.length)">
+                        <handle position="left" type="target" [id]="ih.id" [template]="ihTpl" />
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
               </ng-container>
+              <ng-template #singleIn>
+                <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj)">
+                  <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+                  <ng-template #handleInTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#000000'" 
+                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                      ></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
+                    <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+                  </ng-container>
+                  <ng-template #horizInputSingle>
+                    <div style="position: absolute; left: 0; top: 23px">
+                      <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
+                    </div>
+                  </ng-template>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
               <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
-                <div class="out" *ngFor="let out of outputIds(ctx.node.data.model)">
+                <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index">
                   <ng-template #hTpl let-hctx>
                     <svg:g>
                       <svg:circle
@@ -54,7 +101,14 @@ import { Subscription } from 'rxjs';
                       ></svg:circle>
                     </svg:g>
                   </ng-template>
-                  <handle position="bottom" type="source" [id]="out" [template]="hTpl"></handle>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
+                    <handle position="bottom" type="source" [id]="out" [template]="hTpl"></handle>
+                  </ng-container>
+                  <ng-template #horizOutput>
+                    <div style="position: absolute; right: 0;" [style.top.px]="horizHandleTop(i, outs)">
+                      <handle position="right" type="source" [id]="out" [template]="hTpl"></handle>
+                    </div>
+                  </ng-template>
                 </div>
               </div>
               <!-- Linked handles (targets on right) -->
@@ -97,7 +151,9 @@ import { Subscription } from 'rxjs';
     .flow-viewer { position: relative; height:100%; }
     .canvas.ro { border: 1px solid #e5e7eb; border-radius: 0; overflow: hidden; height:100%; }
     .canvas-host { height: 100%; width: 100%; }
-    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:8px; min-width: 180px; }
+    .node-card.ro { position: relative; background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:8px; min-width: 180px; }
+    .node-card.ro.horizontal { min-height: 70px; }
+    .center-wrap { display:flex; justify-content:center; align-items:center; }
     .node-card.ro.locked { pointer-events: none; }
     .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
     .node-card .icon { width: 20px; height: 20px; display:inline-block; }
@@ -124,6 +180,8 @@ import { Subscription } from 'rxjs';
   `]
 })
 export class FlowViewerComponent implements AfterViewInit, OnDestroy {
+  @Input() background: any = '#EEF0F4';
+  @Input() portOrientation: 'vertical'|'horizontal' = 'horizontal';
   @Input() nodes: any[] = [];
   @Input() edges: Edge[] = [];
   @Input() connectionSettings: ConnectionSettings = {} as any;
@@ -154,7 +212,18 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   tipVisible = false; tipText = ''; tipX = 0; tipY = 0; tipError = false;
 
   private zoomUpdateTimer: any;
-  constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  private appsMap = new Map<string, AppProvider>();
+  constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) {}
+
+  horizHandleTop(index: number, countOrArr: any): number {
+    try {
+      const count = Array.isArray(countOrArr) ? countOrArr.length : Number(countOrArr) || 1;
+      const center = 35; // px (middle of ~70px height)
+      const gap = 16;
+      const start = center - ((count - 1) * gap) / 2;
+      return Math.round(start + index * gap);
+    } catch { return 23; }
+  }
 
   ngOnInit() {
     // Override flags by query params if present
@@ -172,6 +241,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
 
     // Demo graph if requested
     // if (this.demo) this.loadDemo();
+    try { this.catalog.listApps().subscribe(list => this.zone.run(() => { (list || []).forEach(a => this.appsMap.set(a.id, a)); try { this.cdr.detectChanges(); } catch {} })); } catch {}
   }
 
   ngAfterViewInit() {
@@ -395,6 +465,10 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
       return '';
     } catch { return ''; }
   }
+  // Helpers to mirror builder template conditions
+  isTriggerTemplate(tpl: any): boolean {
+    try { const t = String(tpl?.type || '').toLowerCase(); return t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint'; } catch { return false; }
+  }
   onHandleEnter(ev: MouseEvent, model: any, out: string) {
     const txt = this.getOutputName(model, out) || '';
     this.tipText = txt; this.tipVisible = !!txt; this.tipError = String(out) === 'err';
@@ -402,4 +476,30 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   }
   onHandleMove(ev: MouseEvent) { this.tipX = ev.clientX + 8; this.tipY = ev.clientY + 8; }
   onHandleLeave() { this.tipVisible = false; }
+
+  typeIconClass(tpl: any): string {
+    try {
+      const type = String(tpl?.type || '').toLowerCase();
+      switch (type) {
+        case 'start':
+        case 'start_form':
+          return 'fa-solid fa-play';
+        case 'event': return 'fa-solid fa-bell';
+        case 'endpoint': return 'fa-solid fa-link';
+        case 'function': return 'fa-solid fa-cog';
+        case 'condition': return 'fa-solid fa-code-branch';
+        case 'loop': return 'fa-solid fa-sync';
+        case 'end': return 'fa-solid fa-stop';
+        case 'flow': return 'fa-solid fa-diagram-project';
+        default: return 'fa-regular fa-square';
+      }
+    } catch { return 'fa-regular fa-square'; }
+  }
+  appIdOf(tpl: any): string | null {
+    try {
+      const app = tpl?.app; const id = (app && app._id) ? String(app._id) : String(tpl?.appId || '');
+      return id || null;
+    } catch { return null; }
+  }
+  getAppById(id?: string|null): AppProvider | undefined { try { const key = String(id || '').trim(); return key ? this.appsMap.get(key) : undefined; } catch { return undefined; } }
 }

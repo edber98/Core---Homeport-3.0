@@ -233,7 +233,10 @@
       [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
-      [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
+      [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
+      [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
+      [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
+      [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
       [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
       [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
       [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
@@ -366,6 +369,8 @@
     <ng-container *ngIf="(selectionList?.length || 0) > 1; else singleCtx">
       <button (click)="ctxDuplicateGroup()"><i class="fa-regular fa-copy"></i> Dupliquer la sélection ({{selectionList.length}})</button>
       <button (click)="ctxCenterSelection()"><i class="fa-solid fa-crosshairs"></i> Centrer la sélection</button>
+      <button (click)="ctxAlignSelection('horizontal')"><i class="fa-solid fa-arrows-left-right"></i> Aligner horizontalement</button>
+      <button (click)="ctxAlignSelection('vertical')"><i class="fa-solid fa-arrows-up-down"></i> Aligner verticalement</button>
       <button class="danger" (click)="ctxDeleteGroup()"><i class="fa-regular fa-trash-can"></i> Supprimer la sélection ({{selectionList.length}})</button>
       <span class="divider" aria-hidden="true"></span>
     </ng-container>
@@ -417,7 +422,10 @@
       [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
       (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
-      [currentFlowName]="currentFlowName" [currentFlowDesc]="currentFlowDesc" [currentFlowStatus]="currentFlowStatus" [currentFlowEnabled]="currentFlowEnabled"
+      [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
+      [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
+      [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
+      [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
       [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
       [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
       [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
