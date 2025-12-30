@@ -183,7 +183,7 @@ export class FlowBuilderComponent {
     try { this.message.info(`Orientation: ${this.portOrientation}`); } catch {}
     
     // Persist and refresh placement/viewport
-    try { this.updateSharedGraph(); this.saveDraft(); } catch {}
+    try { this.updateSharedGraph(); this.saveDraft(); this.saveLocalUiMeta(); } catch {}
     // Force UI refresh so handles reposition without user interaction
     try {
       this.forceViewRefresh('toggle-orientation');
@@ -205,6 +205,7 @@ export class FlowBuilderComponent {
       try { this.message.info(this.alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'); } catch {}
       this.updateSharedGraph();
       this.saveDraft();
+      this.saveLocalUiMeta();
       this.forceViewRefresh('toggle-alignment-helper');
     } catch {}
   }
@@ -215,6 +216,7 @@ export class FlowBuilderComponent {
       try { this.message.info(this.snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'); } catch {}
       this.updateSharedGraph();
       this.saveDraft();
+      this.saveLocalUiMeta();
       this.forceViewRefresh('toggle-snap-grid');
     } catch {}
   }
@@ -374,6 +376,12 @@ export class FlowBuilderComponent {
         try { this.forceViewRefresh('apply-flow-meta'); } catch {}
         try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('apply-flow-meta-post-center'); }, 0); } catch {}
       }
+      // Fallback to local UI meta for orientation when not defined on server
+      if (!(ori === 'horizontal' || ori === 'vertical')) {
+        const lm = this.readLocalUiMeta();
+        const lo = String(lm?.portOrientation || '').toLowerCase();
+        if (lo === 'horizontal' || lo === 'vertical') this.portOrientation = lo as any;
+      }
       // alignmentHelper (boolean | string | settings)
       try {
         const ah = (ui as any).alignmentHelper;
@@ -392,6 +400,14 @@ export class FlowBuilderComponent {
           this.alignmentHelper = { tolerance: 35, lineColor: '#D1D5DB' };
         }
       } catch {}
+      // Fallback to local meta for helper/grid when not in server settings
+      try {
+        const lm = this.readLocalUiMeta();
+        if (lm && typeof lm === 'object') {
+          if (lm.alignmentHelper != null && (ui as any).alignmentHelper == null) this.alignmentHelper = lm.alignmentHelper;
+          if (Array.isArray(lm.snapGrid) && (ui as any).snapGrid == null) this.snapGrid = [Number(lm.snapGrid[0]), Number(lm.snapGrid[1])] as any;
+        }
+      } catch {}
       // snapGrid ([x,y] or disabled)
       try {
         const sg = (ui as any).snapGrid;
@@ -402,6 +418,8 @@ export class FlowBuilderComponent {
           this.snapGrid = null;
         }
       } catch {}
+      // Mirror to local meta after applying
+      try { this.saveLocalUiMeta(); } catch {}
     } catch {}
   }
   private toastTimer: any;
@@ -891,6 +909,16 @@ export class FlowBuilderComponent {
     } else {
       try { localStorage.removeItem(this.draftKey(fid)); } catch {}
     }
+  }
+  private uiMetaKey(): string { const fid = this.currentFlowId || 'adhoc'; return `flow.ui.meta.${fid}`; }
+  private saveLocalUiMeta() {
+    try {
+      const v = { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid };
+      localStorage.setItem(this.uiMetaKey(), JSON.stringify(v));
+    } catch {}
+  }
+  private readLocalUiMeta(): any {
+    try { const raw = localStorage.getItem(this.uiMetaKey()); return raw ? JSON.parse(raw) : null; } catch { return null; }
   }
   private tryRestoreDraft(flowId: string) {
     try {

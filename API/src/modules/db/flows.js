@@ -77,7 +77,7 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
-    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] } } = req.body || {};
+    const { name, description = '', status = 'draft', enabled = true, graph = { nodes: [], edges: [] }, settings = {} } = req.body || {};
     if (!name || String(name).trim() === '') return res.apiError(400, 'name_required', 'Flow name is required');
     normalizeGraphFormSchemas(graph);
     const Provider = require('../../db/models/provider.model');
@@ -104,6 +104,7 @@ module.exports = function(){
       // Allow enabling on create when force=1 even if graph is invalid (empty or WIP)
       enabled: v.ok ? enabled : (force ? enabled : false),
       graph,
+      settings: (typeof settings === 'object' && settings) ? settings : {},
       invalid: !v.ok,
       validationErrors: v.errors || [],
       validationWarnings: v.warnings || [],
@@ -211,6 +212,9 @@ module.exports = function(){
     }
     // Patch other fields
     Object.assign(f, { name: patch.name ?? f.name, description: (patch.description != null ? String(patch.description) : f.description), status: patch.status ?? f.status, enabled: (patch.enabled != null ? patch.enabled : f.enabled) });
+    if (patch.settings && typeof patch.settings === 'object') {
+      f.settings = patch.settings;
+    }
     await f.save();
     res.apiOk(f);
   });
