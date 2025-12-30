@@ -598,11 +598,11 @@ export class FlowBuilderComponent {
             // Extend suppression window a bit after render to avoid initial remove glitches
             this.suppressNodesRemovedUntil = Math.max(this.suppressNodesRemovedUntil, Date.now() + 1200);
             try { this.cdr.detectChanges(); } catch { }
-            // Center the view (not a node) if requested or if no saved zoom exists
+            // Center the view after panels are closed and layout is ready
             try {
               const hasSavedZoom = !!localStorage.getItem('flow.zoom');
-              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
-            } catch { if (centerActive) setTimeout(() => this.centerFlow(), 0); }
+              if (centerActive || !hasSavedZoom) { this.scheduleCenterIfRequested(true); }
+            } catch { if (centerActive) this.scheduleCenterIfRequested(true); }
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
@@ -666,12 +666,12 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
-            // Center the view (not a node) if requested or if no saved zoom exists
+            // Center the view after panels are closed and layout is ready
             try {
               const centerParam = this.route.snapshot.queryParamMap.get('center');
-              const centerActive = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
+              const centerActive2 = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
               const hasSavedZoom = !!localStorage.getItem('flow.zoom');
-              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
+              if (centerActive2 || !hasSavedZoom) { this.scheduleCenterIfRequested(true); }
             } catch {}
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
@@ -4226,6 +4226,16 @@ export class FlowBuilderComponent {
   }
   private updateSharedGraph() {
     try { this.shared.setGraph(this.snapshot() as any); } catch {}
+  }
+  private scheduleCenterIfRequested(centerActive: boolean) {
+    try {
+      if (!centerActive) return;
+      // Ensure panels are closed before centering and apply a short delay for layout to settle
+      this.leftPanelOpen = false; this.rightPanelOpen = false;
+      this.onLeftDrawerClose(); this.onRightDrawerClose();
+      try { this.cdr.detectChanges(); } catch {}
+      setTimeout(() => { try { this.centerFlow(); } catch {} }, 60);
+    } catch {}
   }
   private historyKey(): string {
     const fid = this.currentFlowId || 'adhoc';

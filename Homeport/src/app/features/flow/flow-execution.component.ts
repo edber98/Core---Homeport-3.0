@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
 import { RunsBackendService, BackendRun } from '../../services/runs-backend.service';
@@ -18,18 +20,23 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 @Component({
   selector: 'flow-execution',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule],
+  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzButtonModule, NzTagModule],
   template: `
   <div class="flow-exec">
     <aside class="side executions">
-      <h4>Exécutions</h4>
+      <div class="panel-heading">
+        <div class="card-title">
+          <div class="t">Exécutions</div>
+          <div class="s">{{ mode }}</div>
+        </div>
+      </div>
       <div class="mode-row apple">
         <select class="mode-select" [(ngModel)]="mode">
           <option value="test">test</option>
           <option value="prod">prod</option>
         </select>
-        <button class="icon-btn ghost" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
-        <button class="icon-btn ghost" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
+        <button nz-button nzSize="small" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
+        <button nz-button nzType="primary" nzSize="small" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
       </div>
       <div class="counters">
         <span class="badge">Lancements: {{ counters.launched }}</span>
@@ -41,25 +48,27 @@ import { NzModalService } from 'ng-zorro-antd/modal';
           <div class="line2">{{ r.startedAt | date:'short' }} · {{ r.durationMs || 0 }} ms</div>
         </li>
       </ul>
-      <h5 style="margin-top:10px;">Historique (backend)</h5>
-      <div class="exec-list scrollable" (scroll)="onListScroll($event)">
-        <div class="exec-item" *ngFor="let b of backendFlowRuns" (click)="selectBackendRun(b)">
-          <div class="line1">
-            <span class="badge st" [ngClass]="b.status">{{ b.status }}</span>
-            <span class="id">#{{ b.id }}</span>
+      <div class="panel-subtitle">Historique (backend)</div>
+      <div class="exec-list" (scroll)="onListScroll($event)">
+        <div class="exec-item" *ngFor="let b of backendFlowRuns; trackBy: trackBackendRun" (click)="selectBackendRun(b)">
+          <div class="row top">
+            <div class="left">
+              <nz-tag [nzColor]="b.status==='success' ? 'green' : (b.status==='error' ? 'red' : (b.status==='running' ? 'blue' : 'default'))">{{ b.status }}</nz-tag>
+              <span class="start" *ngIf="b.startedAt as s">{{ s | date:'medium' }}</span>
+            </div>
+            <div class="right">
+              <button nz-button nzSize="small" (click)="onViewRunClick(b); $event.stopPropagation()" title="Voir détails"><i class="fa-solid fa-eye"></i></button>
+              <button nz-button nzSize="small" nzDanger (click)="cancelBackend(b.id); $event.stopPropagation()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
+              <button nz-button nzSize="small" (click)="openInEditor(b); $event.stopPropagation()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
+            </div>
           </div>
-          <div class="line2">
-            <span *ngIf="b.startedAt as s">{{ s | date:'short' }}</span>
-            <span *ngIf="b.durationMs != null"> · {{ b.durationMs }} ms</span>
-            <span *ngIf="b.nodesExecuted != null"> · {{ b.nodesExecuted }} nœuds</span>
-            <span *ngIf="b.eventsCount != null"> · {{ b.eventsCount }} évts</span>
-          </div>
-          <div class="actions">
-            <button class="icon-btn primary" (click)="onViewRunClick(b); $event.stopPropagation()" title="Voir détails">
-              <i class="fa-solid fa-eye"></i>
-            </button>
-            <button class="icon-btn" (click)="cancelBackend(b.id); $event.stopPropagation()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
-            <button class="icon-btn" (click)="openInEditor(b); $event.stopPropagation()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
+          <div class="row bottom">
+            <div class="id mono">ID: {{ b.id }}</div>
+            <div class="meta" *ngIf="b.durationMs != null || b.nodesExecuted != null || b.eventsCount != null">
+              <span *ngIf="b.durationMs != null">{{ b.durationMs }} ms</span>
+              <span *ngIf="b.nodesExecuted != null"> · {{ b.nodesExecuted }} nœuds</span>
+              <span *ngIf="b.eventsCount != null"> · {{ b.eventsCount }} évts</span>
+            </div>
           </div>
         </div>
         <div class="empty" *ngIf="backendFlowRuns.length===0">Aucune exécution pour ce flow</div>
@@ -100,7 +109,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
       </div>
       <div class="viewer-layout" [class.show-details]="!!selectedBackendRun">
         <div class="viewer-canvas-wrap">
-          <flow-viewer class="viewer-canvas"
+          <flow-viewer class="viewer-canvas" [class.panel-open]="!!selectedBackendRun"
             [nodes]="decoratedNodes"
             [edges]="decoratedEdges"
             [background]="flowBackground"
@@ -108,17 +117,25 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
         <aside class="details-panel" *ngIf="selectedBackendRun as br" #detailsPanel>
-          <div class="panel-header">
-            <div class="title">Détails de l’exécution</div>
+          <div class="panel-heading">
+            <div class="card-title">
+              <div class="t">Exécution</div>
+              <div class="s" *ngIf="br.startedAt as s">{{ s | date:'medium' }}</div>
+              <div class="s mono">ID: {{ br.id }}</div>
+            </div>
             <div class="spacer"></div>
-            <button class="apple-btn" (click)="expandAllAttempts()" title="Développer tout">Développer tout</button>
-            <button class="apple-btn" (click)="collapseAllAttempts()" title="Replier tout">Replier tout</button>
+            <nz-tag [nzColor]="br.status==='success' ? 'green' : (br.status==='error' ? 'red' : (br.status==='running' ? 'blue' : (br.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ br.status }}</nz-tag>
+            <button nz-button nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
+              <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+            </button>
+            <button nz-button nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
+              <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+            </button>
           </div>
           <div class="run-meta">
-            <span class="badge st" [ngClass]="br.status">{{ br.status }}</span>
-            <span *ngIf="br.startedAt as s">{{ s | date:'short' }}</span>
-            <span *ngIf="br.durationMs != null"> · {{ br.durationMs }} ms</span>
+            <span *ngIf="br.durationMs != null">{{ br.durationMs }} ms</span>
             <span *ngIf="br.nodesExecuted != null"> · {{ br.nodesExecuted }} nœuds</span>
+            <span *ngIf="br.eventsCount != null"> · {{ br.eventsCount }} évts</span>
           </div>
           <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
             <div class="hdr">
@@ -173,23 +190,28 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   styles: [`
     .flow-exec { position: relative; display:grid; grid-template-columns: 360px 1fr; gap: 0; height:100%; }
     .side.executions { border: none; border-radius: 0; padding: 12px; background: #ffffff; overflow: auto; }
-    .side.executions h4 { margin: 0 0 8px; font-weight: 600; }
-     .mode-row { display:flex; gap:6px; align-items:center; margin-bottom:8px; }
+    .side.executions .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 6px; }
+    .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+    .panel-heading .card-title .t { font-weight:600; font-size:13px; margin: 0; }
+    .panel-heading .card-title .s { font-size:12px; color:#64748b; margin: 0; }
+    .panel-subtitle { font-weight:600; font-size:12px; color:#444; margin: 8px 0 6px; opacity:.9; }
+    .mode-row { display:flex; gap:6px; align-items:center; margin-bottom:8px; }
     .mode-row .mode-select { flex:0 0 76px; padding:3px 6px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; font-size:12px; }
     .mode-row .icon-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; }
     .counters { display:flex; gap:8px; margin: 8px 0; }
     .badge { display:inline-block; background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:4px 8px; font-size:12px; }
-    .exec-list { list-style: none; padding: 0; margin: 8px 0; display:flex; flex-direction:column; gap:6px; }
-    .exec-list.scrollable { max-height: 42vh; overflow: auto; }
-    .exec-list li { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; cursor:pointer; }
-    .exec-item { position: relative; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; }
-    .exec-item .line1 { display:flex; gap:8px; align-items:center; font-weight:600; }
-    .exec-item .line2 { color:#6b7280; font-size:12px; margin-top:2px; }
+    .exec-list { list-style: none; padding: 0; margin: 8px 0; display:flex; flex-direction:column; gap:8px; }
+    .exec-item { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
+    .exec-item .row.top { display:flex; align-items:center; gap:8px; }
+    .exec-item .row.top .left { display:flex; align-items:center; gap:8px; min-width: 0; }
+    .exec-item .row.top .right { margin-left:auto; display:inline-flex; gap:6px; }
+    .exec-item .row.bottom { display:flex; align-items:center; gap:8px; color:#6b7280; font-size:12px; }
+    .exec-item .row.bottom .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#374151; }
     .exec-item .badge.st { border:1px solid #e5e7eb; padding:2px 6px; border-radius:6px; font-size:12px; text-transform: lowercase; }
     .exec-item .badge.st.success { color:#0f5132; background:#d1e7dd; border-color:#badbcc; }
     .exec-item .badge.st.error { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
     .exec-item .badge.st.running { color:#1d4ed8; background:#dbeafe; border-color:#bfdbfe; }
-    .exec-item .actions { position:absolute; right:8px; top:8px; display:flex; gap:6px; }
+    /* Left panel scrolls itself; no internal max-height */
     .icon-btn.primary { background:#1677ff; color:#fff; border:1px solid #1677ff; }
     .exec-list li.sel { border-color:#1677ff; }
     .attempts { margin-top: 10px; }
@@ -217,12 +239,11 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .viewer-canvas-wrap { height:100%; }
     .viewer-canvas { height: 100%; display:block; }
     .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:10px; min-width: 0; }
+    .details-panel .panel-heading { display:flex; align-items:center; gap:8px; margin: 0 0 10px; padding-bottom:8px; border-bottom:1px solid #E2E1E4; }
+    .details-panel .panel-heading .spacer { flex:1 1 auto; }
+    .details-panel .panel-heading .status-tag { text-transform: lowercase; }
+    .details-panel .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; color:#6b7280; font-size:12px; }
     .details-panel h6 { margin: 12px 0 6px; }
-    .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; }
-    .panel-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-    .panel-header .title { font-weight:600; }
-    .panel-header .spacer { flex:1 1 auto; }
-    .panel-header .apple-btn { padding:20px 10px; }
     .loading-overlay { position:absolute; inset:0; background: rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index: 10; }
     .loading-overlay .spinner { width:28px; height:28px; border:3px solid #e5e7eb; border-top-color:#111827; border-radius:50%; animation: spin .8s linear infinite; }
     .loading-overlay .text { margin-top:10px; color:#374151; font-weight:500; }
@@ -398,6 +419,7 @@ export class FlowExecutionComponent {
   private flowRunsLimit = 20;
   private flowRunsLoading = false;
   private flowRunsHasMore = true;
+  trackBackendRun(index: number, b: BackendRun) { return b && (b as any).id; }
   private loadBackendRuns(flowId?: string, append: boolean = false) {
     const fid = flowId || this.currentFlowId || undefined;
     const wsId = this.acl.currentWorkspaceId() || undefined;
