@@ -6,7 +6,11 @@ class PluginRegistry {
     this.handlers = new Map(); // key -> async (node,msg,inputs)
     this.meta = new Map();     // key -> { source, mtime }
     // Track baseDirs with optional repo metadata for import attribution
-    this.baseDirs = [ { path: path.resolve(__dirname, 'local'), repo: null }, { path: path.resolve(__dirname, 'repos'), repo: null } ];
+    // Default: include both local and repos
+    this.baseDirs = [
+      { path: path.resolve(__dirname, 'local'), repo: null },
+      { path: path.resolve(__dirname, 'repos'), repo: null }
+    ];
   }
 
   normalizeKey(k){
@@ -30,7 +34,7 @@ class PluginRegistry {
 
   addBaseDir(dir, repo = null){ this.baseDirs.push({ path: path.resolve(dir), repo: repo || null }); }
 
-  loadFromDir(dir, repo){
+  async loadFromDir(dir, repo){
     const loaded = [];
     if (!fs.existsSync(dir)) return loaded;
     // Each subdir is a plugin repo with manifest.json and functions/*.js
@@ -42,13 +46,26 @@ class PluginRegistry {
       if (fs.existsSync(manifestPath) && allowImport){
         try {
           const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-          // Import providers/nodeTemplates into DB
+          // Determine/ensure a PluginRepo doc for this folder (builtin repo)
+          let repoMeta = repo || null;
+          try {
+            const PluginRepo = require('../db/models/plugin-repo.model');
+            const name = (manifest.repo && manifest.repo.name) || ent.name;
+            const type = (manifest.repo && manifest.repo.type) || 'local';
+            const url = (manifest.repo && manifest.repo.url) || undefined;
+            const branch = (manifest.repo && manifest.repo.branch) || undefined;
+            let pr = await PluginRepo.findOne({ name, path: plugDir, type, companyId: null });
+            if (!pr) pr = await PluginRepo.create({ name, type, path: plugDir, url, branch, companyId: null, enabled: true, status: 'builtin' });
+            const obj = pr.toObject();
+            repoMeta = { id: obj._id || obj.id, name: obj.name, companyId: obj.companyId || null };
+          } catch {}
+          // Import providers/nodeTemplates into DB with repo metadata and manifest path
           try {
             const { importManifest } = require('./importer');
-            importManifest(manifest, { repo })
-              .then((summary) => logImportSuccess(repo, manifestPath, summary))
-              .catch((e)=>logImportError(repo, manifestPath, e));
-          } catch (e) { logImportError(repo, manifestPath, e); }
+            importManifest(manifest, { repo: repoMeta, manifestPath })
+              .then((summary) => logImportSuccess(repoMeta, manifestPath, summary))
+              .catch((e)=>logImportError(repoMeta, manifestPath, e));
+          } catch (e) { logImportError(repoMeta, manifestPath, e); }
         } catch (e) { logImportError(repo, manifestPath, e); }
       }
       const fnDir = path.join(plugDir, 'functions');
@@ -85,10 +102,13 @@ class PluginRegistry {
     return loaded;
   }
 
-  reload(){
+  async reload(){
     this.handlers.clear(); this.meta.clear();
     let total = [];
-    for (const entry of this.baseDirs) total = total.concat(this.loadFromDir(entry.path, entry.repo || null));
+    for (const entry of this.baseDirs){
+      const arr = await this.loadFromDir(entry.path, entry.repo || null);
+      total = total.concat(arr);
+    }
     return total;
   }
 }
@@ -112,5 +132,13 @@ function logImportSuccess(repo, manifestPath, summary){
     const p = summary && summary.providers || {};
     const t = summary && summary.nodeTemplates || {};
     console.log('[plugins] import ok', manifestPath, `providers(c/u/s): ${p.created||0}/${p.updated||0}/${p.skipped||0}`, `templates(c/u/s): ${t.created||0}/${t.updated||0}/${t.skipped||0}`);
+    // Persist import history if available
+    if (summary && Array.isArray(summary.history) && summary.history.length){
+      try {
+        const PluginImportHistory = require('../db/models/plugin-import-history.model');
+        const bulk = summary.history.map(h => ({ insertOne: { document: h } }));
+        if (bulk.length) PluginImportHistory.bulkWrite(bulk).catch(()=>{});
+      } catch {}
+    }
   } catch {}
 }

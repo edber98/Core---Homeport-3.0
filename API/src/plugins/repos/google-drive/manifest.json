@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "google-drive", "type": "local", "label": "Google Drive" },
   "providers": [
     { "key": "googleDrive", "name": "Google Drive", "title": "Google Drive", "iconClass": "fa-brands fa-google-drive", "color": "#0F9D58", "tags": ["storage"], "categories": ["Docs & Drive"], "hasCredentials": true,
       "credentialsForm": { "title": "OAuth Google", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [

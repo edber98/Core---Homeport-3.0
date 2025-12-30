@@ -3,14 +3,27 @@ const { authMiddleware, requireCompanyScope, requireAdmin } = require('../../aut
 const PluginRepo = require('../../db/models/plugin-repo.model');
 const { registry } = require('../../plugins/registry');
 const path = require('path');
+const fs = require('fs');
 
-async function ensureDefaultLocal(){
+async function ensureBuiltinReposFromDir(){
   try {
-    const defaultPath = path.resolve(__dirname, '../../plugins/local');
-    const exists = await PluginRepo.findOne({ type: 'local', path: defaultPath, companyId: null }).lean();
-    if (!exists) {
-      await PluginRepo.create({ name: 'Local (built-in)', type: 'local', path: defaultPath, companyId: null, enabled: true, status: 'builtin' });
-    }
+    const collect = async (baseDir) => {
+      if (!fs.existsSync(baseDir)) return;
+      const entries = fs.readdirSync(baseDir, { withFileTypes: true }).filter(d => d.isDirectory());
+      for (const ent of entries){
+        const folder = path.join(baseDir, ent.name);
+        const manifestPath = path.join(folder, 'manifest.json');
+        if (!fs.existsSync(manifestPath)) continue;
+        let label = ent.name;
+        try { const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); label = (m.repo && (m.repo.label || m.repo.name)) || ent.name; } catch {}
+        const existing = await PluginRepo.findOne({ type: 'local', path: folder, companyId: null }).lean();
+        if (!existing) {
+          await PluginRepo.create({ name: label, type: 'local', path: folder, companyId: null, enabled: true, status: 'builtin' });
+        }
+      }
+    };
+    await collect(path.resolve(__dirname, '../../plugins/local'));
+    await collect(path.resolve(__dirname, '../../plugins/repos'));
   } catch {}
 }
 
@@ -20,7 +33,7 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/plugin-repos', async (req, res) => {
-    await ensureDefaultLocal();
+    await ensureBuiltinReposFromDir();
     const q = { $or: [ { companyId: null }, { companyId: req.user.companyId } ] };
     let { limit = 100, page = 1, q: search, sort } = req.query;
     limit = Math.max(1, Math.min(200, Number(limit) || 100));
@@ -87,7 +100,7 @@ module.exports = function(){
 
   // Sync a single repository (git/http/local). Validates flows; if invalid and !force, returns impacted
   r.post('/plugin-repos/:id/sync', requireAdmin(), async (req, res) => {
-    await ensureDefaultLocal();
+    await ensureBuiltinReposFromDir();
     const repo = await PluginRepo.findById(req.params.id);
     if (!repo) return res.apiError(404, 'plugin_repo_not_found', 'Plugin repo not found');
     const defaultPath = path.resolve(__dirname, '../../plugins/local');
@@ -99,7 +112,7 @@ module.exports = function(){
     // Add base dir when local
     if (repo.type === 'local' && repo.path) registry.addBaseDir(repo.path, { id: repo._id, name: repo.name, companyId: repo.companyId || null });
     // Reload plugins (imports manifest → providers/node-templates)
-    const loaded = registry.reload();
+    const loaded = await registry.reload();
     // Validate flows against current templates
     const Flow = require('../../db/models/flow.model');
     const Workspace = require('../../db/models/workspace.model');
@@ -146,12 +159,32 @@ module.exports = function(){
   });
 
   r.post('/plugin-repos/reload', requireAdmin(), async (_req, res) => {
-    await ensureDefaultLocal();
+    await ensureBuiltinReposFromDir();
     // Add base dirs for enabled local repos then reload
     const repos = await PluginRepo.find({ enabled: true, type: 'local' });
     for (const rp of repos){ if (rp.path) registry.addBaseDir(rp.path, { id: rp._id, name: rp.name, companyId: rp.companyId || null }); }
-    const loaded = registry.reload();
+    const loaded = await registry.reload();
     res.apiOk({ loaded, repos: repos.map(r => r.path) });
+  });
+
+  // Enable/disable a plugin repo (visibility in lists depends on repo.enabled)
+  r.put('/plugin-repos/:id', requireAdmin(), async (req, res) => {
+    const repo = await PluginRepo.findById(req.params.id);
+    if (!repo) return res.apiError(404, 'plugin_repo_not_found', 'Plugin repo not found');
+    const patch = req.body || {};
+    if (typeof patch.enabled === 'boolean') repo.enabled = patch.enabled;
+    if (patch.name) repo.name = patch.name;
+    await repo.save();
+    res.apiOk(repo);
+  });
+
+  // Admin: purge the legacy built-in local demo repo entry if present
+  r.post('/plugin-repos/purge-builtin-local', requireAdmin(), async (_req, res) => {
+    const defaultPath = path.resolve(__dirname, '../../plugins/local');
+    const repo = await PluginRepo.findOne({ type: 'local', path: defaultPath, companyId: null });
+    if (!repo) return res.apiOk({ deleted: false });
+    await repo.deleteOne();
+    res.apiOk({ deleted: true, path: defaultPath });
   });
 
   // Summary of items imported from a repo (providers, node templates)

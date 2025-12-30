@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "github", "type": "local", "label": "GitHub" },
   "providers": [
     {
       "key": "github",

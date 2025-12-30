@@ -1,41 +1,44 @@
 {
-  "name": "local-core",
-  "version": "1.0.0",
-  "providers": [],
+  "repo": { "name": "core", "type": "local", "label": "Core" },
+  "providers": [
+    { "key": "core", "name": "Core", "title": "Core", "order": 3, "iconClass": "fa-solid fa-cubes", "color": "#111827", "tags": ["core"], "hasCredentials": false }
+  ],
   "nodeTemplates": [
     {
       "key": "wait_all",
       "name": "waitAll",
-      "title": "Wait All",
-      "subtitle": "Barrière (Promise.all)",
+      "schemaVersion": 2,
+      "title": "Attendre tous",
+      "subtitle": "Barrière",
       "type": "function",
       "category": "Core",
+      "providerKey": "core",
       "icon": "fa-solid fa-arrows-to-dot",
-      "output": ["ok"],
-      "args": {
-        "expected": { "type": "string", "enum": ["auto"], "default": "auto" },
-        "combine": { "type": "string", "enum": ["array","object"], "default": "array" },
-        "objectKey": { "type": "string", "enum": ["nodeId","inputId","edgeId"], "default": "nodeId" },
-        "dedupeBy": { "type": "string", "enum": ["nodeId","inputId","edgeId"], "default": "nodeId" },
-        "timeoutMs": { "type": "number", "default": 0 },
-        "onTimeout": { "type": "string", "enum": ["error","continue"], "default": "error" }
-      }
+      "inputHandles": [ { "id": "in", "name": "In", "type": "any", "accepts": ["any","payload"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "args": { "title": "Wait All", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "select", "key": "combine", "label": "Combiner", "options": [ {"label":"array","value":"array"}, {"label":"object","value":"object"} ], "default": "array", "col": { "xs": 24 } },
+        { "type": "number", "key": "timeoutMs", "label": "Timeout (ms)", "default": 0, "col": { "xs": 24 } },
+        { "type": "select", "key": "onTimeout", "label": "Sur timeout", "options": [ {"label":"error","value":"error"}, {"label":"continue","value":"continue"} ], "default": "error", "col": { "xs": 24 } }
+      ] }
     },
     {
       "key": "merge_race",
       "name": "mergeRace",
-      "title": "Merge Race",
+      "schemaVersion": 2,
+      "title": "Course (premier arrivé)",
       "subtitle": "Première arrivée",
       "type": "function",
       "category": "Core",
+      "providerKey": "core",
       "icon": "fa-solid fa-flag-checkered",
-      "output": ["ok"],
-      "args": {
-        "cancelOthers": { "type": "boolean", "default": true },
-        "timeoutMs": { "type": "number", "default": 0 },
-        "onTimeout": { "type": "string", "enum": ["error","continue"], "default": "error" }
-      }
+      "inputHandles": [ { "id": "in", "name": "In", "type": "any", "accepts": ["any","payload"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "args": { "title": "Merge Race", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "checkbox", "key": "cancelOthers", "label": "Annuler les autres", "default": true, "col": { "xs": 24 } },
+        { "type": "number", "key": "timeoutMs", "label": "Timeout (ms)", "default": 0, "col": { "xs": 24 } },
+        { "type": "select", "key": "onTimeout", "label": "Sur timeout", "options": [ {"label":"error","value":"error"}, {"label":"continue","value":"continue"} ], "default": "error", "col": { "xs": 24 } }
+      ] }
     }
   ]
 }
-

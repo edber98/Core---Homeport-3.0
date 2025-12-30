@@ -9,6 +9,7 @@ const ProviderSchema = new Schema({
   color: { type: String },
   tags: { type: [String], default: [] },
   categories: { type: [String], default: [] },
+  order: { type: Number },
   enabled: { type: Boolean, default: true },
   hasCredentials: { type: Boolean, default: false },
   allowWithoutCredentials: { type: Boolean, default: false },
@@ -17,6 +18,9 @@ const ProviderSchema = new Schema({
   // Origin repo (optional)
   repoId: { type: Types.ObjectId, ref: 'PluginRepo', index: true },
   repoName: { type: String },
+  // Multiple repos may contribute the same provider
+  repos: { type: [Types.ObjectId], ref: 'PluginRepo', index: true, default: [] },
+  repoNames: { type: [String], default: [] },
 }, { timestamps: true });
 
 module.exports = model('Provider', ProviderSchema);

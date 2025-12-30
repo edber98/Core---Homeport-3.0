@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "onedrive-sharepoint", "type": "local", "label": "OneDrive/SharePoint" },
   "providers": [
     { "key": "oneDrive", "name": "OneDrive", "title": "OneDrive", "iconClass": "fa-brands fa-microsoft", "color": "#0366D6", "tags": ["storage"], "categories": ["Docs & Drive"], "hasCredentials": true,
       "credentialsForm": { "title": "OAuth Microsoft Graph", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [

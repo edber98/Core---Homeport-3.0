@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "email", "type": "local", "label": "Email" },
   "providers": [
     {
       "key": "smtp_imap",

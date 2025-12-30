@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "slack", "type": "local", "label": "Slack" },
   "providers": [
     {
       "key": "slack",

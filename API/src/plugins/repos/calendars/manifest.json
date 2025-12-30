@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "calendars", "type": "local", "label": "Calendars" },
   "providers": [
     {
       "key": "googleCalendar",

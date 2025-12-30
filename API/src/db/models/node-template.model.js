@@ -11,6 +11,7 @@ const NodeTemplateSchema = new Schema({
   description: { type: String },
   tags: { type: [String], default: [] },
   group: { type: String },
+  enabled: { type: Boolean, default: true },
   // v1: type; v2: nodeKind (superset)
   type: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice'], required: true },
   nodeKind: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice'], default: undefined },
@@ -33,6 +34,9 @@ const NodeTemplateSchema = new Schema({
   // Origin repo (optional)
   repoId: { type: Types.ObjectId, ref: 'PluginRepo', index: true },
   repoName: { type: String },
+  // Multiple repos may contribute the same template
+  repos: { type: [Types.ObjectId], ref: 'PluginRepo', index: true, default: [] },
+  repoNames: { type: [String], default: [] },
 }, { timestamps: true });
 
 module.exports = model('NodeTemplate', NodeTemplateSchema);

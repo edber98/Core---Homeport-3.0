@@ -11,6 +11,10 @@ module.exports = function(){
     limit = Math.max(1, Math.min(200, Number(limit) || 100));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
+    // Hide providers when all their repos are disabled
+    const PluginRepo = require('../../db/models/plugin-repo.model');
+    const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
+    const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
     const query = { enabled: true };
     if (q) {
       const rx = { $regex: String(q), $options: 'i' };
@@ -21,7 +25,14 @@ module.exports = function(){
       const [field, dir] = String(sort).split(':');
       if (field) sortObj = { [field]: (dir === 'desc' ? -1 : 1) };
     }
-    const list = await Provider.find(query)
+    const list = await Provider.find({
+        ...query,
+        $or: [
+          { repos: { $exists: false } },
+          { repos: { $size: 0 } },
+          { repos: { $in: [...enabledIds] } },
+        ]
+      })
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)

@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "zoom", "type": "local", "label": "Zoom" },
   "providers": [
     {
       "key": "zoom",

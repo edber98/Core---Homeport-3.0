@@ -1,0 +1,34 @@
+{
+  "repo": { "name": "events", "type": "local", "label": "Événements" },
+  "providers": [
+    { "key": "events", "name": "Événements", "title": "Événements", "order": 1, "iconClass": "fa-solid fa-bolt", "color": "#f59e0b", "tags": ["events"], "hasCredentials": false }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "start",
+      "name": "start",
+      "schemaVersion": 2,
+      "title": "Démarrage",
+      "subtitle": "Déclencheur",
+      "type": "start",
+      "category": "Core",
+      "providerKey": "events",
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "description": "Point d'entrée du flow",
+      "args": { "title": "Démarrage", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [] }
+    },
+    {
+      "key": "start_form",
+      "name": "start_form",
+      "schemaVersion": 2,
+      "title": "Démarrage formulaire",
+      "subtitle": "Déclencheur",
+      "type": "start_form",
+      "category": "Core",
+      "providerKey": "events",
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "description": "Démarre le flow via un formulaire public ou authentifié",
+      "args": { "title": "Démarrage formulaire", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [] }
+    }
+  ]
+}

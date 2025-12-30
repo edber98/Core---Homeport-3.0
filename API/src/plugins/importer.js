@@ -20,22 +20,68 @@ function humanizeTitle(s){
   } catch { return String(s || 'Node'); }
 }
 
-async function importManifest(manifest, { dryRun = false, repo = null } = {}){
+async function importManifest(manifest, { dryRun = false, repo = null, manifestPath = null } = {}){
   const m = manifest || {};
-  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 } };
+  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 }, history: [] };
+  const record = (kind, key, action, before, after) => {
+    summary.history.push({ kind, key, action, beforeChecksum: before || null, afterChecksum: after || null, repoId: repo && repo.id || null, repoName: repo && repo.name || null, manifestPath: manifestPath || null, at: new Date() });
+  };
+  const isLocalRepo = !!(m && m.repo && String(m.repo.type || '').toLowerCase() === 'local');
 
   for (const p of (m.providers || [])){
     const key = p.key; if (!key) continue;
     const credForm = p.credentialsForm || p.credentials || null;
-    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm });
+    // Only local repos may define display order; use value from manifest when present, otherwise ignore
+    const effOrder = isLocalRepo && (typeof p.order === 'number') ? p.order : undefined;
+    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, order: effOrder, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm });
     const existing = await Provider.findOne({ key });
     if (!existing){
-      if (!dryRun){ await Provider.create({ key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum, repoId: repo && repo.id || undefined, repoName: repo && repo.name || undefined }); }
+      if (!dryRun){
+        const doc = { key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum };
+        if (repo && repo.id){ doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; }
+        await Provider.create(doc);
+      }
       summary.providers.created++;
+      record('provider', key, 'created', null, checksum);
     } else if (existing.checksum !== checksum){
-      if (!dryRun){ Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum }); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } await existing.save(); }
-      summary.providers.updated++;
-    } else { summary.providers.skipped++; }
+      // If provider already belongs to another repo, keep association and skip conflicting updates
+      const belongsElsewhere = existing.repoId && repo && repo.id && String(existing.repoId) !== String(repo.id);
+      if (belongsElsewhere){
+        summary.providers.skipped++;
+        record('provider', key, 'skipped', existing.checksum, checksum);
+      } else {
+        if (!dryRun){
+          const before = existing.checksum;
+          Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum });
+          if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; }
+          if (repo && repo.id){
+            const rid = String(repo.id);
+            const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || '');
+            const ids = new Set((existing.repos || []).map(x => String(x)));
+            if (!ids.has(rid)) existing.repos = [...ids, rid];
+            existing.repoNames = [...names].filter(Boolean);
+          }
+          await existing.save();
+          record('provider', key, 'updated', before, checksum);
+        }
+        summary.providers.updated++;
+      }
+    } else {
+      // Even when skipped (no content change), ensure repo linkage exists
+      if (!dryRun && repo && repo.id){
+        const rid = String(repo.id);
+        const ids = new Set((existing.repos || []).map(x => String(x)));
+        if (!ids.has(rid)){
+          existing.repos = [...ids, rid];
+          const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean);
+          if (!existing.repoId) { existing.repoId = repo.id; existing.repoName = repo.name; }
+          // Ensure order is set only when provided in manifest for local repos
+          if (typeof effOrder === 'number') existing.order = effOrder;
+          await existing.save();
+        }
+      }
+      summary.providers.skipped++;
+    }
   }
 
   // Ensure expression editor is enabled by default for all node template args (form-builder schemas)
@@ -63,6 +109,17 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
 
   for (const t of (m.nodeTemplates || [])){
     const key = t.key; if (!key) continue;
+    // Ensure provider exists if providerKey declared
+    if (t.providerKey){
+      const provExisting = await Provider.findOne({ key: t.providerKey });
+      if (!provExisting && !dryRun){
+        const title = humanizeTitle(t.providerKey);
+        const checksum = checksumJSON({ key: t.providerKey, name: t.providerKey, title, iconClass: null, iconUrl: null, color: null, tags: [], categories: [], enabled: true, hasCredentials: false, allowWithoutCredentials: true, credentialsForm: null });
+        await Provider.create({ key: t.providerKey, name: t.providerKey, title, enabled: true, hasCredentials: false, allowWithoutCredentials: true, checksum, repoId: repo && repo.id || undefined, repoName: repo && repo.name || undefined });
+        summary.providers.created++;
+        record('provider', t.providerKey, 'created', null, checksum);
+      }
+    }
     const argsWithExpr = enableExpressionsOnSchema(t.args || {});
     // v2 detection: presence of handles or nodeKind
     const isV2 = Array.isArray(t.inputHandles) || Array.isArray(t.outputHandles) || Array.isArray(t.linkedHandles) || !!t.nodeKind || t.schemaVersion === 2;
@@ -101,11 +158,15 @@ async function importManifest(manifest, { dryRun = false, repo = null } = {}){
     const normDesc = t.description || `${normTitle} node`;
     const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, checksumArgs, checksumFeature };
     if (!existing){
-      if (!dryRun){ await NodeTemplate.create({ ...base, repoId: repo && repo.id || undefined, repoName: repo && repo.name || undefined }); }
+      if (!dryRun){ const doc = { ...base }; if (repo && repo.id) { doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; } await NodeTemplate.create(doc); record('template', key, 'created', null, checksumFeature + '|' + checksumArgs); }
       summary.nodeTemplates.created++;
     } else {
       const eq = existing.checksumArgs === checksumArgs && existing.checksumFeature === checksumFeature && existing.providerKey === base.providerKey && existing.appName === base.appName && existing.title === base.title && existing.subtitle === base.subtitle && existing.icon === base.icon && existing.description === base.description && (existing.tags || []).join(',') === (base.tags || []).join(',') && existing.group === base.group && JSON.stringify(existing.args || {}) === JSON.stringify(base.args || {}) && JSON.stringify(existing.inputHandles || []) === JSON.stringify(base.inputHandles || []) && JSON.stringify(existing.outputHandles || []) === JSON.stringify(base.outputHandles || []) && JSON.stringify(existing.linkedHandles || []) === JSON.stringify(base.linkedHandles || []);
-      if (!eq){ if (!dryRun){ Object.assign(existing, base); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } await existing.save(); } summary.nodeTemplates.updated++; } else { summary.nodeTemplates.skipped++; }
+      if (!eq){ if (!dryRun){ const before = (existing.checksumFeature || '') + '|' + (existing.checksumArgs || ''); Object.assign(existing, base); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } if (repo && repo.id){ const rid = String(repo.id); const ids = new Set((existing.repos || []).map(x => String(x))); if (!ids.has(rid)) existing.repos = [...ids, rid]; const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean); } await existing.save(); record('template', key, 'updated', before, checksumFeature + '|' + checksumArgs); } summary.nodeTemplates.updated++; } else {
+        // Keep repo linkage in sync even if skipped
+        if (!dryRun && repo && repo.id){ const rid = String(repo.id); const ids = new Set((existing.repos || []).map(x => String(x))); if (!ids.has(rid)) { existing.repos = [...ids, rid]; const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean); if (!existing.repoId) { existing.repoId = repo.id; existing.repoName = repo.name; } await existing.save(); } }
+        summary.nodeTemplates.skipped++;
+      }
     }
   }
 

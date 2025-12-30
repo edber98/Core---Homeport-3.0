@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "nextcloud", "type": "local", "label": "Nextcloud" },
   "providers": [
     {
       "key": "nextcloud",

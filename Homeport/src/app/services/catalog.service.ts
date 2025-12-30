@@ -52,6 +52,7 @@ export type AppProvider = {
   id: string;             // ex: 'gmail'
   name: string;           // ex: 'Gmail'
   title?: string;         // affichage alternatif
+  order?: number;         // ordre d'affichage optionnel
   iconClass?: string;     // ex: 'fa-brands fa-google'
   iconUrl?: string;       // PNG/SVG
   color?: string;         // brand color
@@ -273,6 +274,7 @@ export class CatalogService {
         id: p.key,
         name: p.name,
         title: p.title || p.name,
+        order: (p as any).order,
         iconClass: p.iconClass,
         iconUrl: p.iconUrl,
         color: p.color,

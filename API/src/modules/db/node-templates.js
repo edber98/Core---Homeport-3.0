@@ -24,7 +24,19 @@ module.exports = function(){
     }
     let sortObj = { name: 1 };
     if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'desc' ? -1 : 1) }; }
-    const list = await NodeTemplate.find(query)
+    // Hide templates when all their repos are disabled; honor template.enabled
+    const PluginRepo = require('../../db/models/plugin-repo.model');
+    const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
+    const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
+    const list = await NodeTemplate.find({
+        ...query,
+        enabled: { $ne: false },
+        $or: [
+          { repos: { $exists: false } },
+          { repos: { $size: 0 } },
+          { repos: { $in: [...enabledIds] } },
+        ]
+      })
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)
@@ -190,6 +202,17 @@ module.exports = function(){
       }
     }
     res.apiOk({ deleted: true, key, impacted });
+  });
+
+  // Admin utility: purge templates without providerKey (orphans from local/demo)
+  r.post('/node-templates/purge-orphans', requireAdmin(), async (req, res) => {
+    const dryRun = !!(req.query.dryRun === '1' || req.body?.dryRun);
+    const q = { $or: [ { providerKey: { $exists: false } }, { providerKey: null }, { providerKey: '' } ] };
+    const list = await NodeTemplate.find(q).lean();
+    if (dryRun) return res.apiOk({ wouldDelete: list.map(t => t.key), count: list.length });
+    const keys = list.map(t => t.key);
+    await NodeTemplate.deleteMany({ key: { $in: keys } });
+    res.apiOk({ deleted: keys, count: keys.length });
   });
   return r;
 }

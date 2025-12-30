@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "http", "type": "local", "label": "HTTP" },
   "providers": [
     { "key": "http", "name": "HTTP", "title": "HTTP", "iconClass": "fa-solid fa-globe", "color": "#0ea5e9", "tags": ["http"], "hasCredentials": false }
   ],
@@ -35,15 +36,15 @@
       }
     },
     {
-      "key": "core_http_request",
+      "key": "http",
       "name": "httpRequest",
       "schemaVersion": 2,
-      "title": "Requête HTTP",
-      "subtitle": "Client",
+      "title": "HTTP Request",
+      "subtitle": "Call API",
       "type": "function",
       "category": "HTTP",
       "providerKey": "http",
-      "description": "HTTP client",
+      "description": "Effectuer un appel HTTP",
       "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
       "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
       "args": { "title": "HTTP", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [

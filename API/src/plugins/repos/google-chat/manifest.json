@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "google-chat", "type": "local", "label": "Google Chat" },
   "providers": [
     {
       "key": "googlechat",

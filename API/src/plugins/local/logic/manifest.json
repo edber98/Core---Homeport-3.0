@@ -1,0 +1,70 @@
+{
+  "repo": { "name": "logic", "type": "local", "label": "Logique" },
+  "providers": [
+    {
+      "key": "logic",
+      "name": "Logique",
+      "title": "Opérations logiques",
+      "order": 2,
+      "iconClass": "fa-solid fa-diagram-project",
+      "color": "#334155",
+      "tags": ["logic", "core"],
+      "hasCredentials": false
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "condition",
+      "name": "condition",
+      "schemaVersion": 2,
+      "title": "Condition",
+      "subtitle": "Multi-branch",
+      "type": "condition",
+      "category": "Logic",
+      "providerKey": "logic",
+      "icon": "fa-solid fa-code-branch",
+      "output_array_field": "items",
+      "description": "Branche selon une condition",
+      "args": {
+        "title": "Conditions",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "section",
+            "title": "Branches",
+            "key": "items",
+            "mode": "array",
+            "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } },
+            "fields": [
+              { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+              { "type": "text", "key": "condition", "label": "Condition", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+            ],
+            "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 },
+            "grid": { "gutter": 16 },
+            "ui": { "layout": "vertical" }
+          },
+          { "type": "checkbox", "key": "else_enabled", "label": "Activer Else", "col": { "xs": 24 }, "default": false }
+        ]
+      },
+      "authorize_catch_error": false,
+      "authorize_skip_error": false
+    },
+    {
+      "key": "delay",
+      "name": "delay",
+      "schemaVersion": 2,
+      "title": "Délai",
+      "subtitle": "Attendre",
+      "type": "function",
+      "category": "Logique",
+      "providerKey": "logic",
+      "inputHandles": [ { "id": "in", "name": "In", "type": "any", "accepts": ["any","payload"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "args": { "title": "Delay", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "number", "key": "ms", "label": "Milliseconds", "default": 100, "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "expression": { "allow": true } }
+      ] },
+      "description": "Attendre un certain temps",
+      "authorize_catch_error": true
+    }
+  ]
+}

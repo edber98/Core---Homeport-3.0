@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "microsoft-teams", "type": "local", "label": "Microsoft Teams" },
   "providers": [
     {
       "key": "msteams",

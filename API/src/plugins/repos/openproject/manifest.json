@@ -1,4 +1,5 @@
 {
+  "repo": { "name": "openproject", "type": "local", "label": "OpenProject" },
   "providers": [
     {
       "key": "openproject",
