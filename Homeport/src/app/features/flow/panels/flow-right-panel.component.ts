@@ -5,16 +5,18 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-json-editor.component';
 import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.component';
 
 @Component({
   selector: 'flow-right-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzSelectModule, NzButtonModule, MonacoJsonEditorComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzSelectModule, NzButtonModule, NzToolTipModule, NzModalModule, MonacoJsonEditorComponent, FlowHistoryTimelineComponent],
   template: `
     <div class="right-panel" [class.drawer-mode]="mode==='drawer'">
-      <div class="inspector-meta" style="padding: 8px; overflow: auto;">
+      <div class="inspector-meta" style="padding: 8px; padding-top: 0px; overflow: auto;">
         <div class="panel-heading">
           <div class="card-title left">
             <span class="t">Navigation & Contrôles</span>
@@ -120,12 +122,42 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
                 </div>
               </div>
 
-              <div class="args" *ngIf="filledArgs().length > 0">
-                <div class="args-title">Arguments renseignés</div>
+              <div class="args" *ngIf="filledArgsAll().length > 0">
+                <div class="args-title-row">
+                  <div class="args-title">Arguments renseignés</div>
+                  <div class="title-actions">
+                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" (click)="showFilledModal = true" aria-label="Voir en grand">
+                      <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" (click)="showFilledJsonModal = true" aria-label="Voir en JSON">
+                      <i class="fa-solid fa-code"></i>
+                    </button>
+                  </div>
+                </div>
                 <div class="args-list">
-                  <div class="arg" *ngFor="let a of filledArgs()">
-                    <span class="label">{{ a.label }}</span>
-                    <span class="value mono">{{ a.value | json }}</span>
+                  <div class="arg" *ngFor="let a of filledArgsAll()">
+                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
+                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="args" *ngIf="usedArgsAll().length > 0">
+                <div class="args-title-row">
+                  <div class="args-title">Arguments utilisés</div>
+                  <div class="title-actions">
+                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" (click)="showUsedModal = true" aria-label="Voir en grand">
+                      <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" (click)="showUsedJsonModal = true" aria-label="Voir en JSON">
+                      <i class="fa-solid fa-code"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="args-list">
+                  <div class="arg" *ngFor="let a of usedArgsAll()">
+                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
+                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
                   </div>
                 </div>
               </div>
@@ -143,7 +175,7 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
           </div>
         </ng-container>
 
-        <div class="recent">
+        <div class="recent" *ngIf="(recentRuns?.length || 0) > 0">
           <div class="panel-heading">
             <div class="card-title left">
               <span class="t">Dernières exécutions</span>
@@ -151,7 +183,7 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
             </div>
           </div>
           <div class="recent-list">
-            <div class="r" *ngFor="let r of recentRuns">
+            <div class="r" *ngFor="let r of recentRuns" [class.active]="isCurrentRun(r)">
               <span class="time">{{ r.startedAt | date:'medium':'':'fr-FR' }}</span>
               <span class="status" [class.ok]="r.status==='success'" [class.err]="r.status==='error'" [class.run]="r.status==='running'">{{ r.status || '—' }}</span>
             </div>
@@ -162,6 +194,41 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
           (hoverPast)="hoverPast.emit($event)" (hoverFuture)="hoverFuture.emit($event)"
           (leave)="leave.emit()" (clickPast)="clickPast.emit($event)"
           (clickFuture)="clickFuture.emit($event)"></flow-history-timeline>
+
+        <!-- Modals: view large for each args block -->
+        <nz-modal [(nzVisible)]="showFilledModal" nzTitle="Arguments renseignés" (nzOnCancel)="showFilledModal=false" (nzOnOk)="showFilledModal=false" [nzWidth]="860">
+          <ng-container *nzModalContent>
+            <div class="modal-args">
+              <div class="arg" *ngFor="let a of filledArgsAll()">
+                <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
+                <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </nz-modal>
+
+        <nz-modal [(nzVisible)]="showUsedModal" nzTitle="Arguments utilisés" (nzOnCancel)="showUsedModal=false" (nzOnOk)="showUsedModal=false" [nzWidth]="860">
+          <ng-container *nzModalContent>
+            <div class="modal-args">
+              <div class="arg" *ngFor="let a of usedArgsAll()">
+                <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
+                <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </nz-modal>
+
+        <nz-modal [(nzVisible)]="showFilledJsonModal" nzTitle="Arguments renseignés — JSON" (nzOnCancel)="showFilledJsonModal=false" (nzOnOk)="showFilledJsonModal=false" [nzWidth]="860">
+          <ng-container *nzModalContent>
+            <monaco-json-editor [value]="filledArgsObject() | json" [height]="420" [readonly]="true"></monaco-json-editor>
+          </ng-container>
+        </nz-modal>
+
+        <nz-modal [(nzVisible)]="showUsedJsonModal" nzTitle="Arguments utilisés — JSON" (nzOnCancel)="showUsedJsonModal=false" (nzOnOk)="showUsedJsonModal=false" [nzWidth]="860">
+          <ng-container *nzModalContent>
+            <monaco-json-editor [value]="usedArgsObject() | json" [height]="420" [readonly]="true"></monaco-json-editor>
+          </ng-container>
+        </nz-modal>
       </div>
     </div>
   `,
@@ -169,7 +236,7 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
     :host { display:block; min-height:0; }
     .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; }
     .panel-scroll { height: 100%; overflow: auto; padding: 8px; }
-    .inspector-meta .meta-form { font-size: 12px; padding: 0 8px; margin-top: 8px; }
+    .inspector-meta .meta-form { font-size: 12px; padding: 0 4px; margin-top: 8px; }
     .inspector-meta .meta-form .ant-form-item { margin-bottom: 10px; }
     ::ng-deep .meta-form .ant-form-item-label > label { font-weight: 600; font-size: 12px; }
     .exec-row { display:flex; gap: 8px; align-items:center; }
@@ -188,7 +255,8 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
     .recent .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin:6px 0 8px; }
     .recent .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .recent-list { display:flex; flex-direction:column; gap:8px; padding:8px 0; }
-    .recent-list .r { display:flex; gap:8px; align-items:center; font-size:12px; }
+    .recent-list .r { display:flex; gap:8px; align-items:center; font-size:12px; padding:4px 6px; border-radius:6px; }
+    .recent-list .r.active { background:#f1f5f9; }
     .recent-list .r .time { color:#6b7280; min-width: 160px; }
     .exec-select-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
     .exec-select-row .flex-1 { flex:1 1 auto; min-width: 0; }
@@ -213,7 +281,8 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
     .inspector-node .row .v { color:#111; font-size:12px; max-width: 60%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
     .inspector-node .row .v.err { color:#b42318; white-space:normal; }
     .inspector-node .args { margin-top: 8px; }
-    .inspector-node .args-title { font-weight:600; font-size:12px; color:#111; margin-bottom:6px; }
+    .inspector-node .args-title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+    .inspector-node .args-title { font-weight:600; font-size:12px; color:#111; }
     .inspector-node .args-list { display:flex; flex-direction:column; gap:6px; }
     .inspector-node .args-list .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
     .inspector-node .args-list .label { color:#6b7280; font-size:12px; font-weight:600; }
@@ -230,6 +299,14 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
     .inspector-node .actions-line { display:flex; align-items:center; gap:8px; margin-top:8px; }
     .inspector-node .actions-line.right { justify-content:flex-end; }
     .inspector-node .actions-line.icon-only button { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:0; }
+    .inspector-node .icon-btn { width:26px; height:26px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+    .inspector-node .title-actions { display:flex; align-items:center; gap:6px; }
+
+    /* Modal list styling */
+    .modal-args { display:flex; flex-direction:column; gap:10px; }
+    .modal-args .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .modal-args .label { color:#6b7280; font-size:13px; font-weight:600; }
+    .modal-args .value { color:#111; font-size:13px; max-width: 70%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
   `]
 })
 export class FlowRightPanelComponent implements OnChanges {
@@ -239,6 +316,7 @@ export class FlowRightPanelComponent implements OnChanges {
   @Input() selectedModel: any;
   @Input() nodeHasError: boolean = false;
   @Input() nodeErrorText: string | null = null;
+  @Input() selectedAttempt: { argsPre?: any; argsPost?: any } | null = null;
   @Input() inspectorTab: 'settings' | 'json' = 'settings';
   @Output() inspectorTabChange = new EventEmitter<'settings' | 'json'>();
   @Input() editJson = '';
@@ -283,9 +361,20 @@ export class FlowRightPanelComponent implements OnChanges {
   @Output() clickPast = new EventEmitter<number>();
   @Output() clickFuture = new EventEmitter<number>();
   showJsonViewer = false;
+  showFilledModal = false;
+  showUsedModal = false;
+  showFilledJsonModal = false;
+  showUsedJsonModal = false;
   // helper to read currently selected recent run
   selectedRecent() { try { return (this.recentRuns || []).find(r => String(r.id||'') === String(this.selectedRecentId||'')) || null; } catch { return null; } }
   currentOrSelected() { return this.runInfo || this.selectedRecent(); }
+  isCurrentRun(r: any): boolean {
+    try {
+      const cur = String((this.runInfo && (this.runInfo as any).id) || this.selectedRunId || '');
+      const id = String((r && (r as any).id) || '');
+      return !!cur && !!id && cur === id;
+    } catch { return false; }
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedRunId']) {
       const id = this.selectedRunId || null;
@@ -307,6 +396,29 @@ export class FlowRightPanelComponent implements OnChanges {
       }
     }
   }
+  private schemaKeysAndLabels(): Array<{ key: string; label: string }> {
+    try {
+      const model: any = this.selectedModel || {};
+      const schema: any = model?.templateObj?.args || null;
+      const out: Array<{ key: string; label: string }> = [];
+      const seen = new Set<string>();
+      const walk = (arr?: any[]) => {
+        if (!Array.isArray(arr)) return;
+        for (const it of arr) {
+          const key = String(it?.key || '');
+          const label = String(it?.label || key);
+          if (key && !seen.has(key)) { out.push({ key, label }); seen.add(key); }
+          walk(it?.fields);
+          if (Array.isArray(it?.steps)) for (const s of it.steps as any[]) walk(s?.fields);
+        }
+      };
+      if (schema) {
+        walk(schema.fields);
+        if (Array.isArray(schema.steps)) for (const st of schema.steps as any[]) walk(st?.fields);
+      }
+      return out;
+    } catch { return []; }
+  }
   filledArgs(): Array<{ key: string; label: string; value: any }> {
     try {
       const model: any = this.selectedModel || {};
@@ -323,5 +435,66 @@ export class FlowRightPanelComponent implements OnChanges {
       }
       return entries.map(([k, v]) => ({ key: k, label: map[k] || k, value: v }));
     } catch { return []; }
+  }
+  filledArgsAll(): Array<{ key: string; label: string; value: any }> {
+    try {
+      const model: any = this.selectedModel || {};
+      const ctx = (model?.context && typeof model.context === 'object') ? model.context : {};
+      const fields = this.schemaKeysAndLabels();
+      if (fields.length) return fields.map(f => ({ key: f.key, label: f.label, value: (ctx as any)[f.key] }));
+      return Object.keys(ctx).map(k => ({ key: k, label: k, value: (ctx as any)[k] }));
+    } catch { return []; }
+  }
+  filledArgsObject(): any { try { const obj: any = {}; for (const a of this.filledArgsAll()) obj[a.label || a.key] = a.value; return obj; } catch { return {}; } }
+  usedArgs(): Array<{ key: string; label: string; value: any }> {
+    try {
+      const att = this.selectedAttempt || null;
+      if (!att) return [];
+      const src = (att.argsPost != null && typeof att.argsPost === 'object' && Object.keys(att.argsPost).length) ? att.argsPost
+               : (att.argsPre != null ? att.argsPre : null);
+      if (!src || typeof src !== 'object') return [];
+      const entries = Object.entries(src).filter(([_, v]) => v != null && !(typeof v === 'string' && v.trim() === ''));
+      if (!entries.length) return [];
+      const model: any = this.selectedModel || {};
+      const schema: any = model?.templateObj?.args || null;
+      const map: Record<string,string> = {};
+      if (schema) {
+        if (Array.isArray(schema.fields)) this.flattenFields(schema.fields, map);
+        if (Array.isArray(schema.steps)) {
+          for (const st of schema.steps as any[]) this.flattenFields(st?.fields, map);
+        }
+      }
+      return entries.map(([k, v]) => ({ key: k, label: map[k] || k, value: v }));
+    } catch { return []; }
+  }
+  usedArgsAll(): Array<{ key: string; label: string; value: any }> {
+    try {
+      const att = this.selectedAttempt || null;
+      const fields = this.schemaKeysAndLabels();
+      const src = (att && att.argsPost && typeof att.argsPost === 'object') ? att.argsPost
+               : (att && att.argsPre && typeof att.argsPre === 'object' ? att.argsPre : {});
+      const obj = src || {};
+      if (fields.length) return fields.map(f => ({ key: f.key, label: f.label, value: (obj as any)[f.key] }));
+      return Object.keys(obj).map(k => ({ key: k, label: k, value: (obj as any)[k] }));
+    } catch { return []; }
+  }
+  usedArgsObject(): any { try { const obj: any = {}; for (const a of this.usedArgsAll()) obj[a.label || a.key] = a.value; return obj; } catch { return {}; } }
+
+  displayValue(v: any): string {
+    try {
+      if (v == null) return '—';
+      if (typeof v === 'string') return v.trim().length ? v : '—';
+      return JSON.stringify(v);
+    } catch { return '—'; }
+  }
+
+  labelTip(label?: string, key?: string): string | null {
+    try { const s = String(label || key || ''); return s && s.length > 24 ? s : null; } catch { return null; }
+  }
+  valueTip(v: any): string | null {
+    try {
+      const s = typeof v === 'string' ? v : JSON.stringify(v);
+      return s && s.length > 36 ? s : null;
+    } catch { return null; }
   }
 }

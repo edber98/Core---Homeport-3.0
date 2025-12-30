@@ -29,7 +29,6 @@ import { FlowRunService } from '../../services/flow-run.service';
 import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
-import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
 import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { environment } from '../../../environments/environment';
@@ -39,7 +38,7 @@ import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowHistoryTimelineComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -1951,6 +1950,17 @@ export class FlowBuilderComponent {
     const id = String(nodeId || this.selectedModel?.id || '');
     if (!id) return [];
     return (this.backendNodeAttempts.get(id) || []).slice();
+  }
+  // Exposé au template: dernier attempt pour un nœud (argsPre/argsPost)
+  getLastAttemptFor(nodeId?: string): { argsPre?: any; argsPost?: any } | null {
+    try {
+      const id = String(nodeId || this.selectedModel?.id || '');
+      if (!id) return null;
+      const arr = this.backendNodeAttempts.get(id) || [];
+      if (!arr.length) return null;
+      const last = arr[arr.length - 1];
+      return { argsPre: (last as any).argsPre, argsPost: (last as any).argsPost };
+    } catch { return null; }
   }
   private groupExecCounts(atts: any[]): Map<number, number> {
     const m = new Map<number, number>();
