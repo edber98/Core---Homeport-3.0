@@ -8,6 +8,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc, FormSummary, FormDoc } from '../../../services/catalog.service';
 import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
@@ -266,7 +267,7 @@ export class FlowAdvancedCenterPanelComponent {
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {}
 
   // Credentials state
   credVisible = false;
@@ -379,9 +380,12 @@ export class FlowAdvancedCenterPanelComponent {
         : ((this.model && (this.model.startFormSchema != null))
           ? this.model.startFormSchema
           : (this.model?.templateObj?.args || { title: 'Formulaire', ui: { layout: 'vertical', labelsOnTop: true }, fields: [] }));
+      try { console.log('[center-panel] openFormBuilder', { session: sess, flowId: this.flowId, nodeId: this.model?.id, initSource: (this.model?.context && (this.model.context.fields || this.model.context.steps)) ? 'context' : (this.model?.startFormSchema ? 'startFormSchema' : 'templateArgs') }); } catch {}
       try { localStorage.setItem('formbuilder.session.' + sess, JSON.stringify(init)); } catch {}
       const flow = this.flowId || '';
       const node = String(this.model?.id || '');
+      // Remember last session for this node as a resilience fallback if URL param is lost on return
+      try { if (node) localStorage.setItem('formbuilder.lastSessionForNode.' + node, sess); } catch {}
       const returnTo = this.router.createUrlTree(['/flow-builder/editor'], { queryParams: { flow, node, fbSession: sess } }).toString();
       const query: any = { session: sess, return: returnTo, tplPreset: '1' };
       try { query.schema = JSON.stringify(init); } catch {}
@@ -393,7 +397,17 @@ export class FlowAdvancedCenterPanelComponent {
     this.formsLoading = true;
     this.catalog.listForms().subscribe({
       next: (list) => {
-        this.forms = Array.isArray(list) ? list : [];
+        // Align with /forms page: only show forms accessible in current workspace
+        const all = Array.isArray(list) ? list : [];
+        try {
+          const filtered = all.filter(f => {
+            const ws = this.acl.ensureResourceWorkspace('form', f.id);
+            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+          });
+          this.forms = filtered;
+        } catch {
+          this.forms = all;
+        }
         if (this.selectedFormId && !this.forms.some(f => f.id === this.selectedFormId)) {
           this.selectedFormId = null;
         }
@@ -404,14 +418,21 @@ export class FlowAdvancedCenterPanelComponent {
   }
   applySelectedForm() {
     const id = this.selectedFormId;
-    if (!id) return;
+    if (!id) { try { this.msg.warning('Sélectionnez un formulaire d\'abord'); } catch {} return; }
+    try { console.log('[center-panel] applySelectedForm: fetching', id); } catch {}
     this.catalog.getForm(id).subscribe({
       next: (doc: FormDoc) => {
         const schema = (doc as any)?.schema || { title: doc?.name || 'Formulaire', fields: [] };
-        this.patchModel({ context: schema, startFormEnabled: true });
+        // Store imported form under startFormSchema (source of truth)
+        // Clear context if it currently holds a schema, so preview binds to startFormSchema
+        const m: any = this.model || {};
+        const isCtxSchema = !!(m?.context && (Array.isArray(m.context?.fields) || Array.isArray(m.context?.steps)));
+        this.patchModel({ startFormSchema: schema, startFormEnabled: true, startFormAppliedAt: Date.now(), context: isCtxSchema ? {} : (m.context || {}) });
+        try { console.log('[center-panel] applySelectedForm: applied', { fields: Array.isArray(schema?.fields) ? schema.fields.length : null, steps: Array.isArray(schema?.steps) ? schema.steps.length : null, clearedContext: isCtxSchema }); } catch {}
+        try { this.msg.success('Formulaire importé'); } catch {}
         try { this.cdr.detectChanges(); } catch {}
       },
-      error: () => {}
+      error: () => { try { this.msg.error('Échec de l\'import'); } catch {} }
     });
   }
   trackForm(i: number, f: FormSummary) { return f?.id || i; }

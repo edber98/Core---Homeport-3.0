@@ -679,7 +679,39 @@ export class FlowBuilderComponent {
               this.suppressGraphEventsUntil = Date.now() + 1200;
               this.suppressNodesRemovedUntil = Date.now() + 1500;
               this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
-              this.nodes = (doc.nodes || []) as any[];
+            // Preserve Start Form schema if we just imported and a backend refresh arrives late
+            try {
+              const incoming = (doc.nodes || []) as any[];
+              const prev = (this.nodes || []) as any[];
+              const byId = new Map(prev.map(n => [String(n.id), n]));
+              const merged = incoming.map(n => {
+                const id = String(n?.id || '');
+                const old = byId.get(id);
+                if (!old) return n;
+                try {
+                  const oldM = old?.data?.model || {};
+                  const newM = n?.data?.model || {};
+                  const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                  if (ty === 'start' || ty === 'start_form') {
+                    const want = oldM.startFormSchema;
+                    const has = newM.startFormSchema;
+                    const oldAt = Number(oldM.startFormAppliedAt || 0);
+                    const newAt = Number(newM.startFormAppliedAt || 0);
+                    const preferOld = oldAt && (!newAt || oldAt > newAt);
+                    const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                    if ((preferOld || (oldM?.startFormSchema && diff))) {
+                      const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                      const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                      try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                      return nn;
+                    }
+                  }
+                } catch {}
+                return n;
+              });
+              this.nodes = merged as any[];
+              try { console.log('[flow-builder] flow refresh merged nodes'); } catch {}
+            } catch { this.nodes = (doc.nodes || []) as any[]; }
               
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
@@ -705,6 +737,7 @@ export class FlowBuilderComponent {
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
+              try { console.log('[flow-builder] pending session check', { sess, pending: this.pendingFbSession, qp: this.route.snapshot.queryParamMap.get('fbSession') }); } catch {}
               if (sess) {
                 this.applyStartFormSchemaFromSession(sess);
                 this.pendingFbSession = null;
@@ -714,6 +747,18 @@ export class FlowBuilderComponent {
                   const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
                   delete q.fbSession;
                   this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
+              } else {
+                // Fallback: if URL param got lost (browser back, latency), try last session marker for this node
+                try {
+                  const nodeId = this.route.snapshot.queryParamMap.get('node') || undefined;
+                  const key = nodeId ? ('formbuilder.lastSessionForNode.' + nodeId) : null;
+                  const last = key ? localStorage.getItem(key) : null;
+                  try { console.log('[flow-builder] fallback lastSessionForNode', { nodeId, key, last }); } catch {}
+                  if (last) {
+                    this.applyStartFormSchemaFromSession(last);
+                    try { if (key) localStorage.removeItem(key); } catch {}
+                  }
                 } catch {}
               }
             } catch {}
@@ -753,7 +798,38 @@ export class FlowBuilderComponent {
               this.currentFlowDesc = doc.description || '';
               this.currentFlowStatus = (doc as any).status || 'draft';
               this.currentFlowEnabled = !!(doc as any).enabled;
-              this.nodes = (doc.nodes || []) as any[];
+              try {
+                const incoming = (doc.nodes || []) as any[];
+                const prev = (this.nodes || []) as any[];
+                const byId = new Map(prev.map(n => [String(n.id), n]));
+                const merged = incoming.map(n => {
+                  const id = String(n?.id || '');
+                  const old = byId.get(id);
+                  if (!old) return n;
+                  try {
+                    const oldM = old?.data?.model || {};
+                    const newM = n?.data?.model || {};
+                    const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                    if (ty === 'start' || ty === 'start_form') {
+                      const want = oldM.startFormSchema;
+                      const has = newM.startFormSchema;
+                      const oldAt = Number(oldM.startFormAppliedAt || 0);
+                      const newAt = Number(newM.startFormAppliedAt || 0);
+                      const preferOld = oldAt && (!newAt || oldAt > newAt);
+                      const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                      if ((preferOld || (oldM?.startFormSchema && diff))) {
+                        const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                        const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                        try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                        return nn;
+                      }
+                    }
+                  } catch {}
+                  return n;
+                });
+                this.nodes = merged as any[];
+                try { console.log('[flow-builder] flow refresh merged nodes (route change)'); } catch {}
+              } catch { this.nodes = (doc.nodes || []) as any[]; }
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
@@ -1931,7 +2007,11 @@ export class FlowBuilderComponent {
           import('./start-form-modal.component').then(mod => {
             const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
             const inst: any = ref.getContentComponent();
-            try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+            try {
+              const ctx = m?.context;
+              const schema = (ctx && (Array.isArray(ctx.fields) || Array.isArray(ctx.steps))) ? ctx : (m?.startFormSchema || { title: 'Formulaire', fields: [] });
+              inst.schema = schema; inst.value = {};
+            } catch {}
             const sub = inst.submitted.subscribe((val: any) => {
               try { sub.unsubscribe(); } catch {}
               ref.close();
@@ -2300,21 +2380,31 @@ export class FlowBuilderComponent {
   private applyStartFormSchemaFromSession(session: string | null) {
     if (!session) return;
     try {
+      try { console.log('[flow-builder] applyStartFormSchemaFromSession: session=', session); } catch {}
       const raw = localStorage.getItem('formbuilder.session.' + session);
-      if (!raw) return;
+      if (!raw) { try { console.warn('[flow-builder] no session payload in localStorage'); } catch {} return; }
       const schema = JSON.parse(raw);
+      try { console.log('[flow-builder] session schema keys', Object.keys(schema || {})); } catch {}
       let m = this.selectedModel;
       if (!m) {
         try {
           const nodeId = this.pendingFbNodeId || this.route.snapshot.queryParamMap.get('node');
+          try { console.log('[flow-builder] pendingFbNodeId/route node param', { pending: this.pendingFbNodeId, qp: this.route.snapshot.queryParamMap.get('node') }); } catch {}
           if (nodeId) {
             const node = this.nodes.find(n => String(n.id) === String(nodeId));
             if (node) { this.selectItem(node); m = node.data?.model || null; }
           }
         } catch {}
       }
-      if (!m) return;
-      const newModel = { ...m, startFormEnabled: true, context: schema };
+      if (!m) { try { console.warn('[flow-builder] no selected model to apply session to'); } catch {} return; }
+      const newModel: any = { ...m, startFormEnabled: true, startFormSchema: schema };
+      // If context currently contains a schema (fields/steps), clear it so UI uses startFormSchema
+      try {
+        const cx = newModel.context;
+        const hadCtxSchema = !!(cx && (Array.isArray(cx.fields) || Array.isArray(cx.steps)));
+        if (hadCtxSchema) newModel.context = {};
+        console.log('[flow-builder] applying to model', { id: newModel.id, clearedContext: hadCtxSchema, startFormFields: Array.isArray(schema?.fields) ? schema.fields.length : null, startFormSteps: Array.isArray(schema?.steps) ? schema.steps.length : null });
+      } catch {}
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
       // Re-sélectionner le nœud et rouvrir la boîte de dialogue pour permettre de tester/remplir immédiatement
@@ -3251,6 +3341,10 @@ export class FlowBuilderComponent {
   }
   onAdvancedModelCommitted(m: any) {
     if (!m?.id) return;
+    try {
+      const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
+      console.log('[builder] onAdvancedModelCommitted before', { id: m.id, ctxFields: len(m?.context), sfsFields: len(m?.startFormSchema), argsFields: len(m?.templateObj?.args) });
+    } catch {}
     try { this.openedNodeConfig.add(String(m.id)); } catch { }
     // Normalize else_enabled and stabilize
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
@@ -3268,6 +3362,19 @@ export class FlowBuilderComponent {
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
     // Persist stabilized model on node
     this.nodes = this.nodes.map(n => n.id === stable.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
+    // Realign current selection to the updated node reference so bindings receive the new model
+    try {
+      const updated = this.nodes.find(n => n.id === stable.id) || null;
+      if (updated) {
+        this.selection = updated;
+        try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+      }
+    } catch {}
+    try {
+      const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
+      const cur = (this.nodes.find(n => n.id === stable.id)?.data?.model) || null;
+      console.log('[builder] onAdvancedModelCommitted after', { id: stable.id, ctxFields: len(cur?.context), sfsFields: len(cur?.startFormSchema), argsFields: len(cur?.templateObj?.args) });
+    } catch {}
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     if (res.deletedEdgeIds?.length) {
       res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));

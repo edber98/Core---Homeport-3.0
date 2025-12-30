@@ -36,7 +36,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
         <div *ngIf="loadingOutput" class="wing-loading"><span class="tiny-spinner big"></span></div>
         <!-- Start Form: afficher le Dynamic Form dans le panneau Output pour éditer le payload -->
         <app-dynamic-form *ngIf="isStartForm(model)"
-          [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }"
+          [schema]="debugRightSchema()"
           [value]="injectedOutput || {}"
           (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
         <!-- Start simple: payload JSON éditable -->
@@ -89,7 +89,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
               <div *ngIf="loadingOutput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
               <!-- Start Form (mobile): formulaire dans l'onglet Output -->
               <app-dynamic-form *ngIf="!loadingOutput && isStartForm(model)"
-                [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }" [value]="injectedOutput || {}"
+                [schema]="debugRightSchema()" [value]="injectedOutput || {}"
                 (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
               <!-- Autres (hors start_form): viewer de sortie -->
               <app-json-schema-viewer *ngIf="!loadingOutput && (!isStart(model)) && (!isStartForm(model)) && injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
@@ -214,12 +214,31 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
   emitModel(m: any) {
+    // Update local model immediately so right wing reflects changes live
+    this.model = m;
     this.latestModel = m;
     this.dirty = true;
     this.modelChange.emit(m);
   }
   ngOnInit() { this.updateIsMobile(); this.updateSlidesTransform(); }
   constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
+  private lastSchemaLogAt = 0;
+  debugRightSchema(): any {
+    try {
+      const now = Date.now();
+      const ctx = this.model?.context;
+      const sfs = this.model?.startFormSchema;
+      const args = this.model?.templateObj?.args;
+      const useCtx = !!(ctx && (Array.isArray(ctx?.fields) || Array.isArray(ctx?.steps)));
+      const schema = useCtx ? ctx : (sfs || args) || { title: 'Formulaire', fields: [] };
+      if (now - this.lastSchemaLogAt > 200) {
+        this.lastSchemaLogAt = now;
+        const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
+        console.log('[dialog][right] pick schema', { useCtx, ctxFields: len(ctx), sfsFields: len(sfs), argsFields: len(args), pickedFields: len(schema) });
+      }
+      return schema;
+    } catch { return (this.model?.startFormSchema || this.model?.templateObj?.args) || { title: 'Formulaire', fields: [] }; }
+  }
   ngAfterViewInit() {
     this.zone.run(() => {
       setTimeout(() => {
