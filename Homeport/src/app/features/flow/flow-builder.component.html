@@ -61,7 +61,7 @@
         <ng-template  let-ctx nodeHtml>
 
           <div class="node-card"  [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal', 'spawn': spawnAnimNodes.has(ctx.node.id), 'spawn-lite': spawnLiteAnimNodes.has(ctx.node.id) }"
+            [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal', 'spawn': spawnAnimNodes.has(ctx.node.id), 'spawn-lite': spawnLiteAnimNodes.has(ctx.node.id), 'removing': removingNodes.has(ctx.node.id), 'removing-lite': removingLiteNodes.has(ctx.node.id) }"
             (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">

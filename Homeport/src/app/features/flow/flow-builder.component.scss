@@ -292,6 +292,34 @@ nz-drawer { display: contents; }
   background-position: center;
   animation: node-ripple-inset 1000ms ease-out both, node-bg-fill 1000ms ease-out both;
 }
+.node-card.removing-lite {
+  /* halo + bande de balayage internes */
+  --wipe: rgba(239, 68, 68, 0.18);  /* rouge doux */
+  background-image:
+    radial-gradient(circle at center, var(--wipe) 12%, rgba(239, 68, 68, 0) 13%),
+    linear-gradient(90deg, transparent 0%, var(--wipe) 50%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position: center, left center;
+  background-size: 0% 0%, 0% 100%;
+  animation: node-wipe 420ms ease-out forwards, node-clean 420ms ease-out forwards;
+}
+
+@keyframes node-wipe {
+  /* 1) halo “grandit”, 2) bande balaye la carte */
+  0%   { background-size: 0% 0%, 0% 100%; }
+  35%  { background-size: 120% 120%, 0% 100%; }
+  100% { background-size: 160% 160%, 100% 100%; }
+}
+
+@keyframes node-clean {
+  /* revient au fond blanc à la fin */
+  0%   { background-color: #ffffff; }
+  100% { background-color: #ffffff; background-image: linear-gradient(transparent, transparent); }
+}
+
+/* Navigateur non iOS: suppression via opacity (fluide) */
+.node-card.removing { animation: node-remove-opacity 220ms ease-in forwards; }
+@keyframes node-remove-opacity { 0% { opacity:1; } 100% { opacity:0; } }
 @keyframes node-ripple-inset {
   0%   { background-size: 0% 0%; }
   70%  { background-size: 170% 170%; }

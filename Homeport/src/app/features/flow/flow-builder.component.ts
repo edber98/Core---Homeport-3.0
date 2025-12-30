@@ -110,6 +110,32 @@ export class FlowBuilderComponent {
   spawnAnimNodes = new Set<string>();
   spawnLiteAnimNodes = new Set<string>();
   private isIOSSafari = false;
+  removingNodes = new Set<string>();
+  removingLiteNodes = new Set<string>();
+  private pendingRemoveTimers: Record<string, any> = {};
+  private scheduleRemove(ids: Set<string>, reason: string = 'nodes.removed') {
+    try {
+      const toRemove = Array.from(ids).filter(id => !!id);
+      if (!toRemove.length) return;
+      toRemove.forEach(id => {
+        const key = String(id);
+        if (this.isIOSSafari) this.removingLiteNodes.add(key); else this.removingNodes.add(key);
+        if (this.pendingRemoveTimers[key]) return;
+        this.pendingRemoveTimers[key] = setTimeout(() => {
+          delete this.pendingRemoveTimers[key];
+          this.nodes = this.nodes.filter(n => String(n.id) !== key);
+          this.edges = this.edges.filter(e => String(e.source) !== key && String(e.target) !== key);
+          this.errorNodes.delete(key);
+          if (this.isIOSSafari) this.removingLiteNodes.delete(key); else this.removingNodes.delete(key);
+          try { this.cdr.detectChanges(); } catch {}
+          this.recomputeErrorPropagation();
+        }, 260);
+      });
+      this.selection = null; this.selectionList = [];
+      this.pushState(reason);
+      this.recomputeValidation();
+    } catch {}
+  }
   private triggerSpawnAnim(id: string) {
     try {
       const key = String(id);
@@ -332,6 +358,9 @@ export class FlowBuilderComponent {
       localStorage.setItem(this.startPayloadKey(), JSON.stringify(wrapped));
     } catch {}
   }
+  private triggerSpawnForNodes(ids: string[]) {
+    try { ids.forEach(id => this.triggerSpawnAnim(id)); } catch {}
+  }
 
   private applyFlowMeta(meta: any) {
     try {
@@ -537,10 +566,16 @@ export class FlowBuilderComponent {
   // Removed event interceptors to align with working dev playground
 
   ngOnInit() {
-    // Detect iOS Safari early (animation fallback)
+    // Detect iOS/iPadOS Safari early (animation fallback)
     try {
-      const ua = (navigator && (navigator as any).userAgent) ? (navigator as any).userAgent : '';
-      this.isIOSSafari = /iP(hone|ad|od)/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+      const nav: any = (typeof navigator !== 'undefined') ? navigator : {};
+      const agent: string = String(nav.userAgent || '').toLowerCase();
+      const platform: string = String((nav.platform || '')).toLowerCase();
+      const maxTP: number = Number((nav.maxTouchPoints || 0));
+      const isIOSDevice = /iphone|ipod|ipad/.test(agent) || (platform === 'macintel' && maxTP > 1);
+      // Safari uniquement (exclut Chrome/Edge/Firefox iOS: CriOS/FxiOS/EdgiOS, etc.)
+      const isMobileSafari = /safari/.test(agent) && !/crios|fxios|edgios|opios|chrome|opr|android/.test(agent);
+      this.isIOSSafari = !!(isIOSDevice && isMobileSafari);
     } catch { this.isIOSSafari = false; }
     // Debug helpers removed
     // Subscribe run streams (builder live panel)
@@ -1823,6 +1858,7 @@ export class FlowBuilderComponent {
     try { ev.preventDefault(); ev.stopPropagation(); } catch { }
     this.openCtxMenuAt(ev.clientX, ev.clientY, node);
   }
+  
   private openCtxMenuAt(x: number, y: number, node: any) {
     try { this.selectionBoxStart = null; this.selectionBoxRect = null; this.marqueePrimed = false; } catch {}
     this.ctxMenuVisible = true;
@@ -2455,6 +2491,8 @@ export class FlowBuilderComponent {
       } catch { }
       const vNode = { id: newId, point: newPoint, type: node.type, data: { ...node.data, model } };
       this.nodes = [...this.nodes, vNode];
+      try { this.triggerSpawnAnim(newId); } catch {}
+      try { this.triggerSpawnAnim(newId); } catch {}
       try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
       // After duplicate (single), select only the new node and clear any previous selection
       this.selectionList = [vNode as any];
@@ -2809,16 +2847,13 @@ export class FlowBuilderComponent {
         this.edges = this.edges.filter(e => e !== tgt);
         this.pushState('delete.edge');
       } else {
-        const id = (tgt as any).id;
-        this.nodes = this.nodes.filter(n => n.id !== id);
-        this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
-        this.errorNodes.delete(String(id));
-        this.pushState('nodes.removed');
+        const id = String((tgt as any).id || '');
+        if (id) {
+          // Play removal animation then actually remove
+          this.scheduleRemove(new Set([id]), 'ctx.delete.node');
+        }
       }
-      this.selection = null;
-      // Context deletions may affect error branches
-      this.recomputeErrorPropagation();
-      this.recomputeValidation();
+      // scheduleRemove handles selection clearing, recompute and history
     } catch { }
   }
   ctxCenterTarget() {
@@ -3034,13 +3069,7 @@ export class FlowBuilderComponent {
       // Avoid deleting start nodes via batch
       const safeIds = new Set(Array.from(ids).filter(id => !this.isStartLike(this.nodes.find(n => String(n.id)===id)?.data?.model?.templateObj)));
       if (!safeIds.size) return;
-      this.nodes = this.nodes.filter(n => !safeIds.has(String(n.id)));
-      this.edges = this.edges.filter(e => !safeIds.has(String(e.source)) && !safeIds.has(String(e.target)));
-      safeIds.forEach(id => this.errorNodes.delete(id));
-      this.selection = null; this.selectionList = [];
-      this.pushState('nodes.removed.many');
-      this.recomputeErrorPropagation();
-      this.recomputeValidation();
+      this.scheduleRemove(safeIds, 'nodes.removed.many');
     } catch {}
   }
 
@@ -3210,17 +3239,9 @@ export class FlowBuilderComponent {
       this.pushState('delete.edge');
     } else {
       // selected a node
-      const id = sel.id;
-      this.nodes = this.nodes.filter(n => n.id !== id);
-      this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
-      this.errorNodes.delete(String(id));
-      // Record deletion of one or more nodes
-      this.pushState('nodes.removed');
+      const id = String(sel.id);
+      this.scheduleRemove(new Set([id]), 'delete.node');
     }
-    this.selection = null;
-    // Deletion may change error-branch reachability
-    this.recomputeErrorPropagation();
-    this.recomputeValidation();
   }
 
   private findBestTargetNodeForStart(wx: number, wy: number): any | null {
@@ -4253,7 +4274,10 @@ export class FlowBuilderComponent {
         const vNode = { id: newId, point: { x: p.x + dx, y: p.y + dy }, type: n.type, data: { ...n.data, model: m } };
         newNodes.push(vNode);
       }
-      if (newNodes.length) this.nodes = [...this.nodes, ...newNodes];
+      if (newNodes.length) {
+        this.nodes = [...this.nodes, ...newNodes];
+        this.triggerSpawnForNodes(newNodes.map(n => String(n.id)));
+      }
       // Edges
       const newEdges: any[] = [];
       for (const e of srcEdges) {
@@ -4972,18 +4996,8 @@ export class FlowBuilderComponent {
       const ids = new Set((changes || []).map(c => c?.id).filter(Boolean));
       if (Date.now() < this.suppressNodesRemovedUntil) { this.log('nodes.removed.ignored.window', { until: this.suppressNodesRemovedUntil }); return; }
       if (!ids.size) return;
-      const beforeNodes = this.nodes.length;
-      const beforeEdges = this.edges.length;
       this.log('nodes.removed', { ids: Array.from(ids) });
-      this.nodes = this.nodes.filter(n => !ids.has(n.id));
-      this.edges = this.edges.filter(e => !ids.has(String(e.source)) && !ids.has(String(e.target)));
-      const changed = (this.nodes.length !== beforeNodes) || (this.edges.length !== beforeEdges);
-      ids.forEach(id => this.errorNodes.delete(String(id)));
-      if (changed) {
-        // Removal can break error paths: recompute error propagation
-        this.recomputeErrorPropagation();
-        this.pushState('nodes.removed');
-      }
+      this.scheduleRemove(ids, 'nodes.removed');
     } catch { }
   }
   onEdgesRemoved(changes: any[]) {
