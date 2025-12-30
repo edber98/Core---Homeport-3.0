@@ -1,59 +1,57 @@
 {
   "providers": [
-    {
-      "key": "http",
-      "name": "HTTP",
-      "title": "HTTP",
-      "iconClass": "fa-solid fa-code",
-      "color": "#111827",
-      "tags": ["http", "api"],
-      "hasCredentials": false
-    }
+    { "key": "http", "name": "HTTP", "title": "HTTP", "iconClass": "fa-solid fa-globe", "color": "#0ea5e9", "tags": ["http"], "hasCredentials": false }
   ],
   "nodeTemplates": [
     {
-      "key": "website_open",
-      "name": "OpenWebsite",
+      "key": "core_webhook",
+      "name": "httpEndpoint",
       "schemaVersion": 2,
-      "title": "Open Website",
-      "subtitle": "Website",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Website",
+      "title": "Point d’entrée HTTP",
+      "subtitle": "Webhook",
+      "type": "event",
+      "category": "HTTP",
       "providerKey": "http",
-      "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
+      "description": "Déclenchement via requête HTTP entrante",
       "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
-      "description": "Open an URL in a browser",
       "args": {
-        "title": "Open Website",
+        "title": "Point d’entrée HTTP",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } }
+          { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 }, "default": "/hooks/event", "validators": [{"type":"required"}] },
+          { "type": "select", "key": "method", "label": "Méthode", "col": { "xs": 24 }, "options": [
+            {"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}
+          ], "default": "POST" },
+          { "type": "select", "key": "contentType", "label": "Content-Type attendu", "col": { "xs": 24 }, "options": [
+            {"label":"application/json","value":"application/json"},
+            {"label":"application/x-www-form-urlencoded","value":"application/x-www-form-urlencoded"},
+            {"label":"text/plain","value":"text/plain"},
+            {"label":"multipart/form-data","value":"multipart/form-data"}
+          ], "default": "application/json" },
+          { "type": "checkbox", "key": "cors", "label": "Autoriser CORS (\"*\")", "col": { "xs": 24 }, "default": true },
+          { "type": "number", "key": "respondStatus", "label": "HTTP status de réponse", "col": { "xs": 24 }, "default": 200 },
+          { "type": "textarea", "key": "respondBody", "label": "Corps de réponse (template JSON/texte)", "col": { "xs": 24 }, "default": "" }
         ]
       }
     },
     {
-      "key": "form_submit",
-      "name": "SubmitForm",
+      "key": "core_http_request",
+      "name": "httpRequest",
       "schemaVersion": 2,
-      "title": "Submit Form",
-      "subtitle": "Form",
+      "title": "Requête HTTP",
+      "subtitle": "Client",
       "type": "function",
-      "nodeKind": "function",
-      "category": "Form",
+      "category": "HTTP",
       "providerKey": "http",
+      "description": "HTTP client",
       "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
       "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
-      "description": "Submit a form with data",
-      "args": {
-        "title": "Form Submit",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
-        "fields": [
-          { "type": "text", "key": "formId", "label": "Form ID", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
-          { "type": "object", "key": "data", "label": "Data", "col": { "xs": 24 }, "expression": { "allow": true } }
-        ]
-      }
+      "args": { "title": "HTTP", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "select", "key": "method", "label": "Méthode", "options":[{"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}], "col": { "xs": 24 }, "default": "GET" },
+        { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "validators":[{"type":"required"}] },
+        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "col": { "xs": 24 }, "default": "{}" },
+        { "type": "textarea", "key": "body", "label": "Body (JSON)", "col": { "xs": 24 }, "default": "{}", "visibleIf": { "method": ["POST","PUT","PATCH"] } }
+      ] }
     }
   ]
 }
-
