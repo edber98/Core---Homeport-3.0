@@ -267,13 +267,13 @@
 
   <div class="bottom-bar">
     <div class="actions">
-      <!-- Left side actions are now shown in the vertical left bar on all sizes -->
       <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
         <i class="fa-solid fa-rotate-left"></i>
       </button>
       <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir">
         <i class="fa-solid fa-rotate-right"></i>
       </button>
+      <span class="divider" aria-hidden="true"></span>
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
@@ -286,35 +286,29 @@
       <button class="icon-btn" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
         <i class="fa-solid fa-border-all"></i>
       </button>
-      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
-        [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'
-        " [nzPopoverContent]="issuesTpl" title="Problèmes">
+      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
         <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
       <ng-template #issuesTpl>
         <div style="max-width:320px; max-height: 260px; overflow:auto;">
-          <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;"
-            *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
+          <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;" *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
             <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
             <span> {{ it.message }}</span>
           </button>
         </div>
       </ng-template>
-      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode"
-        title="Centrer sur le nœud sélectionné">
+      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
-      <button class="icon-btn desktop-only" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-        <i class="fa-solid fa-play"></i>
-      </button>
+      <span class="divider" *ngIf="!isMobile" aria-hidden="true"></span>
       <div class="zoom-control" *ngIf="!isMobile">
         <span class="label">Zoom</span>
         <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
         <span class="value">{{ zoomPercent }}%</span>
       </div>
+      <span class="divider" *ngIf="!isMobile" aria-hidden="true"></span>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
 
-      <!-- Desktop: show Import/Export and Save as icon-only on the right of the group -->
       <label class="icon-btn import-btn desktop-only" title="Importer" aria-label="Importer">
         <i class="fa-solid fa-file-arrow-up"></i>
         <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
@@ -325,8 +319,15 @@
       <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
+      <span class="spacer"></span>
+      <span class="divider" aria-hidden="true"></span>
+      <button class="run-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+        <i class="fa-solid fa-play"></i>
+        <span>Lancer</span>
+      </button>
     </div>
   </div>
+
 
   <!-- Context menu overlay -->
   <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
