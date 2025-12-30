@@ -1,5 +1,69 @@
 {
   "repo": { "name": "email", "type": "local", "label": "Email" },
+  "variables": {
+    "email_message": {
+      "title": "Message e-mail",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "messageId", "label": "Message ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "from", "label": "De", "col": { "xs": 24 } },
+        { "type": "text", "key": "to", "label": "À", "col": { "xs": 24 } },
+        { "type": "text", "key": "subject", "label": "Objet", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "html", "label": "Corps (HTML)", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "attachments", "label": "Pièces jointes (JSON)", "col": { "xs": 24 } }
+      ]
+    },
+    "email_messages": {
+      "title": "Messages",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "section", "title": "Messages", "description": "Liste des messages", "mode": "array", "key": "messages", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "messageId", "label": "Message ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "from", "label": "De", "col": { "xs": 24 } },
+            { "type": "text", "key": "to", "label": "À", "col": { "xs": 24 } },
+            { "type": "text", "key": "subject", "label": "Objet", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "text", "label": "Texte", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "email_send_result": {
+      "title": "Résultat d’envoi",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "sent", "label": "Envoyé", "col": { "xs": 24 } },
+        { "type": "text", "key": "messageId", "label": "Message ID", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "envelope", "label": "Envelope (JSON)", "col": { "xs": 24 } },
+        { "type": "text", "key": "response", "label": "Réponse", "col": { "xs": 24 } }
+      ]
+    },
+    "email_labels": {
+      "title": "Labels",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "section", "title": "Labels", "description": "Liste des labels", "mode": "array", "key": "labels", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [ { "type": "text", "key": "label", "label": "Label", "col": { "xs": 24 } } ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "email_action": {
+      "title": "Action",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "added", "label": "Ajouté", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "removed", "label": "Supprimé", "col": { "xs": 24 } }
+      ]
+    },
+    "email_event": {
+      "title": "Événement",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [ { "type": "text", "key": "event", "label": "Event", "col": { "xs": 24 } } ]
+    }
+  },
   "providers": [
     {
       "key": "smtp_imap",
@@ -68,7 +132,7 @@
     { "key": "email_send", "name": "emailSend", "schemaVersion": 2, "title": "Envoyer un e-mail", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" },
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_send_result" },
         { "id": "err", "name": "Error", "type": "error" }
       ],
       "authorize_catch_error": true,
@@ -84,31 +148,31 @@
       ] } },
     { "key": "email_read", "name": "emailRead", "schemaVersion": 2, "title": "Lire les e-mails", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Messages", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Messages", "type": "payload", "schema": "$var:email_messages" }],
       "description": "Lire des e-mails via IMAP avec filtre", "args": { "title": "Lecture", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"mailbox","label":"Boîte","col":{"xs":24},"default":"INBOX"},
         {"type":"text","key":"search","label":"Requête de recherche","col":{"xs":24},"default":"UNSEEN"},
         {"type":"number","key":"limit","label":"Limite","col":{"xs":24},"default":10}
       ] } },
     { "key": "email_new_message", "name": "emailNewMessage", "schemaVersion": 2, "title": "Nouvel e-mail", "subtitle": "Déclencheur", "type": "event", "nodeKind": "event", "category": "E-mail", "providerKey": "smtp_imap",
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_event" }],
       "description": "Déclenché à la réception d’un message IMAP", "args": { "title": "Déclencheur IMAP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"mailbox","label":"Boîte","col":{"xs":24},"default":"INBOX"}
       ] } },
     { "key": "email_list_labels", "name": "emailListLabels", "schemaVersion": 2, "title": "Lister les libellés", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Labels", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Labels", "type": "payload", "schema": "$var:email_labels" }],
       "description": "Lister les libellés Gmail", "args": { "title": "Libellés", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [] } },
     { "key": "email_add_label", "name": "emailAddLabel", "schemaVersion": 2, "title": "Ajouter un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_action" }],
       "description": "Ajouter un libellé Gmail à un message", "args": { "title": "Ajouter un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"messageId","label":"ID du message","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"label","label":"Libellé","col":{"xs":24},"validators":[{"type":"required"}]}
       ] } },
     { "key": "email_remove_label", "name": "emailRemoveLabel", "schemaVersion": 2, "title": "Retirer un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_action" }],
       "description": "Retirer un libellé Gmail d’un message", "args": { "title": "Retirer un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"messageId","label":"ID du message","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"label","label":"Libellé","col":{"xs":24},"validators":[{"type":"required"}]}

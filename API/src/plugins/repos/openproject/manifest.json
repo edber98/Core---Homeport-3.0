@@ -1,5 +1,94 @@
 {
   "repo": { "name": "openproject", "type": "local", "label": "OpenProject" },
+  "variables": {
+    "op_project": {
+      "title": "Projet OpenProject",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+      ]
+    },
+    "op_projects": {
+      "title": "Projets",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "section", "title": "Projets", "description": "Liste des projets", "mode": "array", "key": "projects", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "op_task": {
+      "title": "Tâche OpenProject",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "priority", "label": "Priorité", "col": { "xs": 24 } },
+        { "type": "text", "key": "startDate", "label": "Début", "col": { "xs": 24 } },
+        { "type": "text", "key": "dueDate", "label": "Fin", "col": { "xs": 24 } },
+        { "type": "text", "key": "project", "label": "Projet", "col": { "xs": 24 } },
+        { "type": "text", "key": "assignee", "label": "Assigné", "col": { "xs": 24 } }
+      ]
+    },
+    "op_tasks": {
+      "title": "Tâches",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "section", "title": "Tâches", "description": "Liste des tâches", "mode": "array", "key": "tasks", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+            { "type": "text", "key": "priority", "label": "Priorité", "col": { "xs": 24 } },
+            { "type": "text", "key": "startDate", "label": "Début", "col": { "xs": 24 } },
+            { "type": "text", "key": "dueDate", "label": "Fin", "col": { "xs": 24 } },
+            { "type": "text", "key": "project", "label": "Projet", "col": { "xs": 24 } },
+            { "type": "text", "key": "assignee", "label": "Assigné", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "op_user": {
+      "title": "Utilisateur",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "id", "label": "ID" },
+        { "type": "text", "key": "name", "label": "Nom" },
+        { "type": "text", "key": "email", "label": "Email" },
+        { "type": "text", "key": "login", "label": "Login" }
+      ]
+    },
+    "op_users": {
+      "title": "Utilisateurs",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "section", "title": "Utilisateurs", "description": "Liste des utilisateurs", "mode": "array", "key": "users", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24 } },
+            { "type": "text", "key": "login", "label": "Login", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "openproject",
@@ -31,9 +120,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_project" } ],
       "authorize_skip_error": true,
       "description": "Cree un projet dans OpenProject.",
       "args": {
@@ -56,9 +143,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_projects" } ],
       "authorize_skip_error": true,
       "description": "Liste tous les projets disponibles sur OpenProject.",
       "args": {
@@ -77,9 +162,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_task" } ],
       "authorize_skip_error": true,
       "description": "Ajoute une nouvelle tache a un projet OpenProject.",
       "args": {
@@ -108,9 +191,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_users" } ],
       "authorize_skip_error": true,
       "description": "Liste les utilisateurs OpenProject.",
       "args": {
@@ -129,9 +210,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_tasks" } ],
       "authorize_skip_error": true,
       "description": "Liste les taches OpenProject, avec filtres optionnels.",
       "args": {
@@ -153,9 +232,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_projects" } ],
       "authorize_skip_error": true,
       "description": "Liste les statuts de taches OpenProject.",
       "args": {
@@ -174,9 +251,7 @@
       "category": "OpenProject",
       "providerKey": "openproject",
       "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
-      ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_task" } ],
       "authorize_skip_error": true,
       "description": "Liste les types de taches OpenProject.",
       "args": {

@@ -107,6 +107,12 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     } catch { return schema; }
   };
 
+  // Prepare manifest-level variables to reuse schemas across templates
+  const manifestVars = (() => {
+    const v = (m.variables && typeof m.variables === 'object') ? m.variables : (m.vars && typeof m.vars === 'object') ? m.vars : null;
+    return v || {};
+  })();
+
   for (const t of (m.nodeTemplates || [])){
     const key = t.key; if (!key) continue;
     // Ensure provider exists if providerKey declared
@@ -121,6 +127,8 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
       }
     }
     const argsWithExpr = enableExpressionsOnSchema(t.args || {});
+    // Normalize output schemas (per handle)
+    // output schemas now live inside each output handle (h.schema). Also support mapping via variables below.
     // v2 detection: presence of handles or nodeKind
     const isV2 = Array.isArray(t.inputHandles) || Array.isArray(t.outputHandles) || Array.isArray(t.linkedHandles) || !!t.nodeKind || t.schemaVersion === 2;
     // Convert v1 outputs to v2 handles if needed
@@ -140,12 +148,30 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     if (isV2) {
       const inHs = Array.isArray(t.inputHandles) ? t.inputHandles : undefined;
       const rawOut = Array.isArray(t.outputHandles) ? t.outputHandles : [];
+      const varsLocal = (t && t.variables && typeof t.variables === 'object') ? t.variables : {};
+      const allVars = { ...manifestVars, ...varsLocal };
+      const resolveSchema = (sch) => {
+        try {
+          if (!sch) return undefined;
+          if (typeof sch === 'string') { const k = sch.replace(/^\$var:/,'').replace(/^\$/,''); return allVars[k] || undefined; }
+          if (typeof sch === 'object' && sch.$var) { const k = String(sch.$var); return allVars[k] || undefined; }
+          return sch;
+        } catch { return sch; }
+      };
       const outHs = rawOut.filter((h) => !(Array.isArray(h?.accepts) || h?.arrayField));
+      // attach schema per output if provided, resolve via variables and enable expressions
+      const outWithSchema = outHs.map(h => {
+        const base = { ...h };
+        let schema = resolveSchema((h && (h.schema)) || (t.outputSchemas && t.outputSchemas[h.id]));
+        if (schema) schema = enableExpressionsOnSchema(schema);
+        if (schema) base.schema = schema;
+        return base;
+      });
       const linkHs = (t.linkedHandles && Array.isArray(t.linkedHandles)) ? t.linkedHandles : rawOut.filter((h) => (Array.isArray(h?.accepts) || h?.arrayField)).map((h) => ({ id: h.id, name: h.name, type: h.type, multiple: h.multiple, accepts: h.accepts }));
       // Drop inputs for triggers even if present
       const tt = String(t.nodeKind || t.type || '').toLowerCase();
       const isTrigger = (tt === 'start' || tt === 'start_form' || tt === 'event' || tt === 'endpoint');
-      v2 = { inputHandles: isTrigger ? undefined : (inHs || undefined), outputHandles: outHs.length ? outHs : undefined, linkedHandles: linkHs.length ? linkHs : undefined, nodeKind: t.nodeKind || t.type, schemaVersion: 2 };
+      v2 = { inputHandles: isTrigger ? undefined : (inHs || undefined), outputHandles: outWithSchema.length ? outWithSchema : undefined, linkedHandles: linkHs.length ? linkHs : undefined, nodeKind: t.nodeKind || t.type, schemaVersion: 2 };
     } else {
       v2 = { ...toV2Handles(t), linkedHandles: undefined, schemaVersion: 2 };
     }

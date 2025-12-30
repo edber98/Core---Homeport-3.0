@@ -1,5 +1,28 @@
 {
   "repo": { "name": "slack", "type": "local", "label": "Slack" },
+  "variables": {
+    "slack_message": {
+      "title": "Message Slack",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "channel", "label": "Canal", "col": { "xs": 24 } },
+        { "type": "text", "key": "ts", "label": "Timestamp", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "blocks", "label": "Blocs (JSON)", "col": { "xs": 24 } }
+      ]
+    },
+    "slack_file": {
+      "title": "Fichier Slack",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "mimetype", "label": "Type", "col": { "xs": 24 } },
+        { "type": "number", "key": "size", "label": "Taille (octets)", "col": { "xs": 24 } },
+        { "type": "text", "key": "url_private", "label": "URL privée", "col": { "xs": 24 } }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "slack",
@@ -24,7 +47,7 @@
   "nodeTemplates": [
     { "key": "slack_post_message", "name": "slackPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_message" }],
       "description": "Publier un message dans un canal ou DM", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channel","label":"Canal/DM","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}},
@@ -32,7 +55,7 @@
       ] } },
     { "key": "slack_reply_in_thread", "name": "slackReplyInThread", "schemaVersion": 2, "title": "Répondre dans un fil", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_message" }],
       "description": "Répondre dans un fil", "args": { "title": "Fil", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channel","label":"Canal","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"threadTs","label":"TS du fil","col":{"xs":24},"validators":[{"type":"required"}]},
@@ -40,7 +63,7 @@
       ] } },
     { "key": "slack_upload_file", "name": "slackUploadFile", "schemaVersion": 2, "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_file" }],
       "description": "Téléverser un fichier sur Slack", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"channels","label":"Canaux (séparés par des virgules)","col":{"xs":24}},
         {"type":"text","key":"filename","label":"Nom de fichier","col":{"xs":24}},

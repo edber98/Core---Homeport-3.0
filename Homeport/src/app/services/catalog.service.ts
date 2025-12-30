@@ -34,7 +34,7 @@ export type NodeTemplate = {
   args?: any;
   // v2 handles
   inputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
-  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string }>;
+  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string; schema?: any }>;
   linkedHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
   // legacy v1 (deprecated)
   output?: string[];

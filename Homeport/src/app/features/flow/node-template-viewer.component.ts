@@ -72,6 +72,23 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
           <div><span class="k">Sous-titre</span><span class="v">{{ ui.subtitle || '—' }}</span></div>
         </div>
       </div>
+
+      <div class="panel span-2" *ngIf="(view?.output?.length || $any(tpl)?.outputHandles?.length)">
+        <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <span>Schémas de sortie</span>
+          <button nz-button class="apple-btn" (click)="toggleOutSchemas()"><i class="fa-regular" [class.fa-eye]="!showOutSchemas" [class.fa-eye-slash]="showOutSchemas"></i><span class="label">{{ showOutSchemas ? 'Masquer' : 'Afficher' }}</span></button>
+        </div>
+        <div *ngIf="showOutSchemas">
+          <div class="out-tabs">
+            <button type="button" class="tab" *ngFor="let h of outHandles; let i=index" [class.active]="i===selectedOutIndex" (click)="selectOut(i)">{{ h.name || h.id }}</button>
+          </div>
+          <div class="dialog-preview" *ngIf="currentOutSchemaObj as schema">
+            <div class="dialog-box">
+              <app-dynamic-form [schema]="schema" [value]="{}" [forceBp]="'xs'" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div class="panel preview-col" *ngIf="true">
         <div class="panel-title">Aperçu (flow-builder)</div>
@@ -154,6 +171,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
     .panel { background: transparent; border: none; border-radius: 0; padding: 6px 2px; }
     .panel-title { font-weight:600; margin-bottom:8px; color:#6b7280; }
+    .out-tabs { display:flex; gap:6px; flex-wrap:wrap; margin: 6px 0; }
+    .out-tabs .tab { border:1px solid #e5e7eb; background:#fff; border-radius:8px; padding:4px 8px; cursor:pointer; }
+    .out-tabs .tab.active { background:#eef2ff; border-color:#c7d2fe; }
     .panel-controls { display:flex; align-items:center; justify-content:flex-start; margin-bottom: 8px; }
     .kv { display:flex; flex-direction:column; gap:6px; }
     .kv .k { color:#6b7280; width:180px; display:inline-block; }
@@ -223,6 +243,9 @@ export class NodeTemplateViewerComponent implements OnInit {
   appIconClass = '';
   appIconUrl = '';
   appColor = '';
+  showOutSchemas = false;
+  selectedOutIndex = 0;
+  outHandles: Array<{ id: string; name: string; schema?: any }> = [];
   get inputArray() { return Array.from({ length: this.inputCount }); }
   duplicate() {
     const id = this.view?.id || this.id; if (!id) return;
@@ -277,11 +300,12 @@ export class NodeTemplateViewerComponent implements OnInit {
         const anyt = (t || {}) as any;
         this.tplUi = { icon: anyt?.icon, title: anyt?.title, subtitle: anyt?.subtitle, output_array_field: anyt?.output_array_field };
         this.argsText = JSON.stringify((t && t.args) || {}, null, 2);
-        this.outputs = [...(this.view.output || [])];
-        this.computePreviewPorts();
-        this.computeCredentialsInfo();
-        try { this.cdr.detectChanges(); } catch {}
-      }));
+      this.outputs = [...(this.view.output || [])];
+      this.computePreviewPorts();
+      this.computeCredentialsInfo();
+      this.prepareOutputSchemas();
+      try { this.cdr.detectChanges(); } catch {}
+    }));
     } else {
       // Show empty viewer with default values
       this.tplUi = { icon: '', title: '', subtitle: '', output_array_field: '' };
@@ -289,6 +313,22 @@ export class NodeTemplateViewerComponent implements OnInit {
       this.outputs = [];
       this.computePreviewPorts();
     }
+  }
+  toggleOutSchemas(){ this.showOutSchemas = !this.showOutSchemas; }
+  selectOut(i: number){ this.selectedOutIndex = i; }
+  get currentOutSchemaObj(): any {
+    try {
+      const h = this.outHandles[this.selectedOutIndex];
+      const sch = h && (h.schema || (this.tpl as any)?.outputSchemas?.[h.id]) || { title: 'Sortie', fields: [] };
+      return sch;
+    } catch { return { title: 'Sortie', fields: [] }; }
+  }
+  private prepareOutputSchemas(){
+    try {
+      const hs = Array.isArray((this.tpl as any)?.outputHandles) ? (this.tpl as any).outputHandles : [];
+      this.outHandles = hs.map((h: any) => ({ id: String(h.id||'ok'), name: h.name || h.id || 'ok', schema: h.schema }));
+      if (this.outHandles.length && this.selectedOutIndex >= this.outHandles.length) this.selectedOutIndex = 0;
+    } catch { this.outHandles = []; }
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   simpleIconUrlWithColor(id: string, color?: string) { const hex = (color || '#111').replace('#',''); return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`; }
