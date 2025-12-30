@@ -123,7 +123,7 @@
 /* explosion feedback removed to reduce CSS budget */
 
 
-.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }
+.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
 /* removed paint containment to avoid any visual artifact on Safari */
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
@@ -136,7 +136,7 @@
 .node-card.select-node.hard-error { border-color:#ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.35); }
 /* If both error-branch (try/catch) and hard-error are present, prefer the try/catch pink ring */
 .node-card.select-node.error-branch.hard-error { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.35); }
-.node-card .error-badge { grid-column: 2; grid-row: 1; align-self: start; justify-self: end; color:#ef4444; background:#fff; border:1px solid #fca5a5; border-radius:999px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.node-card .error-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; color:#ef4444; background:#fff; border:1px solid #fca5a5; border-radius:999px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:11px; }
 .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
 .node-card .icon { width: 20px; height: 20px; display:inline-block; }
 .node-card .meta .title { font-weight: 600; }
@@ -274,7 +274,7 @@ nz-drawer { display: contents; }
 .bottom-bar .icon-btn.active { border-color: #1677ff; color: #1677ff; }
 
 
-.node-card .exec-badge { grid-column: 2; grid-row: 1; align-self: end; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
 .node-card .exec-badge .fa-stop.stop { color:#111827; }
