@@ -323,11 +323,11 @@ export class CatalogService {
   // ===== Public API (Credentials)
   listCredentials(workspaceId?: string, providerId?: string): Observable<CredentialSummary[]> {
     if (environment.useBackend && workspaceId) {
-      return this.credsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).filter(c => !providerId || c.providerKey === providerId).map(c => ({
-        id: c.id,
-        name: c.name,
-        providerId: c.providerKey,
-        workspaceId: c.workspaceId,
+      return this.credsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).filter((c: any) => !providerId || String((c as any).providerKey || '') === String(providerId)).map((c: any) => ({
+        id: String(((c as any).id ?? (c as any)._id) || ''),
+        name: String((c as any).name || ''),
+        providerId: String((c as any).providerKey || ''),
+        workspaceId: String((c as any).workspaceId || ''),
       } as CredentialSummary))));
     }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
@@ -364,8 +364,19 @@ export class CatalogService {
   saveCredential(doc: CredentialDoc): Observable<CredentialDoc> {
     if (!doc?.id) {
       if (environment.useBackend) {
-        // Create (id optional)
-        return this.credsApi.create(doc.workspaceId, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(map(() => doc));
+        // Create on backend: return server-created id and echo the rest
+        return this.credsApi.create(doc.workspaceId, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(
+          map((resp: any) => {
+            const d = (resp && (resp.data || resp)) || {};
+            return {
+              id: String(d.id || ''),
+              name: String(d.name || doc.name || ''),
+              providerId: String(d.providerKey || doc.providerId || ''),
+              workspaceId: String(d.workspaceId || doc.workspaceId || ''),
+              values: doc.values || {}
+            } as CredentialDoc;
+          })
+        );
       }
       return throwError(() => new Error('Missing id'));
     }

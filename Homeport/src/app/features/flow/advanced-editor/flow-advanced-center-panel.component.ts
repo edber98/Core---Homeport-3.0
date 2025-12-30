@@ -472,15 +472,28 @@ export class FlowAdvancedCenterPanelComponent {
   openCreateCred() { if (this.currentProvider && this.workspaceId) this.createVisible = true; }
   onCredCreated(doc: CredentialDoc) {
     this.createVisible = false;
-    // Refresh list and select the new one
+    // Optimistic select: insert into local list and bind immediately
+    try {
+      const created: CredentialSummary = { id: String(doc.id), name: String(doc.name || ''), providerId: String(doc.providerId || ''), workspaceId: String(doc.workspaceId || '') };
+      const exists = (this.credentials || []).some(c => String(c.id) === String(created.id));
+      if (!exists) this.credentials = [created, ...(this.credentials || [])];
+      this.selectedCredId = created.id;
+      this.onCredChange(created.id);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+    // Then refresh list from backend to ensure consistency (keep selection)
     try {
       const appId = this.currentProvider?.id || '';
       if (!appId) return;
       const ws = this.workspaceId || undefined;
       this.catalog.listCredentials(ws, appId).subscribe(list => {
         this.credentials = list || [];
-        this.selectedCredId = doc.id;
-        this.onCredChange(doc.id);
+        // preserve selection if still present
+        const sel = this.selectedCredId;
+        if (sel && !this.credentials.some(c => String(c.id) === String(sel))) {
+          // If not present (rare), append a minimal option to keep UI stable
+          this.credentials = [{ id: sel, name: doc.name || sel, providerId: doc.providerId, workspaceId: doc.workspaceId }, ...this.credentials];
+        }
         try { this.cdr.detectChanges(); } catch {}
       });
     } catch {}

@@ -4113,6 +4113,11 @@ export class FlowBuilderComponent {
     const tag = (target?.tagName || '').toLowerCase();
     const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (target?.isContentEditable ?? false);
     if (isInput) return;
+    // When advanced editor modal is open, let browser/system shortcuts (copy/paste...) work normally
+    if (this.advancedOpen) {
+      if (ev.key === 'Escape') { ev.preventDefault(); this.closeAdvancedEditor(); }
+      return;
+    }
     const cmd = ev.metaKey || ev.ctrlKey;
     if (cmd) {
       const key = ev.key.toLowerCase();
