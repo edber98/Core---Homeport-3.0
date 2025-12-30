@@ -36,6 +36,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
                   [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
                   [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
+                  [iconClass]="ctx.node.data.model.templateObj?.icon"
+                  [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
               </div>
               <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">

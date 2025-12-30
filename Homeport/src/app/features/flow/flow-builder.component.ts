@@ -998,6 +998,15 @@ export class FlowBuilderComponent {
       return '';
     } catch { return ''; }
   }
+  miniIconUrl(it: any): string {
+    try {
+      const tpl = it?.template || {};
+      if (tpl?.iconUrl) return String(tpl.iconUrl);
+      const ic = tpl?.icon;
+      if (ic && typeof ic === 'string' && /^https?:\/\//i.test(ic)) return ic;
+      return '';
+    } catch { return ''; }
+  }
   simpleIconUrl(id: string): string { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
   typeIconClass(tpl: any): string {
     const type = String(tpl?.type || '').toLowerCase();
@@ -4227,14 +4236,10 @@ export class FlowBuilderComponent {
         if (k === 'h') { ev.preventDefault(); try { this.ctxAlignSelection('horizontal'); } catch {} return; }
         if (k === 'v') { ev.preventDefault(); try { this.ctxAlignSelection('vertical'); } catch {} return; }
       }
-      if (k === 'p') {
-        ev.preventDefault();
-        try {
-          if (this.isTabletOrBelow) { this.leftDrawer ? this.onLeftDrawerClose() : this.openMobilePanel('left'); }
-          else { this.leftPanelOpen = !this.leftPanelOpen; }
-        } catch {}
-        return;
-      }
+      // P → toggle right panel (parameters)
+      if (k === 'p') { ev.preventDefault(); this.toggleRightPanel(); return; }
+      // N → toggle left panel (nodes/palette)
+      if (k === 'n') { ev.preventDefault(); this.toggleLeftPanel(); return; }
       if (k === 'r') {
         ev.preventDefault();
         this.toggleAlignmentHelper();

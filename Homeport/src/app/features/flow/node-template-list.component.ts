@@ -47,9 +47,9 @@ import { auditTime } from 'rxjs/operators';
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 | uppercase }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
-                <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
-                <img *ngIf="!appFor(it)?.iconClass && appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
-                <img *ngIf="!appFor(it)?.iconClass && !appFor(it)?.iconUrl" [src]="simpleIconUrlWithColor(appFor(it)?.id || '', fgColor(appFor(it)?.color))" alt="icon"/>
+                <img *ngIf="appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
+                <i *ngIf="!appFor(it)?.iconUrl && appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
+                <img *ngIf="!appFor(it)?.iconUrl && !appFor(it)?.iconClass" [src]="simpleIconUrlWithColor(appFor(it)?.id || '', fgColor(appFor(it)?.color))" alt="icon"/>
               </div>
             </ng-template>
           </div>

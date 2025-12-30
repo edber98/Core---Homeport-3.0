@@ -10,9 +10,12 @@ import { AppProvider } from '../services/catalog.service';
     <div class="node-header">
       <div class="leading">
         <div class="app-icon" *ngIf="app || appId" [style.background]="(app?.color || '#f3f4f6')">
-          <i *ngIf="(app?.iconClass || '') && !(app?.iconUrl)" [class]="app?.iconClass" [style.color]="fgColor(app?.color)"></i>
-          <img *ngIf="!(app?.iconClass) && app?.iconUrl" [src]="app?.iconUrl" alt="icon"/>
-          <img *ngIf="!(app?.iconClass) && !(app?.iconUrl) && appId" [src]="simpleIconUrlWithColor(appId || '', fgColor(app?.color))" alt="icon"/>
+          <!-- Priority: explicit node/template iconUrl > explicit iconClass > provider iconUrl > provider iconClass > SimpleIcons fallback -->
+          <img *ngIf="iconUrl" [src]="iconUrl" alt="icon"/>
+          <i *ngIf="!iconUrl && iconClass" [class]="iconClass" [style.color]="fgColor(app?.color)"></i>
+          <img *ngIf="!iconUrl && !iconClass && app?.iconUrl" [src]="app?.iconUrl" alt="icon"/>
+          <i *ngIf="!iconUrl && !iconClass && !app?.iconUrl && app?.iconClass" [class]="app?.iconClass" [style.color]="fgColor(app?.color)"></i>
+          <img *ngIf="!iconUrl && !iconClass && !app?.iconUrl && !app?.iconClass && appId" [src]="simpleIconUrlWithColor(appId || '', fgColor(app?.color))" alt="icon"/>
         </div>
       </div>
       <div class="meta">
@@ -43,6 +46,9 @@ export class NodeCardHeaderComponent {
   @Input() typeIcon: string = '';
   @Input() app?: AppProvider | null;
   @Input() appId?: string | null;
+  // Optional node/template specific icon override
+  @Input() iconClass?: string | null;
+  @Input() iconUrl?: string | null;
 
   fgColor(bg?: string|null): string {
     const b = String(bg || '#1677ff');

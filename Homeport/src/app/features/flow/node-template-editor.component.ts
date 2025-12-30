@@ -29,18 +29,16 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   template: `
   <div class="tpl-editor">
     <div class="header">
-      <div class="card-title left">
-        <span class="t">Template de nœud</span>
-        <span class="s">Créer / Éditer</span>
+      <div class="left">
+        <button type="button" class="icon-btn back" (click)="cancel()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="ts">
+          <span class="t">Template de nœud</span>
+          <span class="s">Créer / Éditer</span>
+        </div>
       </div>
       <div class="actions">
-        <button nz-button class="apple-btn" (click)="cancel()">
-          <i nz-icon nzType="arrow-left"></i>
-          <span class="label">Retour</span>
-        </button>
-        <button nz-button class="apple-btn" nzType="primary" [disabled]="form.invalid || saving" (click)="save()">
+        <button type="button" class="icon-ghost" (click)="save()" [disabled]="form.invalid || saving" aria-label="Enregistrer">
           <i nz-icon nzType="save"></i>
-          <span class="label">Enregistrer</span>
         </button>
       </div>
     </div>
@@ -98,12 +96,27 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Icône</nz-form-label>
+          <nz-form-label>Icône (classe FA)</nz-form-label>
           <nz-form-control>
             <input nz-input formControlName="icon" [nzAutocomplete]="autoIcon" placeholder="fa-solid fa-bolt"/>
             <nz-autocomplete #autoIcon>
               <nz-auto-option *ngFor="let opt of iconOptions" [nzValue]="opt">{{ opt }}</nz-auto-option>
             </nz-autocomplete>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Icône (URL)</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="iconUrl" placeholder="https://.../icon.svg"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Aperçu</nz-form-label>
+          <nz-form-control>
+            <div class="icon" style="width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e5e7eb;">
+              <img *ngIf="form.value.iconUrl" [src]="form.value.iconUrl" alt="icon" style="width:22px;height:22px;object-fit:contain;"/>
+              <i *ngIf="!form.value.iconUrl && form.value.icon" [class]="form.value.icon" style="font-size:18px;color:#64748b;"></i>
+            </div>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -255,12 +268,18 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   `,
   styles: [`
     .tpl-editor { padding: 12px; max-width: 1080px; margin: 0 auto; }
-    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; }
+    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; }
+    .header .left { display:flex; align-items:center; gap:8px; }
     .header .actions { display:flex; gap:8px; }
-    .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+    .card-title, .ts { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .card-title.left { align-items:flex-start; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
+    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
+    .icon-btn.back:hover { background:#f3f4f6; }
+    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
+    .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
+    .icon-ghost:hover { background:#f5f5f5; }
     .ins-section-header { display:flex; justify-content:center; padding:6px 0 8px; margin:12px 0 8px; border-bottom:1px solid #E2E1E4; }
     .ins-section-header.args { margin-top: 18px; }
     .sub-header { display:flex; align-items:flex-end; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; }
@@ -338,6 +357,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       vendors: new FormControl<string[] | null>([], { nonNullable: false }),
       tags: new FormControl<string[] | null>([], { nonNullable: false }),
       icon: new FormControl<string>(''),
+      iconUrl: new FormControl<string>(''),
       title: new FormControl<string>(''),
       subtitle: new FormControl<string>(''),
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
@@ -470,7 +490,7 @@ export class NodeTemplateEditorComponent implements OnInit {
     }, { emitEvent: false });
     // Optional UI fields
     // @ts-ignore
-    this.form.patchValue({ icon: (t as any).icon || '', title: (t as any).title || '', subtitle: (t as any).subtitle || '' }, { emitEvent: false });
+    this.form.patchValue({ icon: (t as any).icon || '', iconUrl: (t as any).iconUrl || '', title: (t as any).title || '', subtitle: (t as any).subtitle || '' }, { emitEvent: false });
     if (t.type === 'function') {
       this.form.get('authorize_catch_error')?.setValue(!!t.authorize_catch_error, { emitEvent: false });
       // skip support visibility flag
@@ -566,6 +586,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       title: v.title || undefined,
       subtitle: v.subtitle || undefined,
       icon: v.icon || undefined,
+      iconUrl: v.iconUrl || undefined,
       category: v.category || undefined,
       group: v.group || undefined,
       appId: v.appId || undefined,

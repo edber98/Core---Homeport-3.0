@@ -46,12 +46,18 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
               <div class="meta">
                 <div class="title">
                   <!-- Show template icon if provided, else fallback to type icon -->
-                  <ng-container *ngIf="miniIconClassFn?.(it) as mic; else noTplIcon">
-                    <span class="mini-icon"><i class="mini" [class]="mic"></i></span>
-                  </ng-container>
-                  <ng-template #noTplIcon>
-                    <span class="mini-icon" *ngIf="typeIconClassFn?.(it.template) as tic"><i class="mini" [class]="tic"></i></span>
-                  </ng-template>
+                  <!-- Template icon URL has priority -->
+                  <span class="mini-icon" *ngIf="isTplIconUrl(it)">
+                    <img [src]="tplIconUrl(it)" alt="icon" style="width:14px;height:14px;" />
+                  </span>
+                  <!-- Else, template icon class if provided -->
+                  <span class="mini-icon" *ngIf="!isTplIconUrl(it) && tplIconClass(it)">
+                    <i class="mini" [class]="tplIconClass(it)"></i>
+                  </span>
+                  <!-- Else, fallback to type icon -->
+                  <span class="mini-icon" *ngIf="!isTplIconUrl(it) && !tplIconClass(it) && typeIconClassFn?.(it.template)">
+                    <i class="mini" [class]="typeIconClassFn?.(it.template)"></i>
+                  </span>
                   {{ it.label }}
                   <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
                 </div>
@@ -152,5 +158,25 @@ export class FlowPalettePanelComponent {
       if (ty === 'endpoint') return 'Déclencheur (HTTP endpoint)';
       return 'Déclencheur';
     } catch { return 'Déclencheur'; }
+  }
+
+  // Helpers to decide which icon to render for a template item
+  isTplIconUrl(it: any): boolean {
+    try {
+      const tpl = it?.template || {};
+      if (tpl?.iconUrl && String(tpl.iconUrl).trim()) return true;
+      const ic = tpl?.icon;
+      return !!(ic && typeof ic === 'string' && (/^https?:\/\//i).test(ic));
+    } catch { return false; }
+  }
+  tplIconUrl(it: any): string {
+    try {
+      const tpl = it?.template || {};
+      const url = tpl?.iconUrl || tpl?.icon || '';
+      return String(url || '');
+    } catch { return ''; }
+  }
+  tplIconClass(it: any): string {
+    try { return this.miniIconClassFn?.(it) || ''; } catch { return ''; }
   }
 }

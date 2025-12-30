@@ -7,6 +7,7 @@ const NodeTemplateSchema = new Schema({
   title: { type: String },
   subtitle: { type: String },
   icon: { type: String },
+  iconUrl: { type: String },
   description: { type: String },
   tags: { type: [String], default: [] },
   group: { type: String },

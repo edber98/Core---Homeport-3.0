@@ -10,6 +10,7 @@ export interface BackendNodeTemplate {
   title?: string;
   subtitle?: string;
   icon?: string;
+  iconUrl?: string;
   description?: string;
   tags?: string[];
   group?: string;

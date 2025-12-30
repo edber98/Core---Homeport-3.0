@@ -24,6 +24,7 @@ export type NodeTemplate = {
   title?: string;         // display title on node
   subtitle?: string;      // display subtitle (category/app)
   icon?: string;          // optional icon class for node card
+  iconUrl?: string;       // optional icon URL (PNG/SVG) for node card
   category?: string;      // fonctionnel (Email, Docs, Calendar...)
   appId?: string;         // logiciel / intégration (ex: 'gmail')
   tags?: string[];        // recherche libre
@@ -191,6 +192,7 @@ export class CatalogService {
           title: t.title || t.name || t.key,
           subtitle: t.subtitle || t.appName || t.providerKey || undefined,
           icon: t.icon,
+          iconUrl: (t as any).iconUrl,
           description: t.description,
           category: t.category,
           appId: t.providerKey || undefined,
@@ -227,6 +229,7 @@ export class CatalogService {
         title: tpl.title,
         subtitle: tpl.subtitle,
         icon: tpl.icon,
+        iconUrl: (tpl as any).iconUrl,
         description: tpl.description,
         tags: tpl.tags,
         group: tpl.group,
