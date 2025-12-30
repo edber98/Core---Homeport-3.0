@@ -4154,11 +4154,7 @@ export class FlowBuilderComponent {
       }
       if (k === 'r') {
         ev.preventDefault();
-        try {
-          if (this.isTabletOrBelow) { this.rightDrawer ? this.onRightDrawerClose() : this.openMobilePanel('right'); }
-          else { this.rightPanelOpen = !this.rightPanelOpen; }
-          if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true);
-        } catch {}
+        this.toggleAlignmentHelper();
         return;
       }
       if (k === 's') { ev.preventDefault(); this.saveFlow(); return; }
