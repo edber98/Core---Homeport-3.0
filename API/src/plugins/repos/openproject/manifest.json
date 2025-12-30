@@ -23,12 +23,13 @@
     {
       "key": "create_openproject_project",
       "name": "createOpenProjectProject",
+      "schemaVersion": 2,
       "title": "Creer un projet",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -47,12 +48,13 @@
     {
       "key": "list_openproject_projects",
       "name": "listOpenProjectProjects",
+      "schemaVersion": 2,
       "title": "Lister les projets",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -67,12 +69,13 @@
     {
       "key": "add_openproject_task",
       "name": "addOpenProjectTask",
+      "schemaVersion": 2,
       "title": "Ajouter une tache",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -97,12 +100,13 @@
     {
       "key": "search_many_openproject_users",
       "name": "searchManyOpenProjectUsers",
+      "schemaVersion": 2,
       "title": "Lister les utilisateurs",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -117,12 +121,13 @@
     {
       "key": "list_openproject_tasks",
       "name": "listOpenProjectTasks",
+      "schemaVersion": 2,
       "title": "Lister les taches",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -140,12 +145,13 @@
     {
       "key": "list_openproject_task_statuses",
       "name": "listOpenProjectTaskStatuses",
+      "schemaVersion": 2,
       "title": "Lister les statuts",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -160,12 +166,13 @@
     {
       "key": "list_openproject_task_types",
       "name": "listOpenProjectTaskTypes",
+      "schemaVersion": 2,
       "title": "Lister les types",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],
@@ -180,12 +187,13 @@
     {
       "key": "update_openproject_task",
       "name": "updateOpenProjectTask",
+      "schemaVersion": 2,
       "title": "Modifier une tache",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" }
       ],

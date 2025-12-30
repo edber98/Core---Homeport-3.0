@@ -17,6 +17,8 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 export type NodeTemplate = {
   id: string;
   type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow' | 'agent' | 'tool_ai' | 'memory' | 'router' | 'choice';
+  nodeKind?: string;        // optional: backend kind (v2)
+  schemaVersion?: number;   // optional: manifest schema version
   name: string;           // technical identifier (no spaces)
   // UI/metadata
   title?: string;         // display title on node
@@ -514,7 +516,9 @@ export class CatalogService {
 
   // ===== Helpers (seed, storage)
   private ensureSeed(force = false) {
+    // No frontend seeds: all data must come from backend plugins.
     try {
+      return;
       if (force || !this.load<any>(this.FLOW_LIST_KEY, null)) {
         const flows: FlowSummary[] = [
           { id: 'demo-1', name: 'Demo: Envoi d\'email', description: 'Start → SendMail' },
@@ -524,10 +528,13 @@ export class CatalogService {
         // Seed demo graphs (with minimal template objects for preview/labels)
         const startTpl: any = {
           id: 'tmpl_start', type: 'start', name: 'Start', title: 'Start', subtitle: 'Trigger', category: 'Core',
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ],
           args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] }
         };
         const sendTpl: any = {
-          id: 'tmpl_sendmail', type: 'function', name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
+          id: 'tmpl_sendmail', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email',
+          inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ],
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true,
           args: {
             title: 'Send mail', ui: { layout: 'vertical' }, fields: [
               { type: 'text', key: 'dest', label: 'Destinataire', col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
@@ -538,7 +545,9 @@ export class CatalogService {
           }
         };
         const httpTpl: any = {
-          id: 'tmpl_http', type: 'function', name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
+          id: 'tmpl_http', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP',
+          inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ],
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true,
           args: { title: 'HTTP Request', ui: { layout: 'vertical' }, fields: [
             { type: 'text', key: 'url', label: 'URL', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
             { type: 'select', key: 'method', label: 'Method', options: [{label:'GET',value:'GET'},{label:'POST',value:'POST'},{label:'PUT',value:'PUT'},{label:'DELETE',value:'DELETE'}], col: { xs: 24 }, default: '', validators: [{ type: 'required' }] },
@@ -585,7 +594,7 @@ export class CatalogService {
           { id: 'n_send', type: 'html-template', point: { x: 120, y: 260 }, data: { model: { id: 'n_send', name: 'SendMail', template: sendTpl.id, templateObj: sendTpl, context: {}, templateChecksum: argsChecksum(sendTpl.args), templateFeatureSig: featureChecksum(sendTpl) } } },
         ];
         const d1Edges: any[] = [
-          { id: 'n_start->n_send:out:', type: 'template', source: 'n_start', target: 'n_send', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } }
+          { id: 'n_start->n_send:ok:in', type: 'template', source: 'n_start', target: 'n_send', sourceHandle: 'ok', targetHandle: 'in', edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } }
         ];
         this.save(this.FLOW_DOC_KEY + 'demo-1', { id: 'demo-1', name: flows[0].name, description: flows[0].description, nodes: d1Nodes, edges: d1Edges, meta: { demo: true } });
 
@@ -596,8 +605,8 @@ export class CatalogService {
           { id: 'n_cond', type: 'html-template', point: { x: 100, y: 430 }, data: { model: { id: 'n_cond', name: 'Condition', template: condTpl.id, templateObj: condTpl, context: { items: [{ _id: 'ok', name: 'OK' }, { _id: 'ko', name: 'KO' }] }, templateChecksum: argsChecksum(condTpl.args), templateFeatureSig: featureChecksum(condTpl) } } },
         ];
         const d2Edges: any[] = [
-          { id: 'n_start->n_http:out:', type: 'template', source: 'n_start', target: 'n_http', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
-          { id: 'n_http->n_cond:0:', type: 'template', source: 'n_http', target: 'n_cond', sourceHandle: '0', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
+          { id: 'n_start->n_http:ok:in', type: 'template', source: 'n_start', target: 'n_http', sourceHandle: 'ok', targetHandle: 'in', edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
+          { id: 'n_http->n_cond:ok:', type: 'template', source: 'n_http', target: 'n_cond', sourceHandle: 'ok', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
         ];
         this.save(this.FLOW_DOC_KEY + 'demo-2', { id: 'demo-2', name: flows[1].name, description: flows[1].description, nodes: d2Nodes, edges: d2Edges, meta: { demo: true } });
       }
@@ -861,12 +870,12 @@ export class CatalogService {
               }
             }, output: ['Success'], authorize_catch_error: true, tags: ['email', 'gmail'], group: 'Functions'
           },
-          { id: 'tmpl_http', type: 'function', name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['http', 'api'], group: 'Functions' },
-          { id: 'tmpl_slack_post', type: 'function', name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['slack', 'chat'], group: 'Functions' },
-          { id: 'tmpl_delay', type: 'function', name: 'Delay', category: 'Core', description: 'Attendre un délai', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['time', 'delay'], group: 'Functions' },
-          { id: 'tmpl_math_add', type: 'function', name: 'Math Add', category: 'Math', description: 'Additionner', output: ['Success'], tags: ['math'], group: 'Functions' },
-          { id: 'tmpl_text_upper', type: 'function', name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', output: ['Success'], tags: ['text'], group: 'Functions' },
-          { id: 'tmpl_pdf', type: 'function', name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', output: ['Success'], tags: ['pdf', 'document'], group: 'Functions' },
+          { id: 'tmpl_http', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['http', 'api'], group: 'Functions' },
+          { id: 'tmpl_slack_post', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['slack', 'chat'], group: 'Functions' },
+          { id: 'tmpl_delay', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Delay', category: 'Core', description: 'Attendre un délai', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['time', 'delay'], group: 'Functions' },
+          { id: 'tmpl_math_add', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Math Add', category: 'Math', description: 'Additionner', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['math'], group: 'Functions' },
+          { id: 'tmpl_text_upper', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['text'], group: 'Functions' },
+          { id: 'tmpl_pdf', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['pdf', 'document'], group: 'Functions' },
         ];
         // Add Gmail event trigger (Recevoir un mail)
         try {
@@ -916,7 +925,7 @@ export class CatalogService {
 
         // Add workflow (subflow) template at seed time
         try {
-          (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
+          (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', nodeKind: 'flow', schemaVersion: 2, name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
         } catch {}
         this.save(this.TPL_LIST_KEY, tpls);
       }

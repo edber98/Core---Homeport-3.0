@@ -1682,7 +1682,19 @@ export class FlowBuilderComponent {
     this.ctxMenuX = x;
     this.ctxMenuY = y;
     this.ctxMenuTarget = node;
-    try { this.selectItem(node); } catch { }
+    try {
+      const count = (this.selectionList || []).length;
+      if (count <= 1) {
+        // If zero or a different single selection, switch to the node under the menu
+        if (count === 0 || String(this.selectionList[0]?.id) !== String(node?.id)) {
+          this.selectionList = [node];
+          this.selection = node;
+          try { this.setVflowSelectedIds([node.id]); } catch {}
+          try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+        }
+      }
+      // If multiple selection exists, keep it as-is (group actions will apply)
+    } catch { }
   }
   // Run selected node in test mode and show I/O in dialog wings
   onTestSelectedNode() {
@@ -2244,7 +2256,8 @@ export class FlowBuilderComponent {
       }
       const newId = this.generateNodeId(node?.data?.model?.templateObj, node?.data?.model?.name || node?.data?.model?.templateObj?.name || node?.data?.model?.templateObj?.title);
       const newPoint = { x: (node.point?.x ?? 0) + 40, y: (node.point?.y ?? 0) + 40 };
-      const model = JSON.parse(JSON.stringify(node.data?.model || {}));
+      const oldModel = node.data?.model || {};
+      const model = JSON.parse(JSON.stringify(oldModel || {}));
       model.id = newId;
       // Adjust name to indicate duplication (non-bloquant)
       try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch { }
@@ -2254,23 +2267,164 @@ export class FlowBuilderComponent {
         if (tmpl?.type === 'condition') {
           const field = tmpl.output_array_field || 'items';
           const used = this.collectAllConditionHandleIds();
+          // Build old->new handle id mapping by index
+          const oldArr = (oldModel?.context && Array.isArray(oldModel.context[field])) ? oldModel.context[field] : [];
           const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          const handleMap: Record<string,string> = {};
           for (const it of arr) {
             if (it && typeof it === 'object') {
               let id = '';
               do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id));
+              const idx = arr.indexOf(it);
+              handleMap[String(oldArr?.[idx]?._id || '')] = id;
               it._id = id; used.add(id);
             }
           }
+          // Else mapping
+          const oldElseId = (oldModel?.context?.else && oldModel.context.else._id) ? String(oldModel.context.else._id) : '';
+          if (model?.context?.else && model.context.else._id) {
+            let eid = '';
+            do { eid = 'else_' + Math.random().toString(36).slice(2); } while (used.has(eid));
+            handleMap[oldElseId] = eid;
+            model.context.else._id = eid; used.add(eid);
+          }
+          // Duplicate outgoing edges from original node with remapped sourceHandle
+          const newEdges: any[] = [];
+          for (const e of (this.edges || [])) {
+            if (String((e as any).source) === String(node.id)) {
+              const ne = JSON.parse(JSON.stringify(e));
+              ne.source = newId;
+              if (ne.sourceHandle && handleMap[String(ne.sourceHandle)]) ne.sourceHandle = handleMap[String(ne.sourceHandle)];
+              try {
+                const sh = String(ne.sourceHandle || '');
+                const th = String(ne.targetHandle || '');
+                ne.id = `${ne.source}->${ne.target}:${sh}:${th}`;
+              } catch {}
+              newEdges.push(ne);
+            }
+          }
+          if (newEdges.length) this.edges = [...this.edges, ...newEdges];
         }
       } catch { }
       const vNode = { id: newId, point: newPoint, type: node.type, data: { ...node.data, model } };
       this.nodes = [...this.nodes, vNode];
       try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
+      // After duplicate (single), select only the new node and clear any previous selection
+      this.selectionList = [vNode as any];
       this.selection = vNode as any;
+      try { setTimeout(() => this.setVflowSelectedIds([newId]), 0); } catch {}
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
       this.history.push(this.snapshot());
       this.recomputeValidation();
     } catch { }
+  }
+
+  // Duplicate the whole current selection, preserving internal connections
+  ctxDuplicateGroup() {
+    this.closeCtxMenu();
+    try {
+      const sels = Array.isArray(this.selectionList) ? this.selectionList.slice() : [];
+      const ids = sels.map(n => String(n?.id)).filter(Boolean);
+      const idSet = new Set(ids);
+      if (ids.length < 2) { this.ctxDuplicateTarget(); return; }
+      // Build id remap and compute offset
+      const bbox = { minx: Infinity, miny: Infinity };
+      for (const n of sels) { const p = n?.point || { x:0, y:0 }; bbox.minx = Math.min(bbox.minx, p.x||0); bbox.miny = Math.min(bbox.miny, p.y||0); }
+      const dx = 60, dy = 60;
+      const idMap = new Map<string,string>();
+      for (const n of sels) {
+        const tpl = n?.data?.model?.templateObj;
+        // Skip triggers
+        if (this.isStartLike(tpl)) continue;
+        const newId = this.generateNodeId(tpl, n?.data?.model?.name || tpl?.name || tpl?.title);
+        idMap.set(String(n.id), newId);
+      }
+      const usedCondIds = this.collectAllConditionHandleIds();
+      // Prepare per-node condition handle remapping: oldId -> (oldHandle -> newHandle)
+      const condHandleMap = new Map<string, Map<string,string>>();
+      const newNodes: any[] = [];
+      for (const n of sels) {
+        const oldId = String(n.id);
+        const newId = idMap.get(oldId);
+        if (!newId) continue; // skipped (e.g., start)
+        const oldM = n?.data?.model || {};
+        const m = JSON.parse(JSON.stringify(oldM || {}));
+        m.id = newId;
+        // Rename for copy UX
+        try { if (m?.name) m.name = String(m.name) + ' (copy)'; } catch {}
+        // Condition: avoid branch id collisions
+        try {
+          const tt = m?.templateObj?.type;
+          if (tt === 'condition') {
+            const field = m?.templateObj?.output_array_field || 'items';
+            const arr = (m?.context && Array.isArray(m.context[field])) ? m.context[field] : [];
+            const oldArr = (oldM?.context && Array.isArray(oldM.context[field])) ? oldM.context[field] : [];
+            const map = new Map<string,string>();
+            for (const it of arr) {
+              if (it && typeof it === 'object') {
+                let cid = '';
+                do { cid = 'cid_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(cid));
+                const idx = arr.indexOf(it);
+                const old = String(oldArr?.[idx]?._id || '');
+                if (old) map.set(old, cid);
+                it._id = cid; usedCondIds.add(cid);
+              }
+            }
+            if (m?.context?.else && m.context.else._id) {
+              let eid = '';
+              do { eid = 'else_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(eid));
+              const oldElse = (oldM?.context?.else && oldM.context.else._id) ? String(oldM.context.else._id) : '';
+              if (oldElse) map.set(oldElse, eid);
+              m.context.else._id = eid; usedCondIds.add(eid);
+            }
+            condHandleMap.set(oldId, map);
+          }
+        } catch {}
+        const p = n?.point || { x:0, y:0 };
+        const vNode = { id: newId, point: { x: p.x + dx, y: p.y + dy }, type: n.type, data: { ...n.data, model: m } };
+        newNodes.push(vNode);
+      }
+      if (newNodes.length) {
+        this.nodes = [...this.nodes, ...newNodes];
+      }
+      // Clone internal edges
+      const newEdges: any[] = [];
+      for (const e of (this.edges || [])) {
+        const s = String((e as any).source || '');
+        const t = String((e as any).target || '');
+        if (idSet.has(s) && idSet.has(t)) {
+          const ns = idMap.get(s); const nt = idMap.get(t);
+          if (ns && nt) {
+            const ne = JSON.parse(JSON.stringify(e));
+            ne.source = ns; ne.target = nt;
+            // Remap condition handles on source side
+            const map = condHandleMap.get(s);
+            if (map && ne.sourceHandle && map.get(String(ne.sourceHandle))) ne.sourceHandle = map.get(String(ne.sourceHandle));
+            try {
+              const sh = String((ne as any).sourceHandle || '');
+              const th = String((ne as any).targetHandle || '');
+              ne.id = `${ns}->${nt}:${sh}:${th}`;
+            } catch {}
+            newEdges.push(ne);
+          }
+        }
+      }
+      if (newEdges.length) {
+        this.edges = [...this.edges, ...newEdges];
+      }
+      // Select newly created nodes
+      this.selectionList = newNodes;
+      this.selection = newNodes[0] || null;
+      try { setTimeout(() => this.setVflowSelectedIds(newNodes.map(n => n.id)), 0); } catch {}
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      this.pushState('duplicate.group');
+      this.recomputeValidation();
+    } catch {}
+  }
+
+  ctxDeleteGroup() {
+    this.closeCtxMenu();
+    try { this.onDeleteMany(); } catch {}
   }
 
   private collectAllConditionHandleIds(): Set<string> {
@@ -2526,6 +2680,10 @@ export class FlowBuilderComponent {
       if (!nodeId) return;
       this.centerOnNodeId(nodeId);
     } catch { }
+  }
+  ctxCenterSelection() {
+    this.closeCtxMenu();
+    try { this.centerOnSelection(); } catch { }
   }
 
   onSelected(ev: any) {
@@ -2871,10 +3029,34 @@ export class FlowBuilderComponent {
   }
   centerOnSelection() {
     try {
-      const sel = this.selection;
-      const nodeId = (sel && !(sel as any).source && (sel as any).id) ? String((sel as any).id) : '';
-      if (!nodeId) return; // only nodes supported
-      this.centerOnNodeId(nodeId);
+      const list = Array.isArray(this.selectionList) ? this.selectionList : (this.selection ? [this.selection] : []);
+      const ids = list.filter(n => n && !(n as any).source && (n as any).id).map(n => String((n as any).id));
+      if (!ids.length) return;
+      if (ids.length === 1) { this.centerOnNodeId(ids[0]); return; }
+      this.centerOnNodeIds(ids);
+    } catch { }
+  }
+  private centerOnNodeIds(nodeIds: string[]) {
+    try {
+      if (!nodeIds || !nodeIds.length) return;
+      const vp = this.flow?.viewportService?.readableViewport() || { zoom: 1 };
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const nid of nodeIds) {
+        const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+        const p = n?.point || { x: 0, y: 0 };
+        let w = 180, h = 100;
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(nid))}\"]`) as HTMLElement | null;
+          if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
+        } catch {}
+        const x1 = p.x, y1 = p.y, x2 = p.x + w, y2 = p.y + h;
+        if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+        if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+      }
+      if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      this.centerViewportOnWorldPoint(cx, cy, 250);
     } catch { }
   }
 
@@ -3607,9 +3789,10 @@ export class FlowBuilderComponent {
       }
       return;
     }
-    if ((ev.key === 'Delete' || ev.key === 'Backspace') && this.selection) {
+    if ((ev.key === 'Delete' || ev.key === 'Backspace') && (this.selection || (this.selectionList && this.selectionList.length))) {
       ev.preventDefault();
-      this.deleteSelected();
+      if ((this.selectionList || []).length > 1) { this.onDeleteMany(); }
+      else { this.deleteSelected(); }
     }
   }
 

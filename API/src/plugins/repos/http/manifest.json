@@ -1,0 +1,59 @@
+{
+  "providers": [
+    {
+      "key": "http",
+      "name": "HTTP",
+      "title": "HTTP",
+      "iconClass": "fa-solid fa-code",
+      "color": "#111827",
+      "tags": ["http", "api"],
+      "hasCredentials": false
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "website_open",
+      "name": "OpenWebsite",
+      "schemaVersion": 2,
+      "title": "Open Website",
+      "subtitle": "Website",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Website",
+      "providerKey": "http",
+      "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "description": "Open an URL in a browser",
+      "args": {
+        "title": "Open Website",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } }
+        ]
+      }
+    },
+    {
+      "key": "form_submit",
+      "name": "SubmitForm",
+      "schemaVersion": 2,
+      "title": "Submit Form",
+      "subtitle": "Form",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Form",
+      "providerKey": "http",
+      "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
+      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
+      "description": "Submit a form with data",
+      "args": {
+        "title": "Form Submit",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "formId", "label": "Form ID", "col": { "xs": 24 }, "validators": [ { "type": "required" } ], "expression": { "allow": true } },
+          { "type": "object", "key": "data", "label": "Data", "col": { "xs": 24 }, "expression": { "allow": true } }
+        ]
+      }
+    }
+  ]
+}
+

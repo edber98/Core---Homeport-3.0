@@ -19,19 +19,19 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "googlechat_post_message", "name": "googlechatPostMessage", "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
+    { "key": "googlechat_post_message", "name": "googlechatPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Publier un message dans Google Chat", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}}
       ] } },
-    { "key": "googlechat_card_message", "name": "googlechatCardMessage", "title": "Message carte", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
+    { "key": "googlechat_card_message", "name": "googlechatCardMessage", "schemaVersion": 2, "title": "Message carte", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Publier une carte sur Google Chat", "args": { "title": "Carte", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"textarea","key":"card","label":"JSON de la carte","col":{"xs":24},"default":"{}"}
       ] } },
-    { "key": "googlechat_incoming_webhook", "name": "googlechatIncomingWebhook", "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Google Chat", "providerKey": "googlechat",
+    { "key": "googlechat_incoming_webhook", "name": "googlechatIncomingWebhook", "schemaVersion": 2, "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Google Chat", "providerKey": "googlechat",
       "description": "Déclenchement sur webhook entrant", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/google-chat"}
       ] } }

@@ -25,12 +25,13 @@
     {
       "key": "openai_chat_completion",
       "name": "openaiChatCompletion",
+      "schemaVersion": 2,
       "title": "Chat Completion",
       "type": "function",
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Générer une complétion de chat (messages System/User)",
       "args": {
@@ -48,6 +49,7 @@
     {
       "key": "openai_memory_static",
       "name": "openaiMemoryStatic",
+      "schemaVersion": 2,
       "title": "Memory (Static)",
       "type": "memory",
       "nodeKind": "memory",
@@ -66,6 +68,7 @@
     {
       "key": "openai_memory_merge",
       "name": "openaiMemoryMerge",
+      "schemaVersion": 2,
       "title": "Memory (Merge)",
       "type": "memory",
       "nodeKind": "memory",
@@ -85,6 +88,7 @@
     {
       "key": "openai_tool_define",
       "name": "openaiToolDefine",
+      "schemaVersion": 2,
       "title": "Tool (LangChain)",
       "type": "tool_ai",
       "nodeKind": "tool_ai",
@@ -105,12 +109,13 @@
     {
       "key": "openai_embeddings",
       "name": "openaiEmbeddings",
+      "schemaVersion": 2,
       "title": "Embeddings",
       "type": "function",
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_vector" }],
       "description": "Générer des vecteurs d’embedding",
       "args": {
@@ -125,12 +130,13 @@
     {
       "key": "openai_image_generate",
       "name": "openaiImageGenerate",
+      "schemaVersion": 2,
       "title": "Image Generate",
       "type": "function",
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any" }],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_image" }],
       "description": "Générer une image à partir d’un prompt",
       "args": {
@@ -151,13 +157,14 @@
     {
       "key": "openai_memory_embed",
       "name": "openaiMemoryEmbed",
+      "schemaVersion": 2,
       "title": "Memory (Embeddings)",
       "type": "memory",
       "nodeKind": "memory",
       "category": "AI",
       "providerKey": "openai",
       "inputHandles": [
-        { "id": "in", "name": "Text", "type": "text" }
+        { "id": "in", "name": "Text", "type": "text", "accepts": ["text"] }
       ],
       "outputHandles": [
         { "id": "memory", "name": "Memory", "type": "ai_memory" }
@@ -176,6 +183,7 @@
     {
       "key": "openai_agent",
       "name": "openaiAgent",
+      "schemaVersion": 2,
       "title": "Agent OpenAI",
       "type": "agent",
       "nodeKind": "agent",

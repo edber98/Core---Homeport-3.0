@@ -41,6 +41,7 @@
     {
       "key": "github_issue_create",
       "name": "githubCreateIssue",
+      "schemaVersion": 2,
       "title": "Créer une issue",
       "subtitle": "GitHub",
       "type": "function",
@@ -137,6 +138,7 @@
     {
       "key": "github_comment",
       "name": "githubAddComment",
+      "schemaVersion": 2,
       "title": "Ajouter un commentaire",
       "subtitle": "GitHub",
       "type": "function",

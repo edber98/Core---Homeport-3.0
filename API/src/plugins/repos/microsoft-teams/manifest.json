@@ -22,7 +22,7 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "teams_post_message", "name": "teamsPostMessage", "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
+    { "key": "teams_post_message", "name": "teamsPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Publier un message dans un canal Teams", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
@@ -30,7 +30,7 @@
         {"type":"text","key":"channelId","label":"ID du canal","col":{"xs":24}},
         {"type":"textarea","key":"text","label":"Texte","col":{"xs":24}}
       ] } },
-    { "key": "teams_adaptive_card", "name": "teamsAdaptiveCard", "title": "Carte adaptative", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
+    { "key": "teams_adaptive_card", "name": "teamsAdaptiveCard", "schemaVersion": 2, "title": "Carte adaptative", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Envoyer une carte adaptative", "args": { "title": "Carte adaptative", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
@@ -38,7 +38,7 @@
         {"type":"text","key":"channelId","label":"ID du canal","col":{"xs":24}},
         {"type":"textarea","key":"card","label":"JSON de la carte","col":{"xs":24},"default":"{}"}
       ] } },
-    { "key": "teams_incoming_webhook", "name": "teamsIncomingWebhook", "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Teams", "providerKey": "msteams",
+    { "key": "teams_incoming_webhook", "name": "teamsIncomingWebhook", "schemaVersion": 2, "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Teams", "providerKey": "msteams",
       "description": "Déclenchement sur webhook entrant", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/teams"}
       ] } }

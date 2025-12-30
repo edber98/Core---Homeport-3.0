@@ -64,7 +64,7 @@
     }
   ],
   "nodeTemplates": [
-    { "key": "email_send", "name": "emailSend", "title": "Envoyer un e-mail", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
+    { "key": "email_send", "name": "emailSend", "schemaVersion": 2, "title": "Envoyer un e-mail", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [
         { "id": "ok", "name": "Success", "type": "payload" },
@@ -81,7 +81,7 @@
         {"type":"textarea","key":"html","label":"Corps (HTML)","col":{"xs":24}},
         {"type":"textarea","key":"attachments","label":"Pièces jointes (tableau JSON)","col":{"xs":24},"default":"[]"}
       ] } },
-    { "key": "email_read", "name": "emailRead", "title": "Lire les e-mails", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
+    { "key": "email_read", "name": "emailRead", "schemaVersion": 2, "title": "Lire les e-mails", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
       "outputHandles": [{ "id": "ok", "name": "Messages", "type": "payload" }],
       "description": "Lire des e-mails via IMAP avec filtre", "args": { "title": "Lecture", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
@@ -89,23 +89,23 @@
         {"type":"text","key":"search","label":"Requête de recherche","col":{"xs":24},"default":"UNSEEN"},
         {"type":"number","key":"limit","label":"Limite","col":{"xs":24},"default":10}
       ] } },
-    { "key": "email_new_message", "name": "emailNewMessage", "title": "Nouvel e-mail", "subtitle": "Déclencheur", "type": "event", "nodeKind": "event", "category": "E-mail", "providerKey": "smtp_imap",
+    { "key": "email_new_message", "name": "emailNewMessage", "schemaVersion": 2, "title": "Nouvel e-mail", "subtitle": "Déclencheur", "type": "event", "nodeKind": "event", "category": "E-mail", "providerKey": "smtp_imap",
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Déclenché à la réception d’un message IMAP", "args": { "title": "Déclencheur IMAP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"mailbox","label":"Boîte","col":{"xs":24},"default":"INBOX"}
       ] } },
-    { "key": "email_list_labels", "name": "emailListLabels", "title": "Lister les libellés", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
+    { "key": "email_list_labels", "name": "emailListLabels", "schemaVersion": 2, "title": "Lister les libellés", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
       "outputHandles": [{ "id": "ok", "name": "Labels", "type": "payload" }],
       "description": "Lister les libellés Gmail", "args": { "title": "Libellés", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [] } },
-    { "key": "email_add_label", "name": "emailAddLabel", "title": "Ajouter un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
+    { "key": "email_add_label", "name": "emailAddLabel", "schemaVersion": 2, "title": "Ajouter un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Ajouter un libellé Gmail à un message", "args": { "title": "Ajouter un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"messageId","label":"ID du message","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"text","key":"label","label":"Libellé","col":{"xs":24},"validators":[{"type":"required"}]}
       ] } },
-    { "key": "email_remove_label", "name": "emailRemoveLabel", "title": "Retirer un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
+    { "key": "email_remove_label", "name": "emailRemoveLabel", "schemaVersion": 2, "title": "Retirer un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Retirer un libellé Gmail d’un message", "args": { "title": "Retirer un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [

@@ -353,11 +353,18 @@
   <!-- Context menu overlay -->
   <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
   <div class="ctx-menu" *ngIf="ctxMenuVisible" [style.left.px]="ctxMenuX" [style.top.px]="ctxMenuY">
-    <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
+    <ng-container *ngIf="(selectionList?.length || 0) > 1; else singleCtx">
+      <button (click)="ctxDuplicateGroup()"><i class="fa-regular fa-copy"></i> Dupliquer la sélection ({{selectionList.length}})</button>
+      <button (click)="ctxCenterSelection()"><i class="fa-solid fa-crosshairs"></i> Centrer la sélection</button>
+      <button class="danger" (click)="ctxDeleteGroup()"><i class="fa-regular fa-trash-can"></i> Supprimer la sélection ({{selectionList.length}})</button>
+      <span class="divider" aria-hidden="true"></span>
+    </ng-container>
+    <ng-template #singleCtx>
+      <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
+    </ng-template>
     <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
-    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Ouvrir l’éditeur +
-      Inspector</button>
-    <button class="danger" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
+    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur</button>
+    <button class="danger" *ngIf="(selectionList?.length || 0) <= 1" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
   <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel" [flowId]="currentFlowId"
     [disableForChecksum]="hasTemplateMismatch(selectedModel)"

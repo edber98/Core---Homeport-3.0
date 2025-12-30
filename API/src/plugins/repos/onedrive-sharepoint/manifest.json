@@ -9,14 +9,14 @@
     { "key": "sharePoint", "name": "SharePoint", "title": "SharePoint", "iconClass": "fa-brands fa-microsoft", "color": "#0078D4", "tags": ["sharepoint"], "categories": ["Docs & Drive"], "hasCredentials": true }
   ],
   "nodeTemplates": [
-    { "key": "onedrive_upload_file", "name": "onedriveUploadFile", "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "OneDrive", "providerKey": "oneDrive",
+    { "key": "onedrive_upload_file", "name": "onedriveUploadFile", "schemaVersion": 2, "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "OneDrive", "providerKey": "oneDrive",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Téléverser un fichier vers OneDrive", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
         {"type":"text","key":"path","label":"Chemin","col":{"xs":24},"validators":[{"type":"required"}]},
         {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
       ] } },
-    { "key": "sharepoint_upload_file", "name": "sharepointUploadFile", "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "SharePoint", "providerKey": "sharePoint",
+    { "key": "sharepoint_upload_file", "name": "sharepointUploadFile", "schemaVersion": 2, "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "SharePoint", "providerKey": "sharePoint",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Téléverser un fichier dans une bibliothèque SharePoint", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
@@ -25,7 +25,7 @@
         {"type":"text","key":"path","label":"Chemin","col":{"xs":24}},
         {"type":"textarea","key":"content","label":"Contenu","col":{"xs":24}}
       ] } },
-    { "key": "sharepoint_share_link", "name": "sharepointShareLink", "title": "Créer un lien de partage", "type": "function", "nodeKind": "function", "category": "SharePoint", "providerKey": "sharePoint",
+    { "key": "sharepoint_share_link", "name": "sharepointShareLink", "schemaVersion": 2, "title": "Créer un lien de partage", "type": "function", "nodeKind": "function", "category": "SharePoint", "providerKey": "sharePoint",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer un lien partageable avec permissions", "args": { "title": "Lien de partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [

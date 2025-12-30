@@ -56,13 +56,9 @@ async function seedMongoIfEmpty(){
     await Flow.create({ name: `${ws.name} — Demo 2`, description: 'Flow de démonstration (test)', workspaceId: ws._id, status: 'test', enabled: false, graph: { nodes: [], edges: [] } });
   }
 
-  // Providers
-  await Provider.create({ key: 'http', name: 'HTTP', title: 'HTTP', categories: ['network'], enabled: true, iconClass: 'fa-solid fa-code' });
-  await Provider.create({ key: 'mail', name: 'Mail', title: 'Mail', categories: ['communication'], enabled: true, iconClass: 'fa-solid fa-envelope' });
+  // Providers: all providers and node templates are now loaded from plugin manifests.
 
-  // Node templates (website + form examples)
-  await NodeTemplate.create({ key: 'website_open', name: 'OpenWebsite', title: 'Open Website', subtitle: 'Website', description: 'Open an URL in a browser', icon: 'fa-solid fa-globe', type: 'function', category: 'website', providerKey: 'http', args: { title: 'Open Website', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'url', label: 'URL', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true }, validators: [{ type: 'required' }] } ] }, output: ['Success'], authorize_catch_error: true, authorize_skip_error: true });
-  await NodeTemplate.create({ key: 'form_submit', name: 'SubmitForm', title: 'Submit Form', subtitle: 'Form', description: 'Submit a form with data', icon: 'fa-solid fa-table', type: 'function', category: 'form', providerKey: 'http', args: { title: 'Form Submit', ui: { layout: 'vertical', labelsOnTop: true }, fields: [ { type: 'text', key: 'formId', label: 'Form ID', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true }, validators: [{ type: 'required' }] }, { type: 'object', key: 'data', label: 'Data', col: { xs:24, sm:24, md:24, lg:24, xl:24 }, expression: { allow: true } } ] }, output: ['Success','Retry'], authorize_catch_error: true, authorize_skip_error: false });
+  // Node templates are no longer seeded — all nodes come from plugins manifests.
 
   // Condition template is provided via plugins, not seeded here.
 
