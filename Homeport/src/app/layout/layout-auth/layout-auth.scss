@@ -1,6 +1,12 @@
-.auth-layout { min-height: 100vh; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); display:flex; align-items:center; justify-content:center; padding: 24px; }
+.auth-layout { height: 100%; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); display:flex; align-items:center; justify-content:center; padding: 24px; }
+/* Prefer dynamic viewport height on mobile to account for top bar properly */
+@supports (height: 100svh) {
+  .auth-layout { height: 100svh; min-height: 100svh; }
+}
+@supports (height: 100dvh) {
+  .auth-layout { height: 100dvh; min-height: 100dvh; }
+}
 .frame { width: 560px; max-width: 100%; }
 .brand { display:flex; align-items:center; gap:10px; margin-bottom: 16px; }
 .brand img { height: 36px; border-radius: 8px; border:1px solid #eee; background:#fff; }
 .brand .title { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-
