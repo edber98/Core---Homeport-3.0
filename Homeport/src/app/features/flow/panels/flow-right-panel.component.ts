@@ -9,11 +9,12 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { MonacoJsonEditorComponent } from '../../dynamic-form/components/monaco-json-editor.component';
 import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.component';
+import { NodeInspectorItemComponent } from './node-inspector-item.component';
 
 @Component({
   selector: 'flow-right-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzSelectModule, NzButtonModule, NzToolTipModule, NzModalModule, MonacoJsonEditorComponent, FlowHistoryTimelineComponent],
+  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzSelectModule, NzButtonModule, NzToolTipModule, NzModalModule, MonacoJsonEditorComponent, FlowHistoryTimelineComponent, NodeInspectorItemComponent],
   template: `
     <div class="right-panel" [class.drawer-mode]="mode==='drawer'">
       <div class="inspector-meta" style="padding: 8px; padding-top: 0px; overflow: auto;">
@@ -110,21 +111,18 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
               <span class="s">Paramètres</span>
             </div>
           </div>
-          <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
-            <div class="actions-line right" *ngIf="(selectedList?.length||0) > 1" style="margin-bottom:4px;">
-              <button nz-button nzSize="small" class="icon-btn" (click)="prev()" aria-label="Précédent"><i class="fa-solid fa-chevron-left"></i></button>
-              <span style="font-size:12px; color:#6b7280;">{{ multiIndex + 1 }} / {{ selectedList.length }}</span>
-              <button nz-button nzSize="small" class="icon-btn" (click)="next()" aria-label="Suivant"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-            <div class="rows simple">
-              <div class="meta" *ngIf="(selectedList?.length||0) <= 1; else multiMeta">
-                <div class="kv-list">
-                  <div class="kv"><span class="label">ID</span><span class="value mono">{{ selectedModel?.id }}</span></div>
-                  <div class="kv"><span class="label">Nom</span><span class="value mono">{{ selectedModel?.name }}</span></div>
-                  <div class="kv"><span class="label">Type</span><span class="value mono">{{ selectedModel?.templateObj?.type }}</span></div>
-                  <div class="kv"><span class="label">Template</span><span class="value mono">{{ selectedModel?.template }}</span></div>
-                  <div class="kv" *ngIf="nodeHasError"><span class="label">Erreurs</span><span class="value err">{{ (nodeErrorText || 'Erreur sur ce nœud') }}</span></div>
-                </div>
+          <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+            <div class="rows simple" *ngIf="(selectedList?.length||0) <= 1; else multiSlides">
+              <div *ngIf="(selectedList?.length||0) <= 1; else multiMeta">
+                <node-inspector-item [model]="selectedModel"
+                  [filledArgs]="filledArgsAll()" [usedArgs]="usedArgsAll()"
+                  [showJsonViewer]="showJsonViewer" [editJson]="editJson"
+                  [nodeHasError]="nodeHasError" [nodeErrorText]="nodeErrorText"
+                  (openFilledModal)="showFilledModal=true"
+                  (openFilledJson)="showFilledJsonModal=true"
+                  (openUsedModal)="showUsedModal=true"
+                  (openUsedJson)="showUsedJsonModal=true">
+                </node-inspector-item>
               </div>
               <ng-template #multiMeta>
                 <ng-container *ngIf="selectedList && selectedList.length">
@@ -138,69 +136,37 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
                   </ng-container>
                 </ng-container>
               </ng-template>
-
-              <div class="args" *ngIf="(selectedList?.length||0) <= 1 && filledArgsAll().length > 0">
-                <div class="args-title-row">
-                  <div class="args-title">Arguments renseignés</div>
-                  <div class="title-actions">
-                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" (click)="showFilledModal = true" aria-label="Voir en grand">
-                      <i class="fa-solid fa-circle-info"></i>
-                    </button>
-                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" (click)="showFilledJsonModal = true" aria-label="Voir en JSON">
-                      <i class="fa-solid fa-code"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="args-list">
-                  <div class="arg" *ngFor="let a of filledArgsAll()">
-                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
-                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="args" *ngIf="(selectedList?.length||0) > 1 && selectedList[multiIndex] as it; else noArgs">
-                <div class="args-title-row">
-                  <div class="args-title">Arguments renseignés ({{ it?.data?.model?.id }})</div>
-                </div>
-                <div class="args-list">
-                  <div class="arg" *ngFor="let a of filledArgsAllFor(it?.data?.model)">
-                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
-                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
-                  </div>
-                </div>
-              </div>
-              <ng-template #noArgs></ng-template>
-
-              <div class="args" *ngIf="usedArgsAll().length > 0">
-                <div class="args-title-row">
-                  <div class="args-title">Arguments utilisés</div>
-                  <div class="title-actions">
-                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" (click)="showUsedModal = true" aria-label="Voir en grand">
-                      <i class="fa-solid fa-circle-info"></i>
-                    </button>
-                    <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" (click)="showUsedJsonModal = true" aria-label="Voir en JSON">
-                      <i class="fa-solid fa-code"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="args-list">
-                  <div class="arg" *ngFor="let a of usedArgsAll()">
-                    <span class="label" nz-tooltip [nzTooltipTitle]="labelTip(a.label, a.key)">{{ a.label }}</span>
-                    <span class="value mono" nz-tooltip [nzTooltipTitle]="valueTip(a.value)">{{ displayValue(a.value) }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="json-box slim" *ngIf="showJsonViewer">
-                <monaco-json-editor [value]="editJson" [height]="220" [readonly]="true"></monaco-json-editor>
-              </div>
-
-              <div class="actions-line icon-only end">
+              <div class="actions-line icon-only end" *ngIf="(selectedList?.length||0) <= 1">
                 <button nz-button nzSize="small" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur avancé" aria-label="Ouvrir l’éditeur avancé"><i class="fa-solid fa-up-right-from-square"></i></button>
                 <button nz-button nzSize="small" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
                 <button nz-button nzSize="small" nzDanger (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
               </div>
             </div>
+
+            <!-- Multi selection: slides with swipe and dots -->
+            <ng-template #multiSlides>
+              <div class="carousel-shell">
+                <div class="slides" [style.transform]="slidesTransform" [class.dragging]="dragging">
+                  <div class="slide" *ngFor="let it of selectedList; let i = index">
+                    <node-inspector-item [model]="it?.data?.model"
+                      [filledArgs]="filledArgsAllFor(it?.data?.model)"
+                      [usedArgs]="usedArgsAll()"
+                      [showJsonViewer]="showJsonViewer && selected?.id===it?.data?.model?.id"
+                      [editJson]="editJson"
+                      [nodeHasError]="false"
+                      [nodeErrorText]="null"
+                      (openFilledModal)="onOpenFilledModalFor(it)"
+                      (openFilledJson)="onOpenFilledJsonFor(it)"
+                      (openUsedModal)="onOpenUsedModalFor(it)"
+                      (openUsedJson)="onOpenUsedJsonFor(it)">
+                    </node-inspector-item>
+                  </div>
+                </div>
+                <div class="dots" role="tablist" aria-label="Sélection">
+                  <button class="dot" type="button" *ngFor="let _ of selectedList; let i = index" [class.active]="i===multiIndex" (click)="go(i)"></button>
+                </div>
+              </div>
+            </ng-template>
           </div>
         </ng-container>
 
@@ -331,6 +297,15 @@ import { FlowHistoryTimelineComponent } from '../history/flow-history-timeline.c
     .inspector-node .icon-btn { width:26px; height:26px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
     .inspector-node .title-actions { display:flex; align-items:center; gap:6px; }
 
+    /* Carousel (mobile dialog-like) */
+    .carousel-shell { position: relative; overflow: hidden; }
+    .slides { display:flex; width:100%; transition: transform .28s ease; will-change: transform; }
+    .slides.dragging { transition: none; }
+    .slide { flex: 0 0 100%; padding-bottom: 8px; }
+    .dots { display:flex; gap:8px; justify-content:center; align-items:center; margin-top:8px; }
+    .dot { width:8px; height:8px; border-radius:50%; border:0; background:#d4d4d8; padding:0; cursor:pointer; }
+    .dot.active { background:#111827; }
+
     /* Modal list styling */
     .modal-args { display:flex; flex-direction:column; gap:10px; }
     .modal-args .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
@@ -398,6 +373,16 @@ export class FlowRightPanelComponent implements OnChanges {
   showUsedModal = false;
   showFilledJsonModal = false;
   showUsedJsonModal = false;
+  // Bottom carousel styles
+  staticStyles = `
+    .carousel-shell { position: relative; overflow:hidden; }
+    .slides { display:flex; width:100%; transition: transform .28s ease; will-change: transform; }
+    .slides.dragging { transition: none; }
+    .slide { flex: 0 0 100%; padding-bottom: 8px; }
+    .dots { display:flex; gap:8px; justify-content:center; align-items:center; margin-top:8px; }
+    .dot { width:8px; height:8px; border-radius:50%; border:0; background:#d4d4d8; padding:0; cursor:pointer; }
+    .dot.active { background:#111827; }
+  `;
   // helper to read currently selected recent run
   selectedRecent() { try { return (this.recentRuns || []).find(r => String(r.id||'') === String(this.selectedRecentId||'')) || null; } catch { return null; } }
   currentOrSelected() { return this.runInfo || this.selectedRecent(); }
@@ -416,21 +401,54 @@ export class FlowRightPanelComponent implements OnChanges {
     if (changes['selectedList']) {
       const len = Array.isArray(this.selectedList) ? this.selectedList.length : 0;
       if (this.multiIndex >= len) this.multiIndex = Math.max(0, len - 1);
+      this.resetSlidesTransform(true);
     }
   }
   multiIndex = 0;
   private swipeX = 0; private swipeY = 0; private swiping = false;
   onTouchStart(ev: TouchEvent) { try { const t = ev.touches && ev.touches[0]; if (!t) return; this.swipeX = t.clientX; this.swipeY = t.clientY; this.swiping = true; } catch {} }
+  onTouchMove(ev: TouchEvent) {
+    try {
+      if (!this.swiping) return;
+      const t = ev.touches && ev.touches[0]; if (!t) return;
+      const dx = t.clientX - this.swipeX;
+      const container = (ev.target as HTMLElement)?.closest('.carousel-shell') as HTMLElement | null;
+      const w = container?.getBoundingClientRect()?.width || 1;
+      const base = -(this.multiIndex * 100);
+      const pct = (dx / w) * 100;
+      this.slidesTransform = `translateX(${base + pct}%)`;
+      this.dragging = true;
+    } catch {}
+  }
   onTouchEnd(ev: TouchEvent) {
     try {
       if (!this.swiping) return; this.swiping = false;
-      const t = ev.changedTouches && ev.changedTouches[0]; if (!t) return;
+      const t = ev.changedTouches && ev.changedTouches[0]; if (!t) { this.resetSlidesTransform(); return; }
       const dx = t.clientX - this.swipeX; const dy = t.clientY - this.swipeY;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) { if (dx < 0) this.next(); else this.prev(); }
+      const thresh = 40; // px
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > thresh) { if (dx < 0) this.next(); else this.prev(); }
+      this.resetSlidesTransform();
     } catch {}
   }
-  prev() { if (this.selectedList && this.selectedList.length > 1) this.multiIndex = (this.multiIndex - 1 + this.selectedList.length) % this.selectedList.length; }
-  next() { if (this.selectedList && this.selectedList.length > 1) this.multiIndex = (this.multiIndex + 1) % this.selectedList.length; }
+  prev() { if (this.selectedList && this.selectedList.length > 1) { this.multiIndex = (this.multiIndex - 1 + this.selectedList.length) % this.selectedList.length; this.resetSlidesTransform(true); } }
+  next() { if (this.selectedList && this.selectedList.length > 1) { this.multiIndex = (this.multiIndex + 1) % this.selectedList.length; this.resetSlidesTransform(true); } }
+  go(i: number) { if (!this.selectedList || i < 0 || i >= this.selectedList.length) return; this.multiIndex = i; this.resetSlidesTransform(true); }
+  slidesTransform = 'translateX(0%)';
+  dragging = false;
+  private resetSlidesTransform(animate = false) {
+    try {
+      const base = -(this.multiIndex * 100);
+      this.slidesTransform = `translateX(${base}%)`;
+      this.dragging = false;
+    } catch {}
+  }
+  // No selection change on slide change — stays informational only
+  onOpenAdvancedFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) { this.openSingle.emit(id); setTimeout(() => this.openAdvanced.emit(), 0); } } catch {} }
+  onToggleJsonFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) this.openSingle.emit(id); this.showJsonViewer = !this.showJsonViewer; } catch {} }
+  onOpenFilledModalFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) this.openSingle.emit(id); this.showFilledModal = true; } catch {} }
+  onOpenFilledJsonFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) this.openSingle.emit(id); this.showFilledJsonModal = true; } catch {} }
+  onOpenUsedModalFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) this.openSingle.emit(id); this.showUsedModal = true; } catch {} }
+  onOpenUsedJsonFor(it: any) { try { const id = String(it?.data?.model?.id || ''); if (id) this.openSingle.emit(id); this.showUsedJsonModal = true; } catch {} }
 
   // Parametrized helpers for carousel nodes
   private schemaKeysAndLabelsForModel(model: any): Array<{ key: string; label: string }> {

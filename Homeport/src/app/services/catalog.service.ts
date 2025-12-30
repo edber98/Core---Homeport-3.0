@@ -146,7 +146,7 @@ export class CatalogService {
       const doc: FlowDoc = { id, name, description, status: status as any, enabled, nodes, edges };
       return this.saveFlow(doc);
     }
-    const payload = { name, description, status, enabled, graph: { nodes, edges } } as any;
+    const payload = { name, description, status, enabled, graph: { nodes, edges }, settings: { ui: { portOrientation: 'horizontal', alignmentHelper: { tolerance: 35, lineColor: '#D1D5DB' } } } } as any;
     // If user requested enabled at creation time, pass force=1 so backend honors enabled even for empty/invalid graphs
     return this.flowsApi.create(wsId, payload, !!enabled).pipe(map((f: any) => ({
       id: String((f && (f.id || f._id)) || ''),

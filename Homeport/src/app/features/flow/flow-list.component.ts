@@ -416,7 +416,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
     const wsId = this.acl.currentWorkspaceId() || 'default';
     const obs = environment.useBackend
       ? this.catalog.createFlow(wsId, name, status, enabled, [], [], (this.draft.description || '').trim())
-      : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: {} } as any);
+      : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: { ui: { portOrientation: 'horizontal', alignmentHelper: { tolerance: 35, lineColor: '#D1D5DB' } } } } as any);
     obs.subscribe({
       next: (doc) => {
         this.zone.run(() => {

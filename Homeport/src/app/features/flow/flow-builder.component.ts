@@ -322,6 +322,9 @@ export class FlowBuilderComponent {
           const s = ah.toLowerCase();
           const on = ['1','true','yes','on'].includes(s);
           this.alignmentHelper = on ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+        } else {
+          // Default at creation: enable alignment helper when not specified
+          this.alignmentHelper = { tolerance: 35, lineColor: '#D1D5DB' };
         }
       } catch {}
       // snapGrid ([x,y] or disabled)
@@ -3513,13 +3516,18 @@ export class FlowBuilderComponent {
         return;
       }
       const launch = () => {
+        this.showExecBadges = true;
         const p = this.getStartPayload();
         this.runsApi.start(this.currentFlowId!, (p && (p as any).payload) ?? null).subscribe({
           next: (r: any) => {
             try { this.message.success('Exécution backend démarrée'); } catch { this.showToast('Exécution backend démarrée'); }
             try {
               const runId = r?.id || r?.data?.id || r?.runId;
-              if (runId) this.openBackendStream(runId);
+              if (runId) {
+                // Préselectionner l'exécution en cours dans "Exécutions récentes"
+                try { this.recentRuns = [{ id: runId, status: 'running', startedAt: new Date().toISOString() }, ...(this.recentRuns || [])]; } catch {}
+                this.openBackendStream(runId);
+              }
             } catch {}
           },
           error: (e) => {
@@ -3534,7 +3542,7 @@ export class FlowBuilderComponent {
 
     // Local run fallback (dev playground)
     try { this.message.info(`Lancement local (${this.builderMode})…`); } catch { this.showToast(`Lancement local (${this.builderMode})…`); }
-    try { this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
+    try { this.showExecBadges = true; this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
   }
 
   private openBackendStream(runId: string) {
