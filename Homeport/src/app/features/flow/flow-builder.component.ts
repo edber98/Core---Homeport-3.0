@@ -418,6 +418,16 @@ export class FlowBuilderComponent {
   isMobile = false;
   // Width-based responsive flag (<= 1280px): use drawers and single-column grid
   isTabletOrBelow = false;
+
+  // Whether a run is currently in progress (backend or local)
+  isRunBusy(): boolean {
+    try {
+      if (this.backendRunStatus === 'running') return true;
+      if (this.testStatus === 'running') return true;
+      const l = this.lastRun; if (l && l.status === 'running') return true;
+      return false;
+    } catch { return false; }
+  }
   private lastTabletFlag = false;
   // Apps map for provider grouping/logo
   private appsMap = new Map<string, AppProvider>();
@@ -3526,6 +3536,12 @@ export class FlowBuilderComponent {
               if (runId) {
                 // Préselectionner l'exécution en cours dans "Exécutions récentes"
                 try { this.recentRuns = [{ id: runId, status: 'running', startedAt: new Date().toISOString() }, ...(this.recentRuns || [])]; } catch {}
+                // Ajoute ?run= dans l'URL sans relancer les chargements
+                try {
+                  const qp = this.route.snapshot.queryParamMap;
+                  const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+                  this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
                 this.openBackendStream(runId);
               }
             } catch {}
@@ -3571,6 +3587,19 @@ export class FlowBuilderComponent {
       const type = ev?.type as string;
       if (!type) return;
       // LiveEvent mapping
+      if (type === 'run.cancelled') {
+        // Mark global run as done and update current running node badge as cancelled
+        this.backendRunStatus = 'done';
+        try {
+          for (const [nid, arr] of this.backendNodeAttempts.entries()) {
+            const last = arr[arr.length - 1];
+            if (last && last.status === 'running') { last.status = 'cancelled'; this.updateNodeVisual(nid); }
+          }
+        } catch {}
+        try { this.cdr.detectChanges(); } catch {}
+        try { s.close(); } catch {}
+        return;
+      }
       if (type === 'run.status') {
         const st = ev?.run?.status || ev?.data?.status;
         const was = this.backendRunStatus;
@@ -3945,7 +3974,20 @@ export class FlowBuilderComponent {
   }
   onLoadMoreRuns() { this.fetchRuns(false); }
   // no search field per request
-  stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
+  stopLastRun() {
+    try {
+      // Prefer cancelling backend run if active
+      if (this.backendRunId && this.backendRunStatus === 'running') {
+        this.runsApi.cancel(this.backendRunId).subscribe({ next: () => {
+          try { this.message.info('Arrêt demandé'); } catch { this.showToast('Arrêt demandé'); }
+        }, error: () => {
+          try { this.message.error("Échec de l'arrêt"); } catch { this.showToast("Échec de l'arrêt"); }
+        } });
+        return;
+      }
+    } catch {}
+    if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {}
+  }
 
 
   private showToast(msg: string) {

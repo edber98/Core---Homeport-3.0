@@ -186,7 +186,7 @@
               </div>
             </div>
             <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
-              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')" title="Etat dernière exécution"></i>
+              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
             </div>
             </div>
@@ -364,10 +364,16 @@
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <span class="divider before-run" aria-hidden="true"></span>
-      <button class="run-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+      <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
         <span *ngIf="!isMobile">Lancer</span>
       </button>
+      <ng-template #stopRunBtn>
+        <button class="run-btn" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+          <i class="fa-solid fa-stop"></i>
+          <span *ngIf="!isMobile">Stop</span>
+        </button>
+      </ng-template>
     </div>
   </div>
 

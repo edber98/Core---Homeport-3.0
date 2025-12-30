@@ -95,7 +95,12 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 <div class="row"><span class="k">Fin</span><span class="v">{{ currentOrSelected()?.finishedAt | date:'medium':'':'fr-FR' }}</span></div>
                 <div class="actions-wrap">
                   <button nz-button nzSize="small" (click)="clearRun.emit()"><i class="fa-regular fa-trash-can"></i><span>Effacer</span></button>
-                  <button nz-button nzType="primary" nzSize="small" (click)="restart.emit()"><i class="fa-solid fa-play"></i><span>Lancer</span></button>
+                  <button *ngIf="(currentOrSelected()?.status||'') !== 'running'" nz-button nzType="primary" nzSize="small" (click)="restart.emit()">
+                    <i class="fa-solid fa-play"></i><span>Lancer</span>
+                  </button>
+                  <button *ngIf="(currentOrSelected()?.status||'') === 'running'" nz-button nzType="default" nzDanger nzSize="small" (click)="stop.emit()">
+                    <i class="fa-solid fa-stop"></i><span>Stop</span>
+                  </button>
                 </div>
               </div>
             </nz-form-control>

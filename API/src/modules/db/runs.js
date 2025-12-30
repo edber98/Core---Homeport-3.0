@@ -16,6 +16,8 @@ function isResultError(result){
 }
 
 module.exports = function(){
+  // Cooperative cancellation registry for DB-backed runs
+  const cancelled = new Set();
   const r = express.Router();
   // Public: start a run if the Start node exposes a public form
   r.post('/public/flows/:flowId/runs', async (req, res) => {
@@ -308,7 +310,7 @@ module.exports = function(){
           for (const pkt of livePackets){ broadcast(String(run._id), pkt); broadcastRun(String(run._id), pkt); }
           try { if (ev && ev.type) console.log(`[runs][db] event: runId=${String(run._id)} type=${ev.type}`); } catch {}
           if (ev.type === 'run.completed') finalMsg = ev; // capture full payload
-        });
+        }, { shouldCancel: () => cancelled.has(String(run._id)) });
         const doc = await Run.findById(run._id);
         doc.status = 'success';
         doc.result = finalMsg?.payload ?? null;
@@ -320,21 +322,48 @@ module.exports = function(){
         try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
         console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
       } catch (e) {
-        const doc = await Run.findById(run._id);
-        doc.status = 'error';
-        doc.finishedAt = new Date();
-        doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
-        await doc.save();
-        // Allocate next sequence safely to avoid duplicate key on (runId, seq)
-        let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
-        const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
-        await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
-        const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
-        broadcast(String(run._id), pkt);
-        broadcastRun(String(run._id), pkt);
-        console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
+        if (String(e && e.message) === '__CANCELLED__') {
+          // Mark last open attempt as cancelled for better node badge
+          try {
+            const lastOpen = await Attempt.findOne({ runId: run._id, finishedAt: { $exists: false } }).sort({ startedAt: -1 });
+            if (lastOpen) {
+              const now = new Date();
+              lastOpen.status = 'cancelled'; lastOpen.finishedAt = now; lastOpen.durationMs = lastOpen.startedAt ? (now.getTime() - new Date(lastOpen.startedAt).getTime()) : undefined; await lastOpen.save();
+              // Ensure a node.status cancelled event exists
+              let lastEvt = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+              const seqC = (lastEvt && typeof lastEvt.seq === 'number' ? lastEvt.seq : 0) + 1;
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId: lastOpen.nodeId, attemptId: lastOpen._id, exec: lastOpen.attempt, branchId: lastOpen.branchId, seq: seqC, data: { status: 'cancelled', finishedAt: now, durationMs: lastOpen.durationMs }, ts: now });
+            }
+          } catch {}
+          const doc = await Run.findById(run._id);
+          doc.status = 'cancelled';
+          doc.finishedAt = new Date();
+          doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
+          await doc.save();
+          let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+          const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
+          await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'cancelled' }, ts: new Date() });
+          const pkt = { type: 'run.status', run: { status: 'cancelled' } };
+          broadcast(String(run._id), pkt);
+          broadcastRun(String(run._id), pkt);
+          console.warn(`[runs][db] cancelled during run: runId=${String(run._id)}`);
+        } else {
+          const doc = await Run.findById(run._id);
+          doc.status = 'error';
+          doc.finishedAt = new Date();
+          doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
+          await doc.save();
+          // Allocate next sequence safely to avoid duplicate key on (runId, seq)
+          let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+          const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
+          await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
+          const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
+          broadcast(String(run._id), pkt);
+          broadcastRun(String(run._id), pkt);
+          console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
+        }
       }
-    })();
+      })();
   });
 
   // Preview: execute predecessors only and return msgIn for a target node (no persistence)
@@ -494,7 +523,7 @@ module.exports = function(){
       for (const ev of news){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
       // heartbeat with current status and timings
       sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status, startedAt: doc.startedAt, finishedAt: doc.finishedAt, durationMs: doc.durationMs } });
-      if (doc.status === 'success' || doc.status === 'error'){
+      if (doc.status === 'success' || doc.status === 'error' || doc.status === 'cancelled' || doc.status === 'timed_out'){
         clearInterval(interval);
         try{ res.end(); }catch{}
       }
@@ -583,6 +612,7 @@ module.exports = function(){
     const ws = await Workspace.findById(run.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'run_not_found', 'Run not found');
     if (['success','error','cancelled','timed_out'].includes(run.status)) return res.apiOk(run);
+    cancelled.add(String(run._id));
     run.status = 'cancelled';
     run.finishedAt = new Date();
     run.durationMs = run.startedAt ? (run.finishedAt.getTime() - run.startedAt.getTime()) : undefined;

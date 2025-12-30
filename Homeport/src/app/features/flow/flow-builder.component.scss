@@ -271,6 +271,7 @@ nz-drawer { display: contents; }
 .node-card .exec-badge { grid-column: 2; grid-row: 1; align-self: end; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
+.node-card .exec-badge .fa-stop.stop { color:#111827; }
 .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
 .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
 

@@ -127,13 +127,24 @@ module.exports = function(store){
           try { broadcast(String(runId), ev); } catch {}
           try { broadcastRun(String(runId), ev); } catch {}
           try { if (ev && ev.type) console.log(`[runs][mem] event: runId=${runId} type=${ev.type}`); } catch {}
-        });
+        }, { shouldCancel: () => store.cancelledRuns.has(runId) || run.status === 'cancelled' });
         run.status = 'success';
         run.result = run.events[run.events.length - 1]?.data?.payload ?? null;
         run.finishedAt = new Date();
         try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
         console.log(`[runs][mem] completed: runId=${runId} status=${run.status}`);
       } catch (e) {
+        if (String(e && e.message) === '__CANCELLED__'){
+          run.status = 'cancelled';
+          const ev = { ts: Date.now(), type: 'run.cancelled', reason: 'user_request' };
+          run.events.push(ev);
+          try { broadcast(String(runId), ev); } catch {}
+          try { broadcastRun(String(runId), ev); } catch {}
+          run.finishedAt = new Date();
+          try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
+          console.warn(`[runs][mem] cancelled during run: runId=${runId}`);
+          return;
+        }
         run.status = 'error';
         const ev = { ts: Date.now(), type: 'run.failed', error: e.message };
         run.events.push(ev);
@@ -192,12 +203,17 @@ module.exports = function(store){
     req.on('close', () => { console.log(`[runs][mem] stream closed: runId=${runId} reqId=${req.requestId}`); });
   });
 
-  // Cancel a run (best-effort): mark as cancelled
+  // Cancel a run (cooperative): mark as cancelled and signal engine
   r.post('/runs/:runId/cancel', (req, res) => {
     const { runId } = req.params; const run = store.runs.get(runId);
     if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
     const ws = store.workspaces.get(run.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'run not found' });
+    // Signal cancellation for engine loop
+    store.cancelledRuns.add(runId);
+    // If already running, proactively mark as cancelled to update UI instantly
     run.status = 'cancelled';
+    run.finishedAt = new Date();
+    try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
     const ev = { ts: Date.now(), type: 'run.cancelled', reason: 'user_request' };
     run.events.push(ev);
     try { broadcast(String(runId), ev); } catch {}

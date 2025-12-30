@@ -467,7 +467,19 @@ export class FlowExecutionComponent {
                 this.ui.success('Exécution démarrée');
                 try { console.log('[frontend][exec] run started with payload', resp); } catch {}
                 this.loadBackendRuns(fid);
-                try { const runId = resp?.id || resp?.data?.id || resp?.runId; if (runId) { this.selectedBackendRun = { id: runId, flowId: fid, status: 'running' } as any; this.openBackendStream(runId); } } catch {}
+                try {
+                  const runId = resp?.id || resp?.data?.id || resp?.runId;
+                  if (runId) {
+                    this.selectedBackendRun = { id: runId, flowId: fid, status: 'running' } as any;
+                    // Update URL with ?run= without reloading
+                    try {
+                      const qp = this.route.snapshot.queryParamMap;
+                      const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+                      this.router.navigate([], { queryParams: q, replaceUrl: true });
+                    } catch {}
+                    this.openBackendStream(runId);
+                  }
+                } catch {}
               },
               error: (e) => { try { console.error('[frontend][exec] run start error', e); } catch {} this.ui.error('Échec du démarrage'); },
             });
@@ -489,6 +501,11 @@ export class FlowExecutionComponent {
             this.backendAttempts = [];
             this.backendEvents = [];
             this.selectedBackendRun = { id: runId, flowId: this.currentFlowId || '', status: 'running' } as BackendRun;
+            try {
+              const qp = this.route.snapshot.queryParamMap;
+              const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+              this.router.navigate([], { queryParams: q, replaceUrl: true });
+            } catch {}
             this.openBackendStream(runId);
           }
         } catch {}

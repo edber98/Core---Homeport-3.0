@@ -75,15 +75,19 @@ function evaluateCondition(node, initialContext, msg){
 }
 
 // Optionally, initialContext may provide an async getCredentials(node) => { values: object } | object | null
-async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
+// options: { shouldCancel?: () => boolean }
+async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options = {}){
   const { nodesById, outEdges, inEdges } = buildGraph(flow);
   if (nodesById.size === 0) throw new Error('Flow vide');
   const start = findStartNode(nodesById); if (!start) throw new Error('Nœud start introuvable');
 
   const send = async (ev) => { try { if (emit) await emit(ev); } catch { /* noop */ } };
   await send({ type: 'run.started', startedAt: new Date().toISOString() });
+  const shouldCancel = typeof options.shouldCancel === 'function' ? options.shouldCancel : () => false;
+  if (shouldCancel()) { await send({ type: 'run.cancelled', reason: 'user_request' }); throw new Error('__CANCELLED__'); }
 
   const runBranch = async (curId, msg, seen, branchId) => {
+    if (shouldCancel()) throw new Error('__CANCELLED__');
     const node = nodesById.get(curId); if (!node) return;
     if (seen.has(curId)) return; seen.add(curId);
     const tObj = node.model?.templateObj || {};
@@ -201,6 +205,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit){
     } else {
       await send({ type: 'node.skipped', nodeId: node.id, branchId });
     }
+    if (shouldCancel()) throw new Error('__CANCELLED__');
     const outs = outEdges.get(curId) || [];
     let nextOuts = outs;
     const err = nodeLog && nodeLog.error ? String(nodeLog.error) : '';
