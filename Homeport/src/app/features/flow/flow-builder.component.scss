@@ -92,9 +92,12 @@
 .flow-builder:not(.right-panel-open) .canvas { border-right: 0; }
 .canvas { position: relative; height: 100%; }
 .canvas-host { height: 100%; width: 100%; position: relative; }
+.canvas-host { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
+.canvas-host vflow { touch-action: none; }
 
 
 .selection-capture { position: absolute; inset: 0; z-index: 9998; pointer-events: all; cursor: crosshair; background: transparent; }
+.marquee-shield { position: absolute; inset: 0; z-index: 9997; pointer-events: all; background: transparent; }
 .selection-box { position: fixed; border: 1px dashed #1677ff; background: rgba(22,119,255,0.08); pointer-events: none; z-index: 9999; }
 .canvas-host.disabled { pointer-events: none; }
 /* Floating action buttons on small screens */
@@ -108,6 +111,9 @@
   box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
 .flow-tooltip.error { background:#f759ab; color:#fff; }
 .ban-overlay { position: fixed; z-index: 201; pointer-events: none; font-size: 14px; }
+
+/* Long-press explosion feedback */
+/* explosion feedback removed to reduce CSS budget */
 
 
 .node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }
@@ -239,8 +245,9 @@ nz-drawer { display: contents; }
 }
 
 /* Bottom bar buttons: consistent square size and centered icons */
-.bottom-bar .icon-btn, .bottom-bar .import-btn { width: 36px; height: 36px; padding: 0; display:inline-flex; align-items:center; justify-content:center; }
+.bottom-bar .icon-btn, .bottom-bar .import-btn { width: 36px; height: 36px; padding: 0; display:inline-flex; align-items:center; justify-content:center; border: 1px solid transparent; }
 .bottom-bar .import-btn input[type=file] { display: none; }
+.bottom-bar .icon-btn.active { border-color: #1677ff; color: #1677ff; }
 
 
 .node-card .exec-badge { grid-column: 2; grid-row: 1; align-self: end; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }

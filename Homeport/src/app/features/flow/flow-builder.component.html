@@ -25,7 +25,8 @@
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
       (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)"
-      (contextmenu)="$event.preventDefault()" (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)">
+      (contextmenu)="onCanvasContextMenu($event)" (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)" (dblclick)="onCanvasDblClick($event)"
+      (touchstart)="onCanvasTouchStart($event)" (touchmove)="onCanvasTouchMove($event)" (touchend)="onCanvasTouchEnd($event)" (touchcancel)="onCanvasTouchEnd($event)">
       <!-- Loading overlay during flow document fetch -->
       <div class="loading-overlay" *ngIf="loadingFlowDoc">
         <div class="spinner"></div>
@@ -35,7 +36,8 @@
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)" (onNodesChange.position.many)="onNodesPositionMany($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
-        (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
+        (onEdgesChange.detached)="onEdgesDetached($event)" #flow
+        (touchstart)="onCanvasTouchStart($event)" (touchmove)="onCanvasTouchMove($event)" (touchend)="onCanvasTouchEnd($event)" (touchcancel)="onCanvasTouchEnd($event)" (dblclick)="onCanvasDblClick($event)" (contextmenu)="onCanvasContextMenu($event)">
         <ng-template let-ctx edge>
           <svg:g customTemplateEdge>
             <svg:path fill="none" [attr.d]="ctx.path()" 
@@ -199,11 +201,15 @@
         </ng-template>
       </vflow>
       <!-- Capture overlay to block pan/zoom while dragging selection -->
-      <div class="selection-capture" *ngIf="selectionBoxStart"
+      <div class="selection-capture" *ngIf="selectionBoxStart || marqueeMode"
            (contextmenu)="$event.preventDefault()"
-           (mousedown)="$event.preventDefault(); $event.stopPropagation()"
+           (mousedown)="onCanvasMouseDown($event)"
            (mousemove)="onCanvasMouseMove($event)"
-           (mouseup)="onCanvasMouseUp($event)"></div>
+           (mouseup)="onCanvasMouseUp($event)"
+           (touchstart)="onCanvasTouchStart($event)"
+           (touchmove)="onCanvasTouchMove($event)"
+           (touchend)="onCanvasTouchEnd($event)"
+           (touchcancel)="onCanvasTouchEnd($event)"></div>
       <!-- Selection rectangle overlay (fixed to viewport) -->
       <div class="selection-box" *ngIf="selectionBoxRect as r"
         [style.left.px]="r.left" [style.top.px]="r.top" [style.width.px]="r.width" [style.height.px]="r.height"></div>
@@ -297,6 +303,10 @@
       <span class="divider" aria-hidden="true"></span>
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
+      </button>
+      <!-- Mobile: toggle marquee selection mode -->
+      <button class="icon-btn" *ngIf="isTabletOrBelow" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
+        <i class="fa-solid fa-vector-square"></i>
       </button>
       <button class="icon-btn" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
         <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>

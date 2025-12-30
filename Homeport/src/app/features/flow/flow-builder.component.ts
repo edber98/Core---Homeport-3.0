@@ -442,6 +442,8 @@ export class FlowBuilderComponent {
   // Global blockers to prevent vflow/CDK from handling events when a drawer is open (iOS fix)
   private blockersActive = false;
   private teardownBlockers: Array<() => void> = [];
+  private dbgListeners: Array<() => void> = [];
+  debugGestures = true;
   // Neutralize global blockers (dev page works without them). Keep API but no-op.
   private enableGlobalBlockers() { /* no-op */ }
   private disableGlobalBlockers() { /* no-op */ }
@@ -473,6 +475,8 @@ export class FlowBuilderComponent {
   // Double-tap detection for opening config dialog on mobile
   private lastTapAt = 0;
   private readonly dtThresh = 350; // ms between taps
+  // Explicit toggle for marquee selection (mobile/tablet)
+  marqueeMode: boolean = false;
   private allTemplates: any[] = [];
   private allowedTplIds = new Set<string>();
   private allFlows: { id: string; name: string; description?: string }[] = [];
@@ -701,6 +705,57 @@ export class FlowBuilderComponent {
     this.recomputeValidation();
     try { window.addEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
   }
+  
+  private dbg(label: string, ev: any) {
+    if (!this.debugGestures) return;
+    try {
+      const tgt = ev?.target as HTMLElement | null;
+      const path = (ev && (ev.composedPath ? ev.composedPath() : [])) || [];
+      const p0 = path && path.length ? path[0] : null;
+      const info = {
+        t: Date.now(),
+        label,
+        type: ev?.type,
+        touches: ev?.touches ? ev.touches.length : undefined,
+        changed: ev?.changedTouches ? ev.changedTouches.length : undefined,
+        pointerType: (ev as any)?.pointerType,
+        defaultPrevented: !!ev?.defaultPrevented,
+        target: tgt ? { tag: tgt.tagName, cls: tgt.className } : null,
+        path0: p0 && (p0 as any).tagName ? { tag: (p0 as any).tagName, cls: (p0 as any).className } : null,
+      };
+      // eslint-disable-next-line no-console
+      console.log('[gesture]', info);
+    } catch {}
+  }
+  private installGestureDebugListeners() {
+    if (!this.debugGestures) return;
+    try {
+      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
+      const vflowEl = host ? (host.querySelector('vflow') as HTMLElement | null) : null;
+      const add = (el: EventTarget | null | undefined, type: string, label: string, capture: boolean) => {
+        if (!el) return;
+        const fn = (e: Event) => this.dbg(label, e);
+        (el as any).addEventListener(type, fn, { capture, passive: false });
+        this.dbgListeners.push(() => { try { (el as any).removeEventListener(type, fn, { capture }); } catch {} });
+      };
+      const types = ['touchstart','touchmove','touchend','touchcancel','pointerdown','pointerup','click','dblclick','contextmenu'];
+      const targets: Array<{ el: any; name: string }> = [
+        { el: document, name: 'doc' },
+        { el: window, name: 'win' },
+        { el: host, name: 'host' },
+        { el: vflowEl, name: 'vflow' }
+      ];
+      for (const t of targets) {
+        for (const ty of types) { add(t.el, ty, `${t.name}.capture.${ty}`, true); add(t.el, ty, `${t.name}.bubble.${ty}`, false); }
+      }
+      // Document capture listener for diagnostics only (no-op)
+      this.globalTouchEndDetect = (_e: TouchEvent) => { /* no-op: double-tap disabled */ };
+      document.addEventListener('touchend', this.globalTouchEndDetect as any, { capture: true, passive: true } as any);
+      this.dbgListeners.push(() => { try { document.removeEventListener('touchend', this.globalTouchEndDetect as any, { capture: true } as any); } catch {} });
+      // eslint-disable-next-line no-console
+      console.log('[gesture] debug listeners installed');
+    } catch {}
+  }
   ngOnDestroy() {
     try { window.removeEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
     try { this.viewportSub?.unsubscribe(); } catch { }
@@ -712,6 +767,7 @@ export class FlowBuilderComponent {
       if (this.canvasGlobalMove) document.removeEventListener('pointermove', this.canvasGlobalMove as any, true as any);
       if (this.canvasGlobalUp) document.removeEventListener('pointerup', this.canvasGlobalUp as any, true as any);
     } catch {}
+    try { (this.dbgListeners || []).forEach(teardown => teardown()); this.dbgListeners = []; } catch {}
   }
 
   private loadFlowsForWorkspace(){
@@ -868,23 +924,32 @@ export class FlowBuilderComponent {
     this.updateZoomDisplay();
     // iOS/Safari: ensure first paint applies HTML transforms
     try { setTimeout(() => { this.forceViewRefresh('afterViewInit'); }, 0); } catch {}
+    try { setTimeout(() => this.installGestureDebugListeners(), 0); } catch {}
 
     // Attach global capture listeners for marquee selection to preempt vflow pan/zoom
     try {
       const host = this.flowHost?.nativeElement;
-      // Skip installing global capture listeners on touch/coarse pointers (mobile/tablet)
-      const isCoarse = (() => { try { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch { return false; } })();
-      if (host && !isCoarse) {
+      if (host) {
         this.canvasGlobalDown = (ev: PointerEvent) => {
           try {
-            // Handle mouse only; ignore touch/pen to avoid mobile interference
+            // When marqueeMode is enabled, capture touch/mouse to start selection and block vflow pan/zoom
             const pt: any = (ev as any).pointerType;
-            if (pt && pt !== 'mouse') return;
             const inside = host.contains(ev.target as Node);
+            if (!inside) return;
+            // If explicit multi-select mode is on and not hitting UI/node, start immediately
+            if (this.marqueeMode) {
+              const e: any = ev as any;
+              if (this.isEventOnUiControls(e) || this.isEventOnNode(e)) return;
+              ev.preventDefault(); ev.stopPropagation();
+              this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+              this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+              try { this.cdr.detectChanges(); } catch {}
+              return;
+            }
+            // Desktop fallback (mouse right or modifiers)
             const ctrl = !!ev.ctrlKey, meta = !!ev.metaKey, alt = !!ev.altKey;
             const isRight = ev.button === 2;
-            // debug logs removed
-            if (!inside) return;
+            if (pt && pt !== 'mouse') return;
             if (!(ctrl || meta || alt || isRight)) return;
             const target = ev.target as HTMLElement;
             if (!ctrl && !meta && !alt && target?.closest && target.closest('.node-card')) return;
@@ -896,7 +961,7 @@ export class FlowBuilderComponent {
         };
         this.canvasGlobalMove = (ev: PointerEvent) => {
           try {
-            const pt: any = (ev as any).pointerType; if (pt && pt !== 'mouse') return;
+            // When drawing a marquee, eat events to block vflow pan/zoom
             if (!this.selectionBoxStart) return;
             if (!host.contains(ev.target as Node)) return;
             ev.preventDefault(); ev.stopPropagation();
@@ -939,7 +1004,6 @@ export class FlowBuilderComponent {
         };
         this.canvasGlobalUp = (ev: PointerEvent) => {
           try {
-            const pt: any = (ev as any).pointerType; if (pt && pt !== 'mouse') return;
             // End any ongoing connect gesture
             try { this.onConnectEnd(); } catch {}
             const hadStart = !!this.selectionBoxStart;
@@ -975,11 +1039,13 @@ export class FlowBuilderComponent {
             // debug logs removed
             try { this.setVflowSelectedIds(ids); } catch {}
             try { this.cdr.detectChanges(); } catch {}
+            // Auto-disable marquee mode after completing selection
+            if (this.marqueeMode) { this.marqueeMode = false; }
           } catch {}
         };
-        document.addEventListener('pointerdown', this.canvasGlobalDown as any, { capture: true } as any);
-        document.addEventListener('pointermove', this.canvasGlobalMove as any, { capture: true } as any);
-        document.addEventListener('pointerup', this.canvasGlobalUp as any, { capture: true } as any);
+        document.addEventListener('pointerdown', this.canvasGlobalDown as any, { capture: true, passive: false } as any);
+        document.addEventListener('pointermove', this.canvasGlobalMove as any, { capture: true, passive: false } as any);
+        document.addEventListener('pointerup', this.canvasGlobalUp as any, { capture: true, passive: false } as any);
       }
     } catch {}
   }
@@ -1678,6 +1744,7 @@ export class FlowBuilderComponent {
     this.openCtxMenuAt(ev.clientX, ev.clientY, node);
   }
   private openCtxMenuAt(x: number, y: number, node: any) {
+    try { this.selectionBoxStart = null; this.selectionBoxRect = null; this.marqueePrimed = false; } catch {}
     this.ctxMenuVisible = true;
     this.ctxMenuX = x;
     this.ctxMenuY = y;
@@ -3978,11 +4045,73 @@ export class FlowBuilderComponent {
   // Selection box UI state (viewport coords)
   selectionBoxStart: { x: number; y: number } | null = null;
   selectionBoxRect: { left: number; top: number; width: number; height: number } | null = null;
+  // Canvas long-press to start marquee (mobile)
+  private canvasLpTimer: any = null;
+  private canvasLpStartX = 0;
+  private canvasLpStartY = 0;
+  private canvasLpCurX = 0;
+  private canvasLpCurY = 0;
+  private canvasLpFired = false;
+  private readonly canvasLpDelay = 520; // ms
+  private readonly canvasLpMoveThresh = 12; // px for long-press stability
+  private readonly canvasDtMoveThresh = 24; // px tolerance between double-taps
+  private canvasLastTapAt = 0;
+  private canvasLastTapX = 0;
+  private canvasLastTapY = 0;
+  private readonly canvasDtThresh = 350; // ms
+  private canvasTapCandidate = false;
+  private marqueePrimed = false; // double-tap activated marquee awaiting drag
+  private isEventOnNode(ev: Event): boolean {
+    try {
+      const target = ev.target as HTMLElement | null;
+      if (!target) return false;
+      if (target.closest && target.closest('.node-card')) return true;
+      const anyEv: any = ev as any;
+      const path: any[] = (anyEv.composedPath && anyEv.composedPath()) || [];
+      return path.some(el => el && el.classList && el.classList.contains && el.classList.contains('node-card'));
+    } catch { return false; }
+  }
+  private isEventOnUiControls(ev: Event): boolean {
+    try {
+      const anyEv: any = ev as any;
+      const path: any[] = (anyEv.composedPath && anyEv.composedPath()) || [];
+      const classes = ['panel-toggle-fab','bottom-bar','left-bar','ctx-menu','ai-chat-fab','ai-chat-popover','ant-drawer','ios-safe-drawer','right-panel','left-panel'];
+      for (const el of path) {
+        const he = el as HTMLElement;
+        if (!he || !he.classList) continue;
+        for (const cls of classes) { if (he.classList.contains(cls)) return true; }
+        const tag = he.tagName?.toUpperCase?.() || '';
+        if (['BUTTON','INPUT','SELECT','TEXTAREA','LABEL'].includes(tag)) { if (!he.closest('.canvas-host')) return true; }
+      }
+      return false;
+    } catch { return false; }
+  }
+  // Press explosion feedback
+  explosionVisible = false;
+  explosionX = 0;
+  explosionY = 0;
+  private explosionTimer: any = null;
+  private triggerExplosion(x: number, y: number) {
+    try {
+      this.explosionX = x; this.explosionY = y; this.explosionVisible = false;
+      // next tick to restart animation
+      setTimeout(() => {
+        this.explosionVisible = true;
+        try { this.cdr.detectChanges(); } catch {}
+        if (this.explosionTimer) clearTimeout(this.explosionTimer);
+        this.explosionTimer = setTimeout(() => { this.explosionVisible = false; try { this.cdr.detectChanges(); } catch {} }, 600);
+      }, 0);
+    } catch {}
+  }
 
   // Global capture listeners to beat d3-zoom
   private canvasGlobalDown?: (ev: PointerEvent) => void;
   private canvasGlobalMove?: (ev: PointerEvent) => void;
   private canvasGlobalUp?: (ev: PointerEvent) => void;
+  private globalTouchEndDetect?: (ev: TouchEvent) => void;
+  private isCoarsePointer(): boolean {
+    try { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || (navigator as any)?.maxTouchPoints > 0; } catch { return false; }
+  }
   // Force vflow to reflect our app-managed selection (so multi-drag works and emits .many)
   private setVflowSelectedIds(ids: string[]) {
     try {
@@ -3997,6 +4126,17 @@ export class FlowBuilderComponent {
           if (m?.selected && typeof m.selected.set === 'function') m.selected.set(sel);
         } catch {}
       }
+    } catch {}
+  }
+  toggleMarqueeMode() {
+    try {
+      this.marqueeMode = !this.marqueeMode;
+      // Clear any pending long-press timer/state when toggling
+      if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; }
+      this.canvasLpFired = false;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      try { this.cdr.detectChanges(); } catch {}
     } catch {}
   }
   
@@ -4036,6 +4176,16 @@ export class FlowBuilderComponent {
   // Right-click drag selection box on canvas (outside nodes)
   onCanvasMouseDown(ev: MouseEvent) {
     try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      // When explicit marquee mode is enabled, start immediately regardless of modifier/right button
+      if (this.marqueeMode && !this.isEventOnNode(ev)) {
+        ev.preventDefault(); ev.stopPropagation();
+        this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+        this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
       // Only start marquee via mouse on desktop (ignore touch)
       const anyEv: any = ev as any; if (anyEv?.pointerType && anyEv.pointerType !== 'mouse') return;
       const ctrl = !!ev.ctrlKey;
@@ -4050,7 +4200,10 @@ export class FlowBuilderComponent {
   }
   onCanvasMouseMove(ev: MouseEvent) {
     try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
       if (!this.selectionBoxStart) return;
+      ev.preventDefault(); ev.stopPropagation();
       const sx = this.selectionBoxStart.x, sy = this.selectionBoxStart.y;
       const cx = ev.clientX, cy = ev.clientY;
       const left = Math.min(sx, cx), top = Math.min(sy, cy);
@@ -4088,9 +4241,163 @@ export class FlowBuilderComponent {
   }
   onCanvasMouseUp(ev: MouseEvent) {
     try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
       if (!this.selectionBoxStart) return;
       ev.preventDefault(); ev.stopPropagation();
       const rect = this.selectionBoxRect;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      this.marqueePrimed = false;
+      if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+      const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+      if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+      const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+      const models: any[] = this.flow?.nodeModels?.() || [];
+      const ids: string[] = [];
+      for (const m of models) {
+        try {
+          const gp = m?.globalPoint?.();
+          const sz = m?.size?.();
+          const id = String(m?.rawNode?.id ?? '');
+          if (!gp || !sz || !id) continue;
+          const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+          const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+          if (overlap) ids.push(id);
+        } catch {}
+      }
+      const idsSet = new Set(ids);
+      this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+      this.selection = this.selectionList[0] || null;
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds(ids); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Use native contextmenu from long-press (mobile) to start marquee on canvas only
+  onCanvasContextMenu(ev: MouseEvent) {
+    try {
+      this.dbg('onCanvasContextMenu', ev);
+      // Ignore if a UI control or a node
+      if (this.isEventOnUiControls(ev)) return;
+      if (this.isEventOnNode(ev)) return;
+      // Prefer mobile/coarse pointers; on desktop, right-click drag is handled elsewhere
+      if (!this.isCoarsePointer()) return;
+      // Only act when explicit marquee mode is enabled
+      if (!this.marqueeMode) return;
+      ev.preventDefault(); ev.stopPropagation();
+      // Start marquee from press point and mark as fired so touchmove extends it
+      const x = (ev as MouseEvent).clientX, y = (ev as MouseEvent).clientY;
+      this.selectionBoxStart = { x, y };
+      this.selectionBoxRect = { left: x, top: y, width: 0, height: 0 };
+      this.canvasLpFired = true;
+      this.triggerExplosion(x, y);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Mobile: long-press on canvas to emulate right-click marquee (or explicit toggle marqueeMode)
+  onCanvasTouchStart(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchStart', ev);
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      if (!ev.touches || ev.touches.length !== 1) return;
+      const t = ev.touches[0];
+      // Ignore touches starting inside a node to keep node long-press behavior
+      if (this.isEventOnNode(ev)) return;
+      // If marquee mode explicitly enabled, start immediately (mobile/tablet)
+      if (this.marqueeMode && this.isCoarsePointer()) {
+        ev.preventDefault(); ev.stopPropagation();
+        this.canvasLpStartX = this.canvasLpCurX = t.clientX; this.canvasLpStartY = this.canvasLpCurY = t.clientY;
+        this.selectionBoxStart = { x: this.canvasLpStartX, y: this.canvasLpStartY };
+        this.selectionBoxRect = { left: this.canvasLpStartX, top: this.canvasLpStartY, width: 0, height: 0 };
+        this.canvasLpFired = true;
+        this.triggerExplosion(this.canvasLpStartX, this.canvasLpStartY);
+        return;
+      }
+      this.canvasLpStartX = this.canvasLpCurX = t.clientX; this.canvasLpStartY = this.canvasLpCurY = t.clientY;
+      this.canvasLpFired = false;
+      this.canvasTapCandidate = false;
+      if (this.canvasLpTimer) clearTimeout(this.canvasLpTimer);
+      this.canvasLpTimer = setTimeout(() => {
+        const dx = Math.abs(this.canvasLpCurX - this.canvasLpStartX);
+        const dy = Math.abs(this.canvasLpCurY - this.canvasLpStartY);
+        if (dx <= this.canvasLpMoveThresh && dy <= this.canvasLpMoveThresh) {
+          // Start marquee selection like right-click drag
+          this.selectionBoxStart = { x: this.canvasLpStartX, y: this.canvasLpStartY };
+          this.selectionBoxRect = { left: this.canvasLpStartX, top: this.canvasLpStartY, width: 0, height: 0 };
+          this.canvasLpFired = true;
+          this.triggerExplosion(this.canvasLpStartX, this.canvasLpStartY);
+        }
+      }, this.canvasLpDelay);
+    } catch {}
+  }
+  onCanvasTouchMove(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchMove', ev);
+      if (this.ctxMenuVisible) return;
+      if (!ev.touches || ev.touches.length !== 1) return;
+      const t = ev.touches[0];
+      this.canvasLpCurX = t.clientX; this.canvasLpCurY = t.clientY;
+      const dx = Math.abs(this.canvasLpCurX - this.canvasLpStartX);
+      const dy = Math.abs(this.canvasLpCurY - this.canvasLpStartY);
+      if (!this.canvasLpFired) {
+        if (dx > this.canvasLpMoveThresh || dy > this.canvasLpMoveThresh) { if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; } }
+        return;
+      }
+      ev.preventDefault(); ev.stopPropagation();
+      const sx = this.selectionBoxStart?.x ?? this.canvasLpStartX;
+      const sy = this.selectionBoxStart?.y ?? this.canvasLpStartY;
+      const cx = this.canvasLpCurX, cy = this.canvasLpCurY;
+      const left = Math.min(sx, cx), top = Math.min(sy, cy);
+      const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+      this.selectionBoxRect = { left, top, width, height };
+      // Live selection while dragging
+      try {
+        if (width >= 2 && height >= 2) {
+          const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+          const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+          if (tl && br) {
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.setVflowSelectedIds(ids); } catch {}
+          }
+        }
+      } catch {}
+    } catch {}
+  }
+  onCanvasTouchEnd(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchEnd', ev);
+      if (this.ctxMenuVisible) return;
+      const wasFired = this.canvasLpFired;
+      if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; }
+      if (!wasFired) { this.canvasLpFired = false; this.canvasTapCandidate = false; return; }
+      ev.preventDefault(); ev.stopPropagation();
+      const rect = this.selectionBoxRect;
+      this.canvasLpFired = false;
+      // No double-tap mode: finalize only if we have a real rect
+      this.canvasTapCandidate = false;
       this.selectionBoxStart = null;
       this.selectionBoxRect = null;
       if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
@@ -4118,6 +4425,45 @@ export class FlowBuilderComponent {
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
       try { this.setVflowSelectedIds(ids); } catch {}
       try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Desktop-style dblclick on canvas to start marquee (helps some Android browsers too)
+  onCanvasDblClick(ev: MouseEvent) {
+    try {
+      this.dbg('onCanvasDblClick', ev);
+      // Only if the dblclick occurred outside any node
+      if (this.ctxMenuVisible) return;
+      // Also bail if event path hits UI controls
+      if (this.isEventOnUiControls(ev)) return;
+      if (this.isEventOnNode(ev)) return;
+      // On iPad/Safari dblclick exists: use it to toggle marquee mode and start selection
+      this.marqueeMode = true;
+      const x = ev.clientX, y = ev.clientY;
+      this.selectionBoxStart = { x, y };
+      this.selectionBoxRect = { left: x, top: y, width: 0, height: 0 };
+      ev.preventDefault(); ev.stopPropagation();
+    } catch {}
+  }
+
+  // Document-level: improve double-tap detection on mobile browsers
+  @HostListener('document:touchend', ['$event'])
+  onDocumentTouchEnd(ev: TouchEvent) {
+    try {
+      this.dbg('onDocumentTouchEnd', ev);
+      if (this.ctxMenuVisible) return;
+      const t = (ev.changedTouches && ev.changedTouches[0]) || null;
+      if (!t) return;
+      const x = t.clientX, y = t.clientY;
+      // Only consider taps inside the canvas host bounds
+      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
+      if (!host) return;
+      const r = host.getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) return;
+      // Ignore if tap ended on a node
+      if (this.isEventOnNode(ev)) return;
+      const now = Date.now();
+      // Double-tap mode disabled
     } catch {}
   }
 
@@ -4455,12 +4801,13 @@ export class FlowBuilderComponent {
       const targetId = String(c.target);
       const sourceHandle = String(c.sourceHandle || '');
       const targetHandle = String(c.targetHandle || '');
+      if (!sourceId || !targetId) return false;
 
       const sType = this.getHandleType(sourceId, sourceHandle, 'source') || 'any';
 
       // Resolve target template and kind
-      const n = this.nodes.find((nn: any) => String(nn.id) === targetId);
-      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const tNode = this.nodes.find((nn: any) => String(nn.id) === targetId);
+      const tpl = (tNode?.data?.model?.templateObj) || (tNode?.data?.model) || {};
       const nodeKind = String(tpl?.type || tpl?.nodeKind || '').toLowerCase();
 
       // Triggers: never accept inputs (start / event / start_form / endpoint)
@@ -4484,22 +4831,20 @@ export class FlowBuilderComponent {
       }
 
       // Decision: allow if source is any OR target accepts any OR target accepts the source type
-      if (sType === 'any') return true;
-      if (accepts.includes('any')) return true;
-      if (accepts.includes(sType)) {
+      if (sType === 'any' || accepts.includes('any') || accepts.includes(sType)) {
         // Enforce multiplicity (fan-out/fan-in)
         // Source multiplicity (outputHandles)
         let sMultiple = true;
         try { const sDef = this.getHandleDef(sourceId, sourceHandle, 'source'); sMultiple = (sDef?.multiple !== false); } catch {}
         if (!sMultiple) {
-          const existingOut = (this.edges || []).filter(e => String(e.source) === sourceId && String(e.sourceHandle || '') === sourceHandle).length;
+          const existingOut = (this.edges || []).filter((e: any) => String(e.source) === sourceId && String(e.sourceHandle || '') === sourceHandle).length;
           if (existingOut >= 1) return false;
         }
         // Target multiplicity (inputHandles or linkedHandles)
         let tMultiple = true;
         try {
-          const n = this.nodes.find((nn: any) => String(nn.id) === targetId);
-          const tpl2 = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+          const tNode2 = this.nodes.find((nn: any) => String(nn.id) === targetId);
+          const tpl2 = (tNode2?.data?.model?.templateObj) || (tNode2?.data?.model) || {};
           const ih2 = (tpl2.inputHandles || []).find((hh: any) => String(hh?.id) === targetHandle);
           const links2 = Array.isArray((tpl2 as any).linkedHandles) ? (tpl2 as any).linkedHandles : [];
           const lh2 = links2.find((hh:any) => String(hh?.id) === targetHandle);
@@ -4507,7 +4852,7 @@ export class FlowBuilderComponent {
           if (def && def.multiple === false) tMultiple = false;
         } catch {}
         if (!tMultiple) {
-          const existingIn = (this.edges || []).filter(e => String(e.target) === targetId && String(e.targetHandle || '') === targetHandle).length;
+          const existingIn = (this.edges || []).filter((e: any) => String(e.target) === targetId && String(e.targetHandle || '') === targetHandle).length;
           if (existingIn >= 1) return false;
         }
         return true;
