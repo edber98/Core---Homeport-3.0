@@ -106,6 +106,22 @@ export class FlowBuilderComponent {
   aiChatOpen = false;
   rightPanelOpen = false;
   leftPanelOpen = false;
+  // Transient animation flags for newly added nodes
+  spawnAnimNodes = new Set<string>();
+  spawnLiteAnimNodes = new Set<string>();
+  private isIOSSafari = false;
+  private triggerSpawnAnim(id: string) {
+    try {
+      const key = String(id);
+      if (this.isIOSSafari) {
+        this.spawnLiteAnimNodes.add(key);
+        setTimeout(() => { this.spawnLiteAnimNodes.delete(key); try { this.cdr.detectChanges(); } catch {} }, 700);
+      } else {
+        this.spawnAnimNodes.add(key);
+        setTimeout(() => { this.spawnAnimNodes.delete(key); try { this.cdr.detectChanges(); } catch {} }, 1100);
+      }
+    } catch {}
+  }
   private panelsStateKey(): string {
     const fid = this.currentFlowId || 'adhoc';
     return `flow.ui.panels.${fid}`;
@@ -521,6 +537,11 @@ export class FlowBuilderComponent {
   // Removed event interceptors to align with working dev playground
 
   ngOnInit() {
+    // Detect iOS Safari early (animation fallback)
+    try {
+      const ua = (navigator && (navigator as any).userAgent) ? (navigator as any).userAgent : '';
+      this.isIOSSafari = /iP(hone|ad|od)/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+    } catch { this.isIOSSafari = false; }
     // Debug helpers removed
     // Subscribe run streams (builder live panel)
     try {
@@ -1427,6 +1448,7 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    this.triggerSpawnAnim(newId);
     try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     
     // If start-like, auto-connect to best target
@@ -1645,6 +1667,7 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    this.triggerSpawnAnim(newId);
     try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     // Auto-connect logic
     if (isStartLike) {

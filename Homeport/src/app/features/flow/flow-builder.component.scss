@@ -124,6 +124,7 @@
 
 
 .node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }
+/* removed paint containment to avoid any visual artifact on Safari */
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
 .node-card .center-wrap node-card-header { pointer-events:auto; }
@@ -280,6 +281,29 @@ nz-drawer { display: contents; }
 .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
 .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
 
+/* Spawn ripple animation without absolute/relative: animate outer box-shadows */
+/* Ripple sans absolute/relative, sans transform/box-shadow: outline + radial-gradient animé */
+/* Ripple strictement contenu dans la carte (pas d'outline extérieur, pas de box-shadow) */
+.node-card.spawn {
+  /* léger voile bleu qui couvrira toute la carte, puis retour au blanc */
+  background-color: rgba(22,119,255,0.06);
+  background-image: radial-gradient(circle at center, rgba(22,119,255,0.22) 0%, rgba(22,119,255,0.14) 30%, rgba(22,119,255,0.00) 31%);
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: node-ripple-inset 1000ms ease-out both, node-bg-fill 1000ms ease-out both;
+}
+@keyframes node-ripple-inset {
+  0%   { background-size: 0% 0%; }
+  70%  { background-size: 170% 170%; }
+  100% { background-size: 170% 170%; }
+}
+@keyframes node-bg-fill {
+  0%   { background-color: rgba(22,119,255,0.06); }
+  60%  { background-color: rgba(22,119,255,0.10); }
+  /* à la fin, la carte redevient blanche */
+  100% { background-color: #ffffff; background-image: radial-gradient(circle at center, rgba(22,119,255,0.00) 0%, rgba(22,119,255,0.00) 100%); }
+}
+
 .loading-overlay {
   position: absolute;
   inset: 0;
@@ -302,3 +326,10 @@ nz-drawer { display: contents; }
 .loading-overlay .text { margin-top: 10px; color: #374151; font-weight: 500; }
 @keyframes fb-spin { to { transform: rotate(360deg); } }
 .panel-toggle-fab.help-fab.open i { color:#1677ff; }
+.node-card.spawn-lite {
+  animation: node-bg-lite 650ms steps(6, end) both;
+}
+@keyframes node-bg-lite {
+  0%   { background-color: rgba(22,119,255,0.06); }
+  100% { background-color: #ffffff; }
+}
