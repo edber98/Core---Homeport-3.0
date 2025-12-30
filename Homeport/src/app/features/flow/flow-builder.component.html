@@ -169,19 +169,19 @@
                   <svg:g>
                     <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                       [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="'#111'" [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, lh.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
-                      (mouseenter)="onTargetEnter($event, hctx.state() === 'valid')"
-                      (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
-                      (mouseleave)="onTargetLeave()"
-                    ></svg:circle>
+                      [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                      (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
+                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onHandleLeave()"></svg:circle>
                   </svg:g>
                 </ng-template>
                 <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
-                  <handle position="bottom" type="target" [id]="lh.id" [template]="linkTpl" />
+                  <!-- Vertical: linked handles are outputs on the right side -->
+                  <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
                 </ng-container>
                 <ng-template #horizLink>
-                  <!-- In horizontal mode, place linked handles at bottom with label above -->
-                  <handle position="bottom" type="target" [id]="lh.id" [template]="linkTpl" />
+                  <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
+                  <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
                 </ng-template>
               </div>
             </div>
