@@ -29,7 +29,9 @@ module.exports = function(store){
       const ws = store.workspaces.get(flow.workspaceId);
       const runId = randomUUID();
       const now = new Date();
-      const run = { id: runId, flowId, workspaceId: ws?.id, companyId: ws?.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const run = { id: runId, flowId, workspaceId: ws?.id, companyId: ws?.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null, graph: graphSnapshot };
       store.runs.set(runId, run);
       res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
       (async () => {
@@ -94,7 +96,9 @@ module.exports = function(store){
     console.log(`[runs][mem] start: flowId=${flowId} enabled=${flow.enabled !== false} ws=${ws.id} user=${req.user?.id} reqId=${req.requestId}`);
     const runId = randomUUID();
     const now = new Date();
-    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null, graph: graphSnapshot };
     store.runs.set(runId, run);
     res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
     console.log(`[runs][mem] created run: id=${runId} flowId=${flowId} status=${run.status} reqId=${req.requestId}`);
@@ -162,6 +166,25 @@ module.exports = function(store){
     if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
     const ws = store.workspaces.get(run.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'run not found' });
     res.apiOk(run);
+  });
+
+  // Stats by flow for memory store
+  r.get('/flows/:flowId/runs/stats', (req, res) => {
+    const { flowId } = req.params;
+    const flow = store.flows.get(flowId);
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = store.workspaces.get(flow.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'flow not found' });
+    const list = [...store.runs.values()].filter(r => r.flowId === flowId);
+    const stats = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
+    let durSum = 0, durCount = 0;
+    for (const r of list){
+      stats.total++;
+      const st = String(r.status || '').toLowerCase();
+      if (stats.hasOwnProperty(st)) stats[st]++;
+      const d = Number(r.durationMs || 0); if (d > 0) { durSum += d; durCount++; }
+    }
+    stats.avgDurationMs = durCount ? Math.round(durSum / durCount) : null;
+    res.apiOk(stats);
   });
 
   r.get('/runs/:runId/stream', (req, res) => {

@@ -40,6 +40,9 @@ export class RunsBackendService {
   listByWorkspace(wsId: string, params?: { flowId?: string; status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/workspaces/${encodeURIComponent(wsId)}/runs`, params);
   }
+  statsByFlow(flowId: string): Observable<any> {
+    return this.api.get<any>(`/api/flows/${encodeURIComponent(flowId)}/runs/stats`);
+  }
   preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
     return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
   }

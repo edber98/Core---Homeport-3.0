@@ -38,9 +38,12 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         <button nz-button nzSize="small" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
         <button nz-button nzType="primary" nzSize="small" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
       </div>
-      <div class="counters">
-        <span class="badge">Lancements: {{ counters.launched }}</span>
-        <span class="badge">Terminés: {{ counters.completed }}</span>
+      <div class="kpis">
+        <div class="kpi"><div class="n">{{ flowStats.success || 0 }}</div><div class="l">Réussis</div></div>
+        <div class="kpi"><div class="n">{{ flowStats.error || 0 }}</div><div class="l">Erreurs</div></div>
+        <div class="kpi"><div class="n">{{ flowStats.cancelled || 0 }}</div><div class="l">Annulés</div></div>
+        <div class="kpi"><div class="n">{{ flowStats.running || 0 }}</div><div class="l">En cours</div></div>
+        <div class="kpi"><div class="n">{{ flowStats.avgDurationMs != null ? flowStats.avgDurationMs : '–' }}</div><div class="l">Durée moy. (ms)</div></div>
       </div>
       <ul class="exec-list">
         <li *ngFor="let r of visibleRuns" [class.sel]="r === selectedRun" (click)="selectRun(r)">
@@ -50,7 +53,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
       </ul>
       <div class="panel-subtitle">Historique (backend)</div>
       <div class="exec-list" (scroll)="onListScroll($event)">
-        <div class="exec-item" *ngFor="let b of backendFlowRuns; trackBy: trackBackendRun" (click)="selectBackendRun(b)">
+        <div class="exec-item" *ngFor="let b of backendFlowRuns; trackBy: trackBackendRun" [class.active]="selectedBackendRun?.id === b.id" (click)="selectBackendRun(b)">
           <div class="row top">
             <div class="left">
               <nz-tag [nzColor]="b.status==='success' ? 'green' : (b.status==='error' ? 'red' : (b.status==='running' ? 'blue' : 'default'))">{{ b.status }}</nz-tag>
@@ -110,8 +113,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
       <div class="viewer-layout" [class.show-details]="!!selectedBackendRun">
         <div class="viewer-canvas-wrap">
           <flow-viewer class="viewer-canvas" [class.panel-open]="!!selectedBackendRun"
-            [nodes]="decoratedNodes"
-            [edges]="decoratedEdges"
+            [nodes]="viewNodes"
+            [edges]="viewEdges"
             [background]="flowBackground"
             [portOrientation]="portOrientation"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
@@ -125,10 +128,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             </div>
             <div class="spacer"></div>
             <nz-tag [nzColor]="br.status==='success' ? 'green' : (br.status==='error' ? 'red' : (br.status==='running' ? 'blue' : (br.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ br.status }}</nz-tag>
-            <button nz-button nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
+            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
               <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
             </button>
-            <button nz-button nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
+            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
               <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
             </button>
           </div>
@@ -189,7 +192,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   `,
   styles: [`
     .flow-exec { position: relative; display:grid; grid-template-columns: 360px 1fr; gap: 0; height:100%; }
-    .side.executions { border: none; border-radius: 0; padding: 12px; background: #ffffff; overflow: auto; }
+    .side.executions { border: none; border-radius: 0; padding: 12px; padding-top: 0; background: #ffffff; overflow: auto; }
     .side.executions .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 6px; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:13px; margin: 0; }
@@ -198,10 +201,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .mode-row { display:flex; gap:6px; align-items:center; margin-bottom:8px; }
     .mode-row .mode-select { flex:0 0 76px; padding:3px 6px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; font-size:12px; }
     .mode-row .icon-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; }
-    .counters { display:flex; gap:8px; margin: 8px 0; }
-    .badge { display:inline-block; background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:4px 8px; font-size:12px; }
+    /* KPIs wrap on multiple lines responsively */
+    .kpis { display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:8px; margin: 6px 0 10px; }
+    .kpi { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px; text-align:center; }
+    .kpi .n { font-weight:700; font-size:14px; color:#111; }
+    .kpi .l { font-size:11px; color:#6b7280; }
     .exec-list { list-style: none; padding: 0; margin: 8px 0; display:flex; flex-direction:column; gap:8px; }
     .exec-item { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
+    .exec-item.active { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
     .exec-item .row.top { display:flex; align-items:center; gap:8px; }
     .exec-item .row.top .left { display:flex; align-items:center; gap:8px; min-width: 0; }
     .exec-item .row.top .right { margin-left:auto; display:inline-flex; gap:6px; }
@@ -255,11 +262,13 @@ export class FlowExecutionComponent {
   runs: ExecutionRun[] = [];
   visibleRuns: ExecutionRun[] = [];
   counters = { launched: 0, completed: 0 };
+  flowStats: any = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
   selectedRun: ExecutionRun | null = null;
 
   currentFlowId: string | null = null;
   hasFlowParam = false;
   loadingFlowDoc = false;
+  private loadingGraphReq = false;
 
   constructor(
     private runner: FlowRunService,
@@ -288,26 +297,30 @@ export class FlowExecutionComponent {
       this.route.queryParamMap.subscribe(qp => {
         const flowId = qp.get('flow');
         this.hasFlowParam = !!flowId;
-        if (flowId && flowId !== this.currentFlowId) {
+        if (flowId && flowId !== this.currentFlowId && !this.loadingGraphReq) {
+          try { console.log('[exec] query change flow=', flowId); } catch {}
           this.currentFlowId = flowId;
           this.currentGraph = null;
           this.loadingFlowDoc = true;
+          this.loadingGraphReq = true;
           this.catalog.getFlow(flowId).subscribe({
             next: (doc) => this.zone.run(() => {
+              try { console.log('[exec] loaded flow doc'); } catch {}
               if (doc) { this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: (doc as any).meta || {} }; this.enrichGraphTemplates(); }
               this.updateVisibleRuns();
               this.loadBackendRuns(flowId);
               this.loadingFlowDoc = false;
+              this.loadingGraphReq = false;
               try { this.cdr.detectChanges(); } catch {}
             }),
-            error: () => this.zone.run(() => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {} }),
-            complete: () => this.zone.run(() => { /* ensure overlay clears in all cases */ this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {} })
+            error: () => this.zone.run(() => { this.loadingFlowDoc = false; this.loadingGraphReq = false; try { this.cdr.detectChanges(); } catch {} }),
+            complete: () => this.zone.run(() => {  this.loadingFlowDoc = false; this.loadingGraphReq = false; try { this.cdr.detectChanges(); } catch {} })
           });
         }
       });
     } catch {}
     // Load workspace runs initially even if no ?flow param (recent runs)
-    try { setTimeout(() => this.loadBackendRuns(), 0); } catch {}
+    try { setTimeout(() => { try { console.log('[exec] initial backend runs load'); } catch {}; this.loadBackendRuns(); }, 0); } catch {}
     try { this.catalog.listNodeTemplates().subscribe(list => this.zone.run(() => { (list || []).forEach(t => this.templatesMap.set(t.id, t)); this.enrichGraphTemplates(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
   }
   private templatesMap = new Map<string, any>();
@@ -401,6 +414,7 @@ export class FlowExecutionComponent {
     const flowId = (this.currentGraph && (this.currentGraph as any).id) || this.route.snapshot.queryParamMap.get('flow') || 'adhoc';
     const run = this.runner.run(graph, this.mode, { hello: 'world' }, flowId);
     this.selectedRun = run;
+    try { this.computeDecorations(); } catch {}
   }
 
   // Backend runs (history + start/cancel)
@@ -417,6 +431,9 @@ export class FlowExecutionComponent {
   // Pagination state for backendFlowRuns
   private flowRunsPage = 1;
   private flowRunsLimit = 20;
+  // Cached decorated graph used by the viewer (avoid getters that recreate arrays on each CD)
+  viewNodes: any[] = [];
+  viewEdges: any[] = [];
   private flowRunsLoading = false;
   private flowRunsHasMore = true;
   trackBackendRun(index: number, b: BackendRun) { return b && (b as any).id; }
@@ -437,6 +454,12 @@ export class FlowExecutionComponent {
           try { this.cdr.detectChanges(); } catch {}
         });
       }, error: () => { this.flowRunsLoading = false; } });
+      // Load stats KPIs for this flow
+      try {
+        this.runsApi.statsByFlow(fid).subscribe(stats => {
+          this.zone.run(() => { this.flowStats = stats || {}; try { this.cdr.detectChanges(); } catch {} });
+        });
+      } catch {}
     } else if (wsId) {
       this.runsApi.listByWorkspace(wsId, { limit: this.flowRunsLimit, offset, sort } as any).subscribe({ next: l => {
         this.zone.run(() => {
@@ -590,6 +613,7 @@ export class FlowExecutionComponent {
       this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut }));
       this.backendEvents = events;
       this.expanded = this.backendAttempts.map(() => false);
+      this.computeDecorations();
       try { this.cdr.detectChanges(); } catch {}
     }, complete: () => {
       if (status === 'running') this.openBackendStream(runId);
@@ -631,6 +655,7 @@ export class FlowExecutionComponent {
     const fid = this.currentFlowId;
     if (fid) this.visibleRuns = (this.runs || []).filter(r => String(r.flowVersionId) === String(fid));
     else this.visibleRuns = this.runs || [];
+    try { this.computeDecorations(); } catch {}
   }
 
   toggleAttempt(i: number) {
@@ -644,27 +669,26 @@ export class FlowExecutionComponent {
   }
 
   // Decorate nodes/edges for selected run: add status per node and highlight taken edges
-  get decoratedNodes(): any[] {
-    const baseNodes = (this.currentGraph?.nodes || []) as any[];
-    const smap = new Map<string, string>();
-    const counts = new Map<string, number>();
-    if (this.selectedBackendRun) {
-      for (const a of this.backendAttempts) {
-        const nid = String(a.nodeId);
-        smap.set(nid, a.status || 'success');
-        counts.set(nid, (counts.get(nid) || 0) + 1);
+  private computeDecorations() {
+    try {
+      const baseNodes = (this.currentGraph?.nodes || []) as any[];
+      const smap = new Map<string, string>();
+      const counts = new Map<string, number>();
+      if (this.selectedBackendRun) {
+        for (const a of this.backendAttempts) {
+          const nid = String(a.nodeId);
+          smap.set(nid, a.status || 'success');
+          counts.set(nid, (counts.get(nid) || 0) + 1);
+        }
+      } else {
+        const atts = this.selectedRun?.attempts || [];
+        for (const a of atts) { const nid = String(a.nodeId); smap.set(nid, a.status); counts.set(nid, (counts.get(nid) || 0) + 1); }
       }
-    } else {
-      const atts = this.selectedRun?.attempts || [];
-      for (const a of atts) { const nid = String(a.nodeId); smap.set(nid, a.status); counts.set(nid, (counts.get(nid) || 0) + 1); }
-    }
-    return baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)), execCount: counts.get(String(n.id)) || 0 } }));
-  }
-  get decoratedEdges(): any[] {
-    const baseEdges = (this.currentGraph?.edges || []) as any[];
-    // Build pairs like in builder: prefer explicit live pairs, else exact events, else linear attempts
-    const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, events: this.backendEvents, attempts: this.backendAttempts });
-    return this.pathSvc.decorateEdges(baseEdges, pairs);
+      this.viewNodes = baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)), execCount: counts.get(String(n.id)) || 0 } }));
+      const baseEdges = (this.currentGraph?.edges || []) as any[];
+      const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, events: this.backendEvents, attempts: this.backendAttempts });
+      this.viewEdges = this.pathSvc.decorateEdges(baseEdges, pairs);
+    } catch {}
   }
 
   private openBackendStream(runId: string) {
@@ -727,11 +751,13 @@ export class FlowExecutionComponent {
             this.expanded.push(false);
           }
         }
+        this.computeDecorations();
       }
       if (t === 'edge.taken') {
         const s = String(ev?.data?.sourceId || ev?.sourceId || '');
         const d = String(ev?.data?.targetId || ev?.targetId || '');
         if (s && d && s !== d) this.backendPairs.add(`${s}->${d}`);
+        this.computeDecorations();
       }
       if (t === 'node.result') {
         const nodeId = String(ev.nodeId || '');
@@ -759,6 +785,7 @@ export class FlowExecutionComponent {
           this.backendAttempts.push({ nodeId, exec, status: nextStatus, input: ev.data?.input, argsPre: ev.data?.argsPre, argsPost: ev.data?.argsPost, result: ev.result ?? ev.data?.result, msgIn: ev.data?.msgIn, msgOut: ev.data?.msgOut, durationMs: ev.data?.durationMs, startedAt: ev.data?.startedAt, finishedAt: ev.data?.finishedAt } as any);
           this.expanded.push(false);
         }
+        this.computeDecorations();
       }
       if (!this.selectedBackendRun) this.selectedBackendRun = { id: runId, flowId: this.currentFlowId || '', status: 'running' } as BackendRun;
       try { this.cdr.detectChanges(); } catch {}

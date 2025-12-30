@@ -75,6 +75,7 @@ export class LayoutMain implements OnInit {
   drawerVisible = false;
   innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
   siderCollapsed = false;
+  private siderInitDone = false;
   showLaunch = false; // desktop center bar visibility (legacy)
   mobileSearchOpen = false; // responsive: shows center search bar
   // User & workspace switchers
@@ -96,6 +97,18 @@ export class LayoutMain implements OnInit {
   }
   ngOnInit(): void {
     try {
+      // Restore sider collapsed state from localStorage or set default for tablet widths
+      const raw = localStorage.getItem('layout.siderCollapsed');
+      if (raw != null) {
+        this.siderCollapsed = String(raw) === 'true';
+      } else {
+        // Default: collapse on tablets (sider visible ~ 992-1279) to save space
+        try { this.siderCollapsed = (this.innerWidth >= 992 && this.innerWidth < 1280); } catch { this.siderCollapsed = false; }
+        localStorage.setItem('layout.siderCollapsed', String(this.siderCollapsed));
+      }
+      this.siderInitDone = true;
+      try { this.cdr.detectChanges(); } catch {}
+
       // Global confirm bridge: show styled NzModal for guard-originated confirmations
       this.confirm.requests$.subscribe((req: ConfirmRequest) => {
         if (req.extraText) {
@@ -150,6 +163,11 @@ export class LayoutMain implements OnInit {
   get isXs(): boolean { return this.innerWidth <= 576; }
 
   @HostListener('window:resize') onResize() { try { this.innerWidth = window.innerWidth; } catch { } }
+
+  onSiderCollapsedChange(v: boolean) {
+    this.siderCollapsed = !!v;
+    try { localStorage.setItem('layout.siderCollapsed', String(this.siderCollapsed)); } catch {}
+  }
 
   openDrawer() { this.drawerVisible = true; }
   closeDrawer() { this.drawerVisible = false; }

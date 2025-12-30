@@ -106,6 +106,25 @@ export class FlowBuilderComponent {
   aiChatOpen = false;
   rightPanelOpen = false;
   leftPanelOpen = false;
+  private panelsStateKey(): string {
+    const fid = this.currentFlowId || 'adhoc';
+    return `flow.ui.panels.${fid}`;
+  }
+  private savePanelsState() {
+    try {
+      const payload = { left: !!this.leftPanelOpen, right: !!this.rightPanelOpen };
+      localStorage.setItem(this.panelsStateKey(), JSON.stringify(payload));
+    } catch {}
+  }
+  private restorePanelsState() {
+    try {
+      const raw = localStorage.getItem(this.panelsStateKey());
+      if (!raw) return;
+      const obj = JSON.parse(raw);
+      if (typeof obj?.left === 'boolean') this.leftPanelOpen = obj.left;
+      if (typeof obj?.right === 'boolean') this.rightPanelOpen = obj.right;
+    } catch {}
+  }
   // Ports orientation (inputs/outputs placement)
   portOrientation: 'vertical' | 'horizontal' = 'horizontal';
   // Alignment helper guidelines (visual lines)
@@ -601,7 +620,10 @@ export class FlowBuilderComponent {
             // Center the view after panels are closed and layout is ready
             try {
               const hasSavedZoom = !!localStorage.getItem('flow.zoom');
-              if (centerActive || !hasSavedZoom) { this.scheduleCenterIfRequested(true); }
+              // Restore panel open state from last session before centering
+              this.restorePanelsState();
+              this.savePanelsState();
+              if (centerActive || !hasSavedZoom) { this.scheduleCenterIfRequested(true, true); }
             } catch { if (centerActive) this.scheduleCenterIfRequested(true); }
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
@@ -1094,6 +1116,7 @@ export class FlowBuilderComponent {
         this.openMobilePanel('left');
       } else {
         this.leftPanelOpen = !this.leftPanelOpen;
+        this.savePanelsState();
       }
     } catch {}
   }
@@ -1106,6 +1129,7 @@ export class FlowBuilderComponent {
       } else {
         this.rightPanelOpen = !this.rightPanelOpen;
         if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true);
+        this.savePanelsState();
       }
     } catch {}
   }
@@ -1733,18 +1757,40 @@ export class FlowBuilderComponent {
     } catch { return null; }
   }
   private computeNewNodePosition(source: any | null, center: { x: number; y: number }): { x: number; y: number } {
-    if (!source) return { x: center.x - 90, y: center.y + 80 };
     try {
-      // Align below source node with a comfortable vertical gap
+      const horizontal = this.portOrientation === 'horizontal';
+      if (!source) {
+        // Place relative to center depending on orientation
+        return horizontal
+          ? { x: center.x + 120, y: center.y }
+          : { x: center.x - 90, y: center.y + 80 };
+      }
       const vp = this.flow?.viewportService?.readableViewport();
       const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(source.id)}\"]`) as HTMLElement | null;
       let w = 180, h = 100;
-      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
-      const gap = 60;
-      const x = (source.point?.x || 0);
-      const y = (source.point?.y || 0) + h + gap;
-      return { x, y };
-    } catch { return { x: center.x - 90, y: center.y + 80 }; }
+      if (el && vp) {
+        const r = el.getBoundingClientRect();
+        if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); }
+      }
+      // Increase spacing so the new node is a bit further from the source
+      const gap = 100;
+      if (horizontal) {
+        // Place to the right of the source on the same row
+        const x = (source.point?.x || 0) + w + gap;
+        const y = (source.point?.y || 0);
+        return { x, y };
+      } else {
+        // Default: place below the source
+        const x = (source.point?.x || 0);
+        const y = (source.point?.y || 0) + h + gap;
+        return { x, y };
+      }
+    } catch {
+      // Fallback a bit further too
+      return this.portOrientation === 'horizontal'
+        ? { x: center.x + 160, y: center.y }
+        : { x: center.x - 90, y: center.y + 120 };
+    }
   }
   isDragging(item: any): boolean { try { const key = String(item?.template?.id || item?.label || ''); return key ? this.draggingPalette.has(key) : false; } catch { return false; } }
 
@@ -4227,14 +4273,20 @@ export class FlowBuilderComponent {
   private updateSharedGraph() {
     try { this.shared.setGraph(this.snapshot() as any); } catch {}
   }
-  private scheduleCenterIfRequested(centerActive: boolean) {
+  private scheduleCenterIfRequested(centerActive: boolean, preservePanels = false) {
     try {
       if (!centerActive) return;
-      // Ensure panels are closed before centering and apply a short delay for layout to settle
-      this.leftPanelOpen = false; this.rightPanelOpen = false;
-      this.onLeftDrawerClose(); this.onRightDrawerClose();
-      try { this.cdr.detectChanges(); } catch {}
-      setTimeout(() => { try { this.centerFlow(); } catch {} }, 60);
+      const prev = { left: this.leftPanelOpen, right: this.rightPanelOpen };
+      if (!preservePanels) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false;
+        this.onLeftDrawerClose(); this.onRightDrawerClose();
+        try { this.cdr.detectChanges(); } catch {}
+      }
+      setTimeout(() => {
+        try { this.centerFlow(); } catch {}
+        if (!preservePanels) { this.leftPanelOpen = prev.left; this.rightPanelOpen = prev.right; this.savePanelsState(); }
+        try { this.cdr.detectChanges(); } catch {}
+      }, 60);
     } catch {}
   }
   private historyKey(): string {

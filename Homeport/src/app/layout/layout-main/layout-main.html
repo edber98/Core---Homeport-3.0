@@ -30,7 +30,7 @@
 
 <nz-layout class="full-height">
   <!-- Sider (desktop) -->
-  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
+  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
     <div class="logo" [class.collapsed]="siderCollapsed">
       <img src="/imgs/logo.png" alt="Kinn" />
       <span class="brand-text">Kinn</span>

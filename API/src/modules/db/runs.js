@@ -173,7 +173,10 @@ module.exports = function(){
     }
     console.log(`[runs][db] start: flowId=${fid} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
     const now = new Date();
-    const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now });
+    // Persist an exact snapshot of the flow graph used for execution
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now, graph: graphSnapshot });
     res.status(201).json({ success: true, data: { id: String(run._id), status: run.status }, requestId: req.requestId, ts: Date.now() });
     console.log(`[runs][db] created run: id=${String(run._id)} flowId=${String(flow._id)} status=${run.status} reqId=${req.requestId}`);
 
@@ -483,12 +486,36 @@ module.exports = function(){
       }
       return res.apiOk(rp);
     }
-    const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
+    const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs, graph: run.graph };
     if (include.length){
       if (include.includes('attempts')) base.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
       if (include.includes('events')) base.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
     }
     res.apiOk(base);
+  });
+
+  // KPIs for a flow: counts per status and average duration
+  r.get('/flows/:flowId/runs/stats', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = await Workspace.findById(flow.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const docs = await Run.find({ flowId: flow._id }).lean();
+    const stats = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
+    let durSum = 0, durCount = 0;
+    for (const r of docs){
+      stats.total++;
+      const st = String(r.status || '').toLowerCase();
+      if (stats.hasOwnProperty(st)) stats[st]++;
+      const d = Number(r.durationMs || 0);
+      if (d > 0) { durSum += d; durCount++; }
+    }
+    stats.avgDurationMs = durCount ? Math.round(durSum / durCount) : null;
+    return res.apiOk(stats);
   });
 
   r.get('/runs/:runId/stream', async (req, res) => {
@@ -554,11 +581,22 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
+    const runIds = list.map(r => r._id);
+    const aggAttempts = await Attempt.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const aggEvents = await RunEvent.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const mapAttempts = new Map(aggAttempts.map(d => [String(d._id), d.count]));
+    const mapEvents = new Map(aggEvents.map(d => [String(d._id), d.count]));
     res.apiOk(list.map(r => ({
       id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
       startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
-      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
-      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+      nodesExecuted: mapAttempts.get(String(r._id)) || 0,
+      eventsCount: mapEvents.get(String(r._id)) || 0,
     })));
   });
 
@@ -582,11 +620,22 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
+    const runIds = list.map(r => r._id);
+    const aggAttempts = await Attempt.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const aggEvents = await RunEvent.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const mapAttempts = new Map(aggAttempts.map(d => [String(d._id), d.count]));
+    const mapEvents = new Map(aggEvents.map(d => [String(d._id), d.count]));
     res.apiOk(list.map(r => ({
       id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
       startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
-      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
-      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+      nodesExecuted: mapAttempts.get(String(r._id)) || 0,
+      eventsCount: mapEvents.get(String(r._id)) || 0,
     })));
   });
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, EventEmitter, Output, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, EventEmitter, Output, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Vflow, Edge, ConnectionSettings } from 'ngx-vflow';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
@@ -15,7 +15,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     <section class="canvas ro">
       <div class="canvas-host" #flowHost (wheel)="onWheel($event)" (pointerdown)="onPointerDown($event)">
         <vflow view="auto" [background]="background" [entitiesSelectable]="allowDrag && move" [minZoom]="0.05" [maxZoom]="3"
-               [nodes]="vflowNodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
+               [nodes]="vNodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
                (selected)="selected.emit($event)" (onConnect)="connect.emit($event)">
           <ng-template let-ctx edge>
             <svg:g customTemplateEdge>
@@ -185,7 +185,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .flow-tooltip.error { background:#f759ab; color:#fff; }
   `]
 })
-export class FlowViewerComponent implements AfterViewInit, OnDestroy {
+export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() background: any = '#EEF0F4';
   @Input() portOrientation: 'vertical'|'horizontal' = 'horizontal';
   @Input() nodes: any[] = [];
@@ -268,12 +268,17 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy {
   }
   ngOnDestroy() { try { this.viewportSub?.unsubscribe(); } catch {} }
 
-  // Provide nodes to Vflow with draggable flag according to inputs
-  get vflowNodes(): any[] {
-    try {
-      const canDrag = !!(this.allowDrag && this.move);
-      return (this.nodes || []).map(n => ({ ...n, draggable: canDrag }));
-    } catch { return this.nodes || []; }
+  // Cached nodes for Vflow to avoid getter recomputation on iOS Safari
+  vNodes: any[] = [];
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['nodes'] || changes['allowDrag'] || changes['move']) {
+      try {
+        const canDrag = !!(this.allowDrag && this.move);
+        const src = Array.isArray(this.nodes) ? this.nodes : [];
+        this.vNodes = src.map(n => ({ ...n, draggable: canDrag }));
+      } catch { this.vNodes = this.nodes || []; }
+      try { this.cdr.detectChanges(); } catch {}
+    }
   }
 
   inputId(tmpl: any): string | null {
