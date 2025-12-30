@@ -441,85 +441,21 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     } catch { return []; }
   };
 
-  // ELK layout integration (layered DAG layout)
+  // ELK layout integration (centralized utility)
   async function elkLayoutCurrentGraph(g, gapX, gapY) {
     try {
-      const ELK = (await import('elkjs')).default;
-      const elk = new ELK();
+      const { layoutGraphApplyToNodes } = require('../utils/elk-layout');
       const nodes = Array.isArray(g.nodes) ? g.nodes.slice() : [];
       const edges = Array.isArray(g.edges) ? g.edges.slice() : [];
-      // Match frontend visual size: ~250x100 top-left placement
       const nodeW = Number(process.env.AI_FLOW_NODE_WIDTH || 250);
       const nodeH = Number(process.env.AI_FLOW_NODE_HEIGHT || 100);
-      // Frontend top-left gaps: gx=260, gy=200 → border gaps = 260 - width, 200 - height
       const topLeftGapX = Number.isFinite(gapX) ? gapX : 260;
       const topLeftGapY = Number.isFinite(gapY) ? gapY : 160;
-      const borderGapX = Math.max(0, topLeftGapX - nodeW);
-      const borderGapY = Math.max(0, topLeftGapY - nodeH);
-      const child = nodes.map(n => ({ id: String(n.id), width: nodeW, height: nodeH }));
-      const eds = edges.map(e => ({ id: String(e.id || (String(e.source)+'->'+String(e.target))), sources: [String(e.source)], targets: [String(e.target)] }));
-      const graph = {
-        id: 'root',
-        layoutOptions: {
-          'elk.algorithm': 'layered',
-          'elk.direction': 'DOWN',
-          'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
-          'elk.layered.mergeEdges': 'true',
-          'elk.layered.crossingMinimization.semiInteractive': 'true',
-          // Vertical gap between layers (border to border)
-          'elk.layered.spacing.nodeNodeBetweenLayers': String(borderGapY),
-          // Horizontal minimal gap (border to border)
-          'elk.spacing.nodeNode': String(borderGapX),
-          'elk.edgeRouting': 'ORTHOGONAL'
-        },
-        children: child,
-        edges: eds
-      };
-      const res = await elk.layout(graph);
-      const byId = new Map(nodes.map(n => [String(n.id), JSON.parse(JSON.stringify(n))]));
-      for (const c of (res.children || [])) {
-        const n = byId.get(String(c.id));
-        if (n) {
-          // ELK x,y is top-left; use directly as point
-          n.point = { x: Math.round(c.x || 0), y: Math.round(c.y || 0) };
-          byId.set(String(c.id), n);
-        }
-      }
-      // Optional vertical gap normalization to match exact frontend spacing between top-lefts
-      try {
-        const wantGapY = topLeftGapY; // e.g., 200
-        // Longest-path layering from sources
-        const ids = Array.from(byId.keys());
-        const incoming = new Map(ids.map(id => [id, 0]));
-        const outs = new Map(ids.map(id => [id, []]));
-        for (const e of (edges || [])) {
-          const s = String(e.source), t = String(e.target);
-          if (!byId.has(s) || !byId.has(t)) continue;
-          incoming.set(t, (incoming.get(t) || 0) + 1);
-          outs.get(s).push(t);
-        }
-        const q = [];
-        const level = new Map(ids.map(id => [id, 0]));
-        for (const id of ids) if ((incoming.get(id) || 0) === 0) q.push(id);
-        while (q.length) {
-          const u = q.shift();
-          for (const v of (outs.get(u) || [])) {
-            level.set(v, Math.max(level.get(v) || 0, (level.get(u) || 0) + 1));
-            incoming.set(v, (incoming.get(v) || 0) - 1);
-            if ((incoming.get(v) || 0) === 0) q.push(v);
-          }
-        }
-        // Apply normalized Y per level
-        for (const [id, n] of byId.entries()) {
-          const lv = level.get(id) || 0;
-          n.point = { x: n.point?.x || 0, y: lv * wantGapY };
-        }
-        emitMessage(`[layout.elk][normalize] gapY=${wantGapY}`);
-      } catch {}
-      try { emitMessage(`[layout.elk][apply] nodeW=${nodeW} nodeH=${nodeH} gapX=${topLeftGapX} gapY=${topLeftGapY} borderGapX=${borderGapX} borderGapY=${borderGapY}`); } catch {}
-      return Array.from(byId.values());
+      const laid = await layoutGraphApplyToNodes({ nodes, edges }, { orientation: 'vertical', nodeWidth: nodeW, nodeHeight: nodeH, gapX: topLeftGapX, gapY: topLeftGapY, normalizeLevels: true });
+      try { emitMessage(`[layout.elk][apply][shared] nodeW=${nodeW} nodeH=${nodeH} gapX=${topLeftGapX} gapY=${topLeftGapY}`); } catch {}
+      return laid;
     } catch (e) {
-      try { emitMessage('[layout.elk][error] ' + (e?.message || e)); } catch {}
+      try { emitMessage('[layout.elk][error][shared] ' + (e?.message || e)); } catch {}
       return null;
     }
   }

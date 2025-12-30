@@ -347,6 +347,9 @@
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
+      <button class="icon-btn" (click)="onBackendAutoLayout()" [disabled]="layoutLoading" title="Auto-placer (backend)">
+        <i class="fa-solid fa-sitemap"></i>
+      </button>
       <!-- Mobile: toggle marquee selection mode -->
       <button class="icon-btn" *ngIf="isTabletOrBelow" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
         <i class="fa-solid fa-vector-square"></i>

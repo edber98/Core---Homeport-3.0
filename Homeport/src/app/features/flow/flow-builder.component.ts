@@ -27,6 +27,7 @@ import { FlowBuilderUtilsService } from './flow-builder-utils.service';
 import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
 import { FlowRunService } from '../../services/flow-run.service';
 import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
+import { LayoutBackendService } from '../../services/layout-backend.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
@@ -412,6 +413,7 @@ export class FlowBuilderComponent {
   private skipStartFormPromptOnce = false;
   previewLoading = false;
   outputLoading = false;
+  layoutLoading = false;
   testStatus: 'idle'|'running'|'success'|'error' = 'idle';
   testStartedAt: number | null = null;
   testDurationMs: number | null = null;
@@ -478,6 +480,7 @@ export class FlowBuilderComponent {
     private modal: NzModalService,
     private router: Router,
     private pathSvc: FlowPathHighlightService,
+    private layoutApi: LayoutBackendService,
   ) { }
   isMobile = false;
   // Width-based responsive flag (<= 1280px): use drawers and single-column grid
@@ -2166,6 +2169,53 @@ export class FlowBuilderComponent {
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
     try { this.selectItem(node); } catch {}
     this.openAdvancedEditor();
+  }
+
+  // Auto-layout the entire graph via backend (ELK)
+  onBackendAutoLayout() {
+    try {
+      if (this.layoutLoading) return;
+      if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
+      const graph = {
+        nodes: (this.nodes || []).map(n => ({ id: String(n.id) })),
+        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target) }))
+      };
+      this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
+      const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
+      const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 250, height: 110, gapX, gapY }).subscribe({
+        next: (resp: any) => {
+          this.zone.run(() => {
+            try {
+              const positions = (resp && (resp.positions || (resp.data && resp.data.positions))) || {};
+              const keys = positions ? Object.keys(positions) : [];
+              if (!keys.length) { try { this.message.warning('Auto-placement: aucune position renvoyée'); } catch {}; return; }
+              // Suppress transient graph events while applying
+              const until = Date.now() + 900;
+              this.suppressNodesRemovedUntil = until as any;
+              this.suppressGraphEventsUntil = until as any;
+              this.suppressRemoveUntil = until as any;
+
+              const map = new Map<string, { x: number; y: number }>();
+              keys.forEach(k => { const p = (positions as any)[k]; if (p && typeof p.x === 'number' && typeof p.y === 'number') map.set(String(k), { x: Math.round(p.x), y: Math.round(p.y) }); });
+              // Create a fresh array so Vflow diff can reconcile by id without detach
+              const updated = (this.nodes || []).map(n => {
+                const id = String(n.id);
+                const p = map.get(id);
+                return p ? { ...n, point: { x: p.x, y: p.y } } : n;
+              });
+              this.nodes = updated;
+              this.updateSharedGraph();
+              this.pushState('auto.layout.backend');
+              this.forceViewRefresh('auto-layout-apply');
+              setTimeout(() => this.centerFlow(), 0);
+            } catch {}
+          });
+        },
+        error: (e) => { try { const er = this.normalizeApiError(e); this.message.error(er?.message || 'Échec de l\'auto-placement'); } catch {} },
+        complete: () => { this.layoutLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
+    } catch {}
   }
 
   // Dialog attempt helpers
