@@ -218,7 +218,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
                       <div class="dialog-box">
                         <ng-container *ngIf="outSchemaReady">
                           <ng-container *ngIf="isFormSchema(getOutSchemaObjAt(i)); else outInvalidSchema">
-                            <app-dynamic-form [schema]="getOutSchemaObjAt(i)" [value]="{}" [forceBp]="'xs'" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
+                            <app-dynamic-form [schema]="getOutSchemaObjAt(i)" [value]="getOutPreviewValueAt(i)" [forceBp]="'xs'" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
                           </ng-container>
                           <ng-template #outInvalidSchema>
                             <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
@@ -389,6 +389,10 @@ export class NodeTemplateEditorComponent implements OnInit {
   showOutSection = false;
   private _parsedOutSig = '';
   private _parsedOutCache: any = null;
+  // Per-output cache to stabilize inputs to app-dynamic-form (avoid CD churn)
+  private _outSchemaSig = new Map<number, string>();
+  private _outSchemaObj = new Map<number, any>();
+  private _outPreviewVal = new Map<number, any>();
   // Pending returns from Form Builder for output handles (when handles not yet loaded)
   private _pendingOutSchemas: Map<number, string> = new Map();
   private _pendingOutSessions: Map<number, string> = new Map();
@@ -804,7 +808,15 @@ export class NodeTemplateEditorComponent implements OnInit {
       return this._parsedOutCache;
     } catch { this._parsedOutSig = this.currentOutSchemaJson || ''; this._parsedOutCache = { title: 'Sortie', fields: [] }; return this._parsedOutCache; }
   }
-  onOutSchemaChange(v: string) { const g = this.outCtrlAt(this.selectedOutIndex); g?.get('schemaJson')?.setValue(v || ''); }
+  onOutSchemaChange(v: string) {
+    const i = this.selectedOutIndex;
+    const g = this.outCtrlAt(i);
+    g?.get('schemaJson')?.setValue(v || '');
+    // Invalidate caches for this index so next getter recomputes
+    this._outSchemaSig.delete(i);
+    this._outSchemaObj.delete(i);
+    this._outPreviewVal.delete(i);
+  }
   defaultOutSchema(name: string) { return { title: `Sortie — ${name || 'ok'}`, ui: { layout: 'vertical', labelsOnTop: true }, fields: [] }; }
   openOutputFormBuilderRoute() {
     try {
@@ -824,6 +836,59 @@ export class NodeTemplateEditorComponent implements OnInit {
   toggleOutRow(i: number){ if (this._openOutRows.has(i)) this._openOutRows.delete(i); else this._openOutRows.add(i); }
   isOutRowOpen(i: number): boolean { return this._openOutRows.has(i); }
   getOutSchemaJsonAt(i: number): string { const g = this.outCtrlAt(i); const raw = g?.get('schemaJson')?.value; return typeof raw === 'string' && raw.trim().length ? raw : JSON.stringify(this.defaultOutSchema(g?.get('name')?.value || g?.get('id')?.value || 'ok'), null, 2); }
-  getOutSchemaObjAt(i: number): any { try { return JSON.parse(this.getOutSchemaJsonAt(i)); } catch { return this.defaultOutSchema('ok'); } }
-  onOutSchemaChangeAt(i: number, v: string) { const g = this.outCtrlAt(i); g?.get('schemaJson')?.setValue(v || ''); }
+  getOutSchemaObjAt(i: number): any {
+    try {
+      const json = this.getOutSchemaJsonAt(i);
+      const sig = (json || '').trim();
+      const prevSig = this._outSchemaSig.get(i);
+      if (prevSig === sig) {
+        const cached = this._outSchemaObj.get(i);
+        if (cached) return cached;
+      }
+      const parsed = JSON.parse(json);
+      const obj = (parsed && typeof parsed === 'object') ? parsed : this.defaultOutSchema('ok');
+      this._outSchemaSig.set(i, sig);
+      this._outSchemaObj.set(i, obj);
+      // Also refresh preview seed for arrays when schema changes
+      this._outPreviewVal.set(i, this.computeOutPreviewSeed(obj));
+      return obj;
+    } catch {
+      return this.defaultOutSchema('ok');
+    }
+  }
+  onOutSchemaChangeAt(i: number, v: string) {
+    const g = this.outCtrlAt(i); g?.get('schemaJson')?.setValue(v || '');
+    // Invalidate caches for this index so next getter recomputes
+    this._outSchemaSig.delete(i);
+    this._outSchemaObj.delete(i);
+    this._outPreviewVal.delete(i);
+  }
+
+  // Build and cache a minimal preview value to seed array sections with one item
+  getOutPreviewValueAt(i: number): any {
+    // Ensure schema cache (and preview) is warmed
+    const _ = this.getOutSchemaObjAt(i);
+    return this._outPreviewVal.get(i) || {};
+  }
+  private computeOutPreviewSeed(schema: any): any {
+    try {
+      const seed: Record<string, any> = {};
+      const visit = (fields?: any[]) => {
+        for (const f of (fields || [])) {
+          if (!f) continue;
+          if (f.type === 'section' || f.type === 'section_array') {
+            const isArray = (f.type === 'section_array') || ((f as any).mode === 'array');
+            if (isArray) {
+              const key = (f as any).key || 'items';
+              if (seed[key] == null) seed[key] = [{}];
+            } else {
+              visit((f as any).fields);
+            }
+          }
+        }
+      };
+      if (Array.isArray(schema?.fields)) visit(schema.fields);
+      return seed;
+    } catch { return {}; }
+  }
 }
