@@ -192,12 +192,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   `,
   styles: [`
     .flow-exec { position: relative; display:grid; grid-template-columns: 360px 1fr; gap: 0; height:100%; }
-    /* Prefer dynamic viewport units; fall back to small viewport if supported */
-    @supports (height: 100svh) {
-      .flow-exec { height: 100svh; min-height: 100svh; }
-    }
-    @supports (height: 100dvh) {
-      .flow-exec { height: 100dvh; min-height: 100dvh; }
+    /* Mobile/tablet only: use dynamic viewport height to account for top bars */
+    @media (max-width: 1024px) {
+      @supports (height: 100svh) {
+        .flow-exec { height: 100svh; min-height: 100svh; }
+      }
+      @supports (height: 100dvh) {
+        .flow-exec { height: 100dvh; min-height: 100dvh; }
+      }
     }
     .side.executions { border: none; border-radius: 0; padding: 12px; padding-top: 0; background: #ffffff; overflow: auto; }
     .side.executions .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 6px; }

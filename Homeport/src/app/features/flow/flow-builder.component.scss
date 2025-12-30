@@ -1,10 +1,12 @@
 .flow-builder { position: relative; display: block; gap: 0; height: 100%; overflow-x: hidden; }
-/* Prefer dynamic viewport units; fall back to small viewport if supported */
-@supports (height: 100svh) {
-  .flow-builder { height: 100svh; min-height: 100svh; }
-}
-@supports (height: 100dvh) {
-  .flow-builder { height: 100dvh; min-height: 100dvh; }
+/* Mobile/tablet: use dynamic viewport units to account for browser top bars */
+@media (max-width: 1024px) {
+  @supports (height: 100svh) {
+    .flow-builder { height: 100svh; min-height: 100svh; }
+  }
+  @supports (height: 100dvh) {
+    .flow-builder { height: 100dvh; min-height: 100dvh; }
+  }
 }
 /* Desktop-only: controlled by class from component */
 .flow-builder.desktop { display: grid; grid-template-columns: auto 1fr auto; }
