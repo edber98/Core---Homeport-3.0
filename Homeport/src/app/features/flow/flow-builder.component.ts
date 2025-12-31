@@ -111,6 +111,10 @@ export class FlowBuilderComponent {
   spawnAnimNodes = new Set<string>();
   spawnLiteAnimNodes = new Set<string>();
   private isIOSSafari = false;
+  // When performing programmatic alignment, avoid immediate drag-final snapshot
+  private lastAlignAt = 0;
+  private suppressMoveSnapshotUntil = 0;
+  private suppressNextMoveSnapshot = false;
   removingNodes = new Set<string>();
   removingLiteNodes = new Set<string>();
   private pendingRemoveTimers: Record<string, any> = {};
@@ -3209,6 +3213,13 @@ export class FlowBuilderComponent {
         this.nodes = next;
         try { this.cdr.detectChanges(); } catch {}
         try { this.setVflowSelectedIds(Array.from(idsSet)); } catch {}
+        // Mark recent align to suppress trailing pointerup snapshot
+        this.lastAlignAt = Date.now();
+        this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
+        this.suppressNextMoveSnapshot = true;
+        // Clear transient drag caches so we don't reapply stale positions
+        try { this.draggingNodes.clear(); } catch {}
+        try { this.pendingPositions = {} as any; } catch {}
         this.pushState('nodes.aligned.' + dir);
       }
     } catch {}
@@ -5195,6 +5206,14 @@ export class FlowBuilderComponent {
   @HostListener('document:pointercancel')
   onPointerUp() {
     if (this.isIgnoring()) return;
+    // If a programmatic alignment just occurred, skip this automatic move snapshot
+    const now = Date.now();
+    if (this.suppressNextMoveSnapshot || (this.lastAlignAt && (now - this.lastAlignAt) < 900) || (now < this.suppressMoveSnapshotUntil)) {
+      this.draggingNodes.clear();
+      this.pendingPositions = {} as any;
+      this.suppressNextMoveSnapshot = false;
+      return;
+    }
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
     // Delay a bit so Vflow can finalize helper adjustments before we read positions
