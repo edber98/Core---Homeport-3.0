@@ -293,6 +293,70 @@ async function layoutGraph(graph, opts = {}){
     }
   } catch {}
 
+  // Horizontal-specific: stabilize loop branches (Each to the right lane, After below) across subsequent levels
+  try {
+    if (elkOptions.direction === 'RIGHT') {
+      // Build incoming count and adjacency with handle ids
+      const incoming = new Map();
+      const adj = new Map();
+      for (const c of (elkGraph.children || [])) incoming.set(String(c.id), 0);
+      for (const e of (elkGraph.edges || [])){
+        const s = String(e.sources?.[0] || '');
+        const t = String(e.targets?.[0] || '');
+        if (!s || !t) continue;
+        const port = String(e.sourcePort || '');
+        const hId = port.startsWith('out:') ? port.slice(4) : '';
+        if (!adj.has(s)) adj.set(s, []);
+        adj.get(s).push({ t, h: hId });
+        if (incoming.has(t)) incoming.set(t, (incoming.get(t) || 0) + 1);
+      }
+      const gapY = elkOptions.gapY;
+      // Helper: propagate a fixed y lane along a chain with in-degree = 1
+      const propagateLane = (startId, laneY) => {
+        let u = String(startId);
+        let curLevel = (level.get(u) || 0);
+        // Walk forward while single incoming and increasing level by 1
+        while (true) {
+          const outs = (adj.get(u) || []).slice().filter(it => (level.get(it.t) || 0) === curLevel + 1);
+          if (outs.length !== 1) break;
+          const v = String(outs[0].t);
+          if ((incoming.get(v) || 0) !== 1) break;
+          posMap.set(v, { x: (curLevel + 1) * elkOptions.gapX, y: laneY });
+          u = v; curLevel = (level.get(u) || (curLevel + 1));
+        }
+      };
+      // Iterate loop nodes and stabilize their two branches
+      const isLoop = (n) => { try { return String(n?.data?.model?.templateObj?.type || '').toLowerCase() === 'loop'; } catch { return false; } };
+      for (const n of (nodes || [])){
+        if (!isLoop(n)) continue;
+        const s = String(n.id);
+        const sLevel = level.get(s) || 0;
+        const sPos = posMap.get(s) || { x: 0, y: 0 };
+        const outs = (adj.get(s) || []).filter(it => (level.get(it.t) || 0) === sLevel + 1);
+        if (!outs.length) continue;
+        // Identify each/after by handle id when possible
+        let eachT = null, afterT = null;
+        for (const it of outs){
+          const hid = String(it.h || '').toLowerCase();
+          if (hid === 'each' || hid === 'loop_start') eachT = String(it.t);
+          if (hid === 'after' || hid === 'loop_end' || hid === 'end') afterT = String(it.t);
+        }
+        // If not identified, rely on current y ordering around the loop node: lower y is Each index 0, higher y is After index 1
+        if (!eachT || !afterT) {
+          const arr = outs.slice().map(it => ({ t: String(it.t), y: (posMap.get(String(it.t)) || { y: sPos.y }).y }));
+          arr.sort((a, b) => a.y - b.y);
+          if (!eachT && arr[0]) eachT = arr[0].t;
+          if (!afterT && arr[arr.length - 1]) afterT = arr[arr.length - 1].t;
+        }
+        // Compute desired lanes: Each stays near sPos.y (upper), After below by ~gapY/2 from sibling ordering step
+        const yEach = eachT ? ((posMap.get(eachT) || { y: sPos.y - Math.round(gapY / 2) }).y) : (sPos.y - Math.round(gapY / 2));
+        const yAfter = afterT ? ((posMap.get(afterT) || { y: sPos.y + Math.round(gapY / 2) }).y) : (sPos.y + Math.round(gapY / 2));
+        if (eachT) propagateLane(eachT, yEach);
+        if (afterT) propagateLane(afterT, yAfter);
+      }
+    }
+  } catch {}
+
   // Vertical-specific global alignment: align each level relative to the Start node column
   try {
     if (elkOptions.direction === 'DOWN') {
