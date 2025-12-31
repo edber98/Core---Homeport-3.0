@@ -292,14 +292,107 @@ async function layoutGraph(graph, opts = {}){
       }
     }
   } catch {}
+
+  // Vertical-specific global alignment: align each level relative to the Start node column
+  try {
+    if (elkOptions.direction === 'DOWN') {
+      // Find the main Start/root node
+      let startId = null;
+      try {
+        for (const n of (nodes || [])){
+          const t = String(n?.data?.model?.templateObj?.type || '').toLowerCase();
+          if (t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint') { startId = String(n.id); break; }
+        }
+      } catch {}
+      if (!startId) {
+        // fallback: node with minimal incoming degree
+        const incoming = new Map();
+        for (const c of (elkGraph.children || [])) incoming.set(String(c.id), 0);
+        for (const e of (elkGraph.edges || [])){
+          const t = String(e.targets?.[0] || '');
+          if (incoming.has(t)) incoming.set(t, (incoming.get(t) || 0) + 1);
+        }
+        let min = Infinity; let id = null;
+        for (const [k, v] of incoming.entries()) { if (v < min) { min = v; id = k; } }
+        startId = id || null;
+      }
+      if (startId) {
+        // Build predecessor map with handle indices
+        const inAdj = new Map();
+        const outIndex = new Map();
+        for (const n of (nodes || [])){
+          const ids = computeOutputOrder(n, edges);
+          const m = new Map(); ids.forEach((id, i) => m.set(String(id), i));
+          outIndex.set(String(n.id), m);
+        }
+        for (const e of (elkGraph.edges || [])){
+          const s = String(e.sources?.[0] || '');
+          const t = String(e.targets?.[0] || '');
+          if (!s || !t) continue;
+          const port = String(e.sourcePort || '');
+          const hId = port.startsWith('out:') ? port.slice(4) : '';
+          if (!inAdj.has(t)) inAdj.set(t, []);
+          const m = outIndex.get(s) || new Map();
+          const idx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
+          inAdj.get(t).push({ s, idx });
+        }
+        // Compute lexicographic keys from start to each node
+        const keyMap = new Map();
+        const compare = (a, b) => {
+          const n = Math.min(a.length, b.length);
+          for (let i = 0; i < n; i++) { if (a[i] !== b[i]) return a[i] - b[i]; }
+          return a.length - b.length;
+        };
+        // Level-order DP
+        const maxLevel = (() => { let m = 0; for (const v of level.values()) m = Math.max(m, v || 0); return m; })();
+        keyMap.set(String(startId), []);
+        for (let lv = 1; lv <= maxLevel; lv++){
+          const ids = Array.from(level.entries()).filter(([k, v]) => (v || 0) === lv).map(([k]) => String(k));
+          // compute candidate keys from predecessors (prefer preds with defined keys)
+          for (const id of ids){
+            const preds = (inAdj.get(id) || []).slice();
+            let best = null;
+            for (const pr of preds){
+              const pk = keyMap.get(pr.s);
+              if (!pk) continue;
+              const cand = pk.concat([pr.idx]);
+              if (!best || compare(cand, best) < 0) best = cand;
+            }
+            if (best) keyMap.set(id, best);
+          }
+          // Any nodes without a computed key: assign far-right order to keep them after
+          const missing = ids.filter(id => !keyMap.has(id));
+          for (const id of missing) keyMap.set(id, [Number.MAX_SAFE_INTEGER - 1, 0]);
+          // Sort nodes by key and align around the Start column
+          const arr = ids.slice().sort((a, b) => {
+            const ka = keyMap.get(a) || [Number.MAX_SAFE_INTEGER];
+            const kb = keyMap.get(b) || [Number.MAX_SAFE_INTEGER];
+            const c = compare(ka, kb);
+            return c !== 0 ? c : a.localeCompare(b);
+          });
+          const center = (arr.length - 1) / 2;
+          const startPos = posMap.get(String(startId)) || { x: 0, y: 0 };
+          for (let i = 0; i < arr.length; i++){
+            const id = arr[i];
+            const x = Math.round(startPos.x + (i - center) * elkOptions.gapX);
+            posMap.set(id, { x, y: lv * elkOptions.gapY });
+          }
+        }
+      }
+    }
+  } catch {}
   // Normalize to grid levels
   if (normalize){
     for (const ch of (laid.children || [])){
       const id = String(ch.id);
       const lv = level.get(id) || 0;
       const p = posMap.get(id) || { x: Math.round(ch.x || 0), y: Math.round(ch.y || 0) };
-      if (elkOptions.direction === 'DOWN') positions[id] = { x: p.x, y: lv * elkOptions.gapY };
-      else positions[id] = { x: lv * elkOptions.gapX, y: Math.round(Math.round(p.y / elkOptions.gapY) * elkOptions.gapY) };
+      if (elkOptions.direction === 'DOWN') {
+        const xq = Math.round(Math.round(p.x / elkOptions.gapX) * elkOptions.gapX);
+        positions[id] = { x: xq, y: lv * elkOptions.gapY };
+      } else {
+        positions[id] = { x: lv * elkOptions.gapX, y: Math.round(Math.round(p.y / elkOptions.gapY) * elkOptions.gapY) };
+      }
     }
   } else {
     for (const [id, p] of posMap.entries()) positions[id] = p;
