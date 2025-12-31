@@ -52,6 +52,7 @@
       "name": "OpenAI",
       "title": "OpenAI",
       "iconClass": "fa-brands fa-openai",
+      "iconUrl": "https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0",
       "color": "#10A37F",
       "tags": ["ai", "llm"],
       "categories": ["AI"],

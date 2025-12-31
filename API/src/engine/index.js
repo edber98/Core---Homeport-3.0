@@ -100,6 +100,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
   const send = async (ev) => { try { if (emit) await emit(ev); } catch { /* noop */ } };
   await send({ type: 'run.started', startedAt: new Date().toISOString() });
   const shouldCancel = typeof options.shouldCancel === 'function' ? options.shouldCancel : () => false;
+  const forceBranches = (options && options.forceBranches && typeof options.forceBranches === 'object') ? options.forceBranches : null;
   if (shouldCancel()) { await send({ type: 'run.cancelled', reason: 'user_request' }); throw new Error('__CANCELLED__'); }
 
   const runBranch = async (curId, msg, seen, branchId) => {
@@ -139,7 +140,15 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore });
-      const chosen = evaluateCondition(node, initialContext, msg);
+      let chosen = evaluateCondition(node, initialContext, msg);
+      try {
+        const forced = forceBranches && (forceBranches[node.id] || forceBranches[String(node.id)]);
+        if (forced != null) {
+          const picks = Array.isArray(forced) ? forced : [forced];
+          chosen = (picks.length === 1) ? picks[0] : picks;
+          try { console.log('[engine] condition:forced', { node: node.id, chosen }); } catch {}
+        }
+      } catch {}
       nodeLog.result = { chosen };
       // Keep payload unchanged for condition; still expose chosen under msg[nodeId]
       msg[node.id] = nodeLog.result;
@@ -372,6 +381,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
 
       // Record node result and finalize payload
       nodeLog.result = { count: items.length, collected: collectResults ? results.length : undefined };
+      // Expose loop result under msg[nodeId] like other nodes (parité avec start/condition/function)
+      try { msg[node.id] = nodeLog.result; } catch {}
       if (collectResults) { try { msg.payload = results; } catch {} }
       else if (resultMode === 'last') { try { msg.payload = lastPayload; } catch {} }
       const msgAfter = JSON.parse(JSON.stringify(msg));

@@ -3365,7 +3365,7 @@ export class FlowBuilderComponent {
         this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
         if (!isStart && nodeId && this.hasPredecessor(nodeId) && environment.useBackend && this.currentFlowId) {
           this.previewLoading = true;
-          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'all').subscribe({
+          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine').subscribe({
             next: (resp) => {
               const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
               this.advancedSimScenarios = scenarios;
@@ -3401,6 +3401,27 @@ export class FlowBuilderComponent {
         this.advancedCtx = this.advancedInjectedInput || {};
       }
       try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+  reloadSimulationForSelected() {
+    try {
+      const nodeId = this.selectedModel?.id;
+      if (!nodeId || !this.currentFlowId) return;
+      this.previewLoading = true;
+      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine').subscribe({
+        next: (resp) => {
+          const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+          this.advancedSimScenarios = scenarios;
+          this.advancedSimScenarioIdx = 0;
+          if (scenarios.length > 0) { this.advancedInjectedInput = scenarios[0].msgIn || {}; }
+          this.advancedCtx = this.advancedInjectedInput || {};
+          try { this.cdr.detectChanges(); } catch {}
+        },
+        error: (e) => {
+          try { this.message.error('Simulation impossible: ' + (e?.error?.message || 'vérifiez les branches/conditions')); } catch {}
+        },
+        complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
     } catch {}
   }
   onStartPayloadChange(v: any) {

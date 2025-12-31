@@ -4,6 +4,7 @@ module.exports = function(store) {
   const r = express.Router();
   const { authMiddleware, requireCompanyScope } = require('../auth/jwt');
   const { simulateScenarios } = require('../utils/flow-simulate');
+  const { simulateViaEngine } = require('../utils/flow-simulate-engine');
 
   r.use(authMiddleware(store));
   r.use(requireCompanyScope());
@@ -16,13 +17,28 @@ module.exports = function(store) {
       const ws = store.workspaces.get(flow.workspaceId);
       if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
       const targetNodeId = String(req.body?.targetNodeId || '');
-      const mode = String(req.body?.mode || 'all');
+      const mode = String(req.body?.mode || 'engine');
       if (!targetNodeId) return res.apiError(400, 'bad_request', 'Missing targetNodeId');
-      const data = simulateScenarios(flow.graph || flow, targetNodeId, mode);
+      const graph = flow.graph || flow;
+      console.log('[simulate] request', { flowId, targetNodeId, mode, user: req.user?.id });
+      let data = (mode === 'engine') ? await simulateViaEngine(graph, targetNodeId) : simulateScenarios(graph, targetNodeId, mode);
+      const scenarios = Array.isArray(data?.scenarios) ? data.scenarios : [];
+      const usable = (sc) => sc && sc.msgIn && typeof sc.msgIn === 'object' && Object.keys(sc.msgIn).length > 0;
+      if (!scenarios.length || !usable(scenarios[0])) {
+        console.warn('[simulate] engine no usable scenario; trying static fallback');
+        const fb = simulateScenarios(graph, targetNodeId, 'all');
+        const fbSc = Array.isArray(fb?.scenarios) ? fb.scenarios : [];
+        if (fbSc.length && usable(fbSc[0])) {
+          console.log('[simulate] fallback static used');
+          return res.apiOk(fb);
+        }
+        console.error('[simulate] unreachable: no path produced a usable msgIn');
+        return res.apiError(422, 'simulation_unreachable', 'Impossible de simuler un msg jusqu’au nœud cible. Vérifiez les conditions/loops et les connexions.');
+      }
+      console.log('[simulate] response', { scenarios: scenarios.length });
       return res.apiOk(data);
     } catch (e) { return res.apiError(500, 'simulate_failed', e && e.message ? e.message : 'Simulation failed'); }
   });
 
   return r;
 };
-

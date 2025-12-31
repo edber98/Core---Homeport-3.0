@@ -48,12 +48,13 @@ function buildSampleFromSchema(schema, opts = {}) {
     if (f == null || typeof f !== 'object') return null;
     if (f.default !== undefined) return f.default;
     const t = String(f.type || '').toLowerCase();
-    if (t === 'text' || t === 'textarea' || t === 'json' || t === 'code') return '';
+    if (t === 'text' || t === 'textarea' || t === 'json' || t === 'code') return 'sample';
     if (t === 'select' || t === 'combobox' || t === 'radio') return optionFirstValue(f) ?? '';
-    if (t === 'number' || t === 'slider') return 0;
-    if (t === 'checkbox' || t === 'switch') return false;
-    if (t === 'date' || t === 'datetime' || t === 'time') return '';
-    if (t === 'tags' || t === 'chips' || t === 'table') return [];
+    if (t === 'number' || t === 'slider') return 1;
+    if (t === 'checkbox' || t === 'switch') return true;
+    if (t === 'date' || t === 'datetime' || t === 'time') return new Date().toISOString();
+    if (t === 'tags' || t === 'chips') return ['sample'];
+    if (t === 'table') return [ {} ];
     if (t === 'array') {
       const item = f.item || f.items || null;
       if (!arraysOneItem) return [];
@@ -230,11 +231,32 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
   const graph = buildGraph(flow);
   const choices = collectChoicePoints(targetNodeId, graph);
   const combos = mode === 'all' ? cartesianChoices(choices, 24) : [{}];
+  // Prepare deepRender for compiling args (expressions/templates) on target node
+  let evaluateTemplateDetailed = null, evaluateExpression = null;
+  try { ({ evaluateTemplateDetailed, evaluateExpression } = require('../engine/expression-sandbox')); } catch {}
+  const buildEvalContext = (initialContext, msg) => ({ ...initialContext, msg, payload: msg?.payload, _nodes: msg?._nodes });
+  const deepRender = (obj, evalCtx) => {
+    if (obj == null) return obj;
+    if (typeof obj === 'string') { try { return evaluateTemplateDetailed ? evaluateTemplateDetailed(obj, evalCtx).text : obj; } catch { return obj; } }
+    if (Array.isArray(obj)) return obj.map(v => deepRender(v, evalCtx));
+    if (typeof obj === 'object'){
+      if (Object.keys(obj).length === 1 && typeof obj.$expr === 'string') { try { return evaluateExpression ? evaluateExpression(obj.$expr, evalCtx) : obj; } catch { return obj; } }
+      const out = {}; for (const [k,v] of Object.entries(obj)) out[k] = deepRender(v, evalCtx); return out;
+    }
+    return obj;
+  };
   const scenarios = combos.map((choice, idx) => {
     const msgIn = simulateMsgForScenario(targetNodeId, choice, graph);
+    let argsPre = null, argsPost = null;
+    try {
+      const node = graph.nodesById.get(String(targetNodeId));
+      const model = node?.model || {};
+      argsPre = model?.context || null;
+      if (argsPre && (evaluateTemplateDetailed || evaluateExpression)) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, msgIn));
+    } catch {}
     const label = Object.keys(choice).length ?
       Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
-    return { id: `sc_${idx+1}`, index: idx, label, msgIn, choice };
+    return { id: `sc_${idx+1}`, index: idx, label, msgIn, argsPre, argsPost, choice };
   });
   // Ensure at least one scenario exists, even if empty
   if (scenarios.length === 0) scenarios.push({ id: 'sc_1', index: 0, label: 'Chemin par défaut', msgIn: {}, choice: {} });
@@ -242,3 +264,7 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
 }
 
 module.exports = { simulateScenarios };
+
+// Also export helpers for engine-based simulation
+module.exports.buildSampleFromSchema = buildSampleFromSchema;
+module.exports.getStartFormSchema = getStartFormSchema;

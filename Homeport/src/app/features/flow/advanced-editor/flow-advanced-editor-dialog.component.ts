@@ -24,6 +24,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
           <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
             <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
           </select>
+          <button (click)="reloadSimulation.emit()" style="border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Recharger</button>
           <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Voir exécution réelle</button>
         </div>
         <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
@@ -81,6 +82,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
                 <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
                   <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
                 </select>
+                <button (click)="reloadSimulation.emit()" style="border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Recharger</button>
                 <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Exécution réelle</button>
               </div>
               <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
@@ -201,6 +203,7 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
   @Input() simSelectedIndex: number = 0;
   @Output() simSelectedIndexChange = new EventEmitter<number>();
+  @Output() reloadSimulation = new EventEmitter<void>();
   // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
   @Output() modelChangeCommitted = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
