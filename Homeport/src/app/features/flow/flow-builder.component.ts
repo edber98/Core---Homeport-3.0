@@ -2911,8 +2911,10 @@ export class FlowBuilderComponent {
           if (m?.catch_error && m?.skip_error) return true; // mutually exclusive
         } catch { }
         if (schema) {
-          const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-          const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+          // Do not consider fields inside section arrays; only validate top-level/section fields
+          const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+          const missing = fields
+            .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
             .filter((f: any) => {
               const v = (m?.context || {})[f.key];
               return v == null || v === '';
@@ -2920,7 +2922,8 @@ export class FlowBuilderComponent {
           if (missing.length) return true;
         }
       } catch { }
-      return false;
+      // If any validation issue exists for this node (e.g., section array items), still show badge
+      try { return (this.validationIssues || []).some(it => it.nodeId === id); } catch { return false; }
     } catch { return false; }
   }
   private recomputeValidation() {
@@ -2967,9 +2970,12 @@ export class FlowBuilderComponent {
           if (model?.skip_error && !t?.authorize_skip_error) issues.push({ kind: 'node', nodeId: id, message: `Option skip_error non autorisée par le template.` });
           if (model?.catch_error && model?.skip_error) issues.push({ kind: 'node', nodeId: id, message: `Options catch et skip ne peuvent pas être activées ensemble.` });
           const schema: any = model?.templateObj?.args || null;
+          // Generic required-fields check (applies to all types), but ignores fields inside section arrays
           if (schema) {
-            const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-            const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+            // Do not consider fields inside section arrays (array items are validated by their own logic)
+            const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+            const missing = fields
+              .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
               .filter((f: any) => {
                 const v = (model?.context || {})[f.key];
                 return v == null || v === '';
@@ -3337,19 +3343,25 @@ export class FlowBuilderComponent {
       setTimeout(() => this.runFlow(), 0);
     }
   }
-  closeAdvancedEditor() { this.advancedOpen = false; }
+  private pendingAdvancedModel: any = null;
+  closeAdvancedEditor() {
+    const m = this.pendingAdvancedModel;
+    this.advancedOpen = false;
+    try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
+    this.pendingAdvancedModel = null;
+  }
   onAdvancedModelChange(m: any) {
     // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
     // Appliquer uniquement à la clôture (onAdvancedModelCommitted) ou via saveSelectedJson.
     if (!m?.id) return;
     try { this.advancedCtx = m?.context || this.advancedCtx; } catch {}
+    // Cache the latest in-dialog model for final commit on close
+    try { this.pendingAdvancedModel = m; } catch {}
   }
+  private _advCommitGuard = false;
   onAdvancedModelCommitted(m: any) {
-    if (!m?.id) return;
-    try {
-      const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
-      console.log('[builder] onAdvancedModelCommitted before', { id: m.id, ctxFields: len(m?.context), sfsFields: len(m?.startFormSchema), argsFields: len(m?.templateObj?.args) });
-    } catch {}
+    if (!m?.id || this._advCommitGuard) return;
+    this._advCommitGuard = true;
     try { this.openedNodeConfig.add(String(m.id)); } catch { }
     // Normalize else_enabled and stabilize
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
@@ -3365,6 +3377,20 @@ export class FlowBuilderComponent {
       }
     } catch {}
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    // Short-circuit if condition outputs did not change to avoid re-renders/deselection loops
+    try {
+      const ty = String(stable?.templateObj?.type || '').toLowerCase();
+      if (ty === 'condition') {
+        const before = this.fbUtils.getConditionItemsFull(oldModel).map(it => it.id);
+        const after = this.fbUtils.getConditionItemsFull(stable).map(it => it.id);
+        const same = before.length === after.length && before.every((v, i) => String(v) === String(after[i]));
+        if (same && this.advancedOpen) {
+          // No structural change (only names/fields edited). While dialog is open, avoid mutating nodes to prevent focus/selection churn.
+          this._advCommitGuard = false;
+          return;
+        }
+      }
+    } catch {}
     // Persist stabilized model on node
     this.nodes = this.nodes.map(n => n.id === stable.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
     // Realign current selection to the updated node reference so bindings receive the new model
@@ -3375,11 +3401,6 @@ export class FlowBuilderComponent {
         try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
       }
     } catch {}
-    try {
-      const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
-      const cur = (this.nodes.find(n => n.id === stable.id)?.data?.model) || null;
-      console.log('[builder] onAdvancedModelCommitted after', { id: stable.id, ctxFields: len(cur?.context), sfsFields: len(cur?.startFormSchema), argsFields: len(cur?.templateObj?.args) });
-    } catch {}
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     if (res.deletedEdgeIds?.length) {
       res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
@@ -3389,6 +3410,7 @@ export class FlowBuilderComponent {
 
     this.pushState('dialog.modelCommit.final');
     this.recomputeValidation();
+    this._advCommitGuard = false;
   }
 
   saveSelectedJson() {
