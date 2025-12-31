@@ -1,0 +1,63 @@
+services:
+  api:
+    image: kinn-backend-2:${CI_COMMIT_REF_NAME}
+    container_name: kinn-backend-2
+    volumes:
+      - ./API:/app
+      - ./API/mongo-data:/mongo-data
+      - ./API/redis-data:/redis-data
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=development
+      - HMAC_SECRET=${HMAC_SECRET}
+      - TOKEN_TTL_SEC=${TOKEN_TTL_SEC}
+      - ENC_KEY=${ENC_KEY}
+      - MONGO_URL=${MONGO_URL}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - SEED=${SEED}
+      - SEED_COMPANIES=${SEED_COMPANIES}
+      - DEFAULT_COMPANY=${DEFAULT_COMPANY}
+      - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
+      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
+      - DEFAULT_WORKSPACE_NAME=${DEFAULT_WORKSPACE_NAME}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - HOST=0.0.0.0
+    labels:
+      - "traefik.http.routers.kinn-backend-2.rule=Host(`app.kinn.fr`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"
+      - "traefik.http.routers.kinn-backend-2.priority=20"
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-web"
+      - "traefik.http.services.kinn-backend-2.loadbalancer.server.port=5055"
+      - "traefik.http.routers.kinn-backend-2.tls=true"
+      - "traefik.http.routers.kinn-backend-2.entrypoints=websecure,web"
+      - "traefik.http.routers.kinn-backend-2.tls.certresolver=myresolver"
+    restart: always
+    networks:
+      - traefik-web
+  
+  homeport:
+    container_name: kinn_homeport-2
+    image: kinn_homeport-2:${CI_COMMIT_REF_NAME}
+    restart: always
+    labels:
+      - "traefik.http.routers.kinn-homeport-2.rule=Host(`app.kinn.fr`)  && PathPrefix(`/`) && !PathPrefix(`/api`) && !PathPrefix(`/auth`)"
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-web"
+      - "traefik.http.services.kinn-homeport-2.loadbalancer.server.port=80"
+      - "traefik.http.routers.kinn-homeport-2.tls=true"
+      - "traefik.http.routers.kinn-homeport-2.entrypoints=websecure,web"
+      - "traefik.http.routers.kinn-homeport-2.tls.certresolver=myresolver"
+
+    depends_on:
+      - api
+    networks:
+      - traefik-web
+
+
+
+networks:
+  traefik-web:
+    driver: bridge
+    external: true
+
