@@ -13,6 +13,7 @@ This document describes the custom edge routing used in the Flow Builder, the co
   - Forward edges remain Bezier.
 - During drag: allow crossing the hovered node only; otherwise never cross nodes.
 - Auto‑layout must ignore backward edges (they should not influence node placement).
+ - Auto‑layout must also ignore Loop "Each" branch edges so branch wiring does not distort placement.
 
 ## Router Overview
 
@@ -77,14 +78,11 @@ File: `src/app/features/flow/edge-curves.ts` exports `backAwareCurve` (an `ngx-v
 
 ## Auto‑layout (API)
 
-- Backward edges must be ignored for placement. They are link‑routing artifacts and should not pull nodes in the opposite direction.
-- Client implementation:
-  - In `onBackendAutoLayout()`, the payload sent to the backend excludes backward edges determined by current node positions:
-    - Compute axis per edge (`abs(dx) >= abs(dy)` → horizontal else vertical).
-    - Horizontal backward: drop edges with `sx > tx`.
-    - Vertical backward: drop edges with `sy > ty`.
-  - This filtering applies regardless of whether an edge sits under a loop/Each branch; it simply prevents backward edges from biasing the layout.
-- Backend guidance (if implemented server‑side): apply the same filter on incoming layout requests for idempotence.
+- Client sends hints to the layout API. When a Loop→Each branch is present and the builder ports are horizontal, the client forces ELK orientation to `vertical` with meta hints to improve branch placement:
+  - Orientation override: `orientation='vertical'` when an `Each` edge exists; otherwise use the builder orientation.
+  - Meta hints: `{ preferVerticalForEach: true, eachLane: 'right', afterPlacement: 'below', outputBias: 'bottom-right' }`.
+  - These hints encode the desired behavior: after an `Each` branch in horizontal UI, the downstream placement should favor the right lane and place the `After` path below, following the bottom‑right output bias of loop nodes.
+- Backend guidance: honor the `orientation` override and `meta` hints to steer the ELK configuration (e.g., rankdir=TB for vertical, lane constraints for Each, and bias to place `After` below the loop block).
 
 ## Parameters (tunable)
 
@@ -107,4 +105,3 @@ File: `src/app/features/flow/edge-curves.ts` exports `backAwareCurve` (an `ngx-v
 - Horizontal backward: exit right before routing left.
 - Vertical backward: always depart to the right and stay on the right‑side lane.
 - Auto‑layout ignores backward edges entirely in its graph model.
-

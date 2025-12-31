@@ -2345,26 +2345,9 @@ export class FlowBuilderComponent {
     try {
       if (this.layoutLoading) return;
       if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
-      // Build layout graph, ignoring backward edges for placement (do not let them influence auto-layout)
-      const nodesArr = (this.nodes || []);
-      const posById = new Map<string, { x: number; y: number }>();
-      nodesArr.forEach(n => { try { posById.set(String(n.id), { x: Number((n as any).point?.x || 0), y: Number((n as any).point?.y || 0) }); } catch {} });
-      const baseEdges = (this.edges || []);
-      const edgesFiltered = baseEdges.filter(e => {
-        try {
-          const s = posById.get(String(e.source));
-          const t = posById.get(String(e.target));
-          if (!s || !t) return true; // keep when unknown
-          const dx = Math.abs(t.x - s.x);
-          const dy = Math.abs(t.y - s.y);
-          const axis: 'horizontal'|'vertical' = (dx >= dy) ? 'horizontal' : 'vertical';
-          if (axis === 'horizontal') return !(s.x > t.x); // drop right->left
-          else return !(s.y > t.y); // drop bottom->top
-        } catch { return true; }
-      });
       const graph = {
-        nodes: nodesArr.map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
-        edges: edgesFiltered.map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
+        nodes: (this.nodes || []).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
+        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
       };
       this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
       const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
