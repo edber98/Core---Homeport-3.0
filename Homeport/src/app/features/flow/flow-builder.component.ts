@@ -2340,7 +2340,7 @@ export class FlowBuilderComponent {
       this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
       const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
       const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
-      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 250, height: 110, gapX, gapY }).subscribe({
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY }).subscribe({
         next: (resp: any) => {
           this.zone.run(() => {
             try {
@@ -3890,7 +3890,11 @@ export class FlowBuilderComponent {
               const runId = r?.id || r?.data?.id || r?.runId;
               if (runId) {
                 // Préselectionner l'exécution en cours dans "Exécutions récentes"
-                try { this.recentRuns = [{ id: runId, status: 'running', startedAt: new Date().toISOString() }, ...(this.recentRuns || [])]; } catch {}
+                const startedAtIso = new Date().toISOString();
+                try {
+                  this.recentRuns = [{ id: runId, status: 'running', startedAt: startedAtIso }, ...(this.recentRuns || [])];
+                  this.currentRunMeta = { id: runId, status: 'running', startedAt: startedAtIso, finishedAt: undefined as any } as any;
+                } catch {}
                 // Ajoute ?run= dans l'URL sans relancer les chargements
                 try {
                   const qp = this.route.snapshot.queryParamMap;
@@ -3898,6 +3902,7 @@ export class FlowBuilderComponent {
                   this.router.navigate([], { queryParams: q, replaceUrl: true });
                 } catch {}
                 this.openBackendStream(runId);
+                try { this.cdr.detectChanges(); } catch {}
               }
             } catch {}
           },
@@ -3985,9 +3990,28 @@ export class FlowBuilderComponent {
             try { this.cdr.detectChanges(); } catch {}
           }
           this.backendRunStatus = 'running';
+          try {
+            if (this.currentRunMeta && this.currentRunMeta.id) this.currentRunMeta = { ...this.currentRunMeta, status: 'running' };
+          } catch {}
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           this.backendRunStatus = 'done';
           try { s.close(); } catch {}
+          // Update right panel meta and recent runs list
+          try {
+            const rid = String(runId);
+            const finishedAt = ev?.run?.finishedAt || ev?.data?.finishedAt || new Date().toISOString();
+            if (this.currentRunMeta && this.currentRunMeta.id === rid) this.currentRunMeta = { ...this.currentRunMeta, status: st, finishedAt } as any;
+            const idx = (this.recentRuns || []).findIndex(r => String(r.id) === rid);
+            if (idx >= 0) {
+              const cur = this.recentRuns[idx];
+              const upd = { ...cur, status: st, finishedAt } as any;
+              this.recentRuns = [
+                ...this.recentRuns.slice(0, idx),
+                upd,
+                ...this.recentRuns.slice(idx + 1)
+              ];
+            }
+          } catch {}
           // Keep snapshot of attempts but stop further updates
           if (this.advancedOpen) {
             this.previewLoading = false; this.outputLoading = false;
@@ -4004,6 +4028,7 @@ export class FlowBuilderComponent {
             } catch {}
           }
         }
+        try { this.cdr.detectChanges(); } catch {}
         return;
       }
       if (type === 'node.status') {
