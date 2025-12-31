@@ -50,6 +50,41 @@
       "authorize_skip_error": false
     },
     {
+      "key": "loop",
+      "name": "loop",
+      "schemaVersion": 2,
+      "title": "Boucle",
+      "subtitle": "For-each",
+      "type": "loop",
+      "category": "Logic",
+      "providerKey": "logic",
+      "icon": "fa-solid fa-arrows-rotate",
+      "description": "Itérer sur une collection et exécuter une branche pour chaque élément.",
+      "inputHandles": [
+        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] },
+        { "id": "items", "name": "Items", "type": "payload", "multiple": true, "accepts": ["payload", "any"] }
+      ],
+      "outputHandles": [
+        { "id": "after", "name": "After", "type": "payload" },
+        { "id": "each", "name": "Each", "type": "payload" }
+      ],
+      "args": {
+        "title": "Loop",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "itemsArg", "label": "Tableau ou chemin (JSON/chemin)", "expression": { "allow": true }, "col": { "xs": 24 } },
+          { "type": "text", "key": "elementExpr", "label": "Mapper l'élément (optionnel)", "expression": { "allow": true }, "col": { "xs": 24 } },
+          { "type": "text", "key": "itemVar", "label": "Nom de la variable élément", "default": "item", "col": { "xs": 12 } },
+          { "type": "text", "key": "indexVar", "label": "Nom de la variable index", "default": "index", "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "perItemPayload", "label": "Définir payload = élément pour la branche", "default": true, "col": { "xs": 24 } },
+          { "type": "select", "key": "resultMode", "label": "Résultat final", "options": [ { "label": "Collecter tous les payloads", "value": "collect" }, { "label": "Conserver le dernier payload", "value": "last" } ], "default": "collect", "col": { "xs": 24 } },
+          { "type": "number", "key": "maxIterations", "label": "Itérations max", "default": 1000, "col": { "xs": 24 } }
+        ]
+      },
+      "authorize_catch_error": false,
+      "authorize_skip_error": false
+    },
+    {
       "key": "delay",
       "name": "delay",
       "schemaVersion": 2,

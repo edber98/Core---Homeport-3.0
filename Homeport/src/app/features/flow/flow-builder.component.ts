@@ -1509,6 +1509,7 @@ export class FlowBuilderComponent {
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
+  getInputName(model: any, id: string): string { return this.graph.getInputName(model, id); }
   private _linkCache = new Map<string, { sig: string; links: Array<{ id: string; name: string; type: string }> }>();
   linkHandlesForNode(nodeId: string, model: any): Array<{ id: string; name: string; type: string }> {
     try {
@@ -4636,6 +4637,16 @@ export class FlowBuilderComponent {
       this.tipText = txt;
       this.tipVisible = !!txt;
       this.tipError = String(out) === 'err';
+      this.onHandleMove(ev);
+    } catch { this.tipVisible = false; }
+  }
+  // Input handle tooltip helpers
+  onInputEnter(ev: MouseEvent, model: any, inputId: string) {
+    try {
+      const txt = this.getInputName(model, inputId) || '';
+      this.tipText = txt;
+      this.tipVisible = !!txt;
+      this.tipError = false;
       this.onHandleMove(ev);
     } catch { this.tipVisible = false; }
   }

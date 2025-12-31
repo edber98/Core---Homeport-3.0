@@ -19,7 +19,16 @@ export class FlowGraphService {
             .map((h:any) => String(h.id));
         }
         return ['out'];
-      case 'loop': return ['loop_start', 'loop_end', 'end'];
+      case 'loop': {
+        // Prefer declared v2 handles on the template
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          return (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any) => String(h.id));
+        }
+        // Fallback to standard loop handles
+        return ['each', 'after'];
+      }
       case 'condition': {
         const field = tmpl.output_array_field || 'items';
         const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
@@ -83,12 +92,33 @@ export class FlowGraphService {
         return '';
       }
       if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        // Back-compat for legacy loop handle ids
+        if (tmpl.type === 'loop'){
+          const legacy = String(idxOrId);
+          if (legacy === 'loop_start') return 'Each';
+          if (legacy === 'loop_end' || legacy === 'end') return 'After';
+        }
         const h = (tmpl.outputHandles as any[])
           .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
           .find((hh:any) => String(hh.id) === String(idxOrId));
         return h?.name || '';
       }
       if (Number.isFinite(idx) && idx >= 0 && idx < outs.length) return outs[idx];
+      return '';
+    } catch { return ''; }
+  }
+
+  // Human-readable name for an input handle
+  getInputName(model: any, id: string): string {
+    try {
+      const tmpl = model?.templateObj || {};
+      const arr: any[] = Array.isArray(tmpl.inputHandles) ? (tmpl.inputHandles as any[]) : [];
+      if (arr.length) {
+        const h = arr.find((hh:any) => String(hh.id) === String(id));
+        return h?.name || '';
+      }
+      // Default single input id is 'in'
+      if (String(id) === 'in') return 'In';
       return '';
     } catch { return ''; }
   }
@@ -123,6 +153,12 @@ export class FlowGraphService {
         return '';
       }
       if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        // Back-compat for legacy loop handle ids
+        if (tmpl.type === 'loop'){
+          const legacy = String(sourceHandle);
+          if (legacy === 'loop_start') return 'Each';
+          if (legacy === 'loop_end' || legacy === 'end') return 'After';
+        }
         const h = (tmpl.outputHandles as any[])
           .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
           .find((hh:any) => String(hh.id) === String(sourceHandle));

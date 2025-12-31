@@ -4,7 +4,7 @@ const { registry } = require('../plugins/registry');
 
 function log(step, data) { const payload = data === undefined ? '' : (typeof data === 'string' ? data : JSON.stringify(data)); console.log(`[engine] ${step} ${payload}`); }
 
-function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; return ''; }
+function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='loop') return 'loop'; return ''; }
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
@@ -36,6 +36,22 @@ function deepRender(obj, evalCtx){
     return out;
   }
   return obj;
+}
+
+// Minimal lodash.get equivalent for dotted/bracket paths (a.b[0].c)
+function dotGet(obj, path, def){
+  try {
+    if (!path) return def;
+    let p = String(path);
+    // Convert bracket to dot notation: a[0].b -> a.0.b
+    p = p.replace(/\[(\w+)\]/g, '.$1');
+    p = p.replace(/\["([^\]]+)"\]/g, '.$1');
+    p = p.replace(/\[\'([^\]]+)\'\]/g, '.$1');
+    const parts = p.split('.').filter(Boolean);
+    let cur = obj;
+    for (const key of parts){ if (cur == null) return def; cur = cur[key]; }
+    return (cur === undefined) ? def : cur;
+  } catch { return def; }
 }
 
 const builtinRegistry = {
@@ -143,6 +159,230 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
         } else if (targets.length > 1) {
           await Promise.all(targets.map(t => runBranch(t.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${t.idx}`)));
         }
+      }
+      return;
+    } else if (nType === 'loop'){
+      const msgBefore = JSON.parse(JSON.stringify(msg));
+      nodeLog.start = new Date().toISOString();
+      nodeLog.args_pre_compilation = node.model?.context || null;
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore });
+      // Compile args
+      const evalCtx = buildEvalContext(initialContext, msg);
+      const compiled = deepRender(node.model?.context || {}, evalCtx) || {};
+      // Normalize source mode; accept legacy values ('items' -> 'handle') and infer when misused
+      const sourceModeRaw = String(compiled.sourceMode || 'payload');
+      let sourceMode = sourceModeRaw.trim().toLowerCase(); // 'handle' | 'expression' | 'payload' | 'path'
+      if (sourceMode === 'items' || sourceMode === 'handle_items') sourceMode = 'handle';
+      // If user mistakenly entered a path in sourceMode (e.g., 'payload.sazaza'), infer path mode
+      const looksLikePath = /[.\[]/.test(sourceModeRaw) && !/^\s*(handle|expression|payload|path)\s*$/.test(sourceModeRaw);
+      if (looksLikePath && (!compiled.itemsPath || !String(compiled.itemsPath).trim())){
+        compiled.itemsPath = sourceModeRaw.trim();
+        sourceMode = 'path';
+        try { console.log('[engine] loop:inferred.path', { node: node.id, from: sourceModeRaw, itemsPath: compiled.itemsPath }); } catch {}
+      }
+      const itemVar = String(compiled.itemVar || 'item');
+      const indexVar = String(compiled.indexVar || 'index');
+      // Coerce perItemPayload to boolean with safe defaults
+      const perItemPayload = (compiled.perItemPayload === undefined)
+        ? true
+        : (compiled.perItemPayload === true || compiled.perItemPayload === 'true' || compiled.perItemPayload === 1 || compiled.perItemPayload === '1');
+      const resultMode = String(compiled.resultMode || (compiled.collectResults ? 'collect' : 'collect'));
+      const collectResults = resultMode === 'collect';
+      const maxIterations = Number.isFinite(Number(compiled.maxIterations)) ? Math.max(0, Number(compiled.maxIterations)) : 1000;
+      const elementExpr = compiled.elementExpr; // optional mapping expression/template applied to each item
+      // Detect explicit source to avoid unintended fallbacks (also consider itemsArg)
+      const hasItemsExprStr = (typeof compiled.itemsExpr === 'string') && compiled.itemsExpr.trim().length > 0;
+      const hasItemsPathStr = (typeof compiled.itemsPath === 'string') && compiled.itemsPath.trim().length > 0;
+      const hasItemsArgVal = (compiled.itemsArg !== undefined) && (typeof compiled.itemsArg !== 'string' || String(compiled.itemsArg).trim().length > 0);
+      const explicitSource = (sourceMode === 'path' && hasItemsPathStr) || (sourceMode === 'expression' && hasItemsExprStr) || (sourceMode === 'handle') || hasItemsArgVal;
+      try {
+        console.log('[engine] loop:compiled', {
+          node: node.id,
+          sourceMode,
+          hasItemsExpr: typeof compiled.itemsExpr === 'string' ? compiled.itemsExpr.trim().slice(0, 120) : (compiled.itemsExpr != null),
+          perItemPayload,
+          resultMode,
+          maxIterations,
+          explicitSource
+        });
+      } catch {}
+
+      // Gather incoming results by target handle (similar to function case)
+      const incoming = { byHandle: {}, flat: [] };
+      try {
+        const arr = inEdges.get(node.id) || [];
+        for (const ie of arr){
+          const srcId = ie.source; const res = msg && msg[srcId] ? msg[srcId] : undefined;
+          if (res !== undefined){
+            incoming.flat.push({ sourceId: srcId, sourceHandle: ie.sourceHandle, targetHandle: ie.targetHandle, result: res });
+            const th = String(ie.targetHandle || '');
+            if (!incoming.byHandle[th]) incoming.byHandle[th] = [];
+            incoming.byHandle[th].push(res);
+          }
+        }
+        try {
+          const inCounts = Object.fromEntries(Object.entries(incoming.byHandle).map(([k,v]) => [k, Array.isArray(v) ? v.length : 0]));
+          console.log('[engine] loop:incoming', { node: node.id, handles: inCounts });
+        } catch {}
+      } catch {}
+
+      // Resolve collection
+      let items = [];
+      let resolvedFrom = 'none';
+      try {
+        if (sourceMode === 'handle'){
+          const vals = incoming.byHandle['items'] || [];
+          // Prefer first non-null; if value itself is an array, use it; else, if multiple arrays, flatten
+          if (vals.length === 1){
+            const v = vals[0];
+            if (Array.isArray(v)) { items = v; resolvedFrom = 'handle:items'; }
+            else if (typeof v === 'number' && Number.isFinite(v)) { items = Array.from({ length: Math.max(0, Math.floor(v)) }, (_, i) => i); resolvedFrom = 'handle:number'; }
+            else if (v != null) { items = [v]; resolvedFrom = 'handle:value'; }
+          } else if (vals.length > 1){
+            const arrs = vals.filter(v => Array.isArray(v));
+            if (arrs.length) { items = arrs.flat(); resolvedFrom = 'handle:arrays'; }
+            else { items = vals.filter(v => v != null); resolvedFrom = 'handle:values'; }
+          }
+          try { console.log('[engine] loop:resolve.handle', { node: node.id, arrays: (incoming.byHandle['items']||[]).filter(Array.isArray).length, values: (incoming.byHandle['items']||[]).length }); } catch {}
+        } else if (sourceMode === 'expression'){
+          let v = compiled.itemsExpr;
+          if (typeof v === 'string') {
+            const rendered = renderTemplate(v, evalCtx);
+            try { console.log('[engine] loop:resolve.expr', { node: node.id, expr: String(v).trim().slice(0,200), rendered: String(rendered).slice(0,200) }); } catch {}
+            // If rendered looks like a path (no JSON brackets), try dotGet first
+            if (rendered && typeof rendered === 'string' && !/^\s*\[/.test(rendered) && !/^\s*\{/.test(rendered)){
+              const got = dotGet({ msg, payload: msg?.payload }, rendered.trim(), undefined);
+              if (Array.isArray(got)) { items = got; resolvedFrom = 'expr:path'; }
+              else if (got && typeof got === 'object') { items = Object.values(got); resolvedFrom = 'expr:path.objectValues'; }
+              else { v = rendered; }
+            } else {
+              v = rendered;
+            }
+          }
+          if ((!Array.isArray(items) || items.length === 0)){
+            if (Array.isArray(v)) { items = v; resolvedFrom = 'expr:array'; }
+            else if (typeof v === 'number' && Number.isFinite(v)) { items = Array.from({ length: Math.max(0, Math.floor(v)) }, (_, i) => i); resolvedFrom = 'expr:number'; }
+            else if (typeof v === 'string'){
+              // Try to parse JSON array
+              try { const parsed = JSON.parse(v); if (Array.isArray(parsed)) { items = parsed; resolvedFrom = 'expr:json'; try { console.log('[engine] loop:resolve.expr.json', { node: node.id, length: parsed.length }); } catch {} } } catch {}
+            }
+          }
+          // Explicit itemsPath support as fallback within expression mode
+          if ((!Array.isArray(items) || items.length === 0) && typeof compiled.itemsPath === 'string' && compiled.itemsPath.trim()){
+            const got = dotGet({ msg, payload: msg?.payload }, compiled.itemsPath.trim(), undefined);
+            if (Array.isArray(got)) { items = got; resolvedFrom = 'expr:itemsPath'; }
+            else if (got && typeof got === 'object') { items = Object.values(got); resolvedFrom = 'expr:itemsPath.objectValues'; }
+          }
+        } else if (sourceMode === 'path'){
+          const p = typeof compiled.itemsPath === 'string' ? compiled.itemsPath.trim() : '';
+          const got = p ? dotGet({ msg, payload: msg?.payload }, p, undefined) : undefined;
+          if (Array.isArray(got)) { items = got; resolvedFrom = 'path'; }
+          else if (got && typeof got === 'object') { items = Object.values(got); resolvedFrom = 'path.objectValues'; }
+        } else { // payload
+          const v = msg && msg.payload;
+          if (Array.isArray(v)) { items = v; resolvedFrom = 'payload'; }
+          else if (typeof v === 'number' && Number.isFinite(v)) { items = Array.from({ length: Math.max(0, Math.floor(v)) }, (_, i) => i); resolvedFrom = 'payload:number'; }
+          try { const t = v == null ? 'null' : (Array.isArray(v) ? 'array' : typeof v); console.log('[engine] loop:resolve.payload', { node: node.id, type: t, length: Array.isArray(v) ? v.length : undefined }); } catch {}
+        }
+        // New: if still unresolved, honor itemsArg as unified argument (array/object/number/path string/JSON string)
+        if ((!Array.isArray(items) || items.length === 0) && hasItemsArgVal){
+          try {
+            let arg = compiled.itemsArg;
+            if (typeof arg === 'string'){
+              const rendered = renderTemplate(arg, evalCtx);
+              const s = String(rendered || '').trim();
+              try { console.log('[engine] loop:resolve.arg', { node: node.id, raw: String(arg).slice(0,200), rendered: s.slice(0,200) }); } catch {}
+              if (/^\[|^\{/.test(s)){
+                try { const parsed = JSON.parse(s); if (Array.isArray(parsed)) { items = parsed; resolvedFrom = 'arg:json'; } else if (parsed && typeof parsed === 'object') { items = Object.values(parsed); resolvedFrom = 'arg:json.objectValues'; } } catch {}
+              }
+              if ((!Array.isArray(items) || items.length === 0)){
+                const got = dotGet({ msg, payload: msg?.payload }, s, undefined);
+                if (Array.isArray(got)) { items = got; resolvedFrom = 'arg:path'; }
+                else if (got && typeof got === 'object') { items = Object.values(got); resolvedFrom = 'arg:path.objectValues'; }
+                else if (typeof got === 'number' && Number.isFinite(got)) { items = Array.from({ length: Math.max(0, Math.floor(got)) }, (_, i) => i); resolvedFrom = 'arg:number'; }
+              }
+            } else if (Array.isArray(arg)) { items = arg; resolvedFrom = 'arg:array'; }
+            else if (arg && typeof arg === 'object') { items = Object.values(arg); resolvedFrom = 'arg:objectValues'; }
+            else if (typeof arg === 'number' && Number.isFinite(arg)) { items = Array.from({ length: Math.max(0, Math.floor(arg)) }, (_, i) => i); resolvedFrom = 'arg:number'; }
+          } catch {}
+        }
+      } catch {}
+      // Fallback: only if no explicit source requested
+      try {
+        if ((!Array.isArray(items) || items.length === 0) && !explicitSource && msg && msg.payload && Array.isArray(msg.payload.items)){
+          items = msg.payload.items;
+          resolvedFrom = 'payload.items';
+          try { console.log('[engine] loop:fallback.payload.items', { node: node.id, length: items.length }); } catch {}
+        }
+      } catch {}
+      if (!Array.isArray(items)) items = [];
+      if (Number.isFinite(maxIterations) && items.length > maxIterations) items = items.slice(0, maxIterations);
+      try { console.log('[engine] loop:resolved', { node: node.id, from: resolvedFrom, length: items.length, sample: items.slice(0, Math.min(3, items.length)) }); } catch {}
+
+      // Find outputs
+      const outs = outEdges.get(node.id) || [];
+      const outEach = outs.find(o => String(o.sourceHandle || '') === 'each') || outs[0] || null;
+      const outAfter = outs.find(o => String(o.sourceHandle || '') === 'after') || (outs.length > 1 ? outs[1] : null);
+
+      const results = [];
+      let lastPayload = undefined;
+      // Re-entry guard: prevent body sub-run from revisiting this loop node (cycles)
+      const reentrySeen = new Set();
+      try { reentrySeen.add(node.id); } catch {}
+      let i = 0;
+      for (const rawItem of items){
+        if (shouldCancel()) throw new Error('__CANCELLED__');
+        if (!outEach) break; // nothing to iterate into
+        // Prepare iteration message
+        const msgClone = JSON.parse(JSON.stringify(msg));
+        const iter = { item: rawItem, index: i, length: items.length };
+        try { msgClone.loop = iter; } catch {}
+        // Optionally map element through elementExpr (only if non-empty string or {$expr})
+        let mapped = rawItem;
+        try {
+          const hasStringExpr = (typeof elementExpr === 'string') && elementExpr.trim().length > 0;
+          const hasExprObj = (elementExpr && typeof elementExpr === 'object' && typeof elementExpr.$expr === 'string');
+          if (hasStringExpr || hasExprObj){
+            const mappedCtx = buildEvalContext(initialContext, msgClone);
+            if (hasStringExpr) mapped = renderTemplate(String(elementExpr), mappedCtx);
+            else if (hasExprObj) mapped = evaluateExpression(elementExpr.$expr, mappedCtx);
+            try { console.log('[engine] loop:map', { node: node.id, index: i, fromType: typeof rawItem, toType: typeof mapped }); } catch {}
+          }
+        } catch {}
+        // Expose item/index under msg.loop and optionally payload
+        try { msgClone.loop[itemVar] = mapped; } catch {}
+        try { msgClone.loop[indexVar] = i; } catch {}
+        if (perItemPayload) {
+          try { msgClone.payload = (mapped && typeof mapped === 'object') ? JSON.parse(JSON.stringify(mapped)) : mapped; } catch { msgClone.payload = mapped; }
+          try {
+            const t = mapped == null ? 'null' : (Array.isArray(mapped) ? 'array' : typeof mapped);
+            const keys = (mapped && typeof mapped === 'object' && !Array.isArray(mapped)) ? Object.keys(mapped).slice(0,5) : undefined;
+            console.log('[engine] loop:iter.payload', { node: node.id, index: i, type: t, keys });
+          } catch {}
+        }
+        try { if (i < 10) console.log('[engine] loop:iter.start', { node: node.id, index: i }); } catch {}
+        await send({ type: 'edge.taken', sourceId: node.id, targetId: outEach.target });
+        // Use a seen set that already contains the current loop node to prevent re-entry/cycles
+        await runBranch(outEach.target, msgClone, new Set(reentrySeen), `${branchId}:each:${i}`);
+        try { if (i < 10) console.log('[engine] loop:iter.done', { node: node.id, index: i }); } catch {}
+        try { lastPayload = JSON.parse(JSON.stringify(msgClone.payload)); } catch { lastPayload = msgClone.payload; }
+        if (collectResults) results.push(lastPayload);
+        i++;
+      }
+
+      // Record node result and finalize payload
+      nodeLog.result = { count: items.length, collected: collectResults ? results.length : undefined };
+      if (collectResults) { try { msg.payload = results; } catch {} }
+      else if (resultMode === 'last') { try { msg.payload = lastPayload; } catch {} }
+      const msgAfter = JSON.parse(JSON.stringify(msg));
+      nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
+      try { console.log('[engine] loop:done', { node: node.id, count: items.length, resultMode, collected: collectResults ? results.length : undefined }); } catch {}
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: compiled, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+
+      // Route to 'after' once
+      if (outAfter){
+        await send({ type: 'edge.taken', sourceId: node.id, targetId: outAfter.target });
+        await runBranch(outAfter.target, msg, seen, `${branchId}:after`);
       }
       return;
     } else if (nType === 'function' || nType === 'agent' || nType === 'tool' || nType === 'tool_ai' || nType === 'memory'){

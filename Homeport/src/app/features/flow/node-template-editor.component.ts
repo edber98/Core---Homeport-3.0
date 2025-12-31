@@ -180,7 +180,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
                 <div class="row-fields">
                   <input nz-input formControlName="id" placeholder="id (ex: in, tools)"/>
                   <input nz-input formControlName="name" placeholder="Nom"/>
-                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch nz-tooltip [nzTooltipTitle]="'Type du handle: ' + (ctrl.value?.id || '')"></nz-select>
+                  <nz-select formControlName="accepts" nzMode="multiple" [nzOptions]="knownTypeOptions" nzPlaceHolder="Accepts…" nz-tooltip [nzTooltipTitle]="'Types acceptes pour: ' + (ctrl.value?.id || '')"></nz-select>
                   <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions entrantes vers ce handle">multiple</label>
                 </div>
                 <div class="row-actions">
@@ -525,8 +526,14 @@ export class NodeTemplateEditorComponent implements OnInit {
   get inputHandles(): FormArray<FormGroup<any>> { return this.form.get('inputHandles') as any; }
   get outputHandles(): FormArray<FormGroup<any>> { return this.form.get('outputHandles') as any; }
   get linkedHandles(): FormArray<FormGroup<any>> { return this.form.get('linkedHandles') as any; }
-  addInputHandle(v: any = { id: '', name: '', type: 'any', multiple: false }) {
-    this.inputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  addInputHandle(v: any = { id: '', name: '', type: 'any', multiple: false, accepts: undefined }) {
+    this.inputHandles.push(this.fb.group({
+      id: this.fb.control(v.id),
+      name: this.fb.control(v.name),
+      type: this.fb.control(v.type),
+      accepts: this.fb.control(Array.isArray(v.accepts) ? v.accepts : (v.type ? [v.type] : ['any'])),
+      multiple: this.fb.control(!!v.multiple)
+    }));
   }
   removeInputHandle(i: number) { this.inputHandles.removeAt(i); }
   addOutputHandle(v: any = { id: '', name: '', type: 'any', multiple: false, schema: undefined }) {
@@ -535,8 +542,14 @@ export class NodeTemplateEditorComponent implements OnInit {
     if (this.selectedOutIndex < 0) this.selectedOutIndex = 0;
   }
   removeOutputHandle(i: number) { this.outputHandles.removeAt(i); }
-  addLinkedHandle(v: any = { id: '', name: '', type: 'any', multiple: true }) {
-    this.linkedHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  addLinkedHandle(v: any = { id: '', name: '', type: 'any', multiple: true, accepts: undefined }) {
+    this.linkedHandles.push(this.fb.group({
+      id: this.fb.control(v.id),
+      name: this.fb.control(v.name),
+      type: this.fb.control(v.type),
+      accepts: this.fb.control(Array.isArray(v.accepts) ? v.accepts : (v.type ? [v.type] : ['any'])),
+      multiple: this.fb.control(!!v.multiple)
+    }));
   }
   removeLinkedHandle(i: number) { this.linkedHandles.removeAt(i); }
 
@@ -595,11 +608,11 @@ export class NodeTemplateEditorComponent implements OnInit {
     }
     // v2 handles
     try {
-      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: (h.type || (Array.isArray(h.accepts) && h.accepts.length ? h.accepts[0] : 'any')), multiple: !!h.multiple }));
+      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type || 'any', accepts: Array.isArray(h.accepts) ? h.accepts : (h.type ? [h.type] : ['any']), multiple: !!h.multiple }));
       this.outputHandles.clear();
       if (t.type !== 'condition') (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple, schema: (h as any).schema }));
       this.linkedHandles.clear();
-      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: (h.type || (Array.isArray(h.accepts) && h.accepts.length ? h.accepts[0] : 'any')), multiple: !!h.multiple }));
+      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type || 'any', accepts: Array.isArray(h.accepts) ? h.accepts : (h.type ? [h.type] : ['any']), multiple: !!h.multiple }));
     } catch {}
     this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
@@ -700,14 +713,14 @@ export class NodeTemplateEditorComponent implements OnInit {
     const generated = v.id || this.makeIdFromName(v.name);
     // Build v2 handles
     const toList = (val:any) => Array.isArray(val) ? val : String(val||'').split(',').map((s:string)=>s.trim()).filter(Boolean);
-    // Inputs/Linked: single selector → map to accepts: [type]
-    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: [h.type || 'any'] }))
+    // Inputs/Linked: map accepts from multi-select when provided; fallback to [type]
+    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: (Array.isArray(h.accepts) && h.accepts.length ? h.accepts : [h.type || 'any']) }))
     const outHs = (this.outputHandles.value || []).map((h:any)=> {
       let schema: any = undefined;
       try { schema = h.schemaJson && String(h.schemaJson).trim().length ? JSON.parse(h.schemaJson) : this.defaultOutSchema(h.name || h.id || 'ok'); } catch { schema = this.defaultOutSchema(h.name || h.id || 'ok'); }
       return ({ id: String(h.id||'').trim()||'ok', name: h.name || h.id || 'Ok', type: h.type || 'any', multiple: !!h.multiple, schema });
     })
-    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: [h.type || 'any'] }))
+    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: (Array.isArray(h.accepts) && h.accepts.length ? h.accepts : [h.type || 'any']) }))
     const tpl: NodeTemplate = {
       id: generated,
       // also store _id for external systems expecting it

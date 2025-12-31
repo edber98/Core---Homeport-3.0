@@ -49,6 +49,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                         [attr.fill]="'#000000'"
                         [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        (mouseenter)="onInputEnter($event, ctx.node.data.model, ih.id)"
+                        (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"
                       ></svg:circle>
                     </svg:g>
                     </ng-template>
@@ -72,6 +75,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                         [attr.fill]="'#000000'" 
                         [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        (mouseenter)="onInputEnter($event, ctx.node.data.model, inId)"
+                        (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"
                       ></svg:circle>
                     </svg:g>
                   </ng-template>
@@ -481,6 +487,18 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Helpers to mirror builder template conditions
   isTriggerTemplate(tpl: any): boolean {
     try { const t = String(tpl?.type || '').toLowerCase(); return t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint'; } catch { return false; }
+  }
+  getInputName(model: any, id: string): string {
+    try {
+      const arr: any[] = Array.isArray(model?.templateObj?.inputHandles) ? (model?.templateObj?.inputHandles as any[]) : [];
+      if (arr.length){ const h = arr.find((hh:any) => String(hh.id) === String(id)); return h?.name || ''; }
+      return String(id) === 'in' ? 'In' : '';
+    } catch { return ''; }
+  }
+  onInputEnter(ev: MouseEvent, model: any, id: string) {
+    const txt = this.getInputName(model, id) || '';
+    this.tipText = txt; this.tipVisible = !!txt; this.tipError = false;
+    this.onHandleMove(ev);
   }
   onHandleEnter(ev: MouseEvent, model: any, out: string) {
     const txt = this.getOutputName(model, out) || '';
