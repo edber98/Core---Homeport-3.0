@@ -89,14 +89,14 @@
                     <svg:g>
                       
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
-                        [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, ih.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
-                        [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
-                        (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, ih.id)"
-                        (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
-                        (mouseleave)="onTargetLeave(); onHandleLeave()"
-                      ></svg:circle>
+                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                         [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
+                         [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, ih.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
+                         [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                         (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, ih.id)"
+                         (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                         (mouseleave)="onTargetLeave(); onHandleLeave()"
+                       ></svg:circle>
                     </svg:g>
                     </ng-template>
                     <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">

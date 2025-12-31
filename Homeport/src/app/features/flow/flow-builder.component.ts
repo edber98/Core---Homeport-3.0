@@ -1996,6 +1996,10 @@ export class FlowBuilderComponent {
       // If multiple selection exists, keep it as-is (group actions will apply)
     } catch { }
   }
+
+  // (removed) absolute positioning helper for inputs (vertical) — not needed
+
+  // (removed) input nudge — using node width to influence spacing instead
   // Run selected node in test mode and show I/O in dialog wings
   onTestSelectedNode() {
     try {

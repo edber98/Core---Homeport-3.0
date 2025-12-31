@@ -132,7 +132,7 @@
 /* explosion feedback removed to reduce CSS budget */
 
 
-.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0px; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
+.node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 0 0 0; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
 /* removed paint containment to avoid any visual artifact on Safari */
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
@@ -151,6 +151,8 @@
 .node-card .meta .title { font-weight: 600; }
 .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
 .node-card .outputs { display:flex; gap:10px; justify-content:center; flex-direction: row; margin-top: 0; }
+.node-card .inputs { display:flex; gap:16px; justify-content:center; flex-direction: row; margin-bottom: 0; }
+/* .node-card:not(.horizontal) { min-width: 196px; } */
 .node-card.horizontal .outputs { position: absolute; top: -200px; display:flex; flex-direction: column; justify-content:center; gap: 17px;
 }
 
