@@ -23,6 +23,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL}
       - HOST=0.0.0.0
+      - PLUGIN_IMPORT_ENABLED=1
     labels:
       - "traefik.http.routers.kinn-backend-2.rule=Host(`app.kinn.fr`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"
       - "traefik.http.routers.kinn-backend-2.priority=20"
