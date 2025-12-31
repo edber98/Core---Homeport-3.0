@@ -589,6 +589,10 @@ export class FlowExecutionComponent {
       this.backendPairs.clear();
       this.backendAttempts = [];
       this.backendEvents = [];
+      // Hide graph entirely until a run is selected
+      this.viewNodes = [];
+      this.viewEdges = [];
+      try { this.cdr.detectChanges(); } catch {}
       return;
     }
     this.selectedBackendRun = b;
@@ -771,6 +775,12 @@ export class FlowExecutionComponent {
   private computeDecorations() {
     try {
       try { console.log('[exec] computeDecorations', { portOrientation: this.portOrientation, nodes: (this.currentGraph?.nodes||[]).length, edges: (this.currentGraph?.edges||[]).length }); } catch {}
+      // If no run is selected (local or backend), do not render any nodes/edges
+      if (!this.selectedBackendRun && !this.selectedRun) {
+        this.viewNodes = [];
+        this.viewEdges = [];
+        return;
+      }
       const baseNodes = (this.currentGraph?.nodes || []) as any[];
       const smap = new Map<string, string>();
       const counts = new Map<string, number>();
