@@ -437,6 +437,8 @@ async function layoutGraph(graph, opts = {}){
         if (lv > maxLv) maxLv = lv;
       }
       // Process levels left to right
+      const occ = new Map(); // lv -> Set(laneIndex)
+      const lanesOf = (lv) => { if (!occ.has(lv)) occ.set(lv, new Set()); return occ.get(lv); };
       for (let lv = 0; lv <= maxLv; lv++){
         const arr = byLevel.get(lv) || [];
         // First pass: compute target y for each node
@@ -453,24 +455,18 @@ async function layoutGraph(graph, opts = {}){
               // straight chain
               y = py;
             } else if (nextCount > 1) {
-              // fan-out: place children around parent using recursive span (lanes) to account for deeper branching
-              // Build siblings list (prefer single-parent children at this level)
-              const siblings = (elkGraph.edges || [])
+              // fan-out: group by output handle index (primary lanes), then place children within each lane by recursive span
+              // siblings on this level with single-parent
+              const sibs = (elkGraph.edges || [])
                 .filter(e => String(e.sources?.[0] || '') === pid)
                 .map(e => String(e.targets?.[0] || ''))
                 .filter(tid => (level.get(tid) || 0) === lv && (parents.get(tid) || []).length === 1);
-              const uniq = Array.from(new Set(siblings));
-              // Order siblings by explicit handle index when available, else by current ELK y
-              const ordered = uniq
-                .map(tid => ({ tid, idx: (childEdge.get(tid)?.idx ?? Number.POSITIVE_INFINITY), y: (posMap.get(tid)?.y ?? py) }))
-                .sort((a,b) => (a.idx === b.idx ? (a.y - b.y) : (a.idx - b.idx)))
-                .map(x => x.tid);
-
+              const uniq = Array.from(new Set(sibs));
               // Build adjacency of single-parent next-level children
               const nextMap = new Map(); // node -> children[] (single-parent) at next level
-              for (const e of (elkGraph.edges || [])){
-                const s2 = String(e.sources?.[0] || '');
-                const t2 = String(e.targets?.[0] || '');
+              for (const e2 of (elkGraph.edges || [])){
+                const s2 = String(e2.sources?.[0] || '');
+                const t2 = String(e2.targets?.[0] || '');
                 if (!s2 || !t2) continue;
                 const sl2 = level.get(s2) || 0; const tl2 = level.get(t2) || 0;
                 if (tl2 === sl2 + 1 && (parents.get(t2) || []).length === 1){
@@ -478,7 +474,7 @@ async function layoutGraph(graph, opts = {}){
                   nextMap.get(s2).push(t2);
                 }
               }
-              // Recursive span (number of lanes) for a node's subtree along single-parent chains
+              // Span of subtree (single-parent chains only)
               const spanMemo = new Map();
               const span = (nid) => {
                 if (spanMemo.has(nid)) return spanMemo.get(nid);
@@ -488,29 +484,66 @@ async function layoutGraph(graph, opts = {}){
                 const val = Math.max(1, ssum);
                 spanMemo.set(nid, val); return val;
               };
-              // Compute cumulative placement using spans
-              const spans = ordered.map(tid => span(tid));
-              const total = spans.reduce((a,b)=>a+b,0);
-              let acc = 0;
-              const posByTid = new Map();
-              for (let i = 0; i < ordered.length; i++){
-                const tid = ordered[i];
-                const sspan = spans[i];
-                const centerOffset = (acc + sspan/2) - total/2; // centered around 0
-                posByTid.set(tid, py + centerOffset * elkOptions.gapY);
-                acc += sspan;
+              // Group children by output handle index
+              const groupsMap = new Map(); // idx -> tids[]
+              for (const tid of uniq){
+                const idx = (childEdge.get(tid)?.idx ?? Number.POSITIVE_INFINITY);
+                if (!groupsMap.has(idx)) groupsMap.set(idx, []);
+                groupsMap.get(idx).push(tid);
               }
-              // Apply to current id
-              y = posByTid.get(id) ?? py;
+              // Order groups by handle index, fallback by average y
+              const groups = Array.from(groupsMap.entries()).map(([idx, tids]) => ({ idx, tids }));
+              groups.sort((a,b) => {
+                if (a.idx === b.idx){
+                  const ay = a.tids.reduce((s,t)=>s+(posMap.get(t)?.y ?? py),0)/Math.max(1,a.tids.length);
+                  const by = b.tids.reduce((s,t)=>s+(posMap.get(t)?.y ?? py),0)/Math.max(1,b.tids.length);
+                  return ay - by;
+                }
+                return a.idx - b.idx;
+              });
+              // Compute span per child and per group
+              const childSpan = new Map();
+              for (const tid of uniq) childSpan.set(tid, span(tid));
+              const groupSpan = groups.map(g => g.tids.reduce((s,t)=>s+(childSpan.get(t) || 1),0));
+              const totalSpan = groupSpan.reduce((a,b)=>a+b,0);
+              // Assign positions
+              let accGroups = 0;
+              let yAssigned = py;
+              for (let gi = 0; gi < groups.length; gi++){
+                const g = groups[gi];
+                const gSpan = groupSpan[gi];
+                const gCenterOffset = (accGroups + gSpan/2) - totalSpan/2;
+                const gBaseY = py + gCenterOffset * elkOptions.gapY; // center of group
+                // distribute children inside the group by their spans
+                let accChild = -gSpan/2;
+                for (const tid of g.tids){
+                  const cs = childSpan.get(tid) || 1;
+                  const cCenter = accChild + cs/2; // relative to group center
+                  const yChild = gBaseY + cCenter * elkOptions.gapY;
+                  if (tid === id) yAssigned = yChild;
+                  accChild += cs;
+                }
+                accGroups += gSpan;
+              }
+              y = yAssigned;
             }
           }
           targetY.set(id, y);
         }
-        // Second pass: snap to grid around anchor
-        for (const id of arr) {
+        // Second pass: snap to grid around anchor, resolving collisions by pushing downwards
+        const set = lanesOf(lv);
+        // stable order by targetY then id
+        const orderedIds = arr.slice().sort((a,b) => {
+          const ya = targetY.get(a) ?? (posMap.get(a)?.y || 0);
+          const yb = targetY.get(b) ?? (posMap.get(b)?.y || 0);
+          return ya === yb ? String(a).localeCompare(String(b)) : (ya - yb);
+        });
+        for (const id of orderedIds) {
           const y = targetY.get(id) ?? (posMap.get(id)?.y || 0);
-          const dq = Math.round((y - yAnchor) / elkOptions.gapY);
-          const yq = yAnchor + dq * elkOptions.gapY;
+          let lane = Math.round((y - yAnchor) / elkOptions.gapY);
+          while (set.has(lane)) lane++;
+          set.add(lane);
+          const yq = yAnchor + lane * elkOptions.gapY;
           positions[id] = { x: lv * elkOptions.gapX, y: yq };
         }
       }
