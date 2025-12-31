@@ -2299,8 +2299,8 @@ export class FlowBuilderComponent {
       if (this.layoutLoading) return;
       if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
       const graph = {
-        nodes: (this.nodes || []).map(n => ({ id: String(n.id) })),
-        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target) }))
+        nodes: (this.nodes || []).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
+        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
       };
       this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
       const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
