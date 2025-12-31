@@ -49,6 +49,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                         [attr.fill]="'#000000'"
                         [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        (mouseenter)="onInputEnter($event, ctx.node.data.model, ih.id)"
+                        (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"
                       ></svg:circle>
                     </svg:g>
                     </ng-template>
@@ -72,6 +75,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                         [attr.fill]="'#000000'" 
                         [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        (mouseenter)="onInputEnter($event, ctx.node.data.model, inId)"
+                        (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"
                       ></svg:circle>
                     </svg:g>
                   </ng-template>
@@ -113,11 +119,25 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   </ng-template>
                 </div>
               </div>
-              <!-- Linked handles (targets on right) -->
-              <div class="links" *ngIf="(ctx.node.data.model.templateObj?.linkedHandles || []).length as lnkCount">
-                <div class="link" *ngFor="let lh of ctx.node.data.model.templateObj.linkedHandles">
+              <!-- Linked handles: mirror builder behavior (orientation + as sources) -->
+              <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
+                <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
                   <div class="link-label">{{ lh.name }}</div>
-                  <handle position="right" type="target" [id]="lh.id"></handle>
+                  <ng-template #linkTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
+                    <!-- Vertical: linked handles are outputs on the right side -->
+                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-container>
+                  <ng-template #horizLink>
+                    <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
+                    <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-template>
                 </div>
               </div>
               <div class="exec-badge" *ngIf="ctx.node.data.execStatus as st">
@@ -155,8 +175,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     :host(.panel-open) .canvas.ro { border-right: 0; }
     .canvas-host { height: 100%; width: 100%; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
     .canvas-host vflow { touch-action: none; }
-    /* Node layout (execution): align with builder grid; no absolute/relative on node */
-    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:0; min-width: 180px; min-height: 70px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 6px; }
+    /* Node layout (execution): align with builder grid */
+    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
     .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
@@ -166,7 +186,15 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .meta .title { font-weight: 600; }
     .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
     .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
-    .node-card .exec-badge { grid-column: 2; grid-row: 1; align-self: end; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+    .node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
+    .node-card .inputs { display:flex; gap:16px; justify-content:center; flex-direction: row; margin-bottom: 0; }
+    /* Linked handles labels layout */
+    .node-card .links { display:flex; gap:8px; margin-top: 4px; }
+    .node-card.horizontal .links { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .node-card:not(.horizontal) .links { flex-direction: column; align-items: flex-end; }
+    .node-card .link { display: inline-flex; align-items: center; gap: 6px; }
+    .node-card .link-label { font-size: 12px; color: #6b7280; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+    .node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
     .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
     .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
     .node-card .exec-badge .fa-stop.stop { color:#111827; }
@@ -196,6 +224,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   @Input() defaultZoom = 0.5;
   @Input() storageKey = 'flow.viewer.viewport';
+  @Input() useStorage = true; // allow callers (execution viewer) to disable localStorage persistence
   @Input() move = false;       // allow position change if true
   @Input() allowDrag = false;  // require true + move to drag nodes
   @Input() allowZoom = true;   // allow zooming if true
@@ -254,6 +283,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   ngAfterViewInit() {
     setTimeout(() => {
+      try { console.log('[viewer] afterViewInit', { useStorage: this.useStorage, storageKey: this.storageKey, portOrientation: this.portOrientation }); } catch {}
       if (!this.restoreViewport()) {
         this.fitAll(() => this.setZoomAndCenter(this.defaultZoom));
       }
@@ -281,6 +311,14 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       } catch { this.vNodes = this.nodes || []; }
       try { this.cdr.detectChanges(); } catch {}
     }
+    try {
+      if (changes['portOrientation']) {
+        console.log('[viewer] portOrientation input changed', { value: this.portOrientation });
+      }
+      if (changes['useStorage']) {
+        console.log('[viewer] useStorage input changed', { value: this.useStorage, storageKey: this.storageKey });
+      }
+    } catch {}
   }
 
   inputId(tmpl: any): string | null {
@@ -297,7 +335,15 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       case 'start_form':
         if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) return (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
         return ['out'];
-      case 'loop': return ['loop_start', 'loop_end', 'end'];
+      case 'loop': {
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          return (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any)=>String(h.id));
+        }
+        // Fallback stable ids
+        return ['after','each'];
+      }
       case 'condition': {
         const field = tmpl.output_array_field || 'items';
         const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
@@ -317,6 +363,25 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         return enableCatch ? ['err', ...base] : base;
       }
     }
+  }
+
+  // Linked handles resolution aligned with builder
+  private _linkCache = new Map<string, { sig: string; links: Array<{ id: string; name: string; type: string }> }>();
+  linkHandlesForNode(nodeId: string, model: any): Array<{ id: string; name: string; type: string }> {
+    try {
+      const tmpl = model?.templateObj || {};
+      const linksArr: any[] = Array.isArray((tmpl as any).linkedHandles) ? (tmpl as any).linkedHandles : [];
+      const arr: any[] = linksArr.length ? linksArr : (Array.isArray(tmpl.outputHandles) ? (tmpl.outputHandles as any[]).filter((h:any)=> Array.isArray(h?.accepts)) : []);
+      const sig = JSON.stringify(arr);
+      const key = String(nodeId);
+      const cached = this._linkCache.get(key);
+      if (cached && cached.sig === sig) return cached.links;
+      const links = arr
+        .filter((h:any) => Array.isArray(h?.accepts))
+        .map((h:any) => ({ id: String(h.id), name: h.name || h.id, type: h.type || 'any' }));
+      this._linkCache.set(key, { sig, links });
+      return links;
+    } catch { return []; }
   }
 
   private fitAll(cb?: () => void) {
@@ -349,6 +414,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   private saveViewport() {
     try {
+      if (!this.useStorage || !this.storageKey) return;
       const vp = this.flow?.viewportService?.readableViewport();
       if (!vp) return;
       localStorage.setItem(this.storageKey, JSON.stringify({ zoom: vp.zoom, x: vp.x, y: vp.y }));
@@ -356,6 +422,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   }
   private restoreViewport(): boolean {
     try {
+      if (!this.useStorage || !this.storageKey) return false;
       const vs: any = this.flow?.viewportService;
       if (!vs) return false;
       const raw = localStorage.getItem(this.storageKey);
@@ -472,6 +539,19 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
         return it ? (it.name ?? '') : '';
       }
+      // v2 output handles
+      if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        // Back-compat mapping for legacy loop ids
+        if (tmpl.type === 'loop'){
+          const legacy = String(idxOrId);
+          if (legacy === 'loop_start') return 'Each';
+          if (legacy === 'loop_end' || legacy === 'end') return 'After';
+        }
+        const h = (tmpl.outputHandles as any[])
+          .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
+          .find((hh:any) => String(hh.id) === String(idxOrId));
+        return h?.name || '';
+      }
       const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
       if (Number.isFinite(idx) && idx >= 0 && idx < outs.length) return outs[idx];
       if (Array.isArray(outs) && outs.length === 1) return outs[0] || 'Succes';
@@ -481,6 +561,18 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Helpers to mirror builder template conditions
   isTriggerTemplate(tpl: any): boolean {
     try { const t = String(tpl?.type || '').toLowerCase(); return t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint'; } catch { return false; }
+  }
+  getInputName(model: any, id: string): string {
+    try {
+      const arr: any[] = Array.isArray(model?.templateObj?.inputHandles) ? (model?.templateObj?.inputHandles as any[]) : [];
+      if (arr.length){ const h = arr.find((hh:any) => String(hh.id) === String(id)); return h?.name || ''; }
+      return String(id) === 'in' ? 'In' : '';
+    } catch { return ''; }
+  }
+  onInputEnter(ev: MouseEvent, model: any, id: string) {
+    const txt = this.getInputName(model, id) || '';
+    this.tipText = txt; this.tipVisible = !!txt; this.tipError = false;
+    this.onHandleMove(ev);
   }
   onHandleEnter(ev: MouseEvent, model: any, out: string) {
     const txt = this.getOutputName(model, out) || '';

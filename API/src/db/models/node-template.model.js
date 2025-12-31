@@ -19,6 +19,7 @@ const NodeTemplateSchema = new Schema({
   providerKey: { type: String },
   appName: { type: String },
   args: { type: Schema.Types.Mixed },
+  // Per-output schema is embedded in outputHandles[i].schema (v2)
   // v1 outputs (deprecated in v2)
   output: { type: [String], default: [] },
   // v2 handles

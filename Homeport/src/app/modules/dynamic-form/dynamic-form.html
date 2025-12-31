@@ -86,11 +86,11 @@
         </nz-row>
 
         <div class="df-actions" [ngStyle]="actionsStyle" *ngIf="!hideActions">
-          <button nz-button (click)="prev()" *ngIf="i > 0" [ngStyle]="stepBtnStyle(i,'prev')">{{ stepPrevTextAt(i) }}</button>
-          <button nz-button nzType="primary" (click)="next()" *ngIf="i < realStepsCount - 1" [disabled]="isNextDisabled(i)" [ngStyle]="stepBtnStyle(i,'next')">{{ stepNextTextAt(i) }}</button>
-          <button nz-button nzType="primary" (click)="go(summaryIndex)" *ngIf="i === realStepsCount - 1 && summaryEnabled" [disabled]="!isCurrentStepValid() || form.pending" [ngStyle]="buttonStyle">Voir le résumé</button>
-          <button nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
-          <button nz-button nzType="primary" (click)="submit()" *ngIf="i === realStepsCount - 1 && !summaryEnabled" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
+          <button type="button" nz-button (click)="prev()" *ngIf="i > 0" [ngStyle]="stepBtnStyle(i,'prev')">{{ stepPrevTextAt(i) }}</button>
+          <button type="button" nz-button nzType="primary" (click)="next()" *ngIf="i < realStepsCount - 1" [disabled]="isNextDisabled(i)" [ngStyle]="stepBtnStyle(i,'next')">{{ stepNextTextAt(i) }}</button>
+          <button type="button" nz-button nzType="primary" (click)="go(summaryIndex)" *ngIf="i === realStepsCount - 1 && summaryEnabled" [disabled]="!isCurrentStepValid() || form.pending" [ngStyle]="buttonStyle">Voir le résumé</button>
+          <button type="button" nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
+          <button type="button" nz-button nzType="primary" (click)="submit()" *ngIf="i === realStepsCount - 1 && !summaryEnabled" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
         </div>
       </ng-container>
     </ng-container>
@@ -113,9 +113,9 @@
         </ng-container>
       </ng-container>
       <div class="df-actions" [ngStyle]="actionsStyle" *ngIf="!hideActions">
-        <button nz-button *ngIf="showCancel" (click)="go(realStepsCount - 1)" [ngStyle]="cancelBtnStyle()">{{ cancelText }}</button>
-        <button nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
-        <button nz-button nzType="primary" (click)="submit()" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
+        <button type="button" nz-button *ngIf="showCancel" (click)="go(realStepsCount - 1)" [ngStyle]="cancelBtnStyle()">{{ cancelText }}</button>
+        <button type="button" nz-button nzType="default" *ngIf="showReset" (click)="reset()" [ngStyle]="resetBtnStyle()">{{ resetText }}</button>
+        <button type="button" nz-button nzType="primary" (click)="submit()" [disabled]="isSubmitDisabled()" [ngStyle]="submitBtnStyle()">{{ submitText }}</button>
       </div>
     </ng-container>
   </ng-container>

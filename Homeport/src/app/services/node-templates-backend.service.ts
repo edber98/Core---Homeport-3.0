@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
 
-export interface BackendNodeTemplateV2Handle { id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }
+export interface BackendNodeTemplateV2Handle { id: string; name: string; type: string; multiple?: boolean; accepts?: string[]; schema?: any }
 export interface BackendNodeTemplate {
   schemaVersion?: number;
   key: string;

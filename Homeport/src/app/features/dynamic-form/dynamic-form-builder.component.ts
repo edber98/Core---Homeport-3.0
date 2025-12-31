@@ -1632,12 +1632,28 @@ export class DynamicFormBuilderComponent implements OnChanges {
   // Save current schema (export to JSON area + toast) or orchestrate route return if provided
   saveSchema(): void {
     try {
+      try {
+        const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
+        console.log('[form-builder] saveSchema click', { sessionKey: this.sessionKey, returnTo: this.returnTo, fields: len(this.schema), steps: len({ steps: (this.schema as any)?.steps }) });
+      } catch {}
       this.export();
       // Mark current state as saved to silence unsaved guard
       this.updateLastChecksum();
       // If orchestrated via route: persist in session and return
       if (this.returnTo) {
-        try { if (this.sessionKey) localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+        try {
+          if (this.sessionKey) {
+            const key = 'formbuilder.session.' + this.sessionKey;
+            const data = JSON.stringify(this.schema);
+            localStorage.setItem(key, data);
+            try {
+              const back = localStorage.getItem(key);
+              const parsed = back ? JSON.parse(back) : null;
+              const fields = Array.isArray(parsed?.fields) ? parsed.fields.length : (Array.isArray(parsed?.steps) ? parsed.steps.length : null);
+              console.log('[form-builder] saveSchema wrote session', { key, bytes: data?.length || 0, fields });
+            } catch {}
+          }
+        } catch {}
         this.leavingAfterSave = true;
         try { this.router.navigateByUrl(this.returnTo, { replaceUrl: true }); return; } catch { location.href = this.returnTo!; return; }
       }
@@ -1665,7 +1681,17 @@ export class DynamicFormBuilderComponent implements OnChanges {
         this.updateLastChecksum();
         this.leavingAfterSave = true;
         if (this.sessionKey) {
-          try { localStorage.setItem('formbuilder.session.' + this.sessionKey, JSON.stringify(this.schema)); } catch {}
+          try {
+            const key = 'formbuilder.session.' + this.sessionKey;
+            const data = JSON.stringify(this.schema);
+            localStorage.setItem(key, data);
+            try {
+              const back = localStorage.getItem(key);
+              const parsed = back ? JSON.parse(back) : null;
+              const fields = Array.isArray(parsed?.fields) ? parsed.fields.length : (Array.isArray(parsed?.steps) ? parsed.steps.length : null);
+              console.log('[form-builder] saveForLeave wrote session', { key, bytes: data?.length || 0, fields });
+            } catch {}
+          } catch {}
         }
         if (this.currentFormId) {
           this.catalog.saveForm({ id: this.currentFormId, name: this.currentFormName || (this.schema.title || 'Formulaire'), description: this.currentFormDesc, schema: this.schema } as any).subscribe({
@@ -2221,6 +2247,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.sessionKey = qp.get('session');
       this.returnTo = qp.get('return');
       this.showRouteSave = !!this.returnTo;
+      try { console.log('[form-builder] init', { sessionKey: this.sessionKey, returnTo: this.returnTo }); } catch {}
       // Fallback: also parse window.location.search to avoid early param loss
       const search = (typeof window !== 'undefined') ? window.location.search : '';
       if (search && (!this.sessionKey || !this.returnTo)) {

@@ -23,9 +23,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     <div class="header">
       <div class="left">
         <button type="button" class="icon-btn back" (click)="back()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
-        <div class="ts">
-          <span class="t">App / Provider</span>
-          <span class="s">Créer / Éditer</span>
+        <div class="card-title left">
+          <span class="t">App</span>
+          <span class="s">{{ form?.value?.title || form?.value?.name || 'Nouveau' }}</span>
         </div>
       </div>
       <div class="actions">
@@ -130,7 +130,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   styles: [`
     .editor { padding: 12px; max-width: 920px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; }
-    .header .left { display:flex; align-items:center; gap:8px; }
+    .header .left { display:flex; align-items:left; gap:0px; }
     .header .actions { display:flex; gap:8px; }
     .card-title, .ts { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }

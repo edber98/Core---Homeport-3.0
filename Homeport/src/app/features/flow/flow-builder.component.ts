@@ -111,6 +111,10 @@ export class FlowBuilderComponent {
   spawnAnimNodes = new Set<string>();
   spawnLiteAnimNodes = new Set<string>();
   private isIOSSafari = false;
+  // When performing programmatic alignment, avoid immediate drag-final snapshot
+  private lastAlignAt = 0;
+  private suppressMoveSnapshotUntil = 0;
+  private suppressNextMoveSnapshot = false;
   removingNodes = new Set<string>();
   removingLiteNodes = new Set<string>();
   private pendingRemoveTimers: Record<string, any> = {};
@@ -679,7 +683,39 @@ export class FlowBuilderComponent {
               this.suppressGraphEventsUntil = Date.now() + 1200;
               this.suppressNodesRemovedUntil = Date.now() + 1500;
               this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
-              this.nodes = (doc.nodes || []) as any[];
+            // Preserve Start Form schema if we just imported and a backend refresh arrives late
+            try {
+              const incoming = (doc.nodes || []) as any[];
+              const prev = (this.nodes || []) as any[];
+              const byId = new Map(prev.map(n => [String(n.id), n]));
+              const merged = incoming.map(n => {
+                const id = String(n?.id || '');
+                const old = byId.get(id);
+                if (!old) return n;
+                try {
+                  const oldM = old?.data?.model || {};
+                  const newM = n?.data?.model || {};
+                  const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                  if (ty === 'start' || ty === 'start_form') {
+                    const want = oldM.startFormSchema;
+                    const has = newM.startFormSchema;
+                    const oldAt = Number(oldM.startFormAppliedAt || 0);
+                    const newAt = Number(newM.startFormAppliedAt || 0);
+                    const preferOld = oldAt && (!newAt || oldAt > newAt);
+                    const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                    if ((preferOld || (oldM?.startFormSchema && diff))) {
+                      const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                      const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                      try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                      return nn;
+                    }
+                  }
+                } catch {}
+                return n;
+              });
+              this.nodes = merged as any[];
+              try { console.log('[flow-builder] flow refresh merged nodes'); } catch {}
+            } catch { this.nodes = (doc.nodes || []) as any[]; }
               
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
@@ -705,6 +741,7 @@ export class FlowBuilderComponent {
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
+              try { console.log('[flow-builder] pending session check', { sess, pending: this.pendingFbSession, qp: this.route.snapshot.queryParamMap.get('fbSession') }); } catch {}
               if (sess) {
                 this.applyStartFormSchemaFromSession(sess);
                 this.pendingFbSession = null;
@@ -714,6 +751,18 @@ export class FlowBuilderComponent {
                   const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
                   delete q.fbSession;
                   this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
+              } else {
+                // Fallback: if URL param got lost (browser back, latency), try last session marker for this node
+                try {
+                  const nodeId = this.route.snapshot.queryParamMap.get('node') || undefined;
+                  const key = nodeId ? ('formbuilder.lastSessionForNode.' + nodeId) : null;
+                  const last = key ? localStorage.getItem(key) : null;
+                  try { console.log('[flow-builder] fallback lastSessionForNode', { nodeId, key, last }); } catch {}
+                  if (last) {
+                    this.applyStartFormSchemaFromSession(last);
+                    try { if (key) localStorage.removeItem(key); } catch {}
+                  }
                 } catch {}
               }
             } catch {}
@@ -753,7 +802,38 @@ export class FlowBuilderComponent {
               this.currentFlowDesc = doc.description || '';
               this.currentFlowStatus = (doc as any).status || 'draft';
               this.currentFlowEnabled = !!(doc as any).enabled;
-              this.nodes = (doc.nodes || []) as any[];
+              try {
+                const incoming = (doc.nodes || []) as any[];
+                const prev = (this.nodes || []) as any[];
+                const byId = new Map(prev.map(n => [String(n.id), n]));
+                const merged = incoming.map(n => {
+                  const id = String(n?.id || '');
+                  const old = byId.get(id);
+                  if (!old) return n;
+                  try {
+                    const oldM = old?.data?.model || {};
+                    const newM = n?.data?.model || {};
+                    const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                    if (ty === 'start' || ty === 'start_form') {
+                      const want = oldM.startFormSchema;
+                      const has = newM.startFormSchema;
+                      const oldAt = Number(oldM.startFormAppliedAt || 0);
+                      const newAt = Number(newM.startFormAppliedAt || 0);
+                      const preferOld = oldAt && (!newAt || oldAt > newAt);
+                      const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                      if ((preferOld || (oldM?.startFormSchema && diff))) {
+                        const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                        const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                        try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                        return nn;
+                      }
+                    }
+                  } catch {}
+                  return n;
+                });
+                this.nodes = merged as any[];
+                try { console.log('[flow-builder] flow refresh merged nodes (route change)'); } catch {}
+              } catch { this.nodes = (doc.nodes || []) as any[]; }
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
@@ -897,7 +977,38 @@ export class FlowBuilderComponent {
     return;
   };
   private draftKey(flowId: string) { return this.DRAFT_KEY_PREFIX + (flowId || 'adhoc'); }
-  private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }
+  private computeChecksum(obj: any): string {
+    try {
+      const sanitizeNode = (n: any) => {
+        const id = String(n?.id ?? '');
+        const point = n?.point && typeof n.point === 'object' ? { x: Math.round(Number(n.point.x) || 0), y: Math.round(Number(n.point.y) || 0) } : undefined;
+        // Keep only model for checksum; strip runtime decorations (exec badges, counts, transient UI)
+        const model = n?.data?.model != null ? n.data.model : undefined;
+        return point ? { id, point, data: model != null ? { model } : {} } : { id, data: model != null ? { model } : {} };
+      };
+      const sanitizeEdge = (e: any) => {
+        return {
+          id: e?.id != null ? String(e.id) : undefined,
+          source: e?.source != null ? String(e.source) : undefined,
+          target: e?.target != null ? String(e.target) : undefined,
+          sourceHandle: (e as any)?.sourceHandle != null ? String((e as any).sourceHandle) : undefined,
+          targetHandle: (e as any)?.targetHandle != null ? String((e as any).targetHandle) : undefined,
+        };
+      };
+      const clean = {
+        nodes: Array.isArray(obj?.nodes) ? (obj.nodes as any[]).map(sanitizeNode) : [],
+        edges: Array.isArray(obj?.edges) ? (obj.edges as any[]).map(sanitizeEdge) : [],
+        name: obj?.name ?? undefined,
+        desc: obj?.desc ?? undefined,
+        status: obj?.status ?? undefined,
+        enabled: !!obj?.enabled,
+        portOrientation: obj?.portOrientation ?? undefined,
+        alignmentHelper: obj?.alignmentHelper ?? undefined,
+        snapGrid: obj?.snapGrid ?? undefined,
+      };
+      return JSON.stringify(clean);
+    } catch { return ''; }
+  }
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
@@ -1433,6 +1544,7 @@ export class FlowBuilderComponent {
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
+  getInputName(model: any, id: string): string { return this.graph.getInputName(model, id); }
   private _linkCache = new Map<string, { sig: string; links: Array<{ id: string; name: string; type: string }> }>();
   linkHandlesForNode(nodeId: string, model: any): Array<{ id: string; name: string; type: string }> {
     try {
@@ -1919,6 +2031,10 @@ export class FlowBuilderComponent {
       // If multiple selection exists, keep it as-is (group actions will apply)
     } catch { }
   }
+
+  // (removed) absolute positioning helper for inputs (vertical) — not needed
+
+  // (removed) input nudge — using node width to influence spacing instead
   // Run selected node in test mode and show I/O in dialog wings
   onTestSelectedNode() {
     try {
@@ -1931,7 +2047,11 @@ export class FlowBuilderComponent {
           import('./start-form-modal.component').then(mod => {
             const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
             const inst: any = ref.getContentComponent();
-            try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+            try {
+              const ctx = m?.context;
+              const schema = (ctx && (Array.isArray(ctx.fields) || Array.isArray(ctx.steps))) ? ctx : (m?.startFormSchema || { title: 'Formulaire', fields: [] });
+              inst.schema = schema; inst.value = {};
+            } catch {}
             const sub = inst.submitted.subscribe((val: any) => {
               try { sub.unsubscribe(); } catch {}
               ref.close();
@@ -2214,13 +2334,13 @@ export class FlowBuilderComponent {
       if (this.layoutLoading) return;
       if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
       const graph = {
-        nodes: (this.nodes || []).map(n => ({ id: String(n.id) })),
-        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target) }))
+        nodes: (this.nodes || []).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
+        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
       };
       this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
       const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
       const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
-      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 250, height: 110, gapX, gapY }).subscribe({
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY }).subscribe({
         next: (resp: any) => {
           this.zone.run(() => {
             try {
@@ -2300,21 +2420,31 @@ export class FlowBuilderComponent {
   private applyStartFormSchemaFromSession(session: string | null) {
     if (!session) return;
     try {
+      try { console.log('[flow-builder] applyStartFormSchemaFromSession: session=', session); } catch {}
       const raw = localStorage.getItem('formbuilder.session.' + session);
-      if (!raw) return;
+      if (!raw) { try { console.warn('[flow-builder] no session payload in localStorage'); } catch {} return; }
       const schema = JSON.parse(raw);
+      try { console.log('[flow-builder] session schema keys', Object.keys(schema || {})); } catch {}
       let m = this.selectedModel;
       if (!m) {
         try {
           const nodeId = this.pendingFbNodeId || this.route.snapshot.queryParamMap.get('node');
+          try { console.log('[flow-builder] pendingFbNodeId/route node param', { pending: this.pendingFbNodeId, qp: this.route.snapshot.queryParamMap.get('node') }); } catch {}
           if (nodeId) {
             const node = this.nodes.find(n => String(n.id) === String(nodeId));
             if (node) { this.selectItem(node); m = node.data?.model || null; }
           }
         } catch {}
       }
-      if (!m) return;
-      const newModel = { ...m, startFormEnabled: true, context: schema };
+      if (!m) { try { console.warn('[flow-builder] no selected model to apply session to'); } catch {} return; }
+      const newModel: any = { ...m, startFormEnabled: true, startFormSchema: schema };
+      // If context currently contains a schema (fields/steps), clear it so UI uses startFormSchema
+      try {
+        const cx = newModel.context;
+        const hadCtxSchema = !!(cx && (Array.isArray(cx.fields) || Array.isArray(cx.steps)));
+        if (hadCtxSchema) newModel.context = {};
+        console.log('[flow-builder] applying to model', { id: newModel.id, clearedContext: hadCtxSchema, startFormFields: Array.isArray(schema?.fields) ? schema.fields.length : null, startFormSteps: Array.isArray(schema?.steps) ? schema.steps.length : null });
+      } catch {}
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
       // Re-sélectionner le nœud et rouvrir la boîte de dialogue pour permettre de tester/remplir immédiatement
@@ -2816,8 +2946,10 @@ export class FlowBuilderComponent {
           if (m?.catch_error && m?.skip_error) return true; // mutually exclusive
         } catch { }
         if (schema) {
-          const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-          const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+          // Do not consider fields inside section arrays; only validate top-level/section fields
+          const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+          const missing = fields
+            .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
             .filter((f: any) => {
               const v = (m?.context || {})[f.key];
               return v == null || v === '';
@@ -2825,7 +2957,8 @@ export class FlowBuilderComponent {
           if (missing.length) return true;
         }
       } catch { }
-      return false;
+      // If any validation issue exists for this node (e.g., section array items), still show badge
+      try { return (this.validationIssues || []).some(it => it.nodeId === id); } catch { return false; }
     } catch { return false; }
   }
   private recomputeValidation() {
@@ -2872,9 +3005,12 @@ export class FlowBuilderComponent {
           if (model?.skip_error && !t?.authorize_skip_error) issues.push({ kind: 'node', nodeId: id, message: `Option skip_error non autorisée par le template.` });
           if (model?.catch_error && model?.skip_error) issues.push({ kind: 'node', nodeId: id, message: `Options catch et skip ne peuvent pas être activées ensemble.` });
           const schema: any = model?.templateObj?.args || null;
+          // Generic required-fields check (applies to all types), but ignores fields inside section arrays
           if (schema) {
-            const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-            const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+            // Do not consider fields inside section arrays (array items are validated by their own logic)
+            const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+            const missing = fields
+              .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
               .filter((f: any) => {
                 const v = (model?.context || {})[f.key];
                 return v == null || v === '';
@@ -3077,6 +3213,13 @@ export class FlowBuilderComponent {
         this.nodes = next;
         try { this.cdr.detectChanges(); } catch {}
         try { this.setVflowSelectedIds(Array.from(idsSet)); } catch {}
+        // Mark recent align to suppress trailing pointerup snapshot
+        this.lastAlignAt = Date.now();
+        this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
+        this.suppressNextMoveSnapshot = true;
+        // Clear transient drag caches so we don't reapply stale positions
+        try { this.draggingNodes.clear(); } catch {}
+        try { this.pendingPositions = {} as any; } catch {}
         this.pushState('nodes.aligned.' + dir);
       }
     } catch {}
@@ -3242,15 +3385,25 @@ export class FlowBuilderComponent {
       setTimeout(() => this.runFlow(), 0);
     }
   }
-  closeAdvancedEditor() { this.advancedOpen = false; }
+  private pendingAdvancedModel: any = null;
+  closeAdvancedEditor() {
+    const m = this.pendingAdvancedModel;
+    this.advancedOpen = false;
+    try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
+    this.pendingAdvancedModel = null;
+  }
   onAdvancedModelChange(m: any) {
     // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
     // Appliquer uniquement à la clôture (onAdvancedModelCommitted) ou via saveSelectedJson.
     if (!m?.id) return;
     try { this.advancedCtx = m?.context || this.advancedCtx; } catch {}
+    // Cache the latest in-dialog model for final commit on close
+    try { this.pendingAdvancedModel = m; } catch {}
   }
+  private _advCommitGuard = false;
   onAdvancedModelCommitted(m: any) {
-    if (!m?.id) return;
+    if (!m?.id || this._advCommitGuard) return;
+    this._advCommitGuard = true;
     try { this.openedNodeConfig.add(String(m.id)); } catch { }
     // Normalize else_enabled and stabilize
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
@@ -3266,8 +3419,30 @@ export class FlowBuilderComponent {
       }
     } catch {}
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    // Short-circuit if condition outputs did not change to avoid re-renders/deselection loops
+    try {
+      const ty = String(stable?.templateObj?.type || '').toLowerCase();
+      if (ty === 'condition') {
+        const before = this.fbUtils.getConditionItemsFull(oldModel).map(it => it.id);
+        const after = this.fbUtils.getConditionItemsFull(stable).map(it => it.id);
+        const same = before.length === after.length && before.every((v, i) => String(v) === String(after[i]));
+        if (same && this.advancedOpen) {
+          // No structural change (only names/fields edited). While dialog is open, avoid mutating nodes to prevent focus/selection churn.
+          this._advCommitGuard = false;
+          return;
+        }
+      }
+    } catch {}
     // Persist stabilized model on node
     this.nodes = this.nodes.map(n => n.id === stable.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
+    // Realign current selection to the updated node reference so bindings receive the new model
+    try {
+      const updated = this.nodes.find(n => n.id === stable.id) || null;
+      if (updated) {
+        this.selection = updated;
+        try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+      }
+    } catch {}
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     if (res.deletedEdgeIds?.length) {
       res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
@@ -3277,6 +3452,7 @@ export class FlowBuilderComponent {
 
     this.pushState('dialog.modelCommit.final');
     this.recomputeValidation();
+    this._advCommitGuard = false;
   }
 
   saveSelectedJson() {
@@ -3714,7 +3890,11 @@ export class FlowBuilderComponent {
               const runId = r?.id || r?.data?.id || r?.runId;
               if (runId) {
                 // Préselectionner l'exécution en cours dans "Exécutions récentes"
-                try { this.recentRuns = [{ id: runId, status: 'running', startedAt: new Date().toISOString() }, ...(this.recentRuns || [])]; } catch {}
+                const startedAtIso = new Date().toISOString();
+                try {
+                  this.recentRuns = [{ id: runId, status: 'running', startedAt: startedAtIso }, ...(this.recentRuns || [])];
+                  this.currentRunMeta = { id: runId, status: 'running', startedAt: startedAtIso, finishedAt: undefined as any } as any;
+                } catch {}
                 // Ajoute ?run= dans l'URL sans relancer les chargements
                 try {
                   const qp = this.route.snapshot.queryParamMap;
@@ -3722,6 +3902,7 @@ export class FlowBuilderComponent {
                   this.router.navigate([], { queryParams: q, replaceUrl: true });
                 } catch {}
                 this.openBackendStream(runId);
+                try { this.cdr.detectChanges(); } catch {}
               }
             } catch {}
           },
@@ -3809,9 +3990,28 @@ export class FlowBuilderComponent {
             try { this.cdr.detectChanges(); } catch {}
           }
           this.backendRunStatus = 'running';
+          try {
+            if (this.currentRunMeta && this.currentRunMeta.id) this.currentRunMeta = { ...this.currentRunMeta, status: 'running' };
+          } catch {}
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           this.backendRunStatus = 'done';
           try { s.close(); } catch {}
+          // Update right panel meta and recent runs list
+          try {
+            const rid = String(runId);
+            const finishedAt = ev?.run?.finishedAt || ev?.data?.finishedAt || new Date().toISOString();
+            if (this.currentRunMeta && this.currentRunMeta.id === rid) this.currentRunMeta = { ...this.currentRunMeta, status: st, finishedAt } as any;
+            const idx = (this.recentRuns || []).findIndex(r => String(r.id) === rid);
+            if (idx >= 0) {
+              const cur = this.recentRuns[idx];
+              const upd = { ...cur, status: st, finishedAt } as any;
+              this.recentRuns = [
+                ...this.recentRuns.slice(0, idx),
+                upd,
+                ...this.recentRuns.slice(idx + 1)
+              ];
+            }
+          } catch {}
           // Keep snapshot of attempts but stop further updates
           if (this.advancedOpen) {
             this.previewLoading = false; this.outputLoading = false;
@@ -3828,6 +4028,7 @@ export class FlowBuilderComponent {
             } catch {}
           }
         }
+        try { this.cdr.detectChanges(); } catch {}
         return;
       }
       if (type === 'node.status') {
@@ -4532,6 +4733,16 @@ export class FlowBuilderComponent {
       this.onHandleMove(ev);
     } catch { this.tipVisible = false; }
   }
+  // Input handle tooltip helpers
+  onInputEnter(ev: MouseEvent, model: any, inputId: string) {
+    try {
+      const txt = this.getInputName(model, inputId) || '';
+      this.tipText = txt;
+      this.tipVisible = !!txt;
+      this.tipError = false;
+      this.onHandleMove(ev);
+    } catch { this.tipVisible = false; }
+  }
   onHandleMove(ev: MouseEvent) {
     try {
       // Offset a bit from cursor
@@ -5020,6 +5231,14 @@ export class FlowBuilderComponent {
   @HostListener('document:pointercancel')
   onPointerUp() {
     if (this.isIgnoring()) return;
+    // If a programmatic alignment just occurred, skip this automatic move snapshot
+    const now = Date.now();
+    if (this.suppressNextMoveSnapshot || (this.lastAlignAt && (now - this.lastAlignAt) < 900) || (now < this.suppressMoveSnapshotUntil)) {
+      this.draggingNodes.clear();
+      this.pendingPositions = {} as any;
+      this.suppressNextMoveSnapshot = false;
+      return;
+    }
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
     // Delay a bit so Vflow can finalize helper adjustments before we read positions

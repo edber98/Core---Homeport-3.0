@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -22,7 +22,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   selector: 'node-template-editor',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule,
+    CommonModule, ReactiveFormsModule, FormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzSwitchModule, NzCheckboxModule, NzButtonModule, NzIconModule, NzToolTipModule, NzAutocompleteModule,
     MonacoJsonEditorComponent, DragDropModule, NzDrawerModule, DynamicForm
   ],
@@ -31,9 +31,9 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     <div class="header">
       <div class="left">
         <button type="button" class="icon-btn back" (click)="cancel()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
-        <div class="ts">
-          <span class="t">Template de nœud</span>
-          <span class="s">Créer / Éditer</span>
+        <div class="card-title left">
+          <span class="t">Template</span>
+          <span class="s">{{ form?.value?.title || form?.value?.name || 'Nouveau' }}</span>
         </div>
       </div>
       <div class="actions">
@@ -171,29 +171,68 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="ins-section-header" *ngIf="form.get('type')?.value!=='condition'">
         <div class="card-title"><span class="t">Handles v2</span><span class="s">Entrées / Sorties typées</span></div>
       </div>
-      <div class="grid cols-2" *ngIf="form.get('type')?.value!=='condition'">
-        <div>
+      <div class="grid cols-1" *ngIf="form.get('type')?.value!=='condition'">
+        <div class="full-line">
           <div class="sub-header"><div class="card-title left"><span class="t">Entrées</span><span class="s">inputHandles</span></div></div>
           <div class="outputs">
             <div class="row" *ngFor="let ctrl of inputHandles.controls; let i=index" [formGroup]="ctrl">
-              <input nz-input formControlName="id" placeholder="id (ex: in, tools)" style="max-width:140px"/>
-              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
-              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions entrantes vers ce handle">multiple</label>
-              <button nz-button nzDanger (click)="removeInputHandle(i)"><i nz-icon nzType="delete"></i></button>
+              <div class="row-top">
+                <div class="row-fields">
+                  <input nz-input formControlName="id" placeholder="id (ex: in, tools)"/>
+                  <input nz-input formControlName="name" placeholder="Nom"/>
+                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch nz-tooltip [nzTooltipTitle]="'Type du handle: ' + (ctrl.value?.id || '')"></nz-select>
+                  <nz-select formControlName="accepts" nzMode="multiple" [nzOptions]="knownTypeOptions" nzPlaceHolder="Accepts…" nz-tooltip [nzTooltipTitle]="'Types acceptes pour: ' + (ctrl.value?.id || '')"></nz-select>
+                  <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions entrantes vers ce handle">multiple</label>
+                </div>
+                <div class="row-actions">
+                  <button nz-button nzDanger (click)="removeInputHandle(i)" nz-tooltip="Supprimer"><i nz-icon nzType="delete"></i></button>
+                </div>
+              </div>
             </div>
             <button nz-button class="apple-btn" (click)="addInputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une entrée</span></button>
           </div>
         </div>
-        <div>
+        <div class="full-line">
           <div class="sub-header"><div class="card-title left"><span class="t">Sorties</span><span class="s">outputHandles</span></div></div>
           <div class="outputs">
             <div class="row" *ngFor="let ctrl of outputHandles.controls; let i=index" [formGroup]="ctrl">
-              <input nz-input formControlName="id" placeholder="id (ex: ok, memory)" style="max-width:140px"/>
-              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
-              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions sortantes depuis ce handle">multiple</label>
-              <button nz-button nzDanger (click)="removeOutputHandle(i)"><i nz-icon nzType="delete"></i></button>
+              <div class="row-top">
+                <div class="row-fields">
+                  <input nz-input formControlName="id" placeholder="id (ex: ok, memory)"/>
+                  <input nz-input formControlName="name" placeholder="Nom"/>
+                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions sortantes depuis ce handle">multiple</label>
+                </div>
+                <div class="row-actions">
+                  <button nz-button type="button" (click)="toggleOutRow(i)" nz-tooltip="Voir le schéma"><i nz-icon nzType="eye"></i></button>
+                  <button nz-button type="button" (click)="selectOutHandleByIndex(i); openOutputFormBuilderRoute(); $event.preventDefault(); $event.stopPropagation();" nz-tooltip="Configurer le schéma"><i nz-icon nzType="form"></i></button>
+                  <button nz-button nzDanger (click)="removeOutputHandle(i)" nz-tooltip="Supprimer"><i nz-icon nzType="delete"></i></button>
+                </div>
+              </div>
+              <div class="out-row-preview" *ngIf="isOutRowOpen(i)">
+                <div class="args-controls">
+                  <label nz-checkbox [(ngModel)]="rowShowJson[i]" [ngModelOptions]="{standalone: true}" nz-tooltip="Afficher/masquer l’éditeur JSON">Afficher JSON (Monaco)</label>
+                </div>
+                <div class="args-row" [class.json-visible]="rowShowJson[i] === true">
+                  <div class="preview-col">
+                    <div class="dialog-preview">
+                      <div class="dialog-box">
+                        <ng-container *ngIf="outSchemaReady">
+                          <ng-container *ngIf="isFormSchema(getOutSchemaObjAt(i)); else outInvalidSchema">
+                            <app-dynamic-form [schema]="getOutSchemaObjAt(i)" [value]="getOutPreviewValueAt(i)" [forceBp]="'xs'" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
+                          </ng-container>
+                          <ng-template #outInvalidSchema>
+                            <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
+                          </ng-template>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="json-col" *ngIf="rowShowJson[i] === true">
+                    <monaco-json-editor class="json" [value]="getOutSchemaJsonAt(i)" (valueChange)="onOutSchemaChangeAt(i, $event)" [height]="220"></monaco-json-editor>
+                  </div>
+                </div>
+              </div>
             </div>
             <button nz-button class="apple-btn" (click)="addOutputHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
           </div>
@@ -208,11 +247,15 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         <div>
           <div class="outputs">
             <div class="row" *ngFor="let ctrl of linkedHandles.controls; let i=index" [formGroup]="ctrl">
-              <input nz-input formControlName="id" placeholder="id (ex: tools)" style="max-width:140px"/>
-              <input nz-input formControlName="name" placeholder="Nom" style="max-width:160px"/>
-              <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch style="min-width:160px; max-width:200px"></nz-select>
-              <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs liens vers cette cible (link handle)">multiple</label>
-              <button nz-button nzDanger (click)="removeLinkedHandle(i)"><i nz-icon nzType="delete"></i></button>
+              <div class="row-top">
+                <div class="row-fields">
+                  <input nz-input formControlName="id" placeholder="id (ex: tools)"/>
+                  <input nz-input formControlName="name" placeholder="Nom"/>
+                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs liens vers cette cible (link handle)">multiple</label>
+                </div>
+                <div class="row-actions"><button nz-button nzDanger (click)="removeLinkedHandle(i)" nz-tooltip="Supprimer"><i nz-icon nzType="delete"></i></button></div>
+              </div>
             </div>
             <button nz-button class="apple-btn" (click)="addLinkedHandle()"><i nz-icon nzType="plus"></i><span class="label">Ajouter un link</span></button>
           </div>
@@ -269,7 +312,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   styles: [`
     .tpl-editor { padding: 12px; max-width: 1080px; margin: 0 auto; }
     .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; }
-    .header .left { display:flex; align-items:center; gap:8px; }
+    .header .left { display:flex; align-items:left; gap:0px; }
     .header .actions { display:flex; gap:8px; }
     .card-title, .ts { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .card-title.left { align-items:flex-start; }
@@ -286,11 +329,17 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     .form { display:block; }
     .grid { display:grid; gap:8px; }
     .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.cols-1 { grid-template-columns: 1fr; }
     .grid .span-2 { grid-column: span 2; }
+    .full-line { grid-column: 1 / -1; }
     @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
-    .outputs { display:flex; flex-direction:column; gap:6px; }
-    .outputs .row { display:flex; gap:6px; align-items:center; padding:6px 8px; border-radius:8px; transition: background 160ms ease; }
-    .outputs .row:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    .outputs { display:flex; flex-direction:column; gap:10px; }
+    .outputs .row { display:block; padding:10px 12px; border-radius:8px; border: 0 !important; background: transparent !important; box-shadow: none !important; transition: none !important; }
+    .outputs .row:hover { background: transparent !important; }
+    .outputs .row .row-top { display:flex; gap:10px; align-items:center; }
+    .outputs .row .row-fields { display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:10px; align-items:center; flex:1; }
+    .outputs .row .row-actions { display:flex; gap:8px; align-items:center; }
+    .out-row-preview { margin-top: 6px; }
     .outputs .drag { cursor: grab; color:#94a3b8; user-select:none; padding:0 4px; }
     /* Drag animations */
     :host ::ng-deep .cdk-drag-animating { transition: transform 180ms cubic-bezier(0.2, 0, 0, 1); }
@@ -332,6 +381,22 @@ export class NodeTemplateEditorComponent implements OnInit {
   argsReady = false;
   private _parsedArgsCache: any = null;
   private _parsedArgsSig = '';
+  // Output schemas editing state
+  selectedOutIndex: number = -1;
+  outSchemaReady = true;
+  showOutJson = false;
+  rowShowJson: Record<number, boolean> = {};
+  private _openOutRows = new Set<number>();
+  showOutSection = false;
+  private _parsedOutSig = '';
+  private _parsedOutCache: any = null;
+  // Per-output cache to stabilize inputs to app-dynamic-form (avoid CD churn)
+  private _outSchemaSig = new Map<number, string>();
+  private _outSchemaObj = new Map<number, any>();
+  private _outPreviewVal = new Map<number, any>();
+  // Pending returns from Form Builder for output handles (when handles not yet loaded)
+  private _pendingOutSchemas: Map<number, string> = new Map();
+  private _pendingOutSessions: Map<number, string> = new Map();
   // Embed form builder state
   // duplicate declarations removed
   iconOptions: string[] = [
@@ -344,7 +409,7 @@ export class NodeTemplateEditorComponent implements OnInit {
 
   ngOnInit(): void {
     // Known data types used for typed handles
-    this.knownTypes = ['any','payload','text','event','message','record','ai_tool','ai_memory','ai_image','ai_context','file','vector'];
+    this.knownTypes = ['any','payload','text','event','message','record','ai_tool','ai_memory','ai_image','ai_context','file','vector','ai_vector'];
     this.knownTypeOptions = this.knownTypes.map(t => ({ label: t, value: t }));
     this.form = this.fb.group({
       id: new FormControl<string | null>(null),
@@ -378,29 +443,54 @@ export class NodeTemplateEditorComponent implements OnInit {
     // When coming back from Form Builder, we must prefer the returned args
     // over any later template patch coming from the catalog fetch.
     let preferArgsFromSession = false;
-    const tryLoad = (sess: string | null) => {
+    const tryLoad = (sess: string | null, outIndex: string | null = null) => {
       if (!sess || sess === lastSession) return;
       lastSession = sess;
       try {
         const raw = localStorage.getItem('formbuilder.session.' + sess);
         if (raw) {
-          this.argsJson = JSON.stringify(JSON.parse(raw), null, 2);
-          preferArgsFromSession = true;
-          // Also expose on instance so later patchTemplate can read it
-          // @ts-ignore
-          (this as any).__preferArgsFromSession = true;
-          localStorage.removeItem('formbuilder.session.' + sess);
+          const parsed = JSON.parse(raw);
+          if (outIndex != null && outIndex !== '') {
+            const idx = Number(outIndex);
+            if (!Number.isNaN(idx)) {
+              // If handles not yet loaded, stash and apply later in patchTemplate
+              const json = JSON.stringify(parsed, null, 2);
+              if ((this.outputHandles?.length || 0) > idx && this.outCtrlAt(idx)) {
+                this.selectedOutIndex = idx;
+                this.onOutSchemaChange(json);
+                try { localStorage.removeItem('formbuilder.session.' + sess); } catch {}
+              } else {
+                this._pendingOutSchemas.set(idx, json);
+                this._pendingOutSessions.set(idx, sess);
+              }
+            }
+          } else {
+            this.argsJson = JSON.stringify(parsed, null, 2);
+            preferArgsFromSession = true;
+            // Also expose on instance so later patchTemplate can read it
+            // @ts-ignore
+            (this as any).__preferArgsFromSession = true;
+            try { localStorage.removeItem('formbuilder.session.' + sess); } catch {}
+          }
         }
       } catch {}
     };
-    tryLoad(this.route.snapshot.queryParamMap.get('fbSession'));
-    try { this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'))); } catch {}
+    tryLoad(this.route.snapshot.queryParamMap.get('fbSession'), this.route.snapshot.queryParamMap.get('fbOutIndex'));
+    try {
+      this.route.queryParamMap.subscribe(map => tryLoad(map.get('fbSession'), map.get('fbOutIndex')));
+    } catch {}
     // Fallback: if we previously opened a session for this template and no fbSession param is present
     try {
       if (!this.route.snapshot.queryParamMap.get('fbSession')) {
         const lastKey = 'formbuilder.session.last.tpl.' + (id || 'new');
         const lastSess = localStorage.getItem(lastKey);
         if (lastSess) { tryLoad(lastSess); localStorage.removeItem(lastKey); }
+        // Also check last session for output by index 0 as a fallback
+        try {
+          const outIdxKey = `formbuilder.session.last.tpl.outidx.${id || 'new'}.0`;
+          const sess0 = localStorage.getItem(outIdxKey);
+          if (sess0) { tryLoad(sess0, '0'); localStorage.removeItem(outIdxKey); }
+        } catch {}
       }
     } catch {}
     const dup = this.route.snapshot.queryParamMap.get('duplicateFrom');
@@ -436,16 +526,30 @@ export class NodeTemplateEditorComponent implements OnInit {
   get inputHandles(): FormArray<FormGroup<any>> { return this.form.get('inputHandles') as any; }
   get outputHandles(): FormArray<FormGroup<any>> { return this.form.get('outputHandles') as any; }
   get linkedHandles(): FormArray<FormGroup<any>> { return this.form.get('linkedHandles') as any; }
-  addInputHandle(v: any = { id: '', name: '', type: 'any', multiple: false }) {
-    this.inputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  addInputHandle(v: any = { id: '', name: '', type: 'any', multiple: false, accepts: undefined }) {
+    this.inputHandles.push(this.fb.group({
+      id: this.fb.control(v.id),
+      name: this.fb.control(v.name),
+      type: this.fb.control(v.type),
+      accepts: this.fb.control(Array.isArray(v.accepts) ? v.accepts : (v.type ? [v.type] : ['any'])),
+      multiple: this.fb.control(!!v.multiple)
+    }));
   }
   removeInputHandle(i: number) { this.inputHandles.removeAt(i); }
-  addOutputHandle(v: any = { id: '', name: '', type: 'any', multiple: false }) {
-    this.outputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  addOutputHandle(v: any = { id: '', name: '', type: 'any', multiple: false, schema: undefined }) {
+    const schemaJson = v.schema ? JSON.stringify(v.schema, null, 2) : JSON.stringify(this.defaultOutSchema(v.name || v.id || 'ok'), null, 2);
+    this.outputHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple), schemaJson: this.fb.control(schemaJson) }));
+    if (this.selectedOutIndex < 0) this.selectedOutIndex = 0;
   }
   removeOutputHandle(i: number) { this.outputHandles.removeAt(i); }
-  addLinkedHandle(v: any = { id: '', name: '', type: 'any', multiple: true }) {
-    this.linkedHandles.push(this.fb.group({ id: this.fb.control(v.id), name: this.fb.control(v.name), type: this.fb.control(v.type), multiple: this.fb.control(!!v.multiple) }));
+  addLinkedHandle(v: any = { id: '', name: '', type: 'any', multiple: true, accepts: undefined }) {
+    this.linkedHandles.push(this.fb.group({
+      id: this.fb.control(v.id),
+      name: this.fb.control(v.name),
+      type: this.fb.control(v.type),
+      accepts: this.fb.control(Array.isArray(v.accepts) ? v.accepts : (v.type ? [v.type] : ['any'])),
+      multiple: this.fb.control(!!v.multiple)
+    }));
   }
   removeLinkedHandle(i: number) { this.linkedHandles.removeAt(i); }
 
@@ -504,11 +608,11 @@ export class NodeTemplateEditorComponent implements OnInit {
     }
     // v2 handles
     try {
-      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: (h.type || (Array.isArray(h.accepts) && h.accepts.length ? h.accepts[0] : 'any')), multiple: !!h.multiple }));
+      this.inputHandles.clear(); (t.inputHandles || []).forEach((h: any) => this.addInputHandle({ id: h.id, name: h.name, type: h.type || 'any', accepts: Array.isArray(h.accepts) ? h.accepts : (h.type ? [h.type] : ['any']), multiple: !!h.multiple }));
       this.outputHandles.clear();
-      if (t.type !== 'condition') (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple }));
+      if (t.type !== 'condition') (t.outputHandles || []).forEach((h: any) => this.addOutputHandle({ id: h.id, name: h.name, type: h.type, multiple: !!h.multiple, schema: (h as any).schema }));
       this.linkedHandles.clear();
-      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: (h.type || (Array.isArray(h.accepts) && h.accepts.length ? h.accepts[0] : 'any')), multiple: !!h.multiple }));
+      if (t.type !== 'condition') (t as any).linkedHandles && (t as any).linkedHandles.forEach((h: any) => this.addLinkedHandle({ id: h.id, name: h.name, type: h.type || 'any', accepts: Array.isArray(h.accepts) ? h.accepts : (h.type ? [h.type] : ['any']), multiple: !!h.multiple }));
     } catch {}
     this.updateAllowWithoutStatus();
     if (t.type === 'condition') {
@@ -532,6 +636,42 @@ export class NodeTemplateEditorComponent implements OnInit {
     } catch {
       this.argsJson = JSON.stringify(t.args || {}, null, 2);
     }
+    // Appliquer d'éventuels retours différés (si handles pas prêts au moment du retour)
+    try {
+      if (this._pendingOutSchemas.size) {
+        this._pendingOutSchemas.forEach((json, idx) => {
+          const g = this.outCtrlAt(idx);
+          if (!g) return;
+          this.selectedOutIndex = idx;
+          this.onOutSchemaChange(json);
+          const sess = this._pendingOutSessions.get(idx);
+          if (sess) { try { localStorage.removeItem('formbuilder.session.' + sess); } catch {} }
+        });
+        this._pendingOutSchemas.clear();
+        this._pendingOutSessions.clear();
+      }
+    } catch {}
+
+    // Fallback: charger d'éventuelles sessions Form Builder pour chaque handle (si retour sans query)
+    try {
+      const id = this.form.get('id')?.value || 'new';
+      const count = this.outputHandles.length;
+      for (let i = 0; i < count; i++) {
+        const k = `formbuilder.session.last.tpl.outidx.${id}.${i}`;
+        const sess = localStorage.getItem(k);
+        if (sess) {
+          try {
+            const raw = localStorage.getItem('formbuilder.session.' + sess);
+            if (raw) {
+              this.selectedOutIndex = i;
+              this.onOutSchemaChange(JSON.stringify(JSON.parse(raw), null, 2));
+              localStorage.removeItem('formbuilder.session.' + sess);
+            }
+          } catch {}
+          localStorage.removeItem(k);
+        }
+      }
+    } catch {}
   }
 
   private updateAllowWithoutStatus() {
@@ -573,10 +713,14 @@ export class NodeTemplateEditorComponent implements OnInit {
     const generated = v.id || this.makeIdFromName(v.name);
     // Build v2 handles
     const toList = (val:any) => Array.isArray(val) ? val : String(val||'').split(',').map((s:string)=>s.trim()).filter(Boolean);
-    // Inputs/Linked: single selector → map to accepts: [type]
-    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: [h.type || 'any'] }))
-    const outHs = (this.outputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'ok', name: h.name || h.id || 'Ok', type: h.type || 'any', multiple: !!h.multiple }))
-    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: [h.type || 'any'] }))
+    // Inputs/Linked: map accepts from multi-select when provided; fallback to [type]
+    const inHs = (this.inputHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim()||'in', name: h.name || h.id || 'In', type: h.type || 'any', multiple: !!h.multiple, accepts: (Array.isArray(h.accepts) && h.accepts.length ? h.accepts : [h.type || 'any']) }))
+    const outHs = (this.outputHandles.value || []).map((h:any)=> {
+      let schema: any = undefined;
+      try { schema = h.schemaJson && String(h.schemaJson).trim().length ? JSON.parse(h.schemaJson) : this.defaultOutSchema(h.name || h.id || 'ok'); } catch { schema = this.defaultOutSchema(h.name || h.id || 'ok'); }
+      return ({ id: String(h.id||'').trim()||'ok', name: h.name || h.id || 'Ok', type: h.type || 'any', multiple: !!h.multiple, schema });
+    })
+    const linkHs = (this.linkedHandles.value || []).map((h:any)=> ({ id: String(h.id||'').trim(), name: h.name || h.id, type: h.type || 'any', multiple: !!h.multiple, accepts: (Array.isArray(h.accepts) && h.accepts.length ? h.accepts : [h.type || 'any']) }))
     const tpl: NodeTemplate = {
       id: generated,
       // also store _id for external systems expecting it
@@ -656,5 +800,108 @@ export class NodeTemplateEditorComponent implements OnInit {
       const tplPreset = this.form.get('fb_preset_tpl')?.value ? '1' : undefined;
       this.router.navigate(['/dynamic-form'], { queryParams: { session, return: returnTo, schema, lockTitle: name, tplPreset } });
     } catch (e) { console.log(e)/* this.router.navigate(['/dynamic-form']); */ }
+  }
+
+  // ===== Output schema helpers =====
+  private outCtrlAt(i: number): FormGroup | null { try { return (this.outputHandles.at(i) as any) || null; } catch { return null; } }
+  selectOutHandleByIndex(i: number) { this.selectedOutIndex = i; }
+  get currentOutSchemaJson(): string {
+    const g = this.outCtrlAt(this.selectedOutIndex);
+    const raw = g?.get('schemaJson')?.value;
+    if (typeof raw === 'string') return raw;
+    return JSON.stringify(this.defaultOutSchema(g?.get('name')?.value || g?.get('id')?.value || 'ok'), null, 2);
+  }
+  get currentOutSchemaObj(): any {
+    try {
+      const sig = (this.currentOutSchemaJson || '').trim();
+      if (this._parsedOutSig === sig && this._parsedOutCache) return this._parsedOutCache;
+      if (!sig) { this._parsedOutSig = sig; this._parsedOutCache = { title: 'Sortie', fields: [] }; return this._parsedOutCache; }
+      const parsed = JSON.parse(sig);
+      this._parsedOutSig = sig; this._parsedOutCache = (parsed && typeof parsed === 'object') ? parsed : { title: 'Sortie', fields: [] };
+      return this._parsedOutCache;
+    } catch { this._parsedOutSig = this.currentOutSchemaJson || ''; this._parsedOutCache = { title: 'Sortie', fields: [] }; return this._parsedOutCache; }
+  }
+  onOutSchemaChange(v: string) {
+    const i = this.selectedOutIndex;
+    const g = this.outCtrlAt(i);
+    g?.get('schemaJson')?.setValue(v || '');
+    // Invalidate caches for this index so next getter recomputes
+    this._outSchemaSig.delete(i);
+    this._outSchemaObj.delete(i);
+    this._outPreviewVal.delete(i);
+  }
+  defaultOutSchema(name: string) { return { title: `Sortie — ${name || 'ok'}`, ui: { layout: 'vertical', labelsOnTop: true }, fields: [] }; }
+  openOutputFormBuilderRoute() {
+    try {
+      const g = this.outCtrlAt(this.selectedOutIndex); if (!g) return;
+      const id = this.form.get('id')?.value;
+      const name = (g.get('name')?.value || g.get('id')?.value || 'ok');
+      const session = 's_' + Date.now().toString(36);
+      const schema = this.currentOutSchemaJson && this.currentOutSchemaJson.trim().length ? this.currentOutSchemaJson : JSON.stringify(this.defaultOutSchema(name));
+      const returnTo = this.router.createUrlTree(['/node-templates/editor'], { queryParams: { id, fbSession: session, fbOutIndex: String(this.selectedOutIndex) } }).toString();
+      try { localStorage.setItem(`formbuilder.session.last.tpl.outidx.${id || 'new'}.${this.selectedOutIndex}`, session); } catch {}
+      const tplPreset = this.form.get('fb_preset_tpl')?.value ? '1' : undefined;
+      this.router.navigate(['/dynamic-form'], { queryParams: { session, return: returnTo, schema, lockTitle: `Sortie — ${name}`, tplPreset } });
+    } catch {}
+  }
+  toggleOutSection() { this.showOutSection = !this.showOutSection; }
+  // Per-row preview helpers
+  toggleOutRow(i: number){ if (this._openOutRows.has(i)) this._openOutRows.delete(i); else this._openOutRows.add(i); }
+  isOutRowOpen(i: number): boolean { return this._openOutRows.has(i); }
+  getOutSchemaJsonAt(i: number): string { const g = this.outCtrlAt(i); const raw = g?.get('schemaJson')?.value; return typeof raw === 'string' && raw.trim().length ? raw : JSON.stringify(this.defaultOutSchema(g?.get('name')?.value || g?.get('id')?.value || 'ok'), null, 2); }
+  getOutSchemaObjAt(i: number): any {
+    try {
+      const json = this.getOutSchemaJsonAt(i);
+      const sig = (json || '').trim();
+      const prevSig = this._outSchemaSig.get(i);
+      if (prevSig === sig) {
+        const cached = this._outSchemaObj.get(i);
+        if (cached) return cached;
+      }
+      const parsed = JSON.parse(json);
+      const obj = (parsed && typeof parsed === 'object') ? parsed : this.defaultOutSchema('ok');
+      this._outSchemaSig.set(i, sig);
+      this._outSchemaObj.set(i, obj);
+      // Also refresh preview seed for arrays when schema changes
+      this._outPreviewVal.set(i, this.computeOutPreviewSeed(obj));
+      return obj;
+    } catch {
+      return this.defaultOutSchema('ok');
+    }
+  }
+  onOutSchemaChangeAt(i: number, v: string) {
+    const g = this.outCtrlAt(i); g?.get('schemaJson')?.setValue(v || '');
+    // Invalidate caches for this index so next getter recomputes
+    this._outSchemaSig.delete(i);
+    this._outSchemaObj.delete(i);
+    this._outPreviewVal.delete(i);
+  }
+
+  // Build and cache a minimal preview value to seed array sections with one item
+  getOutPreviewValueAt(i: number): any {
+    // Ensure schema cache (and preview) is warmed
+    const _ = this.getOutSchemaObjAt(i);
+    return this._outPreviewVal.get(i) || {};
+  }
+  private computeOutPreviewSeed(schema: any): any {
+    try {
+      const seed: Record<string, any> = {};
+      const visit = (fields?: any[]) => {
+        for (const f of (fields || [])) {
+          if (!f) continue;
+          if (f.type === 'section' || f.type === 'section_array') {
+            const isArray = (f.type === 'section_array') || ((f as any).mode === 'array');
+            if (isArray) {
+              const key = (f as any).key || 'items';
+              if (seed[key] == null) seed[key] = [{}];
+            } else {
+              visit((f as any).fields);
+            }
+          }
+        }
+      };
+      if (Array.isArray(schema?.fields)) visit(schema.fields);
+      return seed;
+    } catch { return {}; }
   }
 }

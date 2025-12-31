@@ -28,7 +28,7 @@ export class RunsBackendService {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/runs`, { payload });
   }
   get(runId: string, params?: { populate?: '0'|'1' }): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, params); }
-  getWith(runId: string, include: Array<'attempts'|'events'> = []): Observable<BackendRun> {
+  getWith(runId: string, include: Array<'attempts'|'events'|'meta'|'graph'|'settings'> = []): Observable<BackendRun> {
     const p: any = {};
     if (include && include.length) p.include = include.join(',');
     return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, p);

@@ -7,11 +7,11 @@
       <div class="df-array">
         <div class="df-array-item" *ngFor="let g of arrayItems; let i = index">
           <div class="df-array-controls top">
-            <button nz-button nzSize="small" (click)="moveArrayItem(i,'up')" [disabled]="!canMoveUp(i)">▲</button>
-            <button nz-button nzSize="small" (click)="moveArrayItem(i,'down')" [disabled]="!canMoveDown(i)">▼</button>
-            <button nz-button nzSize="small" (click)="duplicateArrayItem(i)">Dupliquer</button>
+            <button type="button" nz-button nzSize="small" (click)="moveArrayItem(i,'up')" [disabled]="!canMoveUp(i)">▲</button>
+            <button type="button" nz-button nzSize="small" (click)="moveArrayItem(i,'down')" [disabled]="!canMoveDown(i)">▼</button>
+            <button type="button" nz-button nzSize="small" (click)="duplicateArrayItem(i)">Dupliquer</button>
             <span style="flex:1"></span>
-            <button nz-button nzType="default" nzSize="small" *ngIf="canRemoveAt(i)" (click)="removeArrayItem(i)">{{ removeBtnText }}</button>
+            <button type="button" nz-button nzType="default" nzSize="small" *ngIf="canRemoveAt(i)" (click)="removeArrayItem(i)">{{ removeBtnText }}</button>
           </div>
           <nz-row [nzGutter]="section.grid?.gutter || 16">
             <ng-container *ngFor="let f of section.fields; let j = index">
@@ -103,7 +103,7 @@
           </nz-row>
         </div>
         <div class="df-array-controls bottom">
-          <button nz-button nzType="dashed" nzSize="small" (click)="addArrayItem()" [disabled]="!canAddMore()">{{ addBtnText }}</button>
+          <button type="button" nz-button nzType="dashed" nzSize="small" (click)="addArrayItem()" [disabled]="!canAddMore()">{{ addBtnText }}</button>
         </div>
       </div>
     </ng-container>

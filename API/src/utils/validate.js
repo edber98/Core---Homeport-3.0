@@ -140,6 +140,56 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
     }
   }
 
+  // 3b) Handle typing compatibility (source type vs target accepts)
+  try {
+    // Helper to lookup a node template by normalized key if backend loaders present
+    const getTpl = async (key) => loaders?.getTemplateByKey ? (await loaders.getTemplateByKey(key)) : null;
+    const normKey = (k) => { if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); return s.replace(/[^a-z0-9_]/g,'_'); };
+    const typeOfOut = (tpl, handleId) => {
+      try {
+        const arr = Array.isArray(tpl?.outputHandles) ? tpl.outputHandles : [];
+        const h = arr.find((hh) => String(hh?.id) === String(handleId));
+        return (h && h.type) ? String(h.type) : 'any';
+      } catch { return 'any'; }
+    };
+    const acceptsOfIn = (tpl, handleId) => {
+      try {
+        const ins = Array.isArray(tpl?.inputHandles) ? tpl.inputHandles : [];
+        const links = Array.isArray(tpl?.linkedHandles) ? tpl.linkedHandles : [];
+        const h = ins.find((hh) => String(hh?.id) === String(handleId)) || links.find((hh)=> String(hh?.id) === String(handleId));
+        const arr = (h && Array.isArray(h.accepts)) ? h.accepts : [];
+        return (arr && arr.length) ? arr.map(x => String(x)) : ['any'];
+      } catch { return ['any']; }
+    };
+    for (const e of edges){
+      const src = nNodes.find(n => n.id === e.source);
+      const tgt = nNodes.find(n => n.id === e.target);
+      if (!src || !tgt) continue;
+      const sKind = normalizeNodeKind(src.model?.templateObj?.type) || normalizeNodeKind(src.model?.type) || normalizeNodeKind(src.type) || normalizeNodeKind(src.model?.templateObj?.name);
+      // Resolve source template
+      let sTpl = src.model?.templateObj || null;
+      if (!sTpl) {
+        const raw = src.model?.template || src.model?.templateObj?.id || src.model?.name || '';
+        const key = normKey(raw);
+        sTpl = await getTpl(key);
+      }
+      let tTpl = tgt.model?.templateObj || null;
+      if (!tTpl) {
+        const raw = tgt.model?.template || tgt.model?.templateObj?.id || tgt.model?.name || '';
+        const key = normKey(raw);
+        tTpl = await getTpl(key);
+      }
+      // Determine output type and input accepts
+      const sourceHandle = String(e.sourceHandle || (sKind === 'start' ? 'out' : '0'));
+      const targetHandle = String(e.targetHandle || 'in');
+      const sType = sTpl ? typeOfOut(sTpl, sourceHandle) : 'any';
+      const accepts = tTpl ? acceptsOfIn(tTpl, targetHandle) : ['any'];
+      if (!(sType === 'any' || accepts.includes('any') || accepts.includes(sType))){
+        (strict ? errors : warnings).push({ code: 'handle_type_mismatch', message: `Type mismatch: '${sType}' -> accepts(${accepts.join(',')})`, details: { edge: e.id, source: e.source, target: e.target, sourceHandle, targetHandle } });
+      }
+    }
+  } catch {}
+
   // 4) Allowed templates (workspace policy)
   if (loaders?.isTemplateAllowed) {
     for (const n of nNodes){

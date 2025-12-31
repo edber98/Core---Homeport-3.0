@@ -34,7 +34,7 @@ export type NodeTemplate = {
   args?: any;
   // v2 handles
   inputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
-  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string }>;
+  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string; schema?: any }>;
   linkedHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
   // legacy v1 (deprecated)
   output?: string[];
@@ -659,7 +659,19 @@ export class CatalogService {
         const tpls: NodeTemplate[] = [
           { id: 'tmpl_start', type: 'start', name: 'Start', category: 'Core', description: 'Début du flow', args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] } },
           { id: 'tmpl_condition', type: 'condition', name: 'Condition', category: 'Logic', description: 'Branches multiples via items', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] } },
-          { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération' },
+          { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération',
+            inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] }, { id: 'items', name: 'Items', type: 'payload', multiple: true, accepts: ['payload','any'] } ],
+            outputHandles: [ { id: 'after', name: 'After', type: 'payload' }, { id: 'each', name: 'Each', type: 'payload' } ],
+            args: { title: 'Loop', ui: { layout: 'vertical', labelsOnTop: true }, fields: [
+              { type: 'text', key: 'itemsArg', label: 'Tableau ou chemin (JSON/chemin)', expression: { allow: true }, col: { xs: 24 } },
+              { type: 'text', key: 'elementExpr', label: "Mapper l'élément (optionnel)", expression: { allow: true }, col: { xs: 24 } },
+              { type: 'text', key: 'itemVar', label: 'Nom de la variable élément', default: 'item', col: { xs: 12 } },
+              { type: 'text', key: 'indexVar', label: 'Nom de la variable index', default: 'index', col: { xs: 12 } },
+              { type: 'checkbox', key: 'perItemPayload', label: 'Définir payload = élément pour la branche', default: true, col: { xs: 24 } },
+              { type: 'select', key: 'resultMode', label: 'Résultat final', options: [ { label: 'Collecter tous les payloads', value: 'collect' }, { label: 'Conserver le dernier payload', value: 'last' } ], default: 'collect', col: { xs: 24 } },
+              { type: 'number', key: 'maxIterations', label: 'Itérations max', default: 1000, col: { xs: 24 } }
+            ] }
+          },
           { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true },
           {
             id: 'tmpl_sendmail', type: 'function', name: 'SendMail', category: 'Email', appId: 'gmail', description: 'Envoyer un email via Gmail', args: {
