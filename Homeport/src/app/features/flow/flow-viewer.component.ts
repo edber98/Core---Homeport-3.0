@@ -202,6 +202,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   @Input() defaultZoom = 0.5;
   @Input() storageKey = 'flow.viewer.viewport';
+  @Input() useStorage = true; // allow callers (execution viewer) to disable localStorage persistence
   @Input() move = false;       // allow position change if true
   @Input() allowDrag = false;  // require true + move to drag nodes
   @Input() allowZoom = true;   // allow zooming if true
@@ -260,6 +261,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   ngAfterViewInit() {
     setTimeout(() => {
+      try { console.log('[viewer] afterViewInit', { useStorage: this.useStorage, storageKey: this.storageKey, portOrientation: this.portOrientation }); } catch {}
       if (!this.restoreViewport()) {
         this.fitAll(() => this.setZoomAndCenter(this.defaultZoom));
       }
@@ -287,6 +289,14 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       } catch { this.vNodes = this.nodes || []; }
       try { this.cdr.detectChanges(); } catch {}
     }
+    try {
+      if (changes['portOrientation']) {
+        console.log('[viewer] portOrientation input changed', { value: this.portOrientation });
+      }
+      if (changes['useStorage']) {
+        console.log('[viewer] useStorage input changed', { value: this.useStorage, storageKey: this.storageKey });
+      }
+    } catch {}
   }
 
   inputId(tmpl: any): string | null {
@@ -303,7 +313,15 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       case 'start_form':
         if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) return (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
         return ['out'];
-      case 'loop': return ['loop_start', 'loop_end', 'end'];
+      case 'loop': {
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          return (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any)=>String(h.id));
+        }
+        // Fallback stable ids
+        return ['after','each'];
+      }
       case 'condition': {
         const field = tmpl.output_array_field || 'items';
         const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
@@ -355,6 +373,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   private saveViewport() {
     try {
+      if (!this.useStorage || !this.storageKey) return;
       const vp = this.flow?.viewportService?.readableViewport();
       if (!vp) return;
       localStorage.setItem(this.storageKey, JSON.stringify({ zoom: vp.zoom, x: vp.x, y: vp.y }));
@@ -362,6 +381,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   }
   private restoreViewport(): boolean {
     try {
+      if (!this.useStorage || !this.storageKey) return false;
       const vs: any = this.flow?.viewportService;
       if (!vs) return false;
       const raw = localStorage.getItem(this.storageKey);
@@ -477,6 +497,19 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         }
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
         return it ? (it.name ?? '') : '';
+      }
+      // v2 output handles
+      if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+        // Back-compat mapping for legacy loop ids
+        if (tmpl.type === 'loop'){
+          const legacy = String(idxOrId);
+          if (legacy === 'loop_start') return 'Each';
+          if (legacy === 'loop_end' || legacy === 'end') return 'After';
+        }
+        const h = (tmpl.outputHandles as any[])
+          .filter((x:any) => !Array.isArray(x?.accepts) && !x?.arrayField)
+          .find((hh:any) => String(hh.id) === String(idxOrId));
+        return h?.name || '';
       }
       const outs: string[] = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Succes'];
       if (Number.isFinite(idx) && idx >= 0 && idx < outs.length) return outs[idx];

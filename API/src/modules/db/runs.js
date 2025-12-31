@@ -495,6 +495,8 @@ module.exports = function(){
     if (include.length){
       if (include.includes('attempts')) base.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
       if (include.includes('events')) base.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+      if (include.includes('meta')) base.meta = run.meta || undefined;
+      if (include.includes('settings')) base.settings = run.settings || undefined;
     }
     res.apiOk(base);
   });

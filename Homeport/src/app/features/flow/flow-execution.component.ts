@@ -117,6 +117,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             [edges]="viewEdges"
             [background]="flowBackground"
             [portOrientation]="portOrientation"
+            [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
         <aside class="details-panel" *ngIf="selectedBackendRun as br" #detailsPanel>
@@ -314,8 +315,14 @@ export class FlowExecutionComponent {
           this.loadingGraphReq = true;
           this.catalog.getFlow(flowId).subscribe({
             next: (doc) => this.zone.run(() => {
-              try { console.log('[exec] loaded flow doc'); } catch {}
-              if (doc) { this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: (doc as any).meta || {} }; this.enrichGraphTemplates(); }
+              try { console.log('[exec] loaded flow doc (router)'); } catch {}
+              if (doc) {
+                const rawMeta: any = (doc as any).meta || {};
+                const { ui: _ignoredUi, ...metaNoUi } = rawMeta;
+                this.currentGraph = { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: metaNoUi };
+                try { console.log('[exec] stripped UI from meta (router)'); } catch {}
+                this.enrichGraphTemplates();
+              }
               this.updateVisibleRuns();
               this.loadBackendRuns(flowId);
               this.loadingFlowDoc = false;
@@ -574,6 +581,7 @@ export class FlowExecutionComponent {
   selectRun(r: ExecutionRun) { this.selectedRun = r; }
 
   selectBackendRun(b: BackendRun) {
+    try { console.log('[exec] selectBackendRun', { runId: b?.id, status: b?.status, flowId: b?.flowId }); } catch {}
     if (this.selectedBackendRun && this.selectedBackendRun.id === b.id) {
       this.selectedBackendRun = null;
       try { this.currentStream?.close(); } catch {}
@@ -588,7 +596,15 @@ export class FlowExecutionComponent {
     if (fid && (!this.currentGraph || String(this.currentGraph.id) !== String(fid))) {
       this.loadingFlowDoc = true;
       this.catalog.getFlow(fid).subscribe({
-        next: (doc) => { this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: (doc as any).meta || {} } : null; this.enrichGraphTemplates(); this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); },
+        next: (doc) => {
+          // IMPORTANT: strip UI from flow doc so execution viewer doesn't inherit orientation from the editor graph
+          const rawMeta: any = (doc as any)?.meta || {};
+          const { ui: _ignoredUi, ...metaNoUi } = rawMeta;
+          this.currentGraph = doc ? { id: doc.id, name: doc.name, description: doc.description, nodes: doc.nodes || [], edges: doc.edges || [], meta: metaNoUi } : null;
+          try { console.log('[exec] loaded flow doc; stripped UI from meta'); } catch {}
+          this.enrichGraphTemplates(); this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {};
+          if (b && b.id) this.prepareRunDetail(b);
+        },
         error: () => { this.loadingFlowDoc = false; try { this.cdr.detectChanges(); } catch {}; if (b && b.id) this.prepareRunDetail(b); }
       });
     } else if (b && b.id) {
@@ -598,25 +614,99 @@ export class FlowExecutionComponent {
   private prepareRunDetail(runOrId: BackendRun | string){
     const runId = typeof runOrId === 'string' ? runOrId : runOrId.id;
     const status = typeof runOrId === 'string' ? (this.selectedBackendRun?.status || 'running') : (runOrId.status || 'running');
-    // Load attempts + events snapshot so historic runs render with exact path
-    this.runsApi.getWith(runId, ['attempts','events']).subscribe({ next: (r) => {
-      const attempts = (r as any)?.attempts || [];
-      const events = (r as any)?.events || [];
-      // If backend provides a graph/meta snapshot for the run, prefer it
-      try {
-        const g: any = (r as any)?.graph || (r as any)?.flow || (r as any)?.flowSnapshot;
+    // 1) Preload core run to fetch meta.ui (orientation) and graph snapshot
+    try {
+      this.runsApi.getWith(runId, ['meta','graph']).subscribe({ next: (r) => {
+        try { console.log('[exec] run.get (prefetch)', { runId, hasGraph: !!(r as any)?.graph, hasMeta: !!(r as any)?.meta, runUi: (r as any)?.meta?.ui || (r as any)?.ui }); } catch {}
+        const g: any = (r as any)?.graph;
+        const runOri = String(((r as any)?.ui?.portOrientation) || ((r as any)?.meta?.ui?.portOrientation) || ((r as any)?.settings?.ui?.portOrientation) || '').toLowerCase();
         if (g && (Array.isArray(g.nodes) || Array.isArray(g.edges))) {
+          // Prefer run orientation; fallback to graph snapshot orientation
+          const graphMeta = { ...(g?.meta || {}), ...(g?.settings || {}) } as any;
+          const graphOri = String((g?.ui?.portOrientation) || (graphMeta?.ui?.portOrientation) || '').toLowerCase();
+          const chosen = (runOri === 'horizontal' || runOri === 'vertical') ? runOri : ((graphOri === 'horizontal' || graphOri === 'vertical') ? graphOri : undefined);
+          // Build meta without inheriting all graph UI details; only set chosen orientation
+          const { ui: _ignoredGraphUi, ...graphMetaNoUi } = graphMeta || {};
+          const baseMeta = { ...(graphMetaNoUi || {}) } as any;
+          if (chosen) {
+            baseMeta.ui = { ...(baseMeta.ui || {}), portOrientation: chosen };
+            try { console.log('[exec] apply orientation (prefetch)', { runOri, graphOri, chosen }); } catch {}
+          }
           this.currentGraph = {
             id: (g.id || this.currentGraph?.id || null),
             name: (g.name || this.currentGraph?.name || ''),
             description: (g.description || this.currentGraph?.description || ''),
             nodes: g.nodes || [],
             edges: g.edges || [],
-            meta: g.meta || (r as any)?.meta || this.currentGraph?.meta || {},
+            meta: baseMeta,
           } as any;
-        } else if ((r as any)?.meta) {
-          this.currentGraph = { ...(this.currentGraph || {}), meta: (r as any).meta };
           this.enrichGraphTemplates();
+          try { console.log('[exec] currentGraph set (prefetch)', { ui: (this.currentGraph as any)?.meta?.ui, portOrientation: this.portOrientation }); } catch {}
+          try { this.computeDecorations(); } catch {}
+          try { this.cdr.detectChanges(); } catch {}
+        } else if (runOri === 'horizontal' || runOri === 'vertical') {
+          // No graph snapshot; still record orientation at meta
+          const prev = (this.currentGraph as any) || {};
+          const meta = { ...((prev as any)?.meta || {}) } as any;
+          (meta as any).ui = { ...((meta as any).ui || {}), portOrientation: runOri };
+          this.currentGraph = { ...(prev as any), meta };
+          try { console.log('[exec] set orientation on existing graph (prefetch)', { runOri }); } catch {}
+          try { this.computeDecorations(); } catch {}
+          try { this.cdr.detectChanges(); } catch {}
+        }
+      }, error: () => {} });
+    } catch {}
+    // 2) Load attempts + events + meta snapshot so historic runs render with exact path
+    this.runsApi.getWith(runId, ['attempts','events','meta']).subscribe({ next: (r) => {
+      try { console.log('[exec] run.getWith', { runId, hasGraph: !!(r as any)?.graph, hasMeta: !!(r as any)?.meta, metaUi: (r as any)?.meta?.ui }); } catch {}
+      const attempts = (r as any)?.attempts || [];
+      const events = (r as any)?.events || [];
+      // If backend provides a graph/meta snapshot for the run, prefer it
+      try {
+        const g: any = (r as any)?.graph || (r as any)?.flow || (r as any)?.flowSnapshot;
+        if (g && (Array.isArray(g.nodes) || Array.isArray(g.edges))) {
+          // Merge meta/settings; prefer RUN orientation, fallback to GRAPH snapshot orientation
+          const runMeta = { ...(r as any)?.meta, ...(r as any)?.settings } as any;
+          const graphMeta = { ...(g?.meta || {}), ...(g?.settings || {}) } as any;
+          const mergedMeta = { ...(graphMeta || {}), ...(runMeta || {}) } as any;
+          try {
+            const runOri = String(((r as any)?.ui?.portOrientation) || ((r as any)?.meta?.ui?.portOrientation) || ((r as any)?.settings?.ui?.portOrientation) || '').toLowerCase();
+            const graphOri = String((g?.ui?.portOrientation) || (graphMeta?.ui?.portOrientation) || '').toLowerCase();
+            const hadExisting = !!((this.currentGraph as any)?.meta?.ui?.portOrientation);
+            mergedMeta.ui = { ...(mergedMeta.ui || {}) };
+            const chosen = (runOri === 'horizontal' || runOri === 'vertical') ? runOri : ((graphOri === 'horizontal' || graphOri === 'vertical') ? graphOri : (hadExisting ? (this.currentGraph as any)?.meta?.ui?.portOrientation : undefined));
+            if (chosen) mergedMeta.ui.portOrientation = chosen as any; else if ('portOrientation' in (mergedMeta.ui || {})) delete (mergedMeta.ui as any).portOrientation;
+            console.log('[exec] resolve orientation (RUN+SNAPSHOT)', { runOri, graphOri, hadExisting, chosen });
+          } catch {}
+          try { console.log('[exec] merge metas (graph snapshot present)', { finalUi: mergedMeta?.ui }); } catch {}
+          this.currentGraph = {
+            id: (g.id || this.currentGraph?.id || null),
+            name: (g.name || this.currentGraph?.name || ''),
+            description: (g.description || this.currentGraph?.description || ''),
+            nodes: g.nodes || [],
+            edges: g.edges || [],
+            meta: mergedMeta,
+          } as any;
+          try { console.log('[exec] currentGraph set (snapshot)', { nodes: (g.nodes||[]).length, edges: (g.edges||[]).length, ui: (this.currentGraph as any)?.meta?.ui, portOrientation: this.portOrientation }); } catch {}
+        } else if ((r as any)?.meta) {
+          // Merge run-level meta/settings over currentGraph.meta, but set orientation strictly from RUN only
+          const prev = (this.currentGraph as any)?.meta || {};
+          const merged = { ...prev, ...(r as any).settings, ...(r as any).meta } as any;
+          try {
+            const runOri = String(((r as any)?.ui?.portOrientation) || ((r as any)?.meta?.ui?.portOrientation) || ((r as any)?.settings?.ui?.portOrientation) || '').toLowerCase();
+            const hadExisting = !!((this.currentGraph as any)?.meta?.ui?.portOrientation);
+            merged.ui = { ...(merged.ui || {}) };
+            if (runOri === 'horizontal' || runOri === 'vertical') {
+              merged.ui.portOrientation = runOri;
+              console.log('[exec] resolve orientation (RUN ONLY, meta only)', { runOri });
+            } else {
+              if (!hadExisting && 'portOrientation' in (merged.ui || {})) delete (merged.ui as any).portOrientation;
+              console.log('[exec] resolve orientation (RUN ONLY, meta only) — none in run; keep existing?', { hadExisting });
+            }
+          } catch {}
+          this.currentGraph = { ...(this.currentGraph || {}), meta: merged };
+          this.enrichGraphTemplates();
+          try { console.log('[exec] currentGraph set (run meta only)', { ui: (this.currentGraph as any)?.meta?.ui, portOrientation: this.portOrientation }); } catch {}
         }
       } catch {}
       this.backendAttempts = attempts.map((a: any) => ({ nodeId: a.nodeId, exec: a.attempt, status: a.status, durationMs: a.durationMs, startedAt: a.startedAt, finishedAt: a.finishedAt, input: a.input, argsPre: a.argsPre, argsPost: a.argsPost, result: a.result, msgIn: a.msgIn, msgOut: a.msgOut }));
@@ -680,6 +770,7 @@ export class FlowExecutionComponent {
   // Decorate nodes/edges for selected run: add status per node and highlight taken edges
   private computeDecorations() {
     try {
+      try { console.log('[exec] computeDecorations', { portOrientation: this.portOrientation, nodes: (this.currentGraph?.nodes||[]).length, edges: (this.currentGraph?.edges||[]).length }); } catch {}
       const baseNodes = (this.currentGraph?.nodes || []) as any[];
       const smap = new Map<string, string>();
       const counts = new Map<string, number>();
