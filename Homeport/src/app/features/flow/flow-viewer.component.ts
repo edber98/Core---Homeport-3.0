@@ -150,26 +150,27 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
         <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY" [ngClass]="{ error: tipError }">{{ tipText }}</div>
       </div>
     </section>
-  </div>
-  <div class="bottom-bar" *ngIf="showBottomBar">
-    <div class="actions">
-      <button class="icon-btn" *ngIf="showCenterFlow" (click)="onCenterFlow()" title="Centrer le flow">
-        <i class="fa-regular fa-object-group"></i>
-      </button>
-      <button class="icon-btn" *ngIf="showCenterSelection" [disabled]="true" title="Centrer sur la sélection">
-        <i class="fa-solid fa-crosshairs"></i>
-      </button>
-      <button class="icon-btn" *ngIf="showSave" (click)="onSave()" title="Sauvegarder">
-        <i class="fa-regular fa-floppy-disk"></i>
-      </button>
-      <button class="icon-btn" *ngIf="showRun" (click)="onRun()" title="Lancer">
-        <i class="fa-solid fa-play"></i>
-      </button>
-      <span class="zoom-indicator" *ngIf="showZoomIndicator">Zoom: {{ zoomPercent }}%</span>
+    <div class="bottom-bar" *ngIf="showBottomBar">
+      <div class="actions">
+        <button class="icon-btn" *ngIf="showCenterFlow" (click)="onCenterFlow()" title="Centrer le flow">
+          <i class="fa-regular fa-object-group"></i>
+        </button>
+        <button class="icon-btn" *ngIf="showCenterSelection" [disabled]="true" title="Centrer sur la sélection">
+          <i class="fa-solid fa-crosshairs"></i>
+        </button>
+        <button class="icon-btn" *ngIf="showSave" (click)="onSave()" title="Sauvegarder">
+          <i class="fa-regular fa-floppy-disk"></i>
+        </button>
+        <button class="icon-btn" *ngIf="showRun" (click)="onRun()" title="Lancer">
+          <i class="fa-solid fa-play"></i>
+        </button>
+        <span class="zoom-indicator" *ngIf="showZoomIndicator">Zoom: {{ zoomPercent }}%</span>
+      </div>
     </div>
   </div>
   `,
   styles: [`
+    :host { display:block; height:100%; }
     .flow-viewer { position: relative; height:100%; }
     .canvas.ro { border: 1px solid #e5e7eb; border-top: 0; border-radius: 0; overflow: hidden; height:100%; }
     :host(.panel-open) .canvas.ro { border-right: 0; }
@@ -213,6 +214,14 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
     .flow-tooltip { position: fixed; z-index: 200; background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
     .flow-tooltip.error { background:#f759ab; color:#fff; }
+
+    /* Mobile/tablet: mirror builder bottom bar behavior */
+    @media (max-width: 1280px) {
+      .bottom-bar { position: fixed; left: 6px; right: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); z-index: 90; }
+      .bottom-bar .actions { gap: 6px; padding: 6px 10px; border-radius: 9px; }
+      .bottom-bar .icon-btn { width: 34px; height: 34px; }
+      .bottom-bar .divider { height: 24px; margin: 0 2px; }
+    }
   `]
 })
 export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges {
@@ -228,6 +237,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() move = false;       // allow position change if true
   @Input() allowDrag = false;  // require true + move to drag nodes
   @Input() allowZoom = true;   // allow zooming if true
+  // Cap the zoom used during automatic centering to avoid oversized nodes on tiny graphs
+  maxCenterZoom = 0.85;
   @Input() showBottomBar = true;
   @Input() showZoomIndicator = true;
   @Input() showRun = false;
@@ -388,7 +399,15 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
     try {
       const vs = (this as any).flow?.viewportService;
       if (!vs) return;
-      vs.fitView({ duration: 150, padding: 0.25 });
+      // Use a modest padding to avoid excessive empty space on small graphs
+      vs.fitView({ duration: 150, padding: 0.12 });
+      // Clamp zoom to avoid zooming in too much when there are few items
+      try {
+        const z = vs.readableViewport()?.zoom;
+        if (typeof z === 'number' && z > this.maxCenterZoom) {
+          this.setZoomAndCenter(this.maxCenterZoom);
+        }
+      } catch {}
       if (cb) setTimeout(cb, 180);
     } catch {}
   }

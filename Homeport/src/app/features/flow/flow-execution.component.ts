@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { FormsModule } from '@angular/forms';
@@ -16,14 +17,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from '../../services/catalog.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { backAwareCurve } from './edge-curves';
 
 @Component({
   selector: 'flow-execution',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzButtonModule, NzTagModule],
+  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzDrawerModule, NzButtonModule, NzTagModule],
   template: `
   <div class="flow-exec">
-    <aside class="side executions">
+    <!-- Reusable left panel content (desktop + drawer) -->
+    <ng-template #leftPanelContent>
       <div class="panel-heading">
         <div class="card-title">
           <div class="t">Exécutions</div>
@@ -104,15 +107,18 @@ import { NzModalService } from 'ng-zorro-antd/modal';
           </div>
         </div>
       </div>
+    </ng-template>
+    <aside class="side executions">
+      <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
     </aside>
     <section class="viewer">
       <div class="loading-overlay" *ngIf="loadingFlowDoc">
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <div class="viewer-layout" [class.show-details]="!!selectedBackendRun">
+      <div class="viewer-layout" [class.show-details]="rightPanelOpen">
         <div class="viewer-canvas-wrap">
-          <flow-viewer class="viewer-canvas" [class.panel-open]="!!selectedBackendRun"
+          <flow-viewer #viewer class="viewer-canvas" [class.panel-open]="rightPanelOpen"
             [nodes]="viewNodes"
             [edges]="viewEdges"
             [background]="flowBackground"
@@ -120,15 +126,15 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
-        <aside class="details-panel" *ngIf="selectedBackendRun as br" #detailsPanel>
+        <aside class="details-panel" *ngIf="rightPanelOpen && selectedBackendRun" #detailsPanel>
           <div class="panel-heading">
             <div class="card-title">
               <div class="t">Exécution</div>
-              <div class="s" *ngIf="br.startedAt as s">{{ s | date:'medium' }}</div>
-              <div class="s mono">ID: {{ br.id }}</div>
+              <div class="s" *ngIf="selectedBackendRun?.startedAt as s">{{ s | date:'medium' }}</div>
+              <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
             </div>
             <div class="spacer"></div>
-            <nz-tag [nzColor]="br.status==='success' ? 'green' : (br.status==='error' ? 'red' : (br.status==='running' ? 'blue' : (br.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ br.status }}</nz-tag>
+            <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
             <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
               <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
             </button>
@@ -137,9 +143,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             </button>
           </div>
           <div class="run-meta">
-            <span *ngIf="br.durationMs != null">{{ br.durationMs }} ms</span>
-            <span *ngIf="br.nodesExecuted != null"> · {{ br.nodesExecuted }} nœuds</span>
-            <span *ngIf="br.eventsCount != null"> · {{ br.eventsCount }} évts</span>
+            <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+            <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+            <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
           </div>
           <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
             <div class="hdr">
@@ -189,10 +195,102 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         </aside>
       </div>
     </section>
+    <!-- Floating panel toggles (mobile) -->
+    <button nz-button nzSize="small" class="panel-toggle-fab left" type="button" (click)="leftDrawer = true" aria-label="Ouvrir le panneau gauche">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" id="sidebar">
+        <g fill="none" fill-rule="evenodd" stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)">
+          <rect width="16" height="16" rx="2"></rect>
+          <path d="M6 0v18"></path>
+        </g>
+      </svg>
+    </button>
+    <button nz-button nzSize="small" class="panel-toggle-fab" type="button" (click)="onRightFabClick()" aria-label="Ouvrir le panneau droit">
+      <i class="fa-regular fa-rectangle-list" style="color:#6b7280"></i>
+    </button>
+
+    <!-- Responsive drawers (mobile/tablet) -->
+    <nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
+      [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
+      <ng-container *nzDrawerContent>
+        <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+      </ng-container>
+    </nz-drawer>
+    <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
+      [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
+      <ng-container *nzDrawerContent>
+        <div class="details-panel" *ngIf="selectedBackendRun">
+          <div class="panel-heading">
+            <div class="card-title">
+              <div class="t">Exécution</div>
+              <div class="s" *ngIf="selectedBackendRun?.startedAt as s">{{ s | date:'medium' }}</div>
+              <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
+            </div>
+            <div class="spacer"></div>
+            <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
+            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
+              <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+            </button>
+            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
+              <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+            </button>
+          </div>
+          <div class="run-meta">
+            <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+            <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+            <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
+          </div>
+          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
+            <div class="hdr">
+              <span class="nid">{{ a.nodeId }}</span>
+              <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+            </div>
+            <div class="sub">
+              <span class="dur">{{ a.durationMs || 0 }} ms</span>
+              <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
+              <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+            </div>
+            <div class="io" *ngIf="expanded[i]">
+              <div>
+                <div class="k">input</div>
+                <pre>{{ a.input | json }}</pre>
+              </div>
+              <div>
+                <div class="k">msgIn</div>
+                <pre>{{ a.msgIn | json }}</pre>
+              </div>
+              <div>
+                <div class="k">args.pre</div>
+                <pre>{{ a.argsPre | json }}</pre>
+              </div>
+              <div>
+                <div class="k">args.post</div>
+                <pre>{{ a.argsPost | json }}</pre>
+              </div>
+              <div>
+                <div class="k">output</div>
+                <pre>{{ a.result | json }}</pre>
+              </div>
+              <div>
+                <div class="k">msgOut</div>
+                <pre>{{ a.msgOut | json }}</pre>
+              </div>
+            </div>
+          </div>
+          <h6>Journal (brut)</h6>
+          <div class="attempt" *ngFor="let ev of backendEvents">
+            <div class="hdr">
+              <span class="nid">{{ ev?.data?.nodeId || ev?.type }}</span>
+              <span class="dur">{{ ev?.ts || ev?.data?.ts || '' }}</span>
+            </div>
+            <pre>{{ ev | json }}</pre>
+          </div>
+        </div>
+      </ng-container>
+    </nz-drawer>
   </div>
   `,
   styles: [`
-    .flow-exec { position: relative; display:grid; grid-template-columns: 360px 1fr; gap: 0; height:100%; }
+    .flow-exec { position: relative; display:grid; grid-template-columns: 320px 1fr; gap: 0; height:100%; min-height: 0; }
     /* Mobile/tablet only: use dynamic viewport height to account for top bars */
     @media (max-width: 1024px) {
       @supports (height: 100svh) {
@@ -202,8 +300,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
         .flow-exec { height: 100dvh; min-height: 100dvh; }
       }
     }
-    .side.executions { border: none; border-radius: 0; padding: 12px; padding-top: 0; background: #ffffff; overflow: auto; }
-    .side.executions .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 6px; }
+    .side.executions { border: none; border-radius: 0; padding: 12px; padding-top: 0; background: #ffffff; overflow: auto; min-height: 0; }
+    /* Align headers to builder styles */
+    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 8px; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:13px; margin: 0; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; margin: 0; }
@@ -250,13 +349,13 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .attempt .io { display:grid; grid-template-columns: 1fr; gap:8px; margin-top:6px; }
     .attempt .io .k { font-size:12px; color:#8c8c8c; margin-bottom:4px; }
     pre { background:#fafafa; border:1px solid #eee; border-radius:6px; padding:6px; font-size:11px; overflow:auto; }
-    .viewer { position: relative; height:100%; overflow: hidden; }
-    .viewer-layout { display:grid; grid-template-columns: 1fr 0; height:100%; transition: grid-template-columns .25s ease; }
-    .viewer-layout.show-details { grid-template-columns: 1fr 380px; }
-    .viewer-canvas-wrap { height:100%; }
+    .viewer { position: relative; height:100%; min-height: 0; overflow: hidden; padding-bottom: 0 !important; }
+    .viewer-layout { display:grid; grid-template-columns: 1fr 0; height:100%; min-height: 0; transition: grid-template-columns .25s ease; }
+    .viewer-layout.show-details { grid-template-columns: 1fr 320px; }
+    .viewer-canvas-wrap { height:100%; min-height: 0; }
     .viewer-canvas { height: 100%; display:block; }
-    .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:10px; min-width: 0; }
-    .details-panel .panel-heading { display:flex; align-items:center; gap:8px; margin: 0 0 10px; padding-bottom:8px; border-bottom:1px solid #E2E1E4; }
+    .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:12px; min-width: 0; }
+    .details-panel .panel-heading { display:flex; align-items:center; gap:8px; margin: 0 0 8px; padding-bottom:8px; border-bottom:1px solid #E2E1E4; }
     .details-panel .panel-heading .spacer { flex:1 1 auto; }
     .details-panel .panel-heading .status-tag { text-transform: lowercase; }
     .details-panel .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; color:#6b7280; font-size:12px; }
@@ -265,9 +364,35 @@ import { NzModalService } from 'ng-zorro-antd/modal';
     .loading-overlay .spinner { width:28px; height:28px; border:3px solid #e5e7eb; border-top-color:#111827; border-radius:50%; animation: spin .8s linear infinite; }
     .loading-overlay .text { margin-top:10px; color:#374151; font-weight:500; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    /* Floating panel toggle buttons (match builder) */
+    .panel-toggle-fab { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; border-radius: 12px; padding: 0; display:none; align-items:center; justify-content:center; background:#fff; border:1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.12); z-index: 25; }
+    .panel-toggle-fab.left { left: 12px; right: auto; }
+    /* Mobile: hide desktop side panels and show drawers */
+    @media (max-width: 1280px) {
+      .flow-exec { display: block; }
+      .panel-toggle-fab { display: inline-flex; }
+      .side.executions, section.viewer .details-panel { display: none; }
+      /* Keep single column; drawer handles details */
+      .viewer-layout.show-details { grid-template-columns: 1fr 0 !important; }
+    }
+    @media (max-width: 768px) {
+      .flow-exec .viewer { padding-bottom: 0 !important; }
+    }
+    /* Ensure nz-drawer host does not take layout space */
+    nz-drawer { display: contents; }
   `]
 })
 export class FlowExecutionComponent {
+  leftDrawer = false;
+  rightDrawer = false;
+  private mq?: MediaQueryList;
+  private mqHandler?: (e: MediaQueryListEvent) => void;
+  isTabletOrBelow = false;
+  rightPanelOpen = false;
+  @ViewChild('viewer', { static: false }) viewer?: FlowViewerComponent;
+  private pendingCenter = false;
+  private centerTries = 0;
+  private centerMaxTries = 60; // ~60 frames ≈ 1s; wait longer for render + layout
   mode: ExecutionMode = 'test';
   runs: ExecutionRun[] = [];
   visibleRuns: ExecutionRun[] = [];
@@ -338,6 +463,29 @@ export class FlowExecutionComponent {
     // Load workspace runs initially even if no ?flow param (recent runs)
     try { setTimeout(() => { try { console.log('[exec] initial backend runs load'); } catch {}; this.loadBackendRuns(); }, 0); } catch {}
     try { this.catalog.listNodeTemplates().subscribe(list => this.zone.run(() => { (list || []).forEach(t => this.templatesMap.set(t.id, t)); this.enrichGraphTemplates(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
+    try {
+      this.mq = window.matchMedia('(max-width: 1280px)');
+      this.isTabletOrBelow = !!this.mq.matches;
+      this.mqHandler = (e: MediaQueryListEvent) => { this.isTabletOrBelow = !!e.matches; try { this.cdr.detectChanges(); } catch {} };
+      // Safari fallback
+      if (this.mq.addEventListener) this.mq.addEventListener('change', this.mqHandler);
+      else if ((this.mq as any).addListener) (this.mq as any).addListener(this.mqHandler);
+    } catch {}
+  }
+  ngOnDestroy() {
+    try {
+      if (this.mq && this.mqHandler) {
+        if (this.mq.removeEventListener) this.mq.removeEventListener('change', this.mqHandler);
+        else if ((this.mq as any).removeListener) (this.mq as any).removeListener(this.mqHandler);
+      }
+    } catch {}
+  }
+  onLeftDrawerClose() { this.leftDrawer = false; }
+  onRightDrawerClose() { this.rightDrawer = false; }
+  onRightFabClick() {
+    // Do not auto-open panels; user opens with FAB (mobile -> drawer, desktop -> rightPanelOpen)
+    if (this.isTabletOrBelow) { this.rightDrawer = true; }
+    else { this.rightPanelOpen = !this.rightPanelOpen; try { this.cdr.detectChanges(); } catch {} }
   }
   private templatesMap = new Map<string, any>();
   // Match builder visuals
@@ -592,10 +740,18 @@ export class FlowExecutionComponent {
       // Hide graph entirely until a run is selected
       this.viewNodes = [];
       this.viewEdges = [];
+      // Desktop: ensure right panel is closed when deselecting
+      if (!this.isTabletOrBelow) { this.rightPanelOpen = false; try { this.cdr.detectChanges(); } catch {} }
       try { this.cdr.detectChanges(); } catch {}
       return;
     }
     this.selectedBackendRun = b;
+    // On selection: close left drawer on mobile/tablet; keep as-is when deselecting
+    if (this.isTabletOrBelow) { this.leftDrawer = false; }
+    // Center after graph + attempts/events loaded
+    this.pendingCenter = true;
+    // Desktop: auto-open right panel on selection; Mobile: do not auto-open drawer
+    if (!this.isTabletOrBelow) { this.rightPanelOpen = true; try { this.cdr.detectChanges(); } catch {} }
     const fid = b?.flowId || null;
     if (fid && (!this.currentGraph || String(this.currentGraph.id) !== String(fid))) {
       this.loadingFlowDoc = true;
@@ -745,7 +901,7 @@ export class FlowExecutionComponent {
   }
   onViewRunClick(b: BackendRun) {
     this.selectBackendRun(b);
-    this.scrollToDetails();
+    if (!this.isTabletOrBelow && this.rightPanelOpen) this.scrollToDetails();
   }
   openInEditor(b: BackendRun) {
     try { this.router.navigate(['/flow-builder'], { queryParams: { flow: b.flowId, run: b.id } }); } catch {}
@@ -797,8 +953,56 @@ export class FlowExecutionComponent {
       this.viewNodes = baseNodes.map((n: any) => ({ ...n, data: { ...n.data, execStatus: smap.get(String(n.id)), execCount: counts.get(String(n.id)) || 0 } }));
       const baseEdges = (this.currentGraph?.edges || []) as any[];
       const pairs = this.pathSvc.buildPairs({ explicitPairs: this.backendPairs, events: this.backendEvents, attempts: this.backendAttempts });
-      this.viewEdges = this.pathSvc.decorateEdges(baseEdges, pairs);
+      const decorated = this.pathSvc.decorateEdges(baseEdges, pairs);
+      this.viewEdges = (decorated || []).map(e => ({ ...e, curve: (backAwareCurve as any) }));
     } catch {}
+    // Center once, after items are rendered (wait for DOM)
+    if (this.pendingCenter) {
+      this.centerAfterRender();
+    }
+  }
+
+  private centerAfterRender() {
+    try {
+      const viewer = this.viewer as any;
+      const host: HTMLElement | null = viewer?.flowHost?.nativeElement || null;
+      let prevW = -1;
+      let stableCount = 0;
+      const ready = () => {
+        if (!host) return false;
+        // 1) Ensure DOM items rendered
+        const nodesRendered = host.querySelectorAll('.node-card').length;
+        const edgesRendered = host.querySelectorAll('svg path').length;
+        const nodesExpected = (this.viewNodes || []).length;
+        const edgesExpected = (this.viewEdges || []).length;
+        const nodesOk = nodesExpected === 0 ? nodesRendered > 0 : nodesRendered >= nodesExpected;
+        const edgesOk = edgesExpected === 0 ? true : edgesRendered > 0;
+        if (!(nodesOk && edgesOk)) return false;
+        // 2) Ensure container width is stable (accounts for right panel opening on desktop)
+        const w = host.getBoundingClientRect().width;
+        if (w !== prevW) { prevW = w; stableCount = 0; return false; }
+        stableCount += 1;
+        return stableCount >= 2; // two consecutive stable frames
+      };
+      const tick = () => {
+        if (ready()) {
+          this.pendingCenter = false;
+          this.centerTries = 0;
+          try { this.viewer?.onCenterFlow(); } catch {}
+          return;
+        }
+        this.centerTries += 1;
+        if (this.centerTries >= this.centerMaxTries) {
+          // Fallback: still try to center once
+          this.pendingCenter = false;
+          this.centerTries = 0;
+          try { this.viewer?.onCenterFlow(); } catch {}
+          return;
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    } catch { this.pendingCenter = false; this.centerTries = 0; }
   }
 
   private openBackendStream(runId: string) {
