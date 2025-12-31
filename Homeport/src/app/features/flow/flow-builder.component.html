@@ -323,6 +323,7 @@
   <!-- Left vertical floating actions (responsive only) -->
   <div class="left-bar">
     <div class="actions">
+      <!-- Desktop: Save in left bar; on mobile keep Save in bottom bar for consistency -->
       <button class="icon-btn" *ngIf="!isMobile" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
@@ -342,6 +343,20 @@
         <i class="fa-solid fa-file-arrow-up"></i>
         <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
       </label>
+
+      <!-- Balanced: keep configuration toggles in left bar on mobile; move two most used (Center, Auto-placer) back to bottom bar -->
+      <button class="icon-btn" *ngIf="isMobile" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
+        <i class="fa-solid fa-vector-square"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isMobile" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+        <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isMobile" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+        <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isMobile" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+        <i class="fa-solid fa-border-all"></i>
+      </button>
     </div>
   </div>
 
@@ -360,17 +375,13 @@
       <button class="icon-btn" (click)="onBackendAutoLayout()" [disabled]="layoutLoading" title="Auto-placer (backend)">
         <i class="fa-solid fa-sitemap"></i>
       </button>
-      <!-- Mobile: toggle marquee selection mode -->
-      <button class="icon-btn" *ngIf="isTabletOrBelow" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
-        <i class="fa-solid fa-vector-square"></i>
-      </button>
-      <button class="icon-btn" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
         <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
       </button>
-      <button class="icon-btn" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
         <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
       </button>
-      <button class="icon-btn" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
         <i class="fa-solid fa-border-all"></i>
       </button>
       <button class="icon-btn" *ngIf="validationIssues.length && !isMobile" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">

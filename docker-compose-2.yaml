@@ -13,7 +13,7 @@ services:
       - TOKEN_TTL_SEC=${TOKEN_TTL_SEC}
       - ENC_KEY=${ENC_KEY}
       - MONGO_URL=${MONGO_URL}
-      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - MONGO_DB_NAME=kinn_2_production
       - SEED=${SEED}
       - SEED_COMPANIES=${SEED_COMPANIES}
       - DEFAULT_COMPANY=${DEFAULT_COMPANY}
