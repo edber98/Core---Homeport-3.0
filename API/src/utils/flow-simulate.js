@@ -1,0 +1,244 @@
+// Build simulated msg inputs using output handle schemas along upstream paths
+// Returns scenarios representing different branch choices upstream.
+
+function buildGraph(flow) {
+  const nodes = Array.isArray(flow?.nodes) ? flow.nodes : [];
+  const edges = Array.isArray(flow?.edges) ? flow.edges : [];
+  const nodesById = new Map(nodes.map(n => [String(n.id), { ...n, model: n?.data?.model || n?.model || n?.data || {} }]));
+  const outEdges = new Map();
+  const inEdges = new Map();
+  for (const id of nodesById.keys()) { outEdges.set(id, []); inEdges.set(id, []); }
+  for (const e of edges) {
+    const s = String(e.source), t = String(e.target);
+    if (!nodesById.has(s) || !nodesById.has(t)) continue;
+    const obj = { source: s, target: t, sourceHandle: e.sourceHandle || '', targetHandle: e.targetHandle || '' };
+    outEdges.get(s).push(obj); inEdges.get(t).push(obj);
+  }
+  return { nodesById, outEdges, inEdges };
+}
+
+function getHandleSchema(nodeModel, handleId) {
+  try {
+    const tpl = (nodeModel?.templateObj || nodeModel) || {};
+    const outs = Array.isArray(tpl.outputHandles) ? tpl.outputHandles : [];
+    const h = outs.find(o => String(o?.id) === String(handleId));
+    return (h && h.schema) ? h.schema : {};
+  } catch { return {}; }
+}
+
+// Build a minimal sample object from a Dynamic Form-like schema (fields/steps)
+function buildSampleFromSchema(schema, opts = {}) {
+  const { arraysOneItem = true } = opts;
+  const sch = schema || {};
+  const fields = Array.isArray(sch.fields) ? sch.fields : null;
+  const steps = Array.isArray(sch.steps) ? sch.steps : null;
+  const out = {};
+
+  const optionFirstValue = (f) => {
+    try {
+      const arr = Array.isArray(f.options) ? f.options : [];
+      if (arr.length === 0) return undefined;
+      const first = arr[0];
+      if (first && typeof first === 'object' && ('value' in first)) return first.value;
+      return first;
+    } catch { return undefined; }
+  };
+
+  const valFor = (f) => {
+    if (f == null || typeof f !== 'object') return null;
+    if (f.default !== undefined) return f.default;
+    const t = String(f.type || '').toLowerCase();
+    if (t === 'text' || t === 'textarea' || t === 'json' || t === 'code') return '';
+    if (t === 'select' || t === 'combobox' || t === 'radio') return optionFirstValue(f) ?? '';
+    if (t === 'number' || t === 'slider') return 0;
+    if (t === 'checkbox' || t === 'switch') return false;
+    if (t === 'date' || t === 'datetime' || t === 'time') return '';
+    if (t === 'tags' || t === 'chips' || t === 'table') return [];
+    if (t === 'array') {
+      const item = f.item || f.items || null;
+      if (!arraysOneItem) return [];
+      if (!item || typeof item !== 'object') return [];
+      // Scalar item
+      if (item.type && typeof item.type === 'string') return [valFor(item)];
+      // Section-like item with fields
+      if (Array.isArray(item.fields)) {
+        const o = {}; visit(item.fields, o); return [o];
+      }
+      return [];
+    }
+    if (t === 'section' || t === 'object') return {};
+    if (t === 'section_array') return arraysOneItem ? [{}] : [];
+    return null;
+  };
+
+  const visit = (arr, target) => {
+    for (const f of (arr || [])){
+      if (!f || typeof f !== 'object') continue;
+      if (f.type === 'section' || f.type === 'section_array'){
+        const key = f.key || null; if (!key) { visit(f.fields || [], target); continue; }
+        const isArrayMode = (String(f.type).toLowerCase() === 'section_array') || (String(f.mode || '').toLowerCase() === 'array');
+        if (!isArrayMode) {
+          target[key] = {};
+          visit(f.fields || [], target[key]);
+        } else {
+          // Section en mode array → tableau d'objets avec 1 élément d'exemple
+          if (arraysOneItem) { const obj = {}; visit(f.fields || [], obj); target[key] = [obj]; }
+          else target[key] = [];
+        }
+      } else {
+        const key = f.key || null; if (!key) continue;
+        target[key] = valFor(f);
+      }
+    }
+  };
+  if (steps) { steps.forEach(st => visit(st?.fields || [], out)); }
+  else if (fields) { visit(fields, out); }
+  return out;
+}
+
+function nodeKind(nodeModel){
+  try { const t = String((nodeModel?.templateObj?.nodeKind || nodeModel?.templateObj?.type || nodeModel?.nodeKind || nodeModel?.type || '')).toLowerCase(); return t; } catch { return ''; }
+}
+
+function getStartFormSchema(nodeModel){
+  try {
+    const m = nodeModel || {};
+    // Prefer explicit context if schema-like
+    if (m.context && (Array.isArray(m.context.fields) || Array.isArray(m.context.steps))) return m.context;
+    if (m.startFormSchema && (Array.isArray(m.startFormSchema.fields) || Array.isArray(m.startFormSchema.steps))) return m.startFormSchema;
+    const tpl = m.templateObj || {};
+    if (tpl.args && (Array.isArray(tpl.args.fields) || Array.isArray(tpl.args.steps))) return tpl.args;
+  } catch {}
+  return {};
+}
+
+// Compute ancestors that can reach target (reverse reachability)
+function computeAncestors(targetId, inEdges) {
+  const seen = new Set([String(targetId)]);
+  const anc = new Set();
+  const stack = [String(targetId)];
+  while (stack.length) {
+    const cur = stack.pop();
+    const arr = inEdges.get(cur) || [];
+    for (const e of arr) {
+      const u = String(e.source);
+      if (!seen.has(u)) { seen.add(u); anc.add(u); stack.push(u); }
+    }
+  }
+  return anc;
+}
+
+// For each ancestor with multiple outgoing handles that lead to target, list viable handle options
+function collectChoicePoints(targetId, { nodesById, outEdges, inEdges }) {
+  const target = String(targetId);
+  const ancestors = computeAncestors(target, inEdges);
+  const choices = new Map(); // nodeId -> Set(handleId)
+  // A handle is viable if any of its edges leads to a node that is ancestor of target (i.e., on any path to target)
+  const isAncestor = (id) => ancestors.has(String(id)) || String(id) === target;
+  for (const nid of ancestors) {
+    const outs = outEdges.get(nid) || [];
+    const viable = new Set();
+    for (const e of outs) {
+      if (isAncestor(e.target)) viable.add(String(e.sourceHandle || ''));
+    }
+    if (viable.size > 1) choices.set(String(nid), viable);
+  }
+  return choices; // Map<string, Set<string>>
+}
+
+function cartesianChoices(choicesMap, cap = 16) {
+  const entries = Array.from(choicesMap.entries()).map(([nid, set]) => ({ nid, options: Array.from(set.values()) }));
+  if (entries.length === 0) return [{}];
+  const out = [];
+  const recur = (i, acc) => {
+    if (out.length >= cap) return; // safety cap
+    if (i >= entries.length) { out.push({ ...acc }); return; }
+    const { nid, options } = entries[i];
+    for (const h of options) { if (out.length >= cap) break; acc[nid] = h; recur(i + 1, acc); delete acc[nid]; }
+  };
+  recur(0, {});
+  return out;
+}
+
+function simulateMsgForScenario(targetId, choice, graph) {
+  const { nodesById, inEdges } = graph;
+  const msg = { _nodes: {} };
+  const target = String(targetId);
+  const visited = new Set([target]);
+  const stack = (inEdges.get(target) || []).map(e => ({ edge: e, from: String(e.source), to: target }));
+  let payloadSet = false;
+  while (stack.length) {
+    const { edge, from, to } = stack.pop();
+    // Enforce chosen handle when applicable
+    const chosen = choice[String(from)];
+    if (chosen != null && String(edge.sourceHandle || '') !== String(chosen)) continue;
+    // Record node output schema for the handle used on this edge
+    const node = nodesById.get(from);
+    if (node) {
+      const kind = nodeKind(node.model);
+      let schema = null;
+      let sample = null;
+      if (kind === 'start' || kind === 'start_form'){
+        schema = getStartFormSchema(node.model);
+        sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : {};
+        msg[from] = sample && typeof sample === 'object' ? sample : {};
+        // Start-like defines payload
+        if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+        // Log _nodes entry
+        try { msg._nodes[from] = { simulated: true, kind: 'start', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+      } else if (kind === 'condition') {
+        const chosenHandle = String(edge.sourceHandle || chosen || '') || null;
+        const resultObj = { chosen: chosenHandle || null };
+        msg[from] = resultObj;
+        try { msg._nodes[from] = { simulated: true, kind: 'condition', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+        // Do not change payload for conditions (engine keeps payload unchanged)
+      } else if (kind === 'loop') {
+        schema = getHandleSchema(node.model, edge.sourceHandle || '');
+        sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
+        msg[from] = sample && typeof sample === 'object' ? sample : {};
+        // For 'each', emulate msg.loop context
+        const h = String(edge.sourceHandle || '');
+        if (h === 'each') {
+          try { msg.loop = { item: msg[from], index: 0, length: 1 }; } catch {}
+          // In engine, perItemPayload par défaut=true → payload = item pour la branche each
+          try { msg.payload = msg[from]; payloadSet = true; } catch {}
+        } else if (h === 'after') {
+          // Par défaut, resultMode='collect' → payload = tableau des résultats collectés
+          try { msg.payload = [ msg[from] ]; payloadSet = true; } catch {}
+        }
+        try { msg._nodes[from] = { simulated: true, kind: 'loop', outputHandle: h, schema: schema || {}, result: { count: 1, collected: (h === 'after') ? 1 : undefined }, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+      } else {
+        schema = getHandleSchema(node.model, edge.sourceHandle || '');
+        sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
+        msg[from] = sample && typeof sample === 'object' ? sample : {};
+        try { msg._nodes[from] = { simulated: true, kind: kind || 'function', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+        // Préférer payload issue des fonctions
+        if (kind === 'function') { msg.payload = msg[from]; payloadSet = true; }
+        else if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+      }
+    }
+    if (!visited.has(from)) {
+      visited.add(from);
+      const inArr = inEdges.get(from) || [];
+      for (const ie of inArr) stack.push({ edge: ie, from: String(ie.source), to: from });
+    }
+  }
+  return msg;
+}
+
+function simulateScenarios(flow, targetNodeId, mode = 'all') {
+  const graph = buildGraph(flow);
+  const choices = collectChoicePoints(targetNodeId, graph);
+  const combos = mode === 'all' ? cartesianChoices(choices, 24) : [{}];
+  const scenarios = combos.map((choice, idx) => {
+    const msgIn = simulateMsgForScenario(targetNodeId, choice, graph);
+    const label = Object.keys(choice).length ?
+      Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
+    return { id: `sc_${idx+1}`, index: idx, label, msgIn, choice };
+  });
+  // Ensure at least one scenario exists, even if empty
+  if (scenarios.length === 0) scenarios.push({ id: 'sc_1', index: 0, label: 'Chemin par défaut', msgIn: {}, choice: {} });
+  return { targetNodeId: String(targetNodeId), scenarios };
+}
+
+module.exports = { simulateScenarios };

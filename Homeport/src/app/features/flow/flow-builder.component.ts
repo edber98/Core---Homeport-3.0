@@ -77,6 +77,9 @@ export class FlowBuilderComponent {
   advancedCtx: any = {};
   advancedInjectedInput: any = null;
   advancedInjectedOutput: any = null;
+  // Simulation scenarios for dialog
+  advancedSimScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
+  advancedSimScenarioIdx: number = 0;
   builderMode: 'test'|'prod' = 'test';
   lastRun: any = null;
   currentRun: any = null;
@@ -3358,6 +3361,25 @@ export class FlowBuilderComponent {
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
+        // Try backend simulation to propose scenarios
+        this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
+        if (!isStart && nodeId && this.hasPredecessor(nodeId) && environment.useBackend && this.currentFlowId) {
+          this.previewLoading = true;
+          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'all').subscribe({
+            next: (resp) => {
+              const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+              this.advancedSimScenarios = scenarios;
+              this.advancedSimScenarioIdx = 0;
+              if (scenarios.length > 0) {
+                this.advancedInjectedInput = scenarios[0].msgIn || {};
+              }
+              this.advancedCtx = this.advancedInjectedInput || {};
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            error: () => { /* keep local fallback */ },
+            complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+          });
+        }
         // Important: clear any stale output when opening on a non-start node (no attempt yet)
         this.advancedInjectedOutput = isStart ? (this.getStartPayload().payload || {}) : null;
         this.advancedAttemptEvents = [];
@@ -3369,6 +3391,17 @@ export class FlowBuilderComponent {
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
     this.advancedOpen = true;
+  }
+  onSimScenarioIdxChange(idx: number) {
+    try {
+      this.advancedSimScenarioIdx = Number(idx || 0);
+      const sc = (this.advancedSimScenarios || [])[this.advancedSimScenarioIdx];
+      if (sc) {
+        this.advancedInjectedInput = sc.msgIn || {};
+        this.advancedCtx = this.advancedInjectedInput || {};
+      }
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
   }
   onStartPayloadChange(v: any) {
     this.setStartPayload(v);

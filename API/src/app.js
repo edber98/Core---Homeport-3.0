@@ -29,6 +29,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/core')(store));
     app.use('/api', require('./modules/flows')(store));
     app.use('/api', require('./modules/runs')(store));
+    // Flow simulation (memory)
+    app.use('/api', require('./modules/simulate')(store));
     // Layout (ELK) for memory mode
     app.use('/api', require('./modules/layout')(store));
     // Ad-hoc test runs (ephemeral, from request body)
@@ -57,6 +59,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/import-manifest')());
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
+    // Flow simulation (db)
+    app.use('/api', require('./modules/db/simulate')());
     // Layout (ELK) for DB mode
     app.use('/api', require('./modules/db/layout')());
     // Ad-hoc test runs (ephemeral, from request body)

@@ -46,6 +46,9 @@ export class RunsBackendService {
   preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
     return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
   }
+  simulateMsg(flowId: string, targetNodeId: string, mode: 'default'|'all' = 'all'): Observable<{ targetNodeId: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any }> }> {
+    return this.api.post<{ targetNodeId: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any }> }>(`/api/flows/${encodeURIComponent(flowId)}/simulate-msg`, { targetNodeId, mode });
+  }
   testNode(flowId: string, nodeId: string, msg: any): Observable<any> {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/test-node`, { nodeId, msg });
   }

@@ -19,7 +19,14 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
         <div *ngIf="loadingInput" class="wing-loading"><span class="tiny-spinner big"></span></div>
-        <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+        <div *ngIf="!loadingInput && simScenarios && simScenarios.length > 0" style="display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px;">
+          <span style="color:#374151;">Entrée simulée:</span>
+          <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
+            <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
+          </select>
+          <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Voir exécution réelle</button>
+        </div>
+        <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
         </div>
@@ -69,7 +76,14 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
           <!-- Input panel -->
           <div class="slide">
             <div class="scroll">
-              <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+              <div *ngIf="!loadingInput && simScenarios && simScenarios.length > 0" style="display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px;">
+                <span style="color:#374151;">Entrée simulée:</span>
+                <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
+                  <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
+                </select>
+                <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Exécution réelle</button>
+              </div>
+              <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
                 Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
                 <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
               </div>
@@ -183,6 +197,10 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Output() test = new EventEmitter<void>();
   @Output() runPrev = new EventEmitter<void>();
   @Output() startPayloadChange = new EventEmitter<any>();
+  // Simulation scenarios (optional)
+  @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
+  @Input() simSelectedIndex: number = 0;
+  @Output() simSelectedIndexChange = new EventEmitter<number>();
   // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
   @Output() modelChangeCommitted = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
@@ -250,6 +268,12 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
         }, 160);
       });
     });
+  }
+
+  onSimIdxChange(i: number) {
+    const idx = Number(i || 0);
+    this.simSelectedIndex = idx;
+    this.simSelectedIndexChange.emit(idx);
   }
 
   startExit() {

@@ -434,6 +434,7 @@
     [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
     [attemptOptions]="advancedAttemptOptions" [selectedAttemptIdx]="advancedSelectedAttemptIdx"
     (selectedAttemptIdxChange)="onDialogAttemptIdxChange($event)"
+    [simScenarios]="advancedSimScenarios" [simSelectedIndex]="advancedSimScenarioIdx" (simSelectedIndexChange)="onSimScenarioIdxChange($event)"
     (injectedInputChange)="onDialogInputChange($event)"
     (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
