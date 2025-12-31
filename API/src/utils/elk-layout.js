@@ -93,9 +93,43 @@ function buildElkGraph(nodes, edges, opts){
   const borderGapY = Math.max(0, gapY - nodeHeight);
   const nodeIds = new Set((nodes || []).map(n => String(n.id)));
   // Precompute edges and a provisional graph to get levels and ordering hints
-  const elkEdges = (edges || [])
+  const rawEdges = (edges || [])
     .filter(e => nodeIds.has(String(e.source)) && nodeIds.has(String(e.target)))
     .map((e, idx) => ({ id: String(e.id || `e${idx}`), sources: [String(e.source)], targets: [String(e.target)], _raw: e }));
+  // Build node type map and adjacency to detect Loop "return" edges from Each branch
+  const nodeByIdFull = new Map((nodes || []).map(n => [String(n.id), n]));
+  const isLoopNode = (id) => {
+    try { return String(nodeByIdFull.get(String(id))?.data?.model?.templateObj?.type || '').toLowerCase() === 'loop'; } catch { return false; }
+  };
+  const outAdj = new Map(); // id -> array of {t, raw}
+  for (const e of rawEdges){
+    const s = String(e.sources[0]); const t = String(e.targets[0]);
+    if (!outAdj.has(s)) outAdj.set(s, []);
+    outAdj.get(s).push({ t, raw: e._raw });
+  }
+  const eachSubtree = new Map(); // loopId -> Set of nodes reachable from its 'each' branch
+  for (const [id, n] of nodeByIdFull.entries()){
+    if (!isLoopNode(id)) continue;
+    // seeds: edges from loop with sourceHandle === 'each'
+    const seeds = (outAdj.get(id) || []).filter(e => String(e.raw?.sourceHandle || '') === 'each').map(e => String(e.t));
+    const vis = new Set(); const q = [...seeds];
+    while (q.length){
+      const u = q.shift(); if (vis.has(u)) continue; vis.add(u);
+      for (const ne of (outAdj.get(u) || [])){
+        const v = String(ne.t);
+        if (!vis.has(v)) q.push(v);
+      }
+    }
+    eachSubtree.set(id, vis);
+  }
+  // Filter out edges that return from a loop's Each subtree back into the loop (ignore for placement/levels)
+  const elkEdges = rawEdges.filter(e => {
+    const s = String(e.sources[0]); const t = String(e.targets[0]);
+    if (!isLoopNode(t)) return true;
+    const subtree = eachSubtree.get(t);
+    if (!subtree) return true;
+    return !subtree.has(s);
+  });
   const tempGraph = { id: 'root', children: (nodes || []).map(n => ({ id: String(n.id), width: nodeWidth, height: nodeHeight })), edges: elkEdges };
   const levels = computeLevels(tempGraph);
   // For each node, build output index mapping based on frontend order
@@ -389,12 +423,179 @@ async function layoutGraph(graph, opts = {}){
   // Normalize to grid levels
   if (normalize){
     if (elkOptions.direction === 'DOWN') {
+      // DOWN: mirror of RIGHT algorithm → keep straight chains for 1->1 and, for fan-outs, center children by handle order horizontally.
+      // Build helper maps
+      const parents = new Map(); // child -> parents[]
+      const outNext = new Map(); // parent -> count of next-level children (lv+1)
+      const outIndex = new Map(); // parent -> Map(handleId -> index)
+      // Build output index per node based on frontend order
+      for (const n of (nodes || [])){
+        const ids = computeOutputOrder(n, edges);
+        const m = new Map(); ids.forEach((id, i) => m.set(String(id), i));
+        outIndex.set(String(n.id), m);
+      }
+      // Parents and next-level child counts + child handle ids
+      const childEdge = new Map(); // child -> { parent, handleIdx }
+      for (const e of (elkGraph.edges || [])){
+        const s = String(e.sources?.[0] || '');
+        const t = String(e.targets?.[0] || '');
+        if (!s || !t) continue;
+        if (!parents.has(t)) parents.set(t, []);
+        parents.get(t).push(s);
+        const sl = level.get(s) || 0;
+        const tl = level.get(t) || 0;
+        if (tl === sl + 1) {
+          outNext.set(s, (outNext.get(s) || 0) + 1);
+          const port = String(e.sourcePort || '');
+          const hId = port.startsWith('out:') ? port.slice(4) : '';
+          const m = outIndex.get(s) || new Map();
+          const idx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
+          childEdge.set(t, { parent: s, idx });
+        }
+      }
+      // Group nodes by level (row)
+      const byLevel = new Map(); let maxLv = 0;
       for (const ch of (laid.children || [])){
         const id = String(ch.id);
         const lv = level.get(id) || 0;
-        const p = posMap.get(id) || { x: Math.round(ch.x || 0), y: Math.round(ch.y || 0) };
-        const xq = Math.round(Math.round(p.x / elkOptions.gapX) * elkOptions.gapX);
-        positions[id] = { x: xq, y: lv * elkOptions.gapY };
+        if (!byLevel.has(lv)) byLevel.set(lv, []);
+        byLevel.get(lv).push(id);
+        if (lv > maxLv) maxLv = lv;
+      }
+      // Process rows top to bottom
+      const occ = new Map(); // lv -> Set(laneIndex)
+      const lanesOf = (lv) => { if (!occ.has(lv)) occ.set(lv, new Set()); return occ.get(lv); };
+      const xAnchor = 0;
+      for (let lv = 0; lv <= maxLv; lv++){
+        const arr = byLevel.get(lv) || [];
+        // First pass: compute target x for each node
+        const targetX = new Map();
+        for (const id of arr) {
+          const p = posMap.get(id) || { x: 0, y: 0 };
+          let x = p.x;
+          const ps = parents.get(id) || [];
+          if (lv > 0 && ps.length === 1) {
+            const pid = String(ps[0]);
+            const nextCount = outNext.get(pid) || 0;
+            const px = (positions[pid]?.x != null) ? positions[pid].x : (posMap.get(pid)?.x || x);
+            if (nextCount === 1) {
+              // straight chain
+              x = px;
+            } else if (nextCount > 1) {
+              // fan-out: group by output handle index, then place children within each lane by recursive span (mirrored on X)
+              // siblings on this level with single-parent
+              const sibs = (elkGraph.edges || [])
+                .filter(e => String(e.sources?.[0] || '') === pid)
+                .map(e => String(e.targets?.[0] || ''))
+                .filter(tid => (level.get(tid) || 0) === lv && (parents.get(tid) || []).length === 1);
+              const uniq = Array.from(new Set(sibs));
+              // Build adjacency of single-parent next-level children
+              const nextMap = new Map(); // node -> children[] (single-parent) at next level
+              for (const e2 of (elkGraph.edges || [])){
+                const s2 = String(e2.sources?.[0] || '');
+                const t2 = String(e2.targets?.[0] || '');
+                if (!s2 || !t2) continue;
+                const sl2 = level.get(s2) || 0; const tl2 = level.get(t2) || 0;
+                if (tl2 === sl2 + 1 && (parents.get(t2) || []).length === 1){
+                  if (!nextMap.has(s2)) nextMap.set(s2, []);
+                  nextMap.get(s2).push(t2);
+                }
+              }
+              // Span of subtree (single-parent chains only)
+              const spanMemo = new Map();
+              const span = (nid) => {
+                if (spanMemo.has(nid)) return spanMemo.get(nid);
+                const kids = nextMap.get(nid) || [];
+                if (!kids.length) { spanMemo.set(nid, 1); return 1; }
+                let ssum = 0; for (const k of kids) ssum += span(k);
+                const val = Math.max(1, ssum);
+                spanMemo.set(nid, val); return val;
+              };
+              // Group children by output handle index
+              const groupsMap = new Map(); // idx -> tids[]
+              for (const tid of uniq){
+                const idx = (childEdge.get(tid)?.idx ?? Number.POSITIVE_INFINITY);
+                if (!groupsMap.has(idx)) groupsMap.set(idx, []);
+                groupsMap.get(idx).push(tid);
+              }
+              // Order groups by handle index, fallback by average x
+              const groups = Array.from(groupsMap.entries()).map(([idx, tids]) => ({ idx, tids }));
+              groups.sort((a,b) => {
+                if (a.idx === b.idx){
+                  const ax = a.tids.reduce((s,t)=>s+(posMap.get(t)?.x ?? px),0)/Math.max(1,a.tids.length);
+                  const bx = b.tids.reduce((s,t)=>s+(posMap.get(t)?.x ?? px),0)/Math.max(1,b.tids.length);
+                  return ax - bx;
+                }
+                return a.idx - b.idx;
+              });
+              // Compute span per child and per group
+              const childSpan = new Map();
+              for (const tid of uniq) childSpan.set(tid, span(tid));
+              const groupSpan = groups.map(g => g.tids.reduce((s,t)=>s+(childSpan.get(t) || 1),0));
+              const totalSpan = groupSpan.reduce((a,b)=>a+b,0);
+              // Assign positions, then center the longest branch on the parent column
+              let accGroups = 0;
+              let xAssigned = px;
+              for (let gi = 0; gi < groups.length; gi++){
+                const g = groups[gi];
+                const gSpan = groupSpan[gi];
+                const gCenterOffset = (accGroups + gSpan/2) - totalSpan/2;
+                const gBaseX = px + gCenterOffset * elkOptions.gapX; // center of group
+                // distribute children inside the group by their spans
+                let accChild = -gSpan/2;
+                for (const tid of g.tids){
+                  const cs = childSpan.get(tid) || 1;
+                  const cCenter = accChild + cs/2; // relative to group center
+                  const xChild = gBaseX + cCenter * elkOptions.gapX;
+                  if (tid === id) xAssigned = xChild;
+                  accChild += cs;
+                }
+                accGroups += gSpan;
+              }
+              // Find child with maximum span and compute delta to center it on px
+              let bestTid = null; let bestSpan = -1;
+              for (const tid of uniq) { const cs = childSpan.get(tid) || 1; if (cs > bestSpan) { bestSpan = cs; bestTid = tid; } }
+              const xBest = (() => {
+                // recompute same x positions to fetch best child's x
+                let accG = 0; let xB = px;
+                for (let gi = 0; gi < groups.length; gi++){
+                  const g = groups[gi];
+                  const gSpan = groupSpan[gi];
+                  const gCenterOffset = (accG + gSpan/2) - totalSpan/2;
+                  const gBaseX = px + gCenterOffset * elkOptions.gapX;
+                  let accC = -gSpan/2;
+                  for (const tid of g.tids){
+                    const cs = childSpan.get(tid) || 1;
+                    const cCenter = accC + cs/2;
+                    const xx = gBaseX + cCenter * elkOptions.gapX;
+                    if (tid === bestTid) xB = xx;
+                    accC += cs;
+                  }
+                  accG += gSpan;
+                }
+                return xB;
+              })();
+              const delta = px - xBest;
+              x = xAssigned + delta;
+            }
+          }
+          targetX.set(id, x);
+        }
+        // Second pass: snap local per row (stable behavior)
+        const orderedIds = arr.slice().sort((a,b) => {
+          const xa = targetX.get(a) ?? (posMap.get(a)?.x || 0);
+          const xb = targetX.get(b) ?? (posMap.get(b)?.x || 0);
+          return xa === xb ? String(a).localeCompare(String(b)) : (xa - xb);
+        });
+        const set = lanesOf(lv);
+        for (const id of orderedIds) {
+          const x = targetX.get(id) ?? (posMap.get(id)?.x || 0);
+          let lane = Math.round((x - xAnchor) / elkOptions.gapX);
+          while (set.has(lane)) lane++;
+          set.add(lane);
+          const xq = xAnchor + lane * elkOptions.gapX;
+          positions[id] = { x: xq, y: lv * elkOptions.gapY };
+        }
       }
     } else {
       // RIGHT: keep straight chains for 1->1 and, for fan-outs, center children around the parent's row using output order.
