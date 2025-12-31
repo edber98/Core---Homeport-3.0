@@ -481,7 +481,74 @@ export const backAwareCurve: CurveFactory = (params: CurveFactoryParams): CurveL
     }
     return bezierPathLite(params);
   } else {
-    // Pour stabiliser: on garde bezier en vertical (pas de backward vertical pour l’instant)
+    const backward = sourcePoint.y > targetPoint.y; // bottom -> top (vertical backward)
+    if (backward) {
+      try { console.debug('[router] mode=v-back', { sp, tp, S: sourcePoint, T: targetPoint }); } catch {}
+      const routed = routeBackwardVerticalStrict(params);
+      return routed || bezierPathLite(params);
+    }
     return bezierPathLite(params);
   }
 };
+
+// Backward vertical: toujours sortir à gauche, bus vertical à gauche (Escalier vs Grand U latéral)
+function routeBackwardVerticalStrict(params: CurveFactoryParams): CurveLayout {
+  const GAPX = 40, GAPY = 40, PAD = 2, CORNER = 10;
+  const { sourcePoint, targetPoint } = params as any;
+  const S: Point = { x: sourcePoint.x, y: sourcePoint.y };
+  const T: Point = { x: targetPoint.x, y: targetPoint.y };
+  // Si ce n'est pas un backward vertical (source sous la cible), route simple
+  if (!(S.y > T.y)) {
+    const outY = S.y + GAPY;
+    const pts = dedupe([S, { x: S.x, y: outY }, { x: T.x, y: outY }, T]);
+    return { path: roundedOrthogonalPath(pts, CORNER), labelPoints: labelPointsFromPolyline(pts) };
+  }
+
+  // 1) Ports et guides (vertical): sortie en bas, approche par le haut
+  const rects = getNodeRects(params, 0);
+  const srcRect = rects.find(r => pointInRect(S, r)) || null;
+  const tgtRect = rects.find(r => pointInRect(T, r)) || null;
+  const vOutY = S.y + GAPY; // juste sous la source
+  const vInY = T.y - GAPY;  // juste au-dessus de la cible
+
+  // 2) Smart Bus vertical (busX à DROITE) — Right loop
+  const srcRight = srcRect ? srcRect.right : S.x;
+  const tgtRight = tgtRect ? tgtRect.right : T.x;
+  const targetCenterX = tgtRect ? (tgtRect.left + tgtRect.right) / 2 : T.x;
+  const potentialStaircaseX = srcRight + GAPX;
+  const isTargetFarRight = targetCenterX > (srcRight + GAPX + 5);
+  let busX: number = isTargetFarRight ? potentialStaircaseX : (Math.max(srcRight, tgtRight) + GAPX);
+  // Forcer départ vers la DROITE: busX doit être strictement > S.x
+  if (!(busX > S.x)) {
+    busX = srcRight + GAPX;
+  }
+
+  // Pousser busX à DROITE tant qu'il traverse un obstacle entre vInY et vOutY
+  let safety = 0;
+  while (safety++ < 20) {
+    let moved = false;
+    const top = Math.min(vInY, vOutY);
+    const bottom = Math.max(vInY, vOutY);
+    for (const r of rects) {
+      if (srcRect && rectEquals(r, srcRect)) continue;
+      if (tgtRect && rectEquals(r, tgtRect)) continue;
+      const crosses = (r.left < busX && r.right > busX) && (r.top < bottom && r.bottom > top);
+      if (crosses) { busX = Math.max(busX, r.right + GAPX); moved = true; break; }
+    }
+    if (!moved) break;
+  }
+  // Ultime sécurité: garantir P2.x > P1.x
+  if (busX <= S.x) busX = srcRight + GAPX;
+  // (pas de clamp supplémentaire ici; busX a déjà été forcé < S.x)
+
+  // 3) Chemin fixe (miroir de l'horizontal): gauche comme contournement, axes inversés
+  const pts = dedupe([
+    { x: S.x,    y: S.y },
+    { x: S.x,    y: vOutY },
+    { x: busX,   y: vOutY },
+    { x: busX,   y: vInY },
+    { x: T.x,    y: vInY },
+    { x: T.x,    y: T.y },
+  ]);
+  return { path: roundedOrthogonalPath(pts, CORNER), labelPoints: labelPointsFromPolyline(pts) };
+}
