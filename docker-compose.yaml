@@ -1,6 +1,6 @@
 services:
   api:
-    image: kinn-backend:${CI_COMMIT_REF_NAME}
+    image: kinn-backend:${CI_COMMIT_REF_SLUG}
     container_name: kinn-backend
     volumes:
       - ./API:/app
@@ -38,7 +38,7 @@ services:
   
   homeport:
     container_name: kinn_homeport
-    image: kinn_homeport:${CI_COMMIT_REF_NAME}
+    image: kinn_homeport:${CI_COMMIT_REF_SLUG}
     restart: always
     labels:
       - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)  && PathPrefix(`/`) && !PathPrefix(`/api`) && !PathPrefix(`/auth`)"

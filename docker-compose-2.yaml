@@ -1,6 +1,6 @@
 services:
   api:
-    image: kinn-backend-2:${CI_COMMIT_REF_NAME}
+    image: kinn-backend-2:${CI_COMMIT_REF_SLUG}
     container_name: kinn-backend-2
     volumes:
       - ./API:/app
@@ -38,7 +38,7 @@ services:
   
   homeport:
     container_name: kinn_homeport-2
-    image: kinn_homeport-2:${CI_COMMIT_REF_NAME}
+    image: kinn_homeport-2:${CI_COMMIT_REF_SLUG}
     restart: always
     labels:
       - "traefik.http.routers.kinn-homeport-2.rule=Host(`app.kinn.fr`)  && PathPrefix(`/`) && !PathPrefix(`/api`) && !PathPrefix(`/auth`)"
@@ -60,4 +60,3 @@ networks:
   traefik-web:
     driver: bridge
     external: true
-
