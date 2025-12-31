@@ -18,6 +18,9 @@ function pos(p: any): 'left'|'right'|'top'|'bottom'|'' {
   const s = String(p || '').toLowerCase();
   return (s === 'left' || s === 'right' || s === 'top' || s === 'bottom') ? (s as any) : '';
 }
+function rectEquals(a: Rect, b: Rect): boolean {
+  return a.left === b.left && a.top === b.top && a.right === b.right && a.bottom === b.bottom;
+}
 
 function inflate(r: Rect, pad: number): Rect { return { left: r.left - pad, top: r.top - pad, right: r.right + pad, bottom: r.bottom + pad }; }
 function pointInRect(p: Point, r: Rect): boolean { return p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom; }
@@ -267,14 +270,24 @@ function routeBackward(params: CurveFactoryParams, axis: 'horizontal'|'vertical'
   const sDir = dirMap[sp] || { x: 0, y: 0 }; const tDir = dirMap[tp] || { x: 0, y: 0 };
   let S1: Point = { x: S.x + sDir.x * EXIT, y: S.y + sDir.y * EXIT };
   let T1: Point = { x: T.x + tDir.x * ENTRY, y: T.y + tDir.y * ENTRY };
+  const baseRectsNoPad = getNodeRects(params, 0);
   const rectsAll = getNodeRects(params, NODE_PADDING);
-  // Keep all obstacles (do not exclude source/target) so we don't skim over own node
-  const rects = rectsAll;
+  // Keep all obstacles, except when dragging over a node: allow crossing the hovered target node
+  let rects = rectsAll;
+  try {
+    const isConn = (params as any).mode === 'connection';
+    if (isConn && targetPoint) {
+      const hoveredBase = baseRectsNoPad.find(r => pointInRect(T, r));
+      if (hoveredBase) {
+        const hoveredInfl = inflate(hoveredBase, NODE_PADDING);
+        rects = rectsAll.filter(r => !rectEquals(r, hoveredInfl));
+      }
+    }
+  } catch {}
   // In horizontal-backward, ensure first vertical lane is beyond the source node's right edge
   if (axis === 'horizontal') {
     // Compute base rects (no padding) to find the exact right edge of the source node
-    const baseRects = getNodeRects(params, 0);
-    const srcRect = baseRects.find(r => pointInRect(S, r));
+    const srcRect = baseRectsNoPad.find(r => pointInRect(S, r));
     if (srcRect) {
       const minRight = srcRect.right + LANE_GAP;
       if (S1.x < minRight) {
@@ -284,9 +297,8 @@ function routeBackward(params: CurveFactoryParams, axis: 'horizontal'|'vertical'
     }
   } else {
     // Vertical-backward: force explicit first move to the right outside the source rect, then route
-    const baseRects = getNodeRects(params, 0);
-    const srcRect = baseRects.find(r => pointInRect(S, r));
-    const tgtRect = baseRects.find(r => pointInRect(T, r));
+    const srcRect = baseRectsNoPad.find(r => pointInRect(S, r));
+    const tgtRect = baseRectsNoPad.find(r => pointInRect(T, r));
     // Compute a safe y just outside source vertically (exit), and a right lane x
     let yOut = S.y;
     if (srcRect) {
