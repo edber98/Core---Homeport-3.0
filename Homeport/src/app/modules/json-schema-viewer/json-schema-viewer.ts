@@ -205,9 +205,38 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
 
   constructor(private sanitizer: DomSanitizer, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
+  private reorderMsgByExecutionIfApplicable(data: any): any {
+    try {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) return data;
+      const nodesMeta = (data._nodes && typeof data._nodes === 'object') ? data._nodes : null;
+      if (!nodesMeta) return data;
+      const keys = Object.keys(data).filter(k => k !== '_nodes' && k !== 'payload' && k !== 'loop');
+      // Prefer explicit path order provided by backend simulation
+      const path = Array.isArray((nodesMeta as any).__path) ? (nodesMeta as any).__path.map(String) : null;
+      let orderedKeys: string[];
+      if (path && path.length) {
+        const set = new Set<string>(keys);
+        orderedKeys = path.filter((k: string) => set.has(k));
+        const remaining = keys.filter((k: string) => !orderedKeys.includes(k));
+        orderedKeys = [...orderedKeys, ...remaining];
+      } else {
+        const decorated = keys.map(k => ({ k, t: Date.parse((nodesMeta as any)?.[k]?.start || (nodesMeta as any)?.[k]?.startedAt || 0) || 0 }));
+        // Start → … → target (ascendant)
+        decorated.sort((a,b) => a.t - b.t);
+        orderedKeys = decorated.map(d => d.k);
+      }
+      const out: any = {};
+      if ('payload' in data) out.payload = data.payload;
+      if ('loop' in data) out.loop = (data as any).loop;
+      for (const k of orderedKeys) out[k] = (data as any)[k];
+      out._nodes = data._nodes;
+      return out;
+    } catch { return data; }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     // Sync data into currentData when input changes
-    this.currentData = this.data;
+    this.currentData = this.reorderMsgByExecutionIfApplicable(this.data);
     this.updateJsonHtmlAsync();
     // Sync external mode into internalMode if provided
     if (this.mode) this.internalMode = this.mode; else this.internalMode = this.initialMode || 'Schema';
@@ -225,7 +254,7 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
 
   // (removed mobile drag telemetry)
   ngOnInit(): void {
-    this.currentData = this.data;
+    this.currentData = this.reorderMsgByExecutionIfApplicable(this.data);
     this.internalMode = this.mode || this.initialMode || 'Schema';
     this.updateJsonHtmlAsync();
     // Initialize editor buffer if starting directly in JSON edit mode
@@ -353,7 +382,7 @@ export class JsonSchemaViewerComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
   writeValue(value: any): void {
     this.data = value;
-    this.currentData = value;
+    this.currentData = this.reorderMsgByExecutionIfApplicable(value);
     this.updateJsonHtmlAsync();
   }
   private updateJsonHtmlAsync() {

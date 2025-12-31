@@ -50,6 +50,8 @@ async function simulateViaEngine(flow, targetNodeId){
 
   let captured = null;
   let stop = false;
+  const startedSeq = [];
+  const loopStack = [];
   // Build edge index for logging
   const edgeBySrcTgt = new Map(edges.map(e => [`${e.source}|${e.target}`, e]));
 
@@ -74,6 +76,9 @@ async function simulateViaEngine(flow, targetNodeId){
           const n = nodeById.get(String(ev.nodeId||''));
           const kind = String(n?.data?.model?.templateObj?.type || n?.data?.model?.nodeKind || '').toLowerCase();
           console.log('[simulate:engine] node.started', { nodeId: ev.nodeId, kind, branchId: ev.branchId });
+          // record path order
+          const idStr = String(ev.nodeId||'');
+          if (idStr && !startedSeq.includes(idStr)) startedSeq.push(idStr);
         } catch {}
       } else if (ev?.type === 'edge.taken') {
         try {
@@ -81,6 +86,15 @@ async function simulateViaEngine(flow, targetNodeId){
           const ed = edgeBySrcTgt.get(key);
           const h = ed?.sourceHandle || null;
           console.log('[simulate:engine] edge.taken', { sourceId: ev.sourceId, targetId: ev.targetId, sourceHandle: h });
+          // Track loop entry/exit for correct loop placement
+          try {
+            const srcNode = nodeById.get(String(ev.sourceId||''));
+            const isLoop = String(srcNode?.data?.model?.templateObj?.type || srcNode?.data?.model?.nodeKind || '').toLowerCase() === 'loop';
+            if (isLoop && String(h) === 'each') loopStack.push(String(ev.sourceId));
+            if (isLoop && String(h) === 'after') {
+              if (loopStack.length && loopStack[loopStack.length-1] === String(ev.sourceId)) loopStack.pop();
+            }
+          } catch {}
         } catch {}
       }
       if (!captured && ev && ev.type === 'node.started' && String(ev.nodeId || '') === String(targetNodeId)) {
@@ -97,7 +111,57 @@ async function simulateViaEngine(flow, targetNodeId){
   }
 
   if (!captured) captured = { msgIn: null };
+  try {
+    if (captured.msgIn && captured.msgIn._nodes) {
+      captured.msgIn._nodes.__path = startedSeq.slice();
+      captured.msgIn._nodes.__loopOwner = loopStack.length ? loopStack[loopStack.length-1] : null;
+    }
+  } catch {}
   // Also compile target node args with the simulated msg (to mirror frontend expectations)
+  // Reorder msg keys by execution order using _nodes.start/startedAt timestamps
+  const reorderMsgByExecution = (msg) => {
+    try {
+      if (!msg || typeof msg !== 'object') return msg;
+      const nodesMeta = (msg._nodes && typeof msg._nodes === 'object') ? msg._nodes : {};
+      const ids = Object.keys(msg).filter(k => k !== '_nodes' && k !== 'payload');
+      // Prefer explicit path order if provided by simulation
+      const path = Array.isArray(nodesMeta?.__path) ? nodesMeta.__path.map(String) : null;
+      let orderedKeys;
+      if (path && path.length) {
+        const set = new Set(ids);
+        orderedKeys = path.filter(k => set.has(k));
+        const remaining = ids.filter(k => !orderedKeys.includes(k));
+        orderedKeys = [...orderedKeys, ...remaining];
+      } else {
+        const decorated = ids.map(k => ({ k, t: Date.parse(nodesMeta?.[k]?.start || nodesMeta?.[k]?.startedAt || 0) || 0 }));
+        // Ascendant: Start → … → target
+        decorated.sort((a,b) => a.t - b.t);
+        orderedKeys = decorated.map(d => d.k);
+      }
+      // Positionner 'loop' juste après son owner si présent
+      let keysToEmit = orderedKeys.slice();
+      if ('loop' in msg) {
+        keysToEmit = keysToEmit.filter(k => k !== 'loop');
+        const owner = nodesMeta?.__loopOwner ? String(nodesMeta.__loopOwner) : null;
+        if (owner) {
+          const idx = keysToEmit.indexOf(owner);
+          if (idx >= 0) keysToEmit.splice(idx + 1, 0, 'loop');
+          else keysToEmit.unshift('loop');
+        } else {
+          keysToEmit.unshift('loop');
+        }
+      }
+      const out = {};
+      // payload toujours en premier s'il existe
+      if ('payload' in msg) out.payload = msg.payload;
+      for (const k of keysToEmit) out[k] = msg[k];
+      // _nodes en dernier
+      if (msg._nodes) out._nodes = msg._nodes;
+      return out;
+    } catch { return msg; }
+  };
+  try { captured.msgIn = reorderMsgByExecution(captured.msgIn); } catch {}
+
   let argsPre = null, argsPost = null;
   try {
     const { evaluateTemplateDetailed, evaluateExpression } = require('../engine/expression-sandbox');

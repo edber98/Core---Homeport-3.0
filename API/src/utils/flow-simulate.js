@@ -245,18 +245,57 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
     }
     return obj;
   };
+  const reorderMsgByExecution = (msg) => {
+    try {
+      if (!msg || typeof msg !== 'object') return msg;
+      const nodesMeta = (msg._nodes && typeof msg._nodes === 'object') ? msg._nodes : {};
+      const ids = Object.keys(msg).filter(k => k !== '_nodes' && k !== 'payload' && k !== 'loop');
+      const path = Array.isArray(nodesMeta?.__path) ? nodesMeta.__path.map(String) : null;
+      let orderedKeys;
+      if (path && path.length) {
+        const set = new Set(ids);
+        orderedKeys = path.filter(k => set.has(k));
+        const remaining = ids.filter(k => !orderedKeys.includes(k));
+        orderedKeys = [...orderedKeys, ...remaining];
+      } else {
+        const decorated = ids.map(k => ({ k, t: Date.parse(nodesMeta?.[k]?.start || nodesMeta?.[k]?.startedAt || 0) || 0 }));
+        decorated.sort((a,b) => a.t - b.t);
+        orderedKeys = decorated.map(d => d.k);
+      }
+      // Positionner 'loop' juste après son owner si présent
+      let keysToEmit = orderedKeys.slice();
+      if ('loop' in msg) {
+        keysToEmit = keysToEmit.filter(k => k !== 'loop');
+        const owner = nodesMeta?.__loopOwner ? String(nodesMeta.__loopOwner) : null;
+        if (owner) {
+          const idx = keysToEmit.indexOf(owner);
+          if (idx >= 0) keysToEmit.splice(idx + 1, 0, 'loop');
+          else keysToEmit.unshift('loop');
+        } else {
+          keysToEmit.unshift('loop');
+        }
+      }
+      const out = {};
+      if ('payload' in msg) out.payload = msg.payload;
+      for (const k of keysToEmit) out[k] = msg[k];
+      if (msg._nodes) out._nodes = msg._nodes;
+      return out;
+    } catch { return msg; }
+  };
+
   const scenarios = combos.map((choice, idx) => {
     const msgIn = simulateMsgForScenario(targetNodeId, choice, graph);
+    let ordered = msgIn; try { ordered = reorderMsgByExecution(msgIn); } catch {}
     let argsPre = null, argsPost = null;
     try {
       const node = graph.nodesById.get(String(targetNodeId));
       const model = node?.model || {};
       argsPre = model?.context || null;
-      if (argsPre && (evaluateTemplateDetailed || evaluateExpression)) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, msgIn));
+      if (argsPre && (evaluateTemplateDetailed || evaluateExpression)) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, ordered));
     } catch {}
     const label = Object.keys(choice).length ?
       Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
-    return { id: `sc_${idx+1}`, index: idx, label, msgIn, argsPre, argsPost, choice };
+    return { id: `sc_${idx+1}`, index: idx, label, msgIn: ordered, argsPre, argsPost, choice };
   });
   // Ensure at least one scenario exists, even if empty
   if (scenarios.length === 0) scenarios.push({ id: 'sc_1', index: 0, label: 'Chemin par défaut', msgIn: {}, choice: {} });
