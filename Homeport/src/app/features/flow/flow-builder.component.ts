@@ -973,7 +973,38 @@ export class FlowBuilderComponent {
     return;
   };
   private draftKey(flowId: string) { return this.DRAFT_KEY_PREFIX + (flowId || 'adhoc'); }
-  private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }
+  private computeChecksum(obj: any): string {
+    try {
+      const sanitizeNode = (n: any) => {
+        const id = String(n?.id ?? '');
+        const point = n?.point && typeof n.point === 'object' ? { x: Math.round(Number(n.point.x) || 0), y: Math.round(Number(n.point.y) || 0) } : undefined;
+        // Keep only model for checksum; strip runtime decorations (exec badges, counts, transient UI)
+        const model = n?.data?.model != null ? n.data.model : undefined;
+        return point ? { id, point, data: model != null ? { model } : {} } : { id, data: model != null ? { model } : {} };
+      };
+      const sanitizeEdge = (e: any) => {
+        return {
+          id: e?.id != null ? String(e.id) : undefined,
+          source: e?.source != null ? String(e.source) : undefined,
+          target: e?.target != null ? String(e.target) : undefined,
+          sourceHandle: (e as any)?.sourceHandle != null ? String((e as any).sourceHandle) : undefined,
+          targetHandle: (e as any)?.targetHandle != null ? String((e as any).targetHandle) : undefined,
+        };
+      };
+      const clean = {
+        nodes: Array.isArray(obj?.nodes) ? (obj.nodes as any[]).map(sanitizeNode) : [],
+        edges: Array.isArray(obj?.edges) ? (obj.edges as any[]).map(sanitizeEdge) : [],
+        name: obj?.name ?? undefined,
+        desc: obj?.desc ?? undefined,
+        status: obj?.status ?? undefined,
+        enabled: !!obj?.enabled,
+        portOrientation: obj?.portOrientation ?? undefined,
+        alignmentHelper: obj?.alignmentHelper ?? undefined,
+        snapGrid: obj?.snapGrid ?? undefined,
+      };
+      return JSON.stringify(clean);
+    } catch { return ''; }
+  }
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
