@@ -504,8 +504,8 @@ async function layoutGraph(graph, opts = {}){
           }
           for (const v of kids) dfs(v);
           // centre = moyenne des x enfants
-          let sumX = 0; let sumW = 0; let sumWint = 0;
-          for (const v of kids){ sumX += (xlane.get(String(v)) || 0); const wv = (width.get(String(v)) || 1); sumW += (xlane.get(String(v)) || 0); sumWint += wv; }
+          let sumX = 0; let sumWint = 0;
+          for (const v of kids){ sumX += (xlane.get(String(v)) || 0); const wv = (width.get(String(v)) || 1); sumWint += wv; }
           const xavg = sumX / Math.max(1, kids.length);
           xlane.set(id, xavg);
           width.set(id, sumWint);
