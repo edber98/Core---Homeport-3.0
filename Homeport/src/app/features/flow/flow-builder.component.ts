@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorR
 import { ActivatedRoute, Router } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
+import { backAwareCurve } from './edge-curves';
 import { MonacoJsonEditorComponent } from '../dynamic-form/components/monaco-json-editor.component';
 import { FlowAdvancedEditorDialogComponent } from './advanced-editor/flow-advanced-editor-dialog.component';
 import { FormsModule } from '@angular/forms';
@@ -56,6 +57,8 @@ export class FlowBuilderComponent {
   nodes: any[] = [];
   edges: Edge[] = [];
   connectionSettings: ConnectionSettings = {
+    type: 'template',
+    curve: backAwareCurve,
     validator: (c) => this.validateConnection(c)
   };
   private errorNodes = new Set<string>();
@@ -292,7 +295,9 @@ export class FlowBuilderComponent {
       if (this._cachedRenderedEdges && this._cachedRenderedEdgesBaseRef === base && this._cachedRenderedPairsKey === key) {
         return this._cachedRenderedEdges;
       }
-      const next = pairs.size === 0 ? base : this.pathSvc.decorateEdges(base, pairs);
+      const decorated = pairs.size === 0 ? base : this.pathSvc.decorateEdges(base, pairs);
+      // Ensure all edges use the dynamic curve strategy (backward-aware)
+      const next = (decorated || []).map(e => ({ ...e, curve: (backAwareCurve as any) }));
       this._cachedRenderedEdges = next;
       this._cachedRenderedEdgesBaseRef = base;
       this._cachedRenderedPairsKey = key;
@@ -1653,6 +1658,7 @@ export class FlowBuilderComponent {
           sourceHandle: 'out',
           // Target of a start/start_form is a regular node input
           targetHandle: 'in' as any,
+          curve: backAwareCurve as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -1688,6 +1694,7 @@ export class FlowBuilderComponent {
         target: c.target,
         sourceHandle: c.sourceHandle,
         targetHandle: c.targetHandle,
+        curve: backAwareCurve as any,
         edgeLabels: { center: { type: 'html-template', data: { text: labelText } } },
         data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
         markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } }
@@ -1870,6 +1877,7 @@ export class FlowBuilderComponent {
           target: target.id as any,
           sourceHandle: 'out',
           targetHandle: 'in' as any,
+          curve: backAwareCurve as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -1898,6 +1906,7 @@ export class FlowBuilderComponent {
             target: newId,
             sourceHandle: handle,
             targetHandle: 'in' as any,
+            curve: backAwareCurve as any,
             edgeLabels: { center: { type: 'html-template', data: { text: labelText } } } as any,
             data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
             markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } } as any

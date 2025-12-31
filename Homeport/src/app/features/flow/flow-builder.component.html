@@ -32,12 +32,19 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
+  <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)" (onNodesChange.position.many)="onNodesPositionMany($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
         (onEdgesChange.detached)="onEdgesDetached($event)" #flow
         (touchstart)="onCanvasTouchStart($event)" (touchmove)="onCanvasTouchMove($event)" (touchend)="onCanvasTouchEnd($event)" (touchcancel)="onCanvasTouchEnd($event)" (dblclick)="onCanvasDblClick($event)" (contextmenu)="onCanvasContextMenu($event)">
+        <ng-template let-ctx connection>
+          @if (ctx.path(); as p) {
+            <svg:g>
+              <svg:path fill="none" [attr.d]="p" [attr.marker-end]="ctx.marker()" stroke="#b1b1b7" stroke-width="2" />
+            </svg:g>
+          }
+        </ng-template>
         <ng-template let-ctx edge>
           <svg:g customTemplateEdge>
             <svg:path fill="none" [attr.d]="ctx.path()" 
