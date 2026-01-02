@@ -3400,6 +3400,7 @@ export class FlowBuilderComponent {
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
     this.advancedOpen = true;
+    /* portal handled inside dialog component */
   }
   onSimScenarioIdxChange(idx: number) {
     try {
@@ -3452,6 +3453,7 @@ export class FlowBuilderComponent {
   closeAdvancedEditor() {
     const m = this.pendingAdvancedModel;
     this.advancedOpen = false;
+    /* portal handled inside dialog component */
     try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
     this.pendingAdvancedModel = null;
   }

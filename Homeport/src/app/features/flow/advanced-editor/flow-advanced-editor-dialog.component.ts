@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, NgZone, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
@@ -173,7 +173,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     }
   `]
 })
-export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
+export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() flowId: string | null = null;
   @Input() model: any;
   @Input() disableForChecksum = false;
@@ -242,7 +242,6 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
     this.modelChange.emit(m);
   }
   ngOnInit() { this.updateIsMobile(); this.updateSlidesTransform(); }
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
   private lastSchemaLogAt = 0;
   debugRightSchema(): any {
     try {
@@ -260,7 +259,11 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
       return schema;
     } catch { return (this.model?.startFormSchema || this.model?.templateObj?.args) || { title: 'Formulaire', fields: [] }; }
   }
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
+
   ngAfterViewInit() {
+    // iOS Safari: move host to body to escape any overflow/stacking contexts from layout containers
+    try { this.renderer.addClass(this.el.nativeElement, 'advanced-dialog-portal'); this.renderer.appendChild(document.body, this.el.nativeElement); } catch {}
     this.zone.run(() => {
       setTimeout(() => {
         this.centerVisible = true;
@@ -271,6 +274,10 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
         }, 160);
       });
     });
+  }
+
+  ngOnDestroy() {
+    try { this.renderer.removeClass(this.el.nativeElement, 'advanced-dialog-portal'); } catch {}
   }
 
   onSimIdxChange(i: number) {

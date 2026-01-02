@@ -167,6 +167,10 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 .cdk-overlay-container .ant-select-dropdown, .cdk-overlay-container .ant-modal { z-index: 100011; }
 .in-flow-editor-modal .ant-modal, .in-flow-editor-modal .ant-modal-mask { z-index: 100012 !important; }
 
+/* When the custom Advanced Editor dialog is open, ensure app headers/panels do not overlay it on iOS Safari */
+/* Advanced editor dialog: portal to body to avoid iOS stacking issues */
+.advanced-dialog-portal { position: fixed !important; inset: 0 !important; z-index: 100010 !important; }
+
 /* styles.scss */
 
 /* Styled confirm for unsaved changes */
