@@ -89,6 +89,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),
                 children: [
                   { path: '', pathMatch: 'full', redirectTo: 'editor' },
+                  { path: 'ai-console', loadComponent: () => import('./features/flow/flow-ai-console.component').then(m => m.FlowAiConsoleComponent), title: 'Console AI' },
                   { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder', canDeactivate: [unsavedChangesGuard] },
                   { path: 'executions', loadComponent: () => import('./features/flow/flow-execution.component').then(m => m.FlowExecutionComponent), title: 'Exécutions' },
                 ]

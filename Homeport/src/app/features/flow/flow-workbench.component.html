@@ -1,8 +1,9 @@
 <div class="flow-workbench">
   <div class="top-bar">
     <div class="seg">
-      <a routerLink="editor" routerLinkActive="active" [queryParamsHandling]="'preserve'">Editor</a>
-      <a routerLink="executions" routerLinkActive="active" [queryParamsHandling]="'preserve'">Executions</a>
+      <a [routerLink]="['/flow-builder','ai-console']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Console AI</a>
+      <a [routerLink]="['/flow-builder','editor']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Éditeur</a>
+      <a [routerLink]="['/flow-builder','executions']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Exécutions</a>
     </div>
   </div>
   <div class="content">

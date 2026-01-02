@@ -28,6 +28,8 @@ function buildApp(opts = {}){
     app.use('/auth', require('./modules/auth')(store));
     app.use('/api', require('./modules/core')(store));
     app.use('/api', require('./modules/flows')(store));
+    // AI Console (threads, messages, context) in memory mode
+    app.use('/api', require('./modules/ai-console')(store));
     app.use('/api', require('./modules/runs')(store));
     // Flow simulation (memory)
     app.use('/api', require('./modules/simulate')(store));
@@ -59,6 +61,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/import-manifest')());
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
+    // AI Console (threads, messages, context) in DB mode
+    app.use('/api', require('./modules/db/ai-console')());
     // Flow simulation (db)
     app.use('/api', require('./modules/db/simulate')());
     // Layout (ELK) for DB mode

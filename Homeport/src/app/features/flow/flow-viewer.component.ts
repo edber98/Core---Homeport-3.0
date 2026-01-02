@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input, EventEmitter, Output, NgZone, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Vflow, Edge, ConnectionSettings } from 'ngx-vflow';
+import { backAwareCurve } from './edge-curves';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 import { Subscription } from 'rxjs';
 import { CatalogService, AppProvider } from '../../services/catalog.service';
@@ -15,7 +16,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     <section class="canvas ro">
       <div class="canvas-host" #flowHost (wheel)="onWheel($event)" (pointerdown)="onPointerDown($event)">
         <vflow view="auto" [background]="background" [entitiesSelectable]="allowDrag && move" [minZoom]="0.05" [maxZoom]="3"
-               [nodes]="vNodes" [edges]="edges" [connection]="connectionSettings" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
+               [nodes]="vNodes" [edges]="vEdges" [connection]="internalConnection" #flow (onNodesChange.position.single)="onNodePositionChange($event)"
                (selected)="selected.emit($event)" (onConnect)="connect.emit($event)">
           <ng-template let-ctx edge>
             <svg:g customTemplateEdge>
@@ -229,7 +230,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() portOrientation: 'vertical'|'horizontal' = 'horizontal';
   @Input() nodes: any[] = [];
   @Input() edges: Edge[] = [];
-  @Input() connectionSettings: ConnectionSettings = {} as any;
+  vEdges: Edge[] = [];
+  @Input() connectionSettings: ConnectionSettings = { type: 'template', curve: backAwareCurve } as any;
+  internalConnection: ConnectionSettings = { type: 'template', curve: (p: any) => backAwareCurve({ ...(p||{}), allNodes: this.vNodes, allEdges: this.edges }) } as any;
 
   @Input() defaultZoom = 0.5;
   @Input() storageKey = 'flow.viewer.viewport';
@@ -314,14 +317,25 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Cached nodes for Vflow to avoid getter recomputation on iOS Safari
   vNodes: any[] = [];
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['nodes'] || changes['allowDrag'] || changes['move']) {
+    if (changes['nodes'] || changes['allowDrag'] || changes['move'] || changes['edges']) {
       try {
         const canDrag = !!(this.allowDrag && this.move);
         const src = Array.isArray(this.nodes) ? this.nodes : [];
         this.vNodes = src.map(n => ({ ...n, draggable: canDrag }));
       } catch { this.vNodes = this.nodes || []; }
-      try { this.cdr.detectChanges(); } catch {}
+      try {
+        // Attach curve per-edge like execution to ensure custom router is used
+        const srcEdges = Array.isArray(this.edges) ? this.edges : [];
+        this.vEdges = srcEdges.map((e: any) => ({ ...e, curve: (backAwareCurve as any) }));
+        this.cdr.detectChanges();
+      } catch { this.vEdges = this.edges || []; }
     }
+    // Rebuild internal connection to inject current nodes/edges in curve params
+    try {
+      const base = this.connectionSettings || ({} as any);
+      const type = (base as any).type || 'template';
+      this.internalConnection = { ...base, type, curve: (p: any) => backAwareCurve({ ...(p||{}), allNodes: this.vNodes, allEdges: this.edges }) } as any;
+    } catch {}
     try {
       if (changes['portOrientation']) {
         console.log('[viewer] portOrientation input changed', { value: this.portOrientation });
