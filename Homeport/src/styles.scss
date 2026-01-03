@@ -238,8 +238,8 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 /* Directional assist animations */
 @keyframes assistInH { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 1; transform: translateX(0); } }
 @keyframes assistInV { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
-@keyframes assistOutH { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(10px); } }
-@keyframes assistOutV { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(10px); } }
+@keyframes assistOutH { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-10px); } }
+@keyframes assistOutV { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10px); } }
 
 .margin-11 {
     margin: 11px;
