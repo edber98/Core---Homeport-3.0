@@ -78,6 +78,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/ai-form')());
     // AI Flow (SSE) module
     app.use('/api', require('./modules/db/ai-flow')());
+    // AI Workflow v2 (SSE)
+    app.use('/api', require('./modules/db/ai-workflow')());
   }
 
   // API docs (Swagger UI)

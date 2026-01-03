@@ -451,7 +451,18 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const nodeH = Number(process.env.AI_FLOW_NODE_HEIGHT || 100);
       const topLeftGapX = Number.isFinite(gapX) ? gapX : 260;
       const topLeftGapY = Number.isFinite(gapY) ? gapY : 160;
-      const laid = await layoutGraphApplyToNodes({ nodes, edges }, { orientation: 'vertical', nodeWidth: nodeW, nodeHeight: nodeH, gapX: topLeftGapX, gapY: topLeftGapY, normalizeLevels: true });
+      // Orientation: default vertical; allow override via graph.settings.ui.portOrientation or env AI_FLOW_LAYOUT_ORIENTATION
+      let orient = 'vertical';
+      try {
+        const ui = (g && (g.settings?.ui || g.meta?.ui || {}));
+        const p = String(ui?.portOrientation || '').toLowerCase();
+        if (p === 'horizontal' || p === 'vertical') orient = p;
+      } catch {}
+      try {
+        const envO = String(process.env.AI_FLOW_LAYOUT_ORIENTATION || '').toLowerCase();
+        if (envO === 'horizontal' || envO === 'vertical') orient = envO;
+      } catch {}
+      const laid = await layoutGraphApplyToNodes({ nodes, edges }, { orientation: orient, nodeWidth: nodeW, nodeHeight: nodeH, gapX: topLeftGapX, gapY: topLeftGapY, normalizeLevels: true });
       try { emitMessage(`[layout.elk][apply][shared] nodeW=${nodeW} nodeH=${nodeH} gapX=${topLeftGapX} gapY=${topLeftGapY}`); } catch {}
       return laid;
     } catch (e) {
@@ -504,20 +515,27 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       }
       const q = {};
       const list = await NodeTemplate.find(q).lean();
-      const items = list.filter(t => (allowed.size ? allowed.has(String(t.key)) : true)).map(t => ({
-        key: t.key,
-        name: t.name || t.key,
-        title: t.title || t.name || t.key,
-        type: t.type,
-        category: t.category,
-        providerKey: t.providerKey,
-        args: t.args || {},
-        output: t.output || ['ok'],
-        authorize_catch_error: !!t.authorize_catch_error,
-        authorize_skip_error: !!t.authorize_skip_error,
-        allowWithoutCredentials: !!t.allowWithoutCredentials,
-        output_array_field: t.output_array_field,
-      }));
+      const items = list
+        .filter(t => (allowed.size ? allowed.has(String(t.key)) : true))
+        .map(t => ({
+          key: t.key,
+          name: t.name || t.key,
+          title: t.title || t.name || t.key,
+          type: t.type,
+          category: t.category,
+          providerKey: t.providerKey,
+          args: t.args || {},
+          // v2: handles + per-output schema; keep legacy output array for compatibility
+          inputHandles: Array.isArray(t.inputHandles) ? t.inputHandles : undefined,
+          outputHandles: Array.isArray(t.outputHandles) ? t.outputHandles : undefined,
+          linkedHandles: Array.isArray(t.linkedHandles) ? t.linkedHandles : undefined,
+          output: Array.isArray(t.output) && t.output.length ? t.output : undefined,
+          authorize_catch_error: !!t.authorize_catch_error,
+          authorize_skip_error: !!t.authorize_skip_error,
+          allowWithoutCredentials: !!t.allowWithoutCredentials,
+          // Deprecated in v2; conditions derive outputs from model context
+          output_array_field: t.output_array_field,
+        }));
       return items;
     } catch (e) {
       emitMessage('[get_templates][error] ' + (e?.message || e));
@@ -553,7 +571,6 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     try {
       const model = srcModel || {};
       const tpl = model?.templateObj || {};
-      const names = Array.isArray(tpl.output) && tpl.output.length ? tpl.output : ['Succes'];
       if (String(handle) === 'err') return 'Error';
       const t = String(tpl.type || '').toLowerCase();
       if (t === 'start' || t === 'start_form' || t === 'event' || t === 'endpoint') return 'Succes';
@@ -575,14 +592,19 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
         if (!it) return '';
         return (typeof it === 'object') ? (it.name ?? '') : '';
       }
-      // Function-like: map index to output name
+      // Function-like: prefer v2 outputHandles name
       const hs = String(handle ?? '');
       const isIdx = /^\d+$/.test(hs);
-      if (Array.isArray(names) && isIdx) {
-        const i = parseInt(hs, 10);
-        if (i >= 0 && i < names.length) return names[i];
+      // v2 handles
+      if (Array.isArray(tpl.outputHandles) && tpl.outputHandles.length) {
+        // direct id match
+        const oh = tpl.outputHandles.find(h => String(h.id) === hs);
+        if (oh) return oh.name || oh.id || '';
+        if (isIdx) {
+          const i = parseInt(hs, 10);
+          if (i >= 0 && i < tpl.outputHandles.length) return tpl.outputHandles[i]?.name || tpl.outputHandles[i]?.id || '';
+        }
       }
-      if (Array.isArray(names) && names.length === 1) return names[0] || 'Succes';
       return '';
     } catch { return String(handle || ''); }
   }
@@ -593,6 +615,55 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
     schema: z.object({}).describe('Sans argument.'),
     func: async () => JSON.stringify({ success: true, templates: await getTemplates() }),
   });
+
+  // Expose get_output_options and connect_by_output_name for robust connections
+  const getOutputOptionsTool = new DynamicStructuredTool({
+    name: 'get_output_options',
+    description: 'Retourne la liste des sorties disponibles pour un nœud: [{handle, name, type}] (v2 outputHandles).',
+    schema: z.object({ nodeId: z.string() }),
+    func: async ({ nodeId }) => {
+      try {
+        const g = getGraph();
+        const nodes = Array.isArray(g.nodes) ? g.nodes : [];
+        const n = nodes.find(nn => String(nn.id) === String(nodeId));
+        if (!n) return JSON.stringify({ success: false, error: 'node_not_found' });
+        const tpl = (n?.data?.model?.templateObj || {});
+        const arr = Array.isArray(tpl.outputHandles) ? tpl.outputHandles : [];
+        const items = arr.map((h) => ({ handle: String(h.id), name: h.name || String(h.id), type: h.type || 'any' }));
+        if (String(tpl.type).toLowerCase() === 'condition') {
+          const field = tpl.output_array_field || 'items';
+          const dyn = (n?.data?.model?.context && Array.isArray(n?.data?.model?.context[field])) ? n.data.model.context[field] : [];
+          dyn.forEach((it, i) => {
+            const hid = (it && it._id) ? String(it._id) : String(i);
+            const name = (typeof it === 'object' && it.name) ? it.name : String(hid);
+            if (!items.find(x => x.handle === hid)) items.push({ handle: hid, name, type: 'any' });
+          });
+        }
+        return JSON.stringify({ success: true, outputs: items });
+      } catch (e) { return JSON.stringify({ success: false, error: 'internal_error', message: String(e?.message || e) }); }
+    }
+  });
+
+  const connectByOutputNameTool = new DynamicStructuredTool({
+    name: 'connect_by_output_name',
+    description: 'Connecte deux nœuds en résolvant le handle par le nom de sortie (v2).',
+    schema: z.object({ sourceId: z.string(), targetId: z.string(), outputName: z.string() }),
+    func: async ({ sourceId, targetId, outputName }) => {
+      try {
+        const res = JSON.parse(await getOutputOptionsTool.func({ nodeId: sourceId }));
+        if (!res || !res.success) return JSON.stringify({ success: false, error: 'options_failed' });
+        const name = String(outputName || '').trim();
+        const opt = (res.outputs || []).find((o) => String(o.name).toLowerCase() === name.toLowerCase());
+        const handle = opt ? String(opt.handle) : '0';
+        const tools = await buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnapshot, emitMessage, workspaceId, instruction, history });
+        const connect = tools.find(t => t.name === 'connect');
+        if (!connect) return JSON.stringify({ success: false, error: 'connect_tool_missing' });
+        const out = await connect.func({ sourceId, targetId, sourceHandle: handle, targetHandle: 'in' });
+        return out;
+      } catch (e) { return JSON.stringify({ success: false, error: 'internal_error', message: String(e?.message || e) }); }
+    }
+  });
+
 
   // Provide normalized args schema of a node to the agent so it can populate values itself (no provider-specific logic)
   const getNodeArgsSchemaTool = new DynamicStructuredTool({
