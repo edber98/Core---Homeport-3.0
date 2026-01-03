@@ -2476,6 +2476,8 @@ export class FlowBuilderComponent {
               this.nodes = updated;
               this.updateSharedGraph();
               this.pushState('auto.layout.backend');
+              // Après auto-layout, primer un délai d'assistance pour éviter toute re-mesure avec décos visibles
+              try { this.primeAssistDelayAllNodes(480); } catch {}
               this.forceViewRefresh('auto-layout-apply');
               setTimeout(() => this.centerFlow(), 0);
             } catch {}
@@ -3333,6 +3335,8 @@ export class FlowBuilderComponent {
         try { this.draggingNodes.clear(); } catch {}
         try { this.pendingPositions = {} as any; } catch {}
         this.pushState('nodes.aligned.' + dir);
+        // Après alignement programmatique, primer l'assist sur les nœuds concernés pour laisser vflow stabiliser les ancres
+        try { Array.from(idsSet).forEach(id => this.primeAssistDelayForNode(String(id), 420)); this.cdr.detectChanges(); } catch {}
       }
     } catch {}
   }

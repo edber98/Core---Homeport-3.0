@@ -5,6 +5,7 @@ type Rect = { left: number; top: number; right: number; bottom: number };
 type Segment = { a: Point; b: Point };
 
 const RADIUS = 6;
+export const BACKWARD_ACTIVATE_OFFSET = 24; // px: seuil avant d'activer le mode backward
 const NODE_PADDING = 18; // inflate nodes to avoid hugging
 const GRID_GAP = 28; // distance from obstacle boundaries to sample grid lines
 const EXIT = 26; // distance to leave ports before turning
@@ -287,7 +288,7 @@ function routeBackwardHorizontalStrict(params: CurveFactoryParams): { path: stri
   const S: Point = { x: sourcePoint.x, y: sourcePoint.y };
   const T: Point = { x: targetPoint.x, y: targetPoint.y };
   // Si ce n'est pas un backward horizontal, route orthogonale simple
-  if (!(S.x > T.x)) {
+  if (!(S.x > T.x + BACKWARD_ACTIVATE_OFFSET)) {
     const outX = S.x + GAPX;
     const pts = dedupe([S, { x: outX, y: S.y }, { x: outX, y: T.y }, T]);
     return { path: roundedOrthogonalPath(pts, CORNER), labelPoints: labelPointsFromPolyline(pts) };
@@ -463,7 +464,7 @@ export const backAwareCurve: CurveFactory = (params: CurveFactoryParams): CurveL
   const vertHandles = (sp === 'top' || sp === 'bottom') && (tp === 'top' || tp === 'bottom');
   const axis: 'horizontal'|'vertical' = horizHandles ? 'horizontal' : (vertHandles ? 'vertical' : (Math.abs(sourcePoint.x - targetPoint.x) >= Math.abs(sourcePoint.y - targetPoint.y) ? 'horizontal' : 'vertical'));
   if (axis === 'horizontal') {
-    const backward = sourcePoint.x > targetPoint.x; // right -> left
+    const backward = sourcePoint.x > (targetPoint.x + BACKWARD_ACTIVATE_OFFSET); // right -> left (avec offset)
     if (backward) {
       try { console.debug('[router] mode=h-back', { sp, tp, S: sourcePoint, T: targetPoint }); } catch {}
       // Route backward horizontal; fallback to bezier if invalid
@@ -481,7 +482,7 @@ export const backAwareCurve: CurveFactory = (params: CurveFactoryParams): CurveL
     }
     return bezierPathLite(params);
   } else {
-    const backward = sourcePoint.y > targetPoint.y; // bottom -> top (vertical backward)
+    const backward = sourcePoint.y > (targetPoint.y + BACKWARD_ACTIVATE_OFFSET); // bottom -> top (avec offset)
     if (backward) {
       try { console.debug('[router] mode=v-back', { sp, tp, S: sourcePoint, T: targetPoint }); } catch {}
       const routed = routeBackwardVerticalStrict(params);
@@ -498,7 +499,7 @@ function routeBackwardVerticalStrict(params: CurveFactoryParams): CurveLayout {
   const S: Point = { x: sourcePoint.x, y: sourcePoint.y };
   const T: Point = { x: targetPoint.x, y: targetPoint.y };
   // Si ce n'est pas un backward vertical (source sous la cible), route simple
-  if (!(S.y > T.y)) {
+  if (!(S.y > T.y + BACKWARD_ACTIVATE_OFFSET)) {
     const outY = S.y + GAPY;
     const pts = dedupe([S, { x: S.x, y: outY }, { x: T.x, y: outY }, T]);
     return { path: roundedOrthogonalPath(pts, CORNER), labelPoints: labelPointsFromPolyline(pts) };
