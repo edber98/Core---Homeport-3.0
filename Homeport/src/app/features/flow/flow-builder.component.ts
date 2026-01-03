@@ -191,6 +191,8 @@ export class FlowBuilderComponent {
   togglePortOrientation() {
     this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';
     try { this.message.info(`Orientation: ${this.portOrientation}`); } catch {}
+    // After switching orientation, temporarily hide assist on all outputs
+    try { this.primeAssistDelayAllNodes(420); } catch {}
     
     // Persist and refresh placement/viewport
     try { this.updateSharedGraph(); this.saveDraft(); this.saveLocalUiMeta(); } catch {}
@@ -473,6 +475,13 @@ export class FlowBuilderComponent {
     } catch { return false; }
   }
 
+  // Add-node-from-handle modal state
+  addNodeVisible = false;
+  addNodeQuery = '';
+  addNodeSourceId: string | null = null;
+  addNodeSourceHandle: string | null = null;
+  addNodeCandidates: any[] = [];
+
   // Lightweight tooltip state for output handles
   tipVisible = false;
   tipText = '';
@@ -636,6 +645,7 @@ export class FlowBuilderComponent {
               this.currentFlowName = doc?.name || this.currentFlowName;
               this.currentFlowDesc = doc?.description || this.currentFlowDesc;
               this.nodes = (doc?.nodes || []);
+              try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               
               this.edges = (doc?.edges || []);
               this.applyFlowMeta((doc as any).meta || {});
@@ -724,6 +734,7 @@ export class FlowBuilderComponent {
               this.nodes = merged as any[];
               try { console.log('[flow-builder] flow refresh merged nodes'); } catch {}
             } catch { this.nodes = (doc.nodes || []) as any[]; }
+            try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
@@ -842,6 +853,7 @@ export class FlowBuilderComponent {
                 this.nodes = merged as any[];
                 try { console.log('[flow-builder] flow refresh merged nodes (route change)'); } catch {}
               } catch { this.nodes = (doc.nodes || []) as any[]; }
+              try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
@@ -1408,6 +1420,7 @@ export class FlowBuilderComponent {
       this.catalog.getFlow(fid).subscribe({
         next: (doc) => {
           this.nodes = (doc?.nodes || []);
+          try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
           this.edges = (doc?.edges || []);
           this.applyFlowMeta((doc as any).meta || {});
           this.loadingFlowDoc = false;
@@ -1573,6 +1586,87 @@ export class FlowBuilderComponent {
   hasPredecessor(nodeId?: string | null): boolean {
     try { const id = String(nodeId || ''); if (!id) return false; return (this.edges || []).some(e => String(e.target) === id); } catch { return false; }
   }
+
+  // Check if an output handle already has an outgoing edge
+  isOutputConnected(nodeId: string, handleId: string): boolean {
+    try { return (this.edges || []).some(e => String(e.source) === String(nodeId) && String((e as any).sourceHandle || '') === String(handleId)); } catch { return false; }
+  }
+
+  // Open modal to pick a node template and connect from given handle
+  openAddNodeFromHandle(nodeId: string, handleId: string, ev?: Event) {
+    try { if (ev) { ev.stopPropagation(); ev.preventDefault(); } } catch {}
+    this.addNodeSourceId = String(nodeId);
+    this.addNodeSourceHandle = String(handleId);
+    this.addNodeQuery = '';
+    this.rebuildAddNodeCandidates();
+    this.addNodeVisible = true;
+  }
+  closeAddNodeModal() { this.addNodeVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; }
+  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); this.rebuildAddNodeCandidates(); }
+  private rebuildAddNodeCandidates() {
+    try {
+      const q = (this.addNodeQuery || '').trim().toLowerCase();
+      const base = (this.items || []).filter(it => !this.isStartLike(this.normalizeTemplate(it?.template)));
+      const filtered = q ? base.filter(it => {
+        try {
+          const tpl = this.normalizeTemplate(it?.template);
+          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''}`.toLowerCase();
+          return hay.includes(q);
+        } catch { return true; }
+      }) : base;
+      this.addNodeCandidates = filtered.slice(0, 200);
+    } catch { this.addNodeCandidates = []; }
+  }
+  pickTemplateForAdd(it: any) {
+    try {
+      const sourceId = String(this.addNodeSourceId || '');
+      const handleId = String(this.addNodeSourceHandle || '');
+      if (!sourceId || !handleId) { this.closeAddNodeModal(); return; }
+      const source = (this.nodes || []).find(n => String(n.id) === sourceId);
+      const templateObj = this.normalizeTemplate(it?.template || it);
+      const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
+      // Compute placement near source
+      const center = { x: Number(source?.point?.x || 0), y: Number(source?.point?.y || 0) };
+      const point = this.computeNewNodePosition(source || null, center);
+      // Build model similar to external drop
+      const preCtx = (templateObj as any)?.__preContext || null;
+      const nodeModel = {
+        id: newId,
+        name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
+        template: templateObj?.id || null,
+        templateObj,
+        context: (() => { try { return preCtx ? { ...preCtx } : {}; } catch { return {}; } })(),
+        templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+        templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
+      } as any;
+      const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
+      this.nodes = [...this.nodes, vNode];
+      this.primeAssistDelayForNode(newId);
+      this.triggerSpawnAnim(newId);
+      // Connect new node to source handle
+      const targetHandle = this.inputId(templateObj) || 'in';
+      const labelText = this.computeEdgeLabel(sourceId, handleId);
+      const isErr = (handleId === 'err') || this.errorNodes.has(String(sourceId));
+      const edge: Edge = {
+        type: 'template',
+        id: `${sourceId}->${newId}:${handleId}:${targetHandle}`,
+        source: sourceId as any,
+        target: newId as any,
+        sourceHandle: handleId as any,
+        targetHandle: targetHandle as any,
+        curve: backAwareCurve as any,
+        edgeLabels: { center: { type: 'html-template', data: { text: labelText } } },
+        data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
+        markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } }
+      } as any;
+      this.edges = [...this.edges, edge];
+      this.recomputeErrorPropagation();
+      this.pushState('add.node.from.handle');
+      this.closeAddNodeModal();
+      // Refresh view so handles/labels update
+      try { this.forceViewRefresh('add-node-from-handle'); } catch {}
+    } catch { this.closeAddNodeModal(); }
+  }
   onExternalDrop(event: any) {
     // logs disabled
     if (this.isMobile) return; // Disable DnD on mobile
@@ -1643,6 +1737,7 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    this.primeAssistDelayForNode(newId);
     this.triggerSpawnAnim(newId);
     try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     
@@ -1682,6 +1777,8 @@ export class FlowBuilderComponent {
   }
   onConnect(c: Connection) {
     // logs disabled
+    // Anchor correctness: do NOT animate or show assist at connect-time; we keep it hidden
+    // during drag/hover and let connected handles stay hidden (no fade-out) to avoid flicker.
     const labelText = this.computeEdgeLabel(c.source, c.sourceHandle);
     const isErr = (c.sourceHandle === 'err') || this.errorNodes.has(String(c.source));
     if (isErr) this.errorNodes.add(String(c.target));
@@ -1713,6 +1810,8 @@ export class FlowBuilderComponent {
     // After edge deletion, recompute error branch propagation
     this.recomputeErrorPropagation();
     this.pushState('delete.edge');
+    // Make assist for freed source handle appear promptly
+    try { this.primeAssistForHandle(String(edge.source), String((edge as any).sourceHandle || 'out'), 0); this.cdr.detectChanges(); } catch {}
   }
   onDeleteEdgeClick(ev: MouseEvent, edge: Edge) {
     try { ev.preventDefault(); ev.stopPropagation(); } catch { }
@@ -1865,6 +1964,7 @@ export class FlowBuilderComponent {
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
     this.triggerSpawnAnim(newId);
+    this.primeAssistDelayForNode(newId);
     try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     // Auto-connect logic
     if (isStartLike) {
@@ -3514,6 +3614,8 @@ export class FlowBuilderComponent {
       setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
     }
     this.edges = res.edges as any;
+    // If condition outputs changed (items/else), give handles a moment before assist shows
+    try { this.primeAssistDelayForNode(String(stable.id), 420); this.cdr.detectChanges(); } catch {}
 
     this.pushState('dialog.modelCommit.final');
     this.recomputeValidation();
@@ -3550,6 +3652,7 @@ export class FlowBuilderComponent {
         setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
       }
       this.edges = res.edges as any;
+      try { this.primeAssistDelayForNode(String(stable.id), 420); this.cdr.detectChanges(); } catch {}
       this.pushState('inspector.saveJson');
       this.recomputeValidation();
     } catch { }
@@ -4824,7 +4927,12 @@ export class FlowBuilderComponent {
   banX = 0;
   banY = 0;
   onConnectStartFrom(nodeId: string, handleId: string) {
-    try { this.connectingEdge = true; this.connectingSource = { nodeId: String(nodeId), handleId: String(handleId) }; } catch {}
+    try {
+      this.connectingEdge = true;
+      this.connectingSource = { nodeId: String(nodeId), handleId: String(handleId) };
+      // Force immediate DOM update so assist elements are removed before Vflow reads bbox
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
   }
   onConnectEnd() {
     try { this.connectingEdge = false; this.connectingSource = null; this.banVisible = false; } catch {}
@@ -4836,6 +4944,96 @@ export class FlowBuilderComponent {
     try { if (this.connectingEdge && !isValid) { this.banX = ev.clientX + 12; this.banY = ev.clientY + 12; this.banVisible = true; } else { this.banVisible = false; } } catch {}
   }
   onTargetLeave() { try { this.banVisible = false; } catch {} }
+
+  // Is user currently dragging a connection from this exact handle?
+  isConnectingFrom(nodeId: string, handleId: string): boolean {
+    try { return !!this.connectingEdge && !!this.connectingSource && String(this.connectingSource.nodeId) === String(nodeId) && String(this.connectingSource.handleId) === String(handleId); } catch { return false; }
+  }
+
+  // Pre-hide assist when hovering a source handle so bbox equals the circle only
+  private hoverSource: { nodeId: string; handleId: string } | null = null;
+  onOutputHandleEnter(nodeId: string, handleId: string) {
+    try {
+      // Trigger a short out animation for the assist (directional),
+      // then mark hover so template hides assist instantly for anchor safety.
+      this.startAssistCloseOnHover(String(nodeId), String(handleId), 140);
+      this.hoverSource = { nodeId: String(nodeId), handleId: String(handleId) };
+    } catch {}
+  }
+  onOutputHandleLeave(nodeId: string, handleId: string) {
+    try { if (this.hoverSource && String(this.hoverSource.nodeId) === String(nodeId) && String(this.hoverSource.handleId) === String(handleId)) this.hoverSource = null; } catch {}
+  }
+  isHoveringFrom(nodeId: string, handleId: string): boolean {
+    try { return !!this.hoverSource && String(this.hoverSource.nodeId) === String(nodeId) && String(this.hoverSource.handleId) === String(handleId); } catch { return false; }
+  }
+
+  // Assist delayed activation to let Vflow anchor compute from circle-only at first frame
+  private assistReadyAt = new Map<string, number>();
+  private assistDelayMs = 280;
+  private keyForAssist(nodeId: string, handleId: string): string { return `${nodeId}::${handleId}`; }
+  // Returns true only after a per-handle delay; on first call schedules readiness in ~280ms.
+  isAssistReady(nodeId: string, handleId: string): boolean {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      let t = this.assistReadyAt.get(k);
+      if (!t) { t = Date.now() + this.assistDelayMs; this.assistReadyAt.set(k, t); }
+      return Date.now() >= (t || 0);
+    } catch { return false; }
+  }
+  // Helper to prime delay for all outputs of a newly inserted node
+  private primeAssistDelayForNode(nodeId: string, ms?: number) {
+    try {
+      const node = (this.nodes || []).find(n => String(n.id) === String(nodeId));
+      const outs = this.outputIds(node?.data?.model) || [];
+      const until = Date.now() + (Number.isFinite(ms as any) ? Number(ms) : this.assistDelayMs);
+      outs.forEach(h => this.assistReadyAt.set(this.keyForAssist(String(nodeId), String(h)), until));
+    } catch {}
+  }
+  private primeAssistDelayAllNodes(ms?: number) {
+    try {
+      const until = Date.now() + (Number.isFinite(ms as any) ? Number(ms) : this.assistDelayMs);
+      for (const n of (this.nodes || [])) {
+        const outs = this.outputIds(n?.data?.model) || [];
+        outs.forEach(h => this.assistReadyAt.set(this.keyForAssist(String(n.id), String(h)), until));
+      }
+    } catch {}
+  }
+
+  private primeAssistForHandle(nodeId: string, handleId: string, ms?: number) {
+    try { this.assistReadyAt.set(this.keyForAssist(String(nodeId), String(handleId)), Date.now() + (Number.isFinite(ms as any) ? Number(ms) : 0)); } catch {}
+  }
+
+  // Fade-out support for assist (line + '+') without breaking anchor.
+  // Use only in non-drag scenarios (after connect/delete/commit). During drag/hover, we hide instantly.
+  private assistFadingUntil = new Map<string, number>();
+  private startAssistFade(nodeId: string, handleId: string, ms: number = 160) {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      const until = Date.now() + Math.max(80, ms);
+      this.assistFadingUntil.set(k, until);
+      setTimeout(() => { try { this.assistFadingUntil.delete(k); this.cdr.detectChanges(); } catch {} }, Math.max(80, ms) + 10);
+    } catch {}
+  }
+  isAssistFading(nodeId: string, handleId: string): boolean {
+    try { const t = this.assistFadingUntil.get(this.keyForAssist(String(nodeId), String(handleId))) || 0; return Date.now() < t; } catch { return false; }
+  }
+
+  // Close-on-hover animation: show a brief directional out animation when the mouse enters
+  // the circle before drag starts. On pointerdown we still hide instantly for anchor safety.
+  private assistClosingUntil = new Map<string, number>();
+  private startAssistCloseOnHover(nodeId: string, handleId: string, ms: number = 140) {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      const until = Date.now() + Math.max(80, ms);
+      this.assistClosingUntil.set(k, until);
+      setTimeout(() => { try { this.assistClosingUntil.delete(k); this.cdr.detectChanges(); } catch {} }, Math.max(80, ms) + 10);
+    } catch {}
+  }
+  isAssistClosing(nodeId: string, handleId: string): boolean {
+    try { const t = this.assistClosingUntil.get(this.keyForAssist(String(nodeId), String(handleId))) || 0; return Date.now() < t; } catch { return false; }
+  }
+
+  // (Removed assist-down connection spoofing to ensure edges always start from the handle circle)
 
   // Compute preview validity while dragging from a source handle
   canConnectPreview(targetNodeId: string, targetHandleId: string): boolean {
@@ -4974,7 +5172,8 @@ export class FlowBuilderComponent {
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
     this.draggingNodes.add(String(id));
-    // debug logs removed
+    // Hide assist for this node outputs while position settles (prevents anchor bbox flicker)
+    try { this.primeAssistDelayForNode(String(id), 420); } catch {}
   }
 
   // Many nodes moved at once (multi-select drag, helper alignment moves)
@@ -4988,6 +5187,7 @@ export class FlowBuilderComponent {
         if (!id || !pt) continue;
         this.pendingPositions[id] = { x: pt.x, y: pt.y };
         this.draggingNodes.add(id);
+        try { this.primeAssistDelayForNode(String(id), 420); } catch {}
       } catch {}
     }
     // debug logs removed
@@ -5378,14 +5578,15 @@ export class FlowBuilderComponent {
       this.log('edges.removed', { ids: Array.from(removedIds) });
       const nextEdges: Edge[] = [];
       let changed = false;
+      const removedList: Edge[] = [] as any;
       for (const e of this.edges) {
         if (!removedIds.has(e.id as any)) { nextEdges.push(e); continue; }
         const isAllowedDeletion = this.allowedRemovedEdgeIds.has(e.id as any);
-        if (isAllowedDeletion) { changed = true; continue; }
+        if (isAllowedDeletion) { changed = true; removedList.push(e); continue; }
         // Only remove if one of the endpoints no longer exists; otherwise ignore (likely a transient detach while reattaching)
         const hasSource = this.nodes.some(n => n.id === e.source);
         const hasTarget = this.nodes.some(n => n.id === e.target);
-        if (!hasSource || !hasTarget) { changed = true; continue; }
+        if (!hasSource || !hasTarget) { changed = true; removedList.push(e); continue; }
         // Keep the edge; will be restored visually
         nextEdges.push(e);
       }
@@ -5394,6 +5595,13 @@ export class FlowBuilderComponent {
         // Any change in edges can affect error-branch propagation
         this.recomputeErrorPropagation();
         this.pushState('edges.removed');
+        // Prime assist for freed handles so the + reappears promptly
+        try {
+          for (const e of removedList) {
+            this.primeAssistForHandle(String(e.source), String((e as any).sourceHandle || 'out'), 0);
+          }
+          this.cdr.detectChanges();
+        } catch {}
       }
     } catch { }
   }

@@ -220,6 +220,27 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
     border-left: 1px solid #E2E1E4;
 }
 
+/* Flow Builder: small + button near free output handles */
+.handle-add-btn {
+  width: 18px; height: 18px; line-height: 16px; text-align: center;
+  border-radius: 4px; border: 1px solid #d1d5db; background: #fff; color: #1677ff;
+  font-weight: 600; font-size: 12px; cursor: pointer; padding: 0;
+}
+.handle-add-btn:hover { border-color: #1677ff; background: #f0f7ff; }
+
+/* Add-node modal picker items */
+.picker-item { display: flex; align-items: center; width: 100%; border: 0; background: transparent; padding: 6px 4px; cursor: pointer; }
+.picker-item:hover { background: #f5f7fa; }
+.picker-item .label { font-size: 13px; color: #111827; }
+.picker-item .hint { font-size: 12px; color: #6b7280; }
+
+/* Flow Builder: assist fade-in for handle helpers */
+/* Directional assist animations */
+@keyframes assistInH { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 1; transform: translateX(0); } }
+@keyframes assistInV { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes assistOutH { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(10px); } }
+@keyframes assistOutV { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(10px); } }
+
 .margin-11 {
     margin: 11px;
 }

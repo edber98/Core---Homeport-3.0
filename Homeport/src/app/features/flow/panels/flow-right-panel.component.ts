@@ -109,16 +109,16 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
           </form>
 
         <!-- Section Nœud / Paramètres - visible uniquement si un nœud est sélectionné -->
-        <ng-container *ngIf="selected || (selectedList?.length||0) > 1">
+        <ng-container *ngIf="selected || (selectedList.length||0) > 1">
           <div class="panel-heading">
             <div class="card-title left">
-              <span class="t">{{ (selectedList?.length||0) > 1 ? 'Nœuds' : 'Nœud' }}</span>
+              <span class="t">{{ (selectedList.length||0) > 1 ? 'Nœuds' : 'Nœud' }}</span>
               <span class="s">Paramètres</span>
             </div>
           </div>
           <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
-            <div class="rows simple" *ngIf="(selectedList?.length||0) <= 1; else multiSlides">
-              <div *ngIf="(selectedList?.length||0) <= 1; else multiMeta">
+            <div class="rows simple" *ngIf="(selectedList.length||0) <= 1; else multiSlides">
+              <div *ngIf="(selectedList.length||0) <= 1; else multiMeta">
                 <node-inspector-item [model]="selectedModel"
                   [filledArgs]="filledArgsAll()" [usedArgs]="usedArgsAll()"
                   [showJsonViewer]="showJsonViewer" [editJson]="editJson"
@@ -141,7 +141,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                   </ng-container>
                 </ng-container>
               </ng-template>
-              <div class="actions-line icon-only end" *ngIf="(selectedList?.length||0) <= 1">
+              <div class="actions-line icon-only end" *ngIf="(selectedList.length||0) <= 1">
                 <button nz-button nzSize="small" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur avancé" aria-label="Ouvrir l’éditeur avancé"><i class="fa-solid fa-up-right-from-square"></i></button>
                 <button nz-button nzSize="small" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
                 <button nz-button nzSize="small" nzDanger (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>

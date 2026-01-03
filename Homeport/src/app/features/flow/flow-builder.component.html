@@ -147,6 +147,7 @@
               </ng-template>
               <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
                 <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
+                  style="position: relative;"
                   [ngClass]="{ error: out === 'err' }">
         
                   <ng-template #hTpl let-hctx>
@@ -156,8 +157,62 @@
                       [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
                       [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
                       (pointerdown)="onConnectStartFrom(ctx.node.id, out)"
-                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
-                      (mouseleave)="onHandleLeave()"></svg:circle>
+                      (mouseenter)="onOutputHandleEnter(ctx.node.id, out); onHandleEnter($event, ctx.node.data.model, out)"
+                      (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onOutputHandleLeave(ctx.node.id, out); onHandleLeave()"></svg:circle>
+                      <!-- Pure SVG assist elements (do not intercept handle drag) -->
+                      <!-- Assist line: visible only when handle is free, orientation-stable, and not during hover/drag -->
+                      <svg:g *ngIf="!isOutputConnected(ctx.node.id, out) && !isConnectingFrom(ctx.node.id, out) && (isAssistClosing(ctx.node.id, out) || (isAssistReady(ctx.node.id, out) && !isHoveringFrom(ctx.node.id, out)))"
+                        [attr.style]="isAssistClosing(ctx.node.id, out) ? (portOrientation === 'horizontal' ? 'animation: assistOutH 140ms ease both;' : 'animation: assistOutV 140ms ease both;') : (portOrientation === 'horizontal' ? 'animation: assistInH 180ms ease both;' : 'animation: assistInV 180ms ease both;')"
+                        pointer-events="visibleStroke"
+                        (pointerdown)="$event.stopPropagation(); $event.preventDefault()">
+                        <!-- Tooltip shows output display name. Use pure SVG <title> for reliability (no foreignObject). -->
+                        <svg:title>{{ getOutputName(ctx.node.data.model, out) || 'Ajouter un nœud' }}</svg:title>
+                        <svg:line
+                          [attr.x1]="hctx.point().x" [attr.y1]="hctx.point().y"
+                          [attr.x2]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 24 : 0)"
+                          [attr.y2]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 0 : 24)"
+                          [attr.stroke]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          stroke-width="2" stroke-linecap="round" opacity="0.9"></svg:line>
+                        <!-- balancing dummy on opposite side (invisible) to keep bbox center at the circle center -->
+                        <svg:line
+                          [attr.x1]="hctx.point().x" [attr.y1]="hctx.point().y"
+                          [attr.x2]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 24 : 0)"
+                          [attr.y2]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? 0 : 24)"
+                          stroke="#000000" stroke-width="2" stroke-linecap="round" opacity="0"></svg:line>
+                      </svg:g>
+                      <!-- Plus button: same guards; allow touchend on mobile and click on desktop -->
+                      <svg:g *ngIf="!isOutputConnected(ctx.node.id, out) && !isConnectingFrom(ctx.node.id, out) && (isAssistClosing(ctx.node.id, out) || (isAssistReady(ctx.node.id, out) && !isHoveringFrom(ctx.node.id, out)))"
+                        (pointerdown)="$event.stopPropagation(); $event.preventDefault()"
+                        (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+                        (touchstart)="$event.stopPropagation()"
+                        (touchend)="$event.stopPropagation(); openAddNodeFromHandle(ctx.node.id, out, $event)"
+                        (click)="openAddNodeFromHandle(ctx.node.id, out, $event)"
+                        [attr.style]="isAssistClosing(ctx.node.id, out) ? (portOrientation === 'horizontal' ? 'animation: assistOutH 140ms ease both;' : 'animation: assistOutV 140ms ease both;') : (portOrientation === 'horizontal' ? 'animation: assistInH 180ms ease both;' : 'animation: assistInV 180ms ease both;')">
+                        <!-- Same tooltip on the plus button -->
+                        <svg:title>{{ getOutputName(ctx.node.data.model, out) || 'Ajouter un nœud' }}</svg:title>
+                        <svg:circle
+                          [attr.cx]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.cy]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 0 : 34)"
+                          r="8" fill="#ffffff"
+                          [attr.stroke]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          stroke-width="1.5" style="cursor: pointer;"></svg:circle>
+                        <svg:text
+                          [attr.x]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.y]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 3 : 37)"
+                          text-anchor="middle" font-size="12" font-weight="700"
+                          [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          style="pointer-events: none;">+</svg:text>
+                        <!-- balancing dummy circle/text on opposite side (invisible) -->
+                        <svg:circle
+                          [attr.cx]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.cy]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? 0 : 34)"
+                          r="8" fill="#ffffff" stroke="#000000" stroke-width="1.5" opacity="0"></svg:circle>
+                        <svg:text
+                          [attr.x]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.y]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? -3 : 37)"
+                          text-anchor="middle" font-size="12" font-weight="700" fill="#000" opacity="0">+</svg:text>
+                      </svg:g>
                     </svg:g>
                   </ng-template>
                   <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
@@ -209,6 +264,22 @@
           </div>
         </ng-template>
       </vflow>
+      <!-- Modal: add node from output handle -->
+      <nz-modal [(nzVisible)]="addNodeVisible" nzTitle="Ajouter un nœud"
+        (nzOnCancel)="closeAddNodeModal()" [nzFooter]="null">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+          <input nz-input placeholder="Rechercher…" [(ngModel)]="addNodeQuery" (ngModelChange)="onAddNodeQueryChange($event)" />
+          <span style="font-size:12px; color:#6b7280;">{{ addNodeCandidates.length }} résultats</span>
+        </div>
+        <div style="max-height:360px; overflow:auto;">
+          <button type="button" class="picker-item" *ngFor="let it of addNodeCandidates; trackBy: trackItem"
+            (click)="pickTemplateForAdd(it)">
+            <i class="fa-solid fa-plus" style="color:#1677ff; margin-right:6px;"></i>
+            <span class="label">{{ it.label }}</span>
+            <span class="hint" *ngIf="it?.template?.subtitle"> · {{ it?.template?.subtitle }}</span>
+          </button>
+        </div>
+      </nz-modal>
       <!-- Capture overlay to block pan/zoom while dragging selection -->
       <div class="selection-capture" *ngIf="selectionBoxStart || marqueeMode"
            (contextmenu)="$event.preventDefault()"
