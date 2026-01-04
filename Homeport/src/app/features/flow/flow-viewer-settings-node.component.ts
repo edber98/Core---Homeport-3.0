@@ -14,7 +14,7 @@ import { Edge, ConnectionSettings } from 'ngx-vflow';
       [nodes]="nodes" [edges]="edges" [background]="background"
       [connectionSettings]="connectionSettings" [useStorage]="useStorage"
       [showBottomBar]="showBottomBar" [showRun]="showRun" [showSave]="showSave"
-      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview" [focusNodeIds]="focusNodeIds">
+      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview" [focusNodeIds]="focusNodeIds" [autoFitOnInit]="autoFitOnInit" [centerRequest]="centerRequest">
     </flow-viewer>
   `
 })
@@ -36,4 +36,8 @@ export class FlowViewerSettingsNodeComponent {
   @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
   // When provided, the viewer center action will focus only these node ids
   @Input() focusNodeIds: string[] | null = null;
+  // Control initial auto-fit (disable in settings to avoid recenter on mount)
+  @Input() autoFitOnInit: boolean = true;
+  // Programmatic center trigger (incrementing number)
+  @Input() centerRequest: number = 0;
 }

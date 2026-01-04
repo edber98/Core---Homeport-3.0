@@ -466,7 +466,7 @@ export const backAwareCurve: CurveFactory = (params: CurveFactoryParams): CurveL
   if (axis === 'horizontal') {
     const backward = sourcePoint.x > (targetPoint.x + BACKWARD_ACTIVATE_OFFSET); // right -> left (avec offset)
     if (backward) {
-      try { console.debug('[router] mode=h-back', { sp, tp, S: sourcePoint, T: targetPoint }); } catch {}
+      // debug removed
       // Route backward horizontal; fallback to bezier if invalid
       const routed = routeBackwardHorizontalStrict(params);
       // Validate: no node intersections
@@ -484,7 +484,7 @@ export const backAwareCurve: CurveFactory = (params: CurveFactoryParams): CurveL
   } else {
     const backward = sourcePoint.y > (targetPoint.y + BACKWARD_ACTIVATE_OFFSET); // bottom -> top (avec offset)
     if (backward) {
-      try { console.debug('[router] mode=v-back', { sp, tp, S: sourcePoint, T: targetPoint }); } catch {}
+      // debug removed
       const routed = routeBackwardVerticalStrict(params);
       return routed || bezierPathLite(params);
     }

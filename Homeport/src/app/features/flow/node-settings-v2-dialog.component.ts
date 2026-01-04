@@ -1,27 +1,50 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FlowAdvancedCenterPanelComponent } from './advanced-editor/flow-advanced-center-panel.component';
 import { JsonSchemaViewerV2Component } from '../../modules/json-schema-viewer/json-schema-viewer-v2';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
+import { FlowViewerSettingsNodeComponent } from './flow-viewer-settings-node.component';
+import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
+import { LayoutBackendService } from '../../services/layout-backend.service';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'flow-node-settings-v2-dialog',
   standalone: true,
-  imports: [CommonModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerV2Component, DynamicForm],
+  imports: [CommonModule, FormsModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerV2Component, DynamicForm, FlowViewerSettingsNodeComponent, NzSelectModule],
   template: `
     <div class="overlay" (click)="close.emit()"></div>
-    <div class="dialog" (click)="$event.stopPropagation()">
-      <div class="header">
-        <div class="title">Éditeur avancé</div>
-        <button class="close" (click)="close.emit()" aria-label="Fermer">✕</button>
-      </div>
+    <div class="dialog" (click)="$event.stopPropagation()" (dragover)="swallowDrag($event)" (drop)="swallowDrop($event)">
+      <div class="header"></div>
       <div class="body">
-        <!-- Left column: Input preview (when applicable) -->
+        <!-- Left column: Scenario + View mode (top), then viewer -->
         <div class="col left" *ngIf="hasInput(model)">
-          <div class="section-title">Input</div>
+          <div class="top-bar">
+            <nz-select class="scenario-select" [ngModel]="simSelectedIndex" (ngModelChange)="onSelectScenario($event)" nzSize="small" nzPlaceHolder="Scénario">
+              <nz-option *ngFor="let sc of simScenarios; let i=index" [nzValue]="i" [nzLabel]="sc?.label || ('Cas ' + (i+1))"></nz-option>
+            </nz-select>
+            <div class="seg">
+              <button class="seg-btn" [class.active]="viewMode==='flow'" (click)="setView('flow')">Flow</button>
+              <button class="seg-btn" [class.active]="viewMode==='json'" (click)="setView('json')">JSON</button>
+            </div>
+          </div>
           <div *ngIf="loadingInput" class="loading">Chargement…</div>
-          <app-json-schema-viewer-v2 *ngIf="!loadingInput && injectedInput != null && !isStart(model)"
-            [data]="injectedInput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+          <!-- Simulation Flow view inside Input column -->
+          <div class="sim-wrap" *ngIf="viewMode==='flow' && ((viewNodes?.length || 0) > 0)">
+            <div class="viewer-box">
+              <div class="loading" *ngIf="(!hadFirstLayout) || (isScenarioSwitching && layoutBusy)">Chargement…</div>
+              <flow-viewer-settings-node [hidden]="(!hadFirstLayout) || (isScenarioSwitching && layoutBusy)" [centerRequest]="centerRequestTick"
+                [nodes]="$any(viewNodes)" [edges]="$any(displayEdges)" [meta]="$any(simMeta)"
+                [background]="$any('#EEF0F4')" [useStorage]="false" [showBottomBar]="true"
+                [showRun]="false" [showSave]="false" [showCenterFlow]="true" [selectedNodeId]="model?.id" [autoFitOnInit]="false"
+                [simOutputPreview]="$any(simOutputPreview)" [focusNodeIds]="$any(focusNodeIds)">
+              </flow-viewer-settings-node>
+            </div>
+          </div>
+          <!-- JSON Input view -->
+          <app-json-schema-viewer-v2 *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)"
+            [data]="injectedInput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
         </div>
 
@@ -37,7 +60,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
           </flow-advanced-center-panel>
         </div>
 
-        <!-- Right column: Output / Start payload -->
+        <!-- Right column: Output (unchanged) -->
         <div class="col right" *ngIf="hasOutput(model)">
           <div class="section-title">Output</div>
           <!-- Start Form: Dynamic Form in right column -->
@@ -47,11 +70,11 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
             (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
           <!-- Start simple: JSON payload editable -->
           <app-json-schema-viewer-v2 *ngIf="isStart(model) && !isStartForm(model)"
-            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+            [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
           <!-- Other nodes: output viewer readonly -->
           <app-json-schema-viewer-v2 *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null"
-            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+            [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
         </div>
       </div>
@@ -61,19 +84,37 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     :host { position: fixed; inset: 0; z-index: 100000; display:block; }
     .overlay { position:absolute; inset:0; background: rgba(17,17,17,0.32); }
     .dialog { position:absolute; inset: 2.5vh 2.5vw; background:#fff; border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display:flex; flex-direction: column; overflow:hidden; }
-    .header { display:flex; align-items:center; gap:8px; padding: 10px 12px; }
+    .header { display:none; }
     .title { font-weight: 600; }
     .close { margin-left:auto; border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
-    .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(520px, 1.2fr) 1fr; gap: 12px; padding: 12px; overflow:hidden; }
-    .col { min-height:0; overflow:auto; border-radius: 10px; padding: 10px; }
+    .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(480px, 1.2fr) 1fr; gap: 12px; padding: 0; overflow:hidden; }
+    .col { min-height:0; overflow-y:auto; overflow-x:hidden; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
     .col.center {}
-    .section-title { font-size:12px; color:#6b7280; margin-bottom:6px; }
+    .section-title { display:none; }
+    .top-bar { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:nowrap; white-space:nowrap; padding: 12px 8px 0 8px; }
+    /* Match credentials select sizing: fill remaining space, allow ellipsis */
+    .scenario-select { flex: 1 1 auto; min-width: 0; }
+    .seg { display:inline-flex; background:#fff; border:1px solid #e5e7eb; border-radius: 10px; padding:2px; flex: 0 0 auto; }
+    .seg .seg-btn { border:none; background:transparent; border-radius:8px; padding:4px 12px; font-size:12px; cursor:pointer; display:flex; align-items:center; }
+    .seg .seg-btn.active { background:#F8FBFF; border:1px solid #DBEAFE; }
+    .sim-wrap { display:flex; flex-direction:column; gap:8px; min-height:0; flex:1 1 auto; }
+    .viewer-box { flex: 1 1 auto; min-height: 0; display:block; position:relative; }
+    .viewer-box .loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#6b7280; background: rgba(255,255,255,0.6); z-index: 2; }
+    .viewer-box flow-viewer-settings-node { display:block; height:100%; }
+    :host ::ng-deep flow-viewer { height: 100%; display:block; }
+    .sc-list { display:flex; flex-wrap: wrap; gap:4px; }
+    .sc-list.compact { gap:4px; margin-top:-2px; }
+    .sc-item { border:1px solid #e5e7eb; background:#fff; border-radius: 9px; padding:2px 6px; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sc-item.active, .sc-item:hover { background:#F8FBFF; border-color:#DBEAFE; }
+    .sc-item .dot { width:6px; height:6px; border-radius:50%; background:#1677ff; display:inline-block; }
+    .badge.real { color:#0a7; border:1px solid #bfe; background:#eff; border-radius: 8px; padding: 0 6px; font-size:11px; }
   `]
 })
 export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   @Input() flowId: string | null = null;
   @Input() model: any;
-  @Input() nodes: Array<{ id: string; data?: any }>|null = null;
+  @Input() nodes: Array<{ id: string; data?: any, point?: { x:number; y:number } }>|null = null;
+  @Input() edges: Array<any>|null = null;
   @Input() disableForChecksum = false;
   @Input() hasPrev: boolean = false;
   @Input() loadingInput: boolean = false;
@@ -105,7 +146,40 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   labelsMap: Record<string, { label?: string; description?: string }> = {};
   nodeNamesMap: Record<string, string> = {};
   nodeMetaMap: Record<string, { name?: string; templateTitle?: string }> = {};
-  
+  // Simulation view state
+  viewMode: 'flow'|'json' = 'flow';
+  displayEdges: any[] = [];
+  viewNodes: any[] = [];
+  layoutBusy = false;
+  layoutReady = false;
+  hadFirstLayout = false;
+  isScenarioSwitching = false;
+  // Center once after first layout completes
+  centerRequestTick = 0;
+  private centeredOnFirstLayout = false;
+  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+  simMeta: any = { ui: { portOrientation: 'vertical' } };
+  focusNodeIds: string[] = [];
+  realScenarioIndex: number | null = null;
+  mergedScenarioJson: any = null;
+  // Snapshot at open to decouple from live graph mutations
+  baseNodes: any[] = [];
+  baseEdges: any[] = [];
+  private initialized = false;
+
+  constructor(private pathSvc: FlowPathHighlightService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private zone: NgZone) {}
+
+  setView(v: 'flow'|'json') { this.viewMode = v; this.refreshScenarioView(); }
+  onSelectScenario(i: any) {
+    const idx = Number(i || 0);
+    this.simSelectedIndex = idx;
+    this.simSelectedIndexChange.emit(idx);
+    this.isScenarioSwitching = true;
+    try { this.cdr.detectChanges(); } catch {}
+    this.refreshScenarioView();
+  }
+  swallowDrag(ev: DragEvent) { try { ev.preventDefault(); ev.stopPropagation(); } catch {} }
+  swallowDrop(ev: DragEvent) { try { ev.preventDefault(); ev.stopPropagation(); } catch {} }
 
   onFormSubmitted(m: any) {
     try { this.modelChange.emit(m || this.model); } catch {}
@@ -131,7 +205,24 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
     catch { return { title: 'Formulaire', fields: [] }; }
   }
 
-  ngOnChanges(_changes?: SimpleChanges) { this.rebuildLabelMaps(); }
+  ngOnChanges(changes?: SimpleChanges) {
+    try {
+      if (!changes) return;
+      // On first pass, snapshot nodes/edges and initialize
+      if (!this.initialized && (this.nodes || this.edges)) {
+        this.baseNodes = (this.nodes || []).map((n: any) => ({ ...n, point: n?.point ? { x: n.point.x, y: n.point.y } : undefined }));
+        this.baseEdges = (this.edges || []).map((e: any) => ({ ...e }));
+        this.rebuildLabelMaps();
+        this.refreshScenarioView();
+        this.initialized = true;
+        return;
+      }
+      // After init: only react to scenario selection/data changes
+      if (changes['simScenarios'] || changes['simSelectedIndex']) {
+        this.refreshScenarioView();
+      }
+    } catch {}
+  }
 
   private rebuildLabelMaps() {
     const labels: Record<string, { label?: string; description?: string }> = {};
@@ -189,5 +280,136 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
     } catch {}
     this.labelsMap = labels;
     this.nodeNamesMap = nodeNames;
+  }
+
+  private refreshScenarioView() {
+    try {
+      try { console.log('[settings-v2] refreshScenarioView start', { simIdx: this.simSelectedIndex, scenarios: (this.simScenarios||[]).length }); } catch {}
+      // Ensure snapshots exist (first-time fallback)
+      try {
+        if ((!this.baseNodes || this.baseNodes.length === 0) && Array.isArray(this.nodes) && this.nodes.length) {
+          this.baseNodes = (this.nodes || []).map((n: any) => ({ ...n, point: n?.point ? { x: n.point.x, y: n.point.y } : undefined }));
+        }
+        if ((!this.baseEdges || this.baseEdges.length === 0) && Array.isArray(this.edges) && this.edges.length) {
+          this.baseEdges = (this.edges || []).map((e: any) => ({ ...e }));
+        }
+      } catch {}
+      // Reset defaults from snapshots to avoid reacting to live builder edits
+      this.displayEdges = (this.baseEdges || []).map((e: any) => ({ ...e }));
+      // Clone nodes for local layout without mutating builder graph
+      this.viewNodes = (this.baseNodes || []).map((n: any) => ({ ...n, point: n?.point ? { x: n.point.x, y: n.point.y } : undefined }));
+      this.simOutputPreview = {};
+      this.focusNodeIds = [];
+      this.zone.run(() => {
+        this.layoutBusy = true;
+        this.layoutReady = false;
+        try { this.cdr.detectChanges(); } catch {}
+      });
+      this.realScenarioIndex = this.computeRealScenarioIndex();
+      const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![this.simSelectedIndex] : null);
+      if (sc && sc.path && Array.isArray(sc.path.edges)) {
+        const key = (e: any) => `${String(e.source || e.from)}|${String(e.target || e.to)}|${String(e.sourceHandle || '')}`;
+        const wanted = new Set(sc.path.edges.map((it: any) => `${String(it.sourceId)}|${String(it.targetId)}|${String(it.sourceHandle || '')}`));
+        this.displayEdges = (this.baseEdges || []).map((e: any) => wanted.has(key(e)) ? ({ ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2, onPath: true } }) : ({ ...e, data: { ...(e as any).data, onPath: false } }));
+        const nidSet = new Set<string>(); for (const it of sc.path.edges) { nidSet.add(String(it.sourceId)); nidSet.add(String(it.targetId)); }
+        this.focusNodeIds = Array.from(nidSet.values());
+      }
+      // Build preview map from trace
+      try {
+        const trace: any[] = Array.isArray((this.simScenarios && (this.simScenarios as any)[this.simSelectedIndex]?.trace)) ? (this.simScenarios as any)[this.simSelectedIndex].trace : [];
+        const map: any = {};
+        for (const t of trace) { const id = String(t?.nodeId || ''); if (!id) continue; const arr = Array.isArray(t.resultPreview) ? t.resultPreview : []; map[id] = arr.map((it:any, idx:number) => ({ id: `sim_${id}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') })); }
+        this.simOutputPreview = map;
+      } catch { this.simOutputPreview = {}; }
+      // Build merged JSON for JSON mode (schema preview + execution values + extras)
+      this.mergedScenarioJson = this.buildMergedJsonForSelectedScenario();
+      try { this.cdr.detectChanges(); } catch {}
+      // Run a vertical auto-layout pass, adjusted by outputs (like Simulation)
+      this.relayoutForScenario(sc);
+      try { console.log('[settings-v2] refreshScenarioView queued relayout'); } catch {}
+    } catch {}
+  }
+
+  private computeRealScenarioIndex(): number | null {
+    try {
+      const pairs = this.pathSvc.buildPairs({ events: this.attemptEvents, attempts: [] });
+      if (!pairs || pairs.size === 0 || !Array.isArray(this.simScenarios)) return null;
+      let bestIdx: number | null = null; let bestScore = -1;
+      for (let i=0;i<this.simScenarios.length;i++){
+        const sc: any = this.simScenarios[i];
+        const edges = (sc && sc.path && Array.isArray(sc.path.edges)) ? sc.path.edges : [];
+        if (!edges.length) continue;
+        const set = new Set<string>(edges.map((e:any)=> `${String(e.sourceId)}->${String(e.targetId)}`));
+        let ok = 0; for (const k of set) if (pairs.has(String(k))) ok++;
+        if (ok === set.size && ok > bestScore) { bestScore = ok; bestIdx = i; }
+      }
+      return bestIdx;
+    } catch { return null; }
+  }
+
+  private buildMergedJsonForSelectedScenario(): any {
+    try {
+      const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![this.simSelectedIndex] : null);
+      if (!sc) return this.injectedOutput || {};
+      const nodeId = String(this.model?.id || '');
+      const trace: any[] = Array.isArray(sc.trace) ? sc.trace : [];
+      const me = trace.find(t => String(t?.nodeId || '') === nodeId);
+      const base: any = {};
+      if (me && Array.isArray(me.resultPreview)) {
+        for (const it of me.resultPreview) { const k = String(it?.key || it?.name || ''); if (k) base[k] = null; }
+      }
+      const exec = (this.injectedOutput && typeof this.injectedOutput === 'object') ? this.injectedOutput : null;
+      if (exec) { for (const [k, v] of Object.entries(exec)) { (base as any)[k] = v; } }
+      return base;
+    } catch { return this.injectedOutput || {}; }
+  }
+
+  private relayoutForScenario(sc: any) {
+    try {
+      try { console.log('[settings-v2] relayoutForScenario start'); } catch {}
+      const counts: Record<string, number> = {};
+      const trace: any[] = Array.isArray(sc?.trace) ? sc.trace : [];
+      for (const t of trace) {
+        const id = String(t?.nodeId || ''); if (!id) continue;
+        const c = Number(t?.outputsCount);
+        if (Number.isFinite(c)) counts[id] = c;
+      }
+      for (const [k, arr] of Object.entries(this.simOutputPreview || {})) {
+        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).length : 0;
+      }
+      const graph = {
+        nodes: (this.viewNodes || []).map((n: any) => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
+        edges: (this.displayEdges || []).map((e: any) => ({ id: String(e.id||`${e.source}->${e.target}`), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }))
+      } as any;
+      const gapX = 260; const baseGapY = 160;
+      this.layoutApi.layoutGraph(graph, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max' }).subscribe({
+        next: (res: any) => {
+          try {
+            const positions = (res && (res.positions || (res.data && res.data.positions))) || {};
+            const map = new Map<string, { x: number; y: number }>();
+            Object.keys(positions||{}).forEach(k => { const p = (positions as any)[k]; if (p && typeof p.x === 'number' && typeof p.y === 'number') map.set(String(k), { x: Math.round(p.x), y: Math.round(p.y) }); });
+            this.zone.run(() => {
+              this.viewNodes = (this.viewNodes || []).map((n: any) => { const p = map.get(String(n.id)); return p ? ({ ...n, point: { x: p.x, y: p.y } }) : n; });
+              this.layoutReady = true;
+              this.hadFirstLayout = true;
+              try { this.cdr.detectChanges(); } catch {}
+            });
+          } catch {}
+        },
+        error: () => {},
+        complete: () => {
+          this.zone.run(() => {
+            this.layoutBusy = false;
+            this.isScenarioSwitching = false;
+            if (!this.centeredOnFirstLayout && this.hadFirstLayout) {
+              this.centeredOnFirstLayout = true;
+              this.centerRequestTick++;
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+          try { console.log('[settings-v2] relayoutForScenario complete'); } catch {}
+        }
+      });
+    } catch {}
   }
 }

@@ -51,8 +51,19 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
               </div>
               <!-- Simulation output preview rendered like linked handles (1-level only) -->
               <div class="links" *ngIf="simOutputPreview && simOutputPreview[ctx.node.id] as simLinks">
-                <div class="link" *ngFor="let lh of simLinks">
-                  <div class="link-label">{{ lh.name }} <span style="color:#94a3b8">({{ lh.type }})</span></div>
+                <div class="link" *ngFor="let lh of simLinks" draggable="true"
+                     (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name)"
+                     (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name)"
+                     (click)="onSimLinkClick($event, ctx.node.id, lh.name)"
+                     (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name)">
+                  <div class="link-label" draggable="true"
+                       (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name)"
+                       (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name)"
+                       (click)="onSimLinkClick($event, ctx.node.id, lh.name)"
+                       (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name)">
+                    <span class="txt">{{ lh.name }}</span>
+                    <span class="type" style="color:#94a3b8">({{ lh.type }})</span>
+                  </div>
                   <ng-template #simLinkTpl let-hctx>
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
@@ -252,6 +263,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
     .flow-tooltip { position: fixed; z-index: 200; background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
     .flow-tooltip.error { background:#f759ab; color:#fff; }
+    /* DnD logging enabled; keep layout intact (no position relative / z-index) */
+    .node-card .links { pointer-events: auto; }
+    .node-card .link, .node-card .link-label { cursor: grab; user-select: none; }
+    .node-card .link:active, .node-card .link-label:active { cursor: grabbing; }
 
     /* Mobile/tablet: mirror builder bottom bar behavior */
     @media (max-width: 1280px) {
@@ -285,6 +300,10 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() showRun = false;
   @Input() showSave = false;
   @Input() showCenterFlow = true;
+  // Programmatic center trigger: increments cause a center action
+  @Input() centerRequest: number = 0;
+  // Allow parent to disable initial auto-fit/center
+  @Input() autoFitOnInit: boolean = true;
   @Input() showCenterSelection = false;
   @Input() demo = false; // load internal demo flow if true
   @Input() meta: any = null; // optional flow-level metadata
@@ -324,6 +343,32 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
     } catch { return 23; }
   }
 
+  onSimLinkDragStart(ev: DragEvent, nodeId: string, fieldName: string) {
+    try {
+      if (!ev?.dataTransfer) return;
+      const name = String(fieldName || '').trim();
+      const nid = String(nodeId || '').trim();
+      const path = nid && name ? `${nid}.${name}` : (nid || name);
+      const payload = JSON.stringify({ path, name });
+      ev.dataTransfer.setData('application/x-expression-tag', payload);
+      ev.dataTransfer.setData('text/plain', path);
+      ev.dataTransfer.effectAllowed = 'copy';
+      try { console.log('[settings-v2][dnd][flow-viewer] dragstart', { nodeId: nid, field: name, path }); } catch {}
+      try { ev.stopPropagation(); } catch {}
+    } catch {}
+  }
+  onSimLinkMouseDown(ev: MouseEvent, nodeId: string, fieldName: string) {
+    try { console.log('[settings-v2][dnd][flow-viewer] mousedown', { nodeId, field: fieldName }); } catch {}
+    try { ev.stopPropagation(); (ev as any).cancelBubble = true; } catch {}
+  }
+  onSimLinkPointerDown(ev: PointerEvent, nodeId: string, fieldName: string) {
+    try { console.log('[settings-v2][dnd][flow-viewer] pointerdown', { nodeId, field: fieldName }); } catch {}
+    try { ev.stopPropagation(); (ev as any).cancelBubble = true; } catch {}
+  }
+  onSimLinkClick(ev: MouseEvent, nodeId: string, fieldName: string) {
+    try { console.log('[settings-v2][dnd][flow-viewer] click', { nodeId, field: fieldName }); } catch {}
+  }
+
   ngOnInit() {
     // Override flags by query params if present
     try {
@@ -346,8 +391,10 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   ngAfterViewInit() {
     setTimeout(() => {
       try { console.log('[viewer] afterViewInit', { useStorage: this.useStorage, storageKey: this.storageKey, portOrientation: this.portOrientation }); } catch {}
-      if (!this.restoreViewport()) {
-        this.fitAll(() => this.setZoomAndCenter(this.defaultZoom));
+      if (this.autoFitOnInit) {
+        if (!this.restoreViewport()) {
+          this.fitAll(() => this.setZoomAndCenter(this.defaultZoom));
+        }
       }
       try {
         const vs: any = this.flow?.viewportService;
@@ -366,6 +413,15 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   vNodes: any[] = [];
   private activeNodeSet: Set<string> = new Set();
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['centerRequest']) {
+      try {
+        const prev = Number(changes['centerRequest'].previousValue ?? 0);
+        const cur = Number(changes['centerRequest'].currentValue ?? 0);
+        if (Number.isFinite(cur) && cur > prev) {
+          this.onCenterFlow();
+        }
+      } catch {}
+    }
     let orientationChanged = false;
     if (changes['portOrientation']) {
       this._portOrientationExplicit = true;

@@ -320,5 +320,7 @@ export class JsonSchemaViewerV2Component {
     ev.dataTransfer.setData('application/x-expression-tag', payload);
     ev.dataTransfer.setData('text/plain', path);
     ev.dataTransfer.effectAllowed = 'copy';
+    try { console.log('[settings-v2][dnd][json-viewer] dragstart', { path }); } catch {}
+    try { ev.stopPropagation(); } catch {}
   }
 }

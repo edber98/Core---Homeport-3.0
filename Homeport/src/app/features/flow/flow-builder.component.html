@@ -550,7 +550,7 @@
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditor()"></flow-node-settings-dialog>
 
-  <flow-node-settings-v2-dialog *ngIf="advancedV2Open && selectedModel" [model]="selectedModel" [flowId]="currentFlowId" [nodes]="nodes"
+  <flow-node-settings-v2-dialog *ngIf="advancedV2Open && selectedModel" [model]="selectedModel" [flowId]="currentFlowId" [nodes]="nodes" [edges]="edges"
     [disableForChecksum]="hasTemplateMismatch(selectedModel)"
     [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
     [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"

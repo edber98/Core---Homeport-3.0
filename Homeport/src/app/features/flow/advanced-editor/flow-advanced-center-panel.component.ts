@@ -109,8 +109,9 @@ import { FormsModule } from '@angular/forms';
                 </div>
               </div>
               <credential-edit-dialog *ngIf="createVisible" [visible]="createVisible" [provider]="currentProvider" [workspaceId]="workspaceId" (closed)="createVisible=false" (saved)="onCredCreated($event)"></credential-edit-dialog>
-              <ng-container *ngIf="schema as s; else noSchema">
-                <app-dynamic-form *ngIf="dfVisible"
+              <ng-container  *ngIf="schema as s; else noSchema">
+              <div style="overflow-x:hidden">
+              <app-dynamic-form  *ngIf="dfVisible"
                   [schema]="s"
                   [value]="model?.context || {}"
                   [ctx]="ctx"
@@ -119,6 +120,7 @@ import { FormsModule } from '@angular/forms';
                   (validChange)="onValid($event)"
                   (submitted)="onSubmitted($event)">
                 </app-dynamic-form>
+                </div> 
               </ng-container>
               <ng-template #noSchema>
                 <div class="placeholder">Aucun schéma d’arguments (template.args absent).</div>

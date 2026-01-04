@@ -3609,6 +3609,22 @@ export class FlowBuilderComponent {
             const att = this.resolveAttemptForSelection(nodeId);
             this.outputLoading = att?.status === 'running';
           } catch { this.outputLoading = false; }
+          // Also fetch simulation scenarios for comparison (always)
+          try {
+            if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
+              this.previewLoading = true;
+              this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+                next: (resp) => {
+                  const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                  this.advancedSimScenarios = scenarios;
+                  this.advancedSimScenarioIdx = 0;
+                  try { this.cdr.detectChanges(); } catch {}
+                },
+                error: () => {},
+                complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+              });
+            }
+          } catch {}
         } else {
           // No attempts yet for this node in current run
           this.advancedAttemptEvents = [];
@@ -3621,9 +3637,9 @@ export class FlowBuilderComponent {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
         // Try backend simulation to propose scenarios
         this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
-        if (!isStart && nodeId && this.hasPredecessor(nodeId) && environment.useBackend && this.currentFlowId) {
+        if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
           this.previewLoading = true;
-          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine').subscribe({
+          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
             next: (resp) => {
               const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
               this.advancedSimScenarios = scenarios;
@@ -3667,7 +3683,7 @@ export class FlowBuilderComponent {
       const nodeId = this.selectedModel?.id;
       if (!nodeId || !this.currentFlowId) return;
       this.previewLoading = true;
-      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine').subscribe({
+      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
         next: (resp) => {
           const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
           this.advancedSimScenarios = scenarios;
@@ -3711,6 +3727,35 @@ export class FlowBuilderComponent {
   openAdvancedEditorV2() {
     // Ensure only one dialog at a time
     this.advancedOpen = false;
+    // Prefill input from previous node last result (like v1), and fetch simulation scenarios
+    try {
+      const nodeId = this.selectedModel?.id;
+      const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
+      const hasPrev = (this.edges || []).some(e => String(e.target) === String(nodeId));
+      // If no predecessor, keep empty input
+      this.advancedInjectedInput = hasPrev ? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId)) : {};
+      // Always try backend simulation to propose scenarios (engine_split)
+      this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
+      if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
+        this.previewLoading = true;
+        this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+          next: (resp) => {
+            const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+            this.advancedSimScenarios = scenarios;
+            this.advancedSimScenarioIdx = 0;
+            if (scenarios.length > 0) {
+              this.advancedInjectedInput = scenarios[0].msgIn || {};
+            }
+            this.advancedCtx = this.advancedInjectedInput || {};
+            try { this.cdr.detectChanges(); } catch {}
+          },
+          error: () => { /* keep local fallback */ },
+          complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+        });
+      } else {
+        this.advancedCtx = this.advancedInjectedInput || {};
+      }
+    } catch { this.advancedInjectedInput = {}; this.advancedCtx = {}; }
     this.advancedV2Open = true;
     try { this.cdr.detectChanges(); } catch {}
   }
