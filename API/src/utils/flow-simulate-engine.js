@@ -12,7 +12,7 @@ function pickOutputHandle(tpl){
 
 // Helpers are imported directly above
 
-async function simulateViaEngine(flow, targetNodeId){
+async function simulateViaEngine(flow, targetNodeId, opts = {}){
   const { runFlow } = require('../engine');
   // Build simple graph helpers
   const nodes = Array.isArray(flow?.nodes) ? flow.nodes : [];
@@ -57,6 +57,7 @@ async function simulateViaEngine(flow, targetNodeId){
   const edgeBySrcTgt = new Map(edges.map(e => [`${e.source}|${e.target}`, e]));
 
   // Force branches toward the target for condition nodes
+  // Build default forced choices to ensure a deterministic path; allow overrides via opts.forceBranches
   const forceBranches = {};
   for (const nid of ancestors){
     try {
@@ -68,6 +69,10 @@ async function simulateViaEngine(flow, targetNodeId){
       if (viable.length){ const h = String(viable[0].sourceHandle || ''); forceBranches[String(nid)] = h; }
     } catch {}
   }
+  try {
+    const overrides = (opts && typeof opts.forceBranches === 'object') ? opts.forceBranches : null;
+    if (overrides) { for (const [k,v] of Object.entries(overrides)) forceBranches[String(k)] = v; }
+  } catch {}
   try { if (Object.keys(forceBranches).length) console.log('[simulate:engine] forceBranches', forceBranches); } catch {}
 
   try {
@@ -217,19 +222,51 @@ async function simulateViaEngineSplit(flow, targetNodeId){
   const uniq = [];
   const seen = new Set();
   for (const it of incoming) { const key = `${it.source}|${it.sourceHandle}`; if (!seen.has(key)) { seen.add(key); uniq.push(it); } }
-  if (uniq.length <= 1) {
-    // Nothing to split; reuse single-engine path
-    return await simulateViaEngine(flow, targetNodeId);
-  }
+  // Even if there is a single incoming edge to target, there can be nested branches upstream;
+  // do not early-return — enumerate upstream choices below.
+  // Enumerate nested choice points (conditions with multiple viable handles) upstream of target
+  const outE = new Map(); const inE2 = new Map();
+  for (const n of nodes) { outE.set(String(n.id), []); inE2.set(String(n.id), []); }
+  for (const e of edges) { const s=String(e.source), t=String(e.target); if (nodeById.has(s) && nodeById.has(t)){ outE.get(s).push(e); inE2.get(t).push(e); } }
+  const computeAnc = (tid) => { const target=String(tid); const seen=new Set([target]); const anc=new Set(); const st=[target]; while(st.length){ const cur=st.pop(); for (const ie of inE2.get(cur)||[]){ const u=String(ie.source); if (!seen.has(u)){ seen.add(u); anc.add(u); st.push(u);} } } return anc; };
+  const ancAll = computeAnc(targetNodeId);
+  const choicePoints = (() => {
+    const map = new Map();
+    const isAnc = (id) => ancAll.has(String(id)) || String(id)===String(targetNodeId);
+    for (const nid of ancAll){
+      try {
+        const outs = outE.get(String(nid)) || [];
+        // Collect distinct outgoing edges towards ancestors as atomic choices (not just by handle)
+        const viable = outs.filter(e => isAnc(e.target)).map(e => ({ source: String(e.source), target: String(e.target), sourceHandle: String(e.sourceHandle||'') }));
+        if (viable.length > 1) map.set(String(nid), viable);
+      } catch {}
+    }
+    return map;
+  })();
+  const cartesian = (choices, cap=64) => { const entries=Array.from(choices.entries()).map(([nid,opts])=>({nid,opts})); if (!entries.length) return [{}]; const out=[]; const recur=(i,acc)=>{ if (out.length>=cap) return; if (i>=entries.length){ out.push({ ...acc }); return; } const { nid, opts }=entries[i]; for (const pick of opts){ if (out.length>=cap) break; acc[nid]=pick; recur(i+1,acc); delete acc[nid]; } }; recur(0,{}); return out; };
+  const choiceCombos = cartesian(choicePoints, 64);
+
   // Helper to run engine on a filtered graph keeping only one incoming predecessor to the target
   const runForIncoming = async (inc, idx) => {
     const filteredEdges = edges.filter(e => {
       if (String(e.target) !== String(targetNodeId)) return true;
       return String(e.source) === String(inc.source) && String(e.sourceHandle || '') === String(inc.sourceHandle || '');
     });
-    const flowV = { ...flow, nodes, edges: filteredEdges };
-    const one = await simulateViaEngine(flowV, targetNodeId);
-    const sc = (Array.isArray(one?.scenarios) ? one.scenarios : [])[0] || { msgIn: null, argsPre: null, argsPost: null };
+    // Run for each nested branching combination (forced choices)
+    const results = [];
+    const combos = (choiceCombos && choiceCombos.length) ? choiceCombos : [{}];
+    for (let ci=0; ci<combos.length; ci++){
+      const forced = combos[ci] || {};
+      // Filter outgoing edges for nodes with a forced edge selection (by target and handle)
+      const edgesForced = filteredEdges.filter(e => {
+        const pick = forced[String(e.source)];
+        if (!pick) return true;
+        return String(e.target) === String(pick.target) && String(e.sourceHandle||'') === String(pick.sourceHandle||'');
+      });
+      const flowV = { ...flow, nodes, edges: edgesForced };
+      const one = await simulateViaEngine(flowV, targetNodeId);
+      const sc = (Array.isArray(one?.scenarios) ? one.scenarios : [])[0] || { msgIn: null, argsPre: null, argsPost: null };
+      if (!sc || !sc.msgIn) { continue; }
     // Filter path to keep only edges that lie on a path from selected incoming (source+handle) to target
     try {
       const all = Array.isArray(sc?.path?.edges) ? sc.path.edges : [];
@@ -278,19 +315,25 @@ async function simulateViaEngineSplit(flow, targetNodeId){
       }
       sc.msgIn = newMsg;
     } catch {}
-    const label = (() => {
-      try {
-        const n = nodeById.get(String(inc.source));
-        const h = String(inc.sourceHandle || '');
-        const hTxt = h ? ` (${h})` : '';
-        return `Engine via ${n?.data?.model?.title || n?.data?.title || n?.title || inc.source}${hTxt}`;
-      } catch { return `Engine via ${inc.source}`; }
-    })();
-    return { id: `engine_${idx+1}`, index: idx, label, msgIn: sc.msgIn, argsPre: sc.argsPre, argsPost: sc.argsPost, sourceNodeId: String(inc.source), sourceHandle: String(inc.sourceHandle || ''), path: sc.path };
+      const label = (() => {
+        try {
+          const n = nodeById.get(String(inc.source));
+          const h = String(inc.sourceHandle || '');
+          const hTxt = h ? ` (${h})` : '';
+          const forcedStr = Object.keys(forced||{}).length ? ' — ' + Object.entries(forced).map(([nid,p])=>`${nid}:${p.target}${p.sourceHandle?`(${p.sourceHandle})`:''}`).join(', ') : '';
+          return `Engine via ${n?.data?.model?.title || n?.data?.title || n?.title || inc.source}${hTxt}${forcedStr}`;
+        } catch { return `Engine via ${inc.source}`; }
+      })();
+      results.push({ id: `engine_${idx+1}_${ci+1}`, index: -1, label, msgIn: sc.msgIn, argsPre: sc.argsPre, argsPost: sc.argsPost, sourceNodeId: String(inc.source), sourceHandle: String(inc.sourceHandle || ''), path: sc.path });
+    }
+    return results;
   };
   const scenarios = [];
   for (let i = 0; i < uniq.length; i++) {
-    try { scenarios.push(await runForIncoming(uniq[i], i)); } catch (e) { /* continue */ }
+    try {
+      const arr = await runForIncoming(uniq[i], i);
+      if (Array.isArray(arr)) scenarios.push(...arr);
+    } catch (e) { /* continue */ }
   }
   // Build a merged scenario strictly as the union of split scenarios paths (no extra edges)
   if (scenarios.length > 1) {
