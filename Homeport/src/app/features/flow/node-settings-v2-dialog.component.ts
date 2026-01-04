@@ -30,6 +30,11 @@ import { FormsModule } from '@angular/forms';
               <button class="seg-btn" [class.active]="viewMode==='json'" (click)="setView('json')">JSON</button>
             </div>
           </div>
+          <div class="exec-times" *ngIf="isSelectedScenarioExec() && testStartedAt">
+            <span>Début: {{ formatTime(testStartedAt!) }}</span>
+            <span class="sep">—</span>
+            <span>Fin: {{ formatTime((testStartedAt || 0) + (testDurationMs || 0)) }}</span>
+          </div>
           <div *ngIf="loadingInput" class="loading">Chargement…</div>
           <!-- Simulation Flow view inside Input column -->
           <div class="sim-wrap" *ngIf="viewMode==='flow' && ((viewNodes?.length || 0) > 0)">
@@ -136,6 +141,9 @@ import { FormsModule } from '@angular/forms';
     .top-bar .spacer { flex:1 1 auto; }
     .no-output { padding: 8px; color:#6b7280; font-size:12px; }
     .json-pad { padding: 0 16px 12px; }
+    .exec-times { padding: 0 8px 6px 8px; font-size:12px; color:#6b7280; }
+    .col.left .exec-times { padding-left: 20px; }
+    .exec-times .sep { color:#9ca3af; padding: 0 6px; }
   `]
 })
 export class FlowNodeSettingsV2DialogComponent implements OnChanges {
@@ -230,6 +238,12 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       return idx >= 0 ? idx : null;
     } catch { return null; }
   }
+  isSelectedScenarioExec(): boolean {
+    try {
+      const sc = Array.isArray(this.simScenarios) ? this.simScenarios[this.simSelectedIndex] : null;
+      return !!(sc && (sc as any).match?.exec === true);
+    } catch { return false; }
+  }
   onSelectScenario(i: any) {
     const idx = Number(i || 0);
     this.simSelectedIndex = idx;
@@ -247,6 +261,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         this.scenarioMsgIn = sc.msgIn;
         this.recomputeMergedCtx();
         try { console.log('[settings-v2][scenario] msgIn keys', Object.keys(sc.msgIn || {})); } catch {}
+        try { console.log('[settings-v2][scenario] match flags', { idx, match: sc?.match }); } catch {}
         this.injectedInputChange.emit(sc.msgIn);
       }
     } catch {}
@@ -293,15 +308,15 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         const hasNoAtt = !Array.isArray(this.attemptEvents) || this.attemptEvents.length === 0;
         if (hasSc && hasNoAtt && !this.attemptsRequested) { this.attemptsRequested = true; this.requestLoadAttempts.emit(); }
       } catch {}
-      // Keep merged ctx in sync with current selection: merge SEULEMENT si le scénario sélectionné correspond à l'exécution
-      this.recomputeMergedCtx();
-      // Keep merged ctx in sync with execution ctx and current scenario msgIn
+      // Logs for scenarios + match info
       try {
-        const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
-        const scen = (this.scenarioMsgIn && typeof this.scenarioMsgIn === 'object') ? this.scenarioMsgIn : {};
-        this.mergedCtx = { ...scen, ...exec };
-        console.log('[settings-v2][ctx] merge ngOnChanges', { execKeys: Object.keys(exec), scenarioKeys: Object.keys(scen), mergedKeys: Object.keys(this.mergedCtx || {}) });
+        if (Array.isArray(this.simScenarios)) {
+          console.log('[settings-v2] ngOnChanges scenarios', this.simScenarios.map((s:any,i:number)=>({ i, label: s?.label, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+        }
+        console.log('[settings-v2] ngOnChanges selected', { simSelectedIndex: this.simSelectedIndex });
       } catch {}
+      // Garder mergedCtx en phase: MERGE UNIQUEMENT si le scénario sélectionné est marqué exec par le backend
+      this.recomputeMergedCtx();
       // On first pass, snapshot nodes/edges and initialize
       if (!this.initialized && (this.nodes || this.edges)) {
         this.baseNodes = (this.nodes || []).map((n: any) => ({ ...n, point: n?.point ? { x: n.point.x, y: n.point.y } : undefined }));
@@ -409,11 +424,12 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
             this.simSelectedIndex = idx;
             this.simSelectedIndexChange.emit(this.simSelectedIndex);
             this.isScenarioSwitching = true;
-            try { this.cdr.detectChanges(); } catch {}
+            try { console.log('[settings-v2] auto-select exec scenario', { idx }); this.cdr.detectChanges(); } catch {}
           }
         }
       } catch {}
       const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![this.simSelectedIndex] : null);
+      try { console.log('[settings-v2] selected scenario match', { idx: this.simSelectedIndex, match: sc?.match }); } catch {}
       if (sc && sc.path && Array.isArray(sc.path.edges)) {
         const key = (e: any) => `${String(e.source || e.from)}|${String(e.target || e.to)}|${String(e.sourceHandle || '')}`;
         const wanted = new Set(sc.path.edges.map((it: any) => `${String(it.sourceId)}|${String(it.targetId)}|${String(it.sourceHandle || '')}`));
@@ -459,7 +475,9 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       const sc = Array.isArray(this.simScenarios) ? this.simScenarios[this.simSelectedIndex] : null;
       const isExec = !!(sc && ((sc as any).match?.exec === true || (sc as any).isExec === true));
       this.mergedCtx = isExec ? { ...scen, ...exec } : scen;
-      try { console.log('[settings-v2][ctx] recompute', { isExec, scenKeys: Object.keys(scen||{}), execKeys: Object.keys(exec||{}), mergedKeys: Object.keys(this.mergedCtx||{}) }); } catch {}
+      try {
+        console.log('[settings-v2][ctx] recompute', { idx: this.simSelectedIndex, isExec, scenKeys: Object.keys(scen||{}), execKeys: Object.keys(exec||{}), mergedKeys: Object.keys(this.mergedCtx||{}) });
+      } catch {}
     } catch {}
   }
 

@@ -35,6 +35,44 @@ module.exports = function() {
         data = simulateScenarios(graph, targetNodeId, mode);
       }
       const scenarios = Array.isArray(data?.scenarios) ? data.scenarios : [];
+      // Optional: annotate scenario matching the active execution (by runId)
+      try {
+        const runId = req.body && req.body.runId ? String(req.body.runId) : null;
+        if (runId && scenarios.length) {
+          const { Types } = require('mongoose');
+          const Run = require('../../db/models/run.model');
+          const RunEvent = require('../../db/models/run-event.model');
+          const rid = runId;
+          let run = null;
+          if (Types.ObjectId.isValid(rid)) run = await Run.findById(rid).lean();
+          if (!run) run = await Run.findOne({ id: rid }).lean();
+          if (run) {
+            const events = await RunEvent.find({ runId: run._id, type: 'edge.taken' }).sort({ seq: 1 }).lean();
+            const taken = new Set(events.map(ev => `${String(ev?.data?.sourceId||'')}|${String(ev?.data?.targetId||'')}`));
+            // Determine the incoming edge into the target node that was taken
+            const graphEdges = Array.isArray((flow?.graph||flow)?.edges) ? (flow?.graph||flow).edges : [];
+            const incoming = graphEdges.filter(e => String(e.target) === String(targetNodeId));
+            const picked = incoming.find(e => taken.has(`${String(e.source)}|${String(e.target)}`));
+            const handleId = picked ? String(picked.sourceHandle || '') : null;
+            // Mark scenarios whose path contains the picked incoming edge+handle
+            for (let i=0;i<scenarios.length;i++){
+              try {
+                const sc = scenarios[i];
+                const edges = (sc && sc.path && Array.isArray(sc.path.edges)) ? sc.path.edges : [];
+                const has = picked ? edges.some(e => String(e.sourceId) === String(picked.source) && String(e.targetId) === String(picked.target) && String(e.sourceHandle||'') === handleId) : false;
+                const match = has || (scenarios.length === 1); // if only 1 scenario, treat as exec
+                if (!sc.match) sc.match = {};
+                sc.match.exec = !!match;
+                if (match && handleId) {
+                  sc.match.handleId = handleId;
+                  // naive label for Else
+                  if (String(handleId||'').toLowerCase().startsWith('else')) sc.match.handleLabel = 'Else';
+                }
+              } catch {}
+            }
+          }
+        }
+      } catch {}
       const usable = (sc) => sc && sc.msgIn && typeof sc.msgIn === 'object' && Object.keys(sc.msgIn).length > 0;
       if (!scenarios.length || !usable(scenarios[0])) {
         console.warn('[simulate:db] engine no usable scenario; trying static fallback');

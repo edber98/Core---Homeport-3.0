@@ -3646,6 +3646,10 @@ export class FlowBuilderComponent {
               this.previewLoading = true;
               this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
                 next: (resp) => {
+                  try {
+                    const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                    console.log('[builder][simulateMsg][V1 open] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+                  } catch {}
                   const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
                   this.advancedSimScenarios = scenarios;
                   this.advancedSimScenarioIdx = 0;
@@ -3672,6 +3676,10 @@ export class FlowBuilderComponent {
           this.previewLoading = true;
           this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
             next: (resp) => {
+              try {
+                const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                console.log('[builder][simulateMsg][V1 no attempts] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+              } catch {}
               const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
               this.advancedSimScenarios = scenarios;
               this.advancedSimScenarioIdx = 0;
@@ -3716,6 +3724,10 @@ export class FlowBuilderComponent {
       this.previewLoading = true;
       this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
         next: (resp) => {
+          try {
+            const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+            console.log('[builder][simulateMsg][reload V1] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+          } catch {}
           const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
           this.advancedSimScenarios = scenarios;
           this.advancedSimScenarioIdx = 0;
@@ -3798,6 +3810,10 @@ export class FlowBuilderComponent {
         this.previewLoading = true;
         this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
           next: (resp) => {
+            try {
+              const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+              console.log('[builder][simulateMsg][V2 open] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+            } catch {}
             const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
             this.advancedSimScenarios = scenarios;
             this.advancedSimScenarioIdx = 0;
