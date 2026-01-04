@@ -25,6 +25,7 @@
       "icon": "fa-solid fa-code-branch",
       "output_array_field": "items",
       "description": "Branche selon une condition",
+ 
       "args": {
         "title": "Conditions",
         "ui": { "layout": "vertical", "labelsOnTop": true },

@@ -4915,6 +4915,17 @@ export class FlowBuilderComponent {
       this.onHandleMove(ev);
     } catch { this.tipVisible = false; }
   }
+  onInputPointerOver(ev: PointerEvent, model: any, inputId: string) {
+    try {
+      // Pendant un drag de connexion, certains navigateurs envoient pointerover sur le magnet plutôt que mouseenter.
+      // Synchroniser le tooltip ici aussi.
+      const txt = this.getInputName(model, inputId) || '';
+      this.tipText = txt;
+      this.tipVisible = !!txt;
+      this.tipError = false;
+      this.onHandleMove(ev as any);
+    } catch { this.tipVisible = false; }
+  }
   onHandleMove(ev: MouseEvent) {
     try {
       // Offset a bit from cursor
@@ -4923,6 +4934,37 @@ export class FlowBuilderComponent {
     } catch { }
   }
   onHandleLeave() { this.tipVisible = false; }
+
+  // Global pointer move handler during connection to detect hovered input magnet and show tooltip
+  private docPointerMove: ((ev: PointerEvent) => void) | null = null;
+  private onConnectPointerMove(ev: PointerEvent) {
+    try {
+      if (!this.connectingEdge) return;
+      const x = ev.clientX, y = ev.clientY;
+      const host: HTMLElement | undefined = this.flowHost?.nativeElement as any;
+      if (!host) return;
+      const circles = host.querySelectorAll('circle[data-input-id]');
+      let bestEl: Element | null = null;
+      let bestD2 = Infinity;
+      const TH = 22; // px rayon de détection
+      circles.forEach((el: any) => {
+        try {
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width / 2; const cy = r.top + r.height / 2;
+          const dx = x - cx, dy = y - cy; const d2 = dx*dx + dy*dy;
+          if (d2 <= TH*TH && d2 < bestD2) { bestEl = el as Element; bestD2 = d2; }
+        } catch {}
+      });
+      if (bestEl) {
+        const el: any = bestEl as any;
+        const name = String(el?.dataset?.inputName || '');
+        if (name) { this.tipText = name; this.tipVisible = true; this.tipError = false; this.tipX = x + 8; this.tipY = y + 8; }
+        else { this.tipVisible = false; }
+      } else {
+        this.tipVisible = false;
+      }
+    } catch {}
+  }
 
   // Invalid-connect overlay (ban) UX
   connectingEdge = false;
@@ -4936,10 +4978,17 @@ export class FlowBuilderComponent {
       this.connectingSource = { nodeId: String(nodeId), handleId: String(handleId) };
       // Force immediate DOM update so assist elements are removed before Vflow reads bbox
       try { this.cdr.detectChanges(); } catch {}
+      // Installer un suivi global du pointeur pour afficher le tooltip sur inputs (magnet)
+      try {
+        if (!this.docPointerMove) {
+          this.docPointerMove = (ev: PointerEvent) => this.onConnectPointerMove(ev);
+          document.addEventListener('pointermove', this.docPointerMove as any, true);
+        }
+      } catch {}
     } catch {}
   }
   onConnectEnd() {
-    try { this.connectingEdge = false; this.connectingSource = null; this.banVisible = false; } catch {}
+    try { this.connectingEdge = false; this.connectingSource = null; this.banVisible = false; this.tipVisible = false; if (this.docPointerMove) { document.removeEventListener('pointermove', this.docPointerMove as any, true); this.docPointerMove = null; } } catch {}
   }
   onTargetEnter(ev: MouseEvent, isValid: boolean) {
     try { if (this.connectingEdge && !isValid) { this.banVisible = true; this.onTargetMove(ev, isValid); } } catch {}

@@ -100,8 +100,12 @@
                          [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
                          [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, ih.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
                          [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                         [attr.data-input-id]="ih.id" [attr.data-node-id]="ctx.node.id" [attr.data-input-name]="getInputName(ctx.node.data.model, ih.id)"
                          (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, ih.id)"
-                         (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                         (mousemove)="onTargetMove($event, hctx.state() === 'valid'); onHandleMove($event)"
+                         (pointerover)="onInputPointerOver($event, ctx.node.data.model, ih.id)"
+                         (pointermove)="onHandleMove($event)"
+                         (pointerout)="onHandleLeave()"
                          (mouseleave)="onTargetLeave(); onHandleLeave()"
                        ></svg:circle>
                     </svg:g>
@@ -127,8 +131,12 @@
                         [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" 
                         [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, inId) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
                         [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        [attr.data-input-id]="inId" [attr.data-node-id]="ctx.node.id" [attr.data-input-name]="getInputName(ctx.node.data.model, inId)"
                         (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, inId)"
-                        (mousemove)="onTargetMove($event, hctx.state() === 'valid')"
+                        (mousemove)="onTargetMove($event, hctx.state() === 'valid'); onHandleMove($event)"
+                        (pointerover)="onInputPointerOver($event, ctx.node.data.model, inId)"
+                        (pointermove)="onHandleMove($event)"
+                        (pointerout)="onHandleLeave()"
                         (mouseleave)="onTargetLeave(); onHandleLeave()"
                       ></svg:circle>
                     </svg:g>
