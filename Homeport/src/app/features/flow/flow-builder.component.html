@@ -32,6 +32,14 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
+      <!-- Empty-graph starter: centered create card to open Spotlight assistant -->
+      <div class="empty-starter" *ngIf="!loadingFlowDoc && (nodes?.length || 0) === 0">
+        <button type="button" class="starter-card" (click)="openAddNodeStandalone()">
+          <div class="ico">+</div>
+          <div class="title">Créer le premier nœud</div>
+          <div class="hint">Cliquez pour ouvrir l’assistant</div>
+        </button>
+      </div>
   <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
         (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)" (onNodesChange.position.many)="onNodesPositionMany($event)"

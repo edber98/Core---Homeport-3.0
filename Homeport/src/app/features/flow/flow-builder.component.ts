@@ -1622,7 +1622,13 @@ export class FlowBuilderComponent {
   private rebuildAddNodeCandidates() {
     try {
       const q = (this.addNodeQuery || '').trim().toLowerCase();
-      const base = (this.items || []).filter(it => !this.isStartLike(this.normalizeTemplate(it?.template)));
+      const items = (this.items || []);
+      const standalone = !this.addNodeSourceId || !this.addNodeSourceHandle;
+      // When opening standalone (empty graph), only show triggers: start/start_form
+      // When opened from a source handle, exclude start-like templates
+      const base = standalone
+        ? items.filter(it => this.isStartLike(this.normalizeTemplate(it?.template)))
+        : items.filter(it => !this.isStartLike(this.normalizeTemplate(it?.template)));
       const filtered = q ? base.filter(it => {
         try {
           const tpl = this.normalizeTemplate(it?.template);
@@ -1670,7 +1676,9 @@ export class FlowBuilderComponent {
   onSpotlightPick(it: any) {
     // If item is null => Enter pressed with no result: treat as IA prompt
     if (!it) { this.onSubmitAddNodeSearch(); return; }
-    this.pickTemplateForAdd(it);
+    // If we have a source handle, connect from it; otherwise create a first node at center
+    if (this.addNodeSourceId && this.addNodeSourceHandle) this.pickTemplateForAdd(it);
+    else this.pickTemplateForCreate(it);
   }
   onSubmitAddNodeSearch() {
     try {
@@ -1733,9 +1741,70 @@ export class FlowBuilderComponent {
       this.recomputeErrorPropagation();
       this.pushState('add.node.from.handle');
       this.closeAddNodeModal();
+      // Center on the newly added node (keep current zoom) after it renders
+      try { this.centerOnNodeWhenReady(newId, undefined); } catch {}
       // Refresh view so handles/labels update
       try { this.forceViewRefresh('add-node-from-handle'); } catch {}
     } catch { this.closeAddNodeModal(); }
+  }
+  // Open add-node assistant without a source handle (empty graph)
+  openAddNodeStandalone() {
+    try {
+      this.addNodeSourceId = null;
+      this.addNodeSourceHandle = null;
+      this.addNodeQuery = '';
+      this.rebuildAddNodeCandidates();
+      this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+      this.addNodeVisible = true;
+    } catch {}
+  }
+  // Create a first node at the viewport center (no connection)
+  private pickTemplateForCreate(it: any) {
+    try {
+      const templateObj = this.normalizeTemplate(it?.template || it);
+      const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
+      // Place at world origin (0,0) for the first node
+      const point = { x: 0, y: 0 };
+      const preCtx = (templateObj as any)?.__preContext || null;
+      const nodeModel = {
+        id: newId,
+        name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
+        template: templateObj?.id || null,
+        templateObj,
+        context: (() => { try { return preCtx ? { ...preCtx } : {}; } catch { return {}; } })(),
+        templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+        templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
+      } as any;
+      const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
+      this.nodes = [...this.nodes, vNode];
+      this.primeAssistDelayForNode(newId);
+      this.triggerSpawnAnim(newId);
+      this.pushState('add.first.node');
+      this.closeAddNodeModal();
+      // Center on the new node and zoom to 1 for a perfect initial view (after it's rendered)
+      try { this.centerOnNodeWhenReady(newId, 100); } catch {}
+      try { this.forceViewRefresh('add-first-node'); } catch {}
+    } catch { this.closeAddNodeModal(); }
+  }
+
+  // Ensure node is in DOM before centering (prevents centering on stale bounds)
+  private centerOnNodeWhenReady(nodeId: string, setZoomPercent?: number, timeoutMs: number = 800) {
+    try {
+      const start = Date.now();
+      const attempt = () => {
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(nodeId)}\"]`) as HTMLElement | null;
+          const ok = !!(el && el.getBoundingClientRect && el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().height > 0);
+          if (ok) {
+            this.centerOnNodeId(nodeId);
+            if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent);
+            return;
+          }
+        } catch {}
+        if (Date.now() - start < timeoutMs) { setTimeout(attempt, 50); } else { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
+      };
+      setTimeout(attempt, 0);
+    } catch { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
   }
   onExternalDrop(event: any) {
     // logs disabled
