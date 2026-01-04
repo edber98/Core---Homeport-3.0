@@ -3644,7 +3644,7 @@ export class FlowBuilderComponent {
           try {
             if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
               this.previewLoading = true;
-              this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+              this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
                 next: (resp) => {
                   const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
                   this.advancedSimScenarios = scenarios;
@@ -3670,7 +3670,7 @@ export class FlowBuilderComponent {
         this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
         if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
           this.previewLoading = true;
-          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
             next: (resp) => {
               const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
               this.advancedSimScenarios = scenarios;
@@ -3714,7 +3714,7 @@ export class FlowBuilderComponent {
       const nodeId = this.selectedModel?.id;
       if (!nodeId || !this.currentFlowId) return;
       this.previewLoading = true;
-      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
         next: (resp) => {
           const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
           this.advancedSimScenarios = scenarios;
@@ -3796,7 +3796,7 @@ export class FlowBuilderComponent {
       this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
       if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
         this.previewLoading = true;
-        this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split').subscribe({
+        this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
           next: (resp) => {
             const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
             this.advancedSimScenarios = scenarios;
@@ -3828,6 +3828,44 @@ export class FlowBuilderComponent {
     try { this.selectItem(this.ctxMenuTarget); } catch { }
     this.openAdvancedEditorV2();
     this.closeCtxMenu();
+  }
+  onRequestLoadAttempts() {
+    try {
+      const runId = this.backendRunId; const nodeId = String(this.selectedModel?.id || '');
+      if (!runId || !nodeId) return;
+      this.runsApi.getWith(runId, ['attempts','events']).subscribe({
+        next: (r: any) => {
+          try {
+            const attempts = Array.isArray(r?.attempts) ? r.attempts : [];
+            const events = Array.isArray(r?.events) ? r.events : [];
+            const nodeAttempts = attempts.filter((a: any) => String(a?.nodeId) === nodeId);
+            const mapped = nodeAttempts.map((a: any) => ({
+              exec: a.attempt,
+              status: a.status,
+              startedAt: a.startedAt,
+              finishedAt: a.finishedAt,
+              durationMs: a.durationMs,
+              input: a.input, argsPre: a.argsPre, argsPost: a.argsPost,
+              result: a.result, msgIn: a.msgIn, msgOut: a.msgOut,
+              events: Array.isArray(a.events) ? a.events : []
+            }));
+            this.backendNodeAttempts.set(nodeId, mapped);
+            // Optionnel: garder un aperçu d'events globaux pour la timeline (non requis ici)
+            // Sélection logique similaire à V1: dernier essai par défaut
+            if (mapped.length > 0) {
+              this.advancedSelectedExec = Number(mapped[mapped.length - 1].exec);
+              this.advancedOccurByNode.set(nodeId, 0);
+            }
+            this.recomputeAttemptExecOptionsFor(nodeId);
+            this.recomputeAttemptOptionsFor(nodeId);
+            this.recomputeExecCountAndOccIndex(nodeId);
+            this.refreshDialogIOFromSelection();
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        },
+        error: () => {},
+      });
+    } catch {}
   }
   onAdvancedModelChange(m: any) {
     // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.

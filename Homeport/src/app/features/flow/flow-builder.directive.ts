@@ -1,6 +1,6 @@
 import { AfterViewInit, Directive, ElementRef, NgZone, OnDestroy } from '@angular/core';
 
-@Directive({ selector: '[vflowSafariForeignObjectPatch]' })
+@Directive({ selector: '[vflowSafariForeignObjectPatch]', standalone: true })
 export class VflowSafariForeignObjectPatchDirective implements AfterViewInit, OnDestroy {
   private mo?: MutationObserver;
 
