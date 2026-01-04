@@ -142,7 +142,8 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 </ng-container>
               </ng-template>
               <div class="actions-line icon-only end" *ngIf="(selectedList.length||0) <= 1">
-                <button nz-button nzSize="small" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur avancé" aria-label="Ouvrir l’éditeur avancé"><i class="fa-solid fa-up-right-from-square"></i></button>
+                <button nz-button nzSize="small" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur (v1)" aria-label="Ouvrir l’éditeur (v1)"><i class="fa-regular fa-pen-to-square"></i></button>
+                <button nz-button nzSize="small" (click)="openAdvancedV2.emit()" title="Ouvrir l’éditeur avancé (v2)" aria-label="Ouvrir l’éditeur avancé (v2)"><i class="fa-solid fa-up-right-from-square"></i></button>
                 <button nz-button nzSize="small" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
                 <button nz-button nzSize="small" nzDanger (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
               </div>
@@ -331,6 +332,7 @@ export class FlowRightPanelComponent implements OnChanges {
   @Input() editJson = '';
   @Output() editJsonChange = new EventEmitter<string>();
   @Output() openAdvanced = new EventEmitter<void>();
+  @Output() openAdvancedV2 = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
   @Output() openSingle = new EventEmitter<string>();
   @Output() deleteMany = new EventEmitter<void>();

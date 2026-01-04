@@ -125,7 +125,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     :host { position:fixed; inset:0; z-index: 100000; display:block; }
     .overlay { position:absolute; inset:0; background:rgba(17,17,17,0.32); backdrop-filter: blur(2px); opacity:0; transition: opacity .24s ease; pointer-events: none; }
     .overlay.enter { opacity:1; pointer-events:auto; }
-    .bundle { --dialog-h: 90vh; --dialog-w: 450px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, min(var(--dialog-w), calc((100vw - 400px - var(--dialog-w)) / 2))); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:100001; opacity:0; transition: opacity .22s ease, transform .26s ease; pointer-events: auto; }
+    .bundle { --dialog-h: 96vh; --dialog-w: 520px; --margin: 24px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, calc((100vw - (2 * var(--margin)) - var(--dialog-w)) / 2)); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:100001; opacity:0; transition: opacity .22s ease, transform .26s ease; pointer-events: auto; }
     .bundle.center-visible { opacity:1; transform: translate(-50%, -50%); }
     .center { position:relative; z-index:6; }
     .close { position:absolute; top:8px; right:12px; background:#fff; border:1px solid #e5e7eb; border-radius:18px; padding:4px 8px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12); }
@@ -135,8 +135,9 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     .wing { position: relative; pointer-events: auto; height:var(--wing-h); overflow:auto; padding: 9px; opacity:0; background:#fff; }
     .wing .wing-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.65); z-index: 10; }
     .tiny-spinner.big { width: 28px; height: 28px; border-width: 3px; }
-    .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
-    .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .wing.left { width: var(--wing-w); min-width: 320px; border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; margin-left: var(--margin); }
+    .wing.right { width: var(--wing-w); min-width: 320px; border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; margin-right: var(--margin); }
+    .center { width: var(--dialog-w); max-width: calc(100vw - (2 * var(--margin)) - (2 * 320px)); }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
 

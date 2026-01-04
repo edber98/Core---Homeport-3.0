@@ -5,7 +5,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
 import { backAwareCurve } from './edge-curves';
 import { MonacoJsonEditorComponent } from '../dynamic-form/components/monaco-json-editor.component';
-import { FlowAdvancedEditorDialogComponent } from './advanced-editor/flow-advanced-editor-dialog.component';
+import { FlowNodeSettingsDialogComponent } from './node-settings-dialog.component';
+import { FlowNodeSettingsV2DialogComponent } from './node-settings-v2-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { FlowHistoryService } from './flow-history.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -41,7 +42,7 @@ import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -3699,6 +3700,26 @@ export class FlowBuilderComponent {
     /* portal handled inside dialog component */
     try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
     this.pendingAdvancedModel = null;
+  }
+  // V2 dialog state & handlers
+  advancedV2Open = false;
+  openAdvancedEditorV2() {
+    // Ensure only one dialog at a time
+    this.advancedOpen = false;
+    this.advancedV2Open = true;
+    try { this.cdr.detectChanges(); } catch {}
+  }
+  closeAdvancedEditorV2() {
+    const m = this.pendingAdvancedModel;
+    this.advancedV2Open = false;
+    try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
+    this.pendingAdvancedModel = null;
+  }
+  ctxOpenAdvancedV2AndInspector() {
+    if (!this.ctxMenuTarget) return;
+    try { this.selectItem(this.ctxMenuTarget); } catch { }
+    this.openAdvancedEditorV2();
+    this.closeCtxMenu();
   }
   onAdvancedModelChange(m: any) {
     // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
