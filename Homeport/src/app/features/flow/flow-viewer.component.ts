@@ -29,7 +29,12 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
             </div>
           </ng-template>
           <ng-template let-ctx nodeHtml>
-            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal' }">
+            <!-- IMPORTANT (WebKit/Safari constraint):
+                 - Ne pas utiliser foreignObject ou position: absolute/relative au voisinage des handles.
+                 - Garder uniquement du SVG pur dans les templates de handle.
+                 - Tout wrapper CSS doit rester hors des groupes de handle pour éviter les bugs de bbox/anchor.
+            -->
+            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }">
               <div class="center-wrap">
                 <node-card-header
                   [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
@@ -85,11 +90,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
                     <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
                   </ng-container>
-                  <ng-template #horizInputSingle>
-                    <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%);">
+                    <ng-template #horizInputSingle>
+                      <!-- Laisser Vflow centrer verticalement le handle sans wrapper positionné -->
                       <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
-                    </div>
-                  </ng-template>
+                    </ng-template>
                   </ng-container>
                 </ng-container>
               </ng-template>
@@ -171,6 +175,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   </div>
   `,
   styles: [`
+    /* IMPORTANT (WebKit/Safari):
+       - AUCUNE utilisation de foreignObject ou de position: absolute/relative près des handles.
+       - Les handles sont rendus en SVG pur; les wrappers HTML restent hors des groupes de handle.
+    */
     :host { display:block; height:100%; }
     .flow-viewer { position: relative; height:100%; }
     .canvas.ro { border: 1px solid #e5e7eb; border-top: 0; border-radius: 0; overflow: hidden; height:100%; }
@@ -179,6 +187,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .canvas-host vflow { touch-action: none; }
     /* Node layout (execution): align with builder grid */
     .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
+    .node-card.ro.no-inputs { padding-top: 0; }
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
     .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
@@ -187,9 +196,11 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .icon { width: 20px; height: 20px; display:inline-block; }
     .node-card .meta .title { font-weight: 600; }
     .node-card .meta .subtitle { color:#8c8c8c; font-size: 12px; }
-    .node-card .outputs { display:flex; gap:10px; justify-content:center; margin-top: 0; }
+    .node-card .outputs { display:flex; gap:10px; justify-content:center; flex-direction: row; margin-top: 0; }
     .node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
     .node-card .inputs { display:flex; gap:16px; justify-content:center; flex-direction: row; margin-bottom: 0; }
+    /* Align horizontal layout like builder */
+    .node-card.ro.horizontal .outputs { position: absolute; top: -200px; display:flex; flex-direction: column; justify-content:center; gap: 17px; }
     /* Linked handles labels layout */
     .node-card .links { display:flex; gap:8px; margin-top: 4px; }
     .node-card.horizontal .links { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; }

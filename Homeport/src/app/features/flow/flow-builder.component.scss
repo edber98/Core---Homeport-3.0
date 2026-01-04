@@ -381,3 +381,8 @@ nz-drawer { display: contents; }
   100% { background-color: #ffffff; }
 }
 /* moved to global styles.scss to stay under component CSS budget */
+/* !! IMPORTANT WebKit/Safari constraint !!
+   - NE PAS utiliser foreignObject ni position: absolute/relative à proximité des handles (source/target).
+   - Les templates de handles restent en SVG pur; toute décoration HTML/CSS doit être rendue hors des groupes de handle.
+   - But: éviter les erreurs de bbox/getBBox et les ancres décalées lors du tracé des edges.
+*/

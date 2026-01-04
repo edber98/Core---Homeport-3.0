@@ -9,7 +9,7 @@ Observed Problems
 - iOS needed an extra tap in some flows where the assist was in the DOM at the wrong time.
 
 Invariants and Solutions
-- Never use foreignObject or position: absolute/relative near handles; only pure SVG inside the handle template.
+- CSS constraints (WebKit/Safari): do not use foreignObject or position: absolute/relative near handles; only pure SVG inside the handle template. Render HTML overlays outside handle groups.
 - During pointerdown or hover on the circle, hide the assist immediately so bbox = circle only.
 - Force a detectChanges() at pointerdown to ensure the assist is removed before Vflow computes the anchor.
 - Use per-handle delayed activation after DOM-churning events so the first drag reads a clean bbox:
@@ -45,4 +45,3 @@ When to call the priming helpers
 - On flow load: primeAssistDelayAllNodes(480) after assigning this.nodes
 - On condition dialog commit or inspector JSON save (when outputs change): primeAssistDelayForNode(nodeId, 420)
 - On edge removal: primeAssistForHandle(source, sourceHandle, 0) so + reappears right away
-
