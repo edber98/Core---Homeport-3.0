@@ -531,6 +531,8 @@ export class FlowBuilderComponent {
     private layoutApi: LayoutBackendService,
   ) { }
   isMobile = false;
+  // Phones (<=768px wide). Tablets (coarse pointer but wider) are treated as non-phone.
+  isPhone = false;
   // Width-based responsive flag (<= 1280px): use drawers and single-column grid
   isTabletOrBelow = false;
 
@@ -1326,6 +1328,7 @@ export class FlowBuilderComponent {
       const coarse = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
       const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
       const small = width <= 768;
+      this.isPhone = small;
       this.isMobile = coarse || small;
       // Treat widths below a "large desktop" as tablet-or-below to avoid grid on 1281..1535px tablets
       const isDesktop = (width >= 1536) && !coarse;

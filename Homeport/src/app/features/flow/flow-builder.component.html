@@ -427,16 +427,16 @@
       </label>
 
       <!-- Balanced: keep configuration toggles in left bar on mobile; move two most used (Center, Auto-placer) back to bottom bar -->
-      <button class="icon-btn" *ngIf="isMobile" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
+      <button class="icon-btn" *ngIf="isPhone" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
         <i class="fa-solid fa-vector-square"></i>
       </button>
-      <button class="icon-btn" *ngIf="isMobile" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+      <button class="icon-btn" *ngIf="isPhone" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
         <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
       </button>
-      <button class="icon-btn" *ngIf="isMobile" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+      <button class="icon-btn" *ngIf="isPhone" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
         <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
       </button>
-      <button class="icon-btn" *ngIf="isMobile" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+      <button class="icon-btn" *ngIf="isPhone" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
         <i class="fa-solid fa-border-all"></i>
       </button>
     </div>
@@ -457,28 +457,28 @@
       <button class="icon-btn" (click)="onBackendAutoLayout()" [disabled]="layoutLoading" title="Auto-placer (backend)">
         <i class="fa-solid fa-sitemap"></i>
       </button>
-      <button class="icon-btn" *ngIf="!isMobile" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
         <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
       </button>
-      <button class="icon-btn" *ngIf="!isMobile" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
         <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
       </button>
-      <button class="icon-btn" *ngIf="!isMobile" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
         <i class="fa-solid fa-border-all"></i>
       </button>
-      <button class="icon-btn" *ngIf="validationIssues.length && !isMobile" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
+      <button class="icon-btn" *ngIf="validationIssues.length && !isPhone" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
         <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
-      <button class="icon-btn" *ngIf="!isMobile" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
-      <span class="divider" *ngIf="!isMobile" aria-hidden="true"></span>
-      <div class="zoom-control" *ngIf="!isMobile">
+      <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
+      <div class="zoom-control" *ngIf="!isPhone">
         <span class="label">Zoom</span>
         <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
         <span class="value">{{ zoomPercent }}%</span>
       </div>
-      <span class="divider" *ngIf="!isMobile" aria-hidden="true"></span>
+      <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
 
       <label class="icon-btn import-btn desktop-only" title="Importer" aria-label="Importer">
@@ -488,21 +488,21 @@
       <button class="icon-btn desktop-only" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
         <i class="fa-solid fa-cloud-arrow-down"></i>
       </button>
-      <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
-      <button class="icon-btn" *ngIf="isMobile" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn" *ngIf="isPhone" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <span class="divider before-run" aria-hidden="true"></span>
       <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
-        <span *ngIf="!isMobile">Lancer</span>
+        <span *ngIf="!isPhone">Lancer</span>
       </button>
       <ng-template #stopRunBtn>
         <button class="run-btn" (click)="stopLastRun()" title="Stop" aria-label="Stop">
           <i class="fa-solid fa-stop"></i>
-          <span *ngIf="!isMobile">Stop</span>
+          <span *ngIf="!isPhone">Stop</span>
         </button>
       </ng-template>
     </div>
