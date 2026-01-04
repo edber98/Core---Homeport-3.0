@@ -82,6 +82,22 @@ export class FlowBuilderComponent {
   advancedCtx: any = {};
   advancedInjectedInput: any = null;
   advancedInjectedOutput: any = null;
+  // Separate buffers for merging ctx: scenario msgIn and execution msgIn
+  private advancedScenarioMsgIn: any = null;
+  private advancedExecMsgIn: any = null;
+
+  private recomputeAdvancedCtx() {
+    try {
+      const scenario = (this.advancedScenarioMsgIn && typeof this.advancedScenarioMsgIn === 'object') ? this.advancedScenarioMsgIn : {};
+      const exec = (this.advancedExecMsgIn && typeof this.advancedExecMsgIn === 'object') ? this.advancedExecMsgIn : {};
+      // Execution ctx overrides scenario for overlapping keys; shallow is enough (nodeId-level keys)
+      this.advancedCtx = { ...scenario, ...exec };
+      try {
+        const id = String(this.selectedModel?.id || '');
+        console.log('[builder][ctx] recomputeAdvancedCtx', { nodeId: id, scenarioKeys: Object.keys(scenario), execKeys: Object.keys(exec), mergedKeys: Object.keys(this.advancedCtx || {}) });
+      } catch {}
+    } catch { /* keep previous advancedCtx */ }
+  }
   // Simulation scenarios for dialog
   advancedSimScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
   advancedSimScenarioIdx: number = 0;
@@ -2307,7 +2323,7 @@ export class FlowBuilderComponent {
             const sub = inst.submitted.subscribe((val: any) => {
               try { sub.unsubscribe(); } catch {}
               ref.close();
-              this.advancedInjectedInput = val; this.advancedCtx = val || {};
+              this.advancedInjectedInput = val; this.advancedExecMsgIn = val || {}; this.recomputeAdvancedCtx();
               // Après saisie, exécuter directement (la sauvegarde a déjà été confirmée en amont)
               this._doTestNodeBackend(m, isStart, this.advancedInjectedInput || {});
             });
@@ -2328,7 +2344,8 @@ export class FlowBuilderComponent {
     try {
       // Prepare UI: input ready, output loading until result
       this.advancedInjectedInput = input;
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.previewLoading = false;
       this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
@@ -2344,7 +2361,8 @@ export class FlowBuilderComponent {
         const nodeOut = last?.result;
         this.advancedInjectedOutput = nodeOut ?? null;
       }
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.testDurationMs = Math.round(t1 - t0);
       this.testStatus = 'success';
       this.outputLoading = false;
@@ -2378,7 +2396,8 @@ export class FlowBuilderComponent {
     if (environment.useBackend && this.currentFlowId) {
       // Prepare UI: input ready, output loading until result
       this.advancedInjectedInput = msgIn;
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.previewLoading = false;
       this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
@@ -2392,7 +2411,8 @@ export class FlowBuilderComponent {
           } else {
             this.advancedInjectedOutput = resp?.msgOut ?? resp?.result ?? null;
           }
-          this.advancedCtx = this.advancedInjectedInput || {};
+          this.advancedExecMsgIn = this.advancedInjectedInput || {};
+          this.recomputeAdvancedCtx();
           this.testDurationMs = this.testDurationMs ?? Math.round(t1 - t0);
           this.testStatus = 'success';
           this.outputLoading = false;
@@ -2433,14 +2453,16 @@ export class FlowBuilderComponent {
           this.runsApi.preview(this.currentFlowId!, nodeId, p).subscribe({
             next: (resp) => {
               this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
-              this.advancedCtx = this.advancedInjectedInput || {};
+              this.advancedExecMsgIn = this.advancedInjectedInput || {};
+              this.recomputeAdvancedCtx();
               try { this.cdr.detectChanges(); } catch {}
             },
             error: () => {
               // Fallback to local simulation
               const injected = this.runPredecessorsAndGetResult(nodeId);
               this.advancedInjectedInput = injected;
-              this.advancedCtx = this.advancedInjectedInput || {};
+              this.advancedExecMsgIn = this.advancedInjectedInput || {};
+              this.recomputeAdvancedCtx();
               try { this.cdr.detectChanges(); } catch {}
             },
             complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
@@ -2450,7 +2472,8 @@ export class FlowBuilderComponent {
       } else {
         const injected = this.runPredecessorsAndGetResult(nodeId);
         this.advancedInjectedInput = injected;
-        this.advancedCtx = this.advancedInjectedInput || {};
+        this.advancedExecMsgIn = this.advancedInjectedInput || {};
+        this.recomputeAdvancedCtx();
         try { this.cdr.detectChanges(); } catch {}
       }
     } catch {}
@@ -2815,7 +2838,9 @@ export class FlowBuilderComponent {
   onDialogInputChange(v: any) {
     try {
       this.advancedInjectedInput = v;
-      this.advancedCtx = v || {};
+      // Treat injected input from Settings V2 as scenario msgIn
+      this.advancedScenarioMsgIn = v || {};
+      this.recomputeAdvancedCtx();
       try {
         const id = String(this.selectedModel?.id || '');
         console.log('[builder][settings-v2] injectedInputChange', { nodeId: id, keys: Object.keys(this.advancedCtx || {}) });
@@ -2842,7 +2867,9 @@ export class FlowBuilderComponent {
       this.advancedInjectedInput = att?.msgIn ?? att?.input ?? (isStart ? (this.getStartPayload().payload || {}) : null);
       this.advancedInjectedOutput = att?.msgOut ?? att?.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
       this.advancedAttemptEvents = (att?.events || []).slice().sort((a:any,b:any)=> new Date(a?.createdAt||0).getTime() - new Date(b?.createdAt||0).getTime());
-      this.advancedCtx = this.advancedInjectedInput || {};
+      // Set execution ctx buffer and recompute merged ctx with scenario
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       // Output loader should reflect current attempt status
       try {
         const st = (att && (att.status as any)) || null;
@@ -3738,6 +3765,33 @@ export class FlowBuilderComponent {
       const hasPrev = (this.edges || []).some(e => String(e.target) === String(nodeId));
       // If no predecessor, keep empty input
       this.advancedInjectedInput = hasPrev ? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId)) : {};
+      // Si une exécution backend est sélectionnée, initialiser les tentatives/événements comme en V1
+      if (this.backendRunId && nodeId) {
+        const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
+        if (arr.length > 0) {
+          if (this.advancedSelectedExec == null && arr[arr.length - 1].exec != null) this.advancedSelectedExec = Number(arr[arr.length - 1].exec);
+          try {
+            const sameExec = arr.filter(a => Number(a.exec) === Number(this.advancedSelectedExec ?? arr[arr.length - 1].exec));
+            const idx = sameExec.length ? (sameExec.length - 1) : 0;
+            this.advancedOccurByNode.set(String(nodeId), idx);
+          } catch {}
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.advancedSelectedAttemptIdx = arr.length - 1;
+          this.refreshDialogIOFromSelection();
+          try {
+            const att = this.resolveAttemptForSelection(nodeId);
+            this.outputLoading = att?.status === 'running';
+          } catch { this.outputLoading = false; }
+        } else {
+          this.advancedAttemptEvents = [];
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.refreshDialogIOFromSelection();
+        }
+      }
       // Always try backend simulation to propose scenarios (engine_split)
       this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
       if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
@@ -4788,9 +4842,12 @@ export class FlowBuilderComponent {
     const tag = (target?.tagName || '').toLowerCase();
     const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (target?.isContentEditable ?? false);
     if (isInput) return;
-    // When advanced editor modal is open, let browser/system shortcuts (copy/paste...) work normally
-    if (this.advancedOpen) {
-      if (ev.key === 'Escape') { ev.preventDefault(); this.closeAdvancedEditor(); }
+    // Quand un éditeur avancé (V1 ou V2) est ouvert, laisser les raccourcis système par défaut
+    if (this.advancedOpen || this.advancedV2Open) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        try { if (this.advancedV2Open) this.closeAdvancedEditorV2(); else this.closeAdvancedEditor(); } catch {}
+      }
       return;
     }
     const cmd = ev.metaKey || ev.ctrlKey;

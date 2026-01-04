@@ -517,7 +517,13 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       case 'end': return [];
       case 'start':
       case 'start_form':
-        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) return (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
+      case 'event':
+      case 'endpoint':
+        if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+          return (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any)=>String(h.id));
+        }
         return ['out'];
       case 'loop': {
         if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
@@ -531,12 +537,26 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       case 'condition': {
         const field = tmpl.output_array_field || 'items';
         const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
-        return arr.map((it: any, i: number) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
+        const ids = arr.map((it: any, i: number) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && !ids.includes(elseId)) ids.push(elseId);
+        } catch {}
+        try {
+          // Préserver les handles déjà connectés pour éviter les disparitions visuelles
+          const connected = (this.edges || [])
+            .filter((e:any) => String(e.source) === String(model.id))
+            .map((e:any) => String(e.sourceHandle ?? ''))
+            .filter((h:string) => !!h);
+          return Array.from(new Set([...ids, ...connected]));
+        } catch { return ids; }
       }
       case 'function':
       default: {
         if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
-          const ids = (tmpl.outputHandles as any[]).map((h:any)=>String(h.id));
+          const ids = (tmpl.outputHandles as any[])
+            .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
+            .map((h:any)=>String(h.id));
           const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
           return enableCatch ? ['err', ...ids] : ids;
         }
@@ -758,7 +778,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
     try {
       const tmpl = model?.templateObj || {};
       if (typeof idxOrId === 'string' && idxOrId === 'err') return 'Error';
-      if ((tmpl.type === 'start' || tmpl.type === 'start_form') && String(idxOrId) === 'out') return 'Succes';
+      if ((tmpl.type === 'start' || tmpl.type === 'start_form' || tmpl.type === 'event' || tmpl.type === 'endpoint') && String(idxOrId) === 'out') return 'Success';
       const idx = (typeof idxOrId === 'string' && /^\d+$/.test(idxOrId)) ? parseInt(idxOrId, 10) : (typeof idxOrId === 'number' ? idxOrId : NaN);
       if (tmpl.type === 'condition') {
         const field = tmpl.output_array_field || 'items';
@@ -771,7 +791,13 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
           return String(idx);
         }
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
-        return it ? (it.name ?? '') : '';
+        if (it) return (it.name ?? '');
+        // Branche Else
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && String(idxOrId) === elseId) return 'Else';
+        } catch {}
+        return '';
       }
       // v2 output handles
       if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {

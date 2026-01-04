@@ -43,14 +43,16 @@ import { FormsModule } from '@angular/forms';
             </div>
           </div>
           <!-- JSON Input view -->
-          <app-json-schema-viewer-v2 *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)"
-            [data]="injectedInput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
-          </app-json-schema-viewer-v2>
+          <div class="json-pad" *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)">
+            <app-json-schema-viewer-v2
+              [data]="injectedInput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+            </app-json-schema-viewer-v2>
+          </div>
         </div>
 
         <!-- Center column: Settings (args) -->
         <div class="col center" (pointerup)="onFormReleased()">
-          <flow-advanced-center-panel [model]="model" [ctx]="ctx" [flowId]="flowId" [bare]="true"
+          <flow-advanced-center-panel [model]="model" [ctx]="mergedCtx" [flowId]="flowId" [bare]="true"
             [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'"
             (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()"
             (modelChange)="modelChange.emit($event)" (committed)="modelChangeCommitted.emit($event)" (submitted)="onFormSubmitted($event)"
@@ -62,6 +64,16 @@ import { FormsModule } from '@angular/forms';
 
         <!-- Right column: Output (unchanged) -->
         <div class="col right" *ngIf="hasOutput(model)">
+          <div class="top-bar small">
+            <span>Output</span>
+            <span class="spacer"></span>
+            <span *ngIf="realScenarioIndex != null" class="badge real">Scénario Exec: {{ (realScenarioIndex || 0) + 1 }}</span>
+            <span class="sep" *ngIf="testStartedAt">•</span>
+            <span class="ts" *ngIf="testStartedAt as ts">{{ formatTime(ts) }}<ng-container *ngIf="testDurationMs as d"> • {{ formatDuration(d) }}</ng-container></span>
+          </div>
+          <div class="no-output" *ngIf="!isStart(model) && !isStartForm(model) && hasNoOutput()">
+            Aucune exécution — pas d’output.
+          </div>
           <div class="section-title">Output</div>
           <!-- Start Form: Dynamic Form in right column -->
           <app-dynamic-form *ngIf="isStartForm(model)"
@@ -69,13 +81,17 @@ import { FormsModule } from '@angular/forms';
             [value]="injectedOutput || {}"
             (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
           <!-- Start simple: JSON payload editable -->
-          <app-json-schema-viewer-v2 *ngIf="isStart(model) && !isStartForm(model)"
-            [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
-          </app-json-schema-viewer-v2>
+          <div class="json-pad" *ngIf="isStart(model) && !isStartForm(model)">
+            <app-json-schema-viewer-v2
+              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+            </app-json-schema-viewer-v2>
+          </div>
           <!-- Other nodes: output viewer readonly -->
-          <app-json-schema-viewer-v2 *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null"
-            [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
-          </app-json-schema-viewer-v2>
+          <div class="json-pad" *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null">
+            <app-json-schema-viewer-v2
+              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+            </app-json-schema-viewer-v2>
+          </div>
         </div>
       </div>
     </div>
@@ -92,6 +108,8 @@ import { FormsModule } from '@angular/forms';
     .col.center {}
     .section-title { display:none; }
     .top-bar { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:nowrap; white-space:nowrap; padding: 12px 8px 0 8px; }
+    /* Input (col gauche): padding-left plus grand */
+    .col.left .top-bar { padding-left: 20px; }
     /* Match credentials select sizing: fill remaining space, allow ellipsis */
     .scenario-select { flex: 1 1 auto; min-width: 0; }
     .seg { display:inline-flex; background:#fff; border:1px solid #e5e7eb; border-radius: 10px; padding:2px; flex: 0 0 auto; }
@@ -108,6 +126,13 @@ import { FormsModule } from '@angular/forms';
     .sc-item.active, .sc-item:hover { background:#F8FBFF; border-color:#DBEAFE; }
     .sc-item .dot { width:6px; height:6px; border-radius:50%; background:#1677ff; display:inline-block; }
     .badge.real { color:#0a7; border:1px solid #bfe; background:#eff; border-radius: 8px; padding: 0 6px; font-size:11px; }
+    .exec-info { padding: 0 8px 6px 8px; font-size: 12px; color:#6b7280; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .exec-info .sep { color:#9ca3af; }
+    /* Output (col droite): padding top plus grand */
+    .top-bar.small { padding-top: 12px; padding-bottom: 0; font-size:12px; color:#6b7280; display:flex; align-items:center; gap:6px; }
+    .top-bar .spacer { flex:1 1 auto; }
+    .no-output { padding: 8px; color:#6b7280; font-size:12px; }
+    .json-pad { padding: 0 16px 12px; }
   `]
 })
 export class FlowNodeSettingsV2DialogComponent implements OnChanges {
@@ -148,6 +173,10 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   nodeMetaMap: Record<string, { name?: string; templateTitle?: string }> = {};
   // Simulation view state
   viewMode: 'flow'|'json' = 'flow';
+  // Local scenario ctx and merged ctx for the Dynamic Form
+  private scenarioMsgIn: any = null;
+  mergedCtx: any = {};
+  private simRequested = false;
   displayEdges: any[] = [];
   viewNodes: any[] = [];
   layoutBusy = false;
@@ -166,15 +195,35 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   baseNodes: any[] = [];
   baseEdges: any[] = [];
   private initialized = false;
+  private userChangedScenario = false;
 
   constructor(private pathSvc: FlowPathHighlightService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private zone: NgZone) {}
 
   setView(v: 'flow'|'json') { this.viewMode = v; this.refreshScenarioView(); }
+  hasNoOutput(): boolean {
+    try {
+      const v = this.injectedOutput;
+      if (v == null) return true;
+      if (typeof v === 'object') return Object.keys(v || {}).length === 0;
+      return false;
+    } catch { return false; }
+  }
+  formatTime(tsMs: number): string { try { const d = new Date(tsMs); return d.toLocaleString(); } catch { return ''; } }
+  formatDuration(ms: number): string {
+    try {
+      if (!Number.isFinite(ms)) return '';
+      if (ms < 1000) return ms.toFixed(0) + ' ms';
+      const s = ms / 1000; if (s < 60) return s.toFixed(1) + ' s';
+      const m = Math.floor(s / 60); const rem = Math.round(s % 60);
+      return m + ' min ' + rem + ' s';
+    } catch { return ''; }
+  }
   onSelectScenario(i: any) {
     const idx = Number(i || 0);
     this.simSelectedIndex = idx;
     this.simSelectedIndexChange.emit(idx);
     this.isScenarioSwitching = true;
+    this.userChangedScenario = true;
     try {
       console.log('[settings-v2][scenario] select', { index: idx });
       this.cdr.detectChanges();
@@ -182,6 +231,13 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
     try {
       const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![idx] : null);
       if (sc && sc.msgIn != null) {
+        // Update local scenario ctx and merge with execution ctx
+        this.scenarioMsgIn = sc.msgIn;
+        try {
+          const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
+          this.mergedCtx = { ...(this.scenarioMsgIn || {}), ...exec };
+          console.log('[settings-v2][ctx] merge onSelectScenario', { execKeys: Object.keys(exec), scenarioKeys: Object.keys(this.scenarioMsgIn || {}), mergedKeys: Object.keys(this.mergedCtx || {}) });
+        } catch {}
         try { console.log('[settings-v2][scenario] msgIn keys', Object.keys(sc.msgIn || {})); } catch {}
         // Propagate scenario msgIn so the builder updates ctx for DynamicForm expressions
         this.injectedInputChange.emit(sc.msgIn);
@@ -219,6 +275,25 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   ngOnChanges(changes?: SimpleChanges) {
     try {
       if (!changes) return;
+      // If no scenarios yet and parent can fetch, request them once
+      try {
+        const hasPrev = this.hasPrev; const canReq = !this.simRequested && (!Array.isArray(this.simScenarios) || this.simScenarios.length === 0);
+        if (canReq && hasPrev) { this.simRequested = true; this.reloadSimulation.emit(); }
+      } catch {}
+      // Keep merged ctx in sync with execution ctx and current scenario msgIn
+      try {
+        const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
+        const scen = (this.scenarioMsgIn && typeof this.scenarioMsgIn === 'object') ? this.scenarioMsgIn : {};
+        this.mergedCtx = { ...scen, ...exec };
+        console.log('[settings-v2][ctx] merge ngOnChanges', { execKeys: Object.keys(exec), scenarioKeys: Object.keys(scen), mergedKeys: Object.keys(this.mergedCtx || {}) });
+      } catch {}
+      // Keep merged ctx in sync with execution ctx and current scenario msgIn
+      try {
+        const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
+        const scen = (this.scenarioMsgIn && typeof this.scenarioMsgIn === 'object') ? this.scenarioMsgIn : {};
+        this.mergedCtx = { ...scen, ...exec };
+        console.log('[settings-v2][ctx] merge ngOnChanges', { execKeys: Object.keys(exec), scenarioKeys: Object.keys(scen), mergedKeys: Object.keys(this.mergedCtx || {}) });
+      } catch {}
       // On first pass, snapshot nodes/edges and initialize
       if (!this.initialized && (this.nodes || this.edges)) {
         this.baseNodes = (this.nodes || []).map((n: any) => ({ ...n, point: n?.point ? { x: n.point.x, y: n.point.y } : undefined }));
@@ -318,6 +393,18 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         try { this.cdr.detectChanges(); } catch {}
       });
       this.realScenarioIndex = this.computeRealScenarioIndex();
+      // Auto-sélection: si l’utilisateur n’a pas encore changé manuellement, sélectionner le scénario d’exécution par défaut
+      try {
+        const total = Array.isArray(this.simScenarios) ? this.simScenarios!.length : 0;
+        if (!this.userChangedScenario && total > 0) {
+          if (this.realScenarioIndex != null && this.realScenarioIndex >= 0 && this.realScenarioIndex < total && this.simSelectedIndex !== this.realScenarioIndex) {
+            this.simSelectedIndex = this.realScenarioIndex;
+            this.simSelectedIndexChange.emit(this.simSelectedIndex);
+            this.isScenarioSwitching = true;
+            try { this.cdr.detectChanges(); } catch {}
+          }
+        }
+      } catch {}
       const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![this.simSelectedIndex] : null);
       if (sc && sc.path && Array.isArray(sc.path.edges)) {
         const key = (e: any) => `${String(e.source || e.from)}|${String(e.target || e.to)}|${String(e.sourceHandle || '')}`;
@@ -329,6 +416,13 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       // Emit scenario msgIn to update ctx for Dynamic Form expressions
       try {
         if (sc && sc.msgIn != null) {
+          // Keep local scenario ctx for merging with execution ctx
+          this.scenarioMsgIn = sc.msgIn;
+          try {
+            const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
+            this.mergedCtx = { ...(this.scenarioMsgIn || {}), ...exec };
+            console.log('[settings-v2][ctx] merge refreshScenarioView', { execKeys: Object.keys(exec), scenarioKeys: Object.keys(this.scenarioMsgIn || {}), mergedKeys: Object.keys(this.mergedCtx || {}) });
+          } catch {}
           console.log('[settings-v2] refreshScenarioView emit injectedInputChange', { idx: this.simSelectedIndex, keys: Object.keys(sc.msgIn || {}) });
           this.injectedInputChange.emit(sc.msgIn);
         } else {
