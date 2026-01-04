@@ -20,11 +20,14 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                (selected)="selected.emit($event)" (onConnect)="connect.emit($event)">
           <ng-template let-ctx edge>
             <svg:g customTemplateEdge>
-              <svg:path fill="none" [attr.d]="ctx.path()" [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)" [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')" [attr.marker-end]="ctx.markerEnd()" />
+              <svg:path fill="none" [attr.d]="ctx.path()" [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
+                [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
+                [attr.stroke-opacity]="dimInactive && !isEdgeActive(ctx.edge) ? 0.28 : 1"
+                [attr.marker-end]="ctx.markerEnd()" />
             </svg:g>
           </ng-template>
           <ng-template let-ctx edgeLabelHtml>
-            <div class="edge-labels" [ngClass]="{ error: (computeEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }">
+            <div class="edge-labels" [ngClass]="{ error: (computeEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }" [style.opacity]="dimInactive && !isEdgeActive(ctx.edge) ? 0.35 : 1">
               <div class="badge label" *ngIf="computeEdgeLabel(ctx.edge) as txt" [ngClass]="{ error: txt === 'Error' }">{{ txt }}</div>
             </div>
           </ng-template>
@@ -34,7 +37,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                  - Garder uniquement du SVG pur dans les templates de handle.
                  - Tout wrapper CSS doit rester hors des groupes de handle pour éviter les bugs de bbox/anchor.
             -->
-            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }" [class.selected]="selectedNodeId && (ctx.node.id === selectedNodeId)">
+            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj), 'dim': dimInactive && !isNodeActive(ctx.node.id) }" [class.selected]="selectedNodeId && (ctx.node.id === selectedNodeId)">
               <div class="center-wrap">
                 <node-card-header
                   [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
@@ -46,6 +49,26 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
               </div>
+              <!-- Simulation output preview rendered like linked handles (1-level only) -->
+              <div class="links" *ngIf="simOutputPreview && simOutputPreview[ctx.node.id] as simLinks">
+                <div class="link" *ngFor="let lh of simLinks">
+                  <div class="link-label">{{ lh.name }} <span style="color:#94a3b8">({{ lh.type }})</span></div>
+                  <ng-template #simLinkTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else simHorizLink">
+                    <handle position="right" type="source" [id]="lh.id" [template]="simLinkTpl" />
+                  </ng-container>
+                  <ng-template #simHorizLink>
+                    <handle position="bottom" type="source" [id]="lh.id" [template]="simLinkTpl" />
+                  </ng-template>
+                </div>
+              </div>
               <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
                 <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
                   <div class="in" *ngFor="let ih of ins; let i = index">
@@ -53,8 +76,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#000000'"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        [attr.fill]="'#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
                         (mouseenter)="onInputEnter($event, ctx.node.data.model, ih.id)"
                         (mousemove)="onHandleMove($event)"
                         (mouseleave)="onHandleLeave()"
@@ -79,8 +102,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#000000'" 
-                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1"
+                        [attr.fill]="'#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
                         (mouseenter)="onInputEnter($event, ctx.node.data.model, inId)"
                         (mousemove)="onHandleMove($event)"
                         (mouseleave)="onHandleLeave()"
@@ -105,8 +128,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.cx]="hctx.point().x"
                         [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="(out === 'err') ? '#f759ab' : '#000000'"
-                        [attr.stroke]="'#ffffff'"
+                        [attr.fill]="(out === 'err') ? '#f759ab' : '#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
                         stroke-width="1"
                         (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)"
                         (mousemove)="onHandleMove($event)"
@@ -132,7 +155,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1"></svg:circle>
+                        [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
                     </svg:g>
                   </ng-template>
                   <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
@@ -186,7 +210,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .canvas-host { height: 100%; width: 100%; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
     .canvas-host vflow { touch-action: none; }
     /* Node layout (execution): align with builder grid */
-    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease; }
+    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
+    .node-card.dim { opacity: .35; filter: saturate(0.6); }
     .node-card.ro.selected { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.25); }
     .node-card.ro.no-inputs { padding-top: 0; }
     .node-card.ro.horizontal { min-height: 70px; }
@@ -264,6 +289,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() demo = false; // load internal demo flow if true
   @Input() meta: any = null; // optional flow-level metadata
   @Input() showExecBadges = false; // render execution badges only when explicitly enabled
+  @Input() dimInactive = false;
+  // Aperçu (simulation) des sorties (1 niveau) par nœud, rendu comme des linked handles
+  @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
 
   @Output() run = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
@@ -332,6 +360,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   // Cached nodes for Vflow to avoid getter recomputation on iOS Safari
   vNodes: any[] = [];
+  private activeNodeSet: Set<string> = new Set();
   ngOnChanges(changes: SimpleChanges) {
     let orientationChanged = false;
     if (changes['portOrientation']) {
@@ -348,6 +377,18 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         // Attach curve per-edge like execution to ensure custom router is used
         const srcEdges = Array.isArray(this.edges) ? this.edges : [];
         this.vEdges = srcEdges.map((e: any) => ({ ...e, curve: (backAwareCurve as any) }));
+        try {
+          this.activeNodeSet = new Set<string>();
+          for (const e of this.vEdges || []) {
+            const on = !!((e as any)?.data?.onPath) || ((e as any)?.data?.color === '#1677ff');
+            if (on) {
+              const s = String((e as any).source || (e as any).from || '');
+              const t = String((e as any).target || (e as any).to || '');
+              if (s) this.activeNodeSet.add(s);
+              if (t) this.activeNodeSet.add(t);
+            }
+          }
+        } catch {}
         this.cdr.detectChanges();
       } catch { this.vEdges = this.edges || []; }
     }
@@ -401,6 +442,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       } catch {}
     }
   }
+  isEdgeActive(e: any): boolean { try { return !!(e?.data?.onPath) || (e?.data?.color === '#1677ff'); } catch { return false; } }
+  isNodeActive(id: string): boolean { try { return this.activeNodeSet.has(String(id)); } catch { return false; } }
 
   inputId(tmpl: any): string | null {
     if (!tmpl) return null;

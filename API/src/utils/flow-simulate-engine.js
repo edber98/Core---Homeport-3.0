@@ -52,6 +52,9 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
   const takenEdges = [];
   let stop = false;
   const startedSeq = [];
+  // Ordered execution trace: collect per-node timing, outputs and handles used
+  const trace = [];
+  const traceMap = new Map();
   const loopStack = [];
   // Build edge index for logging
   const edgeBySrcTgt = new Map(edges.map(e => [`${e.source}|${e.target}`, e]));
@@ -85,6 +88,9 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           // record path order
           const idStr = String(ev.nodeId||'');
           if (idStr && !startedSeq.includes(idStr)) startedSeq.push(idStr);
+          // Initialize trace entry for this node
+          const entry = { nodeId: idStr, kind, startedAt: ev.startedAt || new Date().toISOString(), handlesUsed: [] };
+          trace.push(entry); traceMap.set(idStr, entry);
         } catch {}
       } else if (ev?.type === 'edge.taken') {
         try {
@@ -93,6 +99,8 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           const h = ed?.sourceHandle || null;
           console.log('[simulate:engine] edge.taken', { sourceId: ev.sourceId, targetId: ev.targetId, sourceHandle: h });
           try { takenEdges.push({ sourceId: String(ev.sourceId||''), targetId: String(ev.targetId||''), sourceHandle: String(h||'') }); } catch {}
+          // Record handle used on the source node in the trace
+          try { const te = traceMap.get(String(ev.sourceId||'')); if (te && te.handlesUsed) te.handlesUsed.push(String(h||'')); } catch {}
           // Track loop entry/exit for correct loop placement
           try {
             const srcNode = nodeById.get(String(ev.sourceId||''));
@@ -102,6 +110,15 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
               if (loopStack.length && loopStack[loopStack.length-1] === String(ev.sourceId)) loopStack.pop();
             }
           } catch {}
+        } catch {}
+      } else if (ev?.type === 'node.done') {
+        try {
+          const idStr = String(ev.nodeId||'');
+          const te = traceMap.get(idStr);
+          if (te) {
+            te.finishedAt = ev.finishedAt || new Date().toISOString();
+            te.resultPreview = buildOneLevelPreview(ev.result);
+          }
         } catch {}
       }
       if (!captured && ev && ev.type === 'node.started' && String(ev.nodeId || '') === String(targetNodeId)) {
@@ -204,7 +221,29 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
     };
     if (argsPre) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, captured.msgIn || {}));
   } catch {}
-  return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges } } ] };
+  // Assemble ordered trace using startedSeq order
+  const orderedTrace = (() => {
+    try {
+      const map = new Map(trace.map(e => [String(e.nodeId), e]));
+      return startedSeq.map(id => map.get(String(id))).filter(Boolean);
+    } catch { return trace; }
+  })();
+  return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges }, trace: orderedTrace } ] };
+}
+
+// Produce a 1-level preview of a node result for settings UI
+function buildOneLevelPreview(result){
+  try {
+    const t = (v) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v);
+    const out = [];
+    if (result == null) return out;
+    if (typeof result === 'object' && !Array.isArray(result)) {
+      for (const [k,v] of Object.entries(result)) out.push({ key: String(k), type: t(v) });
+      return out;
+    }
+    if (Array.isArray(result)) { out.push({ key: '(array)', type: 'array' }); return out; }
+    out.push({ key: '(value)', type: t(result) }); return out;
+  } catch { return []; }
 }
 
 async function simulateViaEngineSplit(flow, targetNodeId){
@@ -324,7 +363,7 @@ async function simulateViaEngineSplit(flow, targetNodeId){
           return `Engine via ${n?.data?.model?.title || n?.data?.title || n?.title || inc.source}${hTxt}${forcedStr}`;
         } catch { return `Engine via ${inc.source}`; }
       })();
-      results.push({ id: `engine_${idx+1}_${ci+1}`, index: -1, label, msgIn: sc.msgIn, argsPre: sc.argsPre, argsPost: sc.argsPost, sourceNodeId: String(inc.source), sourceHandle: String(inc.sourceHandle || ''), path: sc.path });
+      results.push({ id: `engine_${idx+1}_${ci+1}`, index: -1, label, msgIn: sc.msgIn, argsPre: sc.argsPre, argsPost: sc.argsPost, sourceNodeId: String(inc.source), sourceHandle: String(inc.sourceHandle || ''), path: sc.path, trace: sc.trace });
     }
     return results;
   };

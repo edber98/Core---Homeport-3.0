@@ -34,7 +34,7 @@ import { backAwareCurve } from './edge-curves';
         <flow-viewer-settings-node *ngIf="!loading && flowId"
           [nodes]="$any(nodes)" [edges]="$any(edges)" [meta]="$any(meta)"
           [background]="$any(background)" [connectionSettings]="$any(connectionSettings)"
-          [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true" [selectedNodeId]="$any(nodeId)">
+          [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true" [selectedNodeId]="$any(nodeId)" [simOutputPreview]="$any(simOutputPreview)">
         </flow-viewer-settings-node>
         <!-- FAB + drawer (mobile) -->
         <button nz-button nzSize="small" class="panel-toggle-fab left" *ngIf="isMobile" (click)="drawer=true" aria-label="Scénarios">
@@ -98,8 +98,10 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
   drawer = false;
   private mql?: MediaQueryList;
   private onMqlChange?: () => void;
-  simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> } }> = [];
+  simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> }; trace?: Array<{ nodeId: string; kind?: string; startedAt?: string; finishedAt?: string; handlesUsed?: string[]; resultPreview?: Array<{ key: string; type: string }> }> }> = [];
   simIndex = 0;
+  // Simulation output preview map for settings viewer (1-level schema per node)
+  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
 
   constructor(private route: ActivatedRoute, private catalog: CatalogService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private msg: NzMessageService, private runsApi: RunsBackendService) {
     try { this.flowId = this.route.snapshot.queryParamMap.get('flow'); this.nodeId = this.route.snapshot.queryParamMap.get('node'); } catch {}
@@ -210,7 +212,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     const wanted = new Set(list.map(it => `${String(it.sourceId)}|${String(it.targetId)}|${String(it.sourceHandle || '')}`));
     this.edges = (this.edges || []).map(e => {
       const match = wanted.has(key(e));
-      return match ? { ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2 } } : { ...e, data: { ...(e as any).data, color: (e as any).data?.color && (e as any).data?.color !== '#1677ff' ? (e as any).data?.color : undefined, strokeWidth: undefined } };
+      return match ? { ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2, onPath: true } } : { ...e, data: { ...(e as any).data, color: (e as any).data?.color && (e as any).data?.color !== '#1677ff' ? (e as any).data?.color : undefined, strokeWidth: undefined, onPath: false } };
     });
   }
 
@@ -219,6 +221,20 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     if (!sc) { this.highlightPathTo(this.nodeId || ''); return; }
     const edges = sc.path && Array.isArray(sc.path.edges) ? sc.path.edges : undefined;
     this.highlightEdgesList(edges);
+    // Build 1-level outputs preview map from scenario trace
+    try { this.simOutputPreview = this.buildOutputPreviewFromTrace(sc.trace || []); } catch { this.simOutputPreview = {}; }
+  }
+
+  private buildOutputPreviewFromTrace(trace: Array<any>): { [nodeId: string]: Array<{ id: string; name: string; type: string }> } {
+    const map: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+    try {
+      for (const t of trace || []){
+        const nodeId = String(t.nodeId||''); if (!nodeId) continue;
+        const arr = Array.isArray(t.resultPreview) ? t.resultPreview : [];
+        map[nodeId] = arr.map((it:any, idx:number) => ({ id: `sim_${nodeId}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') }));
+      }
+    } catch {}
+    return map;
   }
 
   // NOTE: When backend returns per-scenario path info, we can enrich highlighting here.

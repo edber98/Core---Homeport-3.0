@@ -325,7 +325,18 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
         Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
     }
     const path = (() => { try { const e = (msgIn && (msgIn._path && msgIn._path.edges)) ? msgIn._path.edges : []; return { edges: e }; } catch { return undefined; } })();
-    return { id: `sc_${idx+1}`, index: idx, label, msgIn: ordered, argsPre, argsPost, choice, path };
+    // Static simulate: provide basic pseudo-trace using node order inferred from path
+    const trace = (() => {
+      try {
+        const arr = Array.isArray(path?.edges) ? path.edges : [];
+        const order = [];
+        const seen = new Set();
+        for (const e of arr){ if (!seen.has(e.sourceId)) { seen.add(e.sourceId); order.push({ nodeId: e.sourceId, kind: undefined, handlesUsed: [String(e.sourceHandle||'')], resultPreview: [] }); } }
+        const last = arr.length ? arr[arr.length-1] : null; if (last && !seen.has(last.targetId)) order.push({ nodeId: last.targetId, kind: undefined, handlesUsed: [], resultPreview: [] });
+        return order;
+      } catch { return []; }
+    })();
+    return { id: `sc_${idx+1}`, index: idx, label, msgIn: ordered, argsPre, argsPost, choice, path, trace };
   });
   // Ensure at least one scenario exists, even if empty
   if (scenarios.length === 0) scenarios.push({ id: 'sc_1', index: 0, label: 'Chemin par défaut', msgIn: {}, choice: {} });
