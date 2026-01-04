@@ -2896,6 +2896,11 @@ export class FlowBuilderComponent {
     this.openAdvancedEditor();
     this.closeCtxMenu();
   }
+  ctxOpenSimulation() {
+    const tgt = this.ctxMenuTarget; this.closeCtxMenu();
+    const fid = this.currentFlowId || '';
+    try { if (tgt && (tgt as any).id && fid) this.router.navigate(['/flow-builder','simulation'], { queryParams: { flow: fid, node: (tgt as any).id }, queryParamsHandling: 'merge' }); } catch {}
+  }
   ctxDuplicateTarget() {
     const tgt = this.ctxMenuTarget;
     this.closeCtxMenu();

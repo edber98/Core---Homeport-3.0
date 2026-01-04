@@ -164,6 +164,7 @@ function cartesianChoices(choicesMap, cap = 16) {
 function simulateMsgForScenario(targetId, choice, graph) {
   const { nodesById, inEdges } = graph;
   const msg = { _nodes: {} };
+  const pathEdges = [];
   const target = String(targetId);
   const visited = new Set([target]);
   const stack = (inEdges.get(target) || []).map(e => ({ edge: e, from: String(e.source), to: target }));
@@ -173,6 +174,7 @@ function simulateMsgForScenario(targetId, choice, graph) {
     // Enforce chosen handle when applicable
     const chosen = choice[String(from)];
     if (chosen != null && String(edge.sourceHandle || '') !== String(chosen)) continue;
+    try { pathEdges.push({ sourceId: from, targetId: to, sourceHandle: String(edge.sourceHandle || '') }); } catch {}
     // Record node output schema for the handle used on this edge
     const node = nodesById.get(from);
     if (node) {
@@ -224,13 +226,19 @@ function simulateMsgForScenario(targetId, choice, graph) {
       for (const ie of inArr) stack.push({ edge: ie, from: String(ie.source), to: from });
     }
   }
+  try { msg._path = { edges: pathEdges }; } catch {}
   return msg;
 }
 
 function simulateScenarios(flow, targetNodeId, mode = 'all') {
   const graph = buildGraph(flow);
   const choices = collectChoicePoints(targetNodeId, graph);
-  const combos = mode === 'all' ? cartesianChoices(choices, 24) : [{}];
+  // Special mode: one scenario per direct incoming predecessor of target (non-merged branches)
+  const incoming = (graph.inEdges.get(String(targetNodeId)) || []).map(e => ({ source: String(e.source), sourceHandle: String(e.sourceHandle || '') }));
+  const uniq = []; const seen = new Set();
+  for (const it of incoming) { const key = `${it.source}|${it.sourceHandle}`; if (!seen.has(key)) { seen.add(key); uniq.push(it); } }
+  const combos = mode === 'all' ? cartesianChoices(choices, 24)
+    : (mode === 'branches' && uniq.length > 1 ? uniq.map(p => ({ __branchSource: p.source, __branchHandle: p.sourceHandle })) : [{}]);
   // Prepare deepRender for compiling args (expressions/templates) on target node
   let evaluateTemplateDetailed = null, evaluateExpression = null;
   try { ({ evaluateTemplateDetailed, evaluateExpression } = require('../engine/expression-sandbox')); } catch {}
@@ -284,7 +292,20 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
   };
 
   const scenarios = combos.map((choice, idx) => {
-    const msgIn = simulateMsgForScenario(targetNodeId, choice, graph);
+    // If branches mode, restrict traversal to the selected direct predecessor
+    let msgIn;
+    if (choice && choice.__branchSource){
+      const target = String(targetNodeId);
+      const allowedSrc = String(choice.__branchSource);
+      const allowedHandle = String(choice.__branchHandle || '');
+      // Build a filtered graph view where only edges into target from allowedSrc are considered
+      const g2 = { ...graph, inEdges: new Map(graph.inEdges) };
+      const arr = (graph.inEdges.get(target) || []).filter(e => String(e.source) === allowedSrc && String(e.sourceHandle || '') === allowedHandle);
+      g2.inEdges.set(target, arr);
+      msgIn = simulateMsgForScenario(targetNodeId, {}, g2);
+    } else {
+      msgIn = simulateMsgForScenario(targetNodeId, choice, graph);
+    }
     let ordered = msgIn; try { ordered = reorderMsgByExecution(msgIn); } catch {}
     let argsPre = null, argsPost = null;
     try {
@@ -293,9 +314,18 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
       argsPre = model?.context || null;
       if (argsPre && (evaluateTemplateDetailed || evaluateExpression)) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, ordered));
     } catch {}
-    const label = Object.keys(choice).length ?
-      Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
-    return { id: `sc_${idx+1}`, index: idx, label, msgIn: ordered, argsPre, argsPost, choice };
+    let label;
+    if (choice && choice.__branchSource){
+      const n = graph.nodesById.get(String(choice.__branchSource));
+      const name = (n && (n.model?.title || n.title)) || String(choice.__branchSource);
+      const h = String(choice.__branchHandle || '');
+      label = `Branche via ${name}${h ? ` (${h})` : ''}`;
+    } else {
+      label = Object.keys(choice).length ?
+        Object.entries(choice).map(([nid, h]) => `${nid}:${h}`).join(', ') : 'Chemin par défaut';
+    }
+    const path = (() => { try { const e = (msgIn && (msgIn._path && msgIn._path.edges)) ? msgIn._path.edges : []; return { edges: e }; } catch { return undefined; } })();
+    return { id: `sc_${idx+1}`, index: idx, label, msgIn: ordered, argsPre, argsPost, choice, path };
   });
   // Ensure at least one scenario exists, even if empty
   if (scenarios.length === 0) scenarios.push({ id: 'sc_1', index: 0, label: 'Chemin par défaut', msgIn: {}, choice: {} });

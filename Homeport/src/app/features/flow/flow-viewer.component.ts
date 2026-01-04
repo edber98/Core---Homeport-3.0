@@ -34,7 +34,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                  - Garder uniquement du SVG pur dans les templates de handle.
                  - Tout wrapper CSS doit rester hors des groupes de handle pour éviter les bugs de bbox/anchor.
             -->
-            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }">
+            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }" [class.selected]="selectedNodeId && (ctx.node.id === selectedNodeId)">
               <div class="center-wrap">
                 <node-card-header
                   [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
@@ -186,7 +186,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .canvas-host { height: 100%; width: 100%; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
     .canvas-host vflow { touch-action: none; }
     /* Node layout (execution): align with builder grid */
-    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
+    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease; }
+    .node-card.ro.selected { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.25); }
     .node-card.ro.no-inputs { padding-top: 0; }
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
@@ -237,6 +238,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
   `]
 })
 export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges {
+  @Input() selectedNodeId: string | null = null;
   @Input() background: any = '#EEF0F4';
   @Input() portOrientation: 'vertical'|'horizontal' = 'horizontal';
   @Input() nodes: any[] = [];

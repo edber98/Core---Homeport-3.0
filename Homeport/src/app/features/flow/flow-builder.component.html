@@ -534,6 +534,7 @@
     <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
     <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur</button>
     <button (click)="ctxOpenAdvancedV2AndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur avancé</button>
+    <button (click)="ctxOpenSimulation()"><i class="fa-solid fa-flask"></i> Ouvrir en simulation</button>
     <button class="danger" *ngIf="(selectionList?.length || 0) <= 1" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
   <flow-node-settings-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel" [flowId]="currentFlowId"

@@ -25,7 +25,15 @@ module.exports = function() {
       if (!targetNodeId) return res.apiError(400, 'bad_request', 'Missing targetNodeId');
       const graph = flow.graph || flow;
       console.log('[simulate:db] request', { flowId: fid, targetNodeId, mode, user: req.user?.id });
-      let data = (mode === 'engine') ? await simulateViaEngine(graph, targetNodeId) : simulateScenarios(graph, targetNodeId, mode);
+      let data;
+      if (mode === 'engine_split') {
+        const { simulateViaEngineSplit } = require('../../utils/flow-simulate-engine');
+        data = await simulateViaEngineSplit(graph, targetNodeId);
+      } else if (mode === 'engine') {
+        data = await simulateViaEngine(graph, targetNodeId);
+      } else {
+        data = simulateScenarios(graph, targetNodeId, mode);
+      }
       const scenarios = Array.isArray(data?.scenarios) ? data.scenarios : [];
       const usable = (sc) => sc && sc.msgIn && typeof sc.msgIn === 'object' && Object.keys(sc.msgIn).length > 0;
       if (!scenarios.length || !usable(scenarios[0])) {

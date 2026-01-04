@@ -92,6 +92,7 @@ export const routes: Routes = [
                   { path: 'ai-console', loadComponent: () => import('./features/flow/flow-ai-console.component').then(m => m.FlowAiConsoleComponent), title: 'Console AI' },
                   { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder', canDeactivate: [unsavedChangesGuard] },
                   { path: 'executions', loadComponent: () => import('./features/flow/flow-execution.component').then(m => m.FlowExecutionComponent), title: 'Exécutions' },
+                  { path: 'simulation', loadComponent: () => import('./features/flow/flow-simulation.component').then(m => m.FlowSimulationComponent), title: 'Simulation' },
                 ]
             },
         ]

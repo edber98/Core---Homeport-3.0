@@ -1,0 +1,347 @@
+❯ Building...
+✔ Building...
+Application bundle generation failed. [7.750 seconds]
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: GlobalLoadingComponent is not used within the template of App[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:8:33:
+[37m      8 │   imports: [RouterOutlet, Vflow, [32mGlobalLoadingComponent[37m],
+        ╵                                  [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/catalog/app-provider-editor.component.ts:28:35:
+[37m      28 │ ...    <span class="s">{{ form?.[32mvalue[37m?.title || form?.value?.name ...
+         ╵                                 [32m~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/catalog/app-provider-editor.component.ts:28:57:
+[37m      28 │ ...>{{ form?.value?.title || form?.[32mvalue[37m?.name || 'Nouveau' }}</span>
+         ╵                                    [32m~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: FormTableViewerComponent is not used within the template of AppProviderViewerComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/catalog/app-provider-viewer.component.ts:17:69:
+[37m      17 │ ...odule, NzTagModule, [32mFormTableViewerComponent[37m, RecordsTableCompo...
+         ╵                        [32m~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: DynamicForm is not used within the template of CredentialViewerComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/credentials/credential-viewer.component.ts:15:112:
+[37m      15 │ ...TableViewerComponent, CredentialEditDialogComponent, [32mDynamicForm[37m],
+         ╵                                                         [32m~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/credentials/credential-viewer.component.ts:47:112:
+[37m      47 │ ...tDoc" [workspaceId]="doc?.[32mworkspaceId[37m || null" (closed)="editVi...
+         ╵                              [32m~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLink is not used within the template of FlowAiConsoleComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-ai-console.component.ts:22:39:
+[37m      22 │ ...CommonModule, FormsModule, [32mRouterLink[37m, RouterLinkActive, NzButt...
+         ╵                               [32m~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLinkActive is not used within the template of FlowAiConsoleComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-ai-console.component.ts:22:51:
+[37m      22 │ ...ormsModule, RouterLink, [32mRouterLinkActive[37m, NzButtonModule, NzInp...
+         ╵                            [32m~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: VflowSafariForeignObjectPatchDirective is not used within the template of FlowBuilderComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-builder.component.ts:45:25:
+[37m      45 │ ...CommonModule,[32mVflowSafariForeignObjectPatchDirective[37m, FormsModul...
+         ╵                 [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:135:61:
+[37m      135 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.[32mid[37m }}</div>
+          ╵                                                          [32m~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:138:51:
+[37m      138 │ ...Color]="selectedBackendRun?.[32mstatus[37m==='success' ? 'green' : (se...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:138:103:
+[37m      138 │ ...een' : (selectedBackendRun?.[32mstatus[37m==='error' ? 'red' : (select...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:138:151:
+[37m      138 │ ...red' : (selectedBackendRun?.[32mstatus[37m==='running' ? 'blue' : (sel...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:138:202:
+[37m      138 │ ...lue' : (selectedBackendRun?.[32mstatus[37m==='cancelled' ? 'default' :...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:138:293:
+[37m      138 │ ...)))" class="status-tag">{{ selectedBackendRun?.[32mstatus[37m }}</nz-tag>
+          ╵                                                   [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:147:88:
+[37m      147 │ ...urationMs != null">{{ selectedBackendRun?.[32mdurationMs[37m }} ms</span>
+          ╵                                              [32m~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:148:94:
+[37m      148 │ ...= null"> · {{ selectedBackendRun?[32m.nodesExecute[37md }} nœuds</span>
+          ╵                                     [32m~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:149:92:
+[37m      149 │ ...t != null"> · {{ selectedBackendRun?[32m.eventsCoun[37mt }} évts</span>
+          ╵                                        [32m~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:227:61:
+[37m      227 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.[32mid[37m }}</div>
+          ╵                                                          [32m~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:230:51:
+[37m      230 │ ...Color]="selectedBackendRun?.[32mstatus[37m==='success' ? 'green' : (se...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:230:103:
+[37m      230 │ ...een' : (selectedBackendRun?.[32mstatus[37m==='error' ? 'red' : (select...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:230:151:
+[37m      230 │ ...red' : (selectedBackendRun?.[32mstatus[37m==='running' ? 'blue' : (sel...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:230:202:
+[37m      230 │ ...lue' : (selectedBackendRun?.[32mstatus[37m==='cancelled' ? 'default' :...
+          ╵                                [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:230:293:
+[37m      230 │ ...)))" class="status-tag">{{ selectedBackendRun?.[32mstatus[37m }}</nz-tag>
+          ╵                                                   [32m~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:239:88:
+[37m      239 │ ...urationMs != null">{{ selectedBackendRun?.[32mdurationMs[37m }} ms</span>
+          ╵                                              [32m~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:240:94:
+[37m      240 │ ...= null"> · {{ selectedBackendRun?[32m.nodesExecute[37md }} nœuds</span>
+          ╵                                     [32m~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-execution.component.ts:241:92:
+[37m      241 │ ...t != null"> · {{ selectedBackendRun?[32m.eventsCoun[37mt }} évts</span>
+          ╵                                        [32m~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/node-template-editor.component.ts:36:35:
+[37m      36 │ ...    <span class="s">{{ form?.[32mvalue[37m?.title || form?.value?.name ...
+         ╵                                 [32m~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/node-template-editor.component.ts:36:57:
+[37m      36 │ ...>{{ form?.value?.title || form?.[32mvalue[37m?.name || 'Nouveau' }}</span>
+         ╵                                    [32m~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'nodes' comes from an index signature, so it must be accessed with ['nodes'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:28:11:
+[37m      28 │           [[32mnodes[37m]="nodes" [edges]="edges" [meta]="meta"
+         ╵            [32m~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'edges' comes from an index signature, so it must be accessed with ['edges'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:28:27:
+[37m      28 │           [nodes]="nodes" [[32medges[37m]="edges" [meta]="meta"
+         ╵                            [32m~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'meta' comes from an index signature, so it must be accessed with ['meta'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:28:43:
+[37m      28 │           [nodes]="nodes" [edges]="edges" [[32mmeta[37m]="meta"
+         ╵                                            [32m~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'background' comes from an index signature, so it must be accessed with ['background'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:29:11:
+[37m      29 │           [[32mbackground[37m]="background" [connectionSettings]="connecti...
+         ╵            [32m~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'connectionSettings' comes from an index signature, so it must be accessed with ['connectionSettings'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:29:37:
+[37m      29 │ ...background]="background" [[32mconnectionSettings[37m]="connectionSettings"
+         ╵                              [32m~~~~~~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'useStorage' comes from an index signature, so it must be accessed with ['useStorage'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:30:11:
+[37m      30 │           [[32museStorage[37m]="false" [showBottomBar]="true" [showRun]="f...
+         ╵            [32m~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showBottomBar' comes from an index signature, so it must be accessed with ['showBottomBar'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:30:32:
+[37m      30 │ ...   [useStorage]="false" [[32mshowBottomBar[37m]="true" [showRun]="false...
+         ╵                             [32m~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showRun' comes from an index signature, so it must be accessed with ['showRun'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:30:55:
+[37m      30 │ ...se" [showBottomBar]="true" [[32mshowRun[37m]="false" [showSave]="false"...
+         ╵                                [32m~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showSave' comes from an index signature, so it must be accessed with ['showSave'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:30:73:
+[37m      30 │ ...]="true" [showRun]="false" [[32mshowSave[37m]="false" [showCenterFlow]=...
+         ╵                                [32m~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showCenterFlow' comes from an index signature, so it must be accessed with ['showCenterFlow'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-simulation.component.ts:30:92:
+[37m      30 │ ...rue" [showRun]="false" [showSave]="false" [[32mshowCenterFlow[37m]="true">
+         ╵                                               [32m~~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'nodes' comes from an index signature, so it must be accessed with ['nodes'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:13:15:
+[37m      13 │       [nodes]="[32mnodes[37m" [edges]="edges" [background]="background"
+         ╵                [32m~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'edges' comes from an index signature, so it must be accessed with ['edges'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:13:31:
+[37m      13 │       [nodes]="nodes" [edges]="[32medges[37m" [background]="background"
+         ╵                                [32m~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'background' comes from an index signature, so it must be accessed with ['background'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:13:52:
+[37m      13 │       [nodes]="nodes" [edges]="edges" [background]="[32mbackground[37m"
+         ╵                                                     [32m~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'connectionSettings' comes from an index signature, so it must be accessed with ['connectionSettings'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:14:28:
+[37m      14 │ ... [connectionSettings]="[32mconnectionSettings[37m" [useStorage]="useSto...
+         ╵                           [32m~~~~~~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'useStorage' comes from an index signature, so it must be accessed with ['useStorage'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:14:62:
+[37m      14 │ ...connectionSettings]="connectionSettings" [useStorage]="[32museStorage[37m"
+         ╵                                                           [32m~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showBottomBar' comes from an index signature, so it must be accessed with ['showBottomBar'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:15:23:
+[37m      15 │       [showBottomBar]="[32mshowBottomBar[37m" [showRun]="showRun" [showSav...
+         ╵                        [32m~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showRun' comes from an index signature, so it must be accessed with ['showRun'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:15:49:
+[37m      15 │ ...ttomBar]="showBottomBar" [showRun]="[32mshowRun[37m" [showSave]="showSave"
+         ╵                                        [32m~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showSave' comes from an index signature, so it must be accessed with ['showSave'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:15:70:
+[37m      15 │ ...ttomBar]="showBottomBar" [showRun]="showRun" [showSave]="[32mshowSave[37m"
+         ╵                                                             [32m~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'showCenterFlow' comes from an index signature, so it must be accessed with ['showCenterFlow'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:16:24:
+[37m      16 │       [showCenterFlow]="[32mshowCenterFlow[37m" [meta]="meta" [showExecBad...
+         ╵                         [32m~~~~~~~~~~~~~~[0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS4111: Property 'meta' comes from an index signature, so it must be accessed with ['meta'].[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/flow/flow-viewer-settings-node.component.ts:16:48:
+[37m      16 │ ...nterFlow]="showCenterFlow" [meta]="[32mmeta[37m" [showExecBadges]="false">
+         ╵                                       [32m~~~~[0m
+
+

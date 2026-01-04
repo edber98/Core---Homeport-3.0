@@ -295,6 +295,14 @@ nz-drawer { display: contents; }
   .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
 }
 
+/* Phone-only offset: push floating FABs down by 50px (start at 62px) */
+@media (max-width: 768px) {
+  .panel-toggle-fab { top: 62px; }
+  .panel-toggle-fab.ai-chat-fab { top: 110px; }
+  .panel-toggle-fab.help-fab { top: 158px; }
+  .panel-toggle-fab.clear-run-fab { top: 206px; }
+}
+
 /* Bottom bar buttons: consistent square size and centered icons */
 .bottom-bar .icon-btn, .bottom-bar .import-btn { width: 36px; height: 36px; padding: 0; display:inline-flex; align-items:center; justify-content:center; border: 1px solid transparent; }
 .bottom-bar .import-btn input[type=file] { display: none; }

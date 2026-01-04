@@ -49,6 +49,7 @@ async function simulateViaEngine(flow, targetNodeId){
   };
 
   let captured = null;
+  const takenEdges = [];
   let stop = false;
   const startedSeq = [];
   const loopStack = [];
@@ -86,6 +87,7 @@ async function simulateViaEngine(flow, targetNodeId){
           const ed = edgeBySrcTgt.get(key);
           const h = ed?.sourceHandle || null;
           console.log('[simulate:engine] edge.taken', { sourceId: ev.sourceId, targetId: ev.targetId, sourceHandle: h });
+          try { takenEdges.push({ sourceId: String(ev.sourceId||''), targetId: String(ev.targetId||''), sourceHandle: String(h||'') }); } catch {}
           // Track loop entry/exit for correct loop placement
           try {
             const srcNode = nodeById.get(String(ev.sourceId||''));
@@ -111,6 +113,22 @@ async function simulateViaEngine(flow, targetNodeId){
   }
 
   if (!captured) captured = { msgIn: null };
+  // In parallel merges, we may stop at target.started before all incoming edges into target were emitted.
+  // Ensure all incoming edges into the target from nodes that actually started are present in path.
+  try {
+    const existed = new Set(takenEdges.map(e => `${e.sourceId}|${e.targetId}`));
+    const incomingToTarget = inEdges.get(String(targetNodeId)) || [];
+    for (const e of incomingToTarget) {
+      const s = String(e.source), t = String(e.target);
+      if (!existed.has(`${s}|${t}`)) {
+        // Include only if source node actually started (was on the execution path)
+        if (startedSeq.includes(s)) {
+          const h = (edgeBySrcTgt.get(`${s}|${t}`) || {}).sourceHandle || e.sourceHandle || '';
+          takenEdges.push({ sourceId: s, targetId: t, sourceHandle: String(h || '') });
+        }
+      }
+    }
+  } catch {}
   try {
     if (captured.msgIn && captured.msgIn._nodes) {
       captured.msgIn._nodes.__path = startedSeq.slice();
@@ -181,7 +199,136 @@ async function simulateViaEngine(flow, targetNodeId){
     };
     if (argsPre) argsPost = deepRender(argsPre, buildEvalContext({ now: new Date() }, captured.msgIn || {}));
   } catch {}
-  return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost } ] };
+  return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges } } ] };
 }
 
-module.exports = { simulateViaEngine };
+async function simulateViaEngineSplit(flow, targetNodeId){
+  // Build graph helpers
+  const nodes = Array.isArray(flow?.nodes) ? flow.nodes : [];
+  const edges = Array.isArray(flow?.edges) ? flow.edges : [];
+  const nodeById = new Map(nodes.map(n => [String(n.id), n]));
+  const inEdges = new Map();
+  for (const n of nodes) inEdges.set(String(n.id), []);
+  for (const e of edges) {
+    const s = String(e.source), t = String(e.target);
+    if (nodeById.has(s) && nodeById.has(t)) inEdges.get(t).push(e);
+  }
+  const incoming = (inEdges.get(String(targetNodeId)) || []).map(e => ({ source: String(e.source), sourceHandle: String(e.sourceHandle || '') }));
+  const uniq = [];
+  const seen = new Set();
+  for (const it of incoming) { const key = `${it.source}|${it.sourceHandle}`; if (!seen.has(key)) { seen.add(key); uniq.push(it); } }
+  if (uniq.length <= 1) {
+    // Nothing to split; reuse single-engine path
+    return await simulateViaEngine(flow, targetNodeId);
+  }
+  // Helper to run engine on a filtered graph keeping only one incoming predecessor to the target
+  const runForIncoming = async (inc, idx) => {
+    const filteredEdges = edges.filter(e => {
+      if (String(e.target) !== String(targetNodeId)) return true;
+      return String(e.source) === String(inc.source) && String(e.sourceHandle || '') === String(inc.sourceHandle || '');
+    });
+    const flowV = { ...flow, nodes, edges: filteredEdges };
+    const one = await simulateViaEngine(flowV, targetNodeId);
+    const sc = (Array.isArray(one?.scenarios) ? one.scenarios : [])[0] || { msgIn: null, argsPre: null, argsPost: null };
+    // Filter path to keep only edges that lie on a path from selected incoming (source+handle) to target
+    try {
+      const all = Array.isArray(sc?.path?.edges) ? sc.path.edges : [];
+      const succ = new Map();
+      const pred = new Map();
+      for (const e of all) {
+        const s = String(e.sourceId), t = String(e.targetId);
+        if (!succ.has(s)) succ.set(s, []); succ.get(s).push(e);
+        if (!pred.has(t)) pred.set(t, []); pred.get(t).push(e);
+      }
+      const fwd = new Set([String(inc.source)]);
+      const fq = [String(inc.source)];
+      while (fq.length) {
+        const n = fq.shift();
+        const outs = succ.get(n) || [];
+        for (const e of outs) { const t = String(e.targetId); if (!fwd.has(t)) { fwd.add(t); fq.push(t); } }
+      }
+      const back = new Set([String(targetNodeId)]);
+      const bq = [String(targetNodeId)];
+      while (bq.length) {
+        const n = bq.shift();
+        const ins = pred.get(n) || [];
+        for (const e of ins) { const s = String(e.sourceId); if (!back.has(s)) { back.add(s); bq.push(s); } }
+      }
+      const filteredForward = all.filter(e => fwd.has(String(e.sourceId)) && back.has(String(e.targetId)));
+      // Upstream to selected incoming: nodes that can reach inc.source through taken edges
+      const up = new Set([String(inc.source)]);
+      const uq = [String(inc.source)];
+      while (uq.length) {
+        const n = uq.shift();
+        const ins = pred.get(n) || [];
+        for (const e of ins) { const s = String(e.sourceId); if (!up.has(s)) { up.add(s); uq.push(s); } }
+      }
+      const filteredUp = all.filter(e => up.has(String(e.sourceId)) && up.has(String(e.targetId)));
+      const filtered = [...filteredUp, ...filteredForward];
+      sc.path = { edges: filtered };
+      // Keep only msg entries for nodes present on the filtered path
+      const keepIds = new Set(); filtered.forEach(e => { keepIds.add(String(e.sourceId)); keepIds.add(String(e.targetId)); });
+      const oldMsg = sc.msgIn || {};
+      const newMsg = {};
+      if (Object.prototype.hasOwnProperty.call(oldMsg, 'payload')) newMsg.payload = oldMsg.payload;
+      for (const k of Object.keys(oldMsg)) { if (k !== 'payload' && k !== '_nodes') { if (keepIds.has(String(k))) newMsg[k] = oldMsg[k]; } }
+      if (oldMsg._nodes && typeof oldMsg._nodes === 'object') {
+        newMsg._nodes = {};
+        for (const k of Object.keys(oldMsg._nodes)) { if (keepIds.has(String(k))) newMsg._nodes[k] = oldMsg._nodes[k]; }
+      }
+      sc.msgIn = newMsg;
+    } catch {}
+    const label = (() => {
+      try {
+        const n = nodeById.get(String(inc.source));
+        const h = String(inc.sourceHandle || '');
+        const hTxt = h ? ` (${h})` : '';
+        return `Engine via ${n?.data?.model?.title || n?.data?.title || n?.title || inc.source}${hTxt}`;
+      } catch { return `Engine via ${inc.source}`; }
+    })();
+    return { id: `engine_${idx+1}`, index: idx, label, msgIn: sc.msgIn, argsPre: sc.argsPre, argsPost: sc.argsPost, sourceNodeId: String(inc.source), sourceHandle: String(inc.sourceHandle || ''), path: sc.path };
+  };
+  const scenarios = [];
+  for (let i = 0; i < uniq.length; i++) {
+    try { scenarios.push(await runForIncoming(uniq[i], i)); } catch (e) { /* continue */ }
+  }
+  // Build a merged scenario strictly as the union of split scenarios paths (no extra edges)
+  if (scenarios.length > 1) {
+    const edgeKey = (e) => `${String(e.sourceId)}|${String(e.targetId)}|${String(e.sourceHandle||'')}`;
+    const uniqEdges = new Map();
+    const mergedMsg = {};
+    let mergedArgsPre = null, mergedArgsPost = null;
+    let gotPayload = false;
+    for (const sc of scenarios) {
+      const list = (sc && sc.path && Array.isArray(sc.path.edges)) ? sc.path.edges : [];
+      for (const e of list) { const k = edgeKey(e); if (!uniqEdges.has(k)) uniqEdges.set(k, { ...e }); }
+      // Merge msgIn nodes along split paths
+      const msg = sc && sc.msgIn ? sc.msgIn : {};
+      if (!gotPayload && Object.prototype.hasOwnProperty.call(msg, 'payload')) { mergedMsg.payload = msg.payload; gotPayload = true; }
+      for (const k of Object.keys(msg)) {
+        if (k === 'payload' || k === '_nodes') continue;
+        if (!Object.prototype.hasOwnProperty.call(mergedMsg, k)) mergedMsg[k] = msg[k];
+      }
+      if (msg && typeof msg._nodes === 'object') {
+        if (!mergedMsg._nodes) mergedMsg._nodes = {};
+        for (const nk of Object.keys(msg._nodes)) { if (!Object.prototype.hasOwnProperty.call(mergedMsg._nodes, nk)) mergedMsg._nodes[nk] = msg._nodes[nk]; }
+      }
+      // Keep first argsPre/argsPost as reference
+      if (mergedArgsPre == null && sc.argsPre != null) mergedArgsPre = sc.argsPre;
+      if (mergedArgsPost == null && sc.argsPost != null) mergedArgsPost = sc.argsPost;
+    }
+    const mergedScenario = {
+      id: 'engine_merged',
+      index: scenarios.length,
+      label: 'Simulation (fusion)',
+      msgIn: mergedMsg,
+      argsPre: mergedArgsPre,
+      argsPost: mergedArgsPost,
+      path: { edges: Array.from(uniqEdges.values()) }
+    };
+    scenarios.push(mergedScenario);
+  }
+  return { targetNodeId: String(targetNodeId), scenarios };
+}
+
+module.exports = { simulateViaEngine, simulateViaEngineSplit };

@@ -205,7 +205,7 @@ import { backAwareCurve } from './edge-curves';
         </g>
       </svg>
     </button>
-    <button nz-button nzSize="small" class="panel-toggle-fab" type="button" (click)="onRightFabClick()" aria-label="Ouvrir le panneau droit">
+    <button nz-button nzSize="small" class="panel-toggle-fab" type="button" *ngIf="selectedBackendRun" (click)="onRightFabClick()" aria-label="Ouvrir le panneau droit">
       <i class="fa-regular fa-rectangle-list" style="color:#6b7280"></i>
     </button>
 
@@ -378,6 +378,7 @@ import { backAwareCurve } from './edge-curves';
     }
     @media (max-width: 768px) {
       .flow-exec .viewer { padding-bottom: 0 !important; }
+      .panel-toggle-fab { top: 62px; }
     }
     /* Ensure nz-drawer host does not take layout space */
     nz-drawer { display: contents; }

@@ -21,7 +21,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
           <div class="section-title">Input</div>
           <div *ngIf="loadingInput" class="loading">Chargement…</div>
           <app-json-schema-viewer-v2 *ngIf="!loadingInput && injectedInput != null && !isStart(model)"
-            [data]="injectedInput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+            [data]="injectedInput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
         </div>
 
@@ -47,11 +47,11 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
             (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
           <!-- Start simple: JSON payload editable -->
           <app-json-schema-viewer-v2 *ngIf="isStart(model) && !isStartForm(model)"
-            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
           <!-- Other nodes: output viewer readonly -->
           <app-json-schema-viewer-v2 *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null"
-            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
           </app-json-schema-viewer-v2>
         </div>
       </div>
@@ -104,6 +104,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
 
   labelsMap: Record<string, { label?: string; description?: string }> = {};
   nodeNamesMap: Record<string, string> = {};
+  nodeMetaMap: Record<string, { name?: string; templateTitle?: string }> = {};
   
 
   onFormSubmitted(m: any) {
@@ -144,6 +145,8 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         const template = model?.templateObj || {};
         const name = model?.name || template?.title || template?.name || id;
         nodeNames[id] = String(name);
+        const tplTitle = template?.title || template?.name || '';
+        this.nodeMetaMap[id] = { name: String(name), templateTitle: String(tplTitle || '') };
         // Collect output schemas from template
         let outSchemas = (template?.outputSchemas && typeof template.outputSchemas === 'object') ? template.outputSchemas : {} as any;
         if ((!outSchemas || !Object.keys(outSchemas).length) && Array.isArray(template?.outputHandles)) {

@@ -46,8 +46,8 @@ export class RunsBackendService {
   preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
     return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
   }
-  simulateMsg(flowId: string, targetNodeId: string, mode: 'engine'|'all'|'default' = 'engine'): Observable<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any }> }> {
-    return this.api.post<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any }> }>(`/api/flows/${encodeURIComponent(flowId)}/simulate-msg`, { targetNodeId, mode });
+  simulateMsg(flowId: string, targetNodeId: string, mode: 'engine'|'engine_split'|'all'|'default' = 'engine'): Observable<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> } }> }> {
+    return this.api.post<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> } }> }>(`/api/flows/${encodeURIComponent(flowId)}/simulate-msg`, { targetNodeId, mode });
   }
   testNode(flowId: string, nodeId: string, msg: any): Observable<any> {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/test-node`, { nodeId, msg });
