@@ -401,6 +401,33 @@ async function simulateViaEngineSplit(flow, targetNodeId){
     const mergedMsg = {};
     let mergedArgsPre = null, mergedArgsPost = null;
     let gotPayload = false;
+    // Collect union of per-node previews from traces to drive UI output handles in fusion
+    const previewUnion = new Map(); // nodeId -> { kind, handlesUsed:Set<string>, keys: Map<key, type> }
+    const addTraceToUnion = (traceArr) => {
+      try {
+        const arr = Array.isArray(traceArr) ? traceArr : [];
+        for (const t of arr) {
+          const nid = String(t?.nodeId || ''); if (!nid) continue;
+          let slot = previewUnion.get(nid);
+          if (!slot) { slot = { kind: t?.kind || undefined, handlesUsed: new Set(), keys: new Map() }; previewUnion.set(nid, slot); }
+          // Union handles used
+          try { for (const h of (Array.isArray(t?.handlesUsed) ? t.handlesUsed : [])) slot.handlesUsed.add(String(h||'')); } catch {}
+          // Union preview keys; if same key has conflicting type, mark as 'mixed'
+          try {
+            const items = Array.isArray(t?.resultPreview) ? t.resultPreview : [];
+            for (const it of items) {
+              const k = String((it && (it.key ?? it.name)) || ''); if (!k) continue;
+              const typ = String(it?.type || '');
+              if (!slot.keys.has(k)) slot.keys.set(k, typ);
+              else {
+                const prev = slot.keys.get(k);
+                if (prev !== typ) slot.keys.set(k, 'mixed');
+              }
+            }
+          } catch {}
+        }
+      } catch {}
+    };
     for (const sc of scenarios) {
       const list = (sc && sc.path && Array.isArray(sc.path.edges)) ? sc.path.edges : [];
       for (const e of list) { const k = edgeKey(e); if (!uniqEdges.has(k)) uniqEdges.set(k, { ...e }); }
@@ -415,10 +442,42 @@ async function simulateViaEngineSplit(flow, targetNodeId){
         if (!mergedMsg._nodes) mergedMsg._nodes = {};
         for (const nk of Object.keys(msg._nodes)) { if (!Object.prototype.hasOwnProperty.call(mergedMsg._nodes, nk)) mergedMsg._nodes[nk] = msg._nodes[nk]; }
       }
+      // Union traces
+      addTraceToUnion(sc && sc.trace);
       // Keep first argsPre/argsPost as reference
       if (mergedArgsPre == null && sc.argsPre != null) mergedArgsPre = sc.argsPre;
       if (mergedArgsPost == null && sc.argsPost != null) mergedArgsPost = sc.argsPost;
     }
+    // Build a merged trace ordered topologically along merged path edges
+    const nodesSet = new Set();
+    Array.from(uniqEdges.values()).forEach((e) => { nodesSet.add(String(e.sourceId)); nodesSet.add(String(e.targetId)); });
+    // Also include nodes from union previews (in case a node produced preview without explicit edge in union)
+    for (const nid of previewUnion.keys()) nodesSet.add(String(nid));
+    const indeg = new Map(); const succ = new Map();
+    for (const nid of nodesSet) { indeg.set(nid, 0); succ.set(nid, []); }
+    Array.from(uniqEdges.values()).forEach((e) => {
+      const s = String(e.sourceId), t = String(e.targetId);
+      succ.get(s).push(t);
+      indeg.set(t, (indeg.get(t) || 0) + 1);
+    });
+    const q = [];
+    for (const nid of nodesSet) { if ((indeg.get(nid) || 0) === 0) q.push(nid); }
+    const ordered = [];
+    const seenTopo = new Set();
+    while (q.length) {
+      const n = q.shift(); if (seenTopo.has(n)) continue; seenTopo.add(n); ordered.push(n);
+      for (const t of (succ.get(n) || [])) { const v = (indeg.get(t) || 0) - 1; indeg.set(t, v); if (v === 0) q.push(t); }
+    }
+    // Append any remaining nodes (cycles or isolated)
+    for (const nid of nodesSet) { if (!seenTopo.has(nid)) ordered.push(nid); }
+    const mergedTrace = ordered.map((nid) => {
+      const slot = previewUnion.get(String(nid));
+      if (!slot) return { nodeId: String(nid), handlesUsed: [], resultPreview: [], outputsCount: 0 };
+      const items = Array.from(slot.keys.entries()).map(([k, typ]) => ({ key: k, type: typ || '' }));
+      // Stable order by key for deterministic UI
+      items.sort((a,b) => a.key.localeCompare(b.key));
+      return { nodeId: String(nid), kind: slot.kind, handlesUsed: Array.from(slot.handlesUsed.values()), resultPreview: items, outputsCount: items.length };
+    });
     const mergedScenario = {
       id: 'engine_merged',
       index: scenarios.length,
@@ -426,7 +485,8 @@ async function simulateViaEngineSplit(flow, targetNodeId){
       msgIn: mergedMsg,
       argsPre: mergedArgsPre,
       argsPost: mergedArgsPost,
-      path: { edges: Array.from(uniqEdges.values()) }
+      path: { edges: Array.from(uniqEdges.values()) },
+      trace: mergedTrace
     };
     scenarios.push(mergedScenario);
   }

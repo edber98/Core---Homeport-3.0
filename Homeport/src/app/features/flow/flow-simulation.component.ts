@@ -34,7 +34,8 @@ import { backAwareCurve } from './edge-curves';
         <flow-viewer-settings-node *ngIf="!loading && flowId"
           [nodes]="$any(nodes)" [edges]="$any(edges)" [meta]="$any(meta)"
           [background]="$any(background)" [connectionSettings]="$any(connectionSettings)"
-          [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true" [selectedNodeId]="$any(nodeId)" [simOutputPreview]="$any(simOutputPreview)">
+          [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"
+          [selectedNodeId]="$any(nodeId)" [simOutputPreview]="$any(simOutputPreview)" [focusNodeIds]="$any(focusNodeIds)">
         </flow-viewer-settings-node>
         <!-- FAB + drawer (mobile) -->
         <button nz-button nzSize="small" class="panel-toggle-fab left" *ngIf="isMobile" (click)="drawer=true" aria-label="Scénarios">
@@ -102,6 +103,8 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
   simIndex = 0;
   // Simulation output preview map for settings viewer (1-level schema per node)
   simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+  // Focused node ids used by viewer to center only on selected scenario path
+  focusNodeIds: string[] = [];
 
   constructor(private route: ActivatedRoute, private catalog: CatalogService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private msg: NzMessageService, private runsApi: RunsBackendService) {
     try { this.flowId = this.route.snapshot.queryParamMap.get('flow'); this.nodeId = this.route.snapshot.queryParamMap.get('node'); } catch {}
@@ -214,6 +217,12 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
       const match = wanted.has(key(e));
       return match ? { ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2, onPath: true } } : { ...e, data: { ...(e as any).data, color: (e as any).data?.color && (e as any).data?.color !== '#1677ff' ? (e as any).data?.color : undefined, strokeWidth: undefined, onPath: false } };
     });
+    // Update focused node ids for subset centering
+    try {
+      const nidSet = new Set<string>();
+      for (const it of list) { nidSet.add(String(it.sourceId)); nidSet.add(String(it.targetId)); }
+      this.focusNodeIds = Array.from(nidSet.values());
+    } catch { this.focusNodeIds = []; }
   }
 
   private highlightScenarioIndex(i: number) {

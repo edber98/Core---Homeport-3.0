@@ -14,7 +14,7 @@ import { Edge, ConnectionSettings } from 'ngx-vflow';
       [nodes]="nodes" [edges]="edges" [background]="background"
       [connectionSettings]="connectionSettings" [useStorage]="useStorage"
       [showBottomBar]="showBottomBar" [showRun]="showRun" [showSave]="showSave"
-      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview">
+      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview" [focusNodeIds]="focusNodeIds">
     </flow-viewer>
   `
 })
@@ -34,4 +34,6 @@ export class FlowViewerSettingsNodeComponent {
   @Input() dimInactive: boolean = true;
   // For settings mode: preview map of outputs per node (1-level only)
   @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
+  // When provided, the viewer center action will focus only these node ids
+  @Input() focusNodeIds: string[] | null = null;
 }

@@ -292,6 +292,10 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() dimInactive = false;
   // Aperçu (simulation) des sorties (1 niveau) par nœud, rendu comme des linked handles
   @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
+  // Optional: list of node ids to focus when centering (fit only these)
+  @Input() focusNodeIds: string[] | null = null;
+  // Optional: extra padding ratio for fit (0..0.4 typical)
+  @Input() fitPadding = 0.12;
 
   @Output() run = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
@@ -513,7 +517,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       const vs = (this as any).flow?.viewportService;
       if (!vs) return;
       // Use a modest padding to avoid excessive empty space on small graphs
-      vs.fitView({ duration: 150, padding: 0.12 });
+      vs.fitView({ duration: 150, padding: this.fitPadding });
       // Clamp zoom to avoid zooming in too much when there are few items
       try {
         const z = vs.readableViewport()?.zoom;
@@ -523,6 +527,48 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       } catch {}
       if (cb) setTimeout(cb, 180);
     } catch {}
+  }
+
+  // Fit only a subset of nodes (by ids), with padding and zoom clamp
+  private fitSubset(ids?: string[] | null) {
+    try {
+      const targets = Array.isArray(ids) ? ids.map(String).filter(Boolean) : [];
+      if (!targets.length) return this.fitAll();
+      const host = this.flowHost?.nativeElement; const vs: any = this.flow?.viewportService;
+      if (!host || !vs) return this.fitAll();
+      const rect = host.getBoundingClientRect();
+      const W = Math.max(1, rect.width); const H = Math.max(1, rect.height);
+      // Approx node size aligned with layout service
+      const NODE_W = 223; const NODE_H = 110;
+      let minX = Number.POSITIVE_INFINITY, minY = Number.POSITIVE_INFINITY;
+      let maxX = Number.NEGATIVE_INFINITY, maxY = Number.NEGATIVE_INFINITY;
+      for (const n of (this.vNodes || [])) {
+        const id = String((n as any).id || ''); if (!id || !targets.includes(id)) continue;
+        const pt = (n as any).point || { x: 0, y: 0 };
+        const x0 = Number(pt.x) || 0; const y0 = Number(pt.y) || 0;
+        const x1 = x0 + NODE_W; const y1 = y0 + NODE_H;
+        if (x0 < minX) minX = x0; if (y0 < minY) minY = y0;
+        if (x1 > maxX) maxX = x1; if (y1 > maxY) maxY = y1;
+      }
+      if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) return this.fitAll();
+      // Ensure minimal bbox size to avoid extreme zoom when 1 tiny node
+      if (maxX - minX < NODE_W * 0.6) maxX = minX + NODE_W * 0.6;
+      if (maxY - minY < NODE_H * 0.6) maxY = minY + NODE_H * 0.6;
+      const pad = Math.max(0, Math.min(0.4, this.fitPadding));
+      const worldW = maxX - minX; const worldH = maxY - minY;
+      const scaleX = (W * (1 - pad * 2)) / worldW;
+      const scaleY = (H * (1 - pad * 2)) / worldH;
+      let z = Math.max(0.02, Math.min(scaleX, scaleY));
+      if (z > this.maxCenterZoom) z = this.maxCenterZoom;
+      const cx = (minX + maxX) / 2; const cy = (minY + maxY) / 2;
+      const centerScreenX = W / 2; const centerScreenY = H / 2;
+      const x = centerScreenX - (cx * z);
+      const y = centerScreenY - (cy * z);
+      vs.writableViewport.set({ changeType: 'absolute', state: { zoom: z, x, y }, duration: 150 });
+      try { vs.triggerViewportChangeEvent?.('end'); } catch {}
+      this.updateZoomDisplay();
+      this.saveViewport();
+    } catch { this.fitAll(); }
   }
 
   private setZoomAndCenter(newZoom: number) {
@@ -641,7 +687,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Bottom bar actions
   onRun() { this.run.emit(); }
   onSave() { this.save.emit(); }
-  onCenterFlow() { this.fitAll(); }
+  onCenterFlow() { this.fitSubset(this.focusNodeIds); }
   // Edge labels and tooltips (same mapping as builder)
   computeEdgeLabel(edge: any): string {
     try {
