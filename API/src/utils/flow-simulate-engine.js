@@ -344,17 +344,8 @@ async function simulateViaEngineSplit(flow, targetNodeId){
       const filteredUp = all.filter(e => up.has(String(e.sourceId)) && up.has(String(e.targetId)));
       const filtered = [...filteredUp, ...filteredForward];
       sc.path = { edges: filtered };
-      // Keep only msg entries for nodes present on the filtered path
-      const keepIds = new Set(); filtered.forEach(e => { keepIds.add(String(e.sourceId)); keepIds.add(String(e.targetId)); });
-      const oldMsg = sc.msgIn || {};
-      const newMsg = {};
-      if (Object.prototype.hasOwnProperty.call(oldMsg, 'payload')) newMsg.payload = oldMsg.payload;
-      for (const k of Object.keys(oldMsg)) { if (k !== 'payload' && k !== '_nodes') { if (keepIds.has(String(k))) newMsg[k] = oldMsg[k]; } }
-      if (oldMsg._nodes && typeof oldMsg._nodes === 'object') {
-        newMsg._nodes = {};
-        for (const k of Object.keys(oldMsg._nodes)) { if (keepIds.has(String(k))) newMsg._nodes[k] = oldMsg._nodes[k]; }
-      }
-      sc.msgIn = newMsg;
+      // Preserve full msgIn for richer ctx in editors (do not trim to path)
+      // If a trimmed version is ever needed, expose it under a different key
     } catch {}
       const label = (() => {
         try {

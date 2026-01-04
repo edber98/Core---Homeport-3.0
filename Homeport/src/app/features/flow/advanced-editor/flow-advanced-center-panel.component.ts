@@ -318,6 +318,12 @@ export class FlowAdvancedCenterPanelComponent {
       this.loadForms();
     }
     // Always refresh logs view when attemptEvents changes (even without node/template reset)
+    try {
+      if (changes && (changes as any)['ctx']) {
+        const keys = Object.keys(this.ctx || {});
+        console.log('[center-panel] ctx changed', { keys });
+      }
+    } catch {}
     if ('attemptEvents' in changes) {
       try {
         if (Array.isArray(this.attemptEvents)) {

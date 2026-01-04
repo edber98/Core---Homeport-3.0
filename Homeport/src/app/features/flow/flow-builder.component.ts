@@ -2816,6 +2816,10 @@ export class FlowBuilderComponent {
     try {
       this.advancedInjectedInput = v;
       this.advancedCtx = v || {};
+      try {
+        const id = String(this.selectedModel?.id || '');
+        console.log('[builder][settings-v2] injectedInputChange', { nodeId: id, keys: Object.keys(this.advancedCtx || {}) });
+      } catch {}
     } catch {}
   }
   private recomputeSelectedAttemptIdxForNode(id: string) {
@@ -3775,7 +3779,8 @@ export class FlowBuilderComponent {
     // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
     // Appliquer uniquement à la clôture (onAdvancedModelCommitted) ou via saveSelectedJson.
     if (!m?.id) return;
-    try { this.advancedCtx = m?.context || this.advancedCtx; } catch {}
+    // Ne pas écraser le ctx (provenant de la simulation msgIn) avec les valeurs du formulaire
+    // Garder advancedCtx tel quel; le formulaire met à jour model.context uniquement
     // Cache the latest in-dialog model for final commit on close
     try { this.pendingAdvancedModel = m; } catch {}
   }

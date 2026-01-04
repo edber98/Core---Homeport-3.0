@@ -175,7 +175,18 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
     this.simSelectedIndex = idx;
     this.simSelectedIndexChange.emit(idx);
     this.isScenarioSwitching = true;
-    try { this.cdr.detectChanges(); } catch {}
+    try {
+      console.log('[settings-v2][scenario] select', { index: idx });
+      this.cdr.detectChanges();
+    } catch {}
+    try {
+      const sc: any = (Array.isArray(this.simScenarios) ? this.simScenarios![idx] : null);
+      if (sc && sc.msgIn != null) {
+        try { console.log('[settings-v2][scenario] msgIn keys', Object.keys(sc.msgIn || {})); } catch {}
+        // Propagate scenario msgIn so the builder updates ctx for DynamicForm expressions
+        this.injectedInputChange.emit(sc.msgIn);
+      }
+    } catch {}
     this.refreshScenarioView();
   }
   swallowDrag(ev: DragEvent) { try { ev.preventDefault(); ev.stopPropagation(); } catch {} }
@@ -219,6 +230,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       }
       // After init: only react to scenario selection/data changes
       if (changes['simScenarios'] || changes['simSelectedIndex']) {
+        try { console.log('[settings-v2] ngOnChanges', { simScenarios: Array.isArray(this.simScenarios) ? this.simScenarios.length : null, simSelectedIndex: this.simSelectedIndex }); } catch {}
         this.refreshScenarioView();
       }
     } catch {}
@@ -314,6 +326,15 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         const nidSet = new Set<string>(); for (const it of sc.path.edges) { nidSet.add(String(it.sourceId)); nidSet.add(String(it.targetId)); }
         this.focusNodeIds = Array.from(nidSet.values());
       }
+      // Emit scenario msgIn to update ctx for Dynamic Form expressions
+      try {
+        if (sc && sc.msgIn != null) {
+          console.log('[settings-v2] refreshScenarioView emit injectedInputChange', { idx: this.simSelectedIndex, keys: Object.keys(sc.msgIn || {}) });
+          this.injectedInputChange.emit(sc.msgIn);
+        } else {
+          console.log('[settings-v2] refreshScenarioView no msgIn to emit');
+        }
+      } catch {}
       // Build preview map from trace
       try {
         const trace: any[] = Array.isArray((this.simScenarios && (this.simScenarios as any)[this.simSelectedIndex]?.trace)) ? (this.simScenarios as any)[this.simSelectedIndex].trace : [];
