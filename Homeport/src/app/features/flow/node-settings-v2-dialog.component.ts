@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FlowAdvancedCenterPanelComponent } from './advanced-editor/flow-advanced-center-panel.component';
-import { JsonSchemaViewerComponent } from '../../modules/json-schema-viewer/json-schema-viewer';
+import { JsonSchemaViewerV2Component } from '../../modules/json-schema-viewer/json-schema-viewer-v2';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 
 @Component({
   selector: 'flow-node-settings-v2-dialog',
   standalone: true,
-  imports: [CommonModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, DynamicForm],
+  imports: [CommonModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerV2Component, DynamicForm],
   template: `
     <div class="overlay" (click)="close.emit()"></div>
     <div class="dialog" (click)="$event.stopPropagation()">
@@ -20,9 +20,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         <div class="col left" *ngIf="hasInput(model)">
           <div class="section-title">Input</div>
           <div *ngIf="loadingInput" class="loading">Chargement…</div>
-          <app-json-schema-viewer *ngIf="!loadingInput && injectedInput != null && !isStart(model)"
-            [data]="injectedInput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Input'">
-          </app-json-schema-viewer>
+          <app-json-schema-viewer-v2 *ngIf="!loadingInput && injectedInput != null && !isStart(model)"
+            [data]="injectedInput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+          </app-json-schema-viewer-v2>
         </div>
 
         <!-- Center column: Settings (args) -->
@@ -46,13 +46,13 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
             [value]="injectedOutput || {}"
             (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
           <!-- Start simple: JSON payload editable -->
-          <app-json-schema-viewer *ngIf="isStart(model) && !isStartForm(model)"
-            [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'JSON'" [title]="'Payload (Start)'"
-            (dataChange)="startPayloadChange.emit($event)"></app-json-schema-viewer>
+          <app-json-schema-viewer-v2 *ngIf="isStart(model) && !isStartForm(model)"
+            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+          </app-json-schema-viewer-v2>
           <!-- Other nodes: output viewer readonly -->
-          <app-json-schema-viewer *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null"
-            [data]="injectedOutput" [editable]="false" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'">
-          </app-json-schema-viewer>
+          <app-json-schema-viewer-v2 *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null"
+            [data]="injectedOutput" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [order]="null">
+          </app-json-schema-viewer-v2>
         </div>
       </div>
     </div>
@@ -70,9 +70,10 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     .section-title { font-size:12px; color:#6b7280; margin-bottom:6px; }
   `]
 })
-export class FlowNodeSettingsV2DialogComponent {
+export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   @Input() flowId: string | null = null;
   @Input() model: any;
+  @Input() nodes: Array<{ id: string; data?: any }>|null = null;
   @Input() disableForChecksum = false;
   @Input() hasPrev: boolean = false;
   @Input() loadingInput: boolean = false;
@@ -101,6 +102,10 @@ export class FlowNodeSettingsV2DialogComponent {
   @Output() reloadSimulation = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 
+  labelsMap: Record<string, { label?: string; description?: string }> = {};
+  nodeNamesMap: Record<string, string> = {};
+  
+
   onFormSubmitted(m: any) {
     try { this.modelChange.emit(m || this.model); } catch {}
     try { this.modelChangeCommitted.emit(m || this.model); } catch {}
@@ -123,5 +128,63 @@ export class FlowNodeSettingsV2DialogComponent {
   debugRightSchema(): any {
     try { return (this.model?.startFormSchema || this.model?.templateObj?.args) || { title: 'Formulaire', fields: [] }; }
     catch { return { title: 'Formulaire', fields: [] }; }
+  }
+
+  ngOnChanges(_changes?: SimpleChanges) { this.rebuildLabelMaps(); }
+
+  private rebuildLabelMaps() {
+    const labels: Record<string, { label?: string; description?: string }> = {};
+    const nodeNames: Record<string, string> = {};
+    try {
+      const arr = Array.isArray(this.nodes) ? this.nodes! : [];
+      for (const n of arr) {
+        const id = String((n as any)?.id || (n as any)?.data?.model?.id || (n as any)?.data?.id || '');
+        if (!id) continue;
+        const model = (n as any)?.data?.model || (n as any)?.data || {};
+        const template = model?.templateObj || {};
+        const name = model?.name || template?.title || template?.name || id;
+        nodeNames[id] = String(name);
+        // Collect output schemas from template
+        let outSchemas = (template?.outputSchemas && typeof template.outputSchemas === 'object') ? template.outputSchemas : {} as any;
+        if ((!outSchemas || !Object.keys(outSchemas).length) && Array.isArray(template?.outputHandles)) {
+          try {
+            const oh = template.outputHandles as any[];
+            const acc: any = {};
+            for (const h of oh) { const hid = String(h?.id || 'out'); if (h?.schema) acc[hid] = h.schema; }
+            outSchemas = acc;
+          } catch {}
+        }
+        // Merge args for start_form (payload keys)
+        const isStartForm = String(template?.type || '').toLowerCase() === 'start_form';
+        const startSchema = isStartForm ? (model?.startFormSchema || template?.args || null) : null;
+        // Flatten schemas into labels with full path "nodeId.path"
+        const addFields = (baseId: string, schema: any, basePath?: string) => {
+          try {
+            if (!schema) return;
+            const fields = (schema.fields || []) as any[];
+            for (const f of fields) {
+              if (!f) continue;
+              const key = (f.key || f.id || '').toString();
+              if (!key) { if (f.type === 'section' || f.type === 'section_array') { addFields(baseId, { fields: f.fields || [] }, basePath); } continue; }
+              const full = basePath ? `${basePath}.${key}` : `${baseId}.${key}`;
+              labels[full] = { label: f.title || f.label || key, description: f.description || f.help || '' };
+              // Recurse into section/section_array
+              if (f.type === 'section' || f.type === 'section_array' || f.mode === 'array') {
+                addFields(baseId, { fields: f.fields || [] }, `${baseId}.${key}`);
+              }
+            }
+          } catch {}
+        };
+        // For each output handle schema, flatten
+        try {
+          const handles = Object.keys(outSchemas || {});
+          for (const hid of handles) addFields(id, outSchemas[hid], `${id}`);
+        } catch {}
+        // Start_form payload fields
+        if (startSchema) addFields(id, startSchema, `${id}`);
+      }
+    } catch {}
+    this.labelsMap = labels;
+    this.nodeNamesMap = nodeNames;
   }
 }
