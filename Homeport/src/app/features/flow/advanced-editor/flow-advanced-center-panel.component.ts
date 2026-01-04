@@ -99,7 +99,8 @@ import { FormsModule } from '@angular/forms';
                 <div class="control-row">
                   <nz-select class="cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
                     [(ngModel)]="selectedCredId" [nzAllowClear]="allowWithout"
-                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)">
+                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)"
+                    [nzDropdownStyle]="{ zIndex: '200010' }" [nzDropdownClassName]="'in-advanced-editor'" nzShowSearch>
                     <nz-option *ngFor="let c of credentials" [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
                   </nz-select>
                   <button nz-button class="apple-btn icon-only cred-add-btn" (click)="openCreateCred()" [disabled]="!currentProvider" nz-tooltip nzTooltipTitle="Nouveau">

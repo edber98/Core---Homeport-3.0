@@ -33,6 +33,7 @@ import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
+import { SpotlightAddNodeComponent } from './components/spotlight-add-node.component';
 import { environment } from '../../../environments/environment';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive';
@@ -40,7 +41,7 @@ import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -481,6 +482,14 @@ export class FlowBuilderComponent {
   addNodeSourceId: string | null = null;
   addNodeSourceHandle: string | null = null;
   addNodeCandidates: any[] = [];
+  addNodeActiveIdx: number = -1;
+  addNodeGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
+  private scrollActiveIntoView() {
+    try {
+      const el = document.querySelector('.add-node-modal .results .item.active') as HTMLElement | null;
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+    } catch {}
+  }
 
   // Lightweight tooltip state for output handles
   tipVisible = false;
@@ -1602,10 +1611,11 @@ export class FlowBuilderComponent {
     this.addNodeSourceHandle = String(handleId);
     this.addNodeQuery = '';
     this.rebuildAddNodeCandidates();
+    this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
     this.addNodeVisible = true;
   }
   closeAddNodeModal() { this.addNodeVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; }
-  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); this.rebuildAddNodeCandidates(); }
+  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); this.rebuildAddNodeCandidates(); this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1; setTimeout(()=>this.scrollActiveIntoView(),0); }
   private rebuildAddNodeCandidates() {
     try {
       const q = (this.addNodeQuery || '').trim().toLowerCase();
@@ -1618,7 +1628,61 @@ export class FlowBuilderComponent {
         } catch { return true; }
       }) : base;
       this.addNodeCandidates = filtered.slice(0, 200);
+      // Build groups to reuse the exact left-panel style in modal
+      this.addNodeGroups = this.paletteSvc.buildGroups(this.addNodeCandidates, this.addNodeQuery, this.appsMap) || [];
     } catch { this.addNodeCandidates = []; }
+  }
+  onAddNodeKeydown(ev: KeyboardEvent) {
+    try {
+      if (ev.key === 'ArrowDown') {
+        ev.preventDefault();
+        if (this.addNodeCandidates.length) {
+          this.addNodeActiveIdx = Math.min(this.addNodeCandidates.length - 1, Math.max(0, this.addNodeActiveIdx + 1));
+          this.scrollActiveIntoView();
+        }
+        return;
+      }
+      if (ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        if (this.addNodeCandidates.length) {
+          this.addNodeActiveIdx = Math.max(0, (this.addNodeActiveIdx < 0 ? 0 : this.addNodeActiveIdx - 1));
+          this.scrollActiveIntoView();
+        }
+        return;
+      }
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        this.onSubmitAddNodeSearch();
+        return;
+      }
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        this.closeAddNodeModal();
+        return;
+      }
+    } catch {}
+  }
+  onAddNodeItemHover(i: number) { this.addNodeActiveIdx = i; }
+  onAddNodeItemClick(it: any) { this.pickTemplateForAdd(it); }
+  onSpotlightPick(it: any) {
+    // If item is null => Enter pressed with no result: treat as IA prompt
+    if (!it) { this.onSubmitAddNodeSearch(); return; }
+    this.pickTemplateForAdd(it);
+  }
+  onSubmitAddNodeSearch() {
+    try {
+      const idx = this.addNodeActiveIdx;
+      if (this.addNodeCandidates.length > 0) {
+        const it = (idx >= 0 && idx < this.addNodeCandidates.length) ? this.addNodeCandidates[idx] : this.addNodeCandidates[0];
+        this.pickTemplateForAdd(it);
+      } else {
+        // No match => treat as AI prompt placeholder
+        const prompt = (this.addNodeQuery || '').trim();
+        try { console.log('[flow-builder] add-node AI prompt requested', { prompt, sourceId: this.addNodeSourceId, sourceHandle: this.addNodeSourceHandle }); } catch {}
+        // Close modal for now; future: open AI chat & generate node
+        this.closeAddNodeModal();
+      }
+    } catch { this.closeAddNodeModal(); }
   }
   pickTemplateForAdd(it: any) {
     try {

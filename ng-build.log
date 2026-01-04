@@ -1,79 +1,83 @@
+
+> homeport@0.0.0 build
+> ng build
+
 ❯ Building...
 ✔ Building...
 Initial chunk files   | Names                          |  Raw size | Estimated transfer size
-styles-JMUIOU3L.css   | styles                         | 627.52 kB |                57.13 kB
-chunk-5EGAVLIE.js     | -                              | 181.84 kB |                52.81 kB
-chunk-EISQV576.js     | -                              | 157.03 kB |                36.51 kB
-main-6VEKTWFQ.js      | main                           |  92.30 kB |                21.44 kB
-chunk-W5FPWJ5H.js     | -                              |  87.06 kB |                16.80 kB
-chunk-7UB6ZYAO.js     | -                              |  79.31 kB |                19.71 kB
-chunk-43KCX377.js     | -                              |  73.79 kB |                21.64 kB
-chunk-ZMGC4GYB.js     | -                              |  69.50 kB |                15.85 kB
-chunk-3K4THGYT.js     | -                              |  64.90 kB |                17.76 kB
-chunk-H46PPI3N.js     | -                              |  63.48 kB |                17.01 kB
-chunk-TAWIKNC7.js     | -                              |  60.53 kB |                18.75 kB
-chunk-3GIH2ZCV.js     | -                              |  57.88 kB |                13.69 kB
-chunk-GNJD53MU.js     | -                              |  53.25 kB |                12.76 kB
-chunk-EHAWKMK5.js     | -                              |  50.60 kB |                 9.79 kB
+styles-N2QCUTYO.css   | styles                         | 628.43 kB |                57.43 kB
+chunk-PZV5SZGM.js     | -                              | 181.94 kB |                52.76 kB
+chunk-IFQ5HVPD.js     | -                              | 157.03 kB |                36.52 kB
+main-KEXOSX7F.js      | main                           |  92.30 kB |                21.44 kB
+chunk-BB2ORGMR.js     | -                              |  87.06 kB |                16.78 kB
+chunk-S6QMJXJD.js     | -                              |  79.31 kB |                19.68 kB
+chunk-FA25NUXM.js     | -                              |  73.79 kB |                21.61 kB
+chunk-N4CTNNGT.js     | -                              |  69.50 kB |                15.84 kB
+chunk-OR6UQWEO.js     | -                              |  64.90 kB |                17.77 kB
+chunk-7ECEVBBL.js     | -                              |  63.48 kB |                17.00 kB
+chunk-P6SQQ5AE.js     | -                              |  60.53 kB |                18.78 kB
+chunk-GYW7UWKC.js     | -                              |  57.88 kB |                13.73 kB
+chunk-3FIPLYY2.js     | -                              |  53.25 kB |                12.82 kB
+chunk-VBFQLZT7.js     | -                              |  50.60 kB |                 9.77 kB
 polyfills-B6TNHZQ6.js | polyfills                      |  34.58 kB |                11.32 kB
-chunk-F6JUCMET.js     | -                              |  34.40 kB |                 7.30 kB
-chunk-6TVBTYCO.js     | -                              |  32.60 kB |                 7.86 kB
-chunk-TSU645OT.js     | -                              |  23.07 kB |                 6.00 kB
-chunk-WMIVTL2L.js     | -                              |  21.88 kB |                 4.79 kB
-chunk-JGLD4RO7.js     | -                              |  19.86 kB |                 5.09 kB
-chunk-BKLEPRBE.js     | -                              |  15.01 kB |                 4.43 kB
-chunk-BBSWSKOJ.js     | -                              |  14.93 kB |                 4.20 kB
-chunk-TYZDE2MM.js     | -                              |  14.12 kB |                 3.55 kB
-chunk-WIFEHFHU.js     | -                              |  12.43 kB |                 3.40 kB
-chunk-NLYTZ7JY.js     | -                              |  12.07 kB |                 3.43 kB
-chunk-IGFUSIXN.js     | -                              |   9.29 kB |                 3.12 kB
-chunk-SE5KNPFH.js     | -                              |   8.15 kB |                 2.51 kB
-chunk-UMUCRRIJ.js     | -                              |   7.51 kB |                 2.24 kB
-chunk-HJ4TMPKH.js     | -                              |   6.78 kB |                 1.76 kB
-chunk-SMIEFRR7.js     | -                              |   6.39 kB |                 2.18 kB
-chunk-QKQ64CZD.js     | -                              |   5.49 kB |                 1.90 kB
+chunk-FQE4JBWW.js     | -                              |  34.40 kB |                 7.29 kB
+chunk-2H7EQV34.js     | -                              |  32.60 kB |                 7.86 kB
+chunk-XE2JPBLV.js     | -                              |  23.07 kB |                 6.00 kB
+chunk-WTOKVPEJ.js     | -                              |  21.88 kB |                 4.80 kB
+chunk-2EE2CXK3.js     | -                              |  19.86 kB |                 5.11 kB
+chunk-W2IP3LRB.js     | -                              |  15.01 kB |                 4.43 kB
+chunk-SDM3WQ35.js     | -                              |  14.93 kB |                 4.23 kB
+chunk-KHD5HZ4C.js     | -                              |  14.12 kB |                 3.54 kB
+chunk-D2WPCYH5.js     | -                              |  12.43 kB |                 3.39 kB
+chunk-LZ3J3PZ5.js     | -                              |  12.07 kB |                 3.40 kB
+chunk-PSKHBQGD.js     | -                              |   9.29 kB |                 3.13 kB
+chunk-ZIVVE3TI.js     | -                              |   8.15 kB |                 2.51 kB
+chunk-LUOWELRO.js     | -                              |   7.51 kB |                 2.23 kB
+chunk-UVVF5RL5.js     | -                              |   6.78 kB |                 1.76 kB
+chunk-E5KZ3TL4.js     | -                              |   6.39 kB |                 2.17 kB
+chunk-PWVGJN4F.js     | -                              |   5.49 kB |                 1.88 kB
 chunk-OL2K3ESM.js     | -                              |   5.18 kB |                 1.15 kB
-chunk-ZNUGW6Q6.js     | -                              |   4.82 kB |                 1.60 kB
+chunk-BBULNJTB.js     | -                              |   4.82 kB |                 1.60 kB
 chunk-YUIAPYYF.js     | -                              |   4.13 kB |                 1.06 kB
-chunk-7E2DUVZ4.js     | -                              |   4.07 kB |                 1.06 kB
-chunk-BSLBTPW4.js     | -                              |   3.25 kB |                 1.22 kB
-chunk-SIC3U3AQ.js     | -                              |   2.78 kB |               960 bytes
-chunk-UWHVSUS5.js     | -                              |   2.28 kB |               928 bytes
-chunk-BLGEOODN.js     | -                              |   1.58 kB |               657 bytes
-chunk-BYID4NTU.js     | -                              |   1.48 kB |               574 bytes
-chunk-QAJP4F34.js     | -                              |   1.43 kB |               656 bytes
-chunk-FPKHOSXD.js     | -                              | 981 bytes |               981 bytes
-chunk-OPMQNVBC.js     | -                              | 898 bytes |               898 bytes
-chunk-VXH4E2BF.js     | -                              | 848 bytes |               848 bytes
-chunk-WSINPFV7.js     | -                              | 797 bytes |               797 bytes
-chunk-FDXAYAHC.js     | -                              | 737 bytes |               737 bytes
-chunk-FOBF24WC.js     | -                              | 493 bytes |               493 bytes
-chunk-X2WT5F2I.js     | -                              | 382 bytes |               382 bytes
-chunk-HYDJJ5TV.js     | -                              | 361 bytes |               361 bytes
+chunk-JGCWU7LS.js     | -                              |   4.07 kB |                 1.06 kB
+chunk-LECGV7KV.js     | -                              |   3.25 kB |                 1.21 kB
+chunk-C5QR56ZX.js     | -                              |   2.78 kB |               965 bytes
+chunk-JVYOXDQP.js     | -                              |   2.28 kB |               924 bytes
+chunk-7P5GQHQC.js     | -                              |   1.58 kB |               653 bytes
+chunk-QQLQABUV.js     | -                              |   1.48 kB |               585 bytes
+chunk-2RD77GMB.js     | -                              |   1.43 kB |               657 bytes
+chunk-DTEXCCHS.js     | -                              | 981 bytes |               981 bytes
+chunk-CSKYBJ52.js     | -                              | 898 bytes |               898 bytes
+chunk-RKHQJCD2.js     | -                              | 848 bytes |               848 bytes
+chunk-32WMPQPY.js     | -                              | 797 bytes |               797 bytes
+chunk-QIOE4S5P.js     | -                              | 737 bytes |               737 bytes
+chunk-YAZTYCZF.js     | -                              | 493 bytes |               493 bytes
+chunk-HRPLYV63.js     | -                              | 382 bytes |               382 bytes
+chunk-KRV32IG3.js     | -                              | 361 bytes |               361 bytes
 chunk-OZATGOMX.js     | -                              | 127 bytes |               127 bytes
 chunk-H73J5RAA.js     | -                              |  95 bytes |                95 bytes
 
-                      | Initial total                  |   2.03 MB |               422.32 kB
+                      | Initial total                  |   2.04 MB |               422.58 kB
 
 Lazy chunk files      | Names                          |  Raw size | Estimated transfer size
-chunk-PTU5EHES.js     | flow-builder-component         | 384.38 kB |                71.10 kB
-chunk-U37RP4CB.js     | -                              | 305.48 kB |                84.33 kB
-chunk-DKY57YLI.js     | dynamic-form-builder-component | 252.47 kB |                45.74 kB
-chunk-KSHCHHDQ.js     | -                              | 196.41 kB |                31.65 kB
-chunk-JFTEJHT5.js     | ui-builder-component           | 109.78 kB |                23.14 kB
-chunk-OXWRL7HY.js     | -                              | 101.29 kB |                13.67 kB
-chunk-S7MRP4KQ.js     | dashboard-stats                | 100.81 kB |                21.30 kB
-chunk-B5URUJ5U.js     | node-template-editor-component |  57.09 kB |                14.13 kB
-chunk-PJAZ5U5K.js     | -                              |  56.27 kB |                13.93 kB
-chunk-62G3DFHK.js     | -                              |  55.10 kB |                 6.32 kB
-chunk-KCMFJSVA.js     | flow-execution-component       |  49.01 kB |                11.06 kB
-chunk-VMBTBB4T.js     | -                              |  47.55 kB |                10.43 kB
-chunk-OO3EOYQK.js     | -                              |  39.18 kB |                 8.92 kB
-chunk-RJE57EC4.js     | -                              |  30.39 kB |                 7.55 kB
-chunk-PL3YQFVS.js     | workspace-list-component       |  29.29 kB |                 6.72 kB
+chunk-DNDGAMNZ.js     | flow-builder-component         | 399.33 kB |                73.27 kB
+chunk-UBERTFTE.js     | -                              | 305.48 kB |                84.29 kB
+chunk-5DAO472V.js     | dynamic-form-builder-component | 252.47 kB |                45.73 kB
+chunk-HPLOBTQM.js     | -                              | 196.41 kB |                31.67 kB
+chunk-7WTDIGXC.js     | ui-builder-component           | 109.78 kB |                23.13 kB
+chunk-KZCLSZ4B.js     | -                              | 101.29 kB |                13.66 kB
+chunk-4ORBF35Z.js     | dashboard-stats                | 100.81 kB |                21.22 kB
+chunk-W5OAQJLC.js     | node-template-editor-component |  57.09 kB |                14.11 kB
+chunk-NJQFC54P.js     | -                              |  56.27 kB |                13.88 kB
+chunk-T4SC4Q2X.js     | -                              |  55.10 kB |                 6.29 kB
+chunk-QQ3VJUJV.js     | flow-execution-component       |  49.01 kB |                11.07 kB
+chunk-EKCLL7FF.js     | -                              |  47.55 kB |                10.44 kB
+chunk-O5AZO47L.js     | -                              |  39.18 kB |                 8.94 kB
+chunk-4M3RSBZO.js     | -                              |  30.63 kB |                 7.63 kB
+chunk-T55WMCAK.js     | workspace-list-component       |  29.29 kB |                 6.70 kB
 ...and 60 more lazy chunks files. Use "--verbose" to show all the files.
 
-Application bundle generation failed. [8.802 seconds]
+Application bundle generation failed. [8.988 seconds]
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: GlobalLoadingComponent is not used within the template of App[0m [1m[35m[plugin angular-compiler][0m
 
@@ -278,16 +282,9 @@ Application bundle generation failed. [8.802 seconds]
          ╵                                    [32m~~~~~[0m
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
-
-    src/app/features/flow/panels/flow-right-panel.component.ts:115:48:
-[37m      115 │ ...class="t">{{ (selectedList?.[32mlength[37m||0) > 1 ? 'Nœuds' : 'Nœud...
-          ╵                                [32m~~~~~~[0m
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/features/flow/flow-builder.component.scss exceeded maximum budget. Budget 18.00 kB was not met by 5.43 kB with a total of 23.43 kB.[0m
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/features/flow/flow-builder.component.scss exceeded maximum budget. Budget 18.00 kB was not met by 4.02 kB with a total of 22.02 kB.[0m
-
-
-[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1msrc/app/features/flow/flow-builder.component.scss exceeded maximum budget. Budget 22.00 kB was not met by 24 bytes with a total of 22.02 kB.[0m
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1msrc/app/features/flow/flow-builder.component.scss exceeded maximum budget. Budget 22.00 kB was not met by 1.43 kB with a total of 23.43 kB.[0m
 
 

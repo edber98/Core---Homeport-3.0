@@ -75,6 +75,14 @@
 .palette .item .meta .subtitle { color:#8c8c8c; font-size: 12px; }
 .palette .item .meta .desc { color:#6b7280; font-size: 12px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .palette .item.dragging { opacity: .6; }
+
+/* Add-node modal body padding only */
+/* Modal body padding override via deep selector (overlay lives outside component tree) */
+:host ::ng-deep .spotlight-modal .ant-modal-body { padding: 0 8px 8px; }
+/* Assure un header minimal et un bouton close bien positionné */
+:host ::ng-deep .spotlight-modal .ant-modal-header { padding: 4px 6px; border-bottom: none; min-height: 0; }
+:host ::ng-deep .spotlight-modal .ant-modal-title { display: none; }
+:host ::ng-deep .spotlight-modal .ant-modal-close { top: 6px; right: 6px; }
 /* Make drag preview look like an item card, regardless of DOM nesting */
 :host ::ng-deep .cdk-drag-preview {
   background:#fff;

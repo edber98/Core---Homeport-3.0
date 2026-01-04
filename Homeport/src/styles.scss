@@ -163,9 +163,15 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 }
 
 /* Ensure overlays (select dropdowns, modals) render above custom flow dialog */
-.cdk-overlay-container { z-index: 100010; }
-.cdk-overlay-container .ant-select-dropdown, .cdk-overlay-container .ant-modal { z-index: 100011; }
-.in-flow-editor-modal .ant-modal, .in-flow-editor-modal .ant-modal-mask { z-index: 100012 !important; }
+.cdk-overlay-container { z-index: 200000; }
+.cdk-overlay-container .ant-select-dropdown, .cdk-overlay-container .ant-modal { z-index: 200010; }
+.cdk-overlay-container .spotlight-modal .ant-modal-body { padding: 6px 8px 8px !important; }
+.cdk-overlay-container .spotlight-modal .ant-modal-header { padding: 4px 6px !important; border-bottom: none !important; min-height: 0 !important; }
+.cdk-overlay-container .spotlight-modal .ant-modal-title { display: none !important; }
+.cdk-overlay-container .spotlight-modal .ant-modal-close { top: 6px !important; right: 6px !important; }
+.cdk-overlay-container .in-advanced-editor { z-index: 200010 !important; }
+.in-flow-editor-modal .ant-modal, .in-flow-editor-modal .ant-modal-mask { z-index: 200020 !important; }
+.advanced-dialog-portal { position: fixed !important; inset: 0 !important; z-index: 150000 !important; }
 
 /* When the custom Advanced Editor dialog is open, ensure app headers/panels do not overlay it on iOS Safari */
 /* Advanced editor dialog: portal to body to avoid iOS stacking issues */
@@ -219,6 +225,8 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 .border-left-primary {
     border-left: 1px solid #E2E1E4;
 }
+
+/* (Retiré) Styles Spotlight globaux pour éviter conflits de rendu */
 
 /* Flow Builder: small + button near free output handles */
 .handle-add-btn {

@@ -271,21 +271,25 @@
           </div>
         </ng-template>
       </vflow>
-      <!-- Modal: add node from output handle -->
-      <nz-modal [(nzVisible)]="addNodeVisible" nzTitle="Ajouter un nœud"
-        (nzOnCancel)="closeAddNodeModal()" [nzFooter]="null">
-        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
-          <input nz-input placeholder="Rechercher…" [(ngModel)]="addNodeQuery" (ngModelChange)="onAddNodeQueryChange($event)" />
-          <span style="font-size:12px; color:#6b7280;">{{ addNodeCandidates.length }} résultats</span>
-        </div>
-        <div style="max-height:360px; overflow:auto;">
-          <button type="button" class="picker-item" *ngFor="let it of addNodeCandidates; trackBy: trackItem"
-            (click)="pickTemplateForAdd(it)">
-            <i class="fa-solid fa-plus" style="color:#1677ff; margin-right:6px;"></i>
-            <span class="label">{{ it.label }}</span>
-            <span class="hint" *ngIf="it?.template?.subtitle"> · {{ it?.template?.subtitle }}</span>
-          </button>
-        </div>
+      <!-- Modal: Spotlight-style add node assistant (headerless, close button only) -->
+      <nz-modal
+        [(nzVisible)]="addNodeVisible"
+        nzTitle=""
+        [nzClosable]="false"
+        (nzOnCancel)="closeAddNodeModal()"
+        [nzFooter]="null"
+        [nzWidth]="860"
+        nzClassName="add-node-modal spotlight-modal">
+        <ng-container *nzModalContent>
+          <spotlight-add-node
+            [groups]="addNodeGroups"
+            [query]="addNodeQuery"
+            [totalCount]="addNodeCandidates.length"
+            [getAppByIdFn]="getAppById.bind(this)"
+            (queryChange)="onAddNodeQueryChange($event)"
+            (pick)="onSpotlightPick($event)"
+            (close)="closeAddNodeModal()"></spotlight-add-node>
+        </ng-container>
       </nz-modal>
       <!-- Capture overlay to block pan/zoom while dragging selection -->
       <div class="selection-capture" *ngIf="selectionBoxStart || marqueeMode"
