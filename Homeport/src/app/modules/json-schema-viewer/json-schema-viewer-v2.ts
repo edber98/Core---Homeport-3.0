@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 type LabelInfo = { label?: string; description?: string };
 
@@ -158,7 +158,7 @@ type LabelInfo = { label?: string; description?: string };
     .mono:active { cursor:grabbing; }
   `]
 })
-export class JsonSchemaViewerV2Component {
+export class JsonSchemaViewerV2Component implements OnChanges {
   @Input() data: any;
   // Optional: map of full paths to label/description; caller can merge schema into this.
   @Input() labels: Record<string, LabelInfo> = {};
@@ -181,11 +181,16 @@ export class JsonSchemaViewerV2Component {
     const d = this.data || {};
     // Keep original order, exclude only internal metadata key
     const keys = Object.keys(d).filter(k => k !== '_nodes');
+    const movePayloadFirst = (arr: string[]) => {
+      try { const i = arr.indexOf('payload'); if (i > 0) { arr.splice(i, 1); arr.unshift('payload'); } } catch {}
+      return arr;
+    };
     if (this.order && this.order.length) {
       const set = new Set(keys);
       const pref = this.order.filter(k => set.has(k));
       const rest = keys.filter(k => !pref.includes(k));
-      return [...pref, ...rest];
+      const merged = [...pref, ...rest];
+      return movePayloadFirst(merged);
     }
     try {
       const nodesMeta = (d._nodes && typeof d._nodes === 'object') ? d._nodes : null;
@@ -194,10 +199,13 @@ export class JsonSchemaViewerV2Component {
         const set = new Set(keys);
         const pref = path.filter((k: string) => set.has(k));
         const rest = keys.filter(k => !pref.includes(k));
-        return [...pref, ...rest];
+        const merged = [...pref, ...rest];
+        return movePayloadFirst(merged);
       }
     } catch {}
-    return keys;
+    // Default: respecter l'ordre original, mais placer 'payload' en premier
+    const list = keys.slice();
+    return movePayloadFirst(list);
   }
 
   groupKeys(): string[] {
@@ -218,6 +226,18 @@ export class JsonSchemaViewerV2Component {
     try { return (this.data as any)?.[k]; } catch { return null; }
   }
   groupPath(k: string): string { return k.startsWith('__k__') ? k.slice(5) : k; }
+
+  ngOnChanges(changes?: SimpleChanges) {
+    try {
+      if (changes && (changes['data'] || changes['labels'] || changes['nodeMeta'] || changes['nodeNames'] || changes['order'])) {
+        // Par défaut: tout collapse sauf le premier groupe (souvent 'payload')
+        const groups = this.groupKeys();
+        const next: Record<string, boolean> = {};
+        groups.forEach((g, i) => { if (i > 0) next[g] = true; });
+        this.collapsed = next;
+      }
+    } catch {}
+  }
   displayGroupTitle(k: string): string {
     if (k.startsWith('__k__')) { const top = k.slice(5); return top; }
     const id = k;
