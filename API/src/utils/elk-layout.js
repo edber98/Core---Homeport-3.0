@@ -518,6 +518,73 @@ async function layoutGraph(graph, opts = {}){
           const x = Math.round(xL * gapX);
           positions[String(id)] = { x, y: lv * gapY };
         }
+        // Post-adjust by outputs (vertical per-level + horizontal per-level)
+        try {
+          const adj = opts && typeof opts === 'object' ? opts : {};
+          const adjustByOutputs = !!adj.adjustByOutputs;
+          const perY = Number.isFinite(Number(adj.perOutputYOffset)) ? Number(adj.perOutputYOffset) : 5;
+          const perX = Number.isFinite(Number(adj.perOutputXOffset)) ? Number(adj.perOutputXOffset) : 5;
+          const counts = (adj.outputsCount && typeof adj.outputsCount === 'object') ? adj.outputsCount : {};
+          if (adjustByOutputs && counts){
+            // Vertical per level
+            const maxLevel = (()=>{ let mx=0; for (const [id,p] of Object.entries(positions)){ const lv = level.get(String(id))||0; if (lv>mx) mx=lv; } return mx; })();
+            const mode = String(adj.outputsMode || 'max');
+            if (mode === 'edge') {
+              // Per-edge topological accumulation: add child offset = parent accum + count(parent)*perY
+              const nodeIds = Object.keys(positions).map(String);
+              const succ = new Map(); const indeg = new Map();
+              for (const id of nodeIds){ succ.set(id, []); indeg.set(id, 0); }
+              for (const e of (elkGraph.edges || [])){
+                try {
+                  const s = String(e.sources && e.sources.length ? e.sources[0] : e.source || '');
+                  const t = String(e.targets && e.targets.length ? e.targets[0] : e.target || '');
+                  if (s && t && succ.has(s) && indeg.has(t)) { succ.get(s).push(t); indeg.set(t, (indeg.get(t)||0)+1); }
+                } catch{}
+              }
+              const acc = new Map(nodeIds.map(id => [id, 0]));
+              const q = [];
+              for (const id of nodeIds){ if ((indeg.get(id)||0) === 0) q.push(id); }
+              while (q.length){
+                const u = q.shift();
+                const base = (acc.get(u) || 0) + Math.max(0, Number(counts[u])||0) * perY;
+                for (const v of (succ.get(u) || [])){
+                  acc.set(v, Math.max(acc.get(v)||0, base));
+                  indeg.set(v, (indeg.get(v)||1) - 1);
+                  if ((indeg.get(v)||0) === 0) q.push(v);
+                }
+              }
+              for (const [id,p] of Object.entries(positions)){
+                const addY = Math.round(acc.get(String(id)) || 0);
+                if (addY) positions[String(id)] = { x: p.x, y: p.y + addY };
+              }
+            } else {
+              const levelCount = new Array(maxLevel+1).fill(0);
+              for (const [id,p] of Object.entries(positions)){
+                const lv = level.get(String(id))||0; const c = Math.max(0, Number(counts[String(id)])||0);
+                if (mode === 'sum') levelCount[lv] += c; else if (c>levelCount[lv]) levelCount[lv]=c;
+              }
+              const accLevel = new Array(maxLevel+1).fill(0);
+              for (let l=1;l<=maxLevel;l++){ accLevel[l] = accLevel[l-1] + Math.round(levelCount[l-1] * perY); }
+              for (const [id,p] of Object.entries(positions)){
+                const lv = level.get(String(id))||0; const addY = accLevel[lv]||0; if (addY) positions[String(id)] = { x: p.x, y: p.y + addY };
+              }
+            }
+            // Horizontal per level
+            const byLevel = new Map();
+            for (const [id,p] of Object.entries(positions)){
+              const lv = level.get(String(id))||0; if (!byLevel.has(lv)) byLevel.set(lv, []); byLevel.get(lv).push({ id: String(id), x: p.x, y: p.y, c: Math.max(0, Number(counts[String(id)])||0) });
+            }
+            for (const [lv, arr] of byLevel.entries()){
+              arr.sort((a,b)=>a.x-b.x); let shift=0;
+              for (const it of arr){ const p = positions[it.id]; positions[it.id] = { x: p.x + shift, y: p.y }; shift += it.c * perX; }
+            }
+            try {
+              const ids = Object.keys(positions||{}); const sample = ids.slice(0,5).reduce((a,id)=>{a[id]=positions[id];return a;},{});
+              console.log('[elk-layout][fast] levels', { maxLevel, mode, levelCount, accLevel });
+              console.log('[elk-layout][fast] sample', sample);
+            } catch {}
+          }
+        } catch {}
         return { positions, options: elkOptions };
       } catch (e) {
         // En cas d'erreur, on retombe sur l'ancienne logique plus bas
@@ -970,12 +1037,119 @@ async function layoutGraph(graph, opts = {}){
           const y = Math.round(yL * gapY);
           positions[String(id)] = { x: lv * gapX, y };
         }
+        // Post-adjust by outputs for RIGHT orientation: vertical per-level + horizontal per-level
+        try {
+          const adj = opts && typeof opts === 'object' ? opts : {};
+          const adjustByOutputs = !!adj.adjustByOutputs;
+          const perY = Number.isFinite(Number(adj.perOutputYOffset)) ? Number(adj.perOutputYOffset) : 5;
+          const perX = Number.isFinite(Number(adj.perOutputXOffset)) ? Number(adj.perOutputXOffset) : 5;
+          const counts = (adj.outputsCount && typeof adj.outputsCount === 'object') ? adj.outputsCount : {};
+          if (adjustByOutputs && counts){
+            // Vertical offset per level (by max count per previous level)
+            const maxLevel = (()=>{ let mx=0; for (const [id,p] of Object.entries(positions)){ const lv = level.get(String(id))||0; if (lv>mx) mx=lv; } return mx; })();
+            const mode = String(adj.outputsMode || 'max');
+            const levelCount = new Array(maxLevel+1).fill(0);
+            for (const [id,p] of Object.entries(positions)){
+              const lv = level.get(String(id))||0; const c = Math.max(0, Number(counts[String(id)])||0);
+              if (mode === 'sum') levelCount[lv] += c; else if (c>levelCount[lv]) levelCount[lv]=c;
+            }
+            const accLevel = new Array(maxLevel+1).fill(0);
+            for (let l=1;l<=maxLevel;l++){ accLevel[l] = accLevel[l-1] + Math.round(levelCount[l-1] * perY); }
+            for (const [id,p] of Object.entries(positions)){
+              const lv = level.get(String(id))||0; const addY = accLevel[lv]||0; if (addY) positions[String(id)] = { x: p.x, y: p.y + addY };
+            }
+            // Horizontal per level (optional)
+            const byLevel = new Map();
+            for (const [id,p] of Object.entries(positions)){
+              const lv = level.get(String(id))||0; if (!byLevel.has(lv)) byLevel.set(lv, []); byLevel.get(lv).push({ id: String(id), x: p.x, y: p.y, c: Math.max(0, Number(counts[String(id)])||0) });
+            }
+            for (const [lv, arr] of byLevel.entries()){
+              arr.sort((a,b)=>a.x-b.x); let shift=0;
+              for (const it of arr){ const p = positions[it.id]; positions[it.id] = { x: p.x + shift, y: p.y }; shift += it.c * perX; }
+            }
+            try {
+              const ids = Object.keys(positions||{}); const sample = ids.slice(0,5).reduce((a,id)=>{a[id]=positions[id];return a;},{});
+              console.log('[elk-layout][right] levels', { maxLevel, mode, levelCount, accLevel });
+              console.log('[elk-layout][right] sample', sample);
+            } catch {}
+          }
+        } catch {}
         return { positions, options: elkOptions };
       } catch (e) {}
     }
   } else {
     for (const [id, p] of posMap.entries()) positions[id] = p;
   }
+  // Optional post-processing: adjust vertical placement based on outputs count (1st-level)
+  try {
+    const adj = opts && typeof opts === 'object' ? opts : {};
+    const adjustByOutputs = !!adj.adjustByOutputs;
+    const perPx = Number.isFinite(Number(adj.perOutputYOffset)) ? Number(adj.perOutputYOffset) : 5;
+    const counts = (adj.outputsCount && typeof adj.outputsCount === 'object') ? adj.outputsCount : {};
+    // Optional filter: only adjust nodes provided in outputsOnlyForIds array
+    const onlyIds = Array.isArray(adj.outputsOnlyForIds) ? new Set(adj.outputsOnlyForIds.map(String)) : null;
+    if (adjustByOutputs && perPx && counts){
+      const beforeSample = (()=>{ try { const ids = Object.keys(positions||{}); const s = ids.slice(0,5).reduce((a,id)=>{a[id]=positions[id];return a;},{}); return s; } catch { return {}; } })();
+      // Compute per-level vertical offsets based on max outputsCount at each previous level
+      const levelOf = new Map();
+      const maxLevel = (() => {
+        let mx = 0;
+        for (const [id, pos] of Object.entries(positions)){
+          const lv = Math.max(0, Math.round(pos.y / (elkOptions.gapY || 1)));
+          levelOf.set(String(id), lv); if (lv > mx) mx = lv;
+        }
+        return mx;
+      })();
+      const mode = String(adj.outputsMode || 'max');
+      const levelCount = new Array(maxLevel + 1).fill(0);
+      for (const [id, pos] of Object.entries(positions)){
+        const lv = levelOf.get(String(id)) || 0;
+        const c = Math.max(0, Number(counts[String(id)]) || 0);
+        if (mode === 'sum') levelCount[lv] += c; else if (c > levelCount[lv]) levelCount[lv] = c;
+      }
+      const accLevel = new Array(maxLevel + 1).fill(0);
+      for (let l=1; l<=maxLevel; l++){
+        accLevel[l] = accLevel[l-1] + Math.round(levelCount[l-1] * perPx);
+      }
+      for (const [id, pos] of Object.entries(positions)){
+        const lv = levelOf.get(String(id)) || 0;
+        const addY = accLevel[lv] || 0;
+        if (addY) positions[String(id)] = { x: pos.x, y: pos.y + addY };
+      }
+      // Debug: log levels/counters and sample before/after
+      try {
+        const ids = Object.keys(positions||{});
+        const afterSample = ids.slice(0,5).reduce((a,id)=>{a[id]=positions[id];return a;},{});
+        console.log('[elk-layout] levels', { maxLevel, mode, levelCount, accLevel });
+        console.log('[elk-layout] sample before', beforeSample);
+        console.log('[elk-layout] sample after', afterSample);
+      } catch {}
+    }
+    // Optional horizontal spacing per count: push nodes to the right within the same level
+    const perX = Number.isFinite(Number(adj.perOutputXOffset)) ? Number(adj.perOutputXOffset) : 5;
+    if (adjustByOutputs && perX && counts && elkOptions && elkOptions.gapY){
+      // Build level per node by rounding y/gapY
+      const byLevel = new Map();
+      for (const [id, pos] of Object.entries(positions)){
+        const lv = Math.round(pos.y / (elkOptions.gapY || 1));
+        if (!byLevel.has(lv)) byLevel.set(lv, []);
+        byLevel.get(lv).push({ id: String(id), x: pos.x, y: pos.y, extra: Number(counts[String(id)]) || 0 });
+      }
+      for (const [lv, arr] of byLevel.entries()){
+        arr.sort((a,b) => a.x - b.x);
+        let shift = 0;
+        for (let i=0;i<arr.length;i++){
+          const it = arr[i];
+          const id = it.id; const p = positions[id];
+          positions[id] = { x: p.x + shift, y: p.y };
+          if (!onlyIds || onlyIds.has(id)){
+            const c = Math.max(0, Number(counts[id]) || 0);
+            shift += c * perX;
+          }
+        }
+      }
+    }
+  } catch { /* ignore adjustments errors */ }
   return { positions, options: elkOptions };
 }
 

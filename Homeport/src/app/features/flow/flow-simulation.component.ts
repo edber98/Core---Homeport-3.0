@@ -223,6 +223,8 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     this.highlightEdgesList(edges);
     // Build 1-level outputs preview map from scenario trace
     try { this.simOutputPreview = this.buildOutputPreviewFromTrace(sc.trace || []); } catch { this.simOutputPreview = {}; }
+    // Trigger a layout pass that accounts for first-level outputs (adjust vertical spacing)
+    try { this.relayoutForScenario(sc); } catch {}
   }
 
   private buildOutputPreviewFromTrace(trace: Array<any>): { [nodeId: string]: Array<{ id: string; name: string; type: string }> } {
@@ -235,6 +237,52 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
       }
     } catch {}
     return map;
+  }
+
+  private relayoutForScenario(sc: any) {
+    // Build counts from scenario trace (prefer outputsCount from backend), fallback to preview length
+    const counts: Record<string, number> = {};
+    try {
+      const trace: any[] = Array.isArray(sc?.trace) ? sc.trace : [];
+      for (const t of trace) {
+        const id = String(t?.nodeId || ''); if (!id) continue;
+        const c = Number(t?.outputsCount);
+        if (Number.isFinite(c)) counts[id] = c;
+      }
+      // Fallbacks for nodes not in trace or missing outputsCount
+      for (const [k, arr] of Object.entries(this.simOutputPreview || {})) {
+        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).length : 0;
+      }
+    } catch {}
+    const ids = Object.keys(counts).filter(k => (counts as any)[k] > 0);
+    if (!ids.length) return;
+    const graph = {
+      nodes: (this.nodes || []).map(n => ({ id: String((n as any).id), data: { model: (n as any)?.data?.model } })),
+      edges: (this.edges || []).map(e => ({ id: (e as any).id, source: String((e as any).source), target: String((e as any).target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
+    };
+    const gapX = 260, gapY = 160;
+    // Revenir au mode précédent (par niveau) avec 20px par item: base gap + (max du niveau précédent * 20)
+    const baseGapY = 160; // espacement vertical de base (inchangé)
+    this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max' }).subscribe({
+      next: (res: any) => {
+        try {
+          const positions = (res && (res.positions || (res.data && res.data.positions))) || {};
+          const keys = positions ? Object.keys(positions) : [];
+          if (keys.length) {
+            const map = new Map<string, { x: number; y: number }>();
+            keys.forEach(k => { const p = (positions as any)[k]; if (p && typeof p.x === 'number' && typeof p.y === 'number') map.set(String(k), { x: Math.round(p.x), y: Math.round(p.y) }); });
+            this.nodes = (this.nodes || []).map(n => {
+              const id = String((n as any).id);
+              const p = map.get(id);
+              return p ? { ...n, point: { x: p.x, y: p.y } } : n;
+            });
+          }
+          try { this.cdr.detectChanges(); } catch {}
+        } catch {}
+      },
+      error: () => {},
+      complete: () => {}
+    });
   }
 
   // NOTE: When backend returns per-scenario path info, we can enrich highlighting here.

@@ -117,7 +117,9 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           const te = traceMap.get(idStr);
           if (te) {
             te.finishedAt = ev.finishedAt || new Date().toISOString();
-            te.resultPreview = buildOneLevelPreview(ev.result);
+            const { preview, count } = buildOneLevelPreview(ev.result);
+            te.resultPreview = preview;
+            te.outputsCount = count;
           }
         } catch {}
       }
@@ -231,19 +233,19 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
   return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges }, trace: orderedTrace } ] };
 }
 
-// Produce a 1-level preview of a node result for settings UI
+// Produce a 1-level preview of a node result for settings UI and count first-level outputs
 function buildOneLevelPreview(result){
   try {
     const t = (v) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v);
     const out = [];
-    if (result == null) return out;
+    if (result == null) return { preview: out, count: 0 };
     if (typeof result === 'object' && !Array.isArray(result)) {
       for (const [k,v] of Object.entries(result)) out.push({ key: String(k), type: t(v) });
-      return out;
+      return { preview: out, count: Object.keys(result).length };
     }
-    if (Array.isArray(result)) { out.push({ key: '(array)', type: 'array' }); return out; }
-    out.push({ key: '(value)', type: t(result) }); return out;
-  } catch { return []; }
+    if (Array.isArray(result)) { out.push({ key: '(array)', type: 'array' }); return { preview: out, count: result.length }; }
+    out.push({ key: '(value)', type: t(result) }); return { preview: out, count: 1 };
+  } catch { return { preview: [], count: 0 }; }
 }
 
 async function simulateViaEngineSplit(flow, targetNodeId){

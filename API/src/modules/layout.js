@@ -20,7 +20,32 @@ module.exports = function(store){
       const borderGapX = Math.max(0, gapX - nodeWidth);
       const borderGapY = Math.max(0, gapY - nodeHeight);
 
-      const { positions } = await layoutGraph(graph, { orientation, nodeWidth, nodeHeight, gapX, gapY, normalizeLevels: true });
+      const adjustByOutputs = !!body.adjustByOutputs;
+      const perOutputYOffset = Number.isFinite(Number(body.perOutputYOffset)) ? Number(body.perOutputYOffset) : 5;
+      const outputsCount = (body.outputsCount && typeof body.outputsCount === 'object') ? body.outputsCount : undefined;
+      const outputsOnlyForIds = Array.isArray(body.outputsOnlyForIds) ? body.outputsOnlyForIds : undefined;
+      const perOutputXOffset = Number.isFinite(Number(body.perOutputXOffset)) ? Number(body.perOutputXOffset) : 5;
+      const outputsMode = (typeof body.outputsMode === 'string') ? String(body.outputsMode) : undefined;
+      // Debug logs of inputs
+      try {
+        const countKeys = outputsCount ? Object.keys(outputsCount) : [];
+        const positive = countKeys.filter(k => Number(outputsCount[k]) > 0);
+        const maxK = positive.reduce((acc, k) => (Number(outputsCount[k]) > (acc.v||0) ? { k, v: Number(outputsCount[k]) } : acc), { k: null, v: 0 });
+        console.log('[layout:mem] request', {
+          orientation, nodeWidth, nodeHeight, gapX, gapY,
+          adjustByOutputs, perOutputYOffset, perOutputXOffset,
+          outputsCount_nodes: countKeys.length,
+          outputsCount_positive: positive.length,
+          outputsOnlyForIds_len: Array.isArray(outputsOnlyForIds) ? outputsOnlyForIds.length : 0,
+          maxOutputs: maxK
+        });
+      } catch {}
+      const { positions } = await layoutGraph(graph, { orientation, nodeWidth, nodeHeight, gapX, gapY, normalizeLevels: true, adjustByOutputs, perOutputYOffset, perOutputXOffset, outputsCount, outputsOnlyForIds, outputsMode });
+      try {
+        const ids = Object.keys(positions || {});
+        const sample = ids.slice(0, 5).reduce((acc, id) => { acc[id] = positions[id]; return acc; }, {});
+        console.log('[layout:mem] response', { nodes: ids.length, sample });
+      } catch {}
 
       // Return minimal payload: positions keyed by node id
       return res.json({ success: true, data: { positions, orientation: direction } });
