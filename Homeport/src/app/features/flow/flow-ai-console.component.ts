@@ -10,7 +10,7 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { AiConsoleChatComponent } from './components/ai-console-chat.component';
-import { CatalogService } from '../../services/catalog.service';
+import { CatalogService, NodeTemplate } from '../../services/catalog.service';
 import { AiConsoleBackendService, AiChatThread, AiContext } from '../../services/ai-console-backend.service';
 
 import { ConnectionSettings } from 'ngx-vflow';
@@ -28,7 +28,7 @@ import { backAwareCurve } from './edge-curves';
         <div class="text">Chargement du flow…</div>
       </div>
       <div class="empty" *ngIf="!flowId && !loadingFlowDoc">Sélectionnez un flow (paramètre ?flow=ID) pour afficher le viewer.</div>
-      <flow-viewer *ngIf="flowId" [nodes]="nodes" [edges]="edges" [background]="flowBackground" [portOrientation]="portOrientation" [connectionSettings]="connectionSettings" [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
+      <flow-viewer *ngIf="flowId" [nodes]="nodes" [edges]="edges" [background]="flowBackground" [connectionSettings]="connectionSettings" [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true" [meta]="flowMeta" [showExecBadges]="false"></flow-viewer>
     </section>
     <aside class="chat">
       <ai-console-chat [flowId]="flowId" (openThread)="onOpenThread($event)" (snapshot)="onGraph($event)" (save)="onSave()" (openViewer)="drawerVisible = true"></ai-console-chat>
@@ -36,7 +36,7 @@ import { backAwareCurve } from './edge-curves';
   </div>
   <nz-drawer *ngIf="isMobile" [nzVisible]="drawerVisible" nzPlacement="right" [nzWidth]="'100%'" [nzClosable]="true" nzTitle="Flow" [nzBodyStyle]="{padding:'0'}" (nzOnClose)="drawerVisible=false">
     <ng-container *nzDrawerContent>
-      <flow-viewer *ngIf="flowId" [nodes]="nodes" [edges]="edges" [background]="flowBackground" [portOrientation]="portOrientation" [connectionSettings]="connectionSettings" [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
+      <flow-viewer *ngIf="flowId" [nodes]="nodes" [edges]="edges" [background]="flowBackground" [connectionSettings]="connectionSettings" [useStorage]="false" [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true" [meta]="flowMeta" [showExecBadges]="false"></flow-viewer>
     </ng-container>
   </nz-drawer>
   `,
@@ -58,8 +58,8 @@ import { backAwareCurve } from './edge-curves';
  export class FlowAiConsoleComponent implements OnInit, OnDestroy {
   flowId: string | null = null;
   loadingFlowDoc = false;
-  nodes: any[] = [];
-  edges: any[] = [];
+ nodes: any[] = [];
+ edges: any[] = [];
   flowName = '';
   flowMeta: any = {};
   drawerVisible = false;
@@ -69,12 +69,29 @@ import { backAwareCurve } from './edge-curves';
   flowBackground = '#EEF0F4';
   portOrientation: 'vertical'|'horizontal' = 'horizontal';
   connectionSettings: ConnectionSettings = { type: 'template', curve: backAwareCurve } as any;
+  private templatesMap = new Map<string, NodeTemplate>();
 
   constructor(private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef, private catalog: CatalogService, private ai: AiConsoleBackendService, private msg: NzMessageService) {
     try {
       const qp = this.route.snapshot.queryParamMap;
       this.flowId = qp.get('flow');
       if (qp.get('port') === 'vertical') this.portOrientation = 'vertical';
+    } catch {}
+    // TECH NOTE (template enrichment):
+    // FlowViewer relies on model.templateObj to decide handle placement (start/condition/loop…)
+    // In Console AI we may only have template IDs. Preload templates and enrich nodes so
+    // the viewer renders identically to Builder/Executions.
+    try {
+      this.catalog.listNodeTemplates().subscribe(list => {
+        (list || []).forEach(t => this.templatesMap.set(t.id, t));
+        // If nodes already loaded without enrichment, re-enrich now
+        try {
+          if (Array.isArray(this.nodes) && this.nodes.some((n:any)=>!(n?.data?.model?.templateObj))) {
+            this.nodes = this.enrichNodes(this.nodes);
+            try { this.cdr.detectChanges(); } catch {}
+          }
+        } catch {}
+      });
     } catch {}
     this.loadFlow();
   }
@@ -100,7 +117,8 @@ import { backAwareCurve } from './edge-curves';
     this.loadingFlowDoc = true;
     this.catalog.getFlow(id).subscribe({
       next: (doc) => {
-        this.nodes = (doc?.nodes || []).map(n => ({ ...n }));
+        const nodes = (doc?.nodes || []).map(n => ({ ...n }));
+        this.nodes = this.enrichNodes(nodes);
         this.edges = (doc?.edges || []).map(e => ({ ...e }));
         this.flowName = doc?.name || id;
         this.flowMeta = (doc?.meta ? { ...doc.meta } : {});
@@ -114,7 +132,7 @@ import { backAwareCurve } from './edge-curves';
     try {
       const nodes = Array.isArray(g?.nodes) ? g.nodes : [];
       const edges = Array.isArray(g?.edges) ? g.edges : [];
-      this.nodes = nodes.map((n: any) => ({ ...n }));
+      this.nodes = this.enrichNodes(nodes.map((n: any) => ({ ...n })));
       this.edges = edges.map((e: any) => ({ ...e }));
       this.cdr.detectChanges();
     } catch {}
@@ -128,5 +146,28 @@ import { backAwareCurve } from './edge-curves';
       next: () => { try { this.msg.success('Flow sauvegardé'); } catch {} },
       error: (err) => { try { console.error('Save error', err); this.msg.error('Échec de la sauvegarde'); } catch {} }
     });
+  }
+
+  // Patch template metadata to nodes when missing (align visuals with Builder/Executions)
+  // Tries common fields: model.templateId | model.template?.id | model.templateKey
+  private enrichNodes(nodes: any[]): any[] {
+    try {
+      if (!Array.isArray(nodes) || nodes.length === 0) return nodes || [];
+      const map = this.templatesMap || new Map<string, NodeTemplate>();
+      return nodes.map((n: any) => {
+        try {
+          const m = (n?.data?.model || {});
+          if (!m) return n;
+          if (!m.templateObj) {
+            const key = String(m.templateId || m.template?.id || m.templateKey || m.template || '').trim();
+            if (key && map.has(key)) {
+              const tpl = map.get(key)!;
+              n = { ...n, data: { ...(n.data || {}), model: { ...m, templateObj: tpl } } };
+            }
+          }
+          return n;
+        } catch { return n; }
+      });
+    } catch { return nodes || []; }
   }
 }

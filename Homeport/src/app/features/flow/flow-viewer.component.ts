@@ -145,7 +145,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   </ng-template>
                 </div>
               </div>
-              <div class="exec-badge" *ngIf="ctx.node.data.execStatus as st">
+              <div class="exec-badge" *ngIf="showExecBadges && ctx.node.data.execStatus as st">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : (st === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
               </div>
@@ -260,6 +260,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() showCenterFlow = true;
   @Input() showCenterSelection = false;
   @Input() demo = false; // load internal demo flow if true
+  @Input() meta: any = null; // optional flow-level metadata
+  @Input() showExecBadges = false; // render execution badges only when explicitly enabled
 
   @Output() run = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
@@ -276,6 +278,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   private zoomUpdateTimer: any;
   private appsMap = new Map<string, AppProvider>();
   constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) {}
+  private _portOrientationExplicit = false;
 
   horizHandleTop(index: number, countOrArr: any): number {
     try {
@@ -328,6 +331,11 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Cached nodes for Vflow to avoid getter recomputation on iOS Safari
   vNodes: any[] = [];
   ngOnChanges(changes: SimpleChanges) {
+    let orientationChanged = false;
+    if (changes['portOrientation']) {
+      this._portOrientationExplicit = true;
+      orientationChanged = true;
+    }
     if (changes['nodes'] || changes['allowDrag'] || changes['move'] || changes['edges']) {
       try {
         const canDrag = !!(this.allowDrag && this.move);
@@ -341,6 +349,27 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         this.cdr.detectChanges();
       } catch { this.vEdges = this.edges || []; }
     }
+    // Meta-driven optional UI tweaks (non-breaking defaults)
+    try {
+      if (changes['meta'] && this.meta) {
+        // TECH NOTE
+        // - Orientation is primarily driven by meta.ui.portOrientation in read-only viewers.
+        // - Do NOT override an explicit @Input() provided by a parent (eg. Executions);
+        //   keep a flag of explicit inputs and only apply meta when none was set.
+        // - After switching orientation from meta, a detectChanges/relayout is required so that
+        //   Vflow repositions handle templates (Safari/WebKit can otherwise keep stale anchors).
+        const ui = (this.meta.ui || this.meta.viewer || {}) as any;
+        if (ui) {
+          if (ui.portOrientation && !this._portOrientationExplicit) {
+            const p = String(ui.portOrientation).toLowerCase();
+            if (p === 'vertical' || p === 'horizontal') { this.portOrientation = p as any; orientationChanged = true; }
+          }
+          if (ui.background && !changes['background']) {
+            this.background = ui.background;
+          }
+        }
+      }
+    } catch {}
     // Rebuild internal connection to inject current nodes/edges in curve params
     try {
       const base = this.connectionSettings || ({} as any);
@@ -355,6 +384,20 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         console.log('[viewer] useStorage input changed', { value: this.useStorage, storageKey: this.storageKey });
       }
     } catch {}
+
+    // TECH NOTE (relayout):
+    // Force a lightweight relayout when orientation toggles so that handle positions
+    // recompute correctly (esp. on Safari/iOS). Re-cloning arrays + detectChanges is
+    // sufficient; then nudge viewport listeners to flush pending measurements.
+    if (orientationChanged) {
+      try {
+        this.vNodes = (this.vNodes || []).map(n => ({ ...n }));
+        this.vEdges = (this.vEdges || []).map((e:any) => ({ ...e }));
+        this.cdr.detectChanges();
+        // Nudge viewport listeners so dependent layouts recompute
+        const vs: any = this.flow?.viewportService; vs?.triggerViewportChangeEvent?.('end');
+      } catch {}
+    }
   }
 
   inputId(tmpl: any): string | null {

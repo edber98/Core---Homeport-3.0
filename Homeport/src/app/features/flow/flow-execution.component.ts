@@ -123,6 +123,7 @@ import { backAwareCurve } from './edge-curves';
             [edges]="viewEdges"
             [background]="flowBackground"
             [portOrientation]="portOrientation"
+            [showExecBadges]="true"
             [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
