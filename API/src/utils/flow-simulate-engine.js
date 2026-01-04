@@ -335,6 +335,24 @@ async function simulateViaEngineSplit(flow, targetNodeId){
       if (Array.isArray(arr)) scenarios.push(...arr);
     } catch (e) { /* continue */ }
   }
+  // Deduplicate scenarios that result in identical paths (same set of edges)
+  if (scenarios.length > 1) {
+    const keyOf = (sc) => {
+      try {
+        const arr = (sc && sc.path && Array.isArray(sc.path.edges)) ? sc.path.edges : [];
+        const parts = arr.map(e => `${String(e.sourceId)}|${String(e.targetId)}|${String(e.sourceHandle||'')}`);
+        parts.sort();
+        return parts.join(';');
+      } catch { return ''; }
+    };
+    const seen = new Set();
+    const uniq = [];
+    for (const sc of scenarios) {
+      const k = keyOf(sc);
+      if (!seen.has(k)) { seen.add(k); uniq.push(sc); }
+    }
+    scenarios.length = 0; scenarios.push(...uniq);
+  }
   // Build a merged scenario strictly as the union of split scenarios paths (no extra edges)
   if (scenarios.length > 1) {
     const edgeKey = (e) => `${String(e.sourceId)}|${String(e.targetId)}|${String(e.sourceHandle||'')}`;
