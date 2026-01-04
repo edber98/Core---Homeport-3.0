@@ -51,7 +51,7 @@ import { FormsModule } from '@angular/forms';
           <!-- JSON Input view -->
           <div class="json-pad" *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)">
             <app-json-schema-viewer-v2
-              [data]="injectedInput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+              [data]="$any(inputForViewer || {})" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
             </app-json-schema-viewer-v2>
           </div>
         </div>
@@ -209,6 +209,11 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
   baseEdges: any[] = [];
   private initialized = false;
   private userChangedScenario = false;
+  // Cached input data for JSON viewer to avoid re-creating objects every CD
+  inputForViewer: any = {};
+  private lastInputScenRef: any = null;
+  private lastInputExecRef: any = null;
+  private lastInputIsExec: boolean | null = null;
 
   constructor(private pathSvc: FlowPathHighlightService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private zone: NgZone) {}
 
@@ -243,6 +248,17 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       const sc = Array.isArray(this.simScenarios) ? this.simScenarios[this.simSelectedIndex] : null;
       return !!(sc && (sc as any).match?.exec === true);
     } catch { return false; }
+  }
+  inputDataForViewer(): any {
+    try {
+      // Base: scenario msgIn (local), fallback to injectedInput
+      const scen = (this.scenarioMsgIn && typeof this.scenarioMsgIn === 'object') ? this.scenarioMsgIn : (this.injectedInput || {});
+      if (this.isSelectedScenarioExec()) {
+        const exec = (this.ctx && typeof this.ctx === 'object') ? this.ctx : {};
+        return { ...scen, ...exec };
+      }
+      return scen || {};
+    } catch { return this.injectedInput || {}; }
   }
   onSelectScenario(i: any) {
     const idx = Number(i || 0);
@@ -475,6 +491,16 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
       const sc = Array.isArray(this.simScenarios) ? this.simScenarios[this.simSelectedIndex] : null;
       const isExec = !!(sc && ((sc as any).match?.exec === true || (sc as any).isExec === true));
       this.mergedCtx = isExec ? { ...scen, ...exec } : scen;
+      // Build inputForViewer with same rule, but avoid creating new objects if not needed
+      const scenRef = scen;
+      const execRef = exec;
+      const sigChanged = (this.lastInputScenRef !== scenRef) || (this.lastInputExecRef !== execRef) || (this.lastInputIsExec !== isExec);
+      if (sigChanged) {
+        this.inputForViewer = isExec ? { ...scenRef, ...execRef } : scenRef;
+        this.lastInputScenRef = scenRef;
+        this.lastInputExecRef = execRef;
+        this.lastInputIsExec = isExec;
+      }
       try {
         console.log('[settings-v2][ctx] recompute', { idx: this.simSelectedIndex, isExec, scenKeys: Object.keys(scen||{}), execKeys: Object.keys(exec||{}), mergedKeys: Object.keys(this.mergedCtx||{}) });
       } catch {}
