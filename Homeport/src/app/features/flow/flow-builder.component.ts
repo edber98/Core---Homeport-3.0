@@ -1562,6 +1562,9 @@ export class FlowBuilderComponent {
       return ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint';
     } catch { return false; }
   }
+  hasInputHandles(tmpl: any): boolean {
+    try { return Array.isArray(tmpl?.inputHandles) && tmpl.inputHandles.length > 0; } catch { return false; }
+  }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
