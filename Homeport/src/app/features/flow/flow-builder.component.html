@@ -95,6 +95,7 @@
                   [iconClass]="ctx.node.data.model.templateObj?.icon"
                   [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
+                <div class="desc" *ngIf="ctx.node.data.model?.description as d">{{ d }}</div>
               </div>
           
               <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">

@@ -144,8 +144,9 @@
 .node-card.no-inputs { padding-top: 0; }
 /* removed paint containment to avoid any visual artifact on Safari */
 
-.node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
+.node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
 .node-card .center-wrap node-card-header { pointer-events:auto; }
+.node-card .center-wrap .desc { color:#6b7280; font-size:12px; margin: 6px 0; padding: 0 8px; white-space: pre-line; word-break: break-word; }
 .node-card.select-node { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.15); }
 .node-card.error-branch { border-color: rgba(247,89,171,0.63); box-shadow: none; }
 .node-card.select-node.error-branch { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.35); }
