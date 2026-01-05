@@ -20,7 +20,20 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
       <div class="t">Assistant du nœud</div>
       <div class="sub mono" *ngIf="nodeName">{{ nodeName }}</div>
       <div class="spacer"></div>
-      <button class="btn icon" (click)="resetThread()" [disabled]="!threadId" title="Réinitialiser"><i class="fa-regular fa-rotate"></i></button>
+      <button class="btn icon" (click)="toggleHistory(); $event.stopPropagation()" [attr.aria-expanded]="showHistory" title="Historique des arguments (AI)"><i class="fa-solid fa-clock-rotate-left"></i></button>
+      <button class="btn icon" (click)="resetThread()" [disabled]="!threadId" title="Réinitialiser"><i class="fa-solid fa-rotate"></i></button>
+    </div>
+    <div class="args-history" *ngIf="showHistory">
+      <div class="args-hdr">Historique des arguments (AI)</div>
+      <div class="args-list">
+        <div class="args-item" *ngFor="let it of (aiArgsHistory || []); let i = index">
+          <div class="meta"><span class="mono">{{ it.ts | date:'short' }}</span> · {{ (it.next && (Object.keys(it.next)||[]).length) || 0 }} clés</div>
+          <div class="actions">
+            <button class="btn small" (click)="onRestoreFromHistory(it)"><i class="fa-solid fa-rotate-left"></i> Restaurer</button>
+          </div>
+        </div>
+        <div class="empty" *ngIf="!aiArgsHistory || aiArgsHistory.length===0">Aucun élément</div>
+      </div>
     </div>
     <div class="messages" #msgs>
       <div class="msg-row" *ngFor="let m of messages" [class.me]="m.role==='user'" [class.assistant]="m.role==='assistant'">
@@ -73,6 +86,13 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .hdr .spacer { margin-left:auto; }
     .btn.icon { appearance:none; border:0; background:#fff; border:1px solid #e5e7eb; color:#111; padding:8px 10px; border-radius:12px; cursor:pointer; width:36px; height:32px; display:inline-flex; align-items:center; justify-content:center; }
     .btn.icon:hover { background:#f8fafc; }
+    .args-history { border-bottom:1px solid #f0f0f0; background:#fff; padding: 6px 10px 8px; }
+    .args-history .args-hdr { font-weight:600; font-size:12px; margin-bottom:6px; }
+    .args-history .args-list { display:flex; flex-direction:column; gap:6px; }
+    .args-history .args-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #eee; }
+    .args-history .args-item:last-child { border-bottom:0; }
+    .args-history .meta { font-size:12px; color:#374151; }
+    .args-history .empty { font-size:12px; color:#6b7280; padding: 6px 0; }
     .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
     .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
     .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
@@ -106,18 +126,21 @@ export class NodeAssistantChatComponent implements OnInit {
   @Input() nodeName: string | null = null;
   @Input() threadId: string | null = null;
   @Input() branch: string | null = null;
+  @Input() aiArgsHistory: any[] | null = null;
   @Output() threadLinked = new EventEmitter<{ threadId: string; type: string }>();
   @Output() argsProposed = new EventEmitter<any>();
   @Output() applyArgs = new EventEmitter<any>();
   @Output() applyDesc = new EventEmitter<string>();
   @Output() undoArgsRequested = new EventEmitter<void>();
   @Output() undoDescRequested = new EventEmitter<void>();
+  @Output() restoreFromHistory = new EventEmitter<any>();
 
   messages: Msg[] = [];
   prompt = '';
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
   argsProposal: any = null;
   descProposal: string | null = null;
+  showHistory = false;
   // Expose global Object in template for Object.keys usage
   Object = Object;
 
@@ -126,6 +149,9 @@ export class NodeAssistantChatComponent implements OnInit {
   ngOnInit(): void {
     this.ensureThread();
   }
+
+  toggleHistory() { this.showHistory = !this.showHistory; }
+  onRestoreFromHistory(item: any) { if (item) this.restoreFromHistory.emit(item); }
 
 
   private ensureThread() {

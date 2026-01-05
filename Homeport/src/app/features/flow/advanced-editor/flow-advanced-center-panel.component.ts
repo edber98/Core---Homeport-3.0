@@ -195,22 +195,13 @@ import { NodeAssistantChatComponent } from '../components/node-assistant-chat.co
             <node-assistant-chat [flowId]="flowId || null" [nodeId]="model?.id"
               [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id"
               [threadId]="model?.aiChatThreadId || null" [branch]="(simScenarios && simScenarios[simSelectedIndex]?.match?.handleId) || null"
+              [aiArgsHistory]="model?.aiArgsHistory || []"
               (threadLinked)="onNodeAssistantLinked($event)"
               (applyArgs)="onAssistantApplyArgs($event)"
               (applyDesc)="onAssistantApplyDesc($event)"
               (undoArgsRequested)="undoApplyArgs()"
-              (undoDescRequested)="undoApplyDesc()"></node-assistant-chat>
-            <div class="ai-args-history" *ngIf="(model?.aiArgsHistory?.length)" style="border-top:1px solid #f0f0f0; padding:8px 10px;">
-              <div style="font-weight:600; font-size:12px; margin-bottom:6px;">Historique des arguments (AI)</div>
-              <div *ngFor="let it of model.aiArgsHistory; let i = index" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #eee;">
-                <div style="font-size:12px; color:#374151;">
-                  <span class="mono">{{ it.ts | date:'short' }}</span> · {{ (it.next && (Object.keys(it.next)||[]).length) || 0 }} clés
-                </div>
-                <div style="display:flex; gap:8px;">
-                  <button nz-button nzSize="small" (click)="restoreArgsSnapshot(it)"><i class="fa-solid fa-rotate-left"></i> Restaurer</button>
-                </div>
-              </div>
-            </div>
+              (undoDescRequested)="undoApplyDesc()"
+              (restoreFromHistory)="restoreArgsSnapshot($event)"></node-assistant-chat>
           </div>
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">

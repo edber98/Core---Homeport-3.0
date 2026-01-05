@@ -32,6 +32,13 @@ type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[];
         </div>
       </div>
     </div>
+    <div class="proposal" *ngIf="graphProposal">
+      <div class="desc">Proposition de création disponible</div>
+      <div class="actions">
+        <button class="btn small" (click)="emitApplyGraph()"><i class="fa-solid fa-plus"></i> Appliquer</button>
+        <button class="btn small ghost" (click)="clearGraphProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
+      </div>
+    </div>
     <div class="composer">
       <div class="input-wrap">
         <textarea #promptEl class="input" [(ngModel)]="prompt" rows="1" placeholder="Décrivez le nœud à créer… (Entrée pour envoyer, Maj+Entrée pour retour à la ligne)" (keydown.enter)="onEnter($event)" (input)="autoGrow()"></textarea>
@@ -67,6 +74,11 @@ type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[];
     .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,\"Liberation Mono\",\"Courier New\",monospace; font-size: 10px; padding: 2px 6px; border: 1px solid #e5e7eb; background:#f8fafc; border-radius: 8px; color:#6b7280; }
     .send { display:inline-flex; align-items:center; gap:8px; padding: 8px 12px; border-radius: 14px; background:#1677ff; color:#fff; border:0; font-weight:600; height:40px; }
     .send:disabled { opacity:.6; cursor:not-allowed; }
+    .proposal { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border-top:1px solid #e5e7eb; background:#fffbe6; color:#111; }
+    .proposal .desc { font-size: 12px; }
+    .proposal .actions { display:flex; gap:8px; }
+    .btn.small { appearance:none; border:1px solid #e5e7eb; background:#fff; color:#111; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; }
+    .btn.small.ghost { background:#fafafa; }
   `]
 })
 export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterViewInit {
@@ -82,6 +94,7 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
   messages: Msg[] = [];
   prompt = '';
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
+  graphProposal: any = null;
 
   constructor(private creator: AiCreateNodeAgentService, private chats: AiConsoleBackendService, private cdr: ChangeDetectorRef) {}
   private autoSent = false;
@@ -175,12 +188,10 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           try { this.cdr.detectChanges(); } catch {}
         }
         if (ev.type === 'final' && (ev as any).graph) {
-          const parts = assistantParts.slice(); assistantParts = [];
-          const others = this.messages.filter(x => !x.pending);
-          this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts, createdAt: Date.now() }];
+          // Do not flush the assistant preview yet; more tool logs may arrive.
+          // Only set the proposal and keep streaming until 'done' to avoid splitting into two messages.
+          this.graphProposal = (ev as any).graph;
           try { this.cdr.detectChanges(); } catch {}
-          try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(()=>{}); } catch {}
-          this.graphGenerated.emit((ev as any).graph);
         }
         if (ev.type === 'done') {
           // If no final graph was emitted, still persist the assistant preview as a message
@@ -198,4 +209,6 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
       complete: () => { try { sub.unsubscribe(); } catch {} }
     });
   }
+  clearGraphProposal(){ this.graphProposal = null; try { this.cdr.detectChanges(); } catch {} }
+  emitApplyGraph(){ const g = this.graphProposal; this.graphProposal = null; try { this.cdr.detectChanges(); } catch {} if (g) this.graphGenerated.emit(g); }
 }

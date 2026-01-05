@@ -511,6 +511,7 @@ export class FlowBuilderComponent {
   addNodeQuery = '';
   addNodeSourceId: string | null = null;
   addNodeSourceHandle: string | null = null;
+  addNodeContentVisible = false;
   // Mode Assistant IA (Spotlight → conversation) et état de thread temporaire
   addNodeAiMode = false;
   addNodeAiThreadId: string | null = null;
@@ -1668,9 +1669,10 @@ export class FlowBuilderComponent {
     this.addNodeQuery = '';
     this.rebuildAddNodeCandidates();
     this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+    this.addNodeContentVisible = true;
     this.addNodeVisible = true;
   }
-  closeAddNodeModal() { this.addNodeVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; }
+  closeAddNodeModal() { this.addNodeVisible = false; this.addNodeContentVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; this.addNodeQuery = ''; }
   closeAddNodeModalWithCleanup() {
     try {
       const shouldDelete = this.addNodeAiMode && !this.addNodeAiApplied && this.addNodeAiThreadId;
@@ -1755,6 +1757,7 @@ export class FlowBuilderComponent {
           }, error: () => { this.addNodeAiThreadId = null; }
         });
       }
+      this.addNodeContentVisible = true;
       this.addNodeVisible = true;
     } catch { this.addNodeAiMode = true; this.addNodeVisible = true; }
   }
@@ -1908,6 +1911,7 @@ export class FlowBuilderComponent {
       this.addNodeQuery = '';
       this.rebuildAddNodeCandidates();
       this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+      this.addNodeContentVisible = true;
       this.addNodeVisible = true;
     } catch {}
   }
