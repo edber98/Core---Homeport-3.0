@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
         <!-- Left column: Scenario + View mode (top), then viewer -->
         <div class="col left" *ngIf="hasInput(model)">
           <div class="top-bar">
-            <nz-select class="scenario-select" [ngModel]="simSelectedIndex" (ngModelChange)="onSelectScenario($event)" nzSize="small" nzPlaceHolder="Scénario">
+            <nz-select class="scenario-select" [ngModel]="simSelectedIndex" (ngModelChange)="onSelectScenario($event)" nzPlaceHolder="Scénario">
               <nz-option *ngFor="let sc of simScenarios; let i=index" [nzValue]="i"
                 [nzLabel]="(sc?.label || ('Cas ' + (i+1))) + (sc?.match?.exec ? (' • Exécution' + (sc?.match?.handleLabel ? ' (' + (sc?.match?.handleLabel) + ')' : '')) : '')"></nz-option>
             </nz-select>
@@ -119,6 +119,7 @@ import { FormsModule } from '@angular/forms';
     /* Input (col gauche): padding-left plus grand */
     .col.left .top-bar { padding-left: 20px; }
     /* Match credentials select sizing: fill remaining space, allow ellipsis */
+    .left-actions { display:flex; align-items:center; }
     .scenario-select { flex: 1 1 auto; min-width: 0; }
     .seg { display:inline-flex; background:#fff; border:1px solid #e5e7eb; border-radius: 10px; padding:2px; flex: 0 0 auto; }
     .seg .seg-btn { border:none; background:transparent; border-radius:8px; padding:4px 12px; font-size:12px; cursor:pointer; display:flex; align-items:center; }

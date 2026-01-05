@@ -77,16 +77,18 @@ import { FormsModule } from '@angular/forms';
               </div>
               <div class="test-row">
                 <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
-                <div class="attempt-selects" *ngIf="attemptOptions?.length">
-                  <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzSize="small" nzPlaceHolder="Tentative">
-                    <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
-                  </nz-select>
+                <div class="right-controls">
                   <span class="attempt-name" *ngIf="attemptName() as an">{{ an }}</span>
-                </div>
-                <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
-                <div class="test-meta" *ngIf="(testStartedAt != null) || (testDurationMs != null)">
-                  <span *ngIf="testStartedAt as t">{{ t | date:'shortTime' }}</span>
-                  <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
+                  <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
+                  <div class="test-meta" *ngIf="(testStartedAt != null) || (testDurationMs != null)">
+                    <span *ngIf="testStartedAt as t">{{ t | date:'shortTime' }}</span>
+                    <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
+                  </div>
+                  <div class="attempt-selects" *ngIf="attemptOptions?.length">
+                    <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzPlaceHolder="Tentative">
+                      <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
+                    </nz-select>
+                  </div>
                 </div>
               </div>
               <!-- Credentials selection (above form) -->
@@ -179,13 +181,14 @@ import { FormsModule } from '@angular/forms';
     /* Bare variant: no border, radius, or shadow; fills container */
     .card.panel-card { width:100%; height:100%; max-height:none; border:0; border-radius:0; box-shadow:none; background:transparent; padding:0; }
     .tabs { flex:1 1 auto; min-height:0; display:flex; }
-    .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 12px 0 12px; }
+    .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 0 0; }
     .tab-header .title { font-weight:600; font-size:13px; color:#111; }
     .tab-header .actions { display:flex; gap:6px; }
     .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
-    .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
+    .test-row { display:flex; align-items:center; justify-content:flex-start; gap:8px; margin: 0 0 8px; padding-top: 8px; }
+    .test-row .right-controls { display:flex; align-items:center; gap:8px; margin-left:auto; }
     .test-row .attempt-selects { display:flex; align-items:center; gap:6px; }
     .test-row .attempt-selects .attempt { min-width: 156px; }
     .test-row .attempt-name { color:#6b7280; font-size:12px; }
