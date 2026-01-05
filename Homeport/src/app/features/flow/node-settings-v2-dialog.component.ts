@@ -64,6 +64,7 @@ import { FormsModule } from '@angular/forms';
             (modelChange)="modelChange.emit($event)" (committed)="modelChangeCommitted.emit($event)" (submitted)="onFormSubmitted($event)"
             [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="testDisabled"
             [attemptEvents]="attemptEvents" [attemptOptions]="attemptOptions" [selectedAttemptIdx]="selectedAttemptIdx"
+            [simScenarios]="simScenarios" [simSelectedIndex]="simSelectedIndex"
             (selectedAttemptIdxChange)="selectedAttemptIdxChange.emit($event)">
           </flow-advanced-center-panel>
         </div>

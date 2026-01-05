@@ -6,6 +6,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
 import { AiConsoleBackendService, AiChatMessage, AiChatThread } from '../../../services/ai-console-backend.service';
 import { AiWorkflowAgentV2Service, WorkflowAgentV2Event } from '../../../services/ai-workflow-agent-v2.service';
+import { AiArgsAgentService, ArgsAgentEvent } from '../../../services/ai-args-agent.service';
 
 type Msg = AiChatMessage & { pending?: boolean };
 
@@ -31,6 +32,13 @@ type Msg = AiChatMessage & { pending?: boolean };
           <span class="who">{{ m.role==='user' ? 'Vous' : 'Assistant' }}</span>
           <span class="time">· {{ m.createdAt | date:'shortTime' }}</span>
         </div>
+      </div>
+    </div>
+    <div class="args-proposal" *ngIf="argsProposal">
+      <div class="desc">Arguments proposés: <span class="mono">{{ (argsProposal && (Object.keys(argsProposal)||[])).join(', ') }}</span></div>
+      <div class="actions">
+        <button class="btn small" (click)="emitApplyArgs()"><i class="fa-regular fa-check"></i> Aperçu + Appliquer</button>
+        <button class="btn small ghost" (click)="clearArgsProposal()"><i class="fa-regular fa-xmark"></i> Ignorer</button>
       </div>
     </div>
     <div class="composer">
@@ -70,6 +78,11 @@ type Msg = AiChatMessage & { pending?: boolean };
     .send { display:inline-flex; align-items:center; gap:8px; padding: 8px 12px; border-radius: 14px; background:#1677ff; color:#fff; border:0; font-weight:600; height:40px; }
     .send:disabled { opacity:.6; cursor:not-allowed; }
     .mono { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    .args-proposal { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border-top:1px solid #e5e7eb; background:#fffbe6; color:#111; }
+    .args-proposal .desc { font-size: 12px; }
+    .args-proposal .actions { display:flex; gap:8px; }
+    .btn.small { appearance:none; border:1px solid #e5e7eb; background:#fff; color:#111; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; }
+    .btn.small.ghost { background:#fafafa; }
   `]
 })
 export class NodeAssistantChatComponent implements OnInit {
@@ -77,17 +90,24 @@ export class NodeAssistantChatComponent implements OnInit {
   @Input() nodeId: string | null = null;
   @Input() nodeName: string | null = null;
   @Input() threadId: string | null = null;
+  @Input() branch: string | null = null;
   @Output() threadLinked = new EventEmitter<{ threadId: string; type: string }>();
+  @Output() argsProposed = new EventEmitter<any>();
+  @Output() applyArgs = new EventEmitter<any>();
 
   messages: Msg[] = [];
   prompt = '';
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
+  argsProposal: any = null;
+  // Expose global Object in template for Object.keys usage
+  Object = Object;
 
-  constructor(private api: AiConsoleBackendService, private agentV2: AiWorkflowAgentV2Service, private cdr: ChangeDetectorRef) {}
+  constructor(private api: AiConsoleBackendService, private agentV2: AiWorkflowAgentV2Service, private argsAgent: AiArgsAgentService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.ensureThread();
   }
+
 
   private ensureThread() {
     const fid = this.flowId; const nid = this.nodeId;
@@ -115,7 +135,17 @@ export class NodeAssistantChatComponent implements OnInit {
 
   private loadMsgs() {
     const tid = this.threadId; if (!tid) { this.messages = []; return; }
-    this.api.listMessages(tid).subscribe(list => { this.messages = (list || []); try { this.cdr.detectChanges(); } catch {} });
+    this.api.listMessages(tid).subscribe({
+      next: (list) => { this.messages = (list || []); try { this.cdr.detectChanges(); } catch {} },
+      error: () => {
+        // If the thread was deleted on the backend, recreate a new one and continue silently
+        try {
+          const fid = this.flowId || null; const nid = this.nodeId || null; if (!fid || !nid) return;
+          this.threadId = null;
+          this.ensureThread();
+        } catch {}
+      }
+    });
   }
 
   resetThread() {
@@ -127,6 +157,8 @@ export class NodeAssistantChatComponent implements OnInit {
   autoGrow() {
     try { const el = this.promptEl?.nativeElement; if (!el) return; el.style.height = '0px'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; } catch {}
   }
+  clearArgsProposal(){ this.argsProposal = null; try { this.cdr.detectChanges(); } catch {} }
+  emitApplyArgs(){ if (!this.argsProposal) return; this.applyArgs.emit(this.argsProposal); }
   send() {
     const tid = this.threadId; const txt = (this.prompt || '').trim(); if (!tid || !txt) return;
     const now = Date.now();
@@ -135,7 +167,8 @@ export class NodeAssistantChatComponent implements OnInit {
     this.prompt = '';
     try { this.cdr.detectChanges(); } catch {}
     this.api.appendMessage(tid, { threadId: tid, role: 'user', text: txt } as any).subscribe(() => {
-      const stream = this.agentV2.stream({ flowId: this.flowId || undefined, action: undefined, threadId: this.threadId || undefined });
+      // Use dedicated Args Agent instead of workflow v2 for node assistant
+      const stream = (this as any).argsAgent?.stream({ flowId: this.flowId as string, nodeId: this.nodeId as string, threadId: this.threadId as string, branch: this.branch as any }) || this.agentV2.stream({ flowId: this.flowId || undefined, action: undefined, threadId: this.threadId || undefined });
       let assistantParts: any[] = [];
       const mergeText = (base: string, add: string) => (base || '') + (add || '');
       const appendToLastTextPart = (token: string) => {
@@ -145,7 +178,7 @@ export class NodeAssistantChatComponent implements OnInit {
         else assistantParts.push({ kind: 'text', text: mergeText('', t) });
       };
       const sub = stream.events$.subscribe({
-        next: (ev: WorkflowAgentV2Event) => {
+        next: (ev: any) => {
           if (!ev) return;
           if (ev.type === 'message' && ev.text) {
             const raw = String(ev.text || '');
@@ -155,26 +188,58 @@ export class NodeAssistantChatComponent implements OnInit {
               const isTool = /^\[tool\]/i.test(seg);
               appendToLastTextPart(isTool ? ("\n" + seg) : seg);
             }
-            const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
-            const others = this.messages.filter(x => !x.pending);
-            this.messages = [...others, tmp];
-            try { this.cdr.detectChanges(); } catch {}
+            if (assistantParts.length) {
+              const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, tmp];
+              try { this.cdr.detectChanges(); } catch {}
+            }
           }
-          if ((ev as any).type === 'question') {
-            const text = (ev as any).text || 'J’ai besoin d’une précision (voir options ci-dessus).';
-            assistantParts.push({ kind: 'text', text });
-            const tmp: Msg = { id: `${tid}-assistant-question`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
-            const others = this.messages.filter(x => !x.pending);
-            this.messages = [...others, tmp];
-            try { this.cdr.detectChanges(); } catch {}
+          if (ev.type === 'tool.start') {
+            try {
+              const name = String(ev.name || 'tool');
+              const previewArgs = ev.args ? JSON.stringify(ev.args).slice(0, 200) : '';
+              appendToLastTextPart(`\n[tool] ${name} start ${previewArgs}`);
+              const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, tmp];
+              this.cdr.detectChanges();
+            } catch {}
           }
-          if (ev.type === 'final' || ev.type === 'done') {
+          if (ev.type === 'tool.end') {
+            try {
+              const name = String(ev.name || 'tool');
+              appendToLastTextPart(`\n[tool] ${name} done`);
+              const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, tmp];
+              this.cdr.detectChanges();
+            } catch {}
+          }
+          if (ev.type === 'args' && ev.args) {
+            // Summarize proposed args in a compact assistant message
+            try {
+              const keys = Object.keys(ev.args || {});
+              const summary = `Arguments proposés: ${keys.join(', ')}`;
+              const tmp: Msg = { id: `${tid}-assistant-args-${Date.now().toString(36)}`, threadId: tid, role: 'assistant', text: summary, createdAt: Date.now(), pending: false } as any;
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, tmp];
+              this.cdr.detectChanges();
+              // Persist assistant message
+              this.api.appendMessage(tid, { threadId: tid, role: 'assistant', text: summary } as any).subscribe(() => {});
+              this.argsProposal = ev.args;
+              this.argsProposed.emit(ev.args);
+            } catch {}
+          }
+          if (ev.type === 'done' || ev.type === 'error') {
             const parts = assistantParts.slice();
             assistantParts = [];
-            const others = this.messages.filter(x => !x.pending);
-            this.messages = [...others, { id: `${tid}-${Date.now().toString(36)}`, threadId: tid, role: 'assistant', parts, createdAt: Date.now() } as any];
-            try { this.cdr.detectChanges(); } catch {}
-            this.api.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(() => {});
+            if (parts.length) {
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, { id: `${tid}-${Date.now().toString(36)}`, threadId: tid, role: 'assistant', parts, createdAt: Date.now() } as any];
+              try { this.cdr.detectChanges(); } catch {}
+              this.api.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(() => {});
+            }
           }
         },
         error: () => { try { sub.unsubscribe(); } catch {} },
@@ -183,4 +248,3 @@ export class NodeAssistantChatComponent implements OnInit {
     });
   }
 }
-

@@ -191,8 +191,11 @@ import { NodeAssistantChatComponent } from '../components/node-assistant-chat.co
         </nz-tab>
         <nz-tab nzTitle="Assistant AI">
           <div class="settings-pane" style="padding:0;">
-            <node-assistant-chat [flowId]="flowId || null" [nodeId]="model?.id" [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id" [threadId]="model?.aiChatThreadId || null"
-              (threadLinked)="onNodeAssistantLinked($event)"></node-assistant-chat>
+            <node-assistant-chat [flowId]="flowId || null" [nodeId]="model?.id"
+              [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id"
+              [threadId]="model?.aiChatThreadId || null" [branch]="(simScenarios && simScenarios[simSelectedIndex]?.match?.handleId) || null"
+              (threadLinked)="onNodeAssistantLinked($event)"
+              (applyArgs)="onAssistantApplyArgs($event)"></node-assistant-chat>
           </div>
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
@@ -279,6 +282,8 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() ctx: any = {};
   @Input() flowId: string | null = null;
   @Input() bare = false;
+  @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }>|null = null;
+  @Input() simSelectedIndex: number = 0;
   @Input() disabled = false;
   @Input() disableReason: string | null = null;
   @Input() testStatus: 'idle'|'running'|'success'|'error' = 'idle';
@@ -425,6 +430,19 @@ export class FlowAdvancedCenterPanelComponent {
       const m = { ...this.model, ...patch };
       this.model = m;
       this.modelChange.emit(m);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+  onAssistantApplyArgs(args: any) {
+    try {
+      const ok = window.confirm('Appliquer ces arguments au nœud ?');
+      if (!ok) return;
+      const v = args && typeof args === 'object' ? JSON.parse(JSON.stringify(args)) : {};
+      const m = { ...this.model, context: v };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Arguments appliqués'); } catch {}
       try { this.cdr.detectChanges(); } catch {}
     } catch {}
   }
@@ -717,4 +735,5 @@ export class FlowAdvancedCenterPanelComponent {
       try { this.committed.emit(this.model); } catch {}
     } catch {}
   }
+
 }

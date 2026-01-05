@@ -149,19 +149,7 @@ export class FlowBuilderComponent {
     try {
       const toRemove = Array.from(ids).filter(id => !!id);
       if (!toRemove.length) return;
-      // Best-effort: delete linked AI chats for nodes being removed
-      try {
-        const fid = this.currentFlowId || '';
-        if (fid) {
-          for (const id of toRemove) {
-            const n = this.nodes.find(nn => String(nn.id) === String(id));
-            const threadId = n?.data?.model?.aiChatThreadId || null;
-            if (threadId) {
-              this.aiChats.deleteChat(fid, String(threadId)).subscribe({ next: () => {}, error: () => {} });
-            }
-          }
-        }
-      } catch {}
+      // Do not auto-delete linked AI chats on node removal to preserve undo/restore
       toRemove.forEach(id => {
         const key = String(id);
         if (this.isIOSSafari) this.removingLiteNodes.add(key); else this.removingNodes.add(key);
@@ -364,24 +352,32 @@ export class FlowBuilderComponent {
     return `flow.startPayload.${fid}`;
   }
 
-  // Load AI-generated graph from chat
+  // Load AI-generated graph from chat, with confirmation
   applyAiGraph(g: any) {
     try {
-      try { console.log('[ai-flow][applyAiGraph][received]', g); } catch {}
       const nodes = Array.isArray(g?.nodes) ? g.nodes : [];
       const edges = Array.isArray(g?.edges) ? g.edges : [];
-      this.nodes = nodes as any[];
-      this.edges = edges as any[];
-      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
-      this.updateSharedGraph();
-      this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
-      this.recomputeValidation();
-      // Center the viewport on the loaded graph (like frontend initial centering)
-      try {
-        // Delay to allow DOM to render node sizes before centering
-        setTimeout(() => this.centerFlow(), 0);
-      } catch {}
-      try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
+      const curN = (this.nodes || []).length, curE = (this.edges || []).length;
+      const nextN = nodes.length, nextE = edges.length;
+      const content = `Le chargement AI propose ${nextN} nœuds et ${nextE} arêtes (actuel: ${curN}/${curE}). Appliquer ces changements ?`;
+      this.modal.confirm({
+        nzTitle: 'Charger le graphe proposé',
+        nzContent: content,
+        nzOkText: 'Appliquer',
+        nzCancelText: 'Annuler',
+        nzOnOk: () => {
+          try { console.log('[ai-flow][applyAiGraph][confirmed]', { nextN, nextE }); } catch {}
+          this.nodes = nodes as any[];
+          this.edges = edges as any[];
+          this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+          this.updateSharedGraph();
+          this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
+          this.recomputeValidation();
+          try { setTimeout(() => this.centerFlow(), 0); } catch {}
+          try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
+        },
+        nzOnCancel: () => { try { console.log('[ai-flow][applyAiGraph][cancelled]'); } catch {} }
+      });
     } catch {
       try { this.message.error('Graphe IA invalide'); } catch {}
     }
@@ -3620,7 +3616,7 @@ export class FlowBuilderComponent {
       } else {
         const id = String((tgt as any).id || '');
         if (id) {
-          // Play removal animation then actually remove
+          // Remove directly; orphan chat cleanup will run on save
           this.scheduleRemove(new Set([id]), 'ctx.delete.node');
         }
       }
@@ -3874,6 +3870,79 @@ export class FlowBuilderComponent {
       const safeIds = new Set(Array.from(ids).filter(id => !this.isStartLike(this.nodes.find(n => String(n.id)===id)?.data?.model?.templateObj)));
       if (!safeIds.size) return;
       this.scheduleRemove(safeIds, 'nodes.removed.many');
+    } catch {}
+  }
+
+  private backupChatThenRemove(ids: Set<string>, reason: string) {
+    try {
+      const fid = this.currentFlowId || '';
+      const tasks: Promise<any>[] = [];
+      for (const id of Array.from(ids)) {
+        const node = (this.nodes || []).find(n => String(n.id) === String(id));
+        if (!node) continue;
+        const threadId = node?.data?.model?.aiChatThreadId || null;
+        if (!threadId) continue;
+        tasks.push(new Promise<void>((resolve) => {
+          this.aiChats.listMessages(String(threadId)).subscribe({
+            next: (list) => {
+              try {
+                const last100 = (list || []).slice(-100).map(m => ({ role: m.role, text: m.text, parts: m.parts, createdAt: m.createdAt }));
+                const updated = this.nodes.map(n => {
+                  if (String(n.id) !== String(id)) return n;
+                  const m = n?.data?.model || {};
+                  const model: any = { ...m, aiChatBackup: { messages: last100, savedAt: Date.now() } };
+                  delete model.aiChatThreadId;
+                  return { ...n, data: { ...n.data, model } };
+                });
+                this.nodes = updated;
+                try { this.cdr.detectChanges(); } catch {}
+                this.pushState('node.chat.backup');
+                if (fid) this.aiChats.deleteChat(fid, String(threadId)).subscribe({ next: () => {}, error: () => {} });
+              } catch {}
+            },
+            error: () => resolve(),
+            complete: () => resolve(),
+          });
+        }));
+      }
+      Promise.all(tasks).finally(() => this.scheduleRemove(ids, reason));
+    } catch { this.scheduleRemove(ids, reason); }
+  }
+
+  private async restoreNodeChatsIfNeeded() {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid) return;
+      const toRestore = (this.nodes || []).filter(n => {
+        const m = n?.data?.model || {};
+        return m && m.aiChatBackup && Array.isArray(m.aiChatBackup.messages) && (!m.aiChatThreadId);
+      });
+      for (const node of toRestore) {
+        const nid = String(node.id);
+        const name = node?.data?.model?.name || node?.data?.model?.templateObj?.title || nid;
+        await new Promise<void>((resolve) => {
+          this.aiChats.createChat(fid, `[node:${nid}] Assistant • ${name}`).subscribe({
+            next: (t) => {
+              const msgs = (node?.data?.model?.aiChatBackup?.messages || []).slice(-100);
+              const appendSeq = (i: number) => {
+                if (i >= msgs.length) { resolve(); return; }
+                const msg = msgs[i];
+                this.aiChats.appendMessage(String(t.id), { threadId: String(t.id), role: msg.role as any, text: msg.text, parts: msg.parts } as any)
+                  .subscribe({ next: () => appendSeq(i+1), error: () => appendSeq(i+1) });
+              };
+              appendSeq(0);
+              this.nodes = this.nodes.map(n => {
+                if (String(n.id) !== nid) return n;
+                const m = n?.data?.model || {} as any;
+                const { aiChatBackup, ...rest } = m as any;
+                return { ...n, data: { ...n.data, model: { ...rest, aiChatThreadId: t.id } } };
+              });
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            error: () => resolve(),
+          });
+        });
+      }
     } catch {}
   }
 
@@ -4280,7 +4349,7 @@ export class FlowBuilderComponent {
     } else {
       // selected a node
       const id = String(sel.id);
-      this.scheduleRemove(new Set([id]), 'delete.node');
+      this.backupChatThenRemove(new Set([id]), 'delete.node');
     }
   }
 
@@ -4539,6 +4608,8 @@ export class FlowBuilderComponent {
               this.saveDraft(); // efface le draft si identique à la version serveur
               this.persistHistory();
             } catch {}
+            // Cleanup orphan chats now that the graph is saved
+            try { this.cleanupOrphanChatsAfterSave(); } catch {}
             try { this.cdr.detectChanges(); } catch {}
           },
           error: (e) => {
@@ -4567,6 +4638,7 @@ export class FlowBuilderComponent {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
               this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
                   try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                  try { this.cleanupOrphanChatsAfterSave(); } catch {}
                 } })
               });
             } else {
@@ -4579,7 +4651,34 @@ export class FlowBuilderComponent {
       }
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
+  private cleanupOrphanChatsAfterSave() {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid) return;
+      const used = new Set<string>();
+      try { 
+        for (const n of (this.nodes || [])) { 
+          const tid = String(n?.data?.model?.aiChatThreadId || '') || null; 
+          if (tid) used.add(tid); 
+        } 
+      } catch {}
+      this.aiChats.listChats(fid).subscribe({
+        next: (threads) => {
+          const arr = threads || [];
+          for (const t of arr) {
+            const id = String(t?.id || '');
+            if (!id) continue;
+            if (!used.has(id)) {
+              this.aiChats.deleteChat(fid, id).subscribe({ next: () => {}, error: () => {} });
+            }
+          }
+        },
+        error: () => {}
+      });
+    } catch {}
+  }
   runFlow() {
+
     if (!this.currentFlowEnabled) {
       try { this.message.error('Flow désactivé. Activez-le avant de lancer.'); } catch { this.showToast('Flow désactivé'); }
       return;
@@ -5831,7 +5930,7 @@ export class FlowBuilderComponent {
       const apply = () => {
         try {
           const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
-          if (ids.length) { this.setVflowSelectedIds(ids); try { this.log('sel.drag.sync.tick', { ids }); } catch {} }
+          if (ids.length) { this.setVflowSelectedIds(ids); }
         } catch {}
       };
       apply();
@@ -6291,6 +6390,7 @@ export class FlowBuilderComponent {
       if (Date.now() < this.suppressNodesRemovedUntil) { this.log('nodes.removed.ignored.window', { until: this.suppressNodesRemovedUntil }); return; }
       if (!ids.size) return;
       this.log('nodes.removed', { ids: Array.from(ids) });
+      // Remove directly; orphan chats will be cleaned up on save
       this.scheduleRemove(ids, 'nodes.removed');
     } catch { }
   }

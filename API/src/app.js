@@ -80,6 +80,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/ai-flow')());
     // AI Workflow v2 (SSE)
     app.use('/api', require('./modules/db/ai-workflow')());
+    // AI Args (SSE) — specialized agent for node args completion
+    app.use('/api', require('./modules/db/ai-args')());
   }
 
   // API docs (Swagger UI)
