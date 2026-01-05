@@ -1639,6 +1639,22 @@ export class FlowBuilderComponent {
     try { return (this.edges || []).some(e => String(e.source) === String(nodeId) && String((e as any).sourceHandle || '') === String(handleId)); } catch { return false; }
   }
 
+  // Pick the first available output handle for a node (unconnected)
+  private firstFreeOutputHandle(node: any): string | null {
+    try {
+      const nodeId = String(node?.id || '');
+      const model = node?.data?.model || {};
+      const tpl = model?.templateObj || {};
+      const outFromLinked = (this.linkHandlesForNode(nodeId, model) || []).map(h => String(h?.id || ''));
+      const outFromTpl = Array.isArray((tpl as any).outputHandles) ? (tpl.outputHandles as any[]).map((h:any)=>String(h?.id||'')) : [];
+      const outFromGraph = (this.outputIds(model) || []).map(id => String(id||''));
+      const fallbacks = ['ok','out','default'];
+      const order = Array.from(new Set([ ...outFromLinked, ...outFromTpl, ...outFromGraph, ...fallbacks ] )).filter(Boolean);
+      for (const id of order) { if (!this.isOutputConnected(nodeId, id)) return id; }
+      return null;
+    } catch { return null; }
+  }
+
   // Open modal to pick a node template and connect from given handle
   openAddNodeFromHandle(nodeId: string, handleId: string, ev?: Event) {
     try { if (ev) { ev.stopPropagation(); ev.preventDefault(); } } catch {}
@@ -5327,6 +5343,20 @@ export class FlowBuilderComponent {
       }
       if (k === 's') { ev.preventDefault(); this.saveFlow(); return; }
       if (k === 'd') { ev.preventDefault(); this.onClearRun(); return; }
+    }
+    // Space — open add-node spotlight from first available output of single selection
+    if (!this.advancedOpen && !this.advancedV2Open) {
+      const keyIsSpace = (ev.code === 'Space') || (ev.key === ' ' || ev.key === 'Spacebar');
+      if (keyIsSpace) {
+        try {
+          const list = (this.selectionList && this.selectionList.length) ? this.selectionList : (this.selection ? [this.selection] : []);
+          if (list.length === 1) {
+            const node = list[0];
+            const handleId = this.firstFreeOutputHandle(node);
+            if (handleId) { ev.preventDefault(); ev.stopPropagation(); this.openAddNodeFromHandle(String(node.id), String(handleId)); return; }
+          }
+        } catch {}
+      }
     }
     if (ev.key === 'Escape') {
       if (this.advancedOpen) { ev.preventDefault(); this.closeAdvancedEditor(); return; }

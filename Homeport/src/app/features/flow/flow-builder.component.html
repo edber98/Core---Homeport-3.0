@@ -400,22 +400,23 @@
     (click)="onClearRun()" aria-label="Effacer l'exécution en cours">
     <i class="fa-regular fa-trash-can"></i>
   </button>
-  <ng-template #shortcutsTpl>
-    <div style="min-width:220px; font-size:12px; line-height:1.6;">
-      <div><b>P</b> — Ouvrir/Fermer le panneau droit</div>
-      <div><b>N</b> — Ouvrir/Fermer la palette (gauche)</div>
-      <div><b>R</b> — Activer/Désactiver les aides d'alignement</div>
-      <div><b>S</b> — Sauvegarder</div>
-      <div><b>D</b> — Effacer l’exécution en cours</div>
-      <div><b>Ctrl/Cmd + C</b> — Copier la sélection</div>
-      <div><b>Ctrl/Cmd + X</b> — Couper la sélection</div>
-      <div><b>Ctrl/Cmd + V</b> — Coller</div>
-      <div><b>H</b> — Aligner horizontalement la sélection</div>
-      <div><b>V</b> — Aligner verticalement la sélection</div>
-      <div><b>Ctrl/Cmd + Z</b> — Annuler</div>
-      <div><b>Shift + Ctrl/Cmd + Z</b> ou <b>Ctrl/Cmd + Y</b> — Rétablir</div>
-    </div>
-  </ng-template>
+      <ng-template #shortcutsTpl>
+        <div style="min-width:220px; font-size:12px; line-height:1.6;">
+          <div><b>P</b> — Ouvrir/Fermer le panneau droit</div>
+          <div><b>N</b> — Ouvrir/Fermer la palette (gauche)</div>
+          <div><b>R</b> — Activer/Désactiver les aides d'alignement</div>
+          <div><b>S</b> — Sauvegarder</div>
+          <div><b>D</b> — Effacer l’exécution en cours</div>
+          <div><b>Espace</b> — Ajouter un nœud suivant (si un nœud est sélectionné et une sortie disponible)</div>
+          <div><b>Ctrl/Cmd + C</b> — Copier la sélection</div>
+          <div><b>Ctrl/Cmd + X</b> — Couper la sélection</div>
+          <div><b>Ctrl/Cmd + V</b> — Coller</div>
+          <div><b>H</b> — Aligner horizontalement la sélection</div>
+          <div><b>V</b> — Aligner verticalement la sélection</div>
+          <div><b>Ctrl/Cmd + Z</b> — Annuler</div>
+          <div><b>Shift + Ctrl/Cmd + Z</b> ou <b>Ctrl/Cmd + Y</b> — Rétablir</div>
+        </div>
+      </ng-template>
   <button nz-button nzSize="small" class="panel-toggle-fab left" type="button"
     (click)="toggleLeftPanel()"
     aria-label="Ouvrir ou fermer le panneau gauche">
