@@ -545,7 +545,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges {
         edges: (this.displayEdges || []).map((e: any) => ({ id: String(e.id||`${e.source}->${e.target}`), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }))
       } as any;
       const gapX = 260; const baseGapY = 160;
-      this.layoutApi.layoutGraph(graph, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max' }).subscribe({
+      this.layoutApi.layoutGraph(graph, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
         next: (res: any) => {
           try {
             const positions = (res && (res.positions || (res.data && res.data.positions))) || {};

@@ -14,7 +14,7 @@ import { Edge, ConnectionSettings } from 'ngx-vflow';
       [nodes]="nodes" [edges]="edges" [background]="background"
       [connectionSettings]="connectionSettings" [useStorage]="useStorage"
       [showBottomBar]="showBottomBar" [showRun]="showRun" [showSave]="showSave"
-      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview" [focusNodeIds]="focusNodeIds" [autoFitOnInit]="autoFitOnInit" [centerRequest]="centerRequest">
+      [showCenterFlow]="showCenterFlow" [meta]="meta" [showExecBadges]="false" [selectedNodeId]="selectedNodeId" [dimInactive]="dimInactive" [simOutputPreview]="simOutputPreview" [focusNodeIds]="focusNodeIds" [autoFitOnInit]="autoFitOnInit" [centerRequest]="centerRequest" [showDescriptions]="false">
     </flow-viewer>
   `
 })

@@ -2615,7 +2615,28 @@ export class FlowBuilderComponent {
       this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
       const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
       const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
-      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY }).subscribe({
+      // Include description line hints to ELK so it can increase node height accordingly
+      const descLines: Record<string, number> = {};
+      try {
+        for (const n of (this.nodes || [])) {
+          const id = String((n as any)?.id || ''); if (!id) continue;
+          const model: any = (n as any)?.data?.model || {};
+          if (model?.hide_description === true) continue;
+          const d: string = String(model?.description || '').trim();
+          if (!d) continue;
+          // Estimate wrapped lines for 223px width at ~12px font
+          const wrap = (s: string) => {
+            const len = s.length; const per = 36; // approx chars per line
+            return Math.max(1, Math.ceil(len / per));
+          };
+          const parts = d.split(/\n/);
+          const rawLines = parts.map(wrap).reduce((a, b) => a + b, 0);
+          const maxLines = (model?.expand_description === true) ? 12 : 3;
+          const lines = Math.min(rawLines, maxLines);
+          if (lines > 0) descLines[id] = lines;
+        }
+      } catch {}
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY, descLines: Object.keys(descLines).length ? descLines : undefined, includeDescriptions: true }).subscribe({
         next: (resp: any) => {
           this.zone.run(() => {
             try {

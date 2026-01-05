@@ -144,7 +144,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
           edges: (this.edges || []).map(e => ({ id: (e as any).id, source: String((e as any).source), target: String((e as any).target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
         };
         const gapX = 260, gapY = 160;
-        this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY }).subscribe({
+        this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY, includeDescriptions: false }).subscribe({
           next: (res: any) => {
             try {
               const positions = (res && (res.positions || (res.data && res.data.positions))) || {};
@@ -272,7 +272,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     const gapX = 260, gapY = 160;
     // Revenir au mode précédent (par niveau) avec 20px par item: base gap + (max du niveau précédent * 20)
     const baseGapY = 160; // espacement vertical de base (inchangé)
-    this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max' }).subscribe({
+    this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
       next: (res: any) => {
         try {
           const positions = (res && (res.positions || (res.data && res.data.positions))) || {};

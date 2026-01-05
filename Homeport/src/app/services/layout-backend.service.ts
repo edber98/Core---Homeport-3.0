@@ -9,7 +9,7 @@ export class LayoutBackendService {
   layoutGraph(
     graph: any,
     orientation: 'vertical'|'horizontal',
-    opts: { width?: number; height?: number; gapX?: number; gapY?: number; adjustByOutputs?: boolean; perOutputYOffset?: number; perOutputXOffset?: number; outputsCount?: Record<string, number>; outputsOnlyForIds?: string[]; outputsMode?: 'max'|'sum'|'edge' } = {}
+    opts: { width?: number; height?: number; gapX?: number; gapY?: number; adjustByOutputs?: boolean; perOutputYOffset?: number; perOutputXOffset?: number; outputsCount?: Record<string, number>; outputsOnlyForIds?: string[]; outputsMode?: 'max'|'sum'|'edge'; descLines?: Record<string, number>; includeDescriptions?: boolean; } = {}
   ): Observable<{ positions: Record<string, { x: number; y: number }>, orientation: string }>{
     const body: any = { graph, orientation };
     if (opts?.width) body.nodeWidth = opts.width;
@@ -22,6 +22,8 @@ export class LayoutBackendService {
     if (opts?.outputsCount) body.outputsCount = opts.outputsCount;
     if (opts?.outputsOnlyForIds) body.outputsOnlyForIds = opts.outputsOnlyForIds;
     if (opts?.outputsMode) body.outputsMode = opts.outputsMode;
+    if (opts?.descLines) body.descLines = opts.descLines;
+    if (opts?.includeDescriptions != null) body.includeDescriptions = !!opts.includeDescriptions;
     return this.api.post<any>('/api/layout/graph', body);
   }
 }

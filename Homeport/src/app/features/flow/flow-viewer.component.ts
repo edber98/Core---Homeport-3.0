@@ -48,6 +48,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   [iconClass]="ctx.node.data.model.templateObj?.icon"
                   [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
+                <div class="desc" [ngClass]="{ clamp: (ctx.node.data.model?.expand_description !== true) }" *ngIf="showDescriptions && !simOutputPreview && (ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d"
+                     [ngStyle]="{ display: (portOrientation === 'vertical' && (linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+                  {{ d }}
+                </div>
               </div>
               <!-- Simulation output preview rendered like linked handles (1-level only) -->
               <div class="links" *ngIf="simOutputPreview && simOutputPreview[ctx.node.id] as simLinks">
@@ -158,28 +162,49 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   </ng-template>
                 </div>
               </div>
-              <!-- Linked handles: mirror builder behavior (orientation + as sources) -->
-              <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
-                <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
-                  <div class="link-label">{{ lh.name }}</div>
-                  <ng-template #linkTpl let-hctx>
-                    <svg:g>
-                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
-                    </svg:g>
-                  </ng-template>
-                  <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
-                    <!-- Vertical: linked handles are outputs on the right side -->
-                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
-                  </ng-container>
-                  <ng-template #horizLink>
-                    <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
-                    <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
-                  </ng-template>
-                </div>
-              </div>
+              <!-- Linked handles and description combo -->
+              <ng-container *ngIf="!simOutputPreview">
+                <ng-container *ngIf="portOrientation === 'vertical'; else linksDefault">
+                  <div class="desc-links" *ngIf="(linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0">
+                    <div class="desc" [ngClass]="{ clamp: (ctx.node.data.model?.expand_description !== true) }" *ngIf="showDescriptions && (ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d">{{ d }}</div>
+                    <div class="links">
+                      <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                        <div class="link-label">{{ lh.name }}</div>
+                        <ng-template #linkTpl let-hctx>
+                          <svg:g>
+                            <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                              [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                              [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                              [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                          </svg:g>
+                        </ng-template>
+                        <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #linksDefault>
+                  <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
+                    <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                      <div class="link-label">{{ lh.name }}</div>
+                      <ng-template #linkTpl let-hctx>
+                        <svg:g>
+                          <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                            [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                            [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                            [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                        </svg:g>
+                      </ng-template>
+                      <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
+                        <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                      </ng-container>
+                      <ng-template #horizLink>
+                        <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
+                      </ng-template>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
               <div class="exec-badge" *ngIf="showExecBadges && ctx.node.data.execStatus as st">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : (st === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
@@ -227,8 +252,11 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card.ro.no-inputs { padding-top: 0; }
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
-    .center-wrap { grid-column: 1; grid-row: 1; display:flex; align-items:center; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
+    .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
     .center-wrap node-card-header { pointer-events:auto; }
+    .node-card .desc { color:#6b7280; font-size:12px; white-space: pre-line; word-break: break-word; }
+    .node-card .desc.clamp { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; white-space: normal; }
+    .center-wrap .desc { margin: 6px 0; padding: 0; }
     .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
     .node-card .icon { width: 20px; height: 20px; display:inline-block; }
     .node-card .meta .title { font-weight: 600; }
@@ -240,6 +268,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card.ro.horizontal .outputs { position: absolute; top: -200px; display:flex; flex-direction: column; justify-content:center; gap: 17px; }
     /* Linked handles labels layout */
     .node-card .links { display:flex; gap:8px; margin-top: 4px; }
+    .node-card .desc-links { display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; padding: 0 8px; }
+    .node-card .desc-links > .desc { flex: 1 1 auto; margin: 6px 0; padding: 0; }
+    .node-card .desc-links > .links { flex: 0 0 auto; display:flex; flex-direction: column; align-items:flex-end; gap:8px; margin-top: 4px; }
     .node-card.horizontal .links { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; }
     .node-card:not(.horizontal) .links { flex-direction: column; align-items: flex-end; }
     .node-card .link { display: inline-flex; align-items: center; gap: 6px; }
@@ -311,6 +342,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() dimInactive = false;
   // Aperçu (simulation) des sorties (1 niveau) par nœud, rendu comme des linked handles
   @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
+  // Show node descriptions (hidden in node-settings/simulation)
+  @Input() showDescriptions: boolean = true;
   // Optional: list of node ids to focus when centering (fit only these)
   @Input() focusNodeIds: string[] | null = null;
   // Optional: extra padding ratio for fit (0..0.4 typical)

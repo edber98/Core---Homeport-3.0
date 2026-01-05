@@ -164,6 +164,26 @@ import { FormsModule } from '@angular/forms';
                   (ngModelChange)="onToggleSkipError($event)"></nz-switch>
               </div>
             </div>
+            <!-- Afficher plus de 3 lignes pour la description -->
+            <div class="setting-row">
+              <div class="left">
+                <div class="label">Afficher toute la description</div>
+                <div class="hint">Par défaut, 3 lignes maximum avec ellipses.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.expand_description" (ngModelChange)="onToggleExpandDescription($event)"></nz-switch>
+              </div>
+            </div>
+            <!-- Masquer la description sur la carte -->
+            <div class="setting-row">
+              <div class="left">
+                <div class="label">Masquer la description</div>
+                <div class="hint">N’affiche pas la description sur la carte du nœud.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.hide_description" (ngModelChange)="onToggleHideDescription($event)"></nz-switch>
+              </div>
+            </div>
             <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
           </div>
         </nz-tab>
@@ -658,6 +678,24 @@ export class FlowAdvancedCenterPanelComponent {
       const m = { ...this.model, skip_error: canEnable ? !!val : false };
       this.model = m;
       this.modelChange.emit(m);
+    } catch {}
+  }
+
+  onToggleHideDescription(val: boolean) {
+    try {
+      const m = { ...this.model, hide_description: !!val };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
+  onToggleExpandDescription(val: boolean) {
+    try {
+      const m = { ...this.model, expand_description: !!val };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
     } catch {}
   }
 }

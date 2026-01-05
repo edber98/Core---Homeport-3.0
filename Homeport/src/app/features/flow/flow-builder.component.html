@@ -95,8 +95,8 @@
                   [iconClass]="ctx.node.data.model.templateObj?.icon"
                   [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
-                <div class="desc" *ngIf="ctx.node.data.model?.description as d"
-                     [ngStyle]="{ display: (portOrientation === 'vertical' && (linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+                <div class="desc" [ngClass]="{ clamp: ctx.node.data.model?.expand_description !== true }" *ngIf="(ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d"
+                      [ngStyle]="{ display: (portOrientation === 'vertical' && (linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
                   {{ d }}
                 </div>
               </div>
@@ -245,9 +245,9 @@
                </div>
           </div>
             <!-- Link handles (targets on the right) for v2 -->
-            <ng-container *ngIf="portOrientation === 'vertical'; else linksDefault">
-              <div class="desc-links" *ngIf="(linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0">
-                <div class="desc" *ngIf="ctx.node.data.model?.description as d">{{ d }}</div>
+              <ng-container *ngIf="portOrientation === 'vertical'; else linksDefault">
+                <div class="desc-links" *ngIf="(linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0">
+                <div class="desc" [ngClass]="{ clamp: ctx.node.data.model?.expand_description !== true }" *ngIf="(ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d">{{ d }}</div>
                 <div class="links">
                   <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
                     <div class="link-label">{{ lh.name }}</div>
