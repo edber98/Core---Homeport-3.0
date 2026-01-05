@@ -249,7 +249,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
     .node-card.dim { opacity: .35; filter: saturate(0.6); }
     .node-card.ro.selected { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.25); }
-    .node-card.ro.no-inputs { padding-top: 0; }
+   
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
     .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }

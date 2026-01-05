@@ -783,6 +783,8 @@ export class FlowBuilderComponent {
               // Restore panel open state from last session before centering
               this.restorePanelsState();
               this.savePanelsState();
+              // If right panel was restored open, ensure recent runs are fetched
+              try { if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true); } catch {}
               if (centerActive || !hasSavedZoom) { this.scheduleCenterIfRequested(true, true); }
             } catch { if (centerActive) this.scheduleCenterIfRequested(true); }
             // Apply pending Dynamic Form session (if any) once nodes are available

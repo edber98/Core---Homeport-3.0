@@ -141,7 +141,7 @@
 
 
 .node-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px 0 0 0; width: 223px; min-width: 223px; max-width: 223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; }
-.node-card.no-inputs { padding-top: 0; }
+//.node-card.no-inputs { padding-top: 0; }
 /* removed paint containment to avoid any visual artifact on Safari */
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
