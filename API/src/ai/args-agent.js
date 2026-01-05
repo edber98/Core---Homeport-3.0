@@ -34,18 +34,9 @@ function systemPromptBase(){
   return escapeForLangChain(raw);
 }
 
-async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send }){
-  // Load flow graph lazily
-  const { Types } = require('mongoose');
-  const Flow = require('../db/models/flow.model');
-  const getFlow = async () => {
-    let flow = null;
-    const fid = String(flowId || '');
-    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid).lean();
-    if (!flow) flow = await Flow.findOne({ id: fid }).lean();
-    if (!flow) throw new Error('flow_not_found');
-    return flow.graph || flow;
-  };
+async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send, getFlow }){
+  // getFlow est fourni par l'appelant (peut retourner un seedGraph override)
+  const ensureGetFlow = typeof getFlow === 'function' ? getFlow : async () => { throw new Error('getFlow_not_provided'); };
 
   const listPredecessors = (graph, targetId) => {
     const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
@@ -93,7 +84,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       description: "Retourne les infos du nœud (id, name, description courante, template title).",
       schema: {},
       func: async () => {
-        const graph = await getFlow();
+        const graph = await ensureGetFlow();
         const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
         const n = nodes.find(x => String(x.id) === String(nodeId));
         const model = (n?.data && n.data.model) ? n.data.model : (n?.data || {});
@@ -107,7 +98,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       description: "Récupère le schéma d'arguments du nœud (fields/steps).",
       schema: {},
       func: async () => {
-        const graph = await getFlow();
+        const graph = await ensureGetFlow();
         const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
         const n = nodes.find(x => String(x.id) === String(nodeId));
         const model = (n?.data && n.data.model) ? n.data.model : (n?.data || {});
@@ -120,7 +111,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       description: 'Liste les nœuds précédents (id, nom, type, description).',
       schema: {},
       func: async () => {
-        const graph = await getFlow();
+        const graph = await ensureGetFlow();
         const arr = listPredecessors(graph, nodeId);
         return JSON.stringify(arr);
       }
@@ -130,7 +121,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       description: 'Simule les scénarios vers le nœud cible et retourne le msgIn du scénario sélectionné (si disponible).',
       schema: {},
       func: async () => {
-        const graph = await getFlow();
+        const graph = await ensureGetFlow();
         // Prefer engine split when available
         const { simulateViaEngineSplit, simulateViaEngine } = require('../utils/flow-simulate-engine');
         let data = null;
@@ -190,12 +181,23 @@ function normalizeHistory(h) {
   return h.filter(m => m && typeof m === 'object' && m.role && (m.content != null)).map(m => ({ role: String(m.role), content: String(m.content) }));
 }
 
-async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, history = [], send, done }){
+async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, history = [], send, done, seedGraphOverride = null }){
   const emitMessage = (text) => { if (text) send({ type: 'message', role: 'assistant', text }); };
   try {
     try { console.info('[ai-args] start', { flowId: String(flowId||''), nodeId: String(nodeId||''), branch: branch ? String(branch) : null, promptLen: (String(prompt||'').length||0), histLen: Array.isArray(history) ? history.length : 0 }); } catch {}
     const { DynamicStructuredTool, ChatOpenAI, createOpenAIToolsAgent, AgentExecutor, ChatPromptTemplate } = await importLC();
-    const tools = await buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send });
+    // Prépare getFlow: seedGraph override ou chargement DB
+    const { Types } = require('mongoose');
+    const Flow = require('../db/models/flow.model');
+    const getFlow = async () => {
+      if (seedGraphOverride && typeof seedGraphOverride === 'object') return seedGraphOverride;
+      let flow = null; const fid = String(flowId || '');
+      if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid).lean();
+      if (!flow) flow = await Flow.findOne({ id: fid }).lean();
+      if (!flow) throw new Error('flow_not_found');
+      return flow.graph || flow;
+    };
+    const tools = await buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send, getFlow });
     try { console.info('[ai-args] tools ready', tools.map(t => t?.name).filter(Boolean)); } catch {}
     const model = new ChatOpenAI({
       temperature: 0,
