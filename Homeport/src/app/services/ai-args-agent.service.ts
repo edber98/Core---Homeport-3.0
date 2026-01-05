@@ -9,6 +9,7 @@ export type ArgsAgentEvent =
   | { type: 'message'; role?: string; text?: string }
   | { type: 'tool.start'; name?: string; args?: any }
   | { type: 'tool.end'; name?: string; ok?: boolean }
+  | { type: 'desc'; text?: string }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' };
 
@@ -31,7 +32,7 @@ export class AiArgsAgentService {
     const stream: SseStream<ArgsAgentEvent> = openSse<ArgsAgentEvent>({
       zone: this.zone,
       url,
-      eventTypes: ['message','tool.start','tool.end','args','patch','error','done'],
+      eventTypes: ['message','tool.start','tool.end','args','desc','patch','error','done'],
       coerce: (raw, fallbackType) => ({ ...(raw || {}), type: (raw?.type || fallbackType) as ArgsAgentEvent['type'] }) as ArgsAgentEvent,
     });
     return stream;

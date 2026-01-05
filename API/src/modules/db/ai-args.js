@@ -39,7 +39,11 @@ module.exports = function(){
           let thr = Types.ObjectId.isValid(threadId) ? await AiChatThread.findById(threadId).lean() : await AiChatThread.findOne({ id: threadId }).lean();
           if (thr) {
             const msgs = await AiChatMessage.find({ threadId: thr._id }).sort({ createdAt: 1 }).lean();
-            history = (msgs || []).map(m => ({ role: m.role || 'user', content: (m.text != null ? String(m.text) : (Array.isArray(m.parts) ? JSON.stringify(m.parts) : '')) }));
+            const total = Array.isArray(msgs) ? msgs.length : 0;
+            // Use a sliding window of the last 50 messages to keep context focused
+            const used = total > 50 ? msgs.slice(total - 50) : (msgs || []);
+            history = (used || []).map(m => ({ role: m.role || 'user', content: (m.text != null ? String(m.text) : (Array.isArray(m.parts) ? JSON.stringify(m.parts) : '')) }));
+            try { console.info('[ai-args][sse] history_window', { total, used: history.length }); } catch {}
           }
         }
       } catch (e) { try { console.warn('[ai-args][history][error]', e?.message || e); } catch {} }

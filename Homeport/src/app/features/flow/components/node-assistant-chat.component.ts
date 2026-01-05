@@ -8,7 +8,7 @@ import { AiConsoleBackendService, AiChatMessage, AiChatThread } from '../../../s
 import { AiWorkflowAgentV2Service, WorkflowAgentV2Event } from '../../../services/ai-workflow-agent-v2.service';
 import { AiArgsAgentService, ArgsAgentEvent } from '../../../services/ai-args-agent.service';
 
-type Msg = AiChatMessage & { pending?: boolean };
+type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc' } };
 
 @Component({
   selector: 'node-assistant-chat',
@@ -32,13 +32,23 @@ type Msg = AiChatMessage & { pending?: boolean };
           <span class="who">{{ m.role==='user' ? 'Vous' : 'Assistant' }}</span>
           <span class="time">· {{ m.createdAt | date:'shortTime' }}</span>
         </div>
+        <div class="actions-row" *ngIf="m.localUndo as undo">
+          <button class="btn small link" (click)="onUndo(undo.kind)"><i class="fa-solid fa-rotate-left"></i> Retour</button>
+        </div>
       </div>
     </div>
     <div class="args-proposal" *ngIf="argsProposal">
-      <div class="desc">Arguments proposés: <span class="mono">{{ (argsProposal && (Object.keys(argsProposal)||[])).join(', ') }}</span></div>
+      <div class="desc">Proposition d'arguments <span class="mono">({{ (argsProposal && (Object.keys(argsProposal)||[])).length || 0 }} clés)</span></div>
       <div class="actions">
-        <button class="btn small" (click)="emitApplyArgs()"><i class="fa-regular fa-check"></i> Aperçu + Appliquer</button>
-        <button class="btn small ghost" (click)="clearArgsProposal()"><i class="fa-regular fa-xmark"></i> Ignorer</button>
+        <button class="btn small" (click)="emitApplyArgs()"><i class="fa-solid fa-eye"></i> Aperçu + Appliquer</button>
+        <button class="btn small ghost" (click)="clearArgsProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
+      </div>
+    </div>
+    <div class="args-proposal" *ngIf="descProposal">
+      <div class="desc">Proposition de description: <span class="mono">{{ (descProposal || '').slice(0, 120) }}{{ (descProposal||'').length>120 ? '…' : '' }}</span></div>
+      <div class="actions">
+        <button class="btn small" (click)="emitApplyDesc()"><i class="fa-solid fa-eye"></i> Aperçu + Appliquer</button>
+        <button class="btn small ghost" (click)="clearDescProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
       </div>
     </div>
     <div class="composer">
@@ -83,6 +93,8 @@ type Msg = AiChatMessage & { pending?: boolean };
     .args-proposal .actions { display:flex; gap:8px; }
     .btn.small { appearance:none; border:1px solid #e5e7eb; background:#fff; color:#111; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; }
     .btn.small.ghost { background:#fafafa; }
+    .btn.small.link { background:transparent; border-color:transparent; color:#2563eb; padding: 0 6px; }
+    .actions-row { display:flex; gap:8px; justify-content:flex-end; margin-top: -2px; }
   `]
 })
 export class NodeAssistantChatComponent implements OnInit {
@@ -94,11 +106,15 @@ export class NodeAssistantChatComponent implements OnInit {
   @Output() threadLinked = new EventEmitter<{ threadId: string; type: string }>();
   @Output() argsProposed = new EventEmitter<any>();
   @Output() applyArgs = new EventEmitter<any>();
+  @Output() applyDesc = new EventEmitter<string>();
+  @Output() undoArgsRequested = new EventEmitter<void>();
+  @Output() undoDescRequested = new EventEmitter<void>();
 
   messages: Msg[] = [];
   prompt = '';
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
   argsProposal: any = null;
+  descProposal: string | null = null;
   // Expose global Object in template for Object.keys usage
   Object = Object;
 
@@ -158,7 +174,54 @@ export class NodeAssistantChatComponent implements OnInit {
     try { const el = this.promptEl?.nativeElement; if (!el) return; el.style.height = '0px'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; } catch {}
   }
   clearArgsProposal(){ this.argsProposal = null; try { this.cdr.detectChanges(); } catch {} }
-  emitApplyArgs(){ if (!this.argsProposal) return; this.applyArgs.emit(this.argsProposal); }
+  emitApplyArgs(){
+    if (!this.argsProposal) return;
+    const v = this.argsProposal;
+    this.argsProposal = null;
+    try { this.cdr.detectChanges(); } catch {}
+    // Append chat message locally and persist
+    const tid = this.threadId || '';
+    const msg: Msg = { id: `${tid}-${Date.now().toString(36)}-apply-args`, threadId: tid, role: 'user', text: 'Arguments: proposition appliquée.', createdAt: Date.now() } as any;
+    (msg as any).localUndo = { kind: 'args' };
+    this.messages = [...this.messages, msg];
+    try { this.cdr.detectChanges(); } catch {}
+    try { if (tid) this.api.appendMessage(tid, { threadId: tid, role: 'user', text: msg.text } as any).subscribe(()=>{}); } catch {}
+    this.applyArgs.emit(v);
+  }
+  clearDescProposal(){ this.descProposal = null; try { this.cdr.detectChanges(); } catch {} }
+  private normalizeDesc(input: any): string {
+    try {
+      if (typeof input === 'string') return input;
+      if (input && typeof input === 'object') {
+        const v = (input as any).description ?? (input as any).text;
+        return typeof v === 'string' ? v : JSON.stringify(input);
+      }
+      return '';
+    } catch { return ''; }
+  }
+  emitApplyDesc(){
+    if (!this.descProposal) return;
+    const t = this.normalizeDesc(this.descProposal);
+    this.descProposal = null;
+    try { this.cdr.detectChanges(); } catch {}
+    // Append chat message locally and persist
+    const tid = this.threadId || '';
+    const msg: Msg = { id: `${tid}-${Date.now().toString(36)}-apply-desc`, threadId: tid, role: 'user', text: 'Description: proposition appliquée.', createdAt: Date.now() } as any;
+    (msg as any).localUndo = { kind: 'desc' };
+    this.messages = [...this.messages, msg];
+    try { this.cdr.detectChanges(); } catch {}
+    try { if (tid) this.api.appendMessage(tid, { threadId: tid, role: 'user', text: msg.text } as any).subscribe(()=>{}); } catch {}
+    this.applyDesc.emit(t);
+  }
+  onUndo(kind: string){
+    const tid = this.threadId || '';
+    const text = kind === 'args' ? 'Chargement annulé (arguments).' : 'Chargement annulé (description).';
+    const msg: Msg = { id: `${tid}-${Date.now().toString(36)}-undo-${kind}`, threadId: tid, role: 'user', text, createdAt: Date.now() } as any;
+    this.messages = [...this.messages, msg];
+    try { this.cdr.detectChanges(); } catch {}
+    try { if (tid) this.api.appendMessage(tid, { threadId: tid, role: 'user', text } as any).subscribe(()=>{}); } catch {}
+    if (kind === 'args') this.undoArgsRequested.emit(); else this.undoDescRequested.emit();
+  }
   send() {
     const tid = this.threadId; const txt = (this.prompt || '').trim(); if (!tid || !txt) return;
     const now = Date.now();
@@ -217,19 +280,10 @@ export class NodeAssistantChatComponent implements OnInit {
             } catch {}
           }
           if (ev.type === 'args' && ev.args) {
-            // Summarize proposed args in a compact assistant message
-            try {
-              const keys = Object.keys(ev.args || {});
-              const summary = `Arguments proposés: ${keys.join(', ')}`;
-              const tmp: Msg = { id: `${tid}-assistant-args-${Date.now().toString(36)}`, threadId: tid, role: 'assistant', text: summary, createdAt: Date.now(), pending: false } as any;
-              const others = this.messages.filter(x => !x.pending);
-              this.messages = [...others, tmp];
-              this.cdr.detectChanges();
-              // Persist assistant message
-              this.api.appendMessage(tid, { threadId: tid, role: 'assistant', text: summary } as any).subscribe(() => {});
-              this.argsProposal = ev.args;
-              this.argsProposed.emit(ev.args);
-            } catch {}
+            try { this.argsProposal = ev.args; this.argsProposed.emit(ev.args); this.cdr.detectChanges(); } catch {}
+          }
+          if (ev.type === 'desc') {
+            try { this.descProposal = this.normalizeDesc((ev as any).text); this.cdr.detectChanges(); } catch {}
           }
           if (ev.type === 'done' || ev.type === 'error') {
             const parts = assistantParts.slice();

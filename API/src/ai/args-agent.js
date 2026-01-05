@@ -21,12 +21,14 @@ function escapeForLangChain(text){
 
 function systemPromptBase(){
   const raw = [
-    'Tu es un assistant spécialisé pour compléter les arguments (context) d’un nœud dans Homeport.',
-    "Utilise UNIQUEMENT les tools fournis pour: 1) récupérer le schéma, 2) lister les nœuds précédents (noms, descriptions), 3) récupérer les scénarios simulés (msgIn).",
-    "Objectif: produire des valeurs concrètes et cohérentes pour les champs du schéma en te basant sur les descriptions des champs, du nœud, des nœuds précédents et le msgIn du scénario.",
+    'Tu es un assistant spécialisé pour PROPOSER les arguments (context) d’un nœud et une description courte du nœud dans Homeport.',
+    "Utilise UNIQUEMENT les tools fournis pour: 1) récupérer le schéma, 2) lister les nœuds précédents (noms, descriptions), 3) récupérer les scénarios simulés (msgIn), 4) émettre tes propositions via les tools (pas dans le message).",
+    "Objectif: produire des valeurs concrètes et cohérentes pour les champs du schéma en te basant sur les descriptions des champs, du nœud, des nœuds précédents et le msgIn du scénario; et PROPOSER une description claire et concise du nœud (1–2 phrases) qui reflète ce qu’il fait.",
     "Contraintes: réponds en français; ne change PAS la structure du schéma; n’affiche PAS de listes exhaustives (schéma, nœuds, scénarios) dans le message; n’écho PAS le contexte brut.",
-    "Pose une question UNIQUEMENT si une information est réellement ambigüe, et limite-toi à UNE question courte; sinon, propose directement les valeurs.",
-    "Garde des réponses courtes et utiles (1–3 phrases), sans répéter le contexte.",
+    "SI TU AS ASSEZ D’INFORMATIONS: tu DOIS appeler set_node_args (avec les champs pertinents seulement) ET set_node_description (1–2 phrases). N’écris PAS les valeurs dans ton message; utilise les tools.",
+    "SI UNE INFORMATION MANQUE: pose UNE question courte et précise, sinon propose directement via les tools.",
+    "Important: ne dis jamais que la configuration est appliquée. Dans tes messages, écris seulement: 'Proposition prête à être appliquée.' (ou pose ta question si nécessaire).",
+    "Garde les messages très courts (max 1 phrase) et utiles.",
   ].join('\n');
   return escapeForLangChain(raw);
 }
@@ -144,6 +146,23 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
         try {
           const args = (input && typeof input === 'object') ? input : {};
           send({ type: 'args', args });
+          return 'ok';
+        } catch (e) { return 'error'; }
+      }
+    }),
+    new DynamicStructuredTool({
+      name: 'set_node_description',
+      description: 'Propose une description courte et précise du nœud (1–2 phrases).',
+      schema: {},
+      func: async (input) => {
+        try {
+          let text = '';
+          try {
+            if (typeof input === 'string') text = input;
+            else if (input && typeof input === 'object') text = String(input.description ?? input.text ?? '');
+            else text = '';
+          } catch { text = ''; }
+          send({ type: 'desc', text });
           return 'ok';
         } catch (e) { return 'error'; }
       }

@@ -9,6 +9,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { AiConsoleBackendService } from '../../../services/ai-console-backend.service';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc, FormSummary, FormDoc } from '../../../services/catalog.service';
 import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
@@ -195,7 +196,10 @@ import { NodeAssistantChatComponent } from '../components/node-assistant-chat.co
               [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id"
               [threadId]="model?.aiChatThreadId || null" [branch]="(simScenarios && simScenarios[simSelectedIndex]?.match?.handleId) || null"
               (threadLinked)="onNodeAssistantLinked($event)"
-              (applyArgs)="onAssistantApplyArgs($event)"></node-assistant-chat>
+              (applyArgs)="onAssistantApplyArgs($event)"
+              (applyDesc)="onAssistantApplyDesc($event)"
+              (undoArgsRequested)="undoApplyArgs()"
+              (undoDescRequested)="undoApplyDesc()"></node-assistant-chat>
           </div>
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
@@ -323,7 +327,7 @@ export class FlowAdvancedCenterPanelComponent {
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService, private aiChat: AiConsoleBackendService) {}
 
   // Credentials state
   credVisible = false;
@@ -433,17 +437,67 @@ export class FlowAdvancedCenterPanelComponent {
       try { this.cdr.detectChanges(); } catch {}
     } catch {}
   }
+  lastAppliedArgs?: { prev: any; next: any };
+  lastAppliedDesc?: { prev: string|null; next: string };
+
   onAssistantApplyArgs(args: any) {
     try {
       const ok = window.confirm('Appliquer ces arguments au nœud ?');
       if (!ok) return;
       const v = args && typeof args === 'object' ? JSON.parse(JSON.stringify(args)) : {};
+      const prev = (this.model?.context && typeof this.model.context === 'object') ? JSON.parse(JSON.stringify(this.model.context)) : {};
+      this.lastAppliedArgs = { prev, next: v };
       const m = { ...this.model, context: v };
       this.model = m;
       this.modelChange.emit(m);
       this.committed.emit(m);
       try { this.msg.success('Arguments appliqués'); } catch {}
       try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  undoApplyArgs() {
+    try {
+      const last = this.lastAppliedArgs; if (!last) return;
+      const m = { ...this.model, context: JSON.parse(JSON.stringify(last.prev || {})) };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      this.lastAppliedArgs = undefined;
+      try { this.msg.info('Chargement annulé (arguments)'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  onAssistantApplyDesc(text: string) {
+    try {
+      const ok = window.confirm('Appliquer cette description au nœud ?');
+      if (!ok) return;
+      const prev = String(this.model?.description || '') || '';
+      this.lastAppliedDesc = { prev, next: text };
+      const m = { ...this.model, description: text } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Description appliquée'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  undoApplyDesc() {
+    try {
+      const last = this.lastAppliedDesc; if (!last) return;
+      const m = { ...this.model, description: last.prev || '' } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      this.lastAppliedDesc = undefined;
+      try { this.msg.info('Chargement annulé (description)'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
     } catch {}
   }
   copyFormUrl() { try { const url = this.formUrl || ''; if (!url) return; (window.navigator as any)?.clipboard?.writeText?.(url); } catch {} }
