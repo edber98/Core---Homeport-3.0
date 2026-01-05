@@ -91,6 +91,18 @@ import { FormsModule } from '@angular/forms';
                   </div>
                 </div>
               </div>
+              <!-- Description (node-level, above credentials) -->
+              <div class="desc-box">
+                <div class="title-row">
+                  <div class="title">Description</div>
+                </div>
+                <textarea nz-input class="desc-text"
+                          [ngModel]="model?.description || ''"
+                          (ngModelChange)="onDescChange($event)"
+                          rows="3"
+                          placeholder="Décrire ce nœud (but, détails)…"></textarea>
+              </div>
+
               <!-- Credentials selection (above form) -->
               <div class="cred-box" *ngIf="credVisible">
                 <div class="title-row">
@@ -212,6 +224,11 @@ import { FormsModule } from '@angular/forms';
     .cred-box .control-row .cred-select { flex: 1 1 auto; min-width: 0; }
     .cred-add-btn { display:inline-flex; align-items:center; justify-content:center; height: 32px; padding: 0 12px; border-radius: 6px; }
     .apple-btn.icon-only .label { display: none; }
+    /* Description section (node-level) */
+    .desc-box { border:0; border-radius:0; padding:6px 0 10px; margin: 4px 0 8px; background:transparent; }
+    .desc-box .title-row { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; }
+    .desc-box .title-row .title { font-weight:600; font-size:13px; color:#111; }
+    .desc-box .desc-text { width:100%; min-height: 64px; resize: vertical; }
     .start-form-import { margin-top: 10px; padding: 8px 10px; border: 1px dashed #e5e7eb; border-radius: 10px; background: #fafafa; display:flex; flex-direction:column; gap:6px; }
     .start-form-import .row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
     .start-form-import .label { font-weight:600; font-size:12px; color:#111; }
@@ -258,7 +275,7 @@ export class FlowAdvancedCenterPanelComponent {
   @Output() modelChange = new EventEmitter<any>();
   @Output() submitted = new EventEmitter<any>();
   @Output() committed = new EventEmitter<any>();
-  // Derived schema from template
+  // Derived schema from template (unchanged)
   get schema() { return this.model?.templateObj?.args || null; }
   private formPast: any[] = [];
   private formFuture: any[] = [];
@@ -496,6 +513,15 @@ export class FlowAdvancedCenterPanelComponent {
   onCredChange(id: string | null) {
     try {
       const m = { ...this.model, credentialId: id || null };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
+  onDescChange(text: string) {
+    try {
+      const m = { ...this.model, description: text };
       this.model = m;
       this.modelChange.emit(m);
       this.committed.emit(m);

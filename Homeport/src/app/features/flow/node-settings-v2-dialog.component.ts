@@ -112,8 +112,10 @@ import { FormsModule } from '@angular/forms';
     .title { font-weight: 600; }
     .close { margin-left:auto; border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(480px, 1.2fr) 1fr; gap: 12px; padding: 0; overflow:hidden; }
-    .col { min-height:0; overflow-y:auto; overflow-x:hidden; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
-    .col.center {}
+    .col { min-height:0; overflow-y:auto; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
+    .col.left, .col.right { overflow-x: auto; }
+   
+    /* center: pas d'overflow horizontal (visible par défaut) */
     .section-title { display:none; }
     .top-bar { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:nowrap; white-space:nowrap; padding: 12px 8px 0 8px; }
     /* Input (col gauche): padding-left plus grand */
