@@ -124,8 +124,27 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         } catch {}
       }
       if (!captured && ev && ev.type === 'node.started' && String(ev.nodeId || '') === String(targetNodeId)) {
-        captured = { msgIn: ev.msgIn || null };
-        try { console.log('[simulate:engine] captured target node.msgIn', { nodeId: ev.nodeId, payloadType: typeof (ev.msgIn?.payload), keys: ev.msgIn ? Object.keys(ev.msgIn||{}) : [] }); } catch {}
+        // Capturer le msgIn fourni par le moteur
+        let msgIn = ev.msgIn || null;
+        try {
+          // Si la dernière arête vers la cible provient d'une condition, refléter le 'chosen' dans payload
+          const incoming = takenEdges.filter(e => String(e.targetId) === String(targetNodeId));
+          const last = incoming[incoming.length - 1] || null;
+          if (last) {
+            const src = nodeById.get(String(last.sourceId));
+            const kind = String(src?.data?.model?.templateObj?.type || src?.data?.model?.nodeKind || '').toLowerCase();
+            if (kind === 'condition') {
+              const chosen = String(last.sourceHandle || '');
+              try {
+                if (!msgIn || typeof msgIn !== 'object') msgIn = {};
+                msgIn.payload = { chosen };
+              } catch {}
+              try { console.log('[simulate:engine] payload.injected_from_condition', { sourceId: last.sourceId, chosen }); } catch {}
+            }
+          }
+        } catch {}
+        captured = { msgIn };
+        try { console.log('[simulate:engine] captured target node.msgIn', { nodeId: ev.nodeId, payloadType: typeof (msgIn?.payload), keys: msgIn ? Object.keys(msgIn||{}) : [] }); } catch {}
         stop = true;
       }
     }, { shouldCancel: () => stop, forceBranches });

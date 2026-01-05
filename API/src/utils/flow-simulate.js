@@ -194,7 +194,8 @@ function simulateMsgForScenario(targetId, choice, graph) {
         const resultObj = { chosen: chosenHandle || null };
         msg[from] = resultObj;
         try { msg._nodes[from] = { simulated: true, kind: 'condition', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
-        // Do not change payload for conditions (engine keeps payload unchanged)
+        // Aligner sur le comportement des nœuds classiques: ne définir payload que si aucun payload n'a encore été fixé
+        try { if (!payloadSet) { msg.payload = resultObj; payloadSet = true; } } catch {}
       } else if (kind === 'loop') {
         schema = getHandleSchema(node.model, edge.sourceHandle || '');
         sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
