@@ -165,6 +165,15 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           this.messages = [...others, tmp];
           try { this.cdr.detectChanges(); } catch {}
         }
+        if (ev.type === 'await_user') {
+          const q = (ev as any).question || '';
+          const reason = (ev as any).reason ? ` [${(ev as any).reason}]` : '';
+          appendText(`\n${q || 'L’agent a besoin de précisions.'}${reason}`);
+          const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+          const others = this.messages.filter(x => !x.pending);
+          this.messages = [...others, tmp];
+          try { this.cdr.detectChanges(); } catch {}
+        }
         if (ev.type === 'final' && (ev as any).graph) {
           const parts = assistantParts.slice(); assistantParts = [];
           const others = this.messages.filter(x => !x.pending);

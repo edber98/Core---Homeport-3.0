@@ -188,6 +188,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
             lastScenario = arr[0] || null;
           }
           const msg = lastScenario?.msgIn || {};
+          console.log("msgggg",msg)
           // Heuristique: privilégier les champs du start_form si accessibles; sinon payload + racine
           const pairs = [];
           const pushPair = (k, v) => {
@@ -254,7 +255,19 @@ function normalizeHistory(h) {
 }
 
 async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, history = [], send, done, seedGraphOverride = null }){
-  const emitMessage = (text) => { if (text) send({ type: 'message', role: 'assistant', text }); };
+  // Track whether concrete proposals were produced; otherwise, signal clarification
+  let proposedArgs = false;
+  let proposedDesc = false;
+  let lastAssistantText = '';
+  const localSend = (obj) => {
+    try {
+      if (obj && obj.type === 'args') proposedArgs = true;
+      if (obj && obj.type === 'desc') proposedDesc = true;
+      if (obj && obj.type === 'message' && obj.text) lastAssistantText = String(obj.text || '').trim();
+    } catch {}
+    try { send(obj); } catch {}
+  };
+  const emitMessage = (text) => { if (text) localSend({ type: 'message', role: 'assistant', text }); };
   try {
     try { console.info('[ai-args] start', { flowId: String(flowId||''), nodeId: String(nodeId||''), branch: branch ? String(branch) : null, promptLen: (String(prompt||'').length||0), histLen: Array.isArray(history) ? history.length : 0 }); } catch {}
     const { DynamicStructuredTool, ChatOpenAI, createOpenAIToolsAgent, AgentExecutor, ChatPromptTemplate } = await importLC();
@@ -269,7 +282,7 @@ async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, hi
       if (!flow) throw new Error('flow_not_found');
       return flow.graph || flow;
     };
-    const tools = await buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send, getFlow });
+    const tools = await buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send: localSend, getFlow });
     try { console.info('[ai-args] tools ready', tools.map(t => t?.name).filter(Boolean)); } catch {}
     const model = new ChatOpenAI({
       temperature: 0,
@@ -297,18 +310,25 @@ async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, hi
         } else if (ev.event === 'on_tool_start') {
           const args = ev.data?.input?.input || {};
           try { console.info('[ai-args][tool] start', ev.name, { hasArgs: !!args, keys: args ? Object.keys(args) : [] }); } catch {}
-          send({ type: 'tool.start', name: ev.name, args });
+          localSend({ type: 'tool.start', name: ev.name, args });
         } else if (ev.event === 'on_tool_end') {
           try { console.info('[ai-args][tool] end', ev.name); } catch {}
-          send({ type: 'tool.end', name: ev.name, ok: true });
+          localSend({ type: 'tool.end', name: ev.name, ok: true });
         } else if (ev.event === 'on_chain_error' || ev.event === 'on_tool_error' || ev.event === 'on_chat_model_error') {
           const emsg = ev?.data?.error?.message || ev?.data?.error || 'stream_error';
           try { console.error('[ai-args][stream][error]', emsg); } catch {}
-          send({ type: 'error', code: 'llm_stream_error', message: String(emsg) });
+          localSend({ type: 'error', code: 'llm_stream_error', message: String(emsg) });
         }
       } catch {}
     }
     try { console.info('[ai-args] done'); } catch {}
+    // If nothing was proposed, signal that the agent awaits user clarification
+    try {
+      if (!proposedArgs && !proposedDesc) {
+        const question = (lastAssistantText || '').trim();
+        localSend({ type: 'await_user', question });
+      }
+    } catch {}
     done();
   } catch (e) {
     const msg = e?.message || String(e);

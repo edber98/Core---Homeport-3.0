@@ -123,6 +123,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
 
     const tools = [];
     let emittedFinal = false;
+    let awaitUserInput = false;
     let pendingArgs = null;
     let pendingDesc = '';
     tools.push(new DynamicStructuredTool({
@@ -239,6 +240,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
               if (obj?.type === 'tool.start') { send({ ...obj, type:'tool.start', name: `nodeargs.${obj.name}` }); return; }
               if (obj?.type === 'tool.end') { send({ ...obj, type:'tool.end', name: `nodeargs.${obj.name}` }); return; }
               if (obj?.type === 'done') { send({ type:'tool.end', name:'nodeargs.session', ok:true }); return; }
+              if (obj?.type === 'await_user') { awaitUserInput = true; send({ type:'await_user', question: obj?.question || '' }); return; }
               else if (obj?.type === 'args') { pendingArgs = obj.args || {}; send(obj); }
               else if (obj?.type === 'desc') { pendingDesc = obj.text || ''; send(obj); }
               else if (obj?.type) send(obj);
@@ -268,6 +270,11 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
       schema: {},
       func: async (input) => {
         try {
+          if (awaitUserInput) {
+            try { console.info('[ai-create-node][emit_graph] blocked: awaiting user clarification'); } catch {}
+            try { send({ type: 'await_user', reason: 'args_clarification_needed' }); } catch {}
+            return 'await_user';
+          }
           if (emittedFinal) return 'already_emitted';
           const tplKey = String(input?.templateKey || input?.template || '');
           if (!tplKey) return 'missing_template';

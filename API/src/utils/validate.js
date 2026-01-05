@@ -11,7 +11,21 @@ function normalizeNodeKind(nameOrType=''){
   if (s==='flow') return 'flow';
   return '';
 }
-function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
+function normalizeTemplateKey(k){
+  if (!k) return '';
+  let s = String(k).trim();
+  // Drop common prefixes
+  s = s.replace(/^tmpl_/i,'').replace(/^template_/i,'').replace(/^fn_/i,'').replace(/^node_/i,'');
+  // Convert camelCase/PascalCase to snake_case: "openaiChatCompletion" -> "openai_Chat_Completion" (then lowercased)
+  s = s.replace(/([a-z0-9])([A-Z])/g, '$1_$2');
+  // Replace non-alphanum with underscores
+  s = s.replace(/[^A-Za-z0-9_]+/g, '_');
+  // Lowercase and collapse multiple underscores
+  s = s.toLowerCase().replace(/_+/g, '_');
+  // Trim edge underscores
+  s = s.replace(/^_+|_+$/g, '');
+  return s;
+}
 
 function get(obj, path, def){
   try {

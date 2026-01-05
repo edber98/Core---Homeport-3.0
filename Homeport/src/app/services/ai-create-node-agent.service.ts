@@ -13,6 +13,7 @@ export type CreateNodeEvent =
   | { type: 'desc'; text?: string }
   | { type: 'snapshot'; graph: any }
   | { type: 'final'; graph: any }
+  | { type: 'await_user'; question?: string; reason?: string }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' };
 
@@ -49,7 +50,7 @@ export class AiCreateNodeAgentService {
     const stream: SseStream<CreateNodeEvent> = openSse<CreateNodeEvent>({
       zone: this.zone,
       url,
-      eventTypes: ['message','tool.start','tool.end','args','desc','snapshot','final','error','done'],
+      eventTypes: ['message','tool.start','tool.end','args','desc','snapshot','final','await_user','error','done'],
       coerce: (raw, fallbackType) => ({ ...(raw || {}), type: (raw?.type || fallbackType) as CreateNodeEvent['type'] }) as CreateNodeEvent,
     });
     return stream;
