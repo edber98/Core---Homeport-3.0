@@ -14,11 +14,12 @@ import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { NodeAssistantChatComponent } from '../components/node-assistant-chat.component';
 
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzInputModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzInputModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent, NodeAssistantChatComponent],
   template: `
     <div class="card" [class.panel-card]="bare">
       <div class="tabs">
@@ -129,6 +130,7 @@ import { FormsModule } from '@angular/forms';
                   [schema]="s"
                   [value]="model?.context || {}"
                   [ctx]="ctx"
+                  [hideActions]="true"
                   (valueChange)="onValue($event)"
                   (valueCommitted)="onValueCommitted($event)"
                   (validChange)="onValid($event)"
@@ -185,6 +187,12 @@ import { FormsModule } from '@angular/forms';
               </div>
             </div>
             <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Assistant AI">
+          <div class="settings-pane" style="padding:0;">
+            <node-assistant-chat [flowId]="flowId || null" [nodeId]="model?.id" [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id" [threadId]="model?.aiChatThreadId || null"
+              (threadLinked)="onNodeAssistantLinked($event)"></node-assistant-chat>
           </div>
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
@@ -696,6 +704,17 @@ export class FlowAdvancedCenterPanelComponent {
       this.model = m;
       this.modelChange.emit(m);
       this.committed.emit(m);
+    } catch {}
+  }
+
+  // Link callback from Assistant AI tab
+  onNodeAssistantLinked(ev: { threadId: string|null; type?: string } | null) {
+    try {
+      if (!ev || !ev.threadId) return;
+      const patch: any = { aiChatThreadId: ev.threadId };
+      if (ev.type) patch.aiChatType = ev.type;
+      this.patchModel(patch);
+      try { this.committed.emit(this.model); } catch {}
     } catch {}
   }
 }

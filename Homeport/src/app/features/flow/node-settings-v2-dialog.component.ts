@@ -113,6 +113,8 @@ import { FormsModule } from '@angular/forms';
     .close { margin-left:auto; border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(480px, 1.2fr) 1fr; gap: 12px; padding: 0; overflow:hidden; }
     .col { min-height:0; overflow-y:auto; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
+    .col.center { overflow: hidden; display:flex; flex-direction:column; min-height:0; }
+    .col.center > flow-advanced-center-panel { flex: 1 1 auto; min-height: 0; display:block; }
     .col.left, .col.right { overflow-x: auto; }
    
     /* center: pas d'overflow horizontal (visible par défaut) */

@@ -33,6 +33,7 @@ import { LayoutBackendService } from '../../services/layout-backend.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
+import { AiConsoleBackendService } from '../../services/ai-console-backend.service';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { SpotlightAddNodeComponent } from './components/spotlight-add-node.component';
 import { environment } from '../../../environments/environment';
@@ -142,10 +143,25 @@ export class FlowBuilderComponent {
   removingNodes = new Set<string>();
   removingLiteNodes = new Set<string>();
   private pendingRemoveTimers: Record<string, any> = {};
+  
+
   private scheduleRemove(ids: Set<string>, reason: string = 'nodes.removed') {
     try {
       const toRemove = Array.from(ids).filter(id => !!id);
       if (!toRemove.length) return;
+      // Best-effort: delete linked AI chats for nodes being removed
+      try {
+        const fid = this.currentFlowId || '';
+        if (fid) {
+          for (const id of toRemove) {
+            const n = this.nodes.find(nn => String(nn.id) === String(id));
+            const threadId = n?.data?.model?.aiChatThreadId || null;
+            if (threadId) {
+              this.aiChats.deleteChat(fid, String(threadId)).subscribe({ next: () => {}, error: () => {} });
+            }
+          }
+        }
+      } catch {}
       toRemove.forEach(id => {
         const key = String(id);
         if (this.isIOSSafari) this.removingLiteNodes.add(key); else this.removingNodes.add(key);
@@ -546,6 +562,7 @@ export class FlowBuilderComponent {
     private router: Router,
     private pathSvc: FlowPathHighlightService,
     private layoutApi: LayoutBackendService,
+    private aiChats: AiConsoleBackendService,
   ) { }
   isMobile = false;
   // Phones (<=768px wide). Tablets (coarse pointer but wider) are treated as non-phone.
