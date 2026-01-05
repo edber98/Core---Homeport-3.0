@@ -45,7 +45,16 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     const nodeById = new Map((graph.nodes||[]).map(n => [String(n.id), n]));
     const source = nodeById.get(String(sourceId));
     const sourceModel = source?.data?.model || {};
-    const sourceTpl = sourceModel?.templateObj || {};
+    let sourceTpl = sourceModel?.templateObj || {};
+    try {
+      if (!sourceTpl || Object.keys(sourceTpl).length === 0) {
+        const tplId = sourceModel?.template || null;
+        if (tplId) {
+          const found = await NodeTemplate.findById(tplId).lean();
+          if (found) sourceTpl = found;
+        }
+      }
+    } catch {}
 
     const tools = [];
     tools.push(new DynamicStructuredTool({
@@ -60,7 +69,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     }));
     tools.push(new DynamicStructuredTool({
       name: 'get_source_info',
-      description: "Retourne les infos de la source (id, template type, handle choisi, label d'edge).",
+      description: "Retourne les infos de la source (id, template type, handle choisi).",
       schema: {},
       func: async () => {
         const handle = String(sourceHandle || 'ok');
@@ -109,7 +118,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     const agent = await createOpenAIToolsAgent({ llm: model, tools, prompt: promptT });
     const executor = new AgentExecutor({ agent, tools });
     const inputText = String(prompt||'').trim();
-    try { send({ type: 'message', role: 'assistant', text: 'Démarrage de l'assistant de création…' }); } catch {}
+    try { send({ type: 'message', role: 'assistant', text: "Démarrage de l'assistant de création…" }); } catch {}
     const stream = await executor.streamEvents({ input: inputText, chat_history: Array.isArray(history)? history: [] }, { version: 'v2' });
     for await (const ev of stream) {
       try {
@@ -129,4 +138,3 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
 }
 
 module.exports = { runCreateNodeAgent };
-

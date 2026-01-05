@@ -1759,7 +1759,36 @@ export class FlowBuilderComponent {
     } catch { this.addNodeAiMode = true; this.addNodeVisible = true; }
   }
   onCloseAiMode() { this.closeAddNodeModalWithCleanup(); }
-  buildSeedGraphForAi(): any { try { const nodes = (this.nodes || []).map(n => ({ id: String(n.id), type: String(n.type||'html-template'), point: { x: n.point?.x||0, y: n.point?.y||0 }, data: n.data })); const edges = (this.edges || []).map((e:any) => ({ id: String(e.id||''), type: e.type, source: String(e.source), target: String(e.target), sourceHandle: String((e as any).sourceHandle || ''), targetHandle: String((e as any).targetHandle || '') })); return { nodes, edges }; } catch { return { nodes: [], edges: [] }; } }
+  buildSeedGraphForAi(): any {
+    try {
+      // Minify payload for SSE URL: strip heavy templateObj and runtime props
+      const nodes = (this.nodes || []).map(n => {
+        const m: any = (n as any)?.data?.model || {};
+        const minimalModel: any = {
+          id: String(m?.id || n.id || ''),
+          name: m?.name || undefined,
+          template: m?.template || (m?.templateObj?.id) || undefined,
+          // Only pass lightweight context; omit description and templateObj
+          context: m?.context || undefined,
+        };
+        return {
+          id: String(n.id),
+          type: String((n as any).type || 'html-template'),
+          point: { x: (n as any).point?.x || 0, y: (n as any).point?.y || 0 },
+          data: { model: minimalModel }
+        } as any;
+      });
+      const edges = (this.edges || []).map((e:any) => ({
+        id: String(e.id || ''),
+        type: e.type,
+        source: String(e.source),
+        target: String(e.target),
+        sourceHandle: String((e as any).sourceHandle || ''),
+        targetHandle: String((e as any).targetHandle || '')
+      }));
+      return { nodes, edges };
+    } catch { return { nodes: [], edges: [] }; }
+  }
   onAiNodeGraphGenerated(graph: any) {
     try {
       const seed = this.buildSeedGraphForAi();

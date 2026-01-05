@@ -5,6 +5,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
 import { AiCreateNodeAgentService, CreateNodeEvent } from '../../../services/ai-create-node-agent.service';
+import { AiConsoleBackendService } from '../../../services/ai-console-backend.service';
 
 type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[]; createdAt: number; pending?: boolean };
 
@@ -82,16 +83,29 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
   prompt = '';
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
 
-  constructor(private creator: AiCreateNodeAgentService, private cdr: ChangeDetectorRef) {}
+  constructor(private creator: AiCreateNodeAgentService, private chats: AiConsoleBackendService, private cdr: ChangeDetectorRef) {}
   private autoSent = false;
   ngOnInit(): void { /* inputs set before init in most cases */ }
   ngAfterViewInit(): void { this.tryAutoSend(); }
-  ngOnChanges(changes: SimpleChanges): void { if ('initialPrompt' in changes) this.tryAutoSend(); }
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('initialPrompt' in changes || 'threadId' in changes) this.tryAutoSend();
+  }
   private tryAutoSend(){
     try {
       if (this.autoSent) return;
       const p = (this.initialPrompt || '').trim();
-      if (p) { this.autoSent = true; this.sendPrompt(p); }
+      if (!p) return;
+      // If thread is still being created asynchronously, wait a short moment then send
+      const ready = !!(this.seedGraph && this.sourceId);
+      if (!ready || !this.threadId) {
+        try { console.log('[spotlight-creation] delaying auto-send', { hasPrompt: !!p, hasSeed: !!this.seedGraph, sourceId: this.sourceId, hasThread: !!this.threadId }); } catch {}
+        setTimeout(() => {
+          if (this.autoSent) return;
+          this.autoSent = true; this.sendPrompt(p);
+        }, 250);
+        return;
+      }
+      this.autoSent = true; this.sendPrompt(p);
     } catch {}
   }
 
@@ -103,6 +117,9 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
     const now = Date.now();
     this.messages = [...this.messages, { id: `u-${now}`, role:'user', text: txt, createdAt: now }];
     try { this.cdr.detectChanges(); } catch {}
+    // Persist user message into the temporary thread when available
+    try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'user', text: txt } as any).subscribe(()=>{}); } catch {}
+    try { console.log('[spotlight-creation] send stream', { hasSeed: !!this.seedGraph, sourceId: this.sourceId, sourceHandle: this.sourceHandle, threadId: this.threadId, flowId: this.flowId }); } catch {}
     const stream = this.creator.stream({ prompt: txt, seedGraph: this.seedGraph, sourceId: this.sourceId, sourceHandle: this.sourceHandle || undefined, threadId: this.threadId || undefined, flowId: this.flowId || undefined });
     let assistantParts: any[] = [];
     const appendText = (t: string) => {
@@ -113,6 +130,16 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
     const sub = stream.events$.subscribe({
       next: (ev: CreateNodeEvent) => {
         if (!ev) return;
+        if (ev.type === 'error') {
+          const parts = assistantParts.slice();
+          assistantParts = [];
+          const others = this.messages.filter(x => !x.pending);
+          const msg = `Erreur: ${((ev as any).message || (ev as any).code || 'échec')}\n`;
+          this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts: [{ kind:'text', text: msg }], createdAt: Date.now() }];
+          try { this.cdr.detectChanges(); } catch {}
+          try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts: [{ kind:'text', text: msg }] } as any).subscribe(()=>{}); } catch {}
+          return;
+        }
         if (ev.type === 'message' && ev.text) {
           const lines = String(ev.text).split(/\r?\n/);
           for (const line of lines) {
@@ -144,7 +171,19 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           const others = this.messages.filter(x => !x.pending);
           this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts, createdAt: Date.now() }];
           try { this.cdr.detectChanges(); } catch {}
+          try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(()=>{}); } catch {}
           this.graphGenerated.emit((ev as any).graph);
+        }
+        if (ev.type === 'done') {
+          // If no final graph was emitted, still persist the assistant preview as a message
+          const hasPreview = assistantParts.length > 0;
+          const parts = assistantParts.slice(); assistantParts = [];
+          if (hasPreview) {
+            const others = this.messages.filter(x => !x.pending);
+            this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts, createdAt: Date.now() }];
+            try { this.cdr.detectChanges(); } catch {}
+            try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(()=>{}); } catch {}
+          }
         }
       },
       error: () => { try { sub.unsubscribe(); } catch {} },

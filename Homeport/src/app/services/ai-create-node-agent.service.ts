@@ -43,7 +43,9 @@ export class AiCreateNodeAgentService {
     if (params.seedGraph && typeof params.seedGraph === 'object') {
       try { const json = JSON.stringify(params.seedGraph); const b64 = btoa(unescape(encodeURIComponent(json))); q.set('seed', b64); } catch {}
     }
-    const url = `${environment.apiBaseUrl}/api/ai/create-node/stream?${q.toString()}`;
+    // Prefer alias path to avoid potential blockers on "create-node"
+    const url = `${environment.apiBaseUrl}/api/ai/node-create/stream?${q.toString()}`;
+    try { console.log('[ai-create-node][frontend] open SSE', { url, hasPrompt: !!params.prompt, hasSeed: !!params.seedGraph, sourceId: params.sourceId, sourceHandle: params.sourceHandle, threadId: params.threadId, flowId: params.flowId }); } catch {}
     const stream: SseStream<CreateNodeEvent> = openSse<CreateNodeEvent>({
       zone: this.zone,
       url,
@@ -53,4 +55,3 @@ export class AiCreateNodeAgentService {
     return stream;
   }
 }
-
