@@ -5232,14 +5232,27 @@ export class FlowBuilderComponent {
   private buildClipboardPayload(ids: string[]) {
     const idSet = new Set(ids);
     const nodes = (this.nodes || []).filter(n => idSet.has(String(n.id)));
-    const edges = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target)));
+    // Preserve full edge metadata like in duplicate: curve, labels, data, markers
+    const edgesFull = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target)))
+      .map((e: any) => ({
+        id: String(e.id || ''),
+        type: e.type,
+        source: String(e.source),
+        target: String(e.target),
+        sourceHandle: (e as any).sourceHandle,
+        targetHandle: (e as any).targetHandle,
+        curve: (e as any).curve,
+        edgeLabels: (e as any).edgeLabels,
+        data: (e as any).data,
+        markers: (e as any).markers
+      }));
     // Normalize payload to be portable between flows
     const out = {
       kind: 'homeport.flow.selection',
       version: 1,
       createdAt: Date.now(),
       nodes: nodes.map(n => ({ id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data: n.data })),
-      edges: edges.map((e: any) => ({ id: String(e.id||''), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }))
+      edges: edgesFull
     } as any;
     return out;
   }
