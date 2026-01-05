@@ -1,5 +1,6 @@
 // Create-Node Agent — plans one node to add after a source handle using seedGraph only (no DB writes)
 // It may call the Args agent logic to propose args and a short description.
+// NOTE: zod removed — using permissive schemas for tool I/O
 
 async function importLC() {
   const coreTools = await import('@langchain/core/tools');
@@ -73,7 +74,7 @@ function systemPrompt(){
   const raw = [
     'Tu es un assistant de CRÉATION DE NŒUDS pour Homeport.',
     "But: à partir d'un prompt et d'un graphe (seedGraph), PROPOSER UN SEUL nouveau nœud à relier depuis la sortie indiquée (sourceId/sourceHandle).",
-    "Étapes: 1) lister les templates compatibles, 2) choisir le meilleur template et expliquer brièvement, 3) utiliser get_template_schema(templateKey) pour voir les champs requis (et list_seed_predecessors pour comprendre le contexte), 4) si nécessaire, APPELER args_fill_via_node_assistant(templateKey) pour proposer les arguments avec scénarios seed-only, 5) appeler set_node_args avec un JSON complet couvrant AU MOINS les champs requis et set_node_description (une phrase courte), 6) APPELER EXACTEMENT UNE FOIS le tool emit_graph pour émettre le graphe final (seed + 1 nœud + 1 arête), puis TERMINER.",
+    "Étapes: 1) lister les templates compatibles, 2) choisir le meilleur template et expliquer brièvement, 3) utiliser get_template_schema(templateKey) pour voir les champs requis (et list_seed_predecessors pour comprendre le contexte), 4) si nécessaire, APPELER args_fill_via_node_assistant avec un objet { templateKey, prompt } où 'prompt' résume le sujet et explique quoi extraire depuis le msgIn (tu peux citer quelques clés utiles obtenues via get_scenarios/get_msgin_preview), 5) appeler set_node_args avec un JSON complet couvrant AU MOINS les champs requis et set_node_description (une phrase courte), 6) APPELER EXACTEMENT UNE FOIS le tool emit_graph pour émettre le graphe final (seed + 1 nœud + 1 arête), puis TERMINER.",
     "Contraintes: n'appelle JAMAIS emit_graph plus d'une fois. Utilise UNIQUEMENT les tools fournis.",
     "Important: n’écris 'Proposition prête à être appliquée.' QU’APRÈS un emit_graph réussi. En cas d’erreur de tool (ex: template introuvable), explique l’erreur et ne propose pas d’appliquer.",
   ].join('\n');
@@ -127,6 +128,8 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     let awaitUserInput = false;
     let pendingArgs = null;
     let pendingDesc = '';
+    let argsLocked = false;
+    let descLocked = false;
     tools.push(new DynamicStructuredTool({
       name: 'list_templates',
       description: 'Liste les templates de nœuds disponibles (id, name, title, category, outputHandles).',
@@ -211,7 +214,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
 
     tools.push(new DynamicStructuredTool({
       name: 'args_fill_via_node_assistant',
-      description: "Appelle l'agent ARGS (node assistant) avec un nœud temporaire (seed-only) pour proposer context/description.",
+      description: "Appelle l'agent ARGS (node assistant) avec un nœud temporaire (seed-only) pour proposer context/description. input: { templateKey, prompt? } — Fournis 'prompt' pour résumer le sujet et guider l'extraction depuis msgIn.",
       schema: {},
       func: async (input) => {
         try {
@@ -394,15 +397,24 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
               if (obj?.type === 'tool.end') { send({ ...obj, type:'tool.end', name: `nodeargs.${obj.name}` }); return; }
               if (obj?.type === 'done') { send({ type:'tool.end', name:'nodeargs.session', ok:true }); return; }
               if (obj?.type === 'await_user') { awaitUserInput = true; send({ type:'await_user', question: obj?.question || '' }); return; }
-              else if (obj?.type === 'args') { pendingArgs = obj.args || {}; send(obj); }
-              else if (obj?.type === 'desc') { pendingDesc = obj.text || ''; send(obj); }
+              else if (obj?.type === 'args') { pendingArgs = obj.args || {}; argsLocked = true; send(obj); }
+              else if (obj?.type === 'desc') {
+                pendingDesc = obj.text || '';
+                descLocked = true;
+                try {
+                  const prev = String(pendingDesc||'');
+                  const short = prev.length > 160 ? prev.slice(0,160) + '…' : prev;
+                  console.info('[ai-create-node][args_assistant][desc]', { len: prev.length, preview: short });
+                } catch {}
+                send(obj);
+              }
               else if (obj?.type) send(obj);
             } catch {}
           };
-          // Pour l'agent Args: ne pas réutiliser le prompt de création. Laisser l'agent construire en fonction du schéma/scénarios.
-          const argsPrompt = '';
-          try { console.info('[ai-create-node][args_assistant][prompt]', { len: argsPrompt.length, text: argsPrompt, note: 'using empty prompt to trigger args-agent default' }); } catch {}
-          await runArgsAgentWithTools({ prompt: argsPrompt, flowId: String(flowId||''), nodeId: tempId, branch: sourceHandle || null, history, send: forwardSend, done: ()=>{}, seedGraphOverride: graph });
+          // Utiliser le prompt fourni par l'agent (input.prompt) pour guider l'Args agent
+          const agentProvidedPrompt = String(input?.prompt || '');
+          try { console.info('[ai-create-node][args_assistant][prompt_in]', { len: agentProvidedPrompt.length, text: agentProvidedPrompt }); } catch {}
+          await runArgsAgentWithTools({ prompt: agentProvidedPrompt, flowId: String(flowId||''), nodeId: tempId, branch: sourceHandle || null, history, send: forwardSend, done: ()=>{}, seedGraphOverride: graph });
           try { console.info('[ai-create-node][args_assistant][done]', { argKeys: Object.keys(pendingArgs||{}).length, descLen: String(pendingDesc||'').length }); } catch {}
           return 'ok';
         } catch (e) { try { console.warn('[ai-create-node][args_assistant][error]', e?.message||e); } catch {} return 'error'; }
@@ -412,13 +424,36 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
       name: 'set_node_args',
       description: 'Propose les arguments finals pour le nœud à créer (context).',
       schema: {},
-      func: async (input) => { try { const args = (input && typeof input === 'object') ? input : {}; pendingArgs = args; try { console.info('[ai-create-node][args]', { keys: Object.keys(args||{}).length }); } catch {} send({ type: 'args', args }); return 'ok'; } catch (e) { try { console.warn('[ai-create-node][args][error]', e?.message||e); } catch {} return 'error'; } }
+      func: async (input) => {
+        try {
+          if (argsLocked) { try { console.warn('[ai-create-node][args][locked_ignore]'); } catch {} send({ type:'error', code:'args_locked', message:'Arguments déjà fournis par l’agent Args' }); return 'args_locked'; }
+          const args = (input && typeof input === 'object') ? (input.args && typeof input.args==='object' ? input.args : input) : {};
+          pendingArgs = args;
+          try { console.info('[ai-create-node][args]', { keys: Object.keys(args||{}).length }); } catch {}
+          send({ type: 'args', args });
+          return 'ok';
+        } catch (e) { try { console.warn('[ai-create-node][args][error]', e?.message||e); } catch {} return 'error'; }
+      }
     }));
     tools.push(new DynamicStructuredTool({
       name: 'set_node_description',
       description: 'Propose une description courte (une phrase) pour le nœud.',
       schema: {},
-      func: async (input) => { try { let text = ''; if (typeof input === 'string') text = input; else if (input && typeof input==='object') text = String(input.description ?? input.text ?? ''); pendingDesc = text; try { console.info('[ai-create-node][desc]', { len: (text||'').length }); } catch {} send({ type:'desc', text }); return 'ok'; } catch (e) { try { console.warn('[ai-create-node][desc][error]', e?.message||e); } catch {} return 'error'; } }
+      func: async (input) => {
+        try {
+          if (descLocked) { try { console.warn('[ai-create-node][desc][locked_ignore]'); } catch {} send({ type:'error', code:'desc_locked', message:'Description déjà fournie par l’agent Args' }); return 'desc_locked'; }
+          let text = '';
+          if (input && typeof input==='object') text = String(input.description ?? input.text ?? '');
+          pendingDesc = text;
+          try {
+            const prev = String(text||'');
+            const short = prev.length > 160 ? prev.slice(0,160) + '…' : prev;
+            console.info('[ai-create-node][desc]', { len: prev.length, preview: short });
+          } catch {}
+          send({ type:'desc', text });
+          return 'ok';
+        } catch (e) { try { console.warn('[ai-create-node][desc][error]', e?.message||e); } catch {} return 'error'; }
+      }
     }));
     tools.push(new DynamicStructuredTool({
       name: 'emit_graph',
@@ -441,8 +476,24 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             try { send({ type: 'error', code: 'template_not_found', message: `Template not found: ${tplKey} (normalized: ${nk})` }); } catch {}
             return 'template_not_found';
           }
-          const finalArgs = (input && typeof input==='object' && input.args) ? input.args : (pendingArgs || {});
-          const finalDesc = (input && typeof input==='object' && (input.description || input.text)) ? (input.description || input.text) : (pendingDesc || '');
+          // Utiliser strictement ce que le sous-agent a proposé si disponible
+          let finalArgs = pendingArgs || {};
+          let finalDesc = pendingDesc || '';
+          let argsSource = 'nodeargs';
+          let descSource = finalDesc ? 'nodeargs' : 'create';
+          if (!finalArgs || Object.keys(finalArgs||{}).length === 0) {
+            finalArgs = (input && typeof input==='object' && input.args) ? input.args : {};
+            argsSource = 'create';
+          }
+          if (!finalDesc) {
+            finalDesc = (input && typeof input==='object' && (input.description || input.text)) ? (input.description || input.text) : '';
+          }
+          try {
+            const dprev = String(finalDesc||'');
+            const dshort = dprev.length > 160 ? dprev.slice(0,160) + '…' : dprev;
+            console.info('[ai-create-node][emit_graph][args_source]', { source: argsSource });
+            console.info('[ai-create-node][emit_graph][desc_source]', { source: descSource, len: dprev.length, preview: dshort });
+          } catch {}
           try {
             const providedKeys = Object.keys(finalArgs||{});
             const required = collectRequiredKeys(tpl.args || {});

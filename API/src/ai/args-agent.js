@@ -18,6 +18,7 @@ async function importLC() {
 function escapeForLangChain(text){
   return String(text || '').replace(/\{/g, '{{').replace(/\}/g, '}}');
 }
+// NOTE: removed zod — dynamic tools use permissive schemas
 
 function systemPromptBase(){
   const raw = [
@@ -27,6 +28,11 @@ function systemPromptBase(){
     "Astuce: appelle get_scenarios puis get_msgin_preview pour synthétiser les infos utiles (ex: 'Prénom: …, Nom: …, …') et les intégrer dans le prompt.",
     "Contraintes: réponds en français; ne change PAS la structure du schéma; n’affiche PAS de listes exhaustives (schéma, nœuds, scénarios) dans le message; n’écho PAS le contexte brut.",
     "SI TU AS ASSEZ D’INFORMATIONS: tu DOIS appeler set_node_args (avec les champs pertinents seulement) ET set_node_description (1–2 phrases). N’écris PAS les valeurs dans ton message; utilise les tools.",
+    "Injection de chemins: lorsque la valeur d’un argument vient d’un message précédent (msgIn) ou du résultat d’un nœud antérieur, n’insère PAS de valeur littérale — insère un chemin de template Homeport entre {{ }}:",
+    "- Si la donnée est dans msgIn.payload: utilise {{payload.clef}} (ex: {{payload.first_name}}).",
+    "- Si la donnée vient d’un nœud précédent: utilise {{<nodeId>.clef}} où <nodeId> est l’identifiant vu dans msgIn (ex: {{start_form_startform_abc.first_name}} ou {{function_xxx.text}}).",
+    "- Ne devine pas de clés; base-toi sur les clés observées via get_scenarios/get_msgin_preview (payloadKeys et clés de nœuds).",
+    "- Préfère les chemins stables et explicites; n’injecte PAS de valeurs statiques quand un chemin est disponible.",
     "SI UNE INFORMATION MANQUE: pose UNE question courte et précise, sinon propose directement via les tools.",
     "Important: ne dis jamais que la configuration est appliquée. Dans tes messages, écris seulement: 'Proposition prête à être appliquée.' (ou pose ta question si nécessaire).",
     "Description: très courte (≈ une phrase, ~120 caractères max), en tenant compte de la description actuelle si pertinente (via get_node_info).",
@@ -117,6 +123,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       func: async () => {
         const graph = await ensureGetFlow();
         const arr = listPredecessors(graph, nodeId);
+        console.log("arrarr", arr)
         return JSON.stringify(arr);
       }
     }),
@@ -242,8 +249,13 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       schema: {},
       func: async (input) => {
         try {
-          console.log('inputttt', input)
-          const args = (input && typeof input === 'object') ? input : {};
+          const args = (input && typeof input === 'object') ? (input.args && typeof input.args==='object' ? input.args : input) : {};
+          const keys = Object.keys(args || {});
+          if (!keys.length) {
+            try { console.warn('[ai-args][set_node_args] empty_args_ignored'); } catch {}
+            send({ type: 'error', code: 'args_empty', message: 'Aucun argument fourni dans set_node_args' });
+            return 'args_empty';
+          }
           send({ type: 'args', args });
           return 'ok';
         } catch (e) { return 'error'; }
@@ -257,10 +269,15 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
         try {
           let text = '';
           try {
-            if (typeof input === 'string') text = input;
-            else if (input && typeof input === 'object') text = String(input.description ?? input.text ?? '');
+            if (typeof input === 'string') text = input; else if (input && typeof input === 'object') text = String(input.description ?? input.text ?? '');
             else text = '';
           } catch { text = ''; }
+          try {
+            const prev = String(text || '');
+            const short = prev.length > 160 ? prev.slice(0,160) + '…' : prev;
+            console.info('[ai-args][set_node_description]', { len: prev.length, preview: short });
+          } catch {}
+          if (!text.trim()) { send({ type: 'error', code: 'desc_empty', message: 'Description vide' }); return 'desc_empty'; }
           send({ type: 'desc', text });
           return 'ok';
         } catch (e) { return 'error'; }
@@ -281,8 +298,13 @@ async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, hi
   let lastAssistantText = '';
   const localSend = (obj) => {
     try {
-      if (obj && obj.type === 'args') proposedArgs = true;
-      if (obj && obj.type === 'desc') proposedDesc = true;
+      if (obj && obj.type === 'args') {
+        const k = Object.keys(obj.args || {});
+        if (k.length) proposedArgs = true;
+      }
+      if (obj && obj.type === 'desc') {
+        if (obj.text && String(obj.text).trim().length) proposedDesc = true;
+      }
       if (obj && obj.type === 'message' && obj.text) lastAssistantText = String(obj.text || '').trim();
     } catch {}
     try { send(obj); } catch {}
