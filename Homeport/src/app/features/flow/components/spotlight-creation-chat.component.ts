@@ -61,7 +61,8 @@ type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[];
     .btn.icon:hover { background:#f8fafc; }
     .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
     .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
-    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: normal; word-break: break-word; }
+    :host ::ng-deep .txt.rich .text p { margin: 0 !important; }
     .msg-row.me { justify-items: end; }
     .msg-row.me .bubble { background: linear-gradient(135deg, rgba(22,119,255,.95), rgba(22,119,255,.65)); color:#fff; border-color: rgba(22,119,255,.55); border-bottom-right-radius: 6px; }
     .msg-row.assistant .bubble { background: #ffffff; color:#111827; border-color:#e5e7eb; border-bottom-left-radius: 6px; }
@@ -142,10 +143,24 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
     let lastLineAppended: string | null = null;
     let sawSseDoneMsg = false;
     let sawSseFinishedMsg = false;
+    let lastKind: 'log'|'text'|null = null;
     const appendText = (t: string) => {
       if (!t) return;
       const last = assistantParts[assistantParts.length - 1];
       if (last && last.kind === 'text') last.text = (last.text || '') + t; else assistantParts.push({ kind:'text', text: t });
+    };
+    const appendLog = (line: string) => {
+      if (!line) return;
+      // Insert a blank line between text -> log
+      try {
+        if (lastKind === 'text') {
+          const last = assistantParts[assistantParts.length - 1];
+          const lastTxt: string = (last && last.kind === 'text') ? (last.text || '') : '';
+          if (lastTxt && !lastTxt.endsWith('\n')) appendText('\n');
+        }
+      } catch {}
+      assistantParts.push({ kind: 'log', text: line } as any);
+      lastKind = 'log';
     };
     const sub = stream.events$.subscribe({
       next: (ev: CreateNodeEvent) => {
@@ -163,31 +178,53 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           return;
         }
         if (ev.type === 'message' && ev.text) {
-          const lines = String(ev.text).split(/\r?\n/);
-          for (const line of lines) {
-            if (!line) continue;
-            const isTool = /^\[tool\]/i.test(line);
-            if (/^\[ai-create-node\]\[sse\] done/i.test(line)) sawSseDoneMsg = true;
-            if (/^\[ai-create-node\]\[sse\] finished/i.test(line)) sawSseFinishedMsg = true;
-            const out = isTool ? ('\n' + line) : line;
-            if (lastLineAppended === line) continue;
-            appendText(out);
-            lastLineAppended = line;
+          const text = String(ev.text || '');
+          // Split incoming text by lines; convert [tool] lines as logs, others grouped as text
+          const lines = text.split(/\r?\n/);
+          let buffer = '';
+          const flushBuffer = () => {
+            if (!buffer) return;
+            // When switching from log -> text, insert a single newline first
+            if (lastKind === 'log') {
+              const last = assistantParts[assistantParts.length - 1];
+              const lastTxt: string = (last && last.kind === 'text') ? (last.text || '') : '';
+              const needsBreak = lastTxt && !lastTxt.endsWith('\n');
+              if (needsBreak) appendText('\n');
+            }
+            appendText(buffer);
+            buffer = '';
+            lastKind = 'text';
+          };
+          for (const raw of lines) {
+            const ln = String(raw || '');
+            // Track backend markers silently
+            if (/^\[ai-create-node\]\[sse\] done/i.test(ln)) { sawSseDoneMsg = true; continue; }
+            if (/^\[ai-create-node\]\[sse\] finished/i.test(ln)) { sawSseFinishedMsg = true; continue; }
+            // Tool logs inside message
+            if (/^\[tool\]/i.test(ln)) {
+              // Flush any pending text before appending a log
+              flushBuffer();
+              appendLog(ln);
+              continue;
+            }
+            // Regular text line: accumulate, preserving line breaks
+            buffer += (buffer ? '\n' : '') + ln;
           }
+          flushBuffer();
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
           this.messages = [...others, tmp];
           try { this.cdr.detectChanges(); } catch {}
         }
         if (ev.type === 'tool.start') {
-          appendText(`\n[tool] ${ev.name || 'tool'} start`);
+          appendLog(`[tool] ${ev.name || 'tool'} start`);
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
           this.messages = [...others, tmp];
           try { this.cdr.detectChanges(); } catch {}
         }
         if (ev.type === 'tool.end') {
-          appendText(`\n[tool] ${ev.name || 'tool'} done`);
+          appendLog(`[tool] ${ev.name || 'tool'} done`);
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
           this.messages = [...others, tmp];

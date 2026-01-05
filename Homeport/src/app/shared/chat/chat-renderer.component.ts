@@ -36,6 +36,7 @@ import { RichPart } from './chat-types';
     .st.warn { color:#d97706; }
     .tag { color:#6b7280; }
     .line.tool .text p { margin: 0; display: inline; }
+    .line.log .text, .line.tool .text { color:#9ca3af; }
     .text p { margin: 0; }
   `]
 })
@@ -61,4 +62,3 @@ export class ChatRendererComponent {
     } catch { return src; }
   }
 }
-

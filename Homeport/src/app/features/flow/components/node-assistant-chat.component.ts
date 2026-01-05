@@ -95,7 +95,7 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .args-history .empty { font-size:12px; color:#6b7280; padding: 6px 0; }
     .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
     .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
-    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: normal; word-break: break-word; }
     .msg-row.me { justify-items: end; }
     .msg-row.me .bubble { background: linear-gradient(135deg, rgba(22,119,255,.95), rgba(22,119,255,.65)); color:#fff; border-color: rgba(22,119,255,.55); border-bottom-right-radius: 6px; }
     .msg-row.assistant .bubble { background: #ffffff; color:#111827; border-color:#e5e7eb; border-bottom-left-radius: 6px; }
@@ -118,6 +118,7 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .btn.small.ghost { background:#fafafa; }
     .btn.small.link { background:transparent; border-color:transparent; color:#2563eb; padding: 0 6px; }
     .actions-row { display:flex; gap:8px; justify-content:flex-end; margin-top: -2px; }
+    :host ::ng-deep .txt.rich .text p { margin: 0 !important; }
   `]
 })
 export class NodeAssistantChatComponent implements OnInit {
@@ -262,12 +263,34 @@ export class NodeAssistantChatComponent implements OnInit {
       // Use dedicated Args Agent instead of workflow v2 for node assistant
       const stream = (this as any).argsAgent?.stream({ flowId: this.flowId as string, nodeId: this.nodeId as string, threadId: this.threadId as string, branch: this.branch as any }) || this.agentV2.stream({ flowId: this.flowId || undefined, action: undefined, threadId: this.threadId || undefined });
       let assistantParts: any[] = [];
+      let lastKind: 'log'|'text'|null = null;
       const mergeText = (base: string, add: string) => (base || '') + (add || '');
-      const appendToLastTextPart = (token: string) => {
-        const t = String(token || ''); if (!t) return;
+      const appendText = (chunk: string) => {
+        const t = String(chunk || ''); if (!t) return;
+        // If previous was a log, ensure a single newline between log and text
+        if (lastKind === 'log') {
+          const last = assistantParts[assistantParts.length - 1];
+          const lastTxt: string = (last && last.kind === 'text') ? (last.text || '') : '';
+          if (lastTxt && !lastTxt.endsWith('\n')) {
+            if (assistantParts.length && assistantParts[assistantParts.length - 1].kind === 'text') assistantParts[assistantParts.length - 1].text += '\n';
+            else assistantParts.push({ kind: 'text', text: '\n' });
+          }
+        }
         const last = assistantParts[assistantParts.length - 1];
         if (last && last.kind === 'text') last.text = mergeText(last.text || '', t);
         else assistantParts.push({ kind: 'text', text: mergeText('', t) });
+        lastKind = 'text';
+      };
+      const appendLog = (line: string) => {
+        const l = String(line || '').trim(); if (!l) return;
+        // If previous was text, ensure a single newline between text and log
+        if (lastKind === 'text') {
+          const last = assistantParts[assistantParts.length - 1];
+          const lastTxt: string = (last && last.kind === 'text') ? (last.text || '') : '';
+          if (lastTxt && !lastTxt.endsWith('\n')) appendText('\n');
+        }
+        assistantParts.push({ kind: 'log', text: l });
+        lastKind = 'log';
       };
       const sub = stream.events$.subscribe({
         next: (ev: any) => {
@@ -275,11 +298,15 @@ export class NodeAssistantChatComponent implements OnInit {
           if (ev.type === 'message' && ev.text) {
             const raw = String(ev.text || '');
             const lines = raw.split(/\r?\n/);
+            let buffer = '';
+            const flush = () => { if (buffer) { appendText(buffer); buffer=''; } };
             for (const seg of lines) {
               if (seg === undefined || seg === null) continue;
-              const isTool = /^\[tool\]/i.test(seg);
-              appendToLastTextPart(isTool ? ("\n" + seg) : seg);
+              const s = String(seg || '');
+              if (/^\[tool\]/i.test(s)) { flush(); appendLog(s); }
+              else { buffer += (buffer ? '\n' : '') + s; }
             }
+            flush();
             if (assistantParts.length) {
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
@@ -291,7 +318,7 @@ export class NodeAssistantChatComponent implements OnInit {
             try {
               const name = String(ev.name || 'tool');
               const previewArgs = ev.args ? JSON.stringify(ev.args).slice(0, 200) : '';
-              appendToLastTextPart(`\n[tool] ${name} start ${previewArgs}`);
+              appendLog(`[tool] ${name} start ${previewArgs}`);
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];
@@ -301,7 +328,7 @@ export class NodeAssistantChatComponent implements OnInit {
           if (ev.type === 'tool.end') {
             try {
               const name = String(ev.name || 'tool');
-              appendToLastTextPart(`\n[tool] ${name} done`);
+              appendLog(`[tool] ${name} done`);
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];

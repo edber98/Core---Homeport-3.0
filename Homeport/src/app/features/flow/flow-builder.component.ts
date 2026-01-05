@@ -1808,8 +1808,7 @@ export class FlowBuilderComponent {
       const edgeFromSource = (newEdges || []).find((e:any)=> String(e.source)===fromId);
       const outHandle = edgeFromSource ? String(edgeFromSource.sourceHandle || '') : (this.firstFreeOutputHandle(this.selection || null) || 'out');
       this.addNodeSourceHandle = outHandle || this.addNodeSourceHandle;
-      const ok = window.confirm('Appliquer la création du nœud proposé ?');
-      if (!ok) return;
+      // Apply immediately without confirmation
       const beforeIds = new Set((this.nodes || []).map(n => String(n.id)));
       this.pickTemplateForAdd(tpl);
       const created = (this.nodes || []).find(n => !beforeIds.has(String(n.id)));
