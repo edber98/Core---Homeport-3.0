@@ -9,6 +9,7 @@ import DOMPurify from 'dompurify';
 import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
 import { RichPart } from '../../../shared/chat/chat-types';
 import { AiFlowAgentService, FlowAgentEvent } from '../../../services/ai-flow-agent.service';
+import { AiCreateNodeAgentService } from '../../../services/ai-create-node-agent.service';
 type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[] };
 
 @Component({
@@ -78,6 +79,11 @@ type Msg = { role: 'user'|'assistant'|'system'; text?: string; parts?: RichPart[
 })
 export class FlowAiChatComponent implements AfterViewInit {
   @Input() seedGraph: any = null;
+  @Input() initialPrompt: string | null = null;
+  @Input() createMode: boolean = false;
+  @Input() sourceId?: string | null;
+  @Input() sourceHandle?: string | null;
+  @Input() threadId?: string | null;
   @Output() close = new EventEmitter<void>();
   @Output() graphGenerated = new EventEmitter<any>();
 
@@ -99,10 +105,15 @@ export class FlowAiChatComponent implements AfterViewInit {
   @ViewChild('scroller') scroller?: ElementRef<HTMLDivElement>;
   @ViewChild('composerInput') composerInput?: ElementRef<HTMLTextAreaElement>;
 
-  constructor(private agent: AiFlowAgentService, private cdr: ChangeDetectorRef) {}
+  constructor(private agent: AiFlowAgentService, private creator: AiCreateNodeAgentService, private cdr: ChangeDetectorRef) {}
   ngAfterViewInit(): void {
     this.scrollToBottom();
     setTimeout(() => this.onComposerInput(), 0);
+    // Auto-send initial prompt if provided
+    try {
+      const p = (this.initialPrompt || '').trim();
+      if (p) { this.text = p; this.send(); }
+    } catch {}
   }
 
   send() {
@@ -119,9 +130,22 @@ export class FlowAiChatComponent implements AfterViewInit {
     try { this.recent.clear(); } catch {}
     let seedObj: any = undefined;
     try { const s = (this.seedText || '').trim(); if (s) seedObj = JSON.parse(s); } catch {}
-    const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
-    this.stopFn = stream.stop;
-    stream.events$.subscribe({ next: (ev: FlowAgentEvent) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
+    if (this.createMode) {
+      const stream = this.creator.stream({
+        prompt: t,
+        seedGraph: seedObj || this.seedGraph,
+        sourceId: String(this.sourceId || ''),
+        sourceHandle: this.sourceHandle || undefined,
+        threadId: this.threadId || undefined,
+        flowId: undefined
+      });
+      this.stopFn = stream.stop;
+      stream.events$.subscribe({ next: (ev: any) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
+    } else {
+      const stream = this.agent.stream({ prompt: t, seedGraph: seedObj || this.seedGraph });
+      this.stopFn = stream.stop;
+      stream.events$.subscribe({ next: (ev: any) => this.onEvent(ev), error: () => this.onError('Erreur de flux') });
+    }
   }
   stop() {
     try { this.stopFn?.(); } catch {}
@@ -149,7 +173,7 @@ export class FlowAiChatComponent implements AfterViewInit {
     this.send();
   }
 
-  private onEvent(evt: FlowAgentEvent) {
+  private onEvent(evt: any) {
     if (!evt) return;
     if (evt.type === 'message' && evt.text) {
       const raw = String(evt.text);

@@ -39,11 +39,12 @@ import { SpotlightAddNodeComponent } from './components/spotlight-add-node.compo
 import { environment } from '../../../environments/environment';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive';
+import { SpotlightCreationChatComponent } from './components/spotlight-creation-chat.component';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent, SpotlightCreationChatComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -510,6 +511,10 @@ export class FlowBuilderComponent {
   addNodeQuery = '';
   addNodeSourceId: string | null = null;
   addNodeSourceHandle: string | null = null;
+  // Mode Assistant IA (Spotlight → conversation) et état de thread temporaire
+  addNodeAiMode = false;
+  addNodeAiThreadId: string | null = null;
+  private addNodeAiApplied = false;
   addNodeCandidates: any[] = [];
   addNodeActiveIdx: number = -1;
   addNodeGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
@@ -1666,7 +1671,15 @@ export class FlowBuilderComponent {
     this.addNodeVisible = true;
   }
   closeAddNodeModal() { this.addNodeVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; }
-  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); this.rebuildAddNodeCandidates(); this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1; setTimeout(()=>this.scrollActiveIntoView(),0); }
+  closeAddNodeModalWithCleanup() {
+    try {
+      const shouldDelete = this.addNodeAiMode && !this.addNodeAiApplied && this.addNodeAiThreadId;
+      if (shouldDelete) { try { this.aiChats.deleteChat(this.currentFlowId || '', this.addNodeAiThreadId as any).subscribe(()=>{}); } catch {} }
+    } catch {}
+    this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
+    this.closeAddNodeModal();
+  }
+  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); if (!this.addNodeAiMode) { this.rebuildAddNodeCandidates(); this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1; setTimeout(()=>this.scrollActiveIntoView(),0); } }
   private rebuildAddNodeCandidates() {
     try {
       const q = (this.addNodeQuery || '').trim().toLowerCase();
@@ -1721,6 +1734,70 @@ export class FlowBuilderComponent {
   }
   onAddNodeItemHover(i: number) { this.addNodeActiveIdx = i; }
   onAddNodeItemClick(it: any) { this.pickTemplateForAdd(it); }
+  // Enter/exit AI chat mode for Spotlight
+  private enterAddNodeAiMode(initialPrompt: string) {
+    try {
+      this.addNodeAiMode = true;
+      this.addNodeAiApplied = false;
+      // Create a temporary chat thread; delete if canceled without apply
+      const flowId = this.currentFlowId || '';
+      const sel = this.selection || null;
+      const nodeName = String(sel?.data?.model?.name || sel?.data?.model?.templateObj?.title || sel?.id || 'Node');
+      const title = `[spotlight] Add Node • ${nodeName}`;
+      if (flowId) {
+        this.aiChats.createChat(flowId, title).subscribe({
+          next: (thr: any) => {
+            this.addNodeAiThreadId = thr?.id || null;
+            if (this.addNodeAiThreadId && initialPrompt) {
+              this.aiChats.appendMessage(this.addNodeAiThreadId, { threadId: this.addNodeAiThreadId, role:'user', text: initialPrompt } as any).subscribe(()=>{});
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          }, error: () => { this.addNodeAiThreadId = null; }
+        });
+      }
+      this.addNodeVisible = true;
+    } catch { this.addNodeAiMode = true; this.addNodeVisible = true; }
+  }
+  onCloseAiMode() { this.closeAddNodeModalWithCleanup(); }
+  buildSeedGraphForAi(): any { try { const nodes = (this.nodes || []).map(n => ({ id: String(n.id), type: String(n.type||'html-template'), point: { x: n.point?.x||0, y: n.point?.y||0 }, data: n.data })); const edges = (this.edges || []).map((e:any) => ({ id: String(e.id||''), type: e.type, source: String(e.source), target: String(e.target), sourceHandle: String((e as any).sourceHandle || ''), targetHandle: String((e as any).targetHandle || '') })); return { nodes, edges }; } catch { return { nodes: [], edges: [] }; } }
+  onAiNodeGraphGenerated(graph: any) {
+    try {
+      const seed = this.buildSeedGraphForAi();
+      const seedIds = new Set((seed.nodes||[]).map((n:any)=>String(n.id)));
+      const newNodes = (graph?.nodes || []).filter((n:any) => !seedIds.has(String(n.id)));
+      const newEdges = (graph?.edges || []).filter((e:any) => !(seed.edges||[]).some((se:any)=> String(se.id||'')===String(e.id||'')));
+      if (newNodes.length !== 1) { try { this.message?.warning?.('La proposition IA doit ajouter exactement un nœud.'); } catch {} return; }
+      const nn = newNodes[0];
+      const tpl = nn?.data?.model?.templateObj || nn?.data?.templateObj || null;
+      if (!tpl) { try { this.message?.warning?.('Proposition IA invalide (template manquant).'); } catch {} return; }
+      const args = nn?.data?.model?.context || nn?.data?.context || {};
+      const desc = nn?.data?.model?.description || nn?.data?.description || '';
+      const fromId = String(this.addNodeSourceId || '');
+      const edgeFromSource = (newEdges || []).find((e:any)=> String(e.source)===fromId);
+      const outHandle = edgeFromSource ? String(edgeFromSource.sourceHandle || '') : (this.firstFreeOutputHandle(this.selection || null) || 'out');
+      this.addNodeSourceHandle = outHandle || this.addNodeSourceHandle;
+      const ok = window.confirm('Appliquer la création du nœud proposé ?');
+      if (!ok) return;
+      const beforeIds = new Set((this.nodes || []).map(n => String(n.id)));
+      this.pickTemplateForAdd(tpl);
+      const created = (this.nodes || []).find(n => !beforeIds.has(String(n.id)));
+      if (created) {
+        try {
+          const m = created.data.model || {};
+          m.context = JSON.parse(JSON.stringify(args || {}));
+          m.description = String(desc || '');
+          if (this.addNodeAiThreadId) (m as any).aiChatThreadId = this.addNodeAiThreadId;
+          created.data.model = m;
+          this.pushState('node.ai.create');
+          this.recomputeValidation();
+          try { this.cdr.detectChanges(); } catch {}
+        } catch {}
+      }
+      this.addNodeAiApplied = true;
+      try { if (this.addNodeAiThreadId) this.aiChats.appendMessage(this.addNodeAiThreadId, { threadId: this.addNodeAiThreadId, role:'user', text:'Création de nœud appliquée.' } as any).subscribe(()=>{}); } catch {}
+      this.closeAddNodeModal();
+    } catch {}
+  }
   onSpotlightPick(it: any) {
     // If item is null => Enter pressed with no result: treat as IA prompt
     if (!it) { this.onSubmitAddNodeSearch(); return; }
@@ -1735,11 +1812,10 @@ export class FlowBuilderComponent {
         const it = (idx >= 0 && idx < this.addNodeCandidates.length) ? this.addNodeCandidates[idx] : this.addNodeCandidates[0];
         this.pickTemplateForAdd(it);
       } else {
-        // No match => treat as AI prompt placeholder
+        // No match => enter AI chat mode and bootstrap with current query
         const prompt = (this.addNodeQuery || '').trim();
         try { console.log('[flow-builder] add-node AI prompt requested', { prompt, sourceId: this.addNodeSourceId, sourceHandle: this.addNodeSourceHandle }); } catch {}
-        // Close modal for now; future: open AI chat & generate node
-        this.closeAddNodeModal();
+        this.enterAddNodeAiMode(prompt);
       }
     } catch { this.closeAddNodeModal(); }
   }
@@ -5303,6 +5379,10 @@ export class FlowBuilderComponent {
     }
     const cmd = ev.metaKey || ev.ctrlKey;
     if (cmd) {
+      if (this.addNodeVisible) {
+        const keyBlock = ev.key.toLowerCase();
+        if (keyBlock === 'c' || keyBlock === 'x' || keyBlock === 'v') { ev.preventDefault(); return; }
+      }
       const key = ev.key.toLowerCase();
       if (key === 'c') {
         if (this.hasSelection()) { ev.preventDefault(); this.copySelection(false); }

@@ -82,6 +82,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/ai-workflow')());
     // AI Args (SSE) — specialized agent for node args completion
     app.use('/api', require('./modules/db/ai-args')());
+    // AI Create Node (SSE) — specialized agent to plan a new node and call Args agent
+    app.use('/api', require('./modules/db/ai-create-node')());
   }
 
   // API docs (Swagger UI)

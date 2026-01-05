@@ -312,19 +312,26 @@
         [(nzVisible)]="addNodeVisible"
         nzTitle=""
         [nzClosable]="false"
-        (nzOnCancel)="closeAddNodeModal()"
+        (nzOnCancel)="closeAddNodeModalWithCleanup()"
         [nzFooter]="null"
         [nzWidth]="860"
         nzClassName="add-node-modal spotlight-modal">
         <ng-container *nzModalContent>
-          <spotlight-add-node
-            [groups]="addNodeGroups"
-            [query]="addNodeQuery"
-            [totalCount]="addNodeCandidates.length"
-            [getAppByIdFn]="getAppById.bind(this)"
-            (queryChange)="onAddNodeQueryChange($event)"
-            (pick)="onSpotlightPick($event)"
-            (close)="closeAddNodeModal()"></spotlight-add-node>
+          <ng-container *ngIf="!addNodeAiMode; else aiModeTpl">
+            <spotlight-add-node
+              [groups]="addNodeGroups"
+              [query]="addNodeQuery"
+              [totalCount]="addNodeCandidates.length"
+              [getAppByIdFn]="getAppById.bind(this)"
+              (queryChange)="onAddNodeQueryChange($event)"
+              (pick)="onSpotlightPick($event)"
+              (close)="closeAddNodeModal()"></spotlight-add-node>
+          </ng-container>
+          <ng-template #aiModeTpl>
+            <spotlight-creation-chat [seedGraph]="buildSeedGraphForAi()" [initialPrompt]="addNodeQuery"
+              [sourceId]="addNodeSourceId || ''" [sourceHandle]="addNodeSourceHandle || null" [threadId]="addNodeAiThreadId || null" [flowId]="currentFlowId || null"
+              (graphGenerated)="onAiNodeGraphGenerated($event)" (close)="onCloseAiMode()"></spotlight-creation-chat>
+          </ng-template>
         </ng-container>
       </nz-modal>
       <!-- Capture overlay to block pan/zoom while dragging selection -->
