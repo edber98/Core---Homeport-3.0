@@ -77,7 +77,7 @@
 
           <div class="node-card"  [attr.data-node-id]="ctx.node.id"
             [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal', 'spawn': spawnAnimNodes.has(ctx.node.id), 'spawn-lite': spawnLiteAnimNodes.has(ctx.node.id), 'removing': removingNodes.has(ctx.node.id), 'removing-lite': removingLiteNodes.has(ctx.node.id), 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }"
-            (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+            (pointerdown)="onNodePointerDown($event, ctx.node)" (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
    
@@ -490,7 +490,7 @@
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
-      <button class="icon-btn" (click)="onBackendAutoLayout()" [disabled]="layoutLoading" title="Auto-placer (backend)">
+      <button class="icon-btn" (click)="onAutoLayoutClick()" [disabled]="layoutLoading" [title]="autoLayoutTooltip()">
         <i class="fa-solid fa-sitemap"></i>
       </button>
       <button class="icon-btn" *ngIf="!isPhone" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
@@ -551,6 +551,8 @@
     <ng-container *ngIf="(selectionList?.length || 0) > 1; else singleCtx">
       <button (click)="ctxDuplicateGroup()"><i class="fa-regular fa-copy"></i> Dupliquer la sélection ({{selectionList.length}})</button>
       <button (click)="ctxCenterSelection()"><i class="fa-solid fa-crosshairs"></i> Centrer la sélection</button>
+      <button (click)="ctxCenterZoomSelection()"><i class="fa-solid fa-magnifying-glass-location"></i> Centrer + zoom sur la sélection</button>
+      <button (click)="ctxAutoLayoutSelection()"><i class="fa-solid fa-sitemap"></i> Auto-placer la sélection (backend)</button>
       <button (click)="ctxAlignSelection('horizontal')"><i class="fa-solid fa-arrows-left-right"></i> Aligner horizontalement</button>
       <button (click)="ctxAlignSelection('vertical')"><i class="fa-solid fa-arrows-up-down"></i> Aligner verticalement</button>
       <button class="danger" (click)="ctxDeleteGroup()"><i class="fa-regular fa-trash-can"></i> Supprimer la sélection ({{selectionList.length}})</button>

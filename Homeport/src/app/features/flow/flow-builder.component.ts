@@ -2608,6 +2608,9 @@ export class FlowBuilderComponent {
     try {
       if (this.layoutLoading) return;
       if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
+      // Snapshot current selection to restore it after layout
+      const prevSelIds = this.selectionIds();
+      const prevSelSet = new Set(prevSelIds);
       const graph = {
         nodes: (this.nodes || []).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
         edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
@@ -2662,6 +2665,14 @@ export class FlowBuilderComponent {
               this.pushState('auto.layout.backend');
               // Après auto-layout, primer un délai d'assistance pour éviter toute re-mesure avec décos visibles
               try { this.primeAssistDelayAllNodes(480); } catch {}
+              // Restore selection in ngx-vflow and our state
+              try {
+                const list = (this.nodes || []).filter(n => prevSelSet.has(String(n.id)));
+                this.selectionList = list;
+                this.selection = list[0] || null;
+                this.selectIdsWithRetry(prevSelIds, 6, 80);
+                try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+              } catch {}
               this.forceViewRefresh('auto-layout-apply');
               setTimeout(() => this.centerFlow(), 0);
             } catch {}
@@ -2670,6 +2681,213 @@ export class FlowBuilderComponent {
         error: (e) => { try { const er = this.normalizeApiError(e); this.message.error(er?.message || 'Échec de l\'auto-placement'); } catch {} },
         complete: () => { this.layoutLoading = false; try { this.cdr.detectChanges(); } catch {} }
       });
+    } catch {}
+  }
+
+  // Tooltip for bottom-bar auto-layout button
+  autoLayoutTooltip(): string {
+    try {
+      const count = (this.selectionList?.length || 0);
+      if (count > 1) return 'Auto-placer la sélection (backend)';
+      return 'Auto-placer (backend)';
+    } catch { return 'Auto-placer (backend)'; }
+  }
+
+  // Click handler decides between global vs selection-only
+  onAutoLayoutClick() {
+    try {
+      if ((this.selectionList?.length || 0) > 1) { this.onBackendAutoLayoutSelection(); }
+      else { this.onBackendAutoLayout(); }
+    } catch { this.onBackendAutoLayout(); }
+  }
+
+  // Auto-layout only the current selection (multi-selection), keeping others fixed
+  onBackendAutoLayoutSelection() {
+    try {
+      if (this.layoutLoading) return;
+      if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
+      const ids = this.selectionIds();
+      if (!ids.length || ids.length < 2) { this.onBackendAutoLayout(); return; }
+      const idSet = new Set(ids.map(String));
+      const subNodes = (this.nodes || []).filter(n => idSet.has(String(n.id))).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } }));
+      const subEdges = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target))).map((e: any) => ({ id: String(e.id||''), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }));
+      if (!subNodes.length) return;
+      const graph = { nodes: subNodes, edges: subEdges } as any;
+      this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
+      const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
+      const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
+      // description lines for selected only
+      const descLines: Record<string, number> = {};
+      try {
+        for (const n of subNodes) {
+          const id = String((n as any)?.id || ''); if (!id) continue;
+          const model: any = (n as any)?.data?.model || {};
+          if (model?.hide_description === true) continue;
+          const d: string = String(model?.description || '').trim();
+          if (!d) continue;
+          const wrap = (s: string) => { const len = s.length; const per = 36; return Math.max(1, Math.ceil(len / per)); };
+          const parts = d.split(/\n/);
+          const rawLines = parts.map(wrap).reduce((a, b) => a + b, 0);
+          const maxLines = (model?.expand_description === true) ? 12 : 3;
+          const lines = Math.min(rawLines, maxLines);
+          if (lines > 0) descLines[id] = lines;
+        }
+      } catch {}
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY, descLines: Object.keys(descLines).length ? descLines : undefined, includeDescriptions: true }).subscribe({
+        next: (resp: any) => {
+          this.zone.run(() => {
+            try {
+              const positions = (resp && (resp.positions || (resp.data && resp.data.positions))) || {};
+              const keys = positions ? Object.keys(positions) : [];
+              if (!keys.length) { try { this.message.warning('Auto-placement: aucune position pour la sélection'); } catch {}; return; }
+
+              // Compute anchor: keep selection group near its previous bounding-box center
+              const vp = this.flow?.viewportService?.readableViewport() || { zoom: 1 } as any;
+              const measure = (id: string) => {
+                let w = 223, h = 110;
+                try {
+                  const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(id))}\"]`) as HTMLElement | null;
+                  if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
+                } catch {}
+                return { w, h };
+              };
+              // Old bbox
+              let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+              for (const nid of ids) {
+                const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+                const p = n?.point || { x: 0, y: 0 };
+                const sz = measure(String(nid));
+                const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+                if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+                if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+              }
+              if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+              const oldCx = (minX + maxX) / 2; const oldCy = (minY + maxY) / 2;
+              // New bbox (from backend positions)
+              let nMinX = Infinity, nMinY = Infinity, nMaxX = -Infinity, nMaxY = -Infinity;
+              for (const k of keys) {
+                const p = (positions as any)[k]; const sz = measure(String(k));
+                const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+                if (x1 < nMinX) nMinX = x1; if (y1 < nMinY) nMinY = y1;
+                if (x2 > nMaxX) nMaxX = x2; if (y2 > nMaxY) nMaxY = y2;
+              }
+              const newCx = (nMinX + nMaxX) / 2; const newCy = (nMinY + nMaxY) / 2;
+              const dx = Math.round(oldCx - newCx); const dy = Math.round(oldCy - newCy);
+
+              // Prepare collision set of unselected nodes
+              const other = (this.nodes || []).filter(n => !idSet.has(String(n.id)));
+              const othersBB = other.map(n => {
+                const sz = measure(String(n.id));
+                return { id: String(n.id), x1: (n.point?.x||0), y1: (n.point?.y||0), x2: (n.point?.x||0) + sz.w, y2: (n.point?.y||0) + sz.h };
+              });
+              const overlaps = (a: {x1:number,y1:number,x2:number,y2:number}, b: {x1:number,y1:number,x2:number,y2:number}) => !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2);
+
+              // Map new positions with initial anchoring
+              const mapped = new Map<string, { x: number; y: number; w: number; h: number }>();
+              for (const k of keys) {
+                const p = (positions as any)[k]; const sz = measure(String(k));
+                mapped.set(String(k), { x: Math.round(p.x + dx), y: Math.round(p.y + dy), w: sz.w, h: sz.h });
+              }
+              // If any overlap with others, shift selection group down until clear (limited iterations)
+              const step = 20; let iter = 0;
+              const bboxOf = (m: Map<string, {x:number;y:number;w:number;h:number}>) => {
+                let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity; for (const v of m.values()){ const x1=v.x,y1=v.y,x2=v.x+v.w,y2=v.y+v.h; if(x1<a)a=x1; if(y1<b)b=y1; if(x2>c)c=x2; if(y2>d)d=y2; } return {x1:a,y1:b,x2:c,y2:d};
+              };
+              while (iter < 200) {
+                const bbSel = bboxOf(mapped);
+                const hit = othersBB.some(o => overlaps(bbSel, o));
+                if (!hit) break;
+                for (const [k,v] of mapped.entries()) mapped.set(k, { ...v, y: v.y + step });
+                iter++;
+              }
+
+              // Suppress transient graph events while applying only to selected nodes
+              const until = Date.now() + 900;
+              this.suppressNodesRemovedUntil = until as any;
+              this.suppressGraphEventsUntil = until as any;
+              this.suppressRemoveUntil = until as any;
+              // Apply only to selected nodes
+              const map = new Map<string, { x: number; y: number }>();
+              for (const [k,v] of mapped.entries()) map.set(String(k), { x: v.x, y: v.y });
+              const updated = (this.nodes || []).map(n => {
+                const id = String(n.id); const p = map.get(id);
+                return p ? { ...n, point: { x: p.x, y: p.y } } : n;
+              });
+              this.nodes = updated;
+              this.updateSharedGraph();
+              this.pushState('auto.layout.backend.selection');
+              // Mark as programmatic align-like move to suppress pointerup snapshot flush
+              this.lastAlignAt = Date.now();
+              this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
+              this.suppressNextMoveSnapshot = true;
+              try { this.draggingNodes.clear(); this.pendingPositions = {} as any; } catch {}
+              try { this.primeAssistDelayAllNodes(480); } catch {}
+              // Restore selection list + vflow selection
+              try {
+                const list = (this.nodes || []).filter(n => idSet.has(String(n.id)));
+                this.selectionList = list;
+                this.selection = list[0] || null;
+                this.selectIdsWithRetry(Array.from(idSet), 6, 80);
+                try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+              } catch {}
+              this.forceViewRefresh('auto-layout-selection-apply');
+            } catch {}
+          });
+        },
+        error: (e) => { try { const er = this.normalizeApiError(e); this.message.error(er?.message || 'Échec de l\'auto-placement de la sélection'); } catch {} },
+        complete: () => { this.layoutLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
+    } catch {}
+  }
+
+  // Context menu hooks for selection actions
+  ctxAutoLayoutSelection() { this.closeCtxMenu(); this.onBackendAutoLayoutSelection(); }
+  ctxCenterZoomSelection() { this.closeCtxMenu(); this.centerZoomOnSelection(); }
+
+  // Center and zoom to fit current selection with a max zoom cap
+  centerZoomOnSelection(maxZoom: number = 1.6) {
+    try {
+      const list = Array.isArray(this.selectionList) ? this.selectionList : (this.selection ? [this.selection] : []);
+      const ids = list.filter(n => n && !(n as any).source && (n as any).id).map(n => String((n as any).id));
+      if (!ids.length) return;
+      const vs: any = this.flow?.viewportService; if (!vs || !this.flowHost?.nativeElement) return;
+      const vp = this.flow.viewportService.readableViewport();
+      const rect = this.flowHost.nativeElement.getBoundingClientRect();
+      const zoom = vp.zoom || 1;
+      // Measure world bbox of selection
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      const measure = (id: string) => {
+        let w = 223, h = 110;
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(id))}\"]`) as HTMLElement | null;
+          if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / zoom; h = r.height / zoom; } }
+        } catch {}
+        return { w, h };
+      };
+      for (const nid of ids) {
+        const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+        const p = n?.point || { x: 0, y: 0 };
+        const sz = measure(String(nid));
+        const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+        if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+        if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+      }
+      if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+      const worldW = Math.max(60, maxX - minX);
+      const worldH = Math.max(60, maxY - minY);
+      const pad = 0.10; // 10% padding
+      const targetZoomW = (rect.width * (1 - pad)) / worldW;
+      const targetZoomH = (rect.height * (1 - pad)) / worldH;
+      let newZoom = Math.min(targetZoomW, targetZoomH);
+      newZoom = Math.max(0.05, Math.min(maxZoom, newZoom));
+      // Center at bbox center
+      const cx = (minX + maxX) / 2; const cy = (minY + maxY) / 2;
+      const centerScreenX = rect.width / 2; const centerScreenY = rect.height / 2;
+      const x = centerScreenX - (cx * newZoom);
+      const y = centerScreenY - (cy * newZoom);
+      vs.writableViewport.set({ changeType: 'absolute', state: { zoom: newZoom, x, y }, duration: 200 });
+      try { vs.triggerViewportChangeEvent?.('end'); } catch {}
+      this.updateZoomDisplay();
     } catch {}
   }
 
@@ -3519,11 +3737,16 @@ export class FlowBuilderComponent {
         return n;
       });
       if (changed) {
-        // Prevent accidental node removal reactions during batch update
-        try { this.suppressNodesRemovedUntil = Date.now() + 900; } catch {}
+        // Prevent accidental graph removal reactions during batch update
+        try {
+          const until = Date.now() + 900;
+          this.suppressNodesRemovedUntil = until as any;
+          this.suppressGraphEventsUntil = until as any;
+          this.suppressRemoveUntil = until as any;
+        } catch {}
         this.nodes = next;
         try { this.cdr.detectChanges(); } catch {}
-        try { this.setVflowSelectedIds(Array.from(idsSet)); } catch {}
+        try { this.selectIdsWithRetry(Array.from(idsSet), 6, 80); } catch {}
         // Mark recent align to suppress trailing pointerup snapshot
         this.lastAlignAt = Date.now();
         this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
@@ -3540,6 +3763,17 @@ export class FlowBuilderComponent {
 
   onSelected(ev: any) {
     // Vflow may emit single entity or array of entities
+    // If we are dragging and we have an app-managed multi-selection, ignore vflow deselection
+    try {
+      const dragging = this.draggingNodes && this.draggingNodes.size > 0;
+      const guard = dragging || this.dragIntentActive || (Date.now() < this.dragLockSelectionUntil);
+      if (guard && ((this.selectionList?.length || 0) > 1 || (this.dragIntentIds?.length || 0) > 1)) {
+        const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+        try { this.log('sel.onSelected.guard', { dragging, intent: this.dragIntentActive, ids }); } catch {}
+        try { if (ids.length) this.setVflowSelectedIds(ids); } catch {}
+        return;
+      }
+    } catch {}
     const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
     this.selectionList = list;
     this.selection = list.length ? list[0] : null;
@@ -3548,7 +3782,15 @@ export class FlowBuilderComponent {
 
   onComponentNodeEvent(ev: any) {
     try {
+      const dragging = this.draggingNodes && this.draggingNodes.size > 0;
       const arr = (ev && (ev.selected || ev.selection || ev.nodes)) ? (ev.selected || ev.selection || ev.nodes) : null;
+      const guard = dragging || this.dragIntentActive || (Date.now() < this.dragLockSelectionUntil);
+      if (guard && ((this.selectionList?.length || 0) > 1 || (this.dragIntentIds?.length || 0) > 1)) {
+        const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+        try { this.log('sel.onComponentNodeEvent.guard', { dragging, intent: this.dragIntentActive, ids }); } catch {}
+        try { if (ids.length) this.setVflowSelectedIds(ids); } catch {}
+        return;
+      }
       if (Array.isArray(arr)) {
         this.selectionList = arr as any[];
         this.selection = this.selectionList[0] || null;
@@ -5525,6 +5767,48 @@ export class FlowBuilderComponent {
   private isCoarsePointer(): boolean {
     try { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || (navigator as any)?.maxTouchPoints > 0; } catch { return false; }
   }
+  // Drag-intent state to guard vflow selection churn at drag start
+  private dragIntentActive = false;
+  private dragIntentIds: string[] = [];
+  private dragIntentTimer: any = null;
+  private dragLockSelectionUntil = 0;
+  onNodePointerDown(ev: PointerEvent, node: any) {
+    try {
+      const ids = this.selectionIds();
+      const multi = (ids.length || 0) > 1;
+      const id = String(node?.id || '');
+      if (!id) return;
+      // Only guard if the pointer-down is on a node already in selection OR we have multi-selection
+      const inSel = ids.includes(id);
+      if (multi || inSel) {
+        this.dragIntentActive = true;
+        this.dragIntentIds = ids;
+        try { this.log('sel.drag.intent.start', { ids }); } catch {}
+        if (this.dragIntentTimer) clearTimeout(this.dragIntentTimer);
+        this.dragIntentTimer = setTimeout(() => { this.dragIntentActive = false; this.dragIntentIds = []; try { this.log('sel.drag.intent.expire'); } catch {} }, 1600);
+        // Force vflow to reflect full selection before it starts its internal drag logic
+        try { if (ids.length) { this.setVflowSelectedIds(ids); this.selectIdsWithRetry(ids, 3, 40); } } catch {}
+        this.dragLockSelectionUntil = Date.now() + 1200;
+      }
+    } catch {}
+  }
+  private dragSelectionSyncTimer: any = null;
+  private beginDragSelectionSync() {
+    try {
+      if (this.dragSelectionSyncTimer) { clearInterval(this.dragSelectionSyncTimer); this.dragSelectionSyncTimer = null; }
+      const apply = () => {
+        try {
+          const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+          if (ids.length) { this.setVflowSelectedIds(ids); try { this.log('sel.drag.sync.tick', { ids }); } catch {} }
+        } catch {}
+      };
+      apply();
+      this.dragSelectionSyncTimer = setInterval(apply, 120);
+    } catch {}
+  }
+  private endDragSelectionSync() {
+    try { if (this.dragSelectionSyncTimer) { clearInterval(this.dragSelectionSyncTimer); this.dragSelectionSyncTimer = null; } } catch {}
+  }
   // Force vflow to reflect our app-managed selection (so multi-drag works and emits .many)
   private setVflowSelectedIds(ids: string[]) {
     try {
@@ -5568,18 +5852,22 @@ export class FlowBuilderComponent {
     const id = change?.id;
     const pt = change?.to?.point || change?.point || change?.to;
     if (!id || !pt) { return; }
+    const wasEmptyDrag = this.draggingNodes.size === 0;
     // Cache the last known point; do not mutate nodes during drag
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
     this.draggingNodes.add(String(id));
     // Hide assist for this node outputs while position settles (prevents anchor bbox flicker)
     try { this.primeAssistDelayForNode(String(id), 420); } catch {}
+    // If vflow deselected during drag start, reassert our selection in vflow
+    if (wasEmptyDrag) { this.beginDragSelectionSync(); }
   }
 
   // Many nodes moved at once (multi-select drag, helper alignment moves)
   onNodesPositionMany(changes: any[]) {
     if (this.isIgnoring()) { return; }
     if (!Array.isArray(changes) || !changes.length) return;
+    const wasEmptyDrag = this.draggingNodes.size === 0;
     for (const c of changes) {
       try {
         const id = String(c?.id || '');
@@ -5591,6 +5879,8 @@ export class FlowBuilderComponent {
       } catch {}
     }
     // debug logs removed
+    // If vflow deselected during drag start, reassert our selection in vflow
+    if (wasEmptyDrag) { this.beginDragSelectionSync(); }
   }
 
   onWheel(_ev: WheelEvent) {
@@ -5902,10 +6192,14 @@ export class FlowBuilderComponent {
       this.draggingNodes.clear();
       this.pendingPositions = {} as any;
       this.suppressNextMoveSnapshot = false;
+      this.endDragSelectionSync();
+      this.dragIntentActive = false; this.dragIntentIds = []; if (this.dragIntentTimer) { clearTimeout(this.dragIntentTimer); this.dragIntentTimer = null; }
       return;
     }
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
+    this.endDragSelectionSync();
+    this.dragIntentActive = false; this.dragIntentIds = []; if (this.dragIntentTimer) { clearTimeout(this.dragIntentTimer); this.dragIntentTimer = null; }
     // Delay a bit so Vflow can finalize helper adjustments before we read positions
     setTimeout(() => {
       const updated: Record<string, { x: number; y: number }> = {};
