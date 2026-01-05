@@ -426,7 +426,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
       schema: {},
       func: async (input) => {
         try {
-          if (argsLocked) { try { console.warn('[ai-create-node][args][locked_ignore]'); } catch {} send({ type:'error', code:'args_locked', message:'Arguments déjà fournis par l’agent Args' }); return 'args_locked'; }
+          if (argsLocked) { try { console.warn('[ai-create-node][args][locked_ignore]'); } catch {} return 'args_locked'; }
           const args = (input && typeof input === 'object') ? (input.args && typeof input.args==='object' ? input.args : input) : {};
           pendingArgs = args;
           try { console.info('[ai-create-node][args]', { keys: Object.keys(args||{}).length }); } catch {}
@@ -441,7 +441,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
       schema: {},
       func: async (input) => {
         try {
-          if (descLocked) { try { console.warn('[ai-create-node][desc][locked_ignore]'); } catch {} send({ type:'error', code:'desc_locked', message:'Description déjà fournie par l’agent Args' }); return 'desc_locked'; }
+          if (descLocked) { try { console.warn('[ai-create-node][desc][locked_ignore]'); } catch {} return 'desc_locked'; }
           let text = '';
           if (input && typeof input==='object') text = String(input.description ?? input.text ?? '');
           pendingDesc = text;
@@ -563,11 +563,13 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
         } else if (ev.event === 'on_tool_end') {
           try { console.info('[ai-create-node][tool] end', ev.name); } catch {}
           send({ type:'tool.end', name: ev.name, ok: true });
-          if (emittedFinal && String(ev.name||'') === 'emit_graph') { try { done(); } catch {} break; }
+          // Do not finalize stream here; allow the model to emit any final assistant messages
+          // after emit_graph completes. We'll call done() once the event stream naturally ends.
         }
       } catch {}
     }
-    if (!emittedFinal) done();
+    // Finalize the SSE stream after model completes (whether or not a final graph was emitted)
+    try { done(); } catch {}
   } catch (e) {
     const msg = String(e?.message || e || 'error');
     // Sub-agent seed-only to infer args using scenarios and predecessors

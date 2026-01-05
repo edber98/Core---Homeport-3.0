@@ -129,12 +129,19 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
   private sendPrompt(txt: string) {
     const now = Date.now();
     this.messages = [...this.messages, { id: `u-${now}`, role:'user', text: txt, createdAt: now }];
+    // Track timings and error flags for end-of-stream logs
+    let startedAt = now;
+    let sawEventSourceError = false;
+    let sawDone = false;
     try { this.cdr.detectChanges(); } catch {}
     // Persist user message into the temporary thread when available
     try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'user', text: txt } as any).subscribe(()=>{}); } catch {}
     try { console.log('[spotlight-creation] send stream', { hasSeed: !!this.seedGraph, sourceId: this.sourceId, sourceHandle: this.sourceHandle, threadId: this.threadId, flowId: this.flowId }); } catch {}
     const stream = this.creator.stream({ prompt: txt, seedGraph: this.seedGraph, sourceId: this.sourceId, sourceHandle: this.sourceHandle || undefined, threadId: this.threadId || undefined, flowId: this.flowId || undefined });
     let assistantParts: any[] = [];
+    let lastLineAppended: string | null = null;
+    let sawSseDoneMsg = false;
+    let sawSseFinishedMsg = false;
     const appendText = (t: string) => {
       if (!t) return;
       const last = assistantParts[assistantParts.length - 1];
@@ -144,6 +151,9 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
       next: (ev: CreateNodeEvent) => {
         if (!ev) return;
         if (ev.type === 'error') {
+          const code = String((ev as any).code || '').toLowerCase();
+          if (code === 'eventsource_error') { sawEventSourceError = true; return; }
+          if (code === 'args_locked' || code === 'desc_locked') { return; }
           const msg = `\n[erreur] ${(ev as any).code || ''} ${(ev as any).message || ''}`.trim();
           appendText(msg);
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
@@ -157,7 +167,12 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           for (const line of lines) {
             if (!line) continue;
             const isTool = /^\[tool\]/i.test(line);
-            appendText(isTool ? ('\n' + line) : line);
+            if (/^\[ai-create-node\]\[sse\] done/i.test(line)) sawSseDoneMsg = true;
+            if (/^\[ai-create-node\]\[sse\] finished/i.test(line)) sawSseFinishedMsg = true;
+            const out = isTool ? ('\n' + line) : line;
+            if (lastLineAppended === line) continue;
+            appendText(out);
+            lastLineAppended = line;
           }
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
@@ -193,20 +208,23 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           this.graphProposal = (ev as any).graph;
           try { this.cdr.detectChanges(); } catch {}
         }
-        if (ev.type === 'done') {
-          // If no final graph was emitted, still persist the assistant preview as a message
-          const hasPreview = assistantParts.length > 0;
-          const parts = assistantParts.slice(); assistantParts = [];
-          if (hasPreview) {
-            const others = this.messages.filter(x => !x.pending);
-            this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts, createdAt: Date.now() }];
-            try { this.cdr.detectChanges(); } catch {}
-            try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(()=>{}); } catch {}
-          }
-        }
+        if (ev.type === 'done') { sawDone = true; /* no transcript line for done */ }
       },
       error: () => { try { sub.unsubscribe(); } catch {} },
-      complete: () => { try { sub.unsubscribe(); } catch {} }
+      complete: () => {
+        try { sub.unsubscribe(); } catch {}
+        // Finalize and persist a single assistant message including closing logs
+        const dt = Date.now() - startedAt;
+        // No transcript line for finished; just finalize/persist
+        const hasPreview = assistantParts.length > 0;
+        const parts = assistantParts.slice(); assistantParts = [];
+        if (hasPreview) {
+          const others = this.messages.filter(x => !x.pending);
+          this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts, createdAt: Date.now() }];
+          try { this.cdr.detectChanges(); } catch {}
+          try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts } as any).subscribe(()=>{}); } catch {}
+        }
+      }
     });
   }
   clearGraphProposal(){ this.graphProposal = null; try { this.cdr.detectChanges(); } catch {} }
