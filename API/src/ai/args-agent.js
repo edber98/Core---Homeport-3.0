@@ -24,6 +24,7 @@ function systemPromptBase(){
     'Tu es un assistant spécialisé pour PROPOSER les arguments (context) d’un nœud et une description courte du nœud dans Homeport.',
     "Utilise UNIQUEMENT les tools fournis pour: 1) récupérer le schéma, 2) lister les nœuds précédents (noms, descriptions), 3) récupérer les scénarios simulés (msgIn), 4) récupérer les infos du nœud si utile (get_node_info), 5) émettre tes propositions via les tools (pas dans le message).",
     "Objectif: produire des valeurs concrètes et cohérentes pour les champs du schéma en te basant sur les descriptions des champs, du nœud, des nœuds précédents et le msgIn du scénario; et PROPOSER une description claire et concise du nœud (1–2 phrases) qui reflète ce qu’il fait.",
+    "Astuce: appelle get_scenarios puis get_msgin_preview pour synthétiser les infos utiles (ex: 'Prénom: …, Nom: …, …') et les intégrer dans le prompt.",
     "Contraintes: réponds en français; ne change PAS la structure du schéma; n’affiche PAS de listes exhaustives (schéma, nœuds, scénarios) dans le message; n’écho PAS le contexte brut.",
     "SI TU AS ASSEZ D’INFORMATIONS: tu DOIS appeler set_node_args (avec les champs pertinents seulement) ET set_node_description (1–2 phrases). N’écris PAS les valeurs dans ton message; utilise les tools.",
     "SI UNE INFORMATION MANQUE: pose UNE question courte et précise, sinon propose directement via les tools.",
@@ -37,6 +38,9 @@ function systemPromptBase(){
 async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, send, getFlow }){
   // getFlow est fourni par l'appelant (peut retourner un seedGraph override)
   const ensureGetFlow = typeof getFlow === 'function' ? getFlow : async () => { throw new Error('getFlow_not_provided'); };
+
+  // Mémo du dernier scénario choisi
+  let lastScenario = null;
 
   const listPredecessors = (graph, targetId) => {
     const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
@@ -141,7 +145,75 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
         }
         const chosen = picked || arr[0] || null;
         const keys = chosen && chosen.msgIn ? flattenKeys(chosen.msgIn) : [];
-        return JSON.stringify({ total: arr.length, selected: chosen ? { label: chosen.label, index: chosen.index, msgIn: chosen.msgIn, msgKeys: keys } : null });
+        try {
+          lastScenario = chosen;
+          console.info('[ai-args][get_scenarios]', { total: arr.length, pickedIndex: (chosen && chosen.index != null) ? chosen.index : -1, keys: keys.length });
+          const full = (chosen && chosen.msgIn && typeof chosen.msgIn === 'object') ? chosen.msgIn : {};
+          const payload = full && typeof full === 'object' ? (full.payload || {}) : {};
+          const rootKeys = Object.keys(full || {});
+          const payloadKeys = Object.keys(payload || {});
+          // Console log complet (tronqué) pour debug backend
+          try {
+            const j = JSON.stringify(full);
+            console.info('[ai-args][get_scenarios][msgIn]', { rootKeys, payloadKeys, size: j.length });
+            console.info('[ai-args][get_scenarios][msgIn.json]', j.length > 1200 ? j.slice(0, 1200) + '…' : j);
+          } catch {}
+          // Emit concise debug messages pour l'UI
+          send({ type:'message', role:'assistant', text: `[tool] msgIn keys=${keys.length} payloadKeys=${payloadKeys.length}` });
+          const prev = JSON.stringify({ payload }, null, 0);
+          const short = prev.length > 500 ? prev.slice(0, 500) + '…' : prev;
+          send({ type:'message', role:'assistant', text: `[tool] msgIn.payload ${short}` });
+        } catch {}
+        
+        
+    return  JSON.stringify({ total: arr.length, selected: chosen ? { label: chosen.label, index: (chosen.index != null ? chosen.index : 0), msgIn: chosen.msgIn, msgKeys: keys } : null });
+
+  }
+    }),
+    new DynamicStructuredTool({
+      name: 'get_msgin_preview',
+      description: "Retourne une synthèse texte des valeurs utiles du msgIn sélectionné (ex: 'Prénom: …, Nom: …, …').",
+      schema: {},
+      func: async () => {
+        try {
+          const graph = await ensureGetFlow();
+          // Si aucun scénario en cache, calculer par défaut
+          if (!lastScenario) {
+            const { simulateViaEngineSplit, simulateViaEngine } = require('../utils/flow-simulate-engine');
+            let data = null;
+            try { data = await simulateViaEngineSplit(graph, String(nodeId)); }
+            catch { try { data = await simulateViaEngine(graph, String(nodeId)); } catch {} }
+            if (!data) { const { simulateScenarios } = require('../utils/flow-simulate'); data = simulateScenarios(graph, String(nodeId), 'all'); }
+            const arr = Array.isArray(data?.scenarios) ? data.scenarios : [];
+            lastScenario = arr[0] || null;
+          }
+          const msg = lastScenario?.msgIn || {};
+          // Heuristique: privilégier les champs du start_form si accessibles; sinon payload + racine
+          const pairs = [];
+          const pushPair = (k, v) => {
+            const val = (v == null) ? '' : (typeof v === 'string' ? v : (typeof v === 'number' ? String(v) : (typeof v === 'boolean' ? (v?'true':'false') : '…')));
+            if (k && val !== '') pairs.push(`${k}: ${val}`);
+          };
+          try {
+            // payload keys
+            if (msg && typeof msg === 'object' && msg.payload && typeof msg.payload === 'object') {
+              const entries = Object.entries(msg.payload).slice(0, 8);
+              for (const [k,v] of entries) pushPair(k, v);
+            }
+          } catch {}
+          try {
+            // flatten root simple keys (excluding _nodes, payload)
+            const entries = Object.entries(msg).filter(([k,_]) => k !== '_nodes' && k !== 'payload').slice(0, 4);
+            for (const [k,v] of entries) {
+              if (v && typeof v === 'object') continue; pushPair(k,v);
+            }
+          } catch {}
+          const text = pairs.length ? pairs.join(', ') : '';
+
+          try { console.info('[ai-args][msg_preview]', { len: text.length, fields: pairs.length }); } catch {}
+          console.log(pairs)
+          return JSON.stringify({ text, fields: pairs.length });
+        } catch (e) { try { console.warn('[ai-args][msg_preview][error]', e?.message||e); } catch {} return 'error'; }
       }
     }),
     new DynamicStructuredTool({

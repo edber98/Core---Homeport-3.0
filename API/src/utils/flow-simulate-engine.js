@@ -127,7 +127,7 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         // Capturer le msgIn fourni par le moteur
         let msgIn = ev.msgIn || null;
         try {
-          // Si la dernière arête vers la cible provient d'une condition, refléter le 'chosen' dans payload
+          // Si la dernière arête vers la cible provient d'une condition, refléter le 'chosen' dans payload (sans écraser)
           const incoming = takenEdges.filter(e => String(e.targetId) === String(targetNodeId));
           const last = incoming[incoming.length - 1] || null;
           if (last) {
@@ -137,11 +137,20 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
               const chosen = String(last.sourceHandle || '');
               try {
                 if (!msgIn || typeof msgIn !== 'object') msgIn = {};
-                msgIn.payload = { chosen };
+                const beforeKeys = (msgIn && msgIn.payload && typeof msgIn.payload === 'object') ? Object.keys(msgIn.payload) : [];
+                const base = (msgIn && msgIn.payload && typeof msgIn.payload === 'object') ? msgIn.payload : {};
+                msgIn.payload = { ...base, chosen };
+                const afterKeys = Object.keys(msgIn.payload||{});
+                console.info('[simulate:engine] payload.injected_from_condition', { sourceId: last.sourceId, chosen, beforeKeys: beforeKeys.length, afterKeys: afterKeys.length });
               } catch {}
-              try { console.log('[simulate:engine] payload.injected_from_condition', { sourceId: last.sourceId, chosen }); } catch {}
             }
           }
+          // Journaliser un snapshot du payload sans fusion (comportement demandé: pas de merge)
+          try {
+            const snap = (msgIn && typeof msgIn === 'object' && msgIn.payload && typeof msgIn.payload === 'object') ? msgIn.payload : {};
+            const prev = JSON.stringify(snap);
+            console.info('[simulate:engine] msgIn.payload.snapshot', prev.length > 800 ? prev.slice(0, 800) + '…' : prev);
+          } catch {}
         } catch {}
         captured = { msgIn };
         try { console.log('[simulate:engine] captured target node.msgIn', { nodeId: ev.nodeId, payloadType: typeof (msgIn?.payload), keys: msgIn ? Object.keys(msgIn||{}) : [] }); } catch {}

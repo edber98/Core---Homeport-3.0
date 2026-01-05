@@ -131,13 +131,12 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
       next: (ev: CreateNodeEvent) => {
         if (!ev) return;
         if (ev.type === 'error') {
-          const parts = assistantParts.slice();
-          assistantParts = [];
+          const msg = `\n[erreur] ${(ev as any).code || ''} ${(ev as any).message || ''}`.trim();
+          appendText(msg);
+          const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
-          const msg = `Erreur: ${((ev as any).message || (ev as any).code || 'échec')}\n`;
-          this.messages = [...others, { id:`a-${Date.now().toString(36)}`, role:'assistant', parts: [{ kind:'text', text: msg }], createdAt: Date.now() }];
+          this.messages = [...others, tmp];
           try { this.cdr.detectChanges(); } catch {}
-          try { const tid = this.threadId || null; if (tid) this.chats.appendMessage(tid, { threadId: tid, role: 'assistant', parts: [{ kind:'text', text: msg }] } as any).subscribe(()=>{}); } catch {}
           return;
         }
         if (ev.type === 'message' && ev.text) {

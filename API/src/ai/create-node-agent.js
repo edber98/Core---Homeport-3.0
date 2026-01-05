@@ -236,8 +236,9 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
           // Forward les events de l'agent ARGS, avec préfixe pour les tools
           const forwardSend = (obj) => {
             try {
-              if (obj?.type === 'tool.start') send({ ...obj, type:'tool.start', name: `nodeargs.${obj.name}` });
-              else if (obj?.type === 'tool.end') send({ ...obj, type:'tool.end', name: `nodeargs.${obj.name}` });
+              if (obj?.type === 'tool.start') { send({ ...obj, type:'tool.start', name: `nodeargs.${obj.name}` }); return; }
+              if (obj?.type === 'tool.end') { send({ ...obj, type:'tool.end', name: `nodeargs.${obj.name}` }); return; }
+              if (obj?.type === 'done') { send({ type:'tool.end', name:'nodeargs.session', ok:true }); return; }
               else if (obj?.type === 'args') { pendingArgs = obj.args || {}; send(obj); }
               else if (obj?.type === 'desc') { pendingDesc = obj.text || ''; send(obj); }
               else if (obj?.type) send(obj);
