@@ -146,7 +146,11 @@
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
 .node-card .center-wrap node-card-header { pointer-events:auto; }
-.node-card .center-wrap .desc { color:#6b7280; font-size:12px; margin: 6px 0; padding: 0 8px; white-space: pre-line; word-break: break-word; }
+.node-card .desc { color:#6b7280; font-size:12px; white-space: pre-line; word-break: break-word; }
+.node-card .center-wrap .desc { margin: 6px 0; padding: 0; }
+.node-card .desc-links { display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; padding: 0 8px; }
+.node-card .desc-links > .desc { flex: 1 1 auto; margin: 6px 0; padding: 0; }
+.node-card .desc-links > .links { flex: 0 0 auto; display:flex; flex-direction: column; align-items:flex-end; gap:8px; margin-top: 4px; }
 .node-card.select-node { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.15); }
 .node-card.error-branch { border-color: rgba(247,89,171,0.63); box-shadow: none; }
 .node-card.select-node.error-branch { border-color:#f759ab; box-shadow: 0 0 0 2px rgba(247,89,171,0.35); }

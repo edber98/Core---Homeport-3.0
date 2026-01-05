@@ -95,7 +95,10 @@
                   [iconClass]="ctx.node.data.model.templateObj?.icon"
                   [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
                 ></node-card-header>
-                <div class="desc" *ngIf="ctx.node.data.model?.description as d">{{ d }}</div>
+                <div class="desc" *ngIf="ctx.node.data.model?.description as d"
+                     [ngStyle]="{ display: (portOrientation === 'vertical' && (linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+                  {{ d }}
+                </div>
               </div>
           
               <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
@@ -242,29 +245,53 @@
                </div>
           </div>
             <!-- Link handles (targets on the right) for v2 -->
-            <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
-              <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
-                <div class="link-label">{{ lh.name }}</div>
-                <ng-template #linkTpl let-hctx>
-                  <svg:g>
-                    <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                      [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                      [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
-                      (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
-                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
-                      (mouseleave)="onHandleLeave()"></svg:circle>
-                  </svg:g>
-                </ng-template>
-                <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
-                  <!-- Vertical: linked handles are outputs on the right side -->
-                  <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
-                </ng-container>
-                <ng-template #horizLink>
-                  <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
-                  <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
-                </ng-template>
+            <ng-container *ngIf="portOrientation === 'vertical'; else linksDefault">
+              <div class="desc-links" *ngIf="(linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0">
+                <div class="desc" *ngIf="ctx.node.data.model?.description as d">{{ d }}</div>
+                <div class="links">
+                  <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                    <div class="link-label">{{ lh.name }}</div>
+                    <ng-template #linkTpl let-hctx>
+                      <svg:g>
+                        <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                          [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                          [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                          (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
+                          (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
+                          (mouseleave)="onHandleLeave()"></svg:circle>
+                      </svg:g>
+                    </ng-template>
+                    <!-- Vertical: linked handles are outputs on the right side -->
+                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </div>
+                </div>
               </div>
-            </div>
+            </ng-container>
+            <ng-template #linksDefault>
+              <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
+                <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                  <div class="link-label">{{ lh.name }}</div>
+                  <ng-template #linkTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
+                        (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
+                    <!-- Vertical: linked handles are outputs on the right side -->
+                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-container>
+                  <ng-template #horizLink>
+                    <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
+                    <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-template>
+                </div>
+              </div>
+            </ng-template>
             <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
               <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
