@@ -45,7 +45,8 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
       </div>
     </div>
     <div class="args-proposal" *ngIf="descProposal">
-      <div class="desc">Proposition de description: <span class="mono">{{ (descProposal || '').slice(0, 120) }}{{ (descProposal||'').length>120 ? '…' : '' }}</span></div>
+      <div class="desc">Proposition de description:</div>
+      <div class="preview clamp">{{ descProposal }}</div>
       <div class="actions">
         <button class="btn small" (click)="emitApplyDesc()"><i class="fa-solid fa-eye"></i> Aperçu + Appliquer</button>
         <button class="btn small ghost" (click)="clearDescProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
@@ -90,6 +91,8 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .mono { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
     .args-proposal { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border-top:1px solid #e5e7eb; background:#fffbe6; color:#111; }
     .args-proposal .desc { font-size: 12px; }
+    .args-proposal .preview { font-size: 12px; color:#374151; max-width: 100%; }
+    .clamp { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient: vertical; overflow:hidden; text-overflow: ellipsis; }
     .args-proposal .actions { display:flex; gap:8px; }
     .btn.small { appearance:none; border:1px solid #e5e7eb; background:#fff; color:#111; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; }
     .btn.small.ghost { background:#fafafa; }

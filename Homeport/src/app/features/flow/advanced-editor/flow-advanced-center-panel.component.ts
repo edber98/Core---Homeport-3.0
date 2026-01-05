@@ -200,6 +200,17 @@ import { NodeAssistantChatComponent } from '../components/node-assistant-chat.co
               (applyDesc)="onAssistantApplyDesc($event)"
               (undoArgsRequested)="undoApplyArgs()"
               (undoDescRequested)="undoApplyDesc()"></node-assistant-chat>
+            <div class="ai-args-history" *ngIf="(model?.aiArgsHistory?.length)" style="border-top:1px solid #f0f0f0; padding:8px 10px;">
+              <div style="font-weight:600; font-size:12px; margin-bottom:6px;">Historique des arguments (AI)</div>
+              <div *ngFor="let it of model.aiArgsHistory; let i = index" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed #eee;">
+                <div style="font-size:12px; color:#374151;">
+                  <span class="mono">{{ it.ts | date:'short' }}</span> · {{ (it.next && (Object.keys(it.next)||[]).length) || 0 }} clés
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button nz-button nzSize="small" (click)="restoreArgsSnapshot(it)"><i class="fa-solid fa-rotate-left"></i> Restaurer</button>
+                </div>
+              </div>
+            </div>
           </div>
         </nz-tab>
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
@@ -338,6 +349,8 @@ export class FlowAdvancedCenterPanelComponent {
   selectedCredId: string | null = null;
   createVisible = false;
   workspaceId: string | null = null;
+  // Expose global Object for template usages like Object.keys
+  Object = Object;
 
   ngOnChanges(changes: SimpleChanges) {
     // Reset local form history only when switching node/template (not on each context patch)
@@ -447,7 +460,10 @@ export class FlowAdvancedCenterPanelComponent {
       const v = args && typeof args === 'object' ? JSON.parse(JSON.stringify(args)) : {};
       const prev = (this.model?.context && typeof this.model.context === 'object') ? JSON.parse(JSON.stringify(this.model.context)) : {};
       this.lastAppliedArgs = { prev, next: v };
-      const m = { ...this.model, context: v };
+      const hist = Array.isArray((this.model as any).aiArgsHistory) ? ((this.model as any).aiArgsHistory as any[]).slice() : [];
+      hist.push({ id: 'h' + Date.now().toString(36), ts: Date.now(), by: 'ai-args', prev, next: v, threadId: this.model?.aiChatThreadId || null });
+      while (hist.length > 20) hist.shift();
+      const m = { ...this.model, context: v, aiArgsHistory: hist } as any;
       this.model = m;
       this.modelChange.emit(m);
       this.committed.emit(m);
@@ -460,7 +476,7 @@ export class FlowAdvancedCenterPanelComponent {
   undoApplyArgs() {
     try {
       const last = this.lastAppliedArgs; if (!last) return;
-      const m = { ...this.model, context: JSON.parse(JSON.stringify(last.prev || {})) };
+      const m = { ...this.model, context: JSON.parse(JSON.stringify(last.prev || {})) } as any;
       this.model = m;
       this.modelChange.emit(m);
       this.committed.emit(m);
@@ -468,6 +484,21 @@ export class FlowAdvancedCenterPanelComponent {
       try { this.msg.info('Chargement annulé (arguments)'); } catch {}
       try { this.cdr.detectChanges(); } catch {}
       // chat message is appended by the chat component
+    } catch {}
+  }
+
+  restoreArgsSnapshot(item: any) {
+    try {
+      if (!item || !item.next) return;
+      const ok = window.confirm('Restaurer ces arguments depuis l\'historique ?');
+      if (!ok) return;
+      const v = JSON.parse(JSON.stringify(item.next || {}));
+      const m = { ...this.model, context: v } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Arguments restaurés'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
     } catch {}
   }
 
