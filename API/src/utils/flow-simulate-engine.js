@@ -3,10 +3,16 @@ const { buildSampleFromSchema, getStartFormSchema } = require('./flow-simulate')
 
 function pickOutputHandle(tpl){
   try {
-    const outs = Array.isArray(tpl?.outputHandles) ? tpl.outputHandles : [];
-    if (!outs.length) return null;
-    const ok = outs.find(h => String(h?.id) === 'ok');
-    return ok || outs[0];
+    const outs = tpl?.outputHandles;
+    if (Array.isArray(outs)){
+      if (!outs.length) return null;
+      const ok = outs.find(h => String(h?.id) === 'ok');
+      return ok || outs[0];
+    }
+    if (outs && typeof outs === 'object'){
+      return outs['ok'] || Object.values(outs)[0] || null;
+    }
+    return null;
   } catch { return null; }
 }
 
@@ -31,9 +37,15 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
     return nodes.find(n => String(n?.id||'').toLowerCase().includes('start')) || nodes[0] || null;
   })();
   // Initial payload from Start Form args
-  const startSchema = getStartFormSchema(startNode?.data?.model || {});
+  const startModel = startNode?.data?.model || {};
+  const startSchema = getStartFormSchema(startModel || {});
   const payloadSample = buildSampleFromSchema(startSchema || {}, { arraysOneItem: true });
-  try { console.log('[simulate:engine] init payload from start', { startId: startNode?.id, hasSchema: !!(startSchema && (startSchema.fields||startSchema.steps)), keys: Object.keys(payloadSample||{}) }); } catch {}
+  try {
+    const countFields = Array.isArray(startSchema?.fields) ? startSchema.fields.length : 0;
+    const countSteps = Array.isArray(startSchema?.steps) ? startSchema.steps.length : 0;
+    const countSections = Array.isArray(startSchema?.sections) ? startSchema.sections.length : 0;
+    console.log('[simulate:engine] init payload from start', { startId: startNode?.id, hasSchema: !!(startSchema && (startSchema.fields||startSchema.steps||startSchema.sections)), fields: countFields, steps: countSteps, sections: countSections, keys: Object.keys(payloadSample||{}) });
+  } catch {}
 
   // Prepare mock registry
   const origResolve = registry.resolve.bind(registry);
@@ -41,7 +53,9 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
     try {
       const tpl = (model?.templateObj || model) || {};
       const handle = pickOutputHandle(tpl);
-      const schema = handle && handle.schema ? handle.schema : {};
+      let schema = {};
+      if (handle && handle.schema) schema = handle.schema;
+      else if (tpl && tpl.output && tpl.output.schema) schema = tpl.output.schema;
       const sample = buildSampleFromSchema(schema || {}, { arraysOneItem: true });
       try { console.log('[simulate:engine] fn-mock', { nodeId: id, template: tpl?.id || tpl?.name || model?.template, pickedHandle: handle?.id || null }); } catch {}
       return sample;
@@ -137,11 +151,8 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
               const chosen = String(last.sourceHandle || '');
               try {
                 if (!msgIn || typeof msgIn !== 'object') msgIn = {};
-                const beforeKeys = (msgIn && msgIn.payload && typeof msgIn.payload === 'object') ? Object.keys(msgIn.payload) : [];
-                const base = (msgIn && msgIn.payload && typeof msgIn.payload === 'object') ? msgIn.payload : {};
-                msgIn.payload = { ...base, chosen };
-                const afterKeys = Object.keys(msgIn.payload||{});
-                console.info('[simulate:engine] payload.injected_from_condition', { sourceId: last.sourceId, chosen, beforeKeys: beforeKeys.length, afterKeys: afterKeys.length });
+                msgIn.payload = { chosen };
+                console.info('[simulate:engine] payload.replaced_from_condition', { sourceId: last.sourceId, chosen });
               } catch {}
             }
           }

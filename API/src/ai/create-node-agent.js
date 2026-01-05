@@ -106,6 +106,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     const NodeTemplate = require('../db/models/node-template.model');
     const { normalizeTemplateKey } = require('../utils/validate');
 
+    // Base graph for initial tools (source info): keep seed as-is for now
     const graph = seedGraph && typeof seedGraph === 'object' ? JSON.parse(JSON.stringify(seedGraph)) : { nodes: [], edges: [] };
     const nodeById = new Map((graph.nodes||[]).map(n => [String(n.id), n]));
     const source = nodeById.get(String(sourceId));
@@ -222,7 +223,159 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
           if (!tpl) { try { send({ type:'error', code:'template_not_found', message:`Template not found: ${tplKey}` }); } catch {} return 'template_not_found'; }
           // Construire un graph temporaire = seed + nouveau nœud minimal pour l'agent ARGS
           const tempId = 'tmp_' + Math.random().toString(36).slice(2,9);
-          const graph = seedGraph && typeof seedGraph === 'object' ? JSON.parse(JSON.stringify(seedGraph)) : { nodes: [], edges: [] };
+          // Build a merged graph for the args sub-agent: DB flow (full schemas) + seed overlay + tmp node
+          let graph = { nodes: [], edges: [] };
+          try {
+            const { Types } = require('mongoose');
+            const Flow = require('../db/models/flow.model');
+            let full = null; const fid = String(flowId||'');
+            if (fid) {
+              if (Types.ObjectId.isValid(fid)) full = await Flow.findById(fid).lean();
+              if (!full) full = await Flow.findOne({ id: fid }).lean();
+            }
+            const base = (full && (full.graph || full)) || {};
+            const baseNodes = Array.isArray(base.nodes) ? base.nodes : [];
+            const baseEdges = Array.isArray(base.edges) ? base.edges : [];
+            const seed = seedGraph && typeof seedGraph === 'object' ? seedGraph : { nodes: [], edges: [] };
+            const seedNodes = Array.isArray(seed.nodes) ? seed.nodes : [];
+            const seedEdges = Array.isArray(seed.edges) ? seed.edges : [];
+            const byId = new Map(baseNodes.map(n => [String(n.id), JSON.parse(JSON.stringify(n))]));
+            // Overlay seed only for visual/position, keep DB model (schema) when node exists
+            for (const n of seedNodes) {
+              const id = String(n.id);
+              if (byId.has(id)) {
+                try { const baseN = byId.get(id); if (n.point) baseN.point = JSON.parse(JSON.stringify(n.point)); } catch {}
+              } else {
+                byId.set(id, JSON.parse(JSON.stringify(n)));
+              }
+            }
+            const nodesMerged = Array.from(byId.values());
+            const edgesMerged = [];
+            const seenEdge = new Set();
+            for (const e of [...baseEdges, ...seedEdges]) {
+              const id = String(e.id || `${e.source}->${e.target}:${e.sourceHandle}:${e.targetHandle}`);
+              if (seenEdge.has(id)) continue; seenEdge.add(id);
+              edgesMerged.push(JSON.parse(JSON.stringify(e)));
+            }
+            graph = { nodes: nodesMerged, edges: edgesMerged };
+            try { console.info('[ai-create-node][args_assistant][graph_merge]', { baseNodes: baseNodes.length, baseEdges: baseEdges.length, seedNodes: seedNodes.length, seedEdges: seedEdges.length, mergedNodes: nodesMerged.length, mergedEdges: edgesMerged.length }); } catch {}
+          } catch (e) {
+            graph = seedGraph && typeof seedGraph === 'object' ? JSON.parse(JSON.stringify(seedGraph)) : { nodes: [], edges: [] };
+            try { console.warn('[ai-create-node][args_assistant][graph_merge_failed]', e?.message||e); } catch {}
+          }
+          // Si le seed est minifié, réinjecter le schéma Start Form depuis la DB si possible
+          try {
+            if (flowId) {
+              const Flow = require('../db/models/flow.model');
+              const { Types } = require('mongoose');
+              let flowFull = null; const fid = String(flowId);
+              if (Types.ObjectId.isValid(fid)) flowFull = await Flow.findById(fid).lean();
+              if (!flowFull) flowFull = await Flow.findOne({ id: fid }).lean();
+              const nodesSeed = Array.isArray(graph.nodes) ? graph.nodes : [];
+              const nodesFull = Array.isArray(flowFull?.graph?.nodes) ? flowFull.graph.nodes : (Array.isArray(flowFull?.nodes) ? flowFull.nodes : []);
+              const byIdFull = new Map(nodesFull.map(n => [String(n.id), n]));
+              for (const n of nodesSeed){
+                try {
+                  const modelN = (n?.data && n.data.model) ? n.data.model : (n?.data || {});
+                  const type = String(modelN?.templateObj?.type || modelN?.nodeKind || '').toLowerCase();
+                  if (type === 'start' || type === 'start_form'){
+                    const full = byIdFull.get(String(n.id));
+                    const fullModel = (full && (full.data && full.data.model)) ? full.data.model : (full?.data || {});
+                    const hasNonEmpty = (obj) => {
+                      try {
+                        if (!obj || typeof obj !== 'object') return false;
+                        const f = Array.isArray(obj.fields) ? obj.fields : [];
+                        const s = Array.isArray(obj.steps) ? obj.steps : [];
+                        return f.length > 0 || s.length > 0;
+                      } catch { return false; }
+                    };
+                    const hasSchema = hasNonEmpty(modelN?.context) || hasNonEmpty(modelN?.startFormSchema) || hasNonEmpty(modelN?.templateObj?.args);
+                    if (!hasSchema){
+                      // 1) Tenter via le flow complet
+                      if (fullModel){
+                        const ctx = hasNonEmpty(fullModel.context) ? fullModel.context : null;
+                        const sfs = (!ctx && hasNonEmpty(fullModel.startFormSchema)) ? fullModel.startFormSchema : null;
+                        const args = (!ctx && !sfs && hasNonEmpty(fullModel.templateObj?.args)) ? fullModel.templateObj.args : null;
+                        const applyInto = (obj) => {
+                          if (!obj) return;
+                          if (n?.data?.model){
+                            if (ctx) n.data.model.context = ctx;
+                            else if (sfs) n.data.model.startFormSchema = sfs;
+                            if (args){ n.data.model.templateObj = n.data.model.templateObj || {}; n.data.model.templateObj.args = args; }
+                          } else if (n?.data){
+                            if (ctx) n.data.context = ctx;
+                            else if (sfs) n.data.startFormSchema = sfs;
+                            if (args){ n.data.templateObj = n.data.templateObj || {}; n.data.templateObj.args = args; }
+                          }
+                        };
+                        if (hasNonEmpty(ctx) || hasNonEmpty(sfs) || hasNonEmpty(args)) applyInto(fullModel);
+                      }
+                      // 2) Si toujours vide, tenter via NodeTemplate (clé business)
+                      const rawKey = modelN?.template || modelN?.templateObj?.id || modelN?.templateObj?.key || modelN?.name || '';
+                      if (rawKey){
+                        try {
+                          const nkNode = normalizeTemplateKey(rawKey);
+                          const tplNode = await NodeTemplate.findOne({ $or: [ { key: nkNode }, { key: rawKey } ] }).lean();
+                          const tArgs = (tplNode && tplNode.args) || null;
+                          if (tArgs && (Array.isArray(tArgs.fields) || Array.isArray(tArgs.steps))){
+                            if (n?.data?.model){ n.data.model.templateObj = n.data.model.templateObj || {}; n.data.model.templateObj.args = tArgs; }
+                            else if (n?.data){ n.data.templateObj = n.data.templateObj || {}; n.data.templateObj.args = tArgs; }
+                          }
+                        } catch {}
+                      }
+                      // 3) Pas d'autres fallbacks magiques: on s'appuie sur le graphe DB fusionné
+                    }
+                  }
+                } catch {}
+              }
+            }
+          } catch {}
+          // Enrichir les nœuds existants avec le template complet (args + outputHandles) pour la simulation seed-only
+          try {
+            const cache = new Map();
+            const ensureTplForKey = async (raw) => {
+              try {
+                const keyRaw = String(raw || '').trim(); if (!keyRaw) return null;
+                const nk2 = normalizeTemplateKey(keyRaw);
+                const cacheKey = nk2 || keyRaw;
+                if (cache.has(cacheKey)) return cache.get(cacheKey);
+                const t = await NodeTemplate.findOne({ $or: [ { key: nk2 }, { key: keyRaw } ] }).lean();
+                cache.set(cacheKey, t || null);
+                return t || null;
+              } catch { return null; }
+            };
+            for (const n of Array.isArray(graph.nodes) ? graph.nodes : []){
+              try {
+                const modelN = (n && (n.data && n.data.model)) ? n.data.model : (n?.data || {});
+                const tObj = modelN?.templateObj || {};
+                const hasOut = Array.isArray(tObj?.outputHandles) && tObj.outputHandles.length > 0;
+                const hasArgs = !!tObj?.args;
+                // Enrichir uniquement les nœuds de type fonction/condition/flow si incomplet
+                if (hasOut && hasArgs) continue;
+                const raw = modelN?.template || tObj?.id || tObj?.key || modelN?.name || '';
+                const found = await ensureTplForKey(raw);
+                if (!found) continue;
+                const templateObjN = {
+                  id: found.key,
+                  name: found.name,
+                  title: found.title,
+                  type: found.type,
+                  category: found.category,
+                  providerKey: found.providerKey,
+                  appId: found.providerKey,
+                  args: found.args,
+                  output: found.output,
+                  outputHandles: Array.isArray(found.outputHandles) ? found.outputHandles : [],
+                  authorize_catch_error: found.authorize_catch_error,
+                  authorize_skip_error: found.authorize_skip_error,
+                  allowWithoutCredentials: found.allowWithoutCredentials,
+                  output_array_field: found.output_array_field,
+                };
+                if (n?.data?.model) { n.data.model.template = found.key; n.data.model.templateObj = templateObjN; }
+                else if (n?.data) { n.data.template = found.key; n.data.templateObj = templateObjN; }
+              } catch {}
+            }
+          } catch {}
           const templateObj = {
             id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category,
             providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args,
@@ -246,7 +399,10 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
               else if (obj?.type) send(obj);
             } catch {}
           };
-          await runArgsAgentWithTools({ prompt: String(prompt||''), flowId: String(flowId||''), nodeId: tempId, branch: sourceHandle || null, history, send: forwardSend, done: ()=>{}, seedGraphOverride: graph });
+          // Pour l'agent Args: ne pas réutiliser le prompt de création. Laisser l'agent construire en fonction du schéma/scénarios.
+          const argsPrompt = '';
+          try { console.info('[ai-create-node][args_assistant][prompt]', { len: argsPrompt.length, text: argsPrompt, note: 'using empty prompt to trigger args-agent default' }); } catch {}
+          await runArgsAgentWithTools({ prompt: argsPrompt, flowId: String(flowId||''), nodeId: tempId, branch: sourceHandle || null, history, send: forwardSend, done: ()=>{}, seedGraphOverride: graph });
           try { console.info('[ai-create-node][args_assistant][done]', { argKeys: Object.keys(pendingArgs||{}).length, descLen: String(pendingDesc||'').length }); } catch {}
           return 'ok';
         } catch (e) { try { console.warn('[ai-create-node][args_assistant][error]', e?.message||e); } catch {} return 'error'; }

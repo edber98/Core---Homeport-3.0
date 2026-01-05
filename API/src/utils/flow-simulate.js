@@ -20,9 +20,16 @@ function buildGraph(flow) {
 function getHandleSchema(nodeModel, handleId) {
   try {
     const tpl = (nodeModel?.templateObj || nodeModel) || {};
-    const outs = Array.isArray(tpl.outputHandles) ? tpl.outputHandles : [];
-    const h = outs.find(o => String(o?.id) === String(handleId));
-    return (h && h.schema) ? h.schema : {};
+    const outs = tpl.outputHandles;
+    if (Array.isArray(outs)){
+      const h = outs.find(o => String(o?.id) === String(handleId));
+      return (h && h.schema) ? h.schema : {};
+    }
+    if (outs && typeof outs === 'object'){
+      const h = outs[String(handleId)] || outs['ok'] || Object.values(outs)[0] || null;
+      return (h && h.schema) ? h.schema : {};
+    }
+    return {};
   } catch { return {}; }
 }
 
@@ -30,8 +37,6 @@ function getHandleSchema(nodeModel, handleId) {
 function buildSampleFromSchema(schema, opts = {}) {
   const { arraysOneItem = true } = opts;
   const sch = schema || {};
-  const fields = Array.isArray(sch.fields) ? sch.fields : null;
-  const steps = Array.isArray(sch.steps) ? sch.steps : null;
   const out = {};
 
   const optionFirstValue = (f) => {
@@ -75,25 +80,42 @@ function buildSampleFromSchema(schema, opts = {}) {
   const visit = (arr, target) => {
     for (const f of (arr || [])){
       if (!f || typeof f !== 'object') continue;
-      if (f.type === 'section' || f.type === 'section_array'){
-        const key = f.key || null; if (!key) { visit(f.fields || [], target); continue; }
-        const isArrayMode = (String(f.type).toLowerCase() === 'section_array') || (String(f.mode || '').toLowerCase() === 'array');
-        if (!isArrayMode) {
-          target[key] = {};
-          visit(f.fields || [], target[key]);
-        } else {
-          // Section en mode array → tableau d'objets avec 1 élément d'exemple
-          if (arraysOneItem) { const obj = {}; visit(f.fields || [], obj); target[key] = [obj]; }
-          else target[key] = [];
-        }
-      } else {
-        const key = f.key || null; if (!key) continue;
-        target[key] = valFor(f);
+      const t = String(f.type || '').toLowerCase();
+      const isArrayMode = (t === 'section_array') || (String(f.mode || '').toLowerCase() === 'array') || (f.array === true);
+      // Any container exposing nested fields
+      if (Array.isArray(f.fields)){
+        const key = f.key || null;
+        if (key && !isArrayMode) { target[key] = {}; visit(f.fields || [], target[key]); continue; }
+        if (key && isArrayMode) { if (arraysOneItem) { const obj = {}; visit(f.fields || [], obj); target[key] = [obj]; } else target[key] = []; continue; }
+        // No key: bubble fields up
+        visit(f.fields || [], target); continue;
       }
+      // Unknown container having nested sections
+      if (Array.isArray(f.sections)){
+        const key = f.key || null;
+        if (key) { target[key] = {}; for (const sct of f.sections) visit(sct?.fields || [], target[key]); }
+        else { for (const sct of f.sections) visit(sct?.fields || [], target); }
+        continue;
+      }
+      // Grid-like container with columns[*].fields
+      if (Array.isArray(f.columns)){
+        const key = f.key || null;
+        if (key) { target[key] = {}; for (const col of f.columns) visit(col?.fields || [], target[key]); }
+        else { for (const col of f.columns) visit(col?.fields || [], target); }
+        continue;
+      }
+      // Leaf field
+      const key = f.key || null; if (!key) continue;
+      target[key] = valFor(f);
     }
   };
-  if (steps) { steps.forEach(st => visit(st?.fields || [], out)); }
-  else if (fields) { visit(fields, out); }
+  const visitStep = (step, target) => {
+    if (!step || typeof step !== 'object') return;
+    if (Array.isArray(step.fields)) visit(step.fields, target);
+    else if (Array.isArray(step.sections)) for (const sct of step.sections) visit(sct?.fields || [], target);
+  };
+  if (Array.isArray(sch.steps)) sch.steps.forEach(st => visitStep(st, out));
+  else if (Array.isArray(sch.fields)) visit(sch.fields, out);
   return out;
 }
 
@@ -105,10 +127,34 @@ function getStartFormSchema(nodeModel){
   try {
     const m = nodeModel || {};
     // Prefer explicit context if schema-like
-    if (m.context && (Array.isArray(m.context.fields) || Array.isArray(m.context.steps))) return m.context;
-    if (m.startFormSchema && (Array.isArray(m.startFormSchema.fields) || Array.isArray(m.startFormSchema.steps))) return m.startFormSchema;
+    const hasNonEmpty = (sch) => {
+      try {
+        if (!sch || typeof sch !== 'object') return false;
+        const fields = Array.isArray(sch.fields) ? sch.fields : [];
+        const steps = Array.isArray(sch.steps) ? sch.steps : [];
+        const sections = Array.isArray(sch.sections) ? sch.sections : [];
+        const hasFieldWithKey = (arr) => (arr || []).some(f => f && typeof f === 'object' && ((f.key && String(f.key).trim()) || Array.isArray(f.fields) || Array.isArray(f.sections)));
+        if (hasFieldWithKey(fields)) return true;
+        if (steps.some(st => hasFieldWithKey(st?.fields || []) || (Array.isArray(st?.sections) && st.sections.some(sct => hasFieldWithKey(sct?.fields || []))))) return true;
+        if (hasFieldWithKey(sections)) return true;
+        return false;
+      } catch { return false; }
+    };
+    if (hasNonEmpty(m.context)) return m.context;
+    if (hasNonEmpty(m.startFormSchema)) return m.startFormSchema;
     const tpl = m.templateObj || {};
-    if (tpl.args && (Array.isArray(tpl.args.fields) || Array.isArray(tpl.args.steps))) return tpl.args;
+    if (hasNonEmpty(tpl.args)) return tpl.args;
+    // Fallback: certains templates définissent un schéma côté sortie (outputHandles)
+    try {
+      const outs = tpl.outputHandles;
+      if (Array.isArray(outs)){
+        const ok = outs.find(o => String(o?.id||'') === 'ok') || outs[0] || null;
+        if (ok && ok.schema && (Array.isArray(ok.schema.fields) || Array.isArray(ok.schema.steps))) return ok.schema;
+      } else if (outs && typeof outs === 'object'){
+        const ok = outs['ok'] || Object.values(outs)[0] || null;
+        if (ok && ok.schema && (Array.isArray(ok.schema.fields) || Array.isArray(ok.schema.steps))) return ok.schema;
+      }
+    } catch {}
   } catch {}
   return {};
 }
@@ -187,6 +233,13 @@ function simulateMsgForScenario(targetId, choice, graph) {
         msg[from] = sample && typeof sample === 'object' ? sample : {};
         // Start-like defines payload
         if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+        try {
+          const k = (msg[from] && typeof msg[from]==='object') ? Object.keys(msg[from]) : [];
+          const fcnt = Array.isArray(schema?.fields) ? schema.fields.length : 0;
+          const scnt = Array.isArray(schema?.steps) ? schema.steps.length : 0;
+          const secnt = Array.isArray(schema?.sections) ? schema.sections.length : 0;
+          console.info('[simulate] start.sample', { node: from, keys: k, fields: fcnt, steps: scnt, sections: secnt });
+        } catch {}
         // Log _nodes entry
         try { msg._nodes[from] = { simulated: true, kind: 'start', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
       } else if (kind === 'condition') {
@@ -194,8 +247,8 @@ function simulateMsgForScenario(targetId, choice, graph) {
         const resultObj = { chosen: chosenHandle || null };
         msg[from] = resultObj;
         try { msg._nodes[from] = { simulated: true, kind: 'condition', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
-        // Aligner sur le comportement des nœuds classiques: ne définir payload que si aucun payload n'a encore été fixé
-        try { if (!payloadSet) { msg.payload = resultObj; payloadSet = true; } } catch {}
+        // Remplacer le payload par le choix (pas de merge)
+        try { msg.payload = resultObj; payloadSet = true; } catch {}
       } else if (kind === 'loop') {
         schema = getHandleSchema(node.model, edge.sourceHandle || '');
         sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});

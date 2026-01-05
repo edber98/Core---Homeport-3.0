@@ -187,8 +187,14 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
             const arr = Array.isArray(data?.scenarios) ? data.scenarios : [];
             lastScenario = arr[0] || null;
           }
-          const msg = lastScenario?.msgIn || {};
-          console.log("msgggg",msg)
+          const msg = (lastScenario && lastScenario.msgIn) ? lastScenario.msgIn : {};
+
+          try {
+            const startEntry = Object.entries(msg || {}).find(([k,v]) => /^start_/i.test(String(k)) && v && typeof v === 'object');
+            const startKeys = startEntry ? Object.keys(startEntry[1] || {}) : [];
+            console.info('[ai-args][msg_preview][start_keys]', { node: startEntry ? startEntry[0] : null, keys: startKeys });
+          } catch {}
+
           // Heuristique: privilégier les champs du start_form si accessibles; sinon payload + racine
           const pairs = [];
           const pushPair = (k, v) => {
@@ -203,16 +209,29 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
             }
           } catch {}
           try {
-            // flatten root simple keys (excluding _nodes, payload)
-            const entries = Object.entries(msg).filter(([k,_]) => k !== '_nodes' && k !== 'payload').slice(0, 4);
+            // Aperçu des clés racines (inclure aussi les résultats de fonctions)
+            const entries = Object.entries(msg).filter(([k,_]) => k !== '_nodes' && k !== 'payload').slice(0, 6);
             for (const [k,v] of entries) {
-              if (v && typeof v === 'object') continue; pushPair(k,v);
+              if (v == null) continue;
+              const t = typeof v;
+              if (t === 'string' || t === 'number' || t === 'boolean') { pushPair(k, v); continue; }
+              if (t === 'object') {
+                // Extraire rapidement quelques scalaires de l'objet (ex: résultats de fonctions)
+                try {
+                  let count = 0;
+                  for (const [sk, sv] of Object.entries(v)){
+                    const ts = typeof sv;
+                    if (ts === 'string' || ts === 'number' || ts === 'boolean') { pushPair(`${k}.${sk}`, sv); count++; }
+                    if (count >= 3) break;
+                  }
+                } catch {}
+              }
             }
           } catch {}
           const text = pairs.length ? pairs.join(', ') : '';
 
           try { console.info('[ai-args][msg_preview]', { len: text.length, fields: pairs.length }); } catch {}
-          console.log(pairs)
+          console.log("texxxxt", text)
           return JSON.stringify({ text, fields: pairs.length });
         } catch (e) { try { console.warn('[ai-args][msg_preview][error]', e?.message||e); } catch {} return 'error'; }
       }
@@ -223,6 +242,7 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
       schema: {},
       func: async (input) => {
         try {
+          console.log('inputttt', input)
           const args = (input && typeof input === 'object') ? input : {};
           send({ type: 'args', args });
           return 'ok';
@@ -297,7 +317,10 @@ async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, hi
     ]);
     const agent = await createOpenAIToolsAgent({ llm: model, tools, prompt: promptT });
     const executor = new AgentExecutor({ agent, tools });
-    const inputText = String(prompt || '').trim() || 'Complète les arguments pour ce nœud en utilisant get_node_schema, list_predecessors et get_scenarios. Pose une question si nécessaire.';
+    const rawPrompt = String(prompt || '').trim();
+    const usedDefault = rawPrompt.length === 0;
+    const inputText = usedDefault ? 'Complète les arguments pour ce nœud en utilisant get_node_schema, list_predecessors et get_scenarios. Pose une question si nécessaire.' : rawPrompt;
+    try { console.info('[ai-args][prompt]', { usedDefault, len: inputText.length, text: inputText }); } catch {}
     const chatHistory = normalizeHistory(history);
     // Stream raw LangChain messages and tool logs only
     const stream = await executor.streamEvents({ input: inputText, chat_history: chatHistory }, { version: 'v2' });

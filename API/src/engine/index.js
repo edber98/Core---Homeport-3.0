@@ -128,6 +128,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.args_pre_compilation = node.model?.context || null;
       nodeLog.args_post_compilation = null;
       nodeLog.result = (msg && typeof msg.payload !== 'undefined') ? JSON.parse(JSON.stringify(msg.payload)) : null;
+      try { const k = (nodeLog.result && typeof nodeLog.result==='object') ? Object.keys(nodeLog.result) : []; console.log('[engine] start.result.keys', { node: node.id, keys: k }); } catch {}
       // Expose trigger output under node id like functions for template access
       try { msg[node.id] = nodeLog.result; } catch {}
       // Ensure payload is set to the result value (form or external payload)
