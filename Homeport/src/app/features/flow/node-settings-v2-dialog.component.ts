@@ -110,8 +110,18 @@ import { FormsModule } from '@angular/forms';
     <div class="m-shell" *ngIf="isMobile" (click)="close.emit()">
       <div class="m-dialog enter" (click)="$event.stopPropagation()">
         <div class="m-body" #carRef (touchstart)="onSwipeStart($event)" (touchmove)="onSwipeMove($event)" (touchend)="onSwipeEnd()">
-          <div class="edge-sensor left" (touchstart)="onEdgeStart($event, 'left')"></div>
-          <div class="edge-sensor right" (touchstart)="onEdgeStart($event, 'right')"></div>
+          <div class="edge-sensor left"
+               (touchstart)="onEdgeStart($event, 'left')"
+               (dragenter)="onEdgeDragEnter($event, 'left')"
+               (dragover)="onEdgeDragOver($event, 'left')"
+               (dragleave)="onEdgeDragLeave($event)"
+               (drop)="onEdgeDragLeave($event)"></div>
+          <div class="edge-sensor right"
+               (touchstart)="onEdgeStart($event, 'right')"
+               (dragenter)="onEdgeDragEnter($event, 'right')"
+               (dragover)="onEdgeDragOver($event, 'right')"
+               (dragleave)="onEdgeDragLeave($event)"
+               (drop)="onEdgeDragLeave($event)"></div>
           <div class="slides" #slidesRef [style.transform]="slidesTransform" [class.dragging]="dragging">
             <!-- Input slide -->
             <div class="slide">
@@ -357,6 +367,10 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   private edgeOnly = false;
   private swipeFromEdge: 'left'|'right'|null = null;
   private initialViewSet = false;
+  private dragEdgeActive: 'left'|'right'|null = null;
+  private dragEdgeTimer: any = null;
+  private dragEdgeInitialDelay = 650; // ms avant le premier swipe auto
+  private dragEdgeRepeatDelay = 950;  // ms entre chaque swipe auto pendant le drag
 
   constructor(private pathSvc: FlowPathHighlightService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private zone: NgZone, private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
 
@@ -484,7 +498,8 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     const nearRight = (W - t.clientX) <= 28;
     const startAtEdge = nearLeft || nearRight || !!this.swipeFromEdge;
     this.fromInteractive = isInteractive(target);
-    this.ignoreSwipe = this.fromInteractive || (this.edgeOnly && !startAtEdge);
+    // Détecter le swipe sur toute la zone: ne pas ignorer si interaction; on récupère le geste après lock horizontal
+    this.ignoreSwipe = (this.edgeOnly && !startAtEdge);
     if (this.ignoreSwipe) { this.dragging = false; this.swipeActive = false; return; }
     this.swipeStartX = t.clientX; this.swipeStartY = t.clientY; this.swipeDx = 0; this.swipeDy = 0; this.swipeActive = true; this.dragging = true; this.horizLocked = false; this.swipeStartTime = Date.now();
   }
@@ -517,19 +532,72 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     const canPrev = this.activeIndex > 0;
     const canNext = this.activeIndex < this.panels.length - 1;
     const flick = vx > 0.5;
-    const far = ratio > 0.22;
-    // Close if overscrolling beyond edges with sufficient gesture
-    if ((goNext && !canNext && (flick || far)) || (!goNext && !canPrev && (flick || far))) {
+    // Choisir le panneau le plus engagé: seuil 50% d'un slide
+    const byProgress = ratio >= 0.5;
+    // Fermer si overscroll bord avec geste suffisant
+    if ((goNext && !canNext && (flick || byProgress)) || (!goNext && !canPrev && (flick || byProgress))) {
       this.close.emit();
-      this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.fromInteractive = false;
+      this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.fromInteractive = false; this.swipeFromEdge = null;
       return;
     }
-    if (absY < 60 && (flick || far)) {
+    if (absY < 80 && (flick || byProgress)) {
       if (goNext && canNext) this.activeIndex++;
       else if (!goNext && canPrev) this.activeIndex--;
     }
     this.updateSlidesTransform();
-    this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.ignoreSwipe = false; this.fromInteractive = false;
+    this.swipeActive = false; this.dragging = false; this.horizLocked = false; this.ignoreSwipe = false; this.fromInteractive = false; this.swipeFromEdge = null;
+  }
+
+  // Drag auto-swipe at edges (for JSON viewer DnD on mobile)
+  onEdgeDragEnter(ev: DragEvent, side: 'left'|'right') {
+    try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    this.dragEdgeActive = side;
+    this.ensureDragEdgeTimer();
+  }
+  onEdgeDragOver(ev: DragEvent, side: 'left'|'right') {
+    try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    this.dragEdgeActive = side;
+    this.ensureDragEdgeTimer();
+  }
+  onEdgeDragLeave(ev: DragEvent) {
+    try { ev.preventDefault(); ev.stopPropagation(); } catch {}
+    this.dragEdgeActive = null;
+    if (this.dragEdgeTimer) { clearTimeout(this.dragEdgeTimer); this.dragEdgeTimer = null; }
+  }
+  private ensureDragEdgeTimer() {
+    if (this.dragEdgeTimer || !this.dragEdgeActive) return;
+    const tick = () => {
+      if (!this.dragEdgeActive) { this.dragEdgeTimer = null; return; }
+      const dir = this.dragEdgeActive;
+      const target = dir === 'left' ? Math.max(0, this.activeIndex - 1) : Math.min(this.panels.length - 1, this.activeIndex + 1);
+      this.animateToIndex(target);
+      // continuer tant qu'on reste sur le bord
+      this.dragEdgeTimer = setTimeout(tick, this.dragEdgeRepeatDelay);
+    };
+    this.dragEdgeTimer = setTimeout(() => {
+      // Premier pas après un petit délai pour laisser le temps de se caler
+      tick();
+    }, this.dragEdgeInitialDelay);
+  }
+
+  private animateToIndex(target: number) {
+    if (target === this.activeIndex) return;
+    // Assurer que la transition est active (pas de mode dragging)
+    this.dragging = false;
+    try { this.cdr.detectChanges(); } catch {}
+    const el = this.slidesRef?.nativeElement as HTMLElement | undefined;
+    // Forcer un reflow pour que le navigateur prenne en compte la transition
+    try { if (el) { void el.offsetHeight; } } catch {}
+    // Appliquer le changement sur la frame suivante pour déclencher l'animation
+    this.zone.runOutsideAngular(() => {
+      requestAnimationFrame(() => {
+        this.zone.run(() => {
+          this.activeIndex = target;
+          this.updateSlidesTransform();
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      });
+    });
   }
 
   hasInput(model: any): boolean {
