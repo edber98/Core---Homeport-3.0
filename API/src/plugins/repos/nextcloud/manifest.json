@@ -14,9 +14,9 @@
         "title": "Nextcloud WebDAV",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "baseUrl", "label": "URL de base (WebDAV)", "col": { "xs": 24 }, "default": "https://cloud.example.com/remote.php/dav" },
-          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "col": { "xs": 24 } },
-          { "type": "text", "key": "password", "label": "Mot de passe / App password", "col": { "xs": 24 }, "secret": true }
+          { "type": "text", "key": "baseUrl", "label": "URL de base (WebDAV)", "description": "URL WebDAV de votre instance.", "col": { "xs": 24 }, "default": "https://cloud.example.com/remote.php/dav" },
+          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "description": "Nom d’utilisateur Nextcloud.", "col": { "xs": 24 } },
+          { "type": "text", "key": "password", "label": "Mot de passe / App password", "description": "Mot de passe ou mot de passe d’application.", "col": { "xs": 24 }, "secret": true }
         ]
       }
     }
@@ -26,22 +26,22 @@
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Téléverser un fichier via WebDAV", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin distant","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
+        {"type":"text","key":"path","label":"Chemin distant","description":"Chemin de destination sur le serveur.","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","description":"Contenu du fichier (base64 ou texte).","col":{"xs":24}}
       ] } },
     { "key": "nextcloud_create_share_link", "name": "nextcloudCreateShareLink", "schemaVersion": 2, "title": "Créer un lien de partage", "type": "function", "nodeKind": "function", "category": "Nextcloud", "providerKey": "nextcloud",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer un lien de partage public", "args": { "title": "Partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"permissions","label":"Permissions","col":{"xs":24},"options":[{"label":"lecture","value":"read"},{"label":"écriture","value":"write"}],"default":"read"}
+        {"type":"text","key":"path","label":"Chemin","description":"Chemin du fichier/dossier à partager.","col":{"xs":24},"validators":[{"type":"required"}]},
+        {"type":"select","key":"permissions","label":"Permissions","description":"Droits accordés par le lien.","col":{"xs":24},"options":[{"label":"lecture","value":"read"},{"label":"écriture","value":"write"}],"default":"read"}
       ] } },
     { "key": "nextcloud_set_permissions", "name": "nextcloudSetPermissions", "schemaVersion": 2, "title": "Définir les permissions", "type": "function", "nodeKind": "function", "category": "Nextcloud", "providerKey": "nextcloud",
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Définir les permissions d’un fichier/dossier", "args": { "title": "Permissions", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24}},
-        {"type":"textarea","key":"acl","label":"ACL (JSON)","col":{"xs":24},"default":"{}"}
+        {"type":"text","key":"path","label":"Chemin","description":"Chemin du fichier/dossier.","col":{"xs":24}},
+        {"type":"textarea","key":"acl","label":"ACL (JSON)","description":"Liste des permissions au format JSON.","col":{"xs":24},"default":"{}"}
       ] } }
   ]
 }

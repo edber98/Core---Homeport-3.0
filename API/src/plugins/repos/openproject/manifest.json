@@ -5,11 +5,11 @@
       "title": "Projet OpenProject",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant numérique du projet.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du projet.", "col": { "xs": 24 } },
+        { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique du projet.", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut actuel du projet.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "description": "Description du projet (markdown).", "col": { "xs": 24 } }
       ]
     },
     "op_projects": {
@@ -18,11 +18,11 @@
       "fields": [
         { "type": "section", "title": "Projets", "description": "Liste des projets", "mode": "array", "key": "projects", "array": { "initialItems": 0, "minItems": 0 },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 } },
-            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant numérique du projet.", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "description": "Nom du projet.", "col": { "xs": 24 } },
+            { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique du projet.", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "description": "Statut du projet.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description du projet.", "col": { "xs": 24 } }
           ],
           "col": { "xs": 24 }
         }
@@ -32,15 +32,15 @@
       "title": "Tâche OpenProject",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-        { "type": "text", "key": "priority", "label": "Priorité", "col": { "xs": 24 } },
-        { "type": "text", "key": "startDate", "label": "Début", "col": { "xs": 24 } },
-        { "type": "text", "key": "dueDate", "label": "Fin", "col": { "xs": 24 } },
-        { "type": "text", "key": "project", "label": "Projet", "col": { "xs": 24 } },
-        { "type": "text", "key": "assignee", "label": "Assigné", "col": { "xs": 24 } }
+        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de la tâche.", "col": { "xs": 24 } },
+        { "type": "text", "key": "subject", "label": "Sujet", "description": "Titre/sujet de la tâche.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "description": "Description détaillée (markdown).", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de la tâche.", "col": { "xs": 24 } },
+        { "type": "text", "key": "priority", "label": "Priorité", "description": "Niveau de priorité.", "col": { "xs": 24 } },
+        { "type": "text", "key": "startDate", "label": "Début", "description": "Date de début (YYYY-MM-DD).", "col": { "xs": 24 } },
+        { "type": "text", "key": "dueDate", "label": "Fin", "description": "Date d\u2019échéance (YYYY-MM-DD).", "col": { "xs": 24 } },
+        { "type": "text", "key": "project", "label": "Projet", "description": "Projet associé.", "col": { "xs": 24 } },
+        { "type": "text", "key": "assignee", "label": "Assigné", "description": "Personne assignée.", "col": { "xs": 24 } }
       ]
     },
     "op_tasks": {
@@ -49,15 +49,15 @@
       "fields": [
         { "type": "section", "title": "Tâches", "description": "Liste des tâches", "mode": "array", "key": "tasks", "array": { "initialItems": 0, "minItems": 0 },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
-            { "type": "text", "key": "subject", "label": "Sujet", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
-            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-            { "type": "text", "key": "priority", "label": "Priorité", "col": { "xs": 24 } },
-            { "type": "text", "key": "startDate", "label": "Début", "col": { "xs": 24 } },
-            { "type": "text", "key": "dueDate", "label": "Fin", "col": { "xs": 24 } },
-            { "type": "text", "key": "project", "label": "Projet", "col": { "xs": 24 } },
-            { "type": "text", "key": "assignee", "label": "Assigné", "col": { "xs": 24 } }
+            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de la tâche.", "col": { "xs": 24 } },
+            { "type": "text", "key": "subject", "label": "Sujet", "description": "Titre/sujet de la tâche.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description de la tâche.", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "description": "Statut de la tâche.", "col": { "xs": 24 } },
+            { "type": "text", "key": "priority", "label": "Priorité", "description": "Niveau de priorité.", "col": { "xs": 24 } },
+            { "type": "text", "key": "startDate", "label": "Début", "description": "Date de début (YYYY-MM-DD).", "col": { "xs": 24 } },
+            { "type": "text", "key": "dueDate", "label": "Fin", "description": "Date d\u2019échéance (YYYY-MM-DD).", "col": { "xs": 24 } },
+            { "type": "text", "key": "project", "label": "Projet", "description": "Projet associé.", "col": { "xs": 24 } },
+            { "type": "text", "key": "assignee", "label": "Assigné", "description": "Personne assignée.", "col": { "xs": 24 } }
           ],
           "col": { "xs": 24 }
         }
@@ -67,10 +67,10 @@
       "title": "Utilisateur",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID" },
-        { "type": "text", "key": "name", "label": "Nom" },
-        { "type": "text", "key": "email", "label": "Email" },
-        { "type": "text", "key": "login", "label": "Login" }
+        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de l\u2019utilisateur." },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom complet de l\u2019utilisateur." },
+        { "type": "text", "key": "email", "label": "Email", "description": "Adresse e-mail." },
+        { "type": "text", "key": "login", "label": "Login", "description": "Identifiant de connexion." }
       ]
     },
     "op_users": {
@@ -79,10 +79,10 @@
       "fields": [
         { "type": "section", "title": "Utilisateurs", "description": "Liste des utilisateurs", "mode": "array", "key": "users", "array": { "initialItems": 0, "minItems": 0 },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24 } },
-            { "type": "text", "key": "login", "label": "Login", "col": { "xs": 24 } }
+            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de l\u2019utilisateur.", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "description": "Nom complet.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Adresse e-mail.", "col": { "xs": 24 } },
+            { "type": "text", "key": "login", "label": "Login", "description": "Identifiant de connexion.", "col": { "xs": 24 } }
           ],
           "col": { "xs": 24 }
         }
@@ -127,9 +127,9 @@
         "title": "Creer un projet",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "name", "label": "Nom du projet", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "identifier", "label": "Identifiant", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } }
+          { "type": "text", "key": "name", "label": "Nom du projet", "description": "Nom lisible du projet.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique (slug).", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Description du projet en markdown.", "col": { "xs": 24 } }
         ]
       }
     },
@@ -169,15 +169,15 @@
         "title": "Ajouter une tache",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } },
-          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "col": { "xs": 24 } },
-          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "col": { "xs": 24 } },
-          { "type": "number", "key": "type_id", "label": "Type ID", "col": { "xs": 24 }, "default": 1 },
-          { "type": "number", "key": "status_id", "label": "Statut ID", "col": { "xs": 24 }, "default": 1 },
-          { "type": "number", "key": "priority_id", "label": "Priorite ID", "col": { "xs": 24 }, "default": 8 },
-          { "type": "number", "key": "project_id", "label": "Projet ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+          { "type": "text", "key": "title", "label": "Titre", "description": "Titre de la tâche.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Description détaillée (markdown).", "col": { "xs": 24 } },
+          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "description": "Date de début prévue.", "col": { "xs": 24 } },
+          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "description": "Date d’échéance.", "col": { "xs": 24 } },
+          { "type": "number", "key": "type_id", "label": "Type ID", "description": "Identifiant du type de tâche.", "col": { "xs": 24 }, "default": 1 },
+          { "type": "number", "key": "status_id", "label": "Statut ID", "description": "Identifiant du statut.", "col": { "xs": 24 }, "default": 1 },
+          { "type": "number", "key": "priority_id", "label": "Priorite ID", "description": "Identifiant de priorité.", "col": { "xs": 24 }, "default": 8 },
+          { "type": "number", "key": "project_id", "label": "Projet ID", "description": "Identifiant du projet.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "user_id", "label": "Assigne ID", "description": "Identifiant de l’assigné.", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
         ]
       }
     },
@@ -279,15 +279,15 @@
         "title": "Modifier une tache",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "number", "key": "task_id", "label": "Tache ID", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "col": { "xs": 24 } },
-          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "col": { "xs": 24 } },
-          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "col": { "xs": 24 } },
-          { "type": "number", "key": "type_id", "label": "Type ID", "col": { "xs": 24 } },
-          { "type": "number", "key": "status_id", "label": "Statut ID", "col": { "xs": 24 } },
-          { "type": "number", "key": "priority_id", "label": "Priorite ID", "col": { "xs": 24 } },
-          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 } }
+          { "type": "number", "key": "task_id", "label": "Tache ID", "description": "Identifiant de la tâche à modifier.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "title", "label": "Titre", "description": "Nouveau titre (optionnel).", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Nouvelle description (markdown).", "col": { "xs": 24 } },
+          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "description": "Nouvelle date de début.", "col": { "xs": 24 } },
+          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "description": "Nouvelle date d’échéance.", "col": { "xs": 24 } },
+          { "type": "number", "key": "type_id", "label": "Type ID", "description": "Identifiant du type (optionnel).", "col": { "xs": 24 } },
+          { "type": "number", "key": "status_id", "label": "Statut ID", "description": "Identifiant du statut (optionnel).", "col": { "xs": 24 } },
+          { "type": "number", "key": "priority_id", "label": "Priorite ID", "description": "Identifiant de priorité (optionnel).", "col": { "xs": 24 } },
+          { "type": "number", "key": "user_id", "label": "Assigne ID", "description": "Identifiant du nouvel assigné (optionnel).", "col": { "xs": 24 } }
         ]
       }
     }

@@ -107,6 +107,8 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     } catch { return schema; }
   };
 
+  // (Descriptions are now expected to be present in manifests directly; importer no longer injects them.)
+
   // Prepare manifest-level variables to reuse schemas across templates
   const manifestVars = (() => {
     const v = (m.variables && typeof m.variables === 'object') ? m.variables : (m.vars && typeof m.vars === 'object') ? m.vars : null;

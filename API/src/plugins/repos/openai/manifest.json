@@ -4,34 +4,34 @@
     "llm_text": {
       "title": "Réponse (texte)",
       "ui": { "layout": "vertical", "labelsOnTop": true },
-      "fields": [ { "type": "textarea", "key": "text", "label": "Texte", "col": { "xs": 24 } } ]
+      "fields": [ { "type": "textarea", "key": "text", "label": "Texte", "description": "Texte généré par le modèle.", "col": { "xs": 24 } } ]
     },
     "ai_memory": {
       "title": "Mémoire AI",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "array", "key": "texts", "label": "Texts", "col": { "xs": 24 }, "item": { "type": "text", "key": "_", "label": "Texte" } },
-        { "type": "number", "key": "dimensions", "label": "Dimensions", "col": { "xs": 24 } },
-        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "col": { "xs": 24 } }
+        { "type": "array", "key": "texts", "label": "Texts", "description": "Liste de textes mémorisés.", "col": { "xs": 24 }, "item": { "type": "text", "key": "_", "label": "Texte", "description": "Entrée texte de la mémoire." } },
+        { "type": "number", "key": "dimensions", "label": "Dimensions", "description": "Dimension des vecteurs d\u2019embedding.", "col": { "xs": 24 } },
+        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "description": "Nombre de vecteurs stockés.", "col": { "xs": 24 } }
       ]
     },
     "ai_vectors": {
       "title": "Vecteurs (embeddings)",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "col": { "xs": 24 } },
-        { "type": "number", "key": "dimensions", "label": "Dimensions", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "vectors", "label": "Vectors (JSON)", "col": { "xs": 24 } }
+        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "description": "Nombre de vecteurs générés.", "col": { "xs": 24 } },
+        { "type": "number", "key": "dimensions", "label": "Dimensions", "description": "Dimension des vecteurs.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "vectors", "label": "Vectors (JSON)", "description": "Vecteurs encodés en JSON (tableau de nombres).", "col": { "xs": 24 } }
       ]
     },
     "images": {
       "title": "Images générées",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "array", "key": "images", "label": "Images", "col": { "xs": 24 }, "item": {
-          "type": "section", "key": "_", "label": "Image", "fields": [
-            { "type": "text", "key": "url", "label": "URL" },
-            { "type": "textarea", "key": "b64", "label": "Base64" }
+        { "type": "array", "key": "images", "label": "Images", "description": "Liste des images générées.", "col": { "xs": 24 }, "item": {
+          "type": "section", "key": "_", "label": "Image", "description": "Détails d\u2019une image générée.", "fields": [
+            { "type": "text", "key": "url", "label": "URL", "description": "URL publique/privée de l\u2019image." },
+            { "type": "textarea", "key": "b64", "label": "Base64", "description": "Données de l\u2019image encodées en Base64." }
           ]
         } }
       ]
@@ -40,9 +40,9 @@
       "title": "Outil (LangChain)",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "schema", "label": "Paramètres (JSON Schema)", "col": { "xs": 24 } }
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom lisible de l\u2019outil.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "description": "Description fonctionnelle de l\u2019outil.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "schema", "label": "Paramètres (JSON Schema)", "description": "Schéma JSON des paramètres de l\u2019outil.", "col": { "xs": 24 } }
       ]
     }
   },
@@ -61,10 +61,10 @@
         "title": "Identifiants OpenAI",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "apiKey", "label": "API Key", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "baseUrl", "label": "Base URL (optionnel)", "col": { "xs": 24 } },
-          { "type": "text", "key": "organization", "label": "Organization (optionnel)", "col": { "xs": 24 } },
-          { "type": "text", "key": "defaultModel", "label": "Modèle par défaut", "col": { "xs": 24 }, "default": "gpt-4o-mini" }
+          { "type": "text", "key": "apiKey", "label": "API Key", "description": "Clé API OpenAI.", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
+          { "type": "text", "key": "baseUrl", "label": "Base URL (optionnel)", "description": "URL alternative de l’API (optionnel).", "col": { "xs": 24 } },
+          { "type": "text", "key": "organization", "label": "Organization (optionnel)", "description": "ID d’organisation OpenAI (si requis).", "col": { "xs": 24 } },
+          { "type": "text", "key": "defaultModel", "label": "Modèle par défaut", "description": "Modèle utilisé par défaut.", "col": { "xs": 24 }, "default": "gpt-4o-mini" }
         ]
       }
     }
@@ -86,11 +86,11 @@
         "title": "Chat Completion",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
-          { "type": "textarea", "key": "system", "label": "Système", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "temperature", "label": "Température", "col": { "xs": 24 }, "default": 0.7 },
-          { "type": "number", "key": "maxTokens", "label": "Max tokens", "col": { "xs": 24 } }
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle (ex.: gpt-4o-mini).", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Contexte système (instructions).", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur / consigne.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité de la génération (0-2).", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens de sortie.", "col": { "xs": 24 } }
         ]
       }
     },
@@ -109,7 +109,7 @@
         "title": "Memory (Static)",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "textarea", "key": "text", "label": "Texte de mémoire", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] }
+          { "type": "textarea", "key": "text", "label": "Texte de mémoire", "description": "Contenu texte stocké dans la mémoire.", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] }
         ]
       }
     },
@@ -129,7 +129,7 @@
         "title": "Memory Merge",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "checkbox", "key": "dedupe", "label": "Supprimer doublons", "col": { "xs": 24 }, "default": true }
+          { "type": "checkbox", "key": "dedupe", "label": "Supprimer doublons", "description": "Déduplique les textes similaires.", "col": { "xs": 24 }, "default": true }
         ]
       }
     },
@@ -148,9 +148,9 @@
         "title": "Tool (LangChain)",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "name", "label": "Nom de l'outil", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] },
-          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "parameters", "label": "Paramètres (JSON Schema)", "col": { "xs": 24 }, "default": "{}" }
+          { "type": "text", "key": "name", "label": "Nom de l'outil", "description": "Nom unique et lisible de l\u2019outil.", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] },
+          { "type": "textarea", "key": "description", "label": "Description", "description": "Description de l\u2019outil et de son usage.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "parameters", "label": "Paramètres (JSON Schema)", "description": "Schéma JSON des paramètres.", "col": { "xs": 24 }, "default": "{}" }
         ]
       }
     },
@@ -170,8 +170,8 @@
         "title": "Embeddings",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "text-embedding-3-small" },
-          { "type": "textarea", "key": "input", "label": "Texte (ou JSON array)", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d\u2019embeddings (ex.: text-embedding-3-small).", "col": { "xs": 24 }, "default": "text-embedding-3-small" },
+          { "type": "textarea", "key": "input", "label": "Texte (ou JSON array)", "description": "Texte unique ou tableau JSON de textes.", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
         ]
       }
     },
@@ -191,9 +191,9 @@
         "title": "Image Generate",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-image-1" },
-          { "type": "textarea", "key": "prompt", "label": "Prompt", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "select", "key": "size", "label": "Taille", "col": { "xs": 24 }, "options": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d\u2019image (ex.: gpt-image-1).", "col": { "xs": 24 }, "default": "gpt-image-1" },
+          { "type": "textarea", "key": "prompt", "label": "Prompt", "description": "Description de l\u2019image souhaitée.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "select", "key": "size", "label": "Taille", "description": "Taille de sortie de l\u2019image.", "col": { "xs": 24 }, "options": [
             { "label": "256x256", "value": "256x256" },
             { "label": "512x512", "value": "512x512" },
             { "label": "1024x1024", "value": "1024x1024" }
@@ -220,8 +220,8 @@
         "title": "Memory Embeddings",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "textarea", "key": "text", "label": "Texte (si non fourni en entrée)", "col": { "xs": 24 } },
-          { "type": "text", "key": "model", "label": "Modèle d'embeddings", "col": { "xs": 24 }, "default": "text-embedding-3-small" }
+          { "type": "textarea", "key": "text", "label": "Texte (si non fourni en entrée)", "description": "Texte à indexer si non fourni par l\u2019entrée.", "col": { "xs": 24 } },
+          { "type": "text", "key": "model", "label": "Modèle d'embeddings", "description": "Modèle utilisé pour l\u2019indexation.", "col": { "xs": 24 }, "default": "text-embedding-3-small" }
         ]
       }
     }
@@ -248,10 +248,10 @@
         "title": "Agent OpenAI",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
-          { "type": "textarea", "key": "system", "label": "Système", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "prompt", "label": "Prompt", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "temperature", "label": "Température", "col": { "xs": 24 }, "default": 0.7 }
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle (ex.: gpt-4o-mini).", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Contexte système pour l’agent.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt", "description": "Instruction de départ pour l’utilisateur.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité de la génération (0-2).", "col": { "xs": 24 }, "default": 0.7 }
         ]
       }
     }

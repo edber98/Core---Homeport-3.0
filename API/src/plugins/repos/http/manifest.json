@@ -5,20 +5,20 @@
       "title": "Requête entrante",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "text", "key": "method", "label": "Méthode", "col": { "xs": 24 } },
-        { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "query", "label": "Query (JSON)", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "body", "label": "Body (JSON)", "col": { "xs": 24 } }
+        { "type": "text", "key": "method", "label": "Méthode", "description": "Méthode HTTP (GET, POST, ...).", "col": { "xs": 24 } },
+        { "type": "text", "key": "path", "label": "Chemin", "description": "Chemin d\u2019accès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "description": "En-têtes HTTP au format JSON.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "query", "label": "Query (JSON)", "description": "Paramètres de requête au format JSON.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "body", "label": "Body (JSON)", "description": "Corps de la requête au format JSON.", "col": { "xs": 24 } }
       ]
     },
     "http_response": {
       "title": "Réponse HTTP",
       "ui": { "layout": "vertical", "labelsOnTop": true },
       "fields": [
-        { "type": "number", "key": "status", "label": "Status", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "body", "label": "Body (JSON)", "col": { "xs": 24 } }
+        { "type": "number", "key": "status", "label": "Status", "description": "Code de statut HTTP (ex.: 200, 404).", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "description": "En-têtes de la réponse au format JSON.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "body", "label": "Body (JSON)", "description": "Corps de la réponse au format JSON.", "col": { "xs": 24 } }
       ]
     }
   },
@@ -41,19 +41,19 @@
         "title": "Point d’entrée HTTP",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 }, "default": "/hooks/event", "validators": [{"type":"required"}] },
-          { "type": "select", "key": "method", "label": "Méthode", "col": { "xs": 24 }, "options": [
+          { "type": "text", "key": "path", "label": "Chemin", "description": "Chemin d’URL de l’endpoint.", "col": { "xs": 24 }, "default": "/hooks/event", "validators": [{"type":"required"}] },
+          { "type": "select", "key": "method", "label": "Méthode", "description": "Méthode HTTP attendue.", "col": { "xs": 24 }, "options": [
             {"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}
           ], "default": "POST" },
-          { "type": "select", "key": "contentType", "label": "Content-Type attendu", "col": { "xs": 24 }, "options": [
+          { "type": "select", "key": "contentType", "label": "Content-Type attendu", "description": "Type de contenu attendu.", "col": { "xs": 24 }, "options": [
             {"label":"application/json","value":"application/json"},
             {"label":"application/x-www-form-urlencoded","value":"application/x-www-form-urlencoded"},
             {"label":"text/plain","value":"text/plain"},
             {"label":"multipart/form-data","value":"multipart/form-data"}
           ], "default": "application/json" },
-          { "type": "checkbox", "key": "cors", "label": "Autoriser CORS (\"*\")", "col": { "xs": 24 }, "default": true },
-          { "type": "number", "key": "respondStatus", "label": "HTTP status de réponse", "col": { "xs": 24 }, "default": 200 },
-          { "type": "textarea", "key": "respondBody", "label": "Corps de réponse (template JSON/texte)", "col": { "xs": 24 }, "default": "" }
+          { "type": "checkbox", "key": "cors", "label": "Autoriser CORS (\"*\")", "description": "Active l’en-tête CORS permissif.", "col": { "xs": 24 }, "default": true },
+          { "type": "number", "key": "respondStatus", "label": "HTTP status de réponse", "description": "Code HTTP renvoyé.", "col": { "xs": 24 }, "default": 200 },
+          { "type": "textarea", "key": "respondBody", "label": "Corps de réponse (template JSON/texte)", "description": "Corps de la réponse (template JSON/texte).", "col": { "xs": 24 }, "default": "" }
         ]
       }
     },
@@ -70,10 +70,10 @@
       "inputHandles": [ { "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] } ],
       "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:http_response" } ],
       "args": { "title": "HTTP", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
-        { "type": "select", "key": "method", "label": "Méthode", "options":[{"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}], "col": { "xs": 24 }, "default": "GET" },
-        { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 }, "validators":[{"type":"required"}] },
-        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "col": { "xs": 24 }, "default": "{}" },
-        { "type": "textarea", "key": "body", "label": "Body (JSON)", "col": { "xs": 24 }, "default": "{}", "visibleIf": { "method": ["POST","PUT","PATCH"] } }
+        { "type": "select", "key": "method", "label": "Méthode", "description": "Méthode HTTP.", "options":[{"label":"GET","value":"GET"},{"label":"POST","value":"POST"},{"label":"PUT","value":"PUT"},{"label":"PATCH","value":"PATCH"},{"label":"DELETE","value":"DELETE"}], "col": { "xs": 24 }, "default": "GET" },
+        { "type": "text", "key": "url", "label": "URL", "description": "Adresse de la requête.", "col": { "xs": 24 }, "validators":[{"type":"required"}] },
+        { "type": "textarea", "key": "headers", "label": "Headers (JSON)", "description": "En-têtes au format JSON.", "col": { "xs": 24 }, "default": "{}" },
+        { "type": "textarea", "key": "body", "label": "Body (JSON)", "description": "Corps de la requête au format JSON.", "col": { "xs": 24 }, "default": "{}", "visibleIf": { "method": ["POST","PUT","PATCH"] } }
       ] }
     }
   ]

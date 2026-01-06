@@ -734,8 +734,8 @@ async function runArgsAgentWithTools({ prompt, flowId, nodeId, branch = null, hi
     try { const { ensureToolMetadata } = require('./tools-registry'); await ensureToolMetadata(tools); } catch {}
     try { console.info('[ai-args] tools ready', tools.map(t => t?.name).filter(Boolean)); } catch {}
     const model = new ChatOpenAI({
-      temperature: 0,
-      modelName: process.env.OPENAI_MODEL || 'gpt-4o',
+      temperature: 1,
+      modelName: process.env.OPENAI_MODEL || 'gpt-5',
       openAIApiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '',
       streaming: true,
     });

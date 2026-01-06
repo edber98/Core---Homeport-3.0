@@ -24,6 +24,7 @@
             "type": "text",
             "key": "token",
             "label": "Personal Access Token",
+            "description": "Jeton d’accès personnel GitHub.",
             "col": {
               "xs": 24
             },
@@ -62,6 +63,7 @@
             "type": "text",
             "key": "owner",
             "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur/organisation).",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -82,6 +84,7 @@
             "type": "text",
             "key": "repo",
             "label": "Dépôt",
+            "description": "Nom du dépôt.",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -102,6 +105,7 @@
             "type": "text",
             "key": "title",
             "label": "Titre",
+            "description": "Titre de l’issue.",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -122,6 +126,7 @@
             "type": "textarea",
             "key": "body",
             "label": "Corps",
+            "description": "Description de l’issue (markdown).",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -159,6 +164,7 @@
             "type": "text",
             "key": "owner",
             "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur/organisation).",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -179,6 +185,7 @@
             "type": "text",
             "key": "repo",
             "label": "Dépôt",
+            "description": "Nom du dépôt.",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -199,6 +206,7 @@
             "type": "number",
             "key": "issue",
             "label": "Issue #",
+            "description": "Numéro de l’issue.",
             "col": {
               "xs": 24,
               "sm": 24,
@@ -219,6 +227,7 @@
             "type": "textarea",
             "key": "comment",
             "label": "Commentaire",
+            "description": "Texte du commentaire.",
             "col": {
               "xs": 24,
               "sm": 24,

@@ -14,9 +14,9 @@
         "title": "Identifiants Zoom OAuth/JWT",
         "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
-          { "type": "text", "key": "accountId", "label": "ID du compte", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true }
+          { "type": "text", "key": "accountId", "label": "ID du compte", "description": "Identifiant du compte Zoom.", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientId", "label": "ID client", "description": "Client ID OAuth.", "col": { "xs": 24 } },
+          { "type": "text", "key": "clientSecret", "label": "Secret client", "description": "Client secret OAuth.", "col": { "xs": 24 }, "secret": true }
         ]
       }
     }
@@ -26,14 +26,14 @@
       "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
       "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
       "description": "Créer une réunion Zoom", "args": { "title": "Créer une réunion", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"topic","label":"Sujet","col":{"xs":24}},
-        {"type":"select","key":"type","label":"Type","col":{"xs":24},"options":[{"label":"Planifiée","value":2},{"label":"Instantanée","value":1}]},
-        {"type":"datetime","key":"startTime","label":"Heure de début","col":{"xs":24}},
-        {"type":"number","key":"duration","label":"Durée (min)","col":{"xs":24},"default":30}
+        {"type":"text","key":"topic","label":"Sujet","description":"Sujet/titre de la réunion.","col":{"xs":24}},
+        {"type":"select","key":"type","label":"Type","description":"Type de réunion (planifiée/instantanée).","col":{"xs":24},"options":[{"label":"Planifiée","value":2},{"label":"Instantanée","value":1}]},
+        {"type":"datetime","key":"startTime","label":"Heure de début","description":"Date et heure de début.","col":{"xs":24}},
+        {"type":"number","key":"duration","label":"Durée (min)","description":"Durée de la réunion en minutes.","col":{"xs":24},"default":30}
       ] } },
     { "key": "zoom_webhook_event", "name": "zoomWebhookEvent", "schemaVersion": 2, "title": "Webhook participant", "subtitle": "Déclencheur", "type": "event", "category": "Zoom", "providerKey": "zoom",
       "description": "Déclenchement via webhook Zoom (participant, réunion)", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/zoom"}
+        {"type":"text","key":"path","label":"Chemin d’endpoint","description":"Chemin d\u2019URL pour recevoir les webhooks.","col":{"xs":24},"default":"/hooks/zoom"}
       ] } }
   ]
 }
