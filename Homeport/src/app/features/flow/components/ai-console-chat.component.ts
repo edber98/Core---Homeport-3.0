@@ -63,7 +63,7 @@ type Msg = AiChatMessage & { pending?: boolean };
       </div>
       <div class="list" *ngIf="threads?.length; else emptyThreads">
         <button class="item" *ngFor="let t of threads" [class.active]="t.id===threadId" (click)="selectThread(t)">
-          <div class="name mono">{{ t.title }}</div>
+          <div class="name mono" [title]="t.title">{{ t.title }}</div>
           <div class="sub">{{ t.updatedAt | date:'short' }}</div>
           <button class="del" title="Supprimer" (click)="deleteThread(t); $event.stopPropagation()"><i class="fa-regular fa-trash-can"></i></button>
         </button>
@@ -111,7 +111,7 @@ type Msg = AiChatMessage & { pending?: boolean };
     .list { display:flex; flex-direction:column; gap:6px; padding: 0 10px 8px; overflow:auto; flex:1 1 auto; min-height:0; }
     .item { position: relative; text-align:left; background:#fff; border:1px solid transparent; border-radius:10px; padding:8px; cursor:pointer; }
     .item.active { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
-    .item .name { font-size:12px; color:#111; }
+    .item .name { font-size:12px; color:#111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:block; padding-right: 24px; }
     .item .sub { font-size:11px; color:#8c8c8c; }
     .item .del { position:absolute; right:6px; top:6px; background:transparent; border:0; color:#8c8c8c; cursor:pointer; }
     .empty { color:#8c8c8c; font-size:12px; padding: 0 10px 10px; }
