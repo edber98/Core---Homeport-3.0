@@ -343,4 +343,6 @@ export class JsonSchemaViewerV2Component implements OnChanges {
     try { console.log('[settings-v2][dnd][json-viewer] dragstart', { path }); } catch {}
     try { ev.stopPropagation(); } catch {}
   }
+
+  
 }

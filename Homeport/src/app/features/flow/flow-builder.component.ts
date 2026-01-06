@@ -2430,9 +2430,16 @@ export class FlowBuilderComponent {
   
   private openCtxMenuAt(x: number, y: number, node: any) {
     try { this.selectionBoxStart = null; this.selectionBoxRect = null; this.marqueePrimed = false; } catch {}
+    // Clamp within viewport so menu is always visible (mobile corners esp.)
+    const vw = (typeof window !== 'undefined') ? window.innerWidth : 1024;
+    const vh = (typeof window !== 'undefined') ? window.innerHeight : 768;
+    const margin = 8; const estW = 260; const estH = 320;
+    let px = x, py = y;
+    if (px + estW > vw - margin) px = Math.max(margin, vw - estW - margin);
+    if (py + estH > vh - margin) py = Math.max(margin, vh - estH - margin);
     this.ctxMenuVisible = true;
-    this.ctxMenuX = x;
-    this.ctxMenuY = y;
+    this.ctxMenuX = px;
+    this.ctxMenuY = py;
     this.ctxMenuTarget = node;
     try {
       const count = (this.selectionList || []).length;
@@ -2737,7 +2744,7 @@ export class FlowBuilderComponent {
         this.lpTarget = null; this.lpFired = false;
         if (node) {
           // Open configuration dialog on double-tap
-          try { this.zone.run(() => { this.selectItem(node); this.openAdvancedEditor(); }); } catch {}
+          try { this.zone.run(() => { this.selectItem(node); this.openAdvancedEditorV2(); }); } catch {}
           return;
         }
       } else {
@@ -2749,7 +2756,7 @@ export class FlowBuilderComponent {
   onNodeDoubleClick(ev: MouseEvent, node: any) {
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
     try { this.selectItem(node); } catch {}
-    this.openAdvancedEditor();
+    this.openAdvancedEditorV2();
   }
 
   // Auto-layout the entire graph via backend (ELK)
@@ -3118,7 +3125,7 @@ export class FlowBuilderComponent {
         const node = this.nodes.find(n => String(n.id) === id);
         if (node) {
           this.selectItem(node);
-          setTimeout(() => this.openAdvancedEditor(), 0);
+          setTimeout(() => this.openAdvancedEditorV2(), 0);
         }
       } catch {}
       // Do not auto-save the flow here; let the user decide to save
@@ -3312,7 +3319,7 @@ export class FlowBuilderComponent {
   ctxOpenAdvancedAndInspector() {
     if (!this.ctxMenuTarget) return;
     try { this.selectItem(this.ctxMenuTarget); } catch { }
-    this.openAdvancedEditor();
+    this.openAdvancedEditorV2();
     this.closeCtxMenu();
   }
   ctxOpenSimulation() {
@@ -4094,7 +4101,7 @@ export class FlowBuilderComponent {
       this.selectionList = [sel];
       try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
       try { this.setVflowSelectedIds([nodeId]); } catch {}
-      this.openAdvancedEditor();
+      this.openAdvancedEditorV2();
     } catch {}
   }
 

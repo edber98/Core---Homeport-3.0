@@ -368,7 +368,7 @@
       [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
       [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
       [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
       [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
@@ -461,7 +461,7 @@
       <button class="icon-btn" *ngIf="isMobile" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
-      <button class="icon-btn" *ngIf="!isMobile" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
+      <button class="icon-btn" *ngIf="!isMobile" (click)="openAdvancedEditorV2()" [disabled]="!selectedModel" title="Configurer / Tester (V2)">
         <i class="fa-solid fa-flask"></i>
       </button>
       <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
@@ -572,8 +572,8 @@
       <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
     </ng-template>
     <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
-    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur</button>
-    <button (click)="ctxOpenAdvancedV2AndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur avancé</button>
+    <button (click)="ctxOpenAdvancedV2AndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur (V2)</button>
+    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur (Ancien)</button>
     <button (click)="ctxOpenSimulation()"><i class="fa-solid fa-flask"></i> Ouvrir en simulation</button>
     <button class="danger" *ngIf="(selectionList?.length || 0) <= 1" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
@@ -629,7 +629,7 @@
       [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
       [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
       [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
       [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
       [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
