@@ -58,7 +58,7 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <!-- Center column: Settings (args) -->
-        <div class="col center" (pointerup)="onFormReleased()">
+        <div class="col center" (pointerup)="onFormReleased($event)">
           <flow-advanced-center-panel [model]="model" [ctx]="mergedCtx" [flowId]="flowId" [bare]="true"
             [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'"
             (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()"
@@ -161,7 +161,7 @@ import { FormsModule } from '@angular/forms';
             </div>
             <!-- Center slide -->
             <div class="slide center">
-              <div class="scroll" (pointerup)="onFormReleased()">
+              <div class="scroll" (pointerup)="onFormReleased($event)">
                 <flow-advanced-center-panel [model]="model" [ctx]="mergedCtx" [flowId]="flowId" [bare]="true"
                   [disabled]="disableForChecksum" [disableReason]="'Mise à jour du format requise'"
                   (updateArgs)="requestUpdateArgs.emit()" (test)="test.emit()"
@@ -274,6 +274,7 @@ import { FormsModule } from '@angular/forms';
     .slides { position:absolute; inset:0; display:flex; width:300%; height:100%; transition: transform .28s ease; will-change: transform; }
     .slides.dragging { transition: none; }
     .slide { width:33.3333%; height:100%; overflow:hidden; }
+    .slide.active { pointer-events: auto; }
     .scroll { height:100%; overflow:auto; -webkit-overflow-scrolling: touch; padding: 10px; display:flex; flex-direction: column; }
     .slide.center .scroll { padding: 0; }
   `]
@@ -459,9 +460,27 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     try { this.modelChangeCommitted.emit(m || this.model); } catch {}
     this.close.emit();
   }
-  onFormReleased() {
-    // V2 keeps same behavior: commit on pointer up
-    try { this.modelChangeCommitted.emit(this.model); } catch {}
+  onFormReleased(ev?: Event) {
+    try {
+      const isInteractive = (el: HTMLElement | null): boolean => {
+        let n: HTMLElement | null = el; let d = 0;
+        while (n && d < 8) {
+          const tag = (n.tagName || '').toLowerCase();
+          const editable = (n as any).isContentEditable === true;
+          const tabIndex = (n as any).tabIndex;
+          if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || editable) return true;
+          if (typeof tabIndex === 'number' && tabIndex >= 0) return true;
+          const cls = n.className ? String(n.className) : '';
+          if (/ant-(select|picker|switch|radio|checkbox|btn|input|textarea|form|cascader|tree|mentions)/.test(cls)) return true;
+          if (/(nz-|app-)(select|input|switch|radio|checkbox|button|dynamic-form)/.test(cls)) return true;
+          n = n.parentElement; d++;
+        }
+        return false;
+      };
+      const target = (ev?.target as HTMLElement) || null;
+      if (isInteractive(target)) return; // ne pas committer sur un tap de focus iOS
+      this.modelChangeCommitted.emit(this.model);
+    } catch {}
   }
 
   // Responsive helpers
@@ -498,7 +517,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     const nearRight = (W - t.clientX) <= 28;
     const startAtEdge = nearLeft || nearRight || !!this.swipeFromEdge;
     this.fromInteractive = isInteractive(target);
-    // Détecter le swipe sur toute la zone: ne pas ignorer si interaction; on récupère le geste après lock horizontal
+    // Autoriser le swipe sur toute la zone (même si interactif), sauf si edgeOnly actif et démarrage non sur un bord
     this.ignoreSwipe = (this.edgeOnly && !startAtEdge);
     if (this.ignoreSwipe) { this.dragging = false; this.swipeActive = false; return; }
     this.swipeStartX = t.clientX; this.swipeStartY = t.clientY; this.swipeDx = 0; this.swipeDy = 0; this.swipeActive = true; this.dragging = true; this.horizLocked = false; this.swipeStartTime = Date.now();

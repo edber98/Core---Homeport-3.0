@@ -238,12 +238,19 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
               return false;
             },
             dragover: (event, view) => {
-              const dt = (event as DragEvent).dataTransfer;
+              const e = event as DragEvent;
+              const dt = e.dataTransfer;
               if (!dt) return false;
-              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
-                if (event.cancelable) event.preventDefault();
-                event.stopPropagation(); (event as any).stopImmediatePropagation?.();
-                const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
+              const raw = dt.getData('application/x-expression-tag')
+                || dt.getData('text/plain')
+                || dt.getData('text')
+                || dt.getData('public.utf8-plain-text')
+                || dt.getData('com.apple.traditional-mac-plain-text');
+              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain') || (raw != null && raw !== '')) {
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation(); (e as any).stopImmediatePropagation?.();
+                try { dt.dropEffect = 'copy'; } catch {}
+                const pos = view.posAtCoords({ x: e.clientX, y: e.clientY });
                 if (pos != null) {
                   view.dispatch({ selection: { anchor: pos } });
                   this.ensureCaretVisible();
@@ -254,26 +261,28 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
               return false;
             },
             drop: (event, view) => {
-              const dt = (event as DragEvent).dataTransfer;
+              const e = event as DragEvent;
+              const dt = e.dataTransfer;
               if (!dt) return false;
-              if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain')) {
-                if (this.dropProcessing) { if (event.cancelable) event.preventDefault(); return true; }
-                this.dropProcessing = true;
-                const raw = dt.getData('application/x-expression-tag') || dt.getData('text/plain');
-                if (!raw) return true;
-                try {
-                  if (event.cancelable) event.preventDefault();
-                  event.stopPropagation(); (event as any).stopImmediatePropagation?.();
-                  const data = safeParseTag(raw);
-                  const pos = view.posAtCoords({ x: (event as DragEvent).clientX, y: (event as DragEvent).clientY });
-                  const insertAt = pos != null ? pos : view.state.selection.main.head;
-                  this.insertTagAt(data, insertAt);
-                  this.hideDragCaret();
-                } catch {}
-                setTimeout(() => { this.dropProcessing = false; }, 0);
-                return true;
-              }
-              return false;
+              const raw = dt.getData('application/x-expression-tag')
+                || dt.getData('text/plain')
+                || dt.getData('text')
+                || dt.getData('public.utf8-plain-text')
+                || dt.getData('com.apple.traditional-mac-plain-text');
+              if (raw == null || raw === '') return false;
+              if (this.dropProcessing) { if (e.cancelable) e.preventDefault(); return true; }
+              this.dropProcessing = true;
+              try {
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation(); (e as any).stopImmediatePropagation?.();
+                const data = safeParseTag(raw);
+                const pos = view.posAtCoords({ x: e.clientX, y: e.clientY });
+                const insertAt = pos != null ? pos : view.state.selection.main.head;
+                this.insertTagAt(data, insertAt);
+                this.hideDragCaret();
+              } catch {}
+              setTimeout(() => { this.dropProcessing = false; }, 0);
+              return true;
             },
           }),
           EditorView.updateListener.of(u => this.onUpdate(u)),
@@ -325,11 +334,17 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     // Drag & drop support for external tags
     const host = this.cmRef.nativeElement;
     const onDragOver = (e: DragEvent) => {
-      if (!e.dataTransfer) return;
-      if (e.dataTransfer.types.includes('application/x-expression-tag') || e.dataTransfer.types.includes('text/plain')) {
+      const dt = e.dataTransfer;
+      if (!dt) return;
+      const raw = dt.getData('application/x-expression-tag')
+        || dt.getData('text/plain')
+        || dt.getData('text')
+        || dt.getData('public.utf8-plain-text')
+        || dt.getData('com.apple.traditional-mac-plain-text');
+      if (dt.types.includes('application/x-expression-tag') || dt.types.includes('text/plain') || (raw != null && raw !== '')) {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation(); (e as any).stopImmediatePropagation?.();
-        e.dataTransfer.dropEffect = 'copy';
+        try { dt.dropEffect = 'copy'; } catch {}
         const pos = this.view.posAtCoords({ x: e.clientX, y: e.clientY });
         if (pos != null) {
           this.view.focus();
@@ -340,11 +355,16 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
       }
     };
     const onDrop = (e: DragEvent) => {
-      if (!e.dataTransfer) return;
+      const dt = e.dataTransfer;
+      if (!dt) return;
       if (this.dropProcessing) { e.preventDefault(); return; }
       this.dropProcessing = true;
-      const raw = e.dataTransfer.getData('application/x-expression-tag') || e.dataTransfer.getData('text/plain');
-      if (!raw) return;
+      const raw = dt.getData('application/x-expression-tag')
+        || dt.getData('text/plain')
+        || dt.getData('text')
+        || dt.getData('public.utf8-plain-text')
+        || dt.getData('com.apple.traditional-mac-plain-text');
+      if (raw == null || raw === '') { this.dropProcessing = false; return; }
       try {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation(); (e as any).stopImmediatePropagation?.();
@@ -843,13 +863,9 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
       this.ensureCaretVisible();
       this.closeMenu();
     } else {
-      // Outside: wrap the current token (if any) to avoid splitting like: json{{ json.id }}.id
-      let from = pos, to = pos;
-      const isPathChar = (ch: string) => /[A-Za-z0-9_.$\[\]]/.test(ch);
-      while (from > 0 && isPathChar(doc[from - 1])) from--;
-      while (to < doc.length && isPathChar(doc[to])) to++;
+      // Outside: insert wrapped expression EXACTEMENT au caret sans remplacer de texte existant
       const insert = `{{ ${tag.path} }}`;
-      this.view.dispatch({ changes: { from, to, insert }, selection: { anchor: from + insert.length } });
+      this.view.dispatch({ changes: { from: pos, to: pos, insert }, selection: { anchor: pos + insert.length } });
       this.ensureCaretVisible();
     }
   }
