@@ -3337,6 +3337,9 @@ export class FlowBuilderComponent {
       const oldModel = node.data?.model || {};
       const model = JSON.parse(JSON.stringify(oldModel || {}));
       model.id = newId;
+      // Reset AI chat/args state on duplication
+      try { delete (model as any).aiChatThreadId; } catch {}
+      try { delete (model as any).aiArgsHistory; } catch {}
       // Adjust name to indicate duplication (non-bloquant)
       try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch { }
       // For condition nodes: regenerate stable _id for items to avoid handle collisions
@@ -3431,6 +3434,9 @@ export class FlowBuilderComponent {
         const oldM = n?.data?.model || {};
         const m = JSON.parse(JSON.stringify(oldM || {}));
         m.id = newId;
+        // Reset AI chat/args state on group duplication
+        try { delete (m as any).aiChatThreadId; } catch {}
+        try { delete (m as any).aiArgsHistory; } catch {}
         // Rename for copy UX
         try { if (m?.name) m.name = String(m.name) + ' (copy)'; } catch {}
         // Condition: avoid branch id collisions
@@ -5529,7 +5535,16 @@ export class FlowBuilderComponent {
       kind: 'homeport.flow.selection',
       version: 1,
       createdAt: Date.now(),
-      nodes: nodes.map(n => ({ id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data: n.data })),
+      nodes: nodes.map(n => {
+        try {
+          const data = JSON.parse(JSON.stringify(n.data || {}));
+          const m = data?.model;
+          if (m) { try { delete m.aiChatThreadId; } catch {}; try { delete m.aiArgsHistory; } catch {}; }
+          return { id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data };
+        } catch {
+          return { id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data: n.data };
+        }
+      }),
       edges: edgesFull
     } as any;
     return out;
@@ -5580,6 +5595,9 @@ export class FlowBuilderComponent {
         const oldM = n?.data?.model || {};
         const m = JSON.parse(JSON.stringify(oldM || {}));
         m.id = newId;
+        // Reset AI chat/args state on paste
+        try { delete (m as any).aiChatThreadId; } catch {}
+        try { delete (m as any).aiArgsHistory; } catch {}
         // Condition branch id remap
         try {
           const tt = m?.templateObj?.type;

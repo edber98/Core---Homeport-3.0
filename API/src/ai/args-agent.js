@@ -29,11 +29,13 @@ function systemPromptBase(){
     "Contraintes: réponds en français; ne change PAS la structure du schéma; n’affiche PAS de listes exhaustives (schéma, nœuds, scénarios) dans le message; n’écho PAS le contexte brut.",
     "SI TU AS ASSEZ D’INFORMATIONS: tu DOIS appeler set_node_args (avec les champs pertinents seulement) ET set_node_description (1–2 phrases). N’écris PAS les valeurs dans ton message; utilise les tools.",
     "Injection de chemins: lorsque la valeur d’un argument vient d’un message précédent (msgIn) ou du résultat d’un nœud antérieur, n’insère PAS de valeur littérale — insère un chemin de template Homeport entre {{ }}:",
-    "- Si la donnée est dans msgIn.payload: utilise {{payload.clef}} (ex: {{payload.first_name}}) mais tu trouveras aussi les champs disponible dans le payload avec msgIn tu ne pas utilises une key non reference.",
-    "- Si la donnée vient d’un nœud précédent: utilise {{<nodeId>.clef}} où <nodeId> est l’identifiant vu dans msgIn tu ne dois pas injecter un field qui n'existe pas. (ex: {{start_form_startform_abc.first_name}} ou {{function_xxx.text}}).",
-    "- Ne devine pas de clés; base-toi sur les clés observées via get_scenarios/get_msgin_preview (payloadKeys et clés de nœuds).",
+    "- Si la donnée est dans msgIn.payload: utilise {{payload.clef}} (ex: {{payload.first_name}}).",
+    "- Si la donnée vient d’un nœud précédent: utilise {{<nodeId>.clef}} où <nodeId> est l’identifiant vu dans msgIn; n’injecte JAMAIS une clé inexistante (ex: {{start_form_startform_abc.first_name}} ou {{function_xxx.text}}).",
+    "- Ne devine AUCUNE clé ni identifiant: n’utilise QUE les clés explicitement observées via get_scenarios/get_msgin_preview (payloadKeys et clés de nœuds), y compris pour payload.",
     "- Préfère les chemins stables et explicites; n’injecte PAS de valeurs statiques quand un chemin est disponible.",
-    "SI UNE INFORMATION MANQUE: pose UNE question courte et précise, sinon propose directement via les tools.",
+    "SI UNE INFORMATION MANQUE: pose UNE question courte et précise listant les champs/informations manquants; sinon propose directement via les tools.",
+    "Si les précédents (list_predecessors) et/ou les scénarios (get_scenarios/get_msgin_preview) ne fournissent PAS d’indices suffisants pour compléter les champs requis: NE PAS appeler set_node_args; pose d’abord la question ciblée.",
+    "N’utilise JAMAIS des clés qui ne figurent ni dans payloadKeys ni dans les clés de nœuds précédents; si une clé te manque, dis-le et demande la valeur.",
     "Important: ne dis jamais que la configuration est appliquée. Dans tes messages, écris seulement: 'Proposition prête à être appliquée.' (ou pose ta question si nécessaire).",
     "Description: très courte (≈ une phrase, ~120 caractères max), en tenant compte de la description actuelle si pertinente (via get_node_info).",
     "Garde les messages très courts (max 1 phrase) et utiles.",
@@ -256,7 +258,63 @@ async function buildToolsLC({ DynamicStructuredTool, flowId, nodeId, branch, sen
             send({ type: 'error', code: 'args_empty', message: 'Aucun argument fourni dans set_node_args' });
             return 'args_empty';
           }
-          send({ type: 'args', args });
+          // Validate keys against node schema when available
+          let allowed = null; let required = null;
+          try {
+            const graph = await ensureGetFlow();
+            const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+            const n = nodes.find(x => String(x.id) === String(nodeId));
+            const model = (n?.data && n.data.model) ? n.data.model : (n?.data || {});
+            const schema = model?.templateObj?.args || null;
+            const collectKeys = (sch) => {
+              const set = new Set();
+              const walkFields = (arr) => {
+                for (const f of (arr||[])) {
+                  const k = f && (f.key || f.id || f.name);
+                  if (k && typeof k === 'string') set.add(String(k));
+                  if (Array.isArray(f.fields)) walkFields(f.fields);
+                  if (Array.isArray(f.steps)) walkFields(f.steps.flatMap(s => s.fields||[]));
+                }
+              };
+              if (!sch) return set;
+              if (Array.isArray(sch.fields)) walkFields(sch.fields);
+              if (Array.isArray(sch.steps)) walkFields(sch.steps.flatMap(s => s.fields||[]));
+              return set;
+            };
+            const collectRequired = (sch) => {
+              const set = new Set();
+              const visit = (arr) => {
+                for (const f of (arr||[])) {
+                  const k = f && (f.key || f.id || f.name);
+                  const validators = Array.isArray(f?.validators) ? f.validators : [];
+                  const isReq = !!f?.required || validators.some(v => (v && (v.type === 'required' || v.kind === 'required')));
+                  if (isReq && k) set.add(String(k));
+                  if (Array.isArray(f.fields)) visit(f.fields);
+                  if (Array.isArray(f.steps)) visit(f.steps.flatMap(s => s.fields||[]));
+                }
+              };
+              if (Array.isArray(sch?.fields)) visit(sch.fields);
+              if (Array.isArray(sch?.steps)) visit(sch.steps.flatMap(s => s.fields||[]));
+              return set;
+            };
+            allowed = collectKeys(schema);
+            required = collectRequired(schema);
+          } catch {}
+          let filtered = args;
+          if (allowed && allowed.size) {
+            const bad = [];
+            filtered = {};
+            for (const k of Object.keys(args)) {
+              if (allowed.has(String(k))) filtered[k] = args[k]; else bad.push(k);
+            }
+            if (bad.length) { try { console.warn('[ai-args][set_node_args] unknown_keys', bad); } catch {} send({ type:'error', code:'args_unknown_keys', message:'Clés inconnues ignorées', details: bad }); }
+          }
+          if (!Object.keys(filtered).length) { send({ type: 'error', code: 'args_empty_after_filter', message: 'Aucun argument exploitable (clés inconnues)' }); return 'args_empty_after_filter'; }
+          if (required && required.size) {
+            const missing = Array.from(required).filter(k => !(k in filtered));
+            if (missing.length) { try { console.info('[ai-args][set_node_args] missing_required', missing); } catch {} send({ type:'message', role:'assistant', text:`[tool] champs requis manquants: ${missing.join(', ')}` }); }
+          }
+          send({ type: 'args', args: filtered });
           return 'ok';
         } catch (e) { return 'error'; }
       }
