@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'flow-node-settings-v2-dialog',
   standalone: true,
   imports: [CommonModule, FormsModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerV2Component, DynamicForm, FlowViewerSettingsNodeComponent, NzSelectModule],
+  host: { '[class.tablet-portrait]': 'isTablet && isPortrait' },
   template: `
     <div class="overlay" (click)="close.emit()"></div>
     <!-- Desktop/tablet layout -->
@@ -107,7 +108,8 @@ import { FormsModule } from '@angular/forms';
     </div>
 
     <!-- Mobile layout with carousel/swipe -->
-    <div class="m-shell" *ngIf="isMobile" (click)="close.emit()">
+    <div class="m-shell" *ngIf="isMobile">
+      <div class="m-backdrop" (click)="close.emit()"></div>
       <div class="m-dialog enter" (click)="$event.stopPropagation()">
         <div class="m-body" #carRef (touchstart)="onSwipeStart($event)" (touchmove)="onSwipeMove($event)" (touchend)="onSwipeEnd()">
           <div class="edge-sensor left"
@@ -258,8 +260,10 @@ import { FormsModule } from '@angular/forms';
     .exec-times .sep { color:#9ca3af; padding: 0 6px; }
 
     /* Mobile single-panel shell */
-    .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; }
-    .m-dialog { position:relative; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
+    .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; pointer-events:auto; }
+    .m-backdrop { position:absolute; inset:0; z-index:1; }
+    .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
+    :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(94vh, 940px); }
     .m-body { position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; background:#fff; padding-top: env(safe-area-inset-top); }
     .m-footer { display:flex; align-items:center; justify-content:center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) 12px; border-top:0; background:#fff; }
     .dots { display:flex; gap:8px; }
@@ -274,9 +278,10 @@ import { FormsModule } from '@angular/forms';
     .slides { position:absolute; inset:0; display:flex; width:300%; height:100%; transition: transform .28s ease; will-change: transform; }
     .slides.dragging { transition: none; }
     .slide { width:33.3333%; height:100%; overflow:hidden; }
-    .slide.active { pointer-events: auto; }
     .scroll { height:100%; overflow:auto; -webkit-overflow-scrolling: touch; padding: 10px; display:flex; flex-direction: column; }
     .slide.center .scroll { padding: 0; }
+    /* Tablet portrait: conserver le padding panel-card comme en <=768px */
+    :host(.tablet-portrait) ::ng-deep .card.panel-card { overflow: auto; padding: 0 9px 9px; }
   `]
 })
 export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
@@ -352,6 +357,8 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   @ViewChild('carRef') private carRef?: ElementRef<HTMLElement>;
   @ViewChild('slidesRef') private slidesRef?: ElementRef<HTMLElement>;
   isMobile = false;
+  isTablet = false;
+  isPortrait = false;
   activeIndex = 1; // 0: Input, 1: Center, 2: Output
   panels = ['Input','Center','Output'];
   private swipeStartX = 0;
@@ -375,6 +382,15 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
 
   constructor(private pathSvc: FlowPathHighlightService, private layoutApi: LayoutBackendService, private cdr: ChangeDetectorRef, private zone: NgZone, private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
 
+  private resizeHandler = () => {
+    try {
+      const prev = this.isMobile;
+      this.updateIsMobile();
+      if (!prev && this.isMobile && !this.initialViewSet) { this.viewMode = 'json'; this.initialViewSet = true; }
+      if (prev !== this.isMobile) { this.cdr.detectChanges(); }
+    } catch {}
+  };
+
   ngOnInit() {
     this.updateIsMobile();
     this.updateSlidesTransform();
@@ -383,8 +399,14 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   ngAfterViewInit() {
     // Aligner le comportement iOS/Safari avec V1: porter l'hôte dans <body> pour éviter les contextes d'overflow/stacking
     try { this.renderer.addClass(this.el.nativeElement, 'advanced-dialog-portal'); this.renderer.appendChild(document.body, this.el.nativeElement); } catch {}
+    try { window.addEventListener('resize', this.resizeHandler, { passive: true }); } catch {}
+    try { window.addEventListener('orientationchange', this.resizeHandler, { passive: true }); } catch {}
   }
-  ngOnDestroy() { try { this.renderer.removeClass(this.el.nativeElement, 'advanced-dialog-portal'); } catch {} }
+  ngOnDestroy() {
+    try { this.renderer.removeClass(this.el.nativeElement, 'advanced-dialog-portal'); } catch {}
+    try { window.removeEventListener('resize', this.resizeHandler as any); } catch {}
+    try { window.removeEventListener('orientationchange', this.resizeHandler as any); } catch {}
+  }
 
   setView(v: 'flow'|'json') { this.viewMode = v; this.refreshScenarioView(); }
   hasNoOutput(): boolean {
@@ -484,7 +506,22 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   }
 
   // Responsive helpers
-  private updateIsMobile() { try { this.isMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false; } catch { this.isMobile = false; } }
+  private updateIsMobile() {
+    try {
+      const w = window.innerWidth || 0;
+      const h = window.innerHeight || 0;
+      const shortSide = Math.min(w, h);
+      const coarse = typeof window.matchMedia === 'function' ? window.matchMedia('(pointer: coarse)').matches : false;
+      const portrait = typeof window.matchMedia === 'function' ? window.matchMedia('(orientation: portrait)').matches : (h >= w);
+      const ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
+      const isiPad = /iPad/i.test(ua) || ((navigator as any)?.platform === 'MacIntel' && (navigator as any)?.maxTouchPoints > 1);
+      const isTablet = isiPad || (coarse && shortSide >= 600);
+      this.isTablet = isTablet; this.isPortrait = !!portrait;
+      if (isTablet) { this.isMobile = portrait; return; }
+      if (coarse) { this.isMobile = true; return; }
+      this.isMobile = w <= 768;
+    } catch { this.isMobile = false; }
+  }
   private updateSlidesTransform() { const basePct = this.activeIndex * (100/3); this.slidesTransform = `translateX(-${basePct}%)`; }
   prev() { if (this.activeIndex > 0) { this.activeIndex--; this.updateSlidesTransform(); } }
   next() { if (this.activeIndex < this.panels.length - 1) { this.activeIndex++; this.updateSlidesTransform(); } }
