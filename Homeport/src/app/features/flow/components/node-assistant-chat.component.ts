@@ -53,7 +53,7 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     <div class="args-proposal" *ngIf="argsProposal">
       <div class="desc">Proposition d'arguments <span class="mono">({{ (argsProposal && (Object.keys(argsProposal)||[])).length || 0 }} clés)</span></div>
       <div class="actions">
-        <button class="btn small" (click)="emitApplyArgs()"><i class="fa-solid fa-eye"></i> Aperçu + Appliquer</button>
+        <button class="btn small" (click)="emitApplyArgs()"><i class="fa-solid fa-check"></i> Appliquer</button>
         <button class="btn small ghost" (click)="clearArgsProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
       </div>
     </div>
@@ -61,7 +61,7 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
       <div class="desc">Proposition de description:</div>
       <div class="preview clamp">{{ descProposal }}</div>
       <div class="actions">
-        <button class="btn small" (click)="emitApplyDesc()"><i class="fa-solid fa-eye"></i> Aperçu + Appliquer</button>
+        <button class="btn small" (click)="emitApplyDesc()"><i class="fa-solid fa-check"></i> Appliquer</button>
         <button class="btn small ghost" (click)="clearDescProposal()"><i class="fa-solid fa-xmark"></i> Ignorer</button>
       </div>
     </div>

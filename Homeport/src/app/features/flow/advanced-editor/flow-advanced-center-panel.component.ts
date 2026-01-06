@@ -446,8 +446,6 @@ export class FlowAdvancedCenterPanelComponent {
 
   onAssistantApplyArgs(args: any) {
     try {
-      const ok = window.confirm('Appliquer ces arguments au nœud ?');
-      if (!ok) return;
       const v = args && typeof args === 'object' ? JSON.parse(JSON.stringify(args)) : {};
       const prev = (this.model?.context && typeof this.model.context === 'object') ? JSON.parse(JSON.stringify(this.model.context)) : {};
       this.lastAppliedArgs = { prev, next: v };
@@ -495,8 +493,6 @@ export class FlowAdvancedCenterPanelComponent {
 
   onAssistantApplyDesc(text: string) {
     try {
-      const ok = window.confirm('Appliquer cette description au nœud ?');
-      if (!ok) return;
       const prev = String(this.model?.description || '') || '';
       this.lastAppliedDesc = { prev, next: text };
       const m = { ...this.model, description: text } as any;
