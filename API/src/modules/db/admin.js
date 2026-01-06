@@ -25,6 +25,14 @@ module.exports = function(){
     res.json({ ok: true });
   });
 
+  // Trigger tools seed/update explicitly
+  r.post('/admin/seed-tools', async (_req, res) => {
+    try {
+      const { seedToolsIfMissing } = require('../../bootstrap/seed-tools');
+      await seedToolsIfMissing();
+      res.apiOk({ ok: true });
+    } catch (e) { res.apiError(500, 'seed_tools_failed', e?.message || 'Seed tools failed'); }
+  });
+
   return r;
 }
-

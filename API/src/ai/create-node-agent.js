@@ -76,7 +76,7 @@ function systemPrompt(){
     "But: à partir d'un prompt et d'un graphe (seedGraph), PROPOSER UN SEUL nouveau nœud à relier depuis la sortie indiquée (sourceId/sourceHandle).",
     "Étapes: 1) lister les templates compatibles, 2) choisir le meilleur template et expliquer brièvement, 3) utiliser get_template_schema(templateKey) pour voir les champs requis (et list_seed_predecessors pour comprendre le contexte), 4) si nécessaire, APPELER args_fill_via_node_assistant avec un objet { templateKey, prompt } où 'prompt' résume le sujet et explique quoi extraire depuis le msgIn (tu peux citer quelques clés utiles obtenues via get_scenarios/get_msgin_preview), 5) appeler set_node_args avec un JSON complet couvrant AU MOINS les champs requis et set_node_description (une phrase courte), 6) APPELER EXACTEMENT UNE FOIS le tool emit_graph pour émettre le graphe final (seed + 1 nœud + 1 arête), puis TERMINER.",
     "Contraintes: n'appelle JAMAIS emit_graph plus d'une fois. Utilise UNIQUEMENT les tools fournis.",
-    "Important: n’écris 'Proposition prête à être appliquée.' QU’APRÈS un emit_graph réussi. En cas d’erreur de tool (ex: template introuvable), explique l’erreur et ne propose pas d’appliquer.",
+    "Dans tes messages à l’utilisateur: ne mentionne pas les outils; résume en 1–2 phrases l’objectif et ce que tu as fait/vas faire. Après un emit_graph réussi, résume ce qui a été construit (nœud, rôle, principaux champs, lien depuis la source) de façon concise.",
   ].join('\n');
   return escapeLC(raw);
 }
@@ -90,6 +90,9 @@ function listOutputHandlesFromTemplate(tpl){
 
 async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = null, flowId = null, history = [], send, done }){
   try {
+    const { createDispatcher } = require('../realtime/agent-events');
+    const dispatcher = createDispatcher(send);
+    send = (obj) => { try { dispatcher.emit(obj); } catch {} };
     try {
       console.info('[ai-create-node][agent] start', {
         sourceId,
@@ -442,6 +445,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
               if (obj?.type === 'tool.end') { send({ ...obj, type:'tool.end', name: `nodeargs.${obj.name}` }); return; }
               if (obj?.type === 'done') { send({ type:'tool.end', name:'nodeargs.session', ok:true }); return; }
               if (obj?.type === 'await_user') { awaitUserInput = true; send({ type:'await_user', question: obj?.question || '' }); return; }
+              if (obj?.type === 'args.partial') { send({ type:'args.partial', args: obj.args }); return; }
               else if (obj?.type === 'args') { pendingArgs = obj.args || {}; argsLocked = true; send(obj); }
               else if (obj?.type === 'desc') {
                 pendingDesc = obj.text || '';
@@ -611,6 +615,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
       ['human', '{input}'],
       ['placeholder', '{agent_scratchpad}'],
     ]);
+    try { const { ensureToolMetadata } = require('./tools-registry'); await ensureToolMetadata(tools); } catch {}
     const agent = await createOpenAIToolsAgent({ llm: model, tools, prompt: promptT });
     const executor = new AgentExecutor({ agent, tools, maxIterations: 8 });
     const inputText = String(prompt||'').trim();
@@ -708,9 +713,10 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
           'en utilisant le schema (get_template_schema), les prédécesseurs (list_seed_predecessors) et des scénarios seed (get_seed_scenarios).',
           "Quand prêt, appelle set_args (avec les champs pertinents) ET set_desc (phrase courte).",
         ].join('\n'));
-        const promptT = ChatPromptTemplate.fromMessages([[ 'system', sys ], [ 'human', '{input}' ], [ 'placeholder', '{agent_scratchpad}' ]]);
-        const model = new ChatOpenAI({ temperature: 0, modelName: process.env.OPENAI_MODEL || 'gpt-4o-mini', openAIApiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '', streaming: true });
-        const agent = await createOpenAIToolsAgent({ llm: model, tools: toolsInner, prompt: promptT });
+          const promptT = ChatPromptTemplate.fromMessages([[ 'system', sys ], [ 'human', '{input}' ], [ 'placeholder', '{agent_scratchpad}' ]]);
+          const model = new ChatOpenAI({ temperature: 0, modelName: process.env.OPENAI_MODEL || 'gpt-4o-mini', openAIApiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY || '', streaming: true });
+          try { const { ensureToolMetadata } = require('./tools-registry'); await ensureToolMetadata(toolsInner); } catch {}
+          const agent = await createOpenAIToolsAgent({ llm: model, tools: toolsInner, prompt: promptT });
         const executor = new AgentExecutor({ agent, tools: toolsInner, maxIterations: 6 });
         const text = `Template: ${String(templateKey||'')}. Déduis les valeurs utiles (seed-only).`;
         const stream = await executor.streamEvents({ input: text }, { version: 'v2' });

@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
+import { ToolsBackendService, ToolMeta } from '../../../services/tools-backend.service';
+import { NunjucksService } from '../../../shared/nunjucks.service';
+import { DomSanitizer } from '@angular/platform-browser';
 import { AiConsoleBackendService, AiChatMessage, AiChatThread } from '../../../services/ai-console-backend.service';
 import { AiWorkflowAgentV2Service, WorkflowAgentV2Event } from '../../../services/ai-workflow-agent-v2.service';
 import { AiArgsAgentService, ArgsAgentEvent } from '../../../services/ai-args-agent.service';
@@ -95,7 +98,7 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .args-history .empty { font-size:12px; color:#6b7280; padding: 6px 0; }
     .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
     .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
-    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: normal; word-break: break-word; }
+    .bubble { max-width: 86%; min-width: 0; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; overflow: auto; }
     .msg-row.me { justify-items: end; }
     .msg-row.me .bubble { background: linear-gradient(135deg, rgba(22,119,255,.95), rgba(22,119,255,.65)); color:#fff; border-color: rgba(22,119,255,.55); border-bottom-right-radius: 6px; }
     .msg-row.assistant .bubble { background: #ffffff; color:#111827; border-color:#e5e7eb; border-bottom-left-radius: 6px; }
@@ -144,11 +147,65 @@ export class NodeAssistantChatComponent implements OnInit {
   showHistory = false;
   // Expose global Object in template for Object.keys usage
   Object = Object;
+  // Tools registry for rendering
+  private toolsDict: Record<string, ToolMeta> = {};
+  defaultTpl = '<h4>{{ tool.name or functionName }}</h4><ul>{% for k, v in args %}<li><b>{{ k }}</b>: <pre>{{ v | json }}</pre></li>{% endfor %}</ul>{% if arg_running %}<em>Arguments en cours...</em>{% endif %}';
 
-  constructor(private api: AiConsoleBackendService, private agentV2: AiWorkflowAgentV2Service, private argsAgent: AiArgsAgentService, private cdr: ChangeDetectorRef) {}
+  constructor(private api: AiConsoleBackendService, private agentV2: AiWorkflowAgentV2Service, private argsAgent: AiArgsAgentService, private cdr: ChangeDetectorRef, private toolsApi: ToolsBackendService, private nunjucks: NunjucksService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
+    // 1) Charger la liste des tools (nom/logo/template)
+    try {
+      this.toolsApi.list({ limit: 1000 }).subscribe({
+        next: (list: ToolMeta[]) => {
+          const dict: Record<string, ToolMeta> = {};
+          (list || []).forEach(t => { if (t?.name) dict[String(t.name)] = t; });
+          this.toolsDict = dict;
+          try { console.log('[node-assistant] tools loaded', { count: Object.keys(this.toolsDict).length, names: Object.keys(this.toolsDict) }); } catch {}
+          // Mettre à jour les labels déjà affichés si le flux est démarré
+          this.applyToolLabels();
+        },
+        error: () => {}
+      });
+    } catch {}
+    // 2) Assurer le thread lié au nœud
     this.ensureThread();
+  }
+
+  private renderArgsHtml(log: { function?: string; args?: any; running?: boolean; arg_running?: boolean }): string {
+    const fn = String(log.function || '');
+    const tool = (this.toolsDict && fn) ? (this.toolsDict[fn] || { name: fn }) : ({ name: fn } as ToolMeta);
+    const tpl = tool?.template || this.defaultTpl;
+    const ctx = { functionName: fn, tool, args: log.args || {}, arg_running: !!log.arg_running, running: !!log.running };
+    return this.nunjucks.renderString(tpl, ctx);
+  }
+
+  private friendlyName(func: string): string {
+    const t = this.toolsDict?.[func];
+    if (t?.label) { try { console.log('[node-assistant] label', func, '=>', t.label); } catch {} return t.label; }
+    if (t?.name) { try { console.log('[node-assistant] name fallback', func, '=>', t.name); } catch {} return t.name; }
+    // fallback: prettify id (e.g., get_scenarios -> Get scenarios)
+    const s = (func || '').replace(/[_-]+/g, ' ').trim();
+    const pretty = s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Tool';
+    try { console.log('[node-assistant] prettified id', func, '=>', pretty); } catch {}
+    return pretty;
+  }
+
+  private applyToolLabels(){
+    try {
+      this.messages = (this.messages || []).map(m => {
+        if (!Array.isArray((m as any).parts)) return m;
+        (m as any).parts = (m as any).parts.map((p: any) => {
+          if (p && p.kind === 'tool') {
+            if (p.funcId) p.name = this.friendlyName(p.funcId);
+            else if (p.name && this.toolsDict && this.toolsDict[p.name]) p.name = this.friendlyName(p.name);
+          }
+          return p;
+        });
+        return m;
+      });
+      this.cdr.detectChanges();
+    } catch {}
   }
 
   toggleHistory() { this.showHistory = !this.showHistory; }
@@ -243,6 +300,30 @@ export class NodeAssistantChatComponent implements OnInit {
     try { if (tid) this.api.appendMessage(tid, { threadId: tid, role: 'user', text: msg.text } as any).subscribe(()=>{}); } catch {}
     this.applyDesc.emit(t);
   }
+  private compactArgs(obj: any, funcId?: string): string {
+    try {
+      if (!obj || typeof obj !== 'object') return '';
+      // Stratégie: clef=valeur courts, exclure prompt et gros champs, max ~90 chars
+      const kv: string[] = [];
+      const keys = Object.keys(obj);
+      for (const k of keys) {
+        if (/^prompt$/i.test(k)) { kv.push('prompt=…'); continue; }
+        const v = obj[k];
+        let s = '';
+        if (typeof v === 'string') s = v.length > 20 ? v.slice(0, 20) + '…' : v;
+        else if (typeof v === 'number' || typeof v === 'boolean') s = String(v);
+        else if (v && typeof v === 'object') s = '{…}';
+        else s = '';
+        kv.push(`${k}=${s}`);
+      }
+      let line = kv.join(', ');
+      if (line.length > 90) line = line.slice(0, 90) + '…';
+      // Ajout du nombre de clés pour set_node_args
+      if (funcId === 'set_node_args') line += ` (${keys.length} clés)`;
+      return line;
+    } catch { return ''; }
+  }
+  private pretty(obj: any): string { try { return JSON.stringify(obj, null, 2); } catch { return String(obj); } }
   onUndo(kind: string){
     const tid = this.threadId || '';
     const text = kind === 'args' ? 'Chargement annulé (arguments).' : 'Chargement annulé (description).';
@@ -316,9 +397,12 @@ export class NodeAssistantChatComponent implements OnInit {
           }
           if (ev.type === 'tool.start') {
             try {
-              const name = String(ev.name || 'tool');
-              const previewArgs = ev.args ? JSON.stringify(ev.args).slice(0, 200) : '';
-              appendLog(`[tool] ${name} start ${previewArgs}`);
+              const func = String(ev.name || '');
+              const name = this.friendlyName(func);
+              const compact = this.compactArgs(ev.args || {}, func);
+              // Tooltip HTML via Nunjucks (template ou défaut)
+              const html = this.renderArgsHtml({ function: func, args: ev.args || {}, running: true, arg_running: true });
+              assistantParts.push({ kind: 'tool', funcId: func, name, status: 'running', text: compact, tooltip: html } as any);
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];
@@ -327,20 +411,32 @@ export class NodeAssistantChatComponent implements OnInit {
           }
           if (ev.type === 'tool.end') {
             try {
-              const name = String(ev.name || 'tool');
-              appendLog(`[tool] ${name} done`);
+              const last = assistantParts[assistantParts.length - 1];
+              if (last && last.kind === 'tool') last.status = 'success';
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];
               this.cdr.detectChanges();
             } catch {}
           }
-          if (ev.type === 'args' && ev.args) {
-            try { this.argsProposal = ev.args; this.argsProposed.emit(ev.args); this.cdr.detectChanges(); } catch {}
+          if ((ev.type === 'args' || ev.type === 'args.partial') && ev.args) {
+            try {
+              this.argsProposal = ev.args;
+              this.argsProposed.emit(ev.args);
+              const last = assistantParts[assistantParts.length - 1];
+              const func = String((last as any)?.funcId || ev.name || '');
+              const compact = this.compactArgs(ev.args || {}, func);
+              const name = this.friendlyName(func);
+              const html = this.renderArgsHtml({ function: func, args: ev.args || {}, running: ev.type !== 'args', arg_running: ev.type !== 'args' });
+              if (last && last.kind === 'tool') { last.text = compact; last.tooltip = html; last.name = name; last.funcId = func; }
+              else assistantParts.push({ kind: 'tool', funcId: func, name, text: compact, tooltip: html } as any);
+              this.cdr.detectChanges();
+            } catch {}
           }
           if (ev.type === 'desc') {
             try { this.descProposal = this.normalizeDesc((ev as any).text); this.cdr.detectChanges(); } catch {}
           }
+          if (ev.type === 'error') { try { const last = assistantParts[assistantParts.length - 1]; if (last && last.kind==='tool') last.status = 'error'; } catch {} }
           if (ev.type === 'done' || ev.type === 'error') {
             const parts = assistantParts.slice();
             assistantParts = [];

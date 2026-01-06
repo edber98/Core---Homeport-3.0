@@ -26,6 +26,7 @@
     "langchain": "^0.3.35",
     "mongoose": "^8.7.0",
     "morgan": "^1.10.0",
+    "bee-queue": "^1.5.0",
     "nodemailer": "^6.10.1",
     "socket.io": "^4.7.5",
     "swagger-ui-express": "^5.0.0",

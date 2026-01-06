@@ -54,6 +54,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/core')());
     app.use('/api', require('./modules/db/flows')());
     app.use('/api', require('./modules/db/providers')());
+    app.use('/api', require('./modules/db/tools')());
     app.use('/api', require('./modules/db/node-templates')());
     app.use('/api', require('./modules/db/apps')());
     app.use('/api', require('./modules/db/credentials')());
