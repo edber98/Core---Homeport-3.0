@@ -49,6 +49,7 @@ export class NodeCardHeaderComponent {
   // Optional node/template specific icon override
   @Input() iconClass?: string | null;
   @Input() iconUrl?: string | null;
+  
 
   fgColor(bg?: string|null): string {
     const b = String(bg || '#1677ff');

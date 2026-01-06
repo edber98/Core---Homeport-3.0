@@ -21,13 +21,13 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
           <ng-template let-ctx edge>
             <svg:g customTemplateEdge>
               <svg:path fill="none" [attr.d]="ctx.path()" [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
-                [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
-                [attr.stroke-opacity]="dimInactive && !isEdgeActive(ctx.edge) ? 0.28 : 1"
+                [attr.stroke]="edgeStrokeColor(ctx.edge)"
+                [attr.stroke-opacity]="edgeStrokeOpacity(ctx.edge)"
                 [attr.marker-end]="ctx.markerEnd()" />
             </svg:g>
           </ng-template>
           <ng-template let-ctx edgeLabelHtml>
-            <div class="edge-labels" [ngClass]="{ error: (computeEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error' }" [style.opacity]="dimInactive && !isEdgeActive(ctx.edge) ? 0.35 : 1">
+            <div class="edge-labels" [ngClass]="{ error: (computeEdgeLabel(ctx.edge) || (ctx.label.data?.text || '')) === 'Error', muted: safariOrIOS && dimInactive && !isEdgeActive(ctx.edge) }" [style.opacity]="edgeLabelOpacity(ctx.edge)">
               <div class="badge label" *ngIf="computeEdgeLabel(ctx.edge) as txt" [ngClass]="{ error: txt === 'Error' }">{{ txt }}</div>
             </div>
           </ng-template>
@@ -37,7 +37,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                  - Garder uniquement du SVG pur dans les templates de handle.
                  - Tout wrapper CSS doit rester hors des groupes de handle pour éviter les bugs de bbox/anchor.
             -->
-            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj), 'dim': dimInactive && !isNodeActive(ctx.node.id) }" [class.selected]="selectedNodeId && (ctx.node.id === selectedNodeId)">
+            <div class="node-card ro" [class.locked]="!(allowDrag && move)" [ngClass]="{ 'horizontal': portOrientation === 'horizontal', 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj), 'dim': !safariOrIOS && dimInactive && !isNodeActive(ctx.node.id), 'dim-safari': safariOrIOS && dimInactive && !isNodeActive(ctx.node.id) }" [class.selected]="selectedNodeId && (ctx.node.id === selectedNodeId)">
               <div class="center-wrap">
                 <node-card-header
                   [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
@@ -72,8 +72,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                        [attr.fill]="handleFillColor(ctx.node.id, 'sim')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                        [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
                     </svg:g>
                   </ng-template>
                   <ng-container *ngIf="portOrientation === 'vertical'; else simHorizLink">
@@ -91,8 +91,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.fill]="handleFillColor(ctx.node.id, 'in')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                        [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-width]="1" [attr.stroke-opacity]="handleOpacity(ctx.node.id)"
                         (mouseenter)="onInputEnter($event, ctx.node.data.model, ih.id)"
                         (mousemove)="onHandleMove($event)"
                         (mouseleave)="onHandleLeave()"
@@ -117,8 +117,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                     <svg:g>
                       <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="'#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-width]="1" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.fill]="handleFillColor(ctx.node.id, 'in')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                        [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-width]="1" [attr.stroke-opacity]="handleOpacity(ctx.node.id)"
                         (mouseenter)="onInputEnter($event, ctx.node.data.model, inId)"
                         (mousemove)="onHandleMove($event)"
                         (mouseleave)="onHandleLeave()"
@@ -143,8 +143,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         [attr.cx]="hctx.point().x"
                         [attr.cy]="hctx.point().y"
                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="(out === 'err') ? '#f759ab' : '#000000'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                        [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
+                        [attr.fill]="handleFillColor(ctx.node.id, out)" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                        [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)"
                         stroke-width="1"
                         (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)"
                         (mousemove)="onHandleMove($event)"
@@ -174,8 +174,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                           <svg:g>
                             <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                               [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                              [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                              [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                              [attr.fill]="handleFillColor(ctx.node.id, 'link')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                              [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
                           </svg:g>
                         </ng-template>
                         <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
@@ -191,8 +191,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                         <svg:g>
                           <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                             [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                            [attr.fill]="'#111'" [attr.fill-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1"
-                            [attr.stroke]="'#ffffff'" [attr.stroke-opacity]="dimInactive && !isNodeActive(ctx.node.id) ? 0.28 : 1" stroke-width="1"></svg:circle>
+                            [attr.fill]="handleFillColor(ctx.node.id, 'link')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                            [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
                         </svg:g>
                       </ng-template>
                       <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
@@ -248,6 +248,12 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     /* Node layout (execution): align with builder grid */
     .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
     .node-card.dim { opacity: .35; filter: saturate(0.6); }
+    /* Safari/iOS: avoid opacity — render in grayscale instead */
+    .node-card.dim-safari { background:#f8fafc; border-color:#e5e7eb; }
+    .node-card.dim-safari .node-header .title { color:#9ca3af; }
+    .node-card.dim-safari .node-header .subtitle { color:#cbd5e1; }
+    .node-card.dim-safari .desc { color:#9ca3af; }
+    .node-card.dim-safari .link-label { color:#9ca3af; }
     .node-card.ro.selected { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.25); }
    
     .node-card.ro.horizontal { min-height: 70px; }
@@ -291,6 +297,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .bottom-bar .zoom-indicator { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
     .edge-labels { display:flex; flex-direction:column; align-items:center; gap:4px; }
     .edge-labels .badge { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; color:#111; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+    .edge-labels.muted .badge { background:#f8fafc; color:#9ca3af; border-color:#e5e7eb; }
     .edge-labels .badge.label.error { border-color:#f759ab; color:#f759ab; }
     .flow-tooltip { position: fixed; z-index: 200; background:#111; color:#fff; border-radius:6px; padding:4px 8px; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.18); pointer-events: none; white-space: nowrap; }
     .flow-tooltip.error { background:#f759ab; color:#fff; }
@@ -363,8 +370,50 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
 
   private zoomUpdateTimer: any;
   private appsMap = new Map<string, AppProvider>();
-  constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) {}
+  safariOrIOS = false;
+  constructor(private route: ActivatedRoute, private zone: NgZone, private cdr: ChangeDetectorRef, private catalog: CatalogService) {
+    this.safariOrIOS = this.detectSafariOrIOS();
+  }
   private _portOrientationExplicit = false;
+
+  private detectSafariOrIOS(): boolean {
+    try {
+      const nav: any = (typeof navigator !== 'undefined') ? navigator : {};
+      const ua = String(nav.userAgent || nav.vendor || (typeof (window as any) !== 'undefined' && (window as any).opera) || '').toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(ua) || (nav.platform === 'MacIntel' && Number(nav.maxTouchPoints) > 1);
+      const isSafari = ua.includes('safari') && !ua.includes('chrome') && !ua.includes('android');
+      return !!(isIOS || isSafari);
+    } catch { return false; }
+  }
+
+  // Edge styling helpers: avoid opacity on Safari/iOS, use neutral grays instead
+  edgeStrokeColor(e: any): string {
+    try {
+      if (e?.data?.error) return '#f759ab';
+      const base = (e?.data?.color || '#b1b1b7');
+      if (this.dimInactive && !this.isEdgeActive(e)) {
+        return this.safariOrIOS ? '#cbd5e1' : base;
+      }
+      return base;
+    } catch { return '#b1b1b7'; }
+  }
+  edgeStrokeOpacity(e: any): number { try { return (this.dimInactive && !this.isEdgeActive(e)) ? (this.safariOrIOS ? 1 : 0.28) : 1; } catch { return 1; } }
+  edgeLabelOpacity(e: any): number { try { return (this.dimInactive && !this.isEdgeActive(e)) ? (this.safariOrIOS ? 1 : 0.35) : 1; } catch { return 1; } }
+
+  // Handle styling helpers
+  private isNodeDimmed(nodeId: string): boolean { try { return this.dimInactive && !this.isNodeActive(nodeId); } catch { return false; } }
+  handleOpacity(nodeId: string): number { try { return this.isNodeDimmed(nodeId) ? (this.safariOrIOS ? 1 : 0.28) : 1; } catch { return 1; } }
+  handleFillColor(nodeId: string, kindOrOut: any): string {
+    try {
+      if (this.safariOrIOS && this.isNodeDimmed(nodeId)) return '#9ca3af';
+      // default colors preserved
+      if (String(kindOrOut) === 'err') return '#f759ab';
+      // sim/link use dark gray in original
+      if (kindOrOut === 'sim' || kindOrOut === 'link') return '#111';
+      return '#000000';
+    } catch { return '#000000'; }
+  }
+  handleStrokeColor(nodeId: string): string { try { return (this.safariOrIOS && this.isNodeDimmed(nodeId)) ? '#e5e7eb' : '#ffffff'; } catch { return '#ffffff'; } }
 
   horizHandleTop(index: number, countOrArr: any): number {
     try {
