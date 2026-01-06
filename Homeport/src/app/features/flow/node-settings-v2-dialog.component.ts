@@ -53,7 +53,7 @@ import { FormsModule } from '@angular/forms';
           <!-- JSON Input view -->
           <div class="json-pad" *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)">
             <app-json-schema-viewer-v2
-              [data]="$any(inputForViewer || {})" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+              [data]="$any(inputForViewer || {})" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="isMobile">
             </app-json-schema-viewer-v2>
           </div>
         </div>
@@ -94,13 +94,13 @@ import { FormsModule } from '@angular/forms';
           <!-- Start simple: JSON payload editable -->
           <div class="json-pad" *ngIf="isStart(model) && !isStartForm(model)">
             <app-json-schema-viewer-v2
-              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="isMobile">
             </app-json-schema-viewer-v2>
           </div>
           <!-- Other nodes: output viewer readonly -->
           <div class="json-pad" *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null">
             <app-json-schema-viewer-v2
-              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+              [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="isMobile">
             </app-json-schema-viewer-v2>
           </div>
         </div>
@@ -156,7 +156,7 @@ import { FormsModule } from '@angular/forms';
                 </div>
                 <div class="json-pad" *ngIf="viewMode==='json' && injectedInput != null && !isStart(model)">
                   <app-json-schema-viewer-v2
-                    [data]="$any(inputForViewer || {})" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+                    [data]="$any(inputForViewer || {})" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="true">
                   </app-json-schema-viewer-v2>
                 </div>
               </div>
@@ -193,12 +193,12 @@ import { FormsModule } from '@angular/forms';
                   (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
                 <div class="json-pad" *ngIf="isStart(model) && !isStartForm(model)">
                   <app-json-schema-viewer-v2
-                    [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+                    [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="true">
                   </app-json-schema-viewer-v2>
                 </div>
                 <div class="json-pad" *ngIf="!isStart(model) && !isStartForm(model) && injectedOutput != null">
                   <app-json-schema-viewer-v2
-                    [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null">
+                    [data]="injectedOutput || {}" [labels]="labelsMap" [nodeNames]="nodeNamesMap" [nodeMeta]="nodeMetaMap" [order]="null" [scenarioReady]="hasScenarioFlag" [mobile]="true">
                   </app-json-schema-viewer-v2>
                 </div>
               </div>
@@ -454,6 +454,14 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     try {
       const sc = Array.isArray(this.simScenarios) ? this.simScenarios[this.simSelectedIndex] : null;
       return !!(sc && (sc as any).match?.exec === true);
+    } catch { return false; }
+  }
+  get hasScenarioFlag(): boolean {
+    try {
+      const arr = Array.isArray(this.simScenarios) ? this.simScenarios : [];
+      if (!arr.length) return false;
+      const sc: any = arr[this.simSelectedIndex];
+      return !!(sc && sc.msgIn != null);
     } catch { return false; }
   }
   inputDataForViewer(): any {
