@@ -412,9 +412,22 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             }
           } catch {}
           const templateObj = {
-            id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category,
-            providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args,
-            output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials,
+            id: tpl.key,
+            name: tpl.name,
+            title: tpl.title,
+            type: tpl.type,
+            category: tpl.category,
+            providerKey: tpl.providerKey,
+            appId: tpl.providerKey,
+            args: tpl.args,
+            output: tpl.output,
+            inputHandles: Array.isArray(tpl.inputHandles) ? JSON.parse(JSON.stringify(tpl.inputHandles)) : undefined,
+            outputHandles: Array.isArray(tpl.outputHandles) ? JSON.parse(JSON.stringify(tpl.outputHandles)) : undefined,
+            linkedHandles: Array.isArray(tpl.linkedHandles) ? JSON.parse(JSON.stringify(tpl.linkedHandles)) : undefined,
+            authorize_catch_error: tpl.authorize_catch_error,
+            authorize_skip_error: tpl.authorize_skip_error,
+            allowWithoutCredentials: tpl.allowWithoutCredentials,
+            output_array_field: tpl.output_array_field,
           };
           const model = { id: tempId, name: tpl.title || tpl.name || tpl.key, template: tpl.key, templateObj, context: {} };
           const node = { id: tempId, type: 'html-template', point: { x: 0, y: 0 }, data: { model } };
@@ -536,7 +549,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             console.info('[ai-create-node][emit_graph][args_preview]', preview.length > 400 ? preview.slice(0, 400) + '…' : preview);
           } catch {}
           const newId = 'n_' + Math.random().toString(36).slice(2, 10);
-          // Build templateObj exactly like frontend/flow-agent
+          // Build templateObj to mirror frontend normalization (keep handles + schemas intact)
           const templateObj = {
             id: tpl.key,
             name: tpl.name,
@@ -545,11 +558,19 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             category: tpl.category,
             providerKey: tpl.providerKey,
             appId: tpl.providerKey,
+            // Schema/args
             args: tpl.args,
+            // v1 outputs (legacy)
             output: tpl.output,
+            // v2 handles — important: preserve schema on each handle as-is
+            inputHandles: Array.isArray(tpl.inputHandles) ? JSON.parse(JSON.stringify(tpl.inputHandles)) : undefined,
+            outputHandles: Array.isArray(tpl.outputHandles) ? JSON.parse(JSON.stringify(tpl.outputHandles)) : undefined,
+            linkedHandles: Array.isArray(tpl.linkedHandles) ? JSON.parse(JSON.stringify(tpl.linkedHandles)) : undefined,
+            // Feature flags
             authorize_catch_error: tpl.authorize_catch_error,
             authorize_skip_error: tpl.authorize_skip_error,
             allowWithoutCredentials: tpl.allowWithoutCredentials,
+            // Legacy field for conditions (kept for compatibility)
             output_array_field: tpl.output_array_field,
           };
           try { console.info('[ai-create-node][emit_graph][tpl_ids]', { key: tpl.key, mongoId: tpl._id?.toString?.(), outId: templateObj.id }); } catch {}

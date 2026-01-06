@@ -150,7 +150,7 @@ type Msg = AiChatMessage & { pending?: boolean };
       /* Keep content above iOS bottom bar by fixing the composer
          and reserving space at the bottom of the messages list. */
       .messages { padding-bottom: calc(140px + env(safe-area-inset-bottom)); padding-bottom: calc(140px + constant(safe-area-inset-bottom)); }
-      .composer { grid-template-columns: 1fr; position: fixed; left: 0; right: 0; bottom: env(safe-area-inset-bottom); bottom: constant(safe-area-inset-bottom); z-index: 100; background:#fff; border-top: 1px solid #e5e7eb; }
+      .composer { grid-template-columns: 1fr; position: absolute; left: 0; right: 0; bottom: env(safe-area-inset-bottom); bottom: constant(safe-area-inset-bottom); z-index: 100; background:#fff; border-top: 1px solid #e5e7eb; }
       .send { width:100%; justify-content:center; }
     }
   `]
