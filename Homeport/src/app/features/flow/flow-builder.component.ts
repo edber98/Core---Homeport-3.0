@@ -1664,6 +1664,8 @@ export class FlowBuilderComponent {
   // Open modal to pick a node template and connect from given handle
   openAddNodeFromHandle(nodeId: string, handleId: string, ev?: Event) {
     try { if (ev) { ev.stopPropagation(); ev.preventDefault(); } } catch {}
+    // Always reset AI mode when opening palette fresh
+    this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
     this.addNodeSourceId = String(nodeId);
     this.addNodeSourceHandle = String(handleId);
     this.addNodeQuery = '';
@@ -1817,6 +1819,11 @@ export class FlowBuilderComponent {
           const m = created.data.model || {};
           m.context = JSON.parse(JSON.stringify(args || {}));
           m.description = String(desc || '');
+          // Propagate credentialId from AI-proposed node if present
+          try {
+            const credId = (nn && nn.data && nn.data.model && nn.data.model.credentialId) ? nn.data.model.credentialId : (nn && nn.data && nn.data.credentialId ? nn.data.credentialId : null);
+            if (credId) (m as any).credentialId = credId;
+          } catch {}
           if (this.addNodeAiThreadId) (m as any).aiChatThreadId = this.addNodeAiThreadId;
           created.data.model = m;
           this.pushState('node.ai.create');
@@ -1826,7 +1833,8 @@ export class FlowBuilderComponent {
       }
       this.addNodeAiApplied = true;
       try { if (this.addNodeAiThreadId) this.aiChats.appendMessage(this.addNodeAiThreadId, { threadId: this.addNodeAiThreadId, role:'user', text:'Création de nœud appliquée.' } as any).subscribe(()=>{}); } catch {}
-      this.closeAddNodeModal();
+      // Fully cleanup AI state so next open shows palette, not conversation
+      this.closeAddNodeModalWithCleanup();
     } catch {}
   }
   onSpotlightPick(it: any) {
@@ -1905,6 +1913,8 @@ export class FlowBuilderComponent {
   // Open add-node assistant without a source handle (empty graph)
   openAddNodeStandalone() {
     try {
+      // Reset AI mode to ensure palette is shown
+      this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
       this.addNodeSourceId = null;
       this.addNodeSourceHandle = null;
       this.addNodeQuery = '';
@@ -5406,6 +5416,14 @@ export class FlowBuilderComponent {
       if (ev.key === 'Escape') {
         ev.preventDefault();
         try { if (this.advancedV2Open) this.closeAdvancedEditorV2(); else this.closeAdvancedEditor(); } catch {}
+      }
+      return;
+    }
+    // Désactiver tous les raccourcis du builder quand le Spotlight est ouvert (palette ou conversation)
+    if (this.addNodeVisible) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        try { this.closeAddNodeModalWithCleanup(); } catch {}
       }
       return;
     }

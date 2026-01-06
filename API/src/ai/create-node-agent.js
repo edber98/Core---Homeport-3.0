@@ -124,6 +124,38 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
     } catch {}
 
     const tools = [];
+    // Feature flag: auto-attach first available credential for provider (default ON)
+    const AUTO_ATTACH_CREDENTIALS = String(process.env.AI_CREATE_NODE_AUTO_ATTACH_CRED || '1') !== '0';
+    try { console.info('[ai-create-node][cred][auto_flag]', { enabled: AUTO_ATTACH_CREDENTIALS, env: String(process.env.AI_CREATE_NODE_AUTO_ATTACH_CRED || '') }); } catch {}
+    const firstCredentialIdForFlow = async (providerKey) => {
+      try {
+        if (!AUTO_ATTACH_CREDENTIALS) { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'disabled_by_flag' }); } catch {} return null; }
+        if (!providerKey) { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'missing_providerKey' }); } catch {} return null; }
+        const Flow = require('../db/models/flow.model');
+        const Credential = require('../db/models/credential.model');
+        const { Types } = require('mongoose');
+        const fid = String(flowId || ''); if (!fid) { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'missing_flowId' }); } catch {} return null; }
+        let flow = null;
+        if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid).lean();
+        if (!flow) flow = await Flow.findOne({ id: fid }).lean();
+        if (!flow || !flow.workspaceId) { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'flow_or_ws_not_found', flowFound: !!flow, ws: flow?.workspaceId || null }); } catch {} return null; }
+        const query = { workspaceId: flow.workspaceId, providerKey: String(providerKey) };
+        try { console.info('[ai-create-node][cred][auto_debug]', { step: 'query', query }); } catch {}
+        let cred = await Credential.findOne(query).lean();
+        if (!cred) {
+          // Fallbacks: case-insensitive match, prefix match, any credential in workspace
+          try { console.info('[ai-create-node][cred][auto_debug]', { step: 'no_credential_found_primary', providerKey }); } catch {}
+          cred = await Credential.findOne({ workspaceId: flow.workspaceId, providerKey: new RegExp(`^${String(providerKey).replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&')}$`, 'i') }).lean();
+          if (!cred) cred = await Credential.findOne({ workspaceId: flow.workspaceId, providerKey: new RegExp(`^${String(providerKey).slice(0, 4)}`, 'i') }).lean();
+          if (!cred) cred = await Credential.findOne({ workspaceId: flow.workspaceId }).lean();
+          if (!cred) { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'no_credential_found_all' }); } catch {} return null; }
+          else { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'fallback_used', providerKeyTried: providerKey, chosen: { id: cred.id || String(cred._id), providerKey: cred.providerKey, name: cred.name } }); } catch {} }
+        }
+        const out = cred.id || String(cred._id);
+        try { console.info('[ai-create-node][cred][auto_debug]', { step: 'found', credentialId: out }); } catch {}
+        return out;
+      } catch { return null; }
+    };
     let emittedFinal = false;
     let awaitUserInput = false;
     let pendingArgs = null;
@@ -532,6 +564,16 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             templateChecksum: argsChecksum(tpl.args || {}),
             templateFeatureSig: featureChecksum(tpl),
           };
+          // Auto-attach first available credential for this provider in flow workspace
+          try {
+            const pk = String(templateObj.providerKey || '');
+            try { console.info('[ai-create-node][cred][auto_debug]', { step: 'before_lookup', providerKey: pk }); } catch {}
+            if (pk) {
+              const credId = await firstCredentialIdForFlow(pk);
+              if (credId) { model.credentialId = credId; try { console.info('[ai-create-node][cred][auto]', { nodeId: newId, providerKey: pk, credentialId: credId }); } catch {} }
+              else { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'not_attached', reason: 'no_match' }); } catch {} }
+            } else { try { console.info('[ai-create-node][cred][auto_debug]', { step: 'not_attached', reason: 'no_provider_key' }); } catch {} }
+          } catch (e) { try { console.warn('[ai-create-node][cred][auto_debug][error]', e?.message || e); } catch {} }
           const node = { id: newId, type: 'html-template', point: { x: source?.point?.x || 0, y: (source?.point?.y || 0) + 160 }, data: { model } };
           const edge = { id: `${sourceId}->${newId}:${sourceHandle}:in`, type: 'template', source: String(sourceId), target: newId, sourceHandle: String(sourceHandle || 'ok'), targetHandle: 'in' };
           const out = { nodes: [...(graph.nodes||[]), node], edges: [...(graph.edges||[]), edge] };
