@@ -262,8 +262,8 @@ import { FormsModule } from '@angular/forms';
     /* Mobile single-panel shell */
     .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; pointer-events:auto; }
     .m-backdrop { position:absolute; inset:0; z-index:1; }
-    .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
-    :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(94vh, 940px); }
+    .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(calc(var(--vh, 1vh) * 88), 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
+    :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(calc(var(--vh, 1vh) * 94), 940px); }
     .m-body { position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; background:#fff; padding-top: env(safe-area-inset-top); }
     .m-footer { display:flex; align-items:center; justify-content:center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) 12px; border-top:0; background:#fff; }
     .dots { display:flex; gap:8px; }
@@ -386,6 +386,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
     try {
       const prev = this.isMobile;
       this.updateIsMobile();
+      this.updateVhVar();
       if (!prev && this.isMobile && !this.initialViewSet) { this.viewMode = 'json'; this.initialViewSet = true; }
       if (prev !== this.isMobile) { this.cdr.detectChanges(); }
     } catch {}
@@ -399,13 +400,28 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   ngAfterViewInit() {
     // Aligner le comportement iOS/Safari avec V1: porter l'hôte dans <body> pour éviter les contextes d'overflow/stacking
     try { this.renderer.addClass(this.el.nativeElement, 'advanced-dialog-portal'); this.renderer.appendChild(document.body, this.el.nativeElement); } catch {}
+    this.updateVhVar();
     try { window.addEventListener('resize', this.resizeHandler, { passive: true }); } catch {}
     try { window.addEventListener('orientationchange', this.resizeHandler, { passive: true }); } catch {}
+    try {
+      const vv = (window as any).visualViewport;
+      if (vv && typeof vv.addEventListener === 'function') {
+        vv.addEventListener('resize', this.resizeHandler, { passive: true });
+        vv.addEventListener('scroll', this.resizeHandler, { passive: true });
+      }
+    } catch {}
   }
   ngOnDestroy() {
     try { this.renderer.removeClass(this.el.nativeElement, 'advanced-dialog-portal'); } catch {}
     try { window.removeEventListener('resize', this.resizeHandler as any); } catch {}
     try { window.removeEventListener('orientationchange', this.resizeHandler as any); } catch {}
+    try {
+      const vv = (window as any).visualViewport;
+      if (vv && typeof vv.removeEventListener === 'function') {
+        vv.removeEventListener('resize', this.resizeHandler as any);
+        vv.removeEventListener('scroll', this.resizeHandler as any);
+      }
+    } catch {}
   }
 
   setView(v: 'flow'|'json') { this.viewMode = v; this.refreshScenarioView(); }
@@ -521,6 +537,14 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
       if (coarse) { this.isMobile = true; return; }
       this.isMobile = w <= 768;
     } catch { this.isMobile = false; }
+  }
+  private updateVhVar() {
+    try {
+      const vv = (window as any).visualViewport;
+      const height = vv && vv.height ? vv.height : window.innerHeight;
+      const vh = Math.max(0, Number(height) || 0) / 100;
+      this.renderer.setStyle(this.el.nativeElement, '--vh', vh + 'px');
+    } catch {}
   }
   private updateSlidesTransform() { const basePct = this.activeIndex * (100/3); this.slidesTransform = `translateX(-${basePct}%)`; }
   prev() { if (this.activeIndex > 0) { this.activeIndex--; this.updateSlidesTransform(); } }
