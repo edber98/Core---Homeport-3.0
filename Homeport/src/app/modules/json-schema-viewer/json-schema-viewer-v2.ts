@@ -9,7 +9,7 @@ type LabelInfo = { label?: string; description?: string };
   imports: [CommonModule],
   template: `
     <div class="viewer">
-      <ng-container *ngIf="mobile; else legacy">
+      <ng-container *ngIf="mobileEffective; else legacy">
         <ng-container *ngIf="safeGroups.length; else empty">
           <ng-container *ngFor="let g of safeGroups">
             <div class="group-title" (click)="collapsed[g.key] = !collapsed[g.key]" [class.collapsed]="collapsed[g.key]">
@@ -111,7 +111,7 @@ type LabelInfo = { label?: string; description?: string };
             <ng-container [ngSwitch]="kindOf(ent.value)">
               <!-- Non-scalar child → group row + recurse -->
               <ng-container *ngSwitchCase="'object'">
-                <ng-container *ngIf="!mobile; else mobileObjRow">
+                <ng-container *ngIf="!mobileEffective; else mobileObjRow">
                   <div class="row" [style.paddingLeft.px]="(depth+1) * 14" (click)="toggleNode(ent.fullPath)">
                     <div class="meta">
                       <div class="label">
@@ -142,7 +142,7 @@ type LabelInfo = { label?: string; description?: string };
                 </ng-template>
               </ng-container>
               <ng-container *ngSwitchCase="'array'">
-                <ng-container *ngIf="!mobile; else mobileArrRow">
+                <ng-container *ngIf="!mobileEffective; else mobileArrRow">
                   <div class="row" [style.paddingLeft.px]="(depth+1) * 14" (click)="toggleNode(ent.fullPath)">
                     <div class="meta">
                       <div class="label">
@@ -261,10 +261,25 @@ type LabelInfo = { label?: string; description?: string };
     .collapsible { overflow:hidden; max-height: 0; opacity: 0; transition: max-height .24s ease, opacity .24s ease; }
     .collapsible.open { max-height: 1200px; opacity: 1; }
     .meta { display:block; }
-    .label { font-weight:600; color:#111827; display:flex; align-items:center; gap:8px; }
+    .label { font-weight:600; color:#111827; display:flex; align-items:center; gap:8px; min-width: 0; }
     .desc { font-size:12px; color:#6b7280; line-height:1.35; margin-top: 2px; }
     .val { font-size:12px; color:#374151; margin-top: 2px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; font-size:11px; color:#6b7280; background:#fff; border:1px solid #E5E7EB; border-radius: 9px; padding: 1px 6px; cursor:grab; }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+      font-size:11px;
+      color:#6b7280;
+      background:#fff;
+      border:1px solid #E5E7EB;
+      border-radius: 9px;
+      padding: 1px 6px;
+      cursor:grab;
+      display: inline-block;
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: bottom;
+    }
     .mono:active { cursor:grabbing; }
   `]
 })
@@ -288,6 +303,8 @@ export class JsonSchemaViewerV2Component implements OnChanges {
   nodeCollapsed: Record<string, boolean> = {};
   // Mobile safe precomputed groups
   safeGroups: Array<{ key: string; title: string; root: any }> = [];
+  // Effective mobile flag (includes iOS tablets)
+  mobileEffective: boolean = false;
 
   toggleGroup(k: string) { this.collapsed[k] = !this.collapsed[k]; }
   isCollapsed(k: string): boolean { return !!this.collapsed[k]; }
@@ -350,8 +367,10 @@ export class JsonSchemaViewerV2Component implements OnChanges {
 
   ngOnChanges(changes?: SimpleChanges) {
     try {
+      // Re-evaluate effective mobile mode on every change to cover first render
+      this.mobileEffective = !!this.mobile || this.isIOSLike();
       if (changes && (changes['data'] || changes['labels'] || changes['nodeMeta'] || changes['nodeNames'] || changes['order'] || changes['mobile'])) {
-        if (this.mobile) {
+        if (this.mobileEffective) {
           // Build safe groups for mobile: shallow tree precomputed
           const keys = this.orderedTopKeys();
           const groups: Array<{ key: string; title: string; root: any }> = [];
@@ -375,6 +394,15 @@ export class JsonSchemaViewerV2Component implements OnChanges {
         }
       }
     } catch {}
+  }
+  private isIOSLike(): boolean {
+    try {
+      const nav: any = (typeof navigator !== 'undefined') ? navigator : {};
+      const ua = String(nav.userAgent || nav.vendor || (typeof (window as any) !== 'undefined' && (window as any).opera) || '');
+      const iDevice = /iPad|iPhone|iPod/.test(ua);
+      const iPadOS13Plus = /Macintosh/.test(ua) && typeof document !== 'undefined' && ('ontouchend' in document);
+      return iDevice || iPadOS13Plus;
+    } catch { return false; }
   }
   private safeBuildNode(val: any, path: string, depth: number): any {
     const kind = this.kindOf(val);

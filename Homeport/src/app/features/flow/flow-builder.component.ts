@@ -4142,7 +4142,12 @@ export class FlowBuilderComponent {
           try {
             if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
               this.previewLoading = true;
-              this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
+              this.runsApi.simulateMsg(
+                this.currentFlowId,
+                nodeId,
+                'engine_split',
+                this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+              ).subscribe({
                 next: (resp) => {
                   try {
                     const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
@@ -4220,7 +4225,12 @@ export class FlowBuilderComponent {
       const nodeId = this.selectedModel?.id;
       if (!nodeId || !this.currentFlowId) return;
       this.previewLoading = true;
-      this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
+      this.runsApi.simulateMsg(
+        this.currentFlowId,
+        nodeId,
+        'engine_split',
+        this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+      ).subscribe({
         next: (resp) => {
           try {
             const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
@@ -4306,7 +4316,12 @@ export class FlowBuilderComponent {
       this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
       if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
         this.previewLoading = true;
-        this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
+        this.runsApi.simulateMsg(
+          this.currentFlowId,
+          nodeId,
+          'engine_split',
+          this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+        ).subscribe({
           next: (resp) => {
             try {
               const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];

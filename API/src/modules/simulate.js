@@ -19,7 +19,12 @@ module.exports = function(store) {
       const targetNodeId = String(req.body?.targetNodeId || '');
       const mode = String(req.body?.mode || 'engine');
       if (!targetNodeId) return res.apiError(400, 'bad_request', 'Missing targetNodeId');
-      const graph = flow.graph || flow;
+      // Allow frontend to override with an unsaved graph (work on draft instead of memory store)
+      const override = (req.body && typeof req.body.graph === 'object') ? req.body.graph : null;
+      const graph = override || flow.graph || flow;
+      if (override) {
+        try { console.log('[simulate] using graph override from request body'); } catch {}
+      }
       console.log('[simulate] request', { flowId, targetNodeId, mode, user: req.user?.id });
       let data;
       if (mode === 'engine_split') {
