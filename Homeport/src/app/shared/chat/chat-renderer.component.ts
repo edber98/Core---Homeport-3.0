@@ -10,13 +10,13 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   standalone: true,
   imports: [CommonModule, NzToolTipModule],
   template: `
-    <div class="line" *ngFor="let p of parts" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'">
+    <div class="line" *ngFor="let p of parts" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'" [style.marginLeft.px]="(p.indent||0) * 16">
       <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
       <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
       <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
-      <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
       <span class="name" *ngIf="p.name">{{ p.name }}</span>
-      <span class="tag" *ngIf="p.tag">[{{ p.tag }}]</span>
+      <span class="agent" *ngIf="p.tag" nz-tooltip [nzTooltipTitle]="p.tag==='ARGS' ? 'Agent des arguments du nœud' : p.tag">{{ p.tag }}</span>
+      <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
       <ng-container *ngIf="isMessagePart(p); else notMessage">
         <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
       </ng-container>
@@ -41,6 +41,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .badge { background:#e5e7eb; color:#111827; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; }
     .badge.aiform { background:#fdba74; color:#7c2d12; }
     .badge.flow { background:#dbeafe; color:#1e3a8a; }
+    .agent { background:#eef2ff; color:#3730a3; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; }
     .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; }
     .st.run { color:#2563eb; }
     .st.ok { color:#16a34a; }

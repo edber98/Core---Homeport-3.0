@@ -5,6 +5,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ChatRendererComponent } from '../../../shared/chat/chat-renderer.component';
 import { AiCreateNodeAgentService, CreateNodeEvent } from '../../../services/ai-create-node-agent.service';
+import { ToolsBackendService, ToolMeta } from '../../../services/tools-backend.service';
+import { NunjucksService } from '../../../shared/nunjucks.service';
 import { AiConsoleBackendService } from '../../../services/ai-console-backend.service';
 
 type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[]; createdAt: number; pending?: boolean };
@@ -97,9 +99,33 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
   @ViewChild('promptEl') promptEl?: ElementRef<HTMLTextAreaElement>;
   graphProposal: any = null;
 
-  constructor(private creator: AiCreateNodeAgentService, private chats: AiConsoleBackendService, private cdr: ChangeDetectorRef) {}
+  // Registry Tools (labels/templates) et template par défaut pour l'infobulle
+  private toolsDict: Record<string, ToolMeta> = {};
+  defaultTpl = '<h4>{{ tool.name or functionName }}</h4><ul>{% for k, v in args %}<li><b>{{ k }}</b>: <pre>{{ v | json }}</pre></li>{% endfor %}</ul>{% if arg_running %}<em>Arguments en cours...</em>{% endif %}';
+
+  constructor(
+    private creator: AiCreateNodeAgentService,
+    private chats: AiConsoleBackendService,
+    private cdr: ChangeDetectorRef,
+    private toolsApi: ToolsBackendService,
+    private nunjucks: NunjucksService,
+  ) {}
   private autoSent = false;
-  ngOnInit(): void { /* inputs set before init in most cases */ }
+  ngOnInit(): void {
+    // Charger la liste des tools (nom/label/template)
+    try {
+      this.toolsApi.list({ limit: 1000 }).subscribe({
+        next: (list: ToolMeta[]) => {
+          const dict: Record<string, ToolMeta> = {};
+          (list || []).forEach(t => { if (t?.name) dict[String(t.name)] = t; });
+          this.toolsDict = dict;
+          try { console.log('[spotlight-creation] tools loaded', { count: Object.keys(this.toolsDict).length }); } catch {}
+          this.applyToolLabels();
+        },
+        error: () => {}
+      });
+    } catch {}
+  }
   ngAfterViewInit(): void { this.tryAutoSend(); }
   ngOnChanges(changes: SimpleChanges): void {
     if ('initialPrompt' in changes || 'threadId' in changes) this.tryAutoSend();
@@ -162,6 +188,42 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
       assistantParts.push({ kind: 'log', text: line } as any);
       lastKind = 'log';
     };
+    const compactArgs = (obj: any, funcId?: string): string => {
+      try {
+        if (!obj || typeof obj !== 'object') return '';
+        const kv: string[] = [];
+        const keys = Object.keys(obj);
+        for (const k of keys) {
+          if (/^prompt$/i.test(k)) { kv.push('prompt=…'); continue; }
+          const v = (obj as any)[k];
+          let s = '';
+          if (typeof v === 'string') s = v.length > 20 ? v.slice(0, 20) + '…' : v;
+          else if (typeof v === 'number' || typeof v === 'boolean') s = String(v);
+          else if (v && typeof v === 'object') s = '{…}';
+          else s = '';
+          kv.push(`${k}=${s}`);
+        }
+        let line = kv.join(', ');
+        if (line.length > 90) line = line.slice(0, 90) + '…';
+        return line;
+      } catch { return ''; }
+    };
+    const renderArgsHtml = (log: { function?: string; args?: any; running?: boolean; arg_running?: boolean }): string => {
+      const fn = String(log.function || '');
+      const tool = (this.toolsDict && fn) ? (this.toolsDict[fn] || { name: fn }) : ({ name: fn } as ToolMeta);
+      const tpl = tool?.template || this.defaultTpl;
+      const ctx = { functionName: fn, tool, args: log.args || {}, arg_running: !!log.arg_running, running: !!log.running };
+      return this.nunjucks.renderString(tpl, ctx);
+    };
+    const friendlyName = (func: string): string => {
+      // Défensif: retirer un éventuel préfixe 'nodeargs.' ou 'args.'
+      const base = String(func || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
+      const t = this.toolsDict?.[base];
+      if (t?.label) return t.label;
+      if (t?.name) return t.name;
+      const s = base.replace(/[_-]+/g, ' ').trim();
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Tool';
+    };
     const sub = stream.events$.subscribe({
       next: (ev: CreateNodeEvent) => {
         if (!ev) return;
@@ -179,6 +241,15 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
         }
         if (ev.type === 'message' && ev.text) {
           const text = String(ev.text || '');
+          // Messages du sous-agent: garder en "log" indenté, ne pas créer de TOOL synthétique
+          if ((ev as any).agent === 'nodeargs') {
+            assistantParts.push({ kind: 'log', text, tag: 'ARGS', indent: 1 } as any);
+            const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+            const others = this.messages.filter(x => !x.pending);
+            this.messages = [...others, tmp];
+            try { this.cdr.detectChanges(); } catch {}
+            return;
+          }
           // Split incoming text by lines; convert [tool] lines as logs, others grouped as text
           const lines = text.split(/\r?\n/);
           let buffer = '';
@@ -202,9 +273,8 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
             if (/^\[ai-create-node\]\[sse\] finished/i.test(ln)) { sawSseFinishedMsg = true; continue; }
             // Tool logs inside message
             if (/^\[tool\]/i.test(ln)) {
-              // Flush any pending text before appending a log
-              flushBuffer();
-              appendLog(ln);
+              // Désormais on rend les outils via events dédiés; ignorer ces logs bruts
+              // (on ne les affiche plus pour éviter les doublons et les statuts bloqués)
               continue;
             }
             // Regular text line: accumulate, preserving line breaks
@@ -217,14 +287,57 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
           try { this.cdr.detectChanges(); } catch {}
         }
         if (ev.type === 'tool.start') {
-          appendLog(`[tool] ${ev.name || 'tool'} start`);
-          const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
-          const others = this.messages.filter(x => !x.pending);
-          this.messages = [...others, tmp];
-          try { this.cdr.detectChanges(); } catch {}
+          try {
+            const funcRaw = String(ev.name || '');
+            const funcBase = funcRaw.replace(/^nodeargs\./, '').replace(/^args\./, '');
+            const name = friendlyName(funcBase);
+            const compact = compactArgs((ev as any).args || {}, funcBase);
+            const html = renderArgsHtml({ function: funcBase, args: (ev as any).args || {}, running: true, arg_running: true });
+            const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+            const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+            const tag = path.includes('nodeargs') || (ev as any).agent === 'nodeargs' ? 'ARGS' : undefined;
+            assistantParts.push({ kind: 'tool', funcId: funcBase, name, status: 'running', text: compact, tooltip: html, tag, indent } as any);
+            const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+            const others = this.messages.filter(x => !x.pending);
+            this.messages = [...others, tmp];
+            this.cdr.detectChanges();
+          } catch {}
+        }
+        if ((ev.type === 'args' || ev.type === 'args.partial') && (ev as any).args) {
+          try {
+            const last = assistantParts[assistantParts.length - 1];
+            const funcRaw = String((last as any)?.funcId || (ev as any).name || '');
+            const funcBase = funcRaw.replace(/^nodeargs\./, '').replace(/^args\./, '');
+            const compact = compactArgs((ev as any).args || {}, funcBase);
+            const name = friendlyName(funcBase);
+            const html = renderArgsHtml({ function: funcBase, args: (ev as any).args || {}, running: ev.type !== 'args', arg_running: ev.type !== 'args' });
+            const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+            const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+            const tag = path.includes('nodeargs') || (ev as any).agent === 'nodeargs' ? 'ARGS' : ((last as any)?.tag);
+            if (last && last.kind === 'tool') { last.text = compact; last.tooltip = html; last.name = name; last.funcId = funcBase; if (tag) last.tag = tag; }
+            else assistantParts.push({ kind: 'tool', funcId: funcBase, name, text: compact, tooltip: html, tag, indent } as any);
+            const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+            const others = this.messages.filter(x => !x.pending);
+            this.messages = [...others, tmp];
+            this.cdr.detectChanges();
+          } catch {}
         }
         if (ev.type === 'tool.end') {
-          appendLog(`[tool] ${ev.name || 'tool'} done`);
+          try {
+            // Marquer le dernier outil en cours comme success (même si des logs ont été ajoutés entre-temps)
+            for (let i = assistantParts.length - 1; i >= 0; i--) {
+              const p = assistantParts[i];
+              if (p && p.kind === 'tool' && (!p.status || p.status === 'running')) { p.status = 'success'; break; }
+            }
+            // Fin de session du sous-agent ARGS => l'outil parent 'Assistant paramétrage' passe en success
+            const funcEnd = String((ev as any).name || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
+            if ((ev as any).agent === 'nodeargs' && funcEnd === 'assistant_args') {
+              for (let i = assistantParts.length - 1; i >= 0; i--) {
+                const p = assistantParts[i];
+                if (p && p.kind==='tool' && p.tag==='ARGS' && p.name==='Assistant paramétrage' && p.status==='running') { p.status = 'success'; break; }
+              }
+            }
+          } catch {}
           const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
           const others = this.messages.filter(x => !x.pending);
           this.messages = [...others, tmp];
@@ -266,4 +379,22 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
   }
   clearGraphProposal(){ this.graphProposal = null; try { this.cdr.detectChanges(); } catch {} }
   emitApplyGraph(){ const g = this.graphProposal; this.graphProposal = null; try { this.cdr.detectChanges(); } catch {} if (g) this.graphGenerated.emit(g); }
+
+  private applyToolLabels(){
+    try {
+      this.messages = (this.messages || []).map(m => {
+        if (!Array.isArray((m as any).parts)) return m;
+        (m as any).parts = (m as any).parts.map((p: any) => {
+          if (p && p.kind === 'tool') {
+            const func = String(p.funcId || p.name || '');
+            const t = this.toolsDict?.[func];
+            if (t?.label) p.name = t.label; else if (t?.name) p.name = t.name;
+          }
+          return p;
+        });
+        return m;
+      });
+      this.cdr.detectChanges();
+    } catch {}
+  }
 }

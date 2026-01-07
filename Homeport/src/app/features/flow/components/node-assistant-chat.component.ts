@@ -181,11 +181,12 @@ export class NodeAssistantChatComponent implements OnInit {
   }
 
   private friendlyName(func: string): string {
-    const t = this.toolsDict?.[func];
+    const base = String(func || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
+    const t = this.toolsDict?.[base];
     if (t?.label) { try { console.log('[node-assistant] label', func, '=>', t.label); } catch {} return t.label; }
     if (t?.name) { try { console.log('[node-assistant] name fallback', func, '=>', t.name); } catch {} return t.name; }
     // fallback: prettify id (e.g., get_scenarios -> Get scenarios)
-    const s = (func || '').replace(/[_-]+/g, ' ').trim();
+    const s = base.replace(/[_-]+/g, ' ').trim();
     const pretty = s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Tool';
     try { console.log('[node-assistant] prettified id', func, '=>', pretty); } catch {}
     return pretty;
@@ -377,6 +378,15 @@ export class NodeAssistantChatComponent implements OnInit {
         next: (ev: any) => {
           if (!ev) return;
           if (ev.type === 'message' && ev.text) {
+            if ((ev as any).agent === 'nodeargs') {
+              const text = String(ev.text || '');
+              assistantParts.push({ kind: 'log', text, tag: 'ARGS', indent: 1 } as any);
+              const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
+              const others = this.messages.filter(x => !x.pending);
+              this.messages = [...others, tmp];
+              try { this.cdr.detectChanges(); } catch {}
+              return;
+            }
             const raw = String(ev.text || '');
             const lines = raw.split(/\r?\n/);
             let buffer = '';
@@ -397,12 +407,16 @@ export class NodeAssistantChatComponent implements OnInit {
           }
           if (ev.type === 'tool.start') {
             try {
-              const func = String(ev.name || '');
-              const name = this.friendlyName(func);
-              const compact = this.compactArgs(ev.args || {}, func);
+              const funcRaw = String(ev.name || '');
+              const funcBase = funcRaw.replace(/^nodeargs\./, '').replace(/^args\./, '');
+              const name = this.friendlyName(funcBase);
+              const compact = this.compactArgs(ev.args || {}, funcBase);
               // Tooltip HTML via Nunjucks (template ou défaut)
-              const html = this.renderArgsHtml({ function: func, args: ev.args || {}, running: true, arg_running: true });
-              assistantParts.push({ kind: 'tool', funcId: func, name, status: 'running', text: compact, tooltip: html } as any);
+              const html = this.renderArgsHtml({ function: funcBase, args: ev.args || {}, running: true, arg_running: true });
+              const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+              const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+              const tag = path.includes('nodeargs') || (ev as any).agent === 'nodeargs' ? 'ARGS' : undefined;
+              assistantParts.push({ kind: 'tool', funcId: funcBase, name, status: 'running', text: compact, tooltip: html, tag, indent } as any);
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];
@@ -411,8 +425,17 @@ export class NodeAssistantChatComponent implements OnInit {
           }
           if (ev.type === 'tool.end') {
             try {
-              const last = assistantParts[assistantParts.length - 1];
-              if (last && last.kind === 'tool') last.status = 'success';
+              for (let i = assistantParts.length - 1; i >= 0; i--) {
+                const p = assistantParts[i];
+                if (p && p.kind==='tool' && (!p.status || p.status==='running')) { p.status = 'success'; break; }
+              }
+              const funcEnd = String((ev as any).name || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
+              if ((ev as any).agent === 'nodeargs' && funcEnd === 'assistant_args') {
+                for (let i = assistantParts.length - 1; i >= 0; i--) {
+                  const p = assistantParts[i];
+                  if (p && p.kind==='tool' && p.tag==='ARGS' && p.name==='Assistant paramétrage' && p.status==='running') { p.status = 'success'; break; }
+                }
+              }
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];
@@ -424,12 +447,18 @@ export class NodeAssistantChatComponent implements OnInit {
               this.argsProposal = ev.args;
               this.argsProposed.emit(ev.args);
               const last = assistantParts[assistantParts.length - 1];
-              const func = String((last as any)?.funcId || ev.name || '');
-              const compact = this.compactArgs(ev.args || {}, func);
-              const name = this.friendlyName(func);
-              const html = this.renderArgsHtml({ function: func, args: ev.args || {}, running: ev.type !== 'args', arg_running: ev.type !== 'args' });
-              if (last && last.kind === 'tool') { last.text = compact; last.tooltip = html; last.name = name; last.funcId = func; }
-              else assistantParts.push({ kind: 'tool', funcId: func, name, text: compact, tooltip: html } as any);
+              const funcRaw = String((last as any)?.funcId || ev.name || '');
+              const funcBase = funcRaw.replace(/^nodeargs\./, '').replace(/^args\./, '');
+              const compact = this.compactArgs(ev.args || {}, funcBase);
+              const name = this.friendlyName(funcBase);
+              const html = this.renderArgsHtml({ function: funcBase, args: ev.args || {}, running: ev.type !== 'args', arg_running: ev.type !== 'args' });
+              const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+              const tag = path.includes('nodeargs') || (ev as any).agent === 'nodeargs' ? 'ARGS' : (last as any)?.tag;
+              if (last && last.kind === 'tool') { last.text = compact; last.tooltip = html; last.name = name; last.funcId = funcBase; if (tag) last.tag = tag; }
+              else {
+                const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+                assistantParts.push({ kind: 'tool', funcId: funcBase, name, text: compact, tooltip: html, tag, indent } as any);
+              }
               this.cdr.detectChanges();
             } catch {}
           }

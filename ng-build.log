@@ -1,6 +1,79 @@
 ❯ Building...
 ✔ Building...
-Application bundle generation failed. [8.594 seconds]
+Initial chunk files   | Names                          |  Raw size | Estimated transfer size
+styles-YYMKFZIY.css   | styles                         | 628.99 kB |                57.55 kB
+chunk-HHU7VY4T.js     | -                              | 182.41 kB |                52.96 kB
+chunk-4ZODL4QN.js     | -                              | 157.03 kB |                36.54 kB
+main-3ARLN7P4.js      | main                           |  92.47 kB |                21.52 kB
+chunk-FUWSXZZL.js     | -                              |  87.06 kB |                16.80 kB
+chunk-UEPM62CC.js     | -                              |  79.31 kB |                19.69 kB
+chunk-6GFUKQDE.js     | -                              |  73.79 kB |                21.62 kB
+chunk-XYTPAKLN.js     | -                              |  69.50 kB |                15.86 kB
+chunk-BN7AXZ57.js     | -                              |  64.90 kB |                17.75 kB
+chunk-IXR4UGPM.js     | -                              |  63.48 kB |                17.01 kB
+chunk-62KQO6GG.js     | -                              |  63.10 kB |                19.38 kB
+chunk-YIXZ6QPZ.js     | -                              |  57.88 kB |                13.70 kB
+chunk-H5JJEFDN.js     | -                              |  53.25 kB |                12.79 kB
+chunk-GK57L6TY.js     | -                              |  50.60 kB |                 9.78 kB
+polyfills-B6TNHZQ6.js | polyfills                      |  34.58 kB |                11.32 kB
+chunk-A2PZJWT3.js     | -                              |  34.40 kB |                 7.30 kB
+chunk-WWAWLRSS.js     | -                              |  32.60 kB |                 7.86 kB
+chunk-MEENXYT3.js     | -                              |  23.08 kB |                 6.01 kB
+chunk-PBRAGU6K.js     | -                              |  21.88 kB |                 4.80 kB
+chunk-VEX2RDDG.js     | -                              |  19.86 kB |                 5.08 kB
+chunk-NH3DOQLZ.js     | -                              |  15.01 kB |                 4.43 kB
+chunk-LU45DTUG.js     | -                              |  14.93 kB |                 4.23 kB
+chunk-JRYQKRGP.js     | -                              |  14.12 kB |                 3.54 kB
+chunk-K667LRAP.js     | -                              |  12.43 kB |                 3.39 kB
+chunk-OQLWQCO7.js     | -                              |  12.07 kB |                 3.40 kB
+chunk-7ZWH5LA6.js     | -                              |   9.29 kB |                 3.12 kB
+chunk-IQD5EI5P.js     | -                              |   8.15 kB |                 2.51 kB
+chunk-HKIPOK2P.js     | -                              |   7.51 kB |                 2.24 kB
+chunk-JKLO6X25.js     | -                              |   6.78 kB |                 1.76 kB
+chunk-BN3CYYDH.js     | -                              |   6.38 kB |                 2.17 kB
+chunk-YEXCV7IW.js     | -                              |   5.49 kB |                 1.90 kB
+chunk-OL2K3ESM.js     | -                              |   5.18 kB |                 1.15 kB
+chunk-3H6LJHE3.js     | -                              |   4.82 kB |                 1.60 kB
+chunk-YUIAPYYF.js     | -                              |   4.13 kB |                 1.06 kB
+chunk-ZDXAM45H.js     | -                              |   4.07 kB |                 1.04 kB
+chunk-AYBLEIVL.js     | -                              |   3.25 kB |                 1.22 kB
+chunk-WK37AKWQ.js     | -                              |   2.78 kB |               961 bytes
+chunk-KHV3HENT.js     | -                              |   2.28 kB |               934 bytes
+chunk-KFTLZOM4.js     | -                              |   1.58 kB |               653 bytes
+chunk-V7GEFMTN.js     | -                              |   1.48 kB |               584 bytes
+chunk-JPJQ7RYX.js     | -                              |   1.43 kB |               655 bytes
+chunk-SGN5SC6Z.js     | -                              | 981 bytes |               981 bytes
+chunk-FQUK62NC.js     | -                              | 911 bytes |               911 bytes
+chunk-D7XBDFVU.js     | -                              | 848 bytes |               848 bytes
+chunk-UZBKM3XA.js     | -                              | 797 bytes |               797 bytes
+chunk-OG4RIMZK.js     | -                              | 737 bytes |               737 bytes
+chunk-VJTENCPY.js     | -                              | 493 bytes |               493 bytes
+chunk-AEMPYBB3.js     | -                              | 382 bytes |               382 bytes
+chunk-AAKPWWZA.js     | -                              | 361 bytes |               361 bytes
+chunk-OZATGOMX.js     | -                              | 127 bytes |               127 bytes
+chunk-KAUPSB2Y.js     | -                              |  95 bytes |                95 bytes
+
+                      | Initial total                  |   2.04 MB |               423.61 kB
+
+Lazy chunk files      | Names                          |  Raw size | Estimated transfer size
+chunk-2ULJBVGN.js     | flow-builder-component         | 655.30 kB |               123.27 kB
+chunk-VSFXFOE5.js     | -                              | 305.95 kB |                84.36 kB
+chunk-A4CVEI44.js     | dynamic-form-builder-component | 252.47 kB |                45.65 kB
+chunk-3GGUPWB6.js     | -                              | 196.55 kB |                31.68 kB
+chunk-DPF6UWC7.js     | ui-builder-component           | 109.78 kB |                23.16 kB
+chunk-DSA7MGEQ.js     | -                              | 101.29 kB |                13.71 kB
+chunk-KJ2NLDVE.js     | dashboard-stats                | 100.81 kB |                21.29 kB
+chunk-O5LTW6UW.js     | node-template-editor-component |  57.09 kB |                14.12 kB
+chunk-L66VIYAN.js     | -                              |  56.27 kB |                13.96 kB
+chunk-VZ5S4KV2.js     | -                              |  55.10 kB |                 6.32 kB
+chunk-WDDXFV5Z.js     | -                              |  52.09 kB |                12.71 kB
+chunk-I6R7A4PY.js     | flow-execution-component       |  49.30 kB |                11.08 kB
+chunk-QZ7UHKCK.js     | -                              |  47.55 kB |                10.44 kB
+chunk-OKCLDF3T.js     | -                              |  39.18 kB |                 8.94 kB
+chunk-MHLEOY3G.js     | workspace-list-component       |  29.29 kB |                 6.71 kB
+...and 62 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [12.817 seconds]
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: GlobalLoadingComponent is not used within the template of App[0m [1m[35m[plugin angular-compiler][0m
 
@@ -232,19 +305,5 @@ Application bundle generation failed. [8.594 seconds]
          ╵                                    [32m~~~~~[0m
 
 
-[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mNG8002: Can't bind to 'nzDestroyOnClose' since it isn't a known property of 'nz-modal'.
-1. If 'nz-modal' is an Angular component and it has 'nzDestroyOnClose' input, then verify that it is included in the '@Component.imports' of this component.
-2. If 'nz-modal' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
-3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.[0m [1m[35m[plugin angular-compiler][0m
-
-    src/app/features/flow/flow-builder.component.html:315:8:
-[37m      315 │         [32m[nzDestroyOnClose]="true"[37m
-          ╵         [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-
-  Error occurs in the template of component FlowBuilderComponent.
-
-    src/app/features/flow/flow-builder.component.ts:48:15:
-[37m      48 │   templateUrl: [32m'./flow-builder.component.html'[37m,
-         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-
+Output location: /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/Homeport/dist/homeport
 

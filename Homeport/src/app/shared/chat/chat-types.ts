@@ -7,6 +7,8 @@ export type RichPart = {
   html?: string;
   tooltip?: string;
   tag?: string;
+  indent?: number;
+  funcId?: string;
   name?: string;
   badge?: ChatBadge;
   status?: ChatStatus;
