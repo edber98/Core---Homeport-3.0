@@ -16,8 +16,8 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
         <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
         <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
         <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
-        <span class="name" *ngIf="p.name">{{ p.name }}</span>
-        <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
+        <span class="name" *ngIf="p.name" nz-tooltip [nzTooltipTitle]="p.name" [nzTooltipOverlayClassName]="'wide-tip'">{{ p.name }}</span>
+        <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status" nz-tooltip [nzTooltipTitle]="p.status" [nzTooltipOverlayClassName]="'wide-tip'">{{ p.status }}</span>
       </span>
       <ng-container *ngIf="isMessagePart(p); else notMessage">
         <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
@@ -41,19 +41,23 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   `,
   styles: [`
     :host { display:block; width:100%; min-width: 0; }
-    .line { display:grid; grid-template-columns: auto 1fr; align-items:start; column-gap:8px; padding:1px 0; width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
-    .left { display:inline-flex; align-items:flex-start; align-self:start; gap:8px; white-space: nowrap; flex: 0 0 auto; }
+    .line { display:grid; grid-template-columns: minmax(0, auto) 1fr; align-items:start; column-gap:8px; padding:1px 0; width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
+    .left { display:flex; align-items:flex-start; align-self:start; gap:8px; white-space: nowrap; min-width: 0; }
     .badge { background:#e5e7eb; color:#111827; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; flex: 0 0 auto; white-space: nowrap; margin-top: 2px; }
     .badge.aiform { background:#fdba74; color:#7c2d12; }
     .badge.flow { background:#dbeafe; color:#1e3a8a; }
     .agent { background:#eef2ff; color:#3730a3; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; white-space: nowrap; flex: 0 0 auto; margin-top: 2px; }
-    .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; white-space: nowrap; flex: 0 0 auto; margin-top: 3px; }
+    .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; white-space: nowrap; margin-top: 3px; }
     .st.run { color:#2563eb; }
     .st.ok { color:#16a34a; }
     .st.err { color:#ef4444; }
     .st.warn { color:#d97706; }
     .tag { color:#6b7280; }
-    .left .name { max-width: 24ch; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .left .name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .left .st { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    @media (max-width: 1024px) {
+      .left .name { max-width: none; }
+    }
     .line .text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 6px; }
     .line.message .text { white-space: normal; overflow: visible; text-overflow: clip; }
     .line.tool .text p { margin: 0; display: inline; }

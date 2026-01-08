@@ -49,9 +49,9 @@ import { backAwareCurve } from './edge-curves';
     .loading-overlay .spinner { width:26px; height:26px; border-radius:50%; border:3px solid #eee; border-top-color:#1677ff; animation:spin 1s linear infinite; }
     @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
     @media (max-width: 1024px) {
-      .ai-console { grid-template-columns: 1fr; }
+      .ai-console { grid-template-columns: 1fr; overflow:hidden; }
       .viewer { display: none; }
-      .chat { border-left:none; border-top: 1px solid #e5e7eb; }
+      .chat { border-left:none; border-top: 1px solid #e5e7eb; width:100%; min-width:0; }
     }
   `]
 })

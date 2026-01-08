@@ -93,7 +93,7 @@ type Msg = AiChatMessage & { pending?: boolean };
   `,
   styles: [`
     :host { display:block; height:100%; }
-    .console-chat { position: relative; display:flex; flex-direction: row; gap: 0; height: 100%; min-height:0; }
+    .console-chat { position: relative; display:flex; flex-direction: row; gap: 0; height: 100%; min-height:0; min-width:0; width:100%; }
     .pane { min-height:0; }
     .pane.threads { background:#fff; display:flex; flex-direction:column; padding-top:0; overflow:hidden; flex: 0 0 260px; }
     .pane.threads.desktop-only { margin-top:63px; }
@@ -141,11 +141,11 @@ type Msg = AiChatMessage & { pending?: boolean };
     .send:disabled { opacity:.6; cursor:not-allowed; }
     .btn.icon { width:36px; height:36px; padding:0; justify-content:center; }
     @media (max-width: 1024px) { 
-      .console-chat { flex-direction: column; }
+      .console-chat { flex-direction: column; min-width:0; width:100%; overflow-x:hidden; }
       .mobile-only { display:flex; }
-      .desktop-only { display:block; }
+      .desktop-only { display:none; }
       .pane.threads { display:none; }
-      .pane.dialog { padding-top: 63px; }
+      .pane.dialog { padding-top: 63px; min-width:0; }
       .bubble { max-width: 92%; }
       /* Keep content above iOS bottom bar by fixing the composer
          and reserving space at the bottom of the messages list. */
