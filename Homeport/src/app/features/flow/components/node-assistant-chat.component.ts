@@ -96,9 +96,9 @@ type Msg = AiChatMessage & { pending?: boolean; localUndo?: { kind: 'args'|'desc
     .args-history .args-item:last-child { border-bottom:0; }
     .args-history .meta { font-size:12px; color:#374151; }
     .args-history .empty { font-size:12px; color:#6b7280; padding: 6px 0; }
-    .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
-    .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
-    .bubble { max-width: 86%; min-width: 0; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; overflow: auto; }
+    .messages { overflow:auto; overflow-x: hidden; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
+    .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; min-width: 0; }
+    .bubble { max-width: 86%; min-width: 0; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; overflow: hidden; white-space: normal; word-break: break-word; }
     .msg-row.me { justify-items: end; }
     .msg-row.me .bubble { background: linear-gradient(135deg, rgba(22,119,255,.95), rgba(22,119,255,.65)); color:#fff; border-color: rgba(22,119,255,.55); border-bottom-right-radius: 6px; }
     .msg-row.assistant .bubble { background: #ffffff; color:#111827; border-color:#e5e7eb; border-bottom-left-radius: 6px; }
@@ -180,17 +180,7 @@ export class NodeAssistantChatComponent implements OnInit {
     return this.nunjucks.renderString(tpl, ctx);
   }
 
-  private friendlyName(func: string): string {
-    const base = String(func || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
-    const t = this.toolsDict?.[base];
-    if (t?.label) { try { console.log('[node-assistant] label', func, '=>', t.label); } catch {} return t.label; }
-    if (t?.name) { try { console.log('[node-assistant] name fallback', func, '=>', t.name); } catch {} return t.name; }
-    // fallback: prettify id (e.g., get_scenarios -> Get scenarios)
-    const s = base.replace(/[_-]+/g, ' ').trim();
-    const pretty = s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Tool';
-    try { console.log('[node-assistant] prettified id', func, '=>', pretty); } catch {}
-    return pretty;
-  }
+  
 
   private applyToolLabels(){
     try {
@@ -304,25 +294,38 @@ export class NodeAssistantChatComponent implements OnInit {
   private compactArgs(obj: any, funcId?: string): string {
     try {
       if (!obj || typeof obj !== 'object') return '';
-      // Stratégie: clef=valeur courts, exclure prompt et gros champs, max ~90 chars
+      // Stratégie: clef=valeur courts; inclure un aperçu du prompt; ne pas sur-tronquer (laisser le CSS faire l'ellipsis)
       const kv: string[] = [];
       const keys = Object.keys(obj);
       for (const k of keys) {
-        if (/^prompt$/i.test(k)) { kv.push('prompt=…'); continue; }
+        if (/^prompt$/i.test(k)) {
+          const raw = String(obj[k] ?? '');
+          const preview = raw.length > 60 ? raw.slice(0, 60) + '…' : raw;
+          kv.push(`prompt="${preview}"`);
+          continue;
+        }
         const v = obj[k];
         let s = '';
-        if (typeof v === 'string') s = v.length > 20 ? v.slice(0, 20) + '…' : v;
+        if (typeof v === 'string') s = v.length > 60 ? v.slice(0, 60) + '…' : v;
         else if (typeof v === 'number' || typeof v === 'boolean') s = String(v);
         else if (v && typeof v === 'object') s = '{…}';
         else s = '';
         kv.push(`${k}=${s}`);
       }
       let line = kv.join(', ');
-      if (line.length > 90) line = line.slice(0, 90) + '…';
       // Ajout du nombre de clés pour set_node_args
       if (funcId === 'set_node_args') line += ` (${keys.length} clés)`;
       return line;
     } catch { return ''; }
+  }
+  // Note: label normalisation is handled server-side; use raw tool labels
+  private friendlyName(func: string): string {
+    const base = String(func || '').replace(/^nodeargs\./, '').replace(/^args\./, '');
+    const t = this.toolsDict?.[base];
+    if (t?.label) return t.label;
+    if (t?.name) return t.name;
+    const s = base.replace(/[_-]+/g, ' ').trim();
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Tool';
   }
   private pretty(obj: any): string { try { return JSON.stringify(obj, null, 2); } catch { return String(obj); } }
   onUndo(kind: string){
@@ -378,9 +381,21 @@ export class NodeAssistantChatComponent implements OnInit {
         next: (ev: any) => {
           if (!ev) return;
           if (ev.type === 'message' && ev.text) {
-            if ((ev as any).agent === 'nodeargs') {
+            if ((ev as any).agent === 'nodeargs' || Array.isArray((ev as any).agentPath)) {
               const text = String(ev.text || '');
-              assistantParts.push({ kind: 'log', text, tag: 'ARGS', indent: 1 } as any);
+              const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+              const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+              const tag = (path.includes('nodeargs') || (ev as any).agent === 'nodeargs') ? 'ARGS' : undefined;
+              const isPrompt = String((ev as any).messageKind || '') === 'prompt';
+              const last = assistantParts[assistantParts.length - 1];
+              if (isPrompt) {
+                if (last && last.kind === 'log' && (last as any).promptLog && last.tag === tag && (last.indent || 0) === indent) last.text = String(last.text || '') + text;
+                else assistantParts.push({ kind: 'log', text, tag, indent, promptLog: true } as any);
+              } else {
+                if (last && last.kind === 'log' && (last as any).promptLog && last.tag === tag && (last.indent || 0) === indent) { last.text = String(last.text || '') + text; }
+                else if (last && last.kind === 'text' && last.tag === tag && (last.indent || 0) === indent) last.text = String(last.text || '') + text;
+                else assistantParts.push({ kind: 'text', text, tag, indent } as any);
+              }
               const tmp: Msg = { id: `${tid}-assistant-preview`, threadId: tid, role: 'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
               const others = this.messages.filter(x => !x.pending);
               this.messages = [...others, tmp];

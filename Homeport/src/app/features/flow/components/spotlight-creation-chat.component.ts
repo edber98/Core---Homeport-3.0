@@ -61,9 +61,10 @@ type Msg = { id: string; role: 'user'|'assistant'; text?: string; parts?: any[];
     .hdr .spacer { margin-left:auto; }
     .btn.icon { appearance:none; border:0; background:#fff; border:1px solid #e5e7eb; color:#111; padding:8px 10px; border-radius:12px; cursor:pointer; width:36px; height:32px; display:inline-flex; align-items:center; justify-content:center; }
     .btn.icon:hover { background:#f8fafc; }
-    .messages { overflow:auto; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
-    .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; }
-    .bubble { max-width: 86%; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: normal; word-break: break-word; }
+    .messages { overflow:auto; overflow-x: hidden; min-height:0; padding: 14px 14px; display:flex; flex-direction:column; gap:10px; background:#f8fafc; scrollbar-gutter: stable; flex: 1 1 auto; }
+    .msg-row { display:grid; grid-template-columns: 1fr; gap:6px; min-width: 0; }
+    .bubble { max-width: 86%; min-width: 0; padding: 10px 12px; border-radius: 16px; border: 1px solid #e5e7eb; background:#fff; line-height: 1.35; font-size: 14px; white-space: normal; word-break: break-word; overflow: hidden; }
+    :host ::ng-deep .txt.rich { min-width: 0; overflow: hidden; }
     :host ::ng-deep .txt.rich .text p { margin: 0 !important; }
     .msg-row.me { justify-items: end; }
     .msg-row.me .bubble { background: linear-gradient(135deg, rgba(22,119,255,.95), rgba(22,119,255,.65)); color:#fff; border-color: rgba(22,119,255,.55); border-bottom-right-radius: 6px; }
@@ -194,17 +195,21 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
         const kv: string[] = [];
         const keys = Object.keys(obj);
         for (const k of keys) {
-          if (/^prompt$/i.test(k)) { kv.push('prompt=…'); continue; }
+          if (/^prompt$/i.test(k)) {
+            const raw = String((obj as any)[k] ?? '');
+            const preview = raw.length > 60 ? raw.slice(0, 60) + '…' : raw;
+            kv.push(`prompt="${preview}"`);
+            continue;
+          }
           const v = (obj as any)[k];
           let s = '';
-          if (typeof v === 'string') s = v.length > 20 ? v.slice(0, 20) + '…' : v;
+          if (typeof v === 'string') s = v.length > 60 ? v.slice(0, 60) + '…' : v;
           else if (typeof v === 'number' || typeof v === 'boolean') s = String(v);
           else if (v && typeof v === 'object') s = '{…}';
           else s = '';
           kv.push(`${k}=${s}`);
         }
-        let line = kv.join(', ');
-        if (line.length > 90) line = line.slice(0, 90) + '…';
+        const line = kv.join(', ');
         return line;
       } catch { return ''; }
     };
@@ -241,9 +246,21 @@ export class SpotlightCreationChatComponent implements OnInit, OnChanges, AfterV
         }
         if (ev.type === 'message' && ev.text) {
           const text = String(ev.text || '');
-          // Messages du sous-agent: garder en "log" indenté, ne pas créer de TOOL synthétique
-          if ((ev as any).agent === 'nodeargs') {
-            assistantParts.push({ kind: 'log', text, tag: 'ARGS', indent: 1 } as any);
+          // Messages du sous-agent: distinguer prompt (oneline) vs messages normaux (multi-lignes)
+          if ((ev as any).agent === 'nodeargs' || Array.isArray((ev as any).agentPath)) {
+            const path = Array.isArray((ev as any).agentPath) ? (ev as any).agentPath : [];
+            const indent = path.length > 0 ? path.length : ((ev as any).agent === 'nodeargs' ? 1 : 0);
+            const tag = (path.includes('nodeargs') || (ev as any).agent === 'nodeargs') ? 'ARGS' : undefined;
+            const isPrompt = String((ev as any).messageKind || '') === 'prompt';
+            const last = assistantParts[assistantParts.length - 1];
+            if (isPrompt) {
+              if (last && last.kind === 'log' && (last as any).promptLog && last.tag === tag && (last.indent || 0) === indent) last.text = String(last.text || '') + text;
+              else assistantParts.push({ kind: 'log', text, tag, indent, promptLog: true } as any);
+            } else {
+              if (last && last.kind === 'log' && (last as any).promptLog && last.tag === tag && (last.indent || 0) === indent) { last.text = String(last.text || '') + text; }
+              else if (last && last.kind === 'text' && last.tag === tag && (last.indent || 0) === indent) last.text = String(last.text || '') + text;
+              else assistantParts.push({ kind: 'text', text, tag, indent } as any);
+            }
             const tmp: Msg = { id:`a-prev`, role:'assistant', parts: assistantParts.slice(), createdAt: Date.now(), pending: true } as any;
             const others = this.messages.filter(x => !x.pending);
             this.messages = [...others, tmp];

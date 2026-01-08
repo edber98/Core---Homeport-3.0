@@ -466,7 +466,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
           const agentProvidedPrompt = String(input?.prompt || '');
           try { console.info('[ai-create-node][args_assistant][prompt_in]', { len: agentProvidedPrompt.length, text: agentProvidedPrompt }); } catch { }
           // Émettre un message initial (prompt) pour journaliser côté UI (reste un log indenté)
-          try { if (agentProvidedPrompt) send({ type: 'message', text: agentProvidedPrompt, agent: 'nodeargs', agentPath: ['nodeargs'] }); } catch {}
+          try { if (agentProvidedPrompt) send({ type: 'message', text: agentProvidedPrompt, agent: 'nodeargs', agentPath: ['nodeargs'], messageKind: 'prompt' }); } catch {}
           await runArgsAgentWithTools({ prompt: agentProvidedPrompt, flowId: String(flowId || ''), nodeId: tempId, branch: sourceHandle || null, history, send: forwardSend, done: () => { }, seedGraphOverride: graph });
           try { console.info('[ai-create-node][args_assistant][done]', { argKeys: Object.keys(pendingArgs || {}).length, descLen: String(pendingDesc || '').length }); } catch { }
           return 'ok';
@@ -631,11 +631,14 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
         if (ev.event === 'on_chat_model_stream') {
           const chunk = ev.data?.chunk; if (chunk?.content) send({ type: 'message', role: 'assistant', text: chunk.content });
         }
+           if (ev.event === 'on_chat_model_start') {
+          console.log("end")
+        }
           if (ev.event === 'on_chat_model_end') {
           console.log("end")
         }
         if (ev.event === 'on_chat_model_stream') {
-          console.log("strem")
+          console.log("stream")
         }
           if (ev.event === 'on_agent_finish') {
           console.log("on_agent_finish")

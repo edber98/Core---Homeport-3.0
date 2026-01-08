@@ -10,13 +10,15 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   standalone: true,
   imports: [CommonModule, NzToolTipModule],
   template: `
-    <div class="line" *ngFor="let p of parts" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'" [style.marginLeft.px]="(p.indent||0) * 16">
-      <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
-      <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
-      <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
-      <span class="name" *ngIf="p.name">{{ p.name }}</span>
-      <span class="agent" *ngIf="p.tag" nz-tooltip [nzTooltipTitle]="p.tag==='ARGS' ? 'Agent des arguments du nœud' : p.tag">{{ p.tag }}</span>
-      <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
+    <div class="line" *ngFor="let p of parts" [class.tool]="p.kind==='tool'" [class.log]="p.kind==='log'" [class.aiform]="p.kind==='ai-form'" [class.message]="isMessagePart(p)" [style.paddingLeft.px]="(p.indent||0) * 16">
+      <span class="left">
+        <span class="agent" *ngIf="p.tag" nz-tooltip [nzTooltipTitle]="p.tag==='ARGS' ? 'Agent des arguments du nœud' : p.tag">{{ p.tag }}</span>
+        <span class="badge" *ngIf="p.kind==='tool' || p.badge==='TOOL'">TOOL</span>
+        <span class="badge aiform" *ngIf="p.kind==='ai-form' || p.badge==='AI FORM'">AI FORM</span>
+        <span class="badge flow" *ngIf="p.badge==='FLOW'">FLOW</span>
+        <span class="name" *ngIf="p.name">{{ p.name }}</span>
+        <span class="st" [class.run]="p.status==='running'" [class.ok]="p.status==='success'" [class.err]="p.status==='error'" [class.warn]="p.status==='warn'" *ngIf="p.status">{{ p.status }}</span>
+      </span>
       <ng-container *ngIf="isMessagePart(p); else notMessage">
         <span class="text" [innerHTML]="renderMarkdown(p.text || '')"></span>
       </ng-container>
@@ -30,31 +32,34 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <span class="text oneline" nz-tooltip [nzTooltipTitle]="tt" [nzTooltipOverlayStyle]="tooltipStyle">{{ p.text }}</span>
         </ng-container>
         <ng-template #plainDefault>
-          <span class="text">{{ p.text }}</span>
+          <span class="text" [class.oneline]="p.kind==='log'">{{ p.text }}</span>
         </ng-template>
       </ng-template>
       </ng-template>
     </div>
   `,
   styles: [`
-    .line { display:flex; align-items:baseline; gap:8px; padding:1px 0; }
-    .badge { background:#e5e7eb; color:#111827; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; }
+    :host { display:block; width:100%; min-width: 0; }
+    .line { display:grid; grid-template-columns: auto 1fr; align-items:start; column-gap:8px; padding:1px 0; width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
+    .left { display:inline-flex; align-items:flex-start; align-self:start; gap:8px; white-space: nowrap; flex: 0 0 auto; }
+    .badge { background:#e5e7eb; color:#111827; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; flex: 0 0 auto; white-space: nowrap; margin-top: 2px; }
     .badge.aiform { background:#fdba74; color:#7c2d12; }
     .badge.flow { background:#dbeafe; color:#1e3a8a; }
-    .agent { background:#eef2ff; color:#3730a3; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; }
-    .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; }
+    .agent { background:#eef2ff; color:#3730a3; border-radius: 4px; padding:0 6px; font-weight:600; font-size:11px; white-space: nowrap; flex: 0 0 auto; margin-top: 2px; }
+    .st { font-weight:600; text-transform:uppercase; font-size:11px; color:#374151; white-space: nowrap; flex: 0 0 auto; margin-top: 3px; }
     .st.run { color:#2563eb; }
     .st.ok { color:#16a34a; }
     .st.err { color:#ef4444; }
     .st.warn { color:#d97706; }
     .tag { color:#6b7280; }
-    .line .name { flex: 0 0 auto; }
-    .line .text { flex: 1 1 auto; min-width: 0; }
+    .left .name { max-width: 24ch; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .line .text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 6px; }
+    .line.message .text { white-space: normal; overflow: visible; text-overflow: clip; }
     .line.tool .text p { margin: 0; display: inline; }
     .line.log .text, .line.tool .text { color:#9ca3af; }
     .text p { margin: 0; }
-    .oneline { display:inline-block; max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
-    .line.log .text { display:inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .oneline { max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+    .line.log .text { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .tt-html { white-space: normal; word-break: break-word; max-width: 640px; }
   `]
 })

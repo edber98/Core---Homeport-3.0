@@ -15,15 +15,15 @@ const DEFAULT_TOOLS = [
   // Create-node agent tools
   { name: 'list_templates', label: 'Lister les templates', description: 'Lister les templates disponibles', logo: '', component: '' },
   { name: 'get_template_schema', label: 'Schéma du template', description: "Schéma d'arguments pour un template", logo: '', component: '' },
-  { name: 'list_seed_predecessors', label: 'Prédécesseurs (seed)', description: 'Prédécesseurs de la source (seed)', logo: '', component: '' },
+  { name: 'list_seed_predecessors', label: 'Observer les prédécesseurs', description: 'Prédécesseurs de la source', logo: '', component: '' },
   { name: 'get_source_info', label: 'Infos source', description: 'Infos de la source/handle', logo: '', component: '' },
-  { name: 'args_fill_via_node_assistant', label: 'Assistant Args (seed)', description: 'Sous-agent Args pour seed', logo: '', component: '' },
+  { name: 'args_fill_via_node_assistant', label: 'Assistant paramétrage', description: 'Sous-agent de paramétrage des arguments', logo: '', component: '' },
   { name: 'emit_graph', label: 'Émettre le graphe', description: 'Émettre la proposition de graphe', logo: '', component: '' },
 
   // Create-node seed-only subtools
-  { name: 'get_seed_scenarios', label: 'Scénarios (seed)', description: 'Simulations seed-only', logo: '', component: '' },
-  { name: 'set_args', label: 'Fixer arguments (seed)', description: 'Fixer arguments (seed-only)', logo: '', component: '' },
-  { name: 'set_desc', label: 'Fixer description (seed)', description: 'Fixer description (seed-only)', logo: '', component: '' },
+  { name: 'get_seed_scenarios', label: 'Scénarios', description: 'Simulations', logo: '', component: '' },
+  { name: 'set_args', label: 'Définir les arguments', description: 'Définir les arguments', logo: '', component: '' },
+  { name: 'set_desc', label: 'Définir la description', description: 'Définir la description', logo: '', component: '' },
 ];
 
 async function seedToolsIfMissing() {

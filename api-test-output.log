@@ -1,38 +1,107 @@
-✔ src/modules/db/test-runs.js (94.123708ms)
-[0mGET /health [32m200[0m 1.259 ms - 11[0m
-[0mPOST /auth/login [32m200[0m 24.287 ms - 591[0m
-[0mGET /api/workspaces [32m200[0m 0.351 ms - 394[0m
-[0mPOST /api/plugins/import-manifest [33m404[0m 1.431 ms - 167[0m
-[0mPOST /api/workspaces/20865e91-c400-4e94-9193-5b56f3f62cac/flows [32m201[0m 0.461 ms - 544[0m
-[0mPUT /api/workspaces/20865e91-c400-4e94-9193-5b56f3f62cac [33m404[0m 0.432 ms - 190[0m
-✖ workspace templatesAllowed force validation disables flows and creates notifications (57.188833ms)
-[0mGET /health [32m200[0m 0.887 ms - 11[0m
-[0mPOST /auth/login [32m200[0m 30.998 ms - 591[0m
-[0mGET /api/workspaces [32m200[0m 0.752 ms - 394[0m
-[0mPOST /api/plugins/import-manifest [33m404[0m 0.874 ms - 167[0m
-✖ import manifest upserts provider and templates; transfer remaps node ids (62.07225ms)
-[0mPOST /auth/login [32m200[0m 22.970 ms - 591[0m
-[0mGET /api/company [32m200[0m 0.315 ms - 153[0m
-[0mGET /api/workspaces [32m200[0m 0.174 ms - 394[0m
-✔ login works and lists company workspaces (55.351666ms)
+
+> homeport-backend@0.1.0 test
+> CI_NO_DB=1 node --test
+
+✔ src/modules/db/test-runs.js (81.737041ms)
+✖ workspace templatesAllowed force validation disables flows and creates notifications (0.165542ms)
+✖ import manifest upserts provider and templates; transfer remaps node ids (0.178458ms)
+✖ login works and lists company workspaces (0.164833ms)
+[engine] start.result.keys { node: 'n_start', keys: [] }
 [engine] start { node: 'n_start', argsPre: {}, argsPost: null }
-✖ engine v2: incoming by handle for memory -> agent (7.483917ms)
-[0mPOST /auth/login [32m200[0m 33.902 ms - 591[0m
-[0mGET /api/workspaces [32m200[0m 0.489 ms - 394[0m
-[0mPOST /api/workspaces/9fb0b721-aa06-413b-8d72-2bebbf5fe3ed/flows [32m201[0m 1.014 ms - 569[0m
-[runs][mem] start: flowId=d2b64787-95e6-44a6-9b93-df4f0032be85 enabled=true ws=9fb0b721-aa06-413b-8d72-2bebbf5fe3ed user=ca5e63d6-9323-4d35-a9c0-e21f4693b170 reqId=d82009dd-f581-4e78-b619-ebb40beefcec
-[runs][mem] created run: id=aa650a65-2c3d-410f-a681-b7e015f9669f flowId=d2b64787-95e6-44a6-9b93-df4f0032be85 status=running reqId=d82009dd-f581-4e78-b619-ebb40beefcec
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=run.started
-[0mPOST /api/flows/d2b64787-95e6-44a6-9b93-df4f0032be85/runs [32m201[0m 0.756 ms - 158[0m
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=node.started
-[engine] start { node: 'n_start', argsPre: {}, argsPost: null }
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=node.done
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=edge.taken
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=node.started
-[engine] call { node: 'n_fn', template: 'action', inputs: { x: '42' } }
-[engine] fn opts { node: 'n_fn', hasCredentials: true }
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=node.done
-[runs][mem] event: runId=aa650a65-2c3d-410f-a681-b7e015f9669f type=run.completed
-[runs][mem] completed: runId=aa650a65-2c3d-410f-a681-b7e015f9669f status=success
-[0mGET /api/runs/aa650a65-2c3d-410f-a681-b7e015f9669f [32m200[0m 0.942 ms - 4036[0m
-✖ create and run a simple flow (231.877542ms)
+✖ engine v2: incoming by handle for memory -> agent (4.942375ms)
+✖ create and run a simple flow (0.165ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.40475
+
+✖ failing tests:
+
+test at test-db/force_and_notifications.test.js:19:1
+✖ workspace templatesAllowed force validation disables flows and creates notifications (0.165542ms)
+  /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
+          const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+                        ^^
+  
+  SyntaxError: Unexpected identifier 'as'
+      at wrapSafe (node:internal/modules/cjs/loader:1624:18)
+      at Module._compile (node:internal/modules/cjs/loader:1666:20)
+      at Object..js (node:internal/modules/cjs/loader:1824:10)
+      at Module.load (node:internal/modules/cjs/loader:1427:32)
+      at Module._load (node:internal/modules/cjs/loader:1250:12)
+      at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+      at Module.require (node:internal/modules/cjs/loader:1449:12)
+      at require (node:internal/modules/helpers:135:16)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+
+test at test-db/import_manifest_and_transfer.test.js:23:1
+✖ import manifest upserts provider and templates; transfer remaps node ids (0.178458ms)
+  /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
+          const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+                        ^^
+  
+  SyntaxError: Unexpected identifier 'as'
+      at wrapSafe (node:internal/modules/cjs/loader:1624:18)
+      at Module._compile (node:internal/modules/cjs/loader:1666:20)
+      at Object..js (node:internal/modules/cjs/loader:1824:10)
+      at Module.load (node:internal/modules/cjs/loader:1427:32)
+      at Module._load (node:internal/modules/cjs/loader:1250:12)
+      at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+      at Module.require (node:internal/modules/cjs/loader:1449:12)
+      at require (node:internal/modules/helpers:135:16)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+
+test at test/auth_and_core.test.js:21:1
+✖ login works and lists company workspaces (0.164833ms)
+  /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
+          const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+                        ^^
+  
+  SyntaxError: Unexpected identifier 'as'
+      at wrapSafe (node:internal/modules/cjs/loader:1624:18)
+      at Module._compile (node:internal/modules/cjs/loader:1666:20)
+      at Object..js (node:internal/modules/cjs/loader:1824:10)
+      at Module.load (node:internal/modules/cjs/loader:1427:32)
+      at Module._load (node:internal/modules/cjs/loader:1250:12)
+      at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+      at Module.require (node:internal/modules/cjs/loader:1449:12)
+      at require (node:internal/modules/helpers:135:16)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+
+test at test/engine_v2_handles.test.js:4:1
+✖ engine v2: incoming by handle for memory -> agent (4.942375ms)
+  AssertionError [ERR_ASSERTION]: agent should produce ok payload
+      at TestContext.<anonymous> (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/test/engine_v2_handles.test.js:31:10)
+      at async Test.run (node:internal/test_runner/test:1069:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:332:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '=='
+  }
+
+test at test/flows_and_runs.test.js:24:1
+✖ create and run a simple flow (0.165ms)
+  /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
+          const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+                        ^^
+  
+  SyntaxError: Unexpected identifier 'as'
+      at wrapSafe (node:internal/modules/cjs/loader:1624:18)
+      at Module._compile (node:internal/modules/cjs/loader:1666:20)
+      at Object..js (node:internal/modules/cjs/loader:1824:10)
+      at Module.load (node:internal/modules/cjs/loader:1427:32)
+      at Module._load (node:internal/modules/cjs/loader:1250:12)
+      at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+      at Module.require (node:internal/modules/cjs/loader:1449:12)
+      at require (node:internal/modules/helpers:135:16)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
