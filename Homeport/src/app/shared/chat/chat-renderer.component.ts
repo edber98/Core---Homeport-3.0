@@ -29,10 +29,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       <ng-template #plain>
         <ng-container *ngIf="p.kind==='tool'; else plainDefault">
           <ng-template #tt><div class="tt-html" [innerHTML]="sanitizeHtml(p.tooltip || p.text || '')"></div></ng-template>
-          <span class="text oneline" nz-tooltip [nzTooltipTitle]="tt" [nzTooltipOverlayStyle]="tooltipStyle">{{ p.text }}</span>
+          <span class="text oneline" nz-tooltip [nzTooltipTitle]="tt" [nzTooltipOverlayStyle]="tooltipStyle" [nzTooltipOverlayClassName]="'wide-tip'">{{ p.text }}</span>
         </ng-container>
         <ng-template #plainDefault>
-          <span class="text" [class.oneline]="p.kind==='log'">{{ p.text }}</span>
+          <ng-template #ttLog><div class="tt-pre">{{ p.text }}</div></ng-template>
+          <span class="text" [class.oneline]="p.kind==='log'" nz-tooltip [nzTooltipTitle]="p.kind==='log' ? ttLog : null" [nzTooltipOverlayStyle]="tooltipStyle" [nzTooltipOverlayClassName]="'wide-tip'">{{ p.text }}</span>
         </ng-template>
       </ng-template>
       </ng-template>
@@ -60,12 +61,15 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .text p { margin: 0; }
     .oneline { max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
     .line.log .text { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .tt-html { white-space: normal; word-break: break-word; max-width: 640px; }
+    .tt-html { white-space: normal; word-break: break-word; max-width: 960px; }
+    .tt-pre { white-space: pre-wrap; word-break: break-word; max-width: 960px; }
+    :host ::ng-deep .wide-tip .ant-tooltip-inner { max-width: 960px; width: 960px; white-space: pre-wrap; }
+    :host ::ng-deep .wide-tip .ant-tooltip { max-width: 960px; }
   `]
 })
 export class ChatRendererComponent {
   @Input() parts: RichPart[] = [];
-  tooltipStyle = { 'max-width.px': 640, 'white-space': 'normal', 'word-break': 'break-word' } as any;
+  tooltipStyle = { 'max-width.px': 960, 'white-space': 'pre-wrap', 'word-break': 'break-word' } as any;
 
   isMessagePart(p: RichPart): boolean {
     try {

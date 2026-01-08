@@ -21,6 +21,22 @@ html, body {
 body {
     overflow: hidden;
 }
+/* Wider tooltips for chat renderer (overlays live under body; needs global CSS) */
+.wide-tip .ant-tooltip-inner {
+    width: auto !important;              /* let content size naturally */
+    max-width: 960px !important;         /* desktop cap */
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+.wide-tip.ant-tooltip,
+.cdk-overlay-pane.wide-tip {
+    max-width: 960px !important;         /* desktop cap */
+}
+/* Responsive cap for small screens */
+@media (max-width: 768px) {
+  .wide-tip .ant-tooltip-inner { max-width: 92vw !important; }
+  .wide-tip.ant-tooltip, .cdk-overlay-pane.wide-tip { max-width: 92vw !important; }
+}
 /* Ensure Angular root fills viewport so grid children can size correctly */
 app-root { display:block; height:100%; }
 /* CDK overlay scroll-block can break iOS input focus; relax when overlays are open */
