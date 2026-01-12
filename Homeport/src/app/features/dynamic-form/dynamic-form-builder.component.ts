@@ -12,7 +12,6 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzTagModule } from 'ng-zorro-antd/tag';
@@ -80,7 +79,6 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     NzCardModule,
     NzDividerModule,
     NzCollapseModule,
-    NzTabsModule,
     NzSwitchModule,
     NzInputNumberModule, NzTagModule,
     NzTreeModule, NzDropDownModule, NzModalModule, NzIconModule,
@@ -141,6 +139,25 @@ export class DynamicFormBuilderComponent implements OnChanges {
   }
   get selectedStepForPreview(): StepConfig | null {
     return this.isStep(this.selected) ? (this.selected as StepConfig) : null;
+  }
+
+  getInspectorTitle(): string {
+    const base = this.selected || this.schema;
+    if (!base) return 'Propriétés';
+    if (this.isField(base)) {
+      const name = (base as FieldConfig).label || (base as FieldConfig).key || (base as FieldConfig).type || 'Champ';
+      return `${name} propriétés`;
+    }
+    if (this.isSection(base)) {
+      const name = (base as SectionConfig).title || 'Section';
+      return `${name} propriétés`;
+    }
+    if (this.isStep(base)) {
+      const name = (base as StepConfig).title || 'Étape';
+      return `${name} propriétés`;
+    }
+    const formName = (base as FormSchema).title || 'Formulaire';
+    return `${formName} propriétés`;
   }
 
   // Inspector (réutilisé dans les deux onglets)

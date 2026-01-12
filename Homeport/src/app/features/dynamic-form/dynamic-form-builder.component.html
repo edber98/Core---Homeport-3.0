@@ -444,42 +444,24 @@
   <ng-template #rightPanelContent>
     <ng-template #inspectorTitle>
       <div class="card-title">
-        <span class="t">Inspector</span>
-        <span class="s">Propriétés & Styles</span>
+        <span class="t">{{ getInspectorTitle() }}</span>
       </div>
     </ng-template>
     <nz-card [nzTitle]="inspectorTitle" nzSize="small" class="card no-chrome" *ngIf="selected">
-      <nz-tabs nzSize="small" class="inspector-tabs">
-        <!-- PROPS OBJET -->
-        <nz-tab nzTitle="Propriétés" *ngIf="selected !== schema">
-          <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
-            <!-- STEP -->
-            <ng-container *ngIf="isStep(selected)">
-              <inspector-step [group]="inspector"></inspector-step>
-            </ng-container>
-
-            <!-- SECTION -->
-            <ng-container *ngIf="isSection(selected)">
-              <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
-            </ng-container>
-
-            <!-- FIELD -->
-            <ng-container *ngIf="isField(selected)">
-              <inspector-field [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
-            </ng-container>
-          </form>
-        </nz-tab>
-
-        <!-- FORM SETTINGS (UI + SUMMARY) -->
-        <nz-tab nzTitle="Customisations" *ngIf="selected === schema">
-          <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
-        </nz-tab>
-
-        <!-- APERCU JSON -->
-        <nz-tab nzTitle="Paramètres">
-          <pre class="json">{{ schema | json }}</pre>
-        </nz-tab>
-      </nz-tabs>
+      <ng-container *ngIf="selected === schema; else inspectorProps">
+        <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
+      </ng-container>
+      <ng-template #inspectorProps>
+        <ng-container *ngIf="isStep(selected)">
+          <inspector-step [group]="inspector"></inspector-step>
+        </ng-container>
+        <ng-container *ngIf="isSection(selected)">
+          <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
+        </ng-container>
+        <ng-container *ngIf="isField(selected)">
+          <inspector-field [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
+        </ng-container>
+      </ng-template>
     </nz-card>
   </ng-template>
 

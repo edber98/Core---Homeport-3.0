@@ -33,6 +33,14 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   actionsSpacing!: FormGroup;
   buttonSpacing!: FormGroup;
   private subs: Subscription[] = [];
+  sectionsOpen = {
+    general: true,
+    ui: false,
+    spacing: false,
+    actions: false,
+    summary: false,
+    params: false,
+  };
 
   ngOnInit(): void {
     // Create adapter groups using standard spacing control names
@@ -48,6 +56,10 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+  }
+
+  toggleSection(key: keyof InspectorFormSettingsComponent['sectionsOpen']) {
+    this.sectionsOpen[key] = !this.sectionsOpen[key];
   }
 
   private createSpacingGroup(prefix: string): FormGroup {
