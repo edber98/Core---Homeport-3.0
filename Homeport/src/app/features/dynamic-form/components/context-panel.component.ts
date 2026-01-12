@@ -24,8 +24,8 @@ export class ContextPanelComponent {
   @Input() stepsMode = false;
   @Input() canAddSectionBtn = true;
   @Input() canAddFieldBtn = true;
-  @Input() canQuickAddField = true;
   @Input() json = '';
+  @Input() activeTab: 'structure' | 'import' = 'structure';
 
   @Output() selectFormSettings = new EventEmitter<void>();
   @Output() addStep = new EventEmitter<void>();
@@ -65,7 +65,6 @@ export class ContextPanelComponent {
   @Output() ctxFieldInsertBefore = new EventEmitter<{ key: string }>();
   @Output() ctxFieldInsertAfter = new EventEmitter<{ key: string }>();
 
-  @Output() quickAdd = new EventEmitter<string>();
   @Output() jsonChange = new EventEmitter<string>();
   @Output() doImport = new EventEmitter<void>();
   @Output() doExport = new EventEmitter<void>();

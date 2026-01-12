@@ -193,6 +193,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   // Simulation des conditions dans l'aperçu
   previewUseSim = false;
   simValues: Record<string, any> = {};
+  leftTab: 'structure' | 'import' | 'scenarios' | 'context' = 'structure';
   // Contexte pour expressions (passé à app-dynamic-form)
   ctxJson = '{\n  "json": {},\n  "$json": {},\n  "env": {},\n  "$env": {},\n  "node": {},\n  "$node": {},\n  "now": "' + new Date().toISOString() + '"\n}';
   ctxObj: any = { json: {}, $json: {}, env: {}, $env: {}, node: {}, $node: {}, now: new Date() };

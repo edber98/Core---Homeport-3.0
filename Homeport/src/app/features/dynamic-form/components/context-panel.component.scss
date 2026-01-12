@@ -127,7 +127,11 @@
 
 /* Sub-headers inside the card to match main title style */
 .sub-header {
-  display:flex; justify-content:center; padding:6px 0 8px; margin:16px 0 8px; border-bottom:1px solid #E2E1E4;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 8px;
+  margin: 0 0 8px;
+  border-bottom: 0;
 }
 
 /* Structure tree: selected node in blue (instead of gray) */

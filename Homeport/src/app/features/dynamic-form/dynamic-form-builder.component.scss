@@ -11,11 +11,206 @@
   min-height: 0;
 }
 .builder .route-save { position: sticky; top: 6px; right: 0; display:flex; justify-content:flex-end; width: 100%; z-index: 2; padding: 4px 0; }
-.left { flex: 0 0 380px; min-height: 0; }
-.left { max-height: 100%; overflow: auto; padding-right: 4px; border-right: 1px solid #E2E1E4; }
+.left { flex: 0 0 380px; min-height: 0; height: 100%; }
+.left { max-height: 100%; overflow: auto; padding-right: 0; border-right: 1px solid #E2E1E4; align-self: stretch; }
 .left .ant-card { border: 0 !important; box-shadow: none !important; background: transparent;  }
 .left .ant-card-head { border-bottom: 0; background: transparent; }
 .left .ant-card-body { padding: 6px 8px; }
+.left-panel { display: flex; flex-direction: column; gap: 12px; }
+.left-panel .ant-card-head {
+  border-bottom: 0 !important;
+  background: transparent !important;
+}
+:host ::ng-deep .left-panel .ant-card-head {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+.left-panel-card.ant-card .ant-card-head {
+  border-bottom: 0 !important;
+}
+.left-panel-card.ant-card .ant-card-head::after,
+.left-panel-card.ant-card .ant-card-head::before {
+  border-bottom: 0 !important;
+}
+.ant-drawer-body .left-panel-card.ant-card .ant-card-head {
+  border-bottom: 0 !important;
+}
+.left-panel-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #0f172a;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.left-panel .sub-header {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 8px;
+  margin: 0 0 8px;
+  border-bottom: 1px solid #E2E1E4;
+}
+.left-panel .icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.left-panel .actions-quick-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(2,6,23,.05);
+}
+.left-panel .actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.left-panel .actions-divider-vertical {
+  width: 1px;
+  height: 18px;
+  background: #e2e8f0;
+  margin: 0 8px 6px 4px;
+  display: inline-block;
+}
+.left-panel .actions-divider {
+  height: 1px;
+  margin: 6px 0;
+  background: #e2e8f0;
+}
+.left-panel .icon-grid button[nz-button] {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #0f172a;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.left-panel .icon-grid button[nz-button][disabled] {
+  opacity: .45;
+  filter: grayscale(0.35);
+  cursor: not-allowed;
+}
+.left-panel .icon-grid button[nz-button]:hover:not([disabled]) {
+  background: rgba(22,119,255,0.1);
+  color: #1677ff;
+  box-shadow: 0 2px 6px rgba(22,119,255,0.14);
+  transform: translateY(-1px);
+}
+.left-panel .icon-grid i { font-size: 14px; line-height: 1; }
+.left-panel .action-btn {
+  --btn-bg: #fff;
+  background: var(--btn-bg);
+  border: 1px solid #e5e7eb;
+  color: #0f172a;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+}
+.left-panel .action-btn[disabled] {
+  opacity: .45;
+  filter: grayscale(0.35);
+  cursor: not-allowed;
+}
+.left-panel .action-btn:hover:not([disabled]) {
+  background: rgba(22,119,255,0.1);
+  color: #1677ff;
+  transform: translateY(-1px);
+}
+.left-panel .action-btn i { font-size: 14px; line-height: 1; }
+.left-tabs {
+  display: flex;
+  gap: 14px;
+  padding: 0 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.left-tabs .tab {
+  background: transparent;
+  border: 0;
+  color: #64748b;
+  font-weight: 600;
+  padding: 8px 2px 10px;
+  position: relative;
+  cursor: pointer;
+}
+.left-tabs .tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: #1677ff;
+  border-radius: 999px;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.left-tabs .tab.active {
+  color: #1677ff;
+}
+.left-tabs .tab.active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.left-tab-content { padding-top: 8px; }
+.left-tab-content .mt { margin-top: 0; }
+
+:host ::ng-deep .left-tab-content .sub-header {
+  margin-top: 0;
+  border-bottom: 0;
+}
+:host ::ng-deep .left-tab-content .ant-card-body {
+  padding-top: 0 !important;
+}
+:host ::ng-deep .left-tab-content .ant-card-head {
+  border-bottom: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-panel {
+  padding: 0 8px 8px;
+}
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card-body {
+  padding: 6px 8px;
+}
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card-head {
+  border-bottom: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-tabs {
+  padding: 0 8px;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content {
+  padding-top: 8px;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .mt {
+  margin-top: 0;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .sub-header {
+  margin-top: 0;
+  border-bottom: 0;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .ant-card-head {
+  border-bottom: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .ant-card-head-title {
+  padding-bottom: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .ant-card-body {
+  padding-top: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-panel .left-tab-content .ant-card-body {
+  padding-top: 0 !important;
+}
 .center { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .right { flex: 0 0 380px; height: 100%; overflow: auto; }
 .right .ant-card { display: flex; flex-direction: column; }
@@ -95,7 +290,7 @@
 .center .ant-card.no-chrome { border-right: 1px solid #E2E1E4 !important; /* reserve space for history bar */ --hb-space: 52px; }
 .center .ant-card.no-chrome .ant-card-body { padding: 8px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
 .card-title { display: flex; flex-direction: column; line-height: 1.2; align-items: center; text-align: center; margin: 0; }
-.card-title .t { font-weight: 600; font-size: 14px; }
+.card-title .t { font-weight: 600; font-size: 16px; }
 .card-title .s { font-size: 12px; color: #64748b; }
 
 .card-title { display: flex; flex-direction: column; line-height: 1.2; align-items: center; text-align: center; margin: 0; }
@@ -124,9 +319,15 @@
   .preview-extra-mobile { display: inline-flex; background: transparent; border: 0; box-shadow: none; width: 100%; }
 }
 
-/* Ensure left-panel cards inside drawers have no outer chrome, keep header separator */
-.ant-drawer-body .card.ant-card { border: 0 !important; box-shadow: none !important; border-radius: 0 !important; background: transparent; }
-.ant-drawer-body .card.ant-card .ant-card-head { border-bottom: 1px solid #E2E1E4; }
+/* Ensure left-panel cards inside drawers have no outer chrome */
+:host ::ng-deep .ant-drawer-body .card.ant-card { border: 0 !important; box-shadow: none !important; border-radius: 0 !important; background: transparent; }
+:host ::ng-deep .ant-drawer-body .left-panel .card.ant-card > .ant-card-head,
+:host ::ng-deep .ant-drawer-body .left-panel .card.ant-card > .ant-card-head::before,
+:host ::ng-deep .ant-drawer-body .left-panel .card.ant-card > .ant-card-head::after {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  content: none !important;
+}
 .mobile-only { display: none; }
 
 /* Tablet and below: use drawer layout */
@@ -187,6 +388,58 @@
   color: #1677ff;
   box-shadow: 0 4px 12px rgba(22,119,255,0.18);
   transform: translateY(-1px);
+}
+
+:host ::ng-deep .ant-drawer-body .left-tab-content .card.ant-card > .ant-card-head,
+:host ::ng-deep .ant-drawer-body .left-tab-content .card.ant-card > .ant-card-head::after,
+:host ::ng-deep .ant-drawer-body .left-tab-content .card.ant-card > .ant-card-head::before {
+  border-bottom: 0 !important;
+}
+:host ::ng-deep .ant-drawer-body .left-tab-content .sub-header {
+  border-bottom: 0 !important;
+}
+
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card-head,
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card-head::after,
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card-head::before {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  content: none !important;
+}
+
+:host ::ng-deep .ant-drawer-body .left-tab-card.ant-card > .ant-card-head,
+:host ::ng-deep .ant-drawer-body .left-tab-card.ant-card > .ant-card-head::after,
+:host ::ng-deep .ant-drawer-body .left-tab-card.ant-card > .ant-card-head::before {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  content: none !important;
+}
+
+:host ::ng-deep .ant-drawer-body .ant-card .ant-card-head {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+:host ::ng-deep .ant-drawer-body .ant-card .ant-card-head::after,
+:host ::ng-deep .ant-drawer-body .ant-card .ant-card-head::before {
+  border-bottom: 0 !important;
+  background: transparent !important;
+  content: none !important;
+}
+
+:host ::ng-deep .left-panel-card.ant-card > .ant-card-head {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+:host ::ng-deep .left-panel-card.ant-card > .ant-card-head::after,
+:host ::ng-deep .left-panel-card.ant-card > .ant-card-head::before,
+:host ::ng-deep .left-panel-card.ant-card > .ant-card-head-title::after {
+  border-bottom: 0 !important;
+  background: transparent !important;
+  content: none !important;
+}
+:host ::ng-deep .ant-drawer-body .left-panel-card.ant-card > .ant-card-head {
+  border-bottom: 0 !important;
 }
 .history-bar .hb-mode-btn {
   border-radius: 8px;
