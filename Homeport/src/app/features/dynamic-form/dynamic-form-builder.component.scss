@@ -557,6 +557,10 @@
   color: #6b7280;
   font-size: 16px;
 }
+:host ::ng-deep .left .left-panel-card .card-title .t {
+  color: #6b7280;
+  font-size: 16px;
+}
 :host ::ng-deep .inspector-panel {
   border-left: 0;
   border-right: 0;
@@ -641,6 +645,9 @@
 }
 :host ::ng-deep .inspector-form .switch-left .ant-form-item-control-input-content {
   justify-content: flex-start;
+}
+:host ::ng-deep .right .ant-switch-checked {
+  background-color: #1677ff;
 }
 :host ::ng-deep .inspector-empty {
   color: #64748b;

@@ -43,7 +43,6 @@
                           (addFieldTyped)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, sectionPath: $event.path, type: $event.type })">
               </df-section>
                   <div *ngIf="editMode" class="df-edit-actions">
-                    <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectSection(i, k, $any(f), $event)">Select</button>
                     <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'up' })">▲</button>
                     <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'down' })">▼</button>
                     <button nz-button nzSize="small" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); onDeleteInStepRoot(k, i)">✕</button>
@@ -73,7 +72,6 @@
                   <div class="df-edit-item" [ngStyle]="dfs.fieldContainerStyle($any(f), ui)" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === f" (click)="editMode && onFieldContainerClickStep($event, i, k, $any(f))">
                     <df-field [field]="$any(f)" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerClick($event)"></df-field>
                     <div *ngIf="editMode" class="df-edit-actions">
-                      <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInStepRoot(k, i, $any(f))">Select</button>
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'up' })">▲</button>
                       <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'step', stepIndex: i, index: k, dir: 'down' })">▼</button>
                       <button nz-button nzSize="small" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); onDeleteInStepRoot(k, i)">✕</button>
@@ -147,7 +145,6 @@
                     (addFieldTyped)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, sectionPath: $event.path, type: $event.type })"
         ></df-section>
         <div *ngIf="editMode" class="df-edit-actions">
-          <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectSection(undefined, it.ent.i, ($any(schema.fields)[it.ent.i]), $event)">Select</button>
           <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'up' })">▲</button>
           <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'down' })">▼</button>
           <button nz-button nzSize="small" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); editDeleteField.emit({ path: 'flat', index: i })">✕</button>
@@ -184,7 +181,6 @@
           <div class="df-edit-item" [ngStyle]="dfs.fieldContainerStyle($any(schema.fields)[it.ent.i], ui)" [class.df-edit]="editMode" [class.df-edit-selected]="selectedField === (($any(schema.fields))[it.ent.i])" (click)="editMode && onFieldContainerClickRoot($event, i, ($any(schema.fields))[it.ent.i])">
         <df-field [field]="$any(schema.fields)[it.ent.i]" [form]="form" [ui]="ui" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerClick($event)"></df-field>
             <div *ngIf="editMode" class="df-edit-actions">
-              <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); onSelectInFlat(i, (($any(schema.fields))[it.ent.i]))">Select</button>
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'up' })">▲</button>
               <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); editMoveItem.emit({ path: 'root', index: i, dir: 'down' })">▼</button>
               <button nz-button nzSize="small" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); onDeleteInFlat(i)">✕</button>
