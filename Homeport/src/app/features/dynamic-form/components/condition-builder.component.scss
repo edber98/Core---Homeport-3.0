@@ -5,8 +5,49 @@
 }
 .qb-toolbar {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
   align-items: center;
+}
+.qb-toolbar-actions { display: inline-flex; gap: 8px; }
+.qb-logic {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 2px;
+}
+.qb-logic-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.qb-toggle {
+  display: inline-flex;
+  gap: 6px;
+  padding: 3px;
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+.qb-toggle button[nz-button] {
+  border-radius: 999px;
+  padding: 0 12px;
+  height: 26px;
+  line-height: 24px;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+.qb-toggle button[nz-button].active {
+  background: #e8f1ff;
+  color: #0b5ed7;
+  border-color: #cfe0ff;
+}
+.qb-root,
+.qb-group-body {
+  border-left: 2px solid #e2e8f0;
+  padding-left: 12px;
+  margin-left: 4px;
 }
 .qb-items, .qb-subitems {
   display: flex;
@@ -30,13 +71,37 @@
   border: 1px solid #f0f0f0;
   border-radius: 6px;
   background: #fff;
+  position: relative;
 }
 .qb-item .qb-kind { display: inline-flex; gap: 8px; align-items: center; }
 .qb-rule { display: inline-flex; gap: 8px; align-items: center; }
 .qb-rule nz-select[ng-reflect-nz-mode], .qb-rule nz-select { min-width: 140px; }
 .qb-rule .op { width: 80px; }
 .qb-rule .val { min-width: 140px; }
-.qb-group-head { display: inline-flex; gap: 8px; align-items: center; }
+.qb-group-head { display: inline-flex; gap: 8px; align-items: center; width: 100%; justify-content: space-between; }
+.qb-group .qb-logic { margin-bottom: 4px; }
+.qb-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f8fafc;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.08);
+}
+.qb-remove i { color: inherit; }
+.qb-remove:hover {
+  color: #ef4444;
+  border-color: #fecaca;
+  background: #fff1f2;
+}
 
 /* Nested groups stay inline but readable */
 .qb-subitems .qb-item { background: #fafafa; }

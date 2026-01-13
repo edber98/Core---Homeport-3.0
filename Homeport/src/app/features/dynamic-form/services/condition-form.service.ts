@@ -8,7 +8,7 @@ export class ConditionFormService {
   newRow(kind: 'rule'|'group' = 'rule'): FormGroup {
     return kind === 'rule'
       ? this.fb.group({ kind: ['rule'], field: [''], operator: ['=='], value: [''] })
-      : this.fb.group({ kind: ['group'], logic: ['any'], items: this.fb.array([ this.newRow('rule') ]) });
+      : this.fb.group({ kind: ['group'], logic: ['all'], items: this.fb.array([ this.newRow('rule') ]) });
   }
 
   fromNode(node: any): FormGroup {
@@ -57,7 +57,7 @@ export class ConditionFormService {
   buildNodeFromForm(grp: FormGroup): any {
     const kind = grp.get('kind')?.value;
     if (kind === 'group') {
-      const logic = grp.get('logic')?.value || 'any';
+      const logic = grp.get('logic')?.value || 'all';
       const arr = ((grp.get('items') as FormArray)?.controls || []).map(c => this.buildNodeFromForm(c as FormGroup));
       return { [logic]: arr };
     }
@@ -67,9 +67,9 @@ export class ConditionFormService {
     return { [op]: [ { var: field }, this.parseMaybeNumber(val) ] };
   }
   buildConditionObject(form: FormGroup): any {
-    const logic = form.get('logic')?.value || 'single';
+    const logic = form.get('logic')?.value || 'all';
     const items = (form.get('items') as FormArray)?.controls || [];
-    if (logic === 'single' && items.length === 1) return this.buildNodeFromForm(items[0] as FormGroup);
+    if (items.length === 1) return this.buildNodeFromForm(items[0] as FormGroup);
     return { [logic]: items.map(c => this.buildNodeFromForm(c as FormGroup)) };
   }
   private parseMaybeNumber(x: any) { const n = Number(x); return isNaN(n) ? x : n; }
@@ -80,7 +80,7 @@ export class ConditionFormService {
     items.clear();
     let parsed: any = undefined;
     try { parsed = jsonText ? JSON.parse(jsonText) : undefined; } catch { parsed = undefined; }
-    let logic: 'single'|'any'|'all' = 'single';
+    let logic: 'single'|'any'|'all' = 'all';
     if (parsed && typeof parsed === 'object') {
       if (Array.isArray(parsed.any)) { logic = 'any'; parsed.any.forEach((r: any) => items.push(this.fromNode(r))); }
       else if (Array.isArray(parsed.all)) { logic = 'all'; parsed.all.forEach((r: any) => items.push(this.fromNode(r))); }

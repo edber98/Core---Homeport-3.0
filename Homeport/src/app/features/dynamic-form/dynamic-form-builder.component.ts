@@ -262,7 +262,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // init builders
     this.optionsForm = this.fb.group({ items: this.fb.array([]) });
     this.conditionForm = this.fb.group({
-      logic: ['single'],
+      logic: ['all'],
       items: this.fb.array([ this.condSvc.newRow('rule') ])
     });
     // section styles forms
@@ -1020,6 +1020,9 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.conditionModalVisible = true;
   }
   buildConditionObject(): any { return this.condSvc.buildConditionObject(this.conditionForm); }
+  get conditionJsonPreview(): string {
+    try { return JSON.stringify(this.buildConditionObject(), null, 2); } catch { return '{}'; }
+  }
   saveCondition() {
     const obj = this.buildConditionObject();
     this.inspector.get(this.conditionTarget)?.setValue(JSON.stringify(obj));

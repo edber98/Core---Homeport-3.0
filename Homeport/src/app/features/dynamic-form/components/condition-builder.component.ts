@@ -31,6 +31,10 @@ export class ConditionBuilderComponent {
   subItemsAt(i: number): FormArray { return (this.items.at(i).get('items') as FormArray); }
   subItemsAtNested(i: number, j: number): FormArray { return ((this.items.at(i).get('items') as FormArray).at(j).get('items') as FormArray); }
 
+  setLogic(target: FormGroup, value: 'any'|'all') {
+    target.get('logic')?.setValue(value);
+  }
+
   onChangeKind(i: number, v: any) {
     const kind = (v as 'rule'|'group');
     this.changeCondKind.emit({ index: i, kind });

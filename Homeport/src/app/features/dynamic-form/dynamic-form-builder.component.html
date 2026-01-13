@@ -505,16 +505,24 @@
   </ng-container>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="960" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
+<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="1120" [nzWrapClassName]="'condition-builder-modal'" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
   <ng-container *nzModalContent>
-    <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
-                      (addConditionRow)="addConditionRow()"
-                      (addConditionGroup)="addConditionGroup()"
-                      (removeConditionRow)="removeConditionRow($event)"
-                      (changeCondKind)="changeCondKind($event.index, $event.kind)"
-                      (addSubRule)="addSubRule($event)"
-                      (addSubGroup)="addSubGroup($event)"
-                      (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+    <div class="condition-modal">
+      <div class="condition-modal__builder">
+        <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
+                          (addConditionRow)="addConditionRow()"
+                          (addConditionGroup)="addConditionGroup()"
+                          (removeConditionRow)="removeConditionRow($event)"
+                          (changeCondKind)="changeCondKind($event.index, $event.kind)"
+                          (addSubRule)="addSubRule($event)"
+                          (addSubGroup)="addSubGroup($event)"
+                          (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+      </div>
+      <aside class="condition-modal__preview" aria-label="JSON preview">
+        <div class="condition-modal__title">JSON</div>
+        <pre class="condition-modal__json">{{ conditionJsonPreview }}</pre>
+      </aside>
+    </div>
   </ng-container>
 </nz-modal>
 

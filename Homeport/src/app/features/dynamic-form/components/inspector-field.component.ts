@@ -343,34 +343,40 @@ import { Subscription } from 'rxjs';
                 <div class="ins-section-header"><div class="card-title"><span class="t">Conditions</span><span class="s">Affichage & validation</span></div></div>
                 <div class="ins-grid span-2">
                   <div class="editor-block span-2">
-                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
-                      <div class="title">visibleIf (JSON)</div>
+                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité">
+                      <div class="title">
+                        Condition de visibilite
+                        <span *ngIf="hasCondition('visibleIf')" class="cond-pill">Active</span>
+                      </div>
                       <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('visibleIf'); $event.preventDefault(); $event.stopPropagation()">
                         <i nz-icon nzType="build"></i>
                         <span style="margin-left:6px">Builder</span>
                       </button>
                     </div>
-                    <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" [height]="160"></monaco-json-editor>
                   </div>
                   <div class="editor-block span-2">
-                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire (JSON)">
-                      <div class="title">requiredIf (JSON)</div>
+                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire">
+                      <div class="title">
+                        Condition d'obligation
+                        <span *ngIf="hasCondition('requiredIf')" class="cond-pill">Active</span>
+                      </div>
                       <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('requiredIf'); $event.preventDefault(); $event.stopPropagation()">
                         <i nz-icon nzType="build"></i>
                         <span style="margin-left:6px">Builder</span>
                       </button>
                     </div>
-                    <monaco-json-editor [value]="$any(group.controls['requiredIf'].value)" (valueChange)="group.get('requiredIf')?.setValue($event)" [height]="160"></monaco-json-editor>
                   </div>
                   <div class="editor-block span-2">
-                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ (JSON)">
-                      <div class="title">disabledIf (JSON)</div>
+                    <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ">
+                      <div class="title">
+                        Condition de desactivation
+                        <span *ngIf="hasCondition('disabledIf')" class="cond-pill">Active</span>
+                      </div>
                       <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit('disabledIf'); $event.preventDefault(); $event.stopPropagation()">
                         <i nz-icon nzType="build"></i>
                         <span style="margin-left:6px">Builder</span>
                       </button>
                     </div>
-                    <monaco-json-editor [value]="$any(group.controls['disabledIf'].value)" (valueChange)="group.get('disabledIf')?.setValue($event)" [height]="160"></monaco-json-editor>
                   </div>
                 </div>
               </ng-container>
@@ -505,5 +511,13 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
       const arr = this.safeParseArray(raw);
       this.applyValidatorArray(arr);
     });
+  }
+
+  hasCondition(prop: 'visibleIf' | 'requiredIf' | 'disabledIf'): boolean {
+    const v = this.group?.get(prop)?.value;
+    if (v == null) return false;
+    if (typeof v === 'string') return v.trim().length > 0;
+    if (typeof v === 'object') return Object.keys(v).length > 0;
+    return !!v;
   }
 }
