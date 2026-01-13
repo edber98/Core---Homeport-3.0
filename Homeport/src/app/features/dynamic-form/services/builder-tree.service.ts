@@ -197,13 +197,13 @@ export class BuilderTreeService {
         const isStepBase = baseKey.startsWith('step:');
         const key = isStepBase ? `${baseKey}:field:${i}` : `${baseKey}:${i}`;
         if (this.isSection(f)) {
-          const secNode: any = { title: f.title || 'Section', key, isLeaf: false, expanded: isExpanded(key, false), children: [] };
+          const secNode: any = { title: f.title || 'Section', key, type: f.type || 'section', isLeaf: false, expanded: isExpanded(key, false), children: [] };
           // Under step, keep child base as section key; at root, use ':field' marker
           const childBase = isStepBase ? key : `${key}:field`;
           pushFieldNodes(secNode.children, childBase, f.fields || []);
           acc.push(secNode);
         } else {
-          acc.push({ title: f.label || f.key || f.type, key, isLeaf: true });
+          acc.push({ title: f.key || f.label || f.type, key, type: f.type || 'field', isLeaf: true });
         }
       });
     };
@@ -211,17 +211,17 @@ export class BuilderTreeService {
       const children: any[] = [];
       schema.steps.forEach((st, si) => {
         const stepKey = `step:${si}`;
-        const stepNode: any = { title: st.title || `Step ${si + 1}`, key: stepKey, isLeaf: false, expanded: isExpanded(stepKey, false), children: [] };
+        const stepNode: any = { title: st.title || `Step ${si + 1}`, key: stepKey, type: 'step', isLeaf: false, expanded: isExpanded(stepKey, false), children: [] };
         pushFieldNodes(stepNode.children, stepKey, st.fields || []);
         children.push(stepNode);
       });
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
+      nodes.push({ title: 'Formulaire', key: 'root', type: 'root', isLeaf: false, expanded: true, children });
     } else if (schema.fields?.length) {
       const children: any[] = [];
       pushFieldNodes(children, 'field', schema.fields);
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: false, expanded: true, children });
+      nodes.push({ title: 'Formulaire', key: 'root', type: 'root', isLeaf: false, expanded: true, children });
     } else {
-      nodes.push({ title: 'Formulaire', key: 'root', isLeaf: true });
+      nodes.push({ title: 'Formulaire', key: 'root', type: 'root', isLeaf: true });
     }
     return nodes;
   }

@@ -72,6 +72,25 @@ export class ContextPanelComponent {
   currentCtxKey: string | null = null;
   constructor(private dropdown: NzContextMenuService) {}
 
+  iconForNode(node: any): string {
+    const type = node?.origin?.type ?? node?.type;
+    switch (type) {
+      case 'root': return 'fa-solid fa-sliders';
+      case 'step': return 'fa-solid fa-list-ol';
+      case 'section': return 'fa-solid fa-layer-group';
+      case 'section_array': return 'fa-solid fa-boxes-stacked';
+      case 'text': return 'fa-solid fa-font';
+      case 'textarea': return 'fa-solid fa-align-left';
+      case 'number': return 'fa-solid fa-hashtag';
+      case 'date': return 'fa-regular fa-calendar';
+      case 'select': return 'fa-solid fa-caret-down';
+      case 'radio': return 'fa-regular fa-circle-dot';
+      case 'checkbox': return 'fa-regular fa-square-check';
+      case 'textblock': return 'fa-solid fa-paragraph';
+      default: return 'fa-solid fa-square-plus';
+    }
+  }
+
   onTreeClick(evt: any) {
     const key = evt?.node?.key as string | undefined;
     if (key) this.treeClick.emit(key);

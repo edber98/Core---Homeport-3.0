@@ -16,22 +16,34 @@
           <!-- Root -->
           <span *ngIf="node.key==='root'; else notRoot"
                 (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
-                class="tree-node-label" style="display:block">{{ node.title }}</span>
+                class="tree-node-label">
+            <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+            <span class="tree-node-text">{{ node.title }}</span>
+          </span>
           <ng-template #notRoot>
             <!-- Step -->
             <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
                   (contextmenu)="openTreeMenu($event, menuStep, node.key)"
-                  class="tree-node-label" style="display:block">{{ node.title }}</span>
+                  class="tree-node-label">
+              <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+              <span class="tree-node-text">{{ node.title }}</span>
+            </span>
             <ng-template #notStep>
               <!-- Section (any non-leaf that is not step/root) -->
               <span *ngIf="!node.isLeaf; else leafField"
                     (contextmenu)="openTreeMenu($event, menuSection, node.key)"
-                    class="tree-node-label" style="display:block">{{ node.title }}</span>
+                    class="tree-node-label">
+                <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+                <span class="tree-node-text">{{ node.title }}</span>
+              </span>
             </ng-template>
             <!-- Field -->
             <ng-template #leafField>
               <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
-                    class="tree-node-label" style="display:block">{{ node.title }}</span>
+                    class="tree-node-label">
+                <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+                <span class="tree-node-text">{{ node.title }}</span>
+              </span>
             </ng-template>
           </ng-template>
         </ng-template>
