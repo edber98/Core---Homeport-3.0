@@ -156,6 +156,6 @@
 /* Structure tree: selected node in blue (instead of gray) */
 :host ::ng-deep .tree .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected,
 :host ::ng-deep .tree .ant-tree .ant-tree-treenode-selected .ant-tree-node-content-wrapper {
-  background-color: transparent !important;
+  background-color: #eef4ff !important;
   box-shadow: inset 0 0 0 1px #1677ff !important;
 }

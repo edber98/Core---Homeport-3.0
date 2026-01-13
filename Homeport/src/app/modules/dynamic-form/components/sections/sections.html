@@ -42,7 +42,6 @@
                                       (addFieldTyped)="addFieldTyped.emit({ index: j, type: $event.type, path: [j].concat($event.path || []) })"
                           ></df-section>
                           <div *ngIf="editMode" class="df-edit-actions">
-                            <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: j, section: $any(f) })">Select</button>
                             <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'up' })">▲</button>
                             <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'down' })">▼</button>
                             <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: j })">✕</button>
@@ -78,7 +77,6 @@
                                       (addFieldTyped)="addFieldTyped.emit({ index: j, type: $event.type, path: [j].concat($event.path || []) })"
                           ></df-section>
                           <div *ngIf="editMode" class="df-edit-actions">
-                            <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: j, section: $any(f) })">Select</button>
                             <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'up' })">▲</button>
                             <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: j, dir: 'down' })">▼</button>
                             <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: j })">✕</button>
@@ -88,7 +86,6 @@
                       <ng-container *ngSwitchDefault>
                         <df-field [field]="f" [form]="g" [ui]="sectionUi" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" [disableExpressions]="disableExpressions" (click)="onInnerFieldClick($event)"></df-field>
                         <div class="df-edit-actions" *ngIf="editMode">
-                          <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectField.emit({ index: j, field: f, section: section })">Select</button>
                           <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: j, dir: 'up'}); $event.stopPropagation()">▲</button>
                           <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: j, dir: 'down'}); $event.stopPropagation()">▼</button>
                           <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="deleteField.emit({index: j}); $event.stopPropagation()">✕</button>
@@ -138,7 +135,6 @@
                                   (addFieldTyped)="addFieldTyped.emit({ index: i, type: $event.type, path: [i].concat($event.path || []) })"
                       ></df-section>
                       <div *ngIf="editMode" class="df-edit-actions">
-                        <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: i, section: $any(f) })">Select</button>
                         <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'up' })">▲</button>
                         <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'down' })">▼</button>
                         <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: i })">✕</button>
@@ -171,7 +167,6 @@
                                   (addFieldTyped)="addFieldTyped.emit({ index: i, type: $event.type, path: [i].concat($event.path || []) })"
                       ></df-section>
                       <div *ngIf="editMode" class="df-edit-actions">
-                        <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectSection.emit({ index: i, section: $any(f) })">Select</button>
                         <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'up' })">▲</button>
                         <button nz-button nzSize="small" *ngIf="allowMove" (click)="$event.preventDefault(); $event.stopPropagation(); moveField.emit({ index: i, dir: 'down' })">▼</button>
                         <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="$event.preventDefault(); $event.stopPropagation(); deleteField.emit({ index: i })">✕</button>
@@ -195,7 +190,6 @@
                   <ng-container *ngSwitchDefault>
                     <df-field [field]="f" [form]="form" [ui]="sectionUi" [ctx]="ctx" [exprPreviewShowErrors]="exprPreviewShowErrors" (click)="onInnerFieldClick($event)"></df-field>
                     <div class="df-edit-actions" *ngIf="editMode">
-                      <button nz-button nzSize="small" (click)="$event.preventDefault(); $event.stopPropagation(); selectField.emit({ index: i, field: f, section: section })">Select</button>
                       <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'up'}); $event.stopPropagation()">▲</button>
                       <button nz-button nzSize="small" *ngIf="allowMove" (click)="moveField.emit({index: i, dir: 'down'}); $event.stopPropagation()">▼</button>
                       <button nz-button nzSize="small" *ngIf="allowDelete" nzDanger (click)="deleteField.emit({index: i}); $event.stopPropagation()">✕</button>

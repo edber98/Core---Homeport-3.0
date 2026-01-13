@@ -8,66 +8,76 @@
         </div>
       </ng-template>
       <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
-        <div class="left-panel-title">Actions et champs rapides</div>
-        <div class="actions-quick-wrap">
-          <div class="actions-row">
-            <button nz-button nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Paramètres du formulaire"
-                    class="action-btn" (click)="select(schema)" aria-label="Paramètres du formulaire">
-              <i class="fa-solid fa-sliders"></i>
-            </button>
-            <span class="actions-divider-vertical" aria-hidden="true"></span>
-            <button nz-button nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une étape"
-                    class="action-btn" (click)="addStep()" aria-label="Ajouter une étape">
-              <i class="fa-solid fa-list-ol"></i>
-            </button>
-            <button nz-button nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une section"
-                    class="action-btn" (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section">
-              <i class="fa-solid fa-layer-group"></i>
-            </button>
-            <button nz-button nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une section (répétable)"
-                    class="action-btn" (click)="addArraySectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section répétable">
-              <i class="fa-solid fa-boxes-stacked"></i>
-            </button>
-            <button nz-button nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter un champ"
-                    class="action-btn" (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()" aria-label="Ajouter un champ">
-              <i class="fa-solid fa-square-plus"></i>
-            </button>
-          </div>
-          <div class="actions-divider" aria-hidden="true"></div>
-          <div class="icon-grid">
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Texte"
-                    (click)="quickAdd('text')" [disabled]="!canQuickAddField" aria-label="Ajouter champ texte">
-              <i class="fa-solid fa-font"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Zone de texte"
-                    (click)="quickAdd('textarea')" [disabled]="!canQuickAddField" aria-label="Ajouter zone de texte">
-              <i class="fa-solid fa-align-left"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Nombre"
-                    (click)="quickAdd('number')" [disabled]="!canQuickAddField" aria-label="Ajouter nombre">
-              <i class="fa-solid fa-hashtag"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Date"
-                    (click)="quickAdd('date')" [disabled]="!canQuickAddField" aria-label="Ajouter date">
-              <i class="fa-regular fa-calendar"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Sélecteur"
-                    (click)="quickAdd('select')" [disabled]="!canQuickAddField" aria-label="Ajouter sélecteur">
-              <i class="fa-solid fa-caret-down"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Radio"
-                    (click)="quickAdd('radio')" [disabled]="!canQuickAddField" aria-label="Ajouter radio">
-              <i class="fa-regular fa-circle-dot"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Case à cocher"
-                    (click)="quickAdd('checkbox')" [disabled]="!canQuickAddField" aria-label="Ajouter checkbox">
-              <i class="fa-regular fa-square-check"></i>
-            </button>
-            <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Bloc de texte"
-                    (click)="quickAdd('textblock')" [disabled]="!canQuickAddField" aria-label="Ajouter bloc de texte">
-              <i class="fa-solid fa-paragraph"></i>
-            </button>
-          </div>
+        <div class="left-panel-title">Actions</div>
+        <div class="actions-grid">
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="select(schema)" aria-label="Paramètres du formulaire">
+            <i class="fa-solid fa-sliders"></i>
+            <span class="quick-label">Form</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addStep()" aria-label="Ajouter une étape">
+            <i class="fa-solid fa-list-ol"></i>
+            <span class="quick-label">Step</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section">
+            <i class="fa-solid fa-layer-group"></i>
+            <span class="quick-label">Section</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addArraySectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section répétable">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span class="quick-label">Array</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()" aria-label="Ajouter un champ">
+            <i class="fa-solid fa-square-plus"></i>
+            <span class="quick-label">Champ</span>
+          </button>
+        </div>
+        <div class="left-panel-title quick-title">Champs rapides</div>
+        <div class="quick-grid">
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('text')" [disabled]="!canQuickAddField" aria-label="Ajouter champ texte">
+            <i class="fa-solid fa-font"></i>
+            <span class="quick-label">Texte</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('textarea')" [disabled]="!canQuickAddField" aria-label="Ajouter zone de texte">
+            <i class="fa-solid fa-align-left"></i>
+            <span class="quick-label">Zone</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('number')" [disabled]="!canQuickAddField" aria-label="Ajouter nombre">
+            <i class="fa-solid fa-hashtag"></i>
+            <span class="quick-label">Nombre</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('date')" [disabled]="!canQuickAddField" aria-label="Ajouter date">
+            <i class="fa-regular fa-calendar"></i>
+            <span class="quick-label">Date</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('select')" [disabled]="!canQuickAddField" aria-label="Ajouter sélecteur">
+            <i class="fa-solid fa-caret-down"></i>
+            <span class="quick-label">Select</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('radio')" [disabled]="!canQuickAddField" aria-label="Ajouter radio">
+            <i class="fa-regular fa-circle-dot"></i>
+            <span class="quick-label">Radio</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('checkbox')" [disabled]="!canQuickAddField" aria-label="Ajouter checkbox">
+            <i class="fa-regular fa-square-check"></i>
+            <span class="quick-label">Case</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('textblock')" [disabled]="!canQuickAddField" aria-label="Ajouter bloc de texte">
+            <i class="fa-solid fa-paragraph"></i>
+            <span class="quick-label">Bloc</span>
+          </button>
         </div>
       </nz-card>
 
