@@ -623,8 +623,13 @@
 :host ::ng-deep .inspector-form .switch-left .ant-form-item-control-input-content {
   justify-content: flex-start;
 }
-:host ::ng-deep .right .ant-switch-checked {
+:host ::ng-deep .right .inspector-form .ant-switch.ant-switch-checked {
   background-color: #1677ff;
+  border-color: #1677ff;
+}
+:host ::ng-deep .right .inspector-form .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1677ff;
+  border-color: #1677ff;
 }
 :host ::ng-deep .inspector-empty {
   color: #64748b;

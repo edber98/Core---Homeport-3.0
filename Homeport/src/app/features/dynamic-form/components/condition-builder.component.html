@@ -35,6 +35,10 @@
               <nz-option nzValue="<=" nzLabel="<="></nz-option>
             </nz-select>
             <input nz-input formControlName="value" placeholder="valeur" class="val"/>
+            <button nz-button nzType="text" nzDanger class="qb-remove"
+                    (click)="removeConditionRow.emit(i); $event.preventDefault(); $event.stopPropagation()">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </div>
 
           <div *ngIf="$any(grp).controls.kind.value==='group'" class="qb-group">
@@ -52,6 +56,10 @@
               <div class="qb-toolbar-actions">
                 <button nz-button nzType="dashed" (click)="addSubRule.emit(i); $event.preventDefault(); $event.stopPropagation()">+ Règle</button>
                 <button nz-button nzType="dashed" (click)="addSubGroup.emit(i); $event.preventDefault(); $event.stopPropagation()">+ Groupe</button>
+                <button nz-button nzType="text" nzDanger class="qb-remove"
+                        (click)="removeConditionRow.emit(i); $event.preventDefault(); $event.stopPropagation()">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
             </div>
             <div formArrayName="items" class="qb-subitems qb-group-body">
@@ -69,6 +77,12 @@
                                 (click)="setLogic($any(sub), 'any'); $event.preventDefault(); $event.stopPropagation()">OR</button>
                       </div>
                     </div>
+                  </div>
+                  <div class="qb-toolbar-actions">
+                    <button nz-button nzType="text" nzDanger class="qb-remove"
+                            (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
                   </div>
                   <div formArrayName="items" class="qb-subitems qb-group-body">
                     <div *ngFor="let sub2 of subItemsAtNested(i,j).controls; let k=index" [formGroupName]="k" class="qb-item">
@@ -90,6 +104,10 @@
                             <nz-option nzValue="<=" nzLabel="<="></nz-option>
                           </nz-select>
                           <input nz-input formControlName="value" placeholder="valeur" class="val"/>
+                          <button nz-button nzType="text" nzDanger class="qb-remove"
+                                  (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
                         </div>
                       </ng-template>
                     </div>
@@ -109,19 +127,15 @@
                       <nz-option nzValue="<=" nzLabel="<="></nz-option>
                     </nz-select>
                     <input nz-input formControlName="value" placeholder="valeur" class="val"/>
+                    <button nz-button nzType="text" nzDanger class="qb-remove"
+                            (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
                   </div>
                 </ng-template>
-                <button nz-button nzType="text" nzDanger class="qb-remove"
-                        (click)="removeSubAt.emit({ index: i, subIndex: j }); $event.preventDefault(); $event.stopPropagation()">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
               </div>
             </div>
           </div>
-          <button nz-button nzType="text" nzDanger class="qb-remove"
-                  (click)="removeConditionRow.emit(i); $event.preventDefault(); $event.stopPropagation()">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
         </div>
       </ng-container>
     </div>

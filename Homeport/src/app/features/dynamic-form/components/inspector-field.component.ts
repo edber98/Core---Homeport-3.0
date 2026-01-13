@@ -516,8 +516,24 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   hasCondition(prop: 'visibleIf' | 'requiredIf' | 'disabledIf'): boolean {
     const v = this.group?.get(prop)?.value;
     if (v == null) return false;
-    if (typeof v === 'string') return v.trim().length > 0;
-    if (typeof v === 'object') return Object.keys(v).length > 0;
-    return !!v;
+    if (typeof v === 'string') {
+      const raw = v.trim();
+      if (!raw) return false;
+      try { return this.isMeaningfulCondition(JSON.parse(raw)); } catch { return false; }
+    }
+    if (typeof v === 'object') return this.isMeaningfulCondition(v);
+    return false;
+  }
+
+  private isMeaningfulCondition(rule: any): boolean {
+    if (!rule || typeof rule !== 'object') return false;
+    if (Array.isArray(rule.any)) return rule.any.some((r: any) => this.isMeaningfulCondition(r));
+    if (Array.isArray(rule.all)) return rule.all.some((r: any) => this.isMeaningfulCondition(r));
+    const op = Object.keys(rule)[0];
+    const args = (rule as any)[op];
+    if (!op || !Array.isArray(args) || args.length < 2) return false;
+    const left = args[0];
+    const field = left && typeof left === 'object' ? String(left.var || '') : '';
+    return field.trim().length > 0;
   }
 }
