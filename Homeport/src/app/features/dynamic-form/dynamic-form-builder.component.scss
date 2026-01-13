@@ -454,7 +454,7 @@
 .step:hover, .section:hover, .field:hover {
   border-color: #bfbfbf; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.06);
 }
-.selected { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,.15); background: #fff; }
+.selected { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,.15); background: #eef4ff; }
 
 .step-header, .section-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; cursor: grab; }
 .section-header .t { font-weight: 600; }

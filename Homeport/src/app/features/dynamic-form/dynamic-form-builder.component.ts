@@ -1890,6 +1890,24 @@ export class DynamicFormBuilderComponent implements OnChanges {
     const mod = e.metaKey || e.ctrlKey;
     if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); }
     else if (mod && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) { e.preventDefault(); this.redo(); }
+    else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); this.deleteSelected(); }
+  }
+
+  private deleteSelected(): void {
+    const sel = this.selected;
+    if (!sel || sel === this.schema) return;
+    if (this.isStep(sel)) {
+      this.removeStep(sel as StepConfig);
+      return;
+    }
+    const key = this.treeSvc.keyForObject(this.schema, sel);
+    if (!key) return;
+    if (this.isSection(sel)) {
+      if (this.ctxActions.deleteSection(this.schema, key)) this.select(this.schema);
+    } else if (this.isField(sel)) {
+      if (this.ctxActions.deleteField(this.schema, key)) this.select(this.schema);
+    }
+    this.refresh();
   }
 
   private openConflictFor(entry: { rule: any }): boolean {

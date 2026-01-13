@@ -30,6 +30,15 @@
   font-size: var(--df-label-font-size) !important;
 }
 
+/* Fond gris tres clair pour tous les champs */
+:host ::ng-deep .df-form-item .ant-input,
+:host ::ng-deep .df-form-item textarea.ant-input,
+:host ::ng-deep .df-form-item .ant-input-affix-wrapper,
+:host ::ng-deep .df-form-item .ant-select-selector,
+:host ::ng-deep .df-form-item .ant-picker {
+  background: #fafafa;
+}
+
 /* When Val/Expr segmented is present and editor is not large, add right padding to CodeMirror */
 :host ::ng-deep .df-control-wrap:has(.df-expr-toggle) app-expression-editor .cm-host:not(.large) .cm-editor {
   padding-right: 83px !important;
