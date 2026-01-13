@@ -29,21 +29,31 @@ import { Subscription } from 'rxjs';
           </button>
           <div class="inspector-panel__content">
             <div class="inspector-panel__inner">
-              <nz-form-item>
-                <nz-form-label nzFor="fld_type" nzTooltipTitle="Type de champ (texte, nombre, date…)"><span>Type de champ</span></nz-form-label>
-                <nz-form-control>
-                  <nz-select id="fld_type" formControlName="type">
-                    <nz-option nzValue="text" nzLabel="text"></nz-option>
-                    <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
-                    <nz-option nzValue="number" nzLabel="number"></nz-option>
-                    <nz-option nzValue="date" nzLabel="date"></nz-option>
-                    <nz-option nzValue="select" nzLabel="select"></nz-option>
-                    <nz-option nzValue="radio" nzLabel="radio"></nz-option>
-                    <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
-                    <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
-                  </nz-select>
-                </nz-form-control>
-              </nz-form-item>
+              <div class="inline-2">
+                <nz-form-item [class.span-2]="group.get('type')?.value==='textblock'">
+                  <nz-form-label nzFor="fld_type" nzTooltipTitle="Type de champ (texte, nombre, date…)"><span>Type de champ</span></nz-form-label>
+                  <nz-form-control>
+                    <nz-select id="fld_type" formControlName="type">
+                      <nz-option nzValue="text" nzLabel="text"></nz-option>
+                      <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
+                      <nz-option nzValue="number" nzLabel="number"></nz-option>
+                      <nz-option nzValue="date" nzLabel="date"></nz-option>
+                      <nz-option nzValue="select" nzLabel="select"></nz-option>
+                      <nz-option nzValue="radio" nzLabel="radio"></nz-option>
+                      <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
+                      <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+                <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Champ requis pour valider le formulaire"><span>Obligatoire</span></nz-form-label>
+                    <nz-form-control>
+                      <nz-switch [(ngModel)]="v_required" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                </ng-container>
+              </div>
 
               <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
                 <nz-form-item>
@@ -64,12 +74,6 @@ import { Subscription } from 'rxjs';
                 <nz-form-item>
                   <nz-form-label nzFor="fld_desc" nzTooltipTitle="Aide sous le champ"><span>Description</span></nz-form-label>
                   <nz-form-control><textarea nz-input rows="2" id="fld_desc" formControlName="description"></textarea></nz-form-control>
-                </nz-form-item>
-                <nz-form-item class="toggle-row">
-                  <nz-form-label nzTooltipTitle="Champ requis pour valider le formulaire"><span>Obligatoire</span></nz-form-label>
-                  <nz-form-control>
-                    <nz-switch [(ngModel)]="v_required" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()"></nz-switch>
-                  </nz-form-control>
                 </nz-form-item>
                 <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                   <nz-form-label nzTooltipTitle="Liste des options (JSON)"><span>Options (JSON)</span></nz-form-label>

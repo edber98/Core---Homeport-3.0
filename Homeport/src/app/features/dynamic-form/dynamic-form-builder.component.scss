@@ -65,7 +65,7 @@
 .left-panel .actions-grid button[nz-button],
 .left-panel .quick-grid button[nz-button] {
   border: 1px solid #d6dbe3;
-  background: #f8f9ff;
+  background: #eff4ff;
   color: #0f172a;
   width: 60px;
   height: 60px;
@@ -493,7 +493,7 @@
 :host ::ng-deep .right .ant-card .inspector-form .ant-select-selector,
 :host ::ng-deep .right .ant-card .inspector-form .ant-input-number,
 :host ::ng-deep .right .ant-card .inspector-form .ant-switch {
-  background: #f6f7f9;
+  background: #f3f7ff;
   transition: box-shadow .12s ease, border-color .12s ease;
 }
 :host ::ng-deep .right .ant-card .inspector-form .ant-input:focus,
@@ -627,9 +627,17 @@
   background-color: #1677ff;
   border-color: #1677ff;
 }
+:host ::ng-deep .right .inspector-form .ant-switch:not(.ant-switch-checked) {
+  background-color: #dbe8ff;
+  border-color: #9dbdff;
+}
 :host ::ng-deep .right .inspector-form .ant-checkbox-checked .ant-checkbox-inner {
   background-color: #1677ff;
   border-color: #1677ff;
+}
+:host ::ng-deep .right .inspector-form .ant-checkbox:not(.ant-checkbox-checked) .ant-checkbox-inner {
+  border: 1px solid #9dbdff !important;
+  background-color: #e7f0ff;
 }
 :host ::ng-deep .inspector-empty {
   color: #64748b;
@@ -663,8 +671,8 @@
 :host ::ng-deep .right .ant-card .inspector-form .ant-select-selector,
 :host ::ng-deep .right .ant-card .inspector-form .ant-input-number,
 :host ::ng-deep .right .ant-card .inspector-form .ant-picker {
-  background: #f6f7f9;
-  border-color: #e5e7eb;
+  background: #f3f7ff;
+  border-color: #d9e4ff;
 }
 :host ::ng-deep .right .ant-card .inspector-form .ant-input:hover,
 :host ::ng-deep .right .ant-card .inspector-form .ant-select-selector:hover,

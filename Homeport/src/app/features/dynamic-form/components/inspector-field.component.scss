@@ -15,6 +15,8 @@
 @media (max-width: 1280px) { .ins-grid { grid-template-columns: 1fr; } }
 .ins-grid .ant-form-item { margin-bottom: 8px; }
 .ins-grid .span-2 { grid-column: span 2; }
+.inline-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.inline-2 .span-2 { grid-column: span 2; }
 
 /* Ensure form controls fill available width so two columns balance 50/50 */
 .ins-grid .ant-form-item-control,
