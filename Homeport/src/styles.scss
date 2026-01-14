@@ -372,6 +372,18 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 }
 .inspector-empty { color: #64748b; font-size: 12px; padding: 4px 0; }
 
+/* Blue builder buttons in Advanced/Conditions */
+.inspector-form .cond-builder-btn {
+  background: transparent !important;
+  border-color: #1677ff !important;
+  color: #1677ff !important;
+}
+.inspector-form .cond-builder-btn:hover {
+  background: rgba(22,119,255,0.08) !important;
+  border-color: #1677ff !important;
+  color: #1677ff !important;
+}
+
 /* Keep 2-column layout for expression options inside the mobile drawer */
 .ant-drawer-body .inspector-form .ins-grid.cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -292,7 +292,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
               <div class="editor-block">
                 <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
                   <div class="title">visibleIf (JSON)</div>
-                  <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
+                  <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
                     <i nz-icon nzType="build"></i>
                     <span style="margin-left:6px">Builder</span>
                   </button>
