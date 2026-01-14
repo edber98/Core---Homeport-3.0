@@ -24,7 +24,7 @@ import { Subscription } from 'rxjs';
       <nav class="inspector-tabs" role="tablist" aria-label="Onglets de l’inspecteur">
         <button type="button" class="tab-btn" [class.active]="activeTab==='general'" (click)="setTab('general')" role="tab" [attr.aria-selected]="activeTab==='general'">Général</button>
         <button type="button" class="tab-btn" [class.active]="activeTab==='logic'" (click)="setTab('logic')" role="tab" [attr.aria-selected]="activeTab==='logic'">Logique</button>
-        <button type="button" class="tab-btn" [class.active]="activeTab==='json'" (click)="setTab('json')" role="tab" [attr.aria-selected]="activeTab==='json'">JSON</button>
+        <button type="button" class="tab-btn" [class.active]="activeTab==='json'" (click)="setTab('json')" role="tab" [attr.aria-selected]="activeTab==='json'">Paramètres</button>
       </nav>
 
       <ng-container *ngIf="activeTab==='general'">
@@ -69,7 +69,7 @@ import { Subscription } from 'rxjs';
                 <nz-form-control><input nz-input id="fld_label" formControlName="label"/></nz-form-control>
               </nz-form-item>
               <nz-form-item>
-                <nz-form-label nzFor="fld_placeholder" nzTooltipTitle="Texte indicatif dans le champ"><span>Placeholder</span></nz-form-label>
+                <nz-form-label nzFor="fld_placeholder" nzTooltipTitle="Texte indicatif dans le champ"><span>Texte indicatif</span></nz-form-label>
                 <nz-form-control><input nz-input id="fld_placeholder" formControlName="placeholder"/></nz-form-control>
               </nz-form-item>
               <nz-form-item>

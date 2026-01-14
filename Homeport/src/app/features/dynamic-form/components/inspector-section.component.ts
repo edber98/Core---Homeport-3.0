@@ -7,19 +7,18 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { SpacingEditorComponent } from './spacing-editor.component';
-import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'inspector-section',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzDividerModule, NzInputNumberModule, NzSelectModule, NzIconModule, SpacingEditorComponent, MonacoJsonEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzDividerModule, NzInputNumberModule, NzSelectModule, NzIconModule, SpacingEditorComponent],
   template: `
     <form nz-form [formGroup]="group" class="inspector-form" nzLayout="vertical">
       <nav class="inspector-tabs" role="tablist" aria-label="Onglets de l’inspecteur">
         <button type="button" class="tab-btn" [class.active]="activeTab==='general'" (click)="setTab('general')" role="tab" [attr.aria-selected]="activeTab==='general'">Général</button>
         <button type="button" class="tab-btn" [class.active]="activeTab==='logic'" (click)="setTab('logic')" role="tab" [attr.aria-selected]="activeTab==='logic'">Logique</button>
-        <button type="button" class="tab-btn" [class.active]="activeTab==='json'" (click)="setTab('json')" role="tab" [attr.aria-selected]="activeTab==='json'">JSON</button>
+        <button type="button" class="tab-btn" [class.active]="activeTab==='json'" (click)="setTab('json')" role="tab" [attr.aria-selected]="activeTab==='json'">Paramètres</button>
       </nav>
 
       <ng-container *ngIf="activeTab==='general'">
@@ -106,42 +105,42 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                 <div class="ins-section-header">
                   <div class="card-title">
                     <span class="t">Mise en forme interne</span>
-                    <span class="s">Héritage & Overrides</span>
+                    <span class="s">Héritage & surcharges</span>
                   </div>
                 </div>
                 <div class="ins-grid cols-2">
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Disposition interne de la section (si défini)">
-                      <span>Layout</span>
+                      <span>Disposition</span>
                     </nz-form-label>
                     <nz-form-control>
                       <nz-select formControlName="sec_ui_layout" style="min-width:140px;">
-                        <nz-option nzValue="" nzLabel="Inherit"></nz-option>
+                        <nz-option nzValue="" nzLabel="Hériter"></nz-option>
                         <nz-option nzValue="horizontal" nzLabel="Horizontal"></nz-option>
                         <nz-option nzValue="vertical" nzLabel="Vertical"></nz-option>
-                        <nz-option nzValue="inline" nzLabel="Inline"></nz-option>
+                        <nz-option nzValue="inline" nzLabel="En ligne"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Alignement des libellés dans cette section">
-                      <span>Align label</span>
+                      <span>Alignement des libellés</span>
                     </nz-form-label>
                     <nz-form-control>
                       <nz-select formControlName="sec_ui_labelAlign" style="min-width:140px;">
-                        <nz-option nzValue="" nzLabel="Inherit"></nz-option>
-                        <nz-option nzValue="left" nzLabel="Left"></nz-option>
-                        <nz-option nzValue="right" nzLabel="Right"></nz-option>
+                        <nz-option nzValue="" nzLabel="Hériter"></nz-option>
+                        <nz-option nzValue="left" nzLabel="Gauche"></nz-option>
+                        <nz-option nzValue="right" nzLabel="Droite"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Placer les libellés au-dessus (override)">
-                      <span>Labels on top</span>
+                      <span>Libellés au-dessus</span>
                     </nz-form-label>
                     <nz-form-control>
                       <nz-select formControlName="sec_ui_labelsOnTop" style="min-width:140px;">
-                        <nz-option [nzValue]="null" nzLabel="Inherit"></nz-option>
+                        <nz-option [nzValue]="null" nzLabel="Hériter"></nz-option>
                         <nz-option [nzValue]="true" nzLabel="Oui"></nz-option>
                         <nz-option [nzValue]="false" nzLabel="Non"></nz-option>
                       </nz-select>
@@ -149,13 +148,13 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Colonnes pour le libellé (override)">
-                      <span>Label span</span>
+                      <span>Colonnes libellé</span>
                     </nz-form-label>
                     <nz-form-control><nz-input-number formControlName="sec_ui_labelColSpan" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Colonnes pour le champ (override)">
-                      <span>Control span</span>
+                      <span>Colonnes champ</span>
                     </nz-form-label>
                     <nz-form-control><nz-input-number style="width:100%" formControlName="sec_ui_controlColSpan" [nzMin]="1" [nzMax]="24"></nz-input-number></nz-form-control>
                   </nz-form-item>
@@ -163,60 +162,60 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                 <div class="ins-section-header">
                   <div class="card-title">
                     <span class="t">Titre & Description</span>
-                    <span class="s">Couleurs, tailles & marges</span>
+                    <span class="s">Couleurs, tailles & espacements</span>
                   </div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Couleur du titre de section">
-                      <span>Titre couleur</span>
+                      <span>Couleur du titre</span>
                     </nz-form-label>
                     <nz-form-control><input nz-input formControlName="sec_titleColor" placeholder="#000 or red"/></nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Taille de police du titre (px)">
-                      <span>Titre fontSize</span>
+                      <span>Taille du titre</span>
                     </nz-form-label>
                     <nz-form-control><nz-input-number formControlName="sec_titleFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Marge haute/basse du titre">
-                      <span>Titre MT/MB</span>
+                      <span>Marge du titre</span>
                     </nz-form-label>
                     <nz-form-control>
                       <div style="display:flex; gap:6px;">
-                        <nz-input-number formControlName="sec_titleMT" [nzMin]="0" placeholder="MT"></nz-input-number>
-                        <nz-input-number formControlName="sec_titleMB" [nzMin]="0" placeholder="MB"></nz-input-number>
+                        <nz-input-number formControlName="sec_titleMT" [nzMin]="0" [nzPlaceHolder]="'Haut'"></nz-input-number>
+                        <nz-input-number formControlName="sec_titleMB" [nzMin]="0" [nzPlaceHolder]="'Bas'"></nz-input-number>
                       </div>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Couleur de la description">
-                      <span>Desc couleur</span>
+                      <span>Couleur de la description</span>
                     </nz-form-label>
                     <nz-form-control><input nz-input formControlName="sec_descColor" placeholder="#666"/></nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Taille de police de la description (px)">
-                      <span>Desc fontSize</span>
+                      <span>Taille de la description</span>
                     </nz-form-label>
                     <nz-form-control><nz-input-number style="width:100%" formControlName="sec_descFontSize" [nzMin]="8"></nz-input-number></nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Marge haute/basse de la description">
-                      <span>Desc MT/MB</span>
+                      <span>Marge de la description</span>
                     </nz-form-label>
                     <nz-form-control>
                       <div style="display:flex; gap:6px;">
-                        <nz-input-number formControlName="sec_descMT" [nzMin]="0" placeholder="MT"></nz-input-number>
-                        <nz-input-number formControlName="sec_descMB" [nzMin]="0" placeholder="MB"></nz-input-number>
+                        <nz-input-number formControlName="sec_descMT" [nzMin]="0" [nzPlaceHolder]="'Haut'"></nz-input-number>
+                        <nz-input-number formControlName="sec_descMB" [nzMin]="0" [nzPlaceHolder]="'Bas'"></nz-input-number>
                       </div>
                     </nz-form-control>
                   </nz-form-item>
                 </div>
                 <nz-form-item>
                   <nz-form-label nzTooltipTitle="Espace entre colonnes (gutter)">
-                    <span>Grid gutter</span>
+                    <span>Gouttière de grille</span>
                   </nz-form-label>
                   <nz-form-control><nz-input-number style="width:100%" formControlName="gridGutter" [nzMin]="0"></nz-input-number></nz-form-control>
                 </nz-form-item>
@@ -281,18 +280,22 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
           <div class="ins-section-header">
             <div class="card-title">
               <span class="t">Conditions</span>
-              <span class="s">Visibilité de la section</span>
+              <span class="s">Affichage & validation</span>
             </div>
           </div>
-          <div class="editor-block">
-            <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité (JSON logique)">
-              <div class="title">visibleIf (JSON)</div>
-              <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
-                <i nz-icon nzType="build"></i>
-                <span style="margin-left:6px">Builder</span>
-              </button>
+          <div class="ins-grid span-2">
+            <div class="editor-block span-2">
+              <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de visibilité">
+                <div class="title">
+                  Condition de visibilite
+                  <span *ngIf="hasCondition('visibleIf')" class="cond-pill">Active</span>
+                </div>
+                <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
+                  <i nz-icon nzType="build"></i>
+                  <span style="margin-left:6px">Builder</span>
+                </button>
+              </div>
             </div>
-            <monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)" [height]="160"></monaco-json-editor>
           </div>
         </div>
       </ng-container>
@@ -325,6 +328,30 @@ export class InspectorSectionComponent {
 
   hasOpenSections(): boolean {
     return Object.values(this.sectionsOpen).some(Boolean);
+  }
+
+  hasCondition(prop: 'visibleIf'): boolean {
+    const v = this.group?.get(prop)?.value;
+    if (v == null) return false;
+    if (typeof v === 'string') {
+      const raw = v.trim();
+      if (!raw) return false;
+      try { return this.isMeaningfulCondition(JSON.parse(raw)); } catch { return false; }
+    }
+    if (typeof v === 'object') return this.isMeaningfulCondition(v);
+    return false;
+  }
+
+  private isMeaningfulCondition(rule: any): boolean {
+    if (!rule || typeof rule !== 'object') return false;
+    if (Array.isArray(rule.any)) return rule.any.some((r: any) => this.isMeaningfulCondition(r));
+    if (Array.isArray(rule.all)) return rule.all.some((r: any) => this.isMeaningfulCondition(r));
+    const op = Object.keys(rule)[0];
+    const args = (rule as any)[op];
+    if (!op || !Array.isArray(args) || args.length < 2) return false;
+    const left = args[0];
+    const field = left && typeof left === 'object' ? String(left.var || '') : '';
+    return field.trim().length > 0;
   }
 
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }

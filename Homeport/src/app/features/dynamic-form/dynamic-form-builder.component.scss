@@ -137,6 +137,18 @@
   color: #6b7280;
   line-height: 1;
 }
+.left-panel .quick-label--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 22px;
+}
+.left-panel .quick-label-sub {
+  margin-top: 2px;
+  font-size: 9px;
+  color: #94a3b8;
+  line-height: 1;
+}
 .left-tabs {
   display: flex;
   gap: 10px;

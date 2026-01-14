@@ -1289,15 +1289,43 @@ export class DynamicFormBuilderComponent implements OnChanges {
     return !!obj && 'type' in obj && (obj as any).type !== 'section';
   }
 
+  private findFieldContext(field: FieldConfig): { step?: StepConfig; section?: SectionConfig } | null {
+    let found: { step?: StepConfig; section?: SectionConfig } | null = null;
+    const visit = (fs?: any[], ctx?: { step?: StepConfig; section?: SectionConfig }): boolean => {
+      for (const f of (fs || [])) {
+        if (f === field) { found = ctx || {}; return true; }
+        if (f && (f.type === 'section' || f.type === 'section_array')) {
+          if (visit(f.fields, { step: ctx?.step, section: f as SectionConfig })) return true;
+        }
+      }
+      return false;
+    };
+    if (this.schema.steps?.length) {
+      for (const st of this.schema.steps) {
+        if (visit(st.fields, { step: st })) break;
+      }
+    } else {
+      visit(this.schema.fields, {});
+    }
+    return found;
+  }
+
   // ---------- Ajouts rapides (basés sur la sélection) ----------
   quickAdd(type: FieldType): void {
     const f = this.newField(type);
+    const fieldCtx = this.selected && this.isField(this.selected) ? this.findFieldContext(this.selected) : null;
     if (this.selected && this.isSection(this.selected)) {
       this.selected.fields = this.selected.fields || [];
       this.selected.fields.push(f);
     } else if (this.selected && this.isStep(this.selected)) {
       (this.selected as any).fields = (this.selected as any).fields || [];
       (this.selected as any).fields.push(f);
+    } else if (fieldCtx?.section) {
+      fieldCtx.section.fields = fieldCtx.section.fields || [];
+      fieldCtx.section.fields.push(f);
+    } else if (fieldCtx?.step) {
+      (fieldCtx.step as any).fields = (fieldCtx.step as any).fields || [];
+      (fieldCtx.step as any).fields.push(f);
     } else if (this.schema.steps?.length) {
       const step = this.schema.steps[this.schema.steps.length - 1];
       (step as any).fields = (step as any).fields || [];
@@ -1314,7 +1342,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   // ---------- Canvas actions ----------
   addStep(): void {
     this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
+    const step: StepConfig = { title: 'Étape', fields: [], style: 'stack' } as any;
     this.schema.steps!.push(step);
     this.selectedField = null;
     this.select(step);
@@ -1334,6 +1362,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
       const ctx = this.treeSvc.keyForObject(this.schema, this.selected);
       if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInside(); return; }
       if (!this.isStepsMode) { this.addSection(undefined); return; }
+    } else if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      if (fieldCtx?.section) {
+        const ctx = this.treeSvc.keyForObject(this.schema, fieldCtx.section);
+        if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInside(); return; }
+      }
+      if (fieldCtx?.step) { this.addSection(fieldCtx.step); return; }
+      if (!this.isStepsMode) { this.addSection(undefined); return; }
     } else if (!this.isStepsMode) {
       this.addSection();
     } else {
@@ -1352,6 +1388,17 @@ export class DynamicFormBuilderComponent implements OnChanges {
       if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInsideArray(); return; }
       // sinon, à la racine si flat
       if (!this.isStepsMode) { this.selectedField = null; this.ctxAddSectionRootArray(); return; }
+    } else if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      if (fieldCtx?.section) {
+        const ctx = this.treeSvc.keyForObject(this.schema, fieldCtx.section);
+        if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionInsideArray(); return; }
+      }
+      if (fieldCtx?.step) {
+        const ctx = this.treeSvc.keyForObject(this.schema, fieldCtx.step);
+        if (ctx) { this.dropdownKey = ctx; this.selectedField = null; this.ctxAddSectionArray(); return; }
+      }
+      if (!this.isStepsMode) { this.selectedField = null; this.ctxAddSectionRootArray(); return; }
     } else if (!this.isStepsMode) {
       this.selectedField = null;
       this.ctxAddSectionRootArray();
@@ -1363,6 +1410,11 @@ export class DynamicFormBuilderComponent implements OnChanges {
       this.addField(this.selected);
     } else if (this.selected && this.isStep(this.selected)) {
       this.addFieldToStep(this.selected);
+    } else if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      if (fieldCtx?.section) { this.addField(fieldCtx.section); return; }
+      if (fieldCtx?.step) { this.addFieldToStep(fieldCtx.step); return; }
+      if (!this.isStepsMode) { this.addField(); return; }
     } else if (!this.isStepsMode) {
       this.addField();
     } else {
@@ -1381,19 +1433,34 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // Flat mode: autorisé (ajoute à la racine)
     if (!this.isStepsMode) return true;
     // Steps mode: autorisé si un step ou une section est sélectionné
-    return !!(this.selected && (this.isStep(this.selected) || this.isSection(this.selected)));
+    if (this.selected && (this.isStep(this.selected) || this.isSection(this.selected))) return true;
+    if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      return !!(fieldCtx?.section || fieldCtx?.step);
+    }
+    return false;
   }
   canAddFieldBtn(): boolean {
     // Flat mode: autorisé
     if (!this.isStepsMode) return true;
     // Steps mode: autorisé si section ou step sélectionné
-    return !!(this.selected && (this.isSection(this.selected) || this.isStep(this.selected)));
+    if (this.selected && (this.isSection(this.selected) || this.isStep(this.selected))) return true;
+    if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      return !!(fieldCtx?.section || fieldCtx?.step);
+    }
+    return false;
   }
 
   // Palette rapide: activer uniquement si contexte valide
   get canQuickAddField(): boolean {
     if (!this.isStepsMode) return true; // à la racine en flat
-    return !!(this.selected && (this.isSection(this.selected) || this.isStep(this.selected)));
+    if (this.selected && (this.isSection(this.selected) || this.isStep(this.selected))) return true;
+    if (this.selected && this.isField(this.selected)) {
+      const fieldCtx = this.findFieldContext(this.selected);
+      return !!(fieldCtx?.section || fieldCtx?.step);
+    }
+    return false;
   }
 
   addSection(step?: StepConfig): void {

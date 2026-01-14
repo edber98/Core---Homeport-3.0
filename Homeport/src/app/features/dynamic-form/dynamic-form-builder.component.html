@@ -5,7 +5,7 @@
       <ng-template #paletteTitle>
         <div class="card-title">
           <span class="t">Palette & Contexte</span>
-          <span class="s">Navigation &amp; Contrôles</span>
+          <span class="s">Création &amp; organisation</span>
         </div>
       </ng-template>
       <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
@@ -21,7 +21,7 @@
           <button nz-button nzType="default" nzSize="small"
                   (click)="addStep()" aria-label="Ajouter une étape">
             <i class="fa-solid fa-list-ol"></i>
-            <span class="quick-label">Step</span>
+            <span class="quick-label">Étape</span>
           </button>
           <button nz-button nzType="default" nzSize="small"
                   (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section">
@@ -31,7 +31,7 @@
           <button nz-button nzType="default" nzSize="small"
                   (click)="addArraySectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section répétable">
             <i class="fa-solid fa-boxes-stacked"></i>
-            <span class="quick-label">Array</span>
+            <span class="quick-label quick-label--stack">Section<span class="quick-label-sub">(tableau)</span></span>
           </button>
           <button nz-button nzType="default" nzSize="small"
                   (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()" aria-label="Ajouter un champ">
@@ -265,7 +265,7 @@
     <ng-template #previewTitle>
       <div class="card-title">
         <span class="t">Aperçu éditable</span>
-        <span class="s">Navigation &amp; Contrôles</span>
+        <span class="s">Rendu du formulaire</span>
       </div>
       
     </ng-template>
@@ -457,7 +457,7 @@
   <ng-template #rightPanelContent>
     <ng-template #inspectorTitle>
       <div class="card-title">
-        <span class="t">Inspector</span>
+        <span class="t">Inspecteur</span>
         <span class="s">Propriétés &amp; Styles</span>
       </div>
     </ng-template>
@@ -467,7 +467,7 @@
       </ng-container>
       <ng-template #inspectorProps>
         <ng-container *ngIf="isStep(selected)">
-          <inspector-step [group]="inspector"></inspector-step>
+          <inspector-step [group]="inspector" (openCondition)="openConditionBuilder('visibleIf')"></inspector-step>
         </ng-container>
         <ng-container *ngIf="isSection(selected)">
           <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
