@@ -205,6 +205,9 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
   display: flex;
   flex-direction: column;
   gap: 0;
+  padding-bottom: 0;
+}
+.inspector-accordion.has-open {
   padding-bottom: 40vh;
 }
 .inspector-panel {

@@ -5,6 +5,7 @@
       <ng-template #paletteTitle>
         <div class="card-title">
           <span class="t">Palette & Contexte</span>
+          <span class="s">Navigation &amp; Contrôles</span>
         </div>
       </ng-template>
       <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
@@ -264,6 +265,7 @@
     <ng-template #previewTitle>
       <div class="card-title">
         <span class="t">Aperçu éditable</span>
+        <span class="s">Navigation &amp; Contrôles</span>
       </div>
       
     </ng-template>
@@ -455,7 +457,8 @@
   <ng-template #rightPanelContent>
     <ng-template #inspectorTitle>
       <div class="card-title">
-        <span class="t">{{ getInspectorTitle() }}</span>
+        <span class="t">Inspector</span>
+        <span class="s">Propriétés &amp; Styles</span>
       </div>
     </ng-template>
     <nz-card [nzTitle]="inspectorTitle" nzSize="small" class="card no-chrome" *ngIf="selected">

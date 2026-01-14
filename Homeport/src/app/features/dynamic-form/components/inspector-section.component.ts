@@ -23,7 +23,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       </nav>
 
       <ng-container *ngIf="activeTab==='general'">
-        <div class="inspector-accordion">
+        <div class="inspector-accordion" [class.has-open]="hasOpenSections()">
           <div class="inspector-panel__inner">
             <nz-form-item>
               <nz-form-label nzFor="sec_title" nzTooltipTitle="Titre affiché au-dessus de la section">
@@ -321,6 +321,10 @@ export class InspectorSectionComponent {
 
   toggleSection(key: keyof InspectorSectionComponent['sectionsOpen']) {
     this.sectionsOpen[key] = !this.sectionsOpen[key];
+  }
+
+  hasOpenSections(): boolean {
+    return Object.values(this.sectionsOpen).some(Boolean);
   }
 
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }

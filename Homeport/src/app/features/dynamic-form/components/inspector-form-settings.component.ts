@@ -61,6 +61,10 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
     this.sectionsOpen[key] = !this.sectionsOpen[key];
   }
 
+  hasOpenSections(): boolean {
+    return Object.values(this.sectionsOpen).some(Boolean);
+  }
+
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 
   private createSpacingGroup(prefix: string): FormGroup {

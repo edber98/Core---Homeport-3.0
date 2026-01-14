@@ -28,7 +28,7 @@ import { Subscription } from 'rxjs';
       </nav>
 
       <ng-container *ngIf="activeTab==='general'">
-        <div class="inspector-accordion">
+        <div class="inspector-accordion" [class.has-open]="hasOpenSections()">
           <div class="inspector-panel__inner">
             <div class="inline-2">
               <nz-form-item [class.span-2]="group.get('type')?.value==='textblock'">
@@ -445,6 +445,10 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
 
   toggleSection(key: keyof InspectorFieldComponent['sectionsOpen']) {
     this.sectionsOpen[key] = !this.sectionsOpen[key];
+  }
+
+  hasOpenSections(): boolean {
+    return Object.values(this.sectionsOpen).some(Boolean);
   }
 
   ngOnChanges(_c: SimpleChanges) {
