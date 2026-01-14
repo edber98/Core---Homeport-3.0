@@ -608,6 +608,17 @@
 :host ::ng-deep .right .ant-card .inspector-form .ins-section-header .card-title .t {
   color: #111;
 }
+:host ::ng-deep .ant-drawer-body .inspector-form .ins-section-header {
+  display: flex;
+  justify-content: flex-start;
+  padding: 6px 0 8px 6px;
+  margin: 8px 0;
+  border-bottom: 0;
+}
+:host ::ng-deep .ant-drawer-body .inspector-form .ins-section-header .card-title {
+  align-items: flex-start;
+  text-align: left;
+}
 :host ::ng-deep .right .ant-card .inspector-form .ins-mini-header { display: flex; justify-content: center; padding: 4px 0 6px; margin: 6px 0; border-bottom: 1px solid #eee; }
 :host ::ng-deep .right .ant-card .inspector-form .ins-mini-header .card-title .t { font-size: 13px; }
 :host ::ng-deep .right .ant-card .inspector-form .ins-mini-header .card-title .s { font-size: 11px; }

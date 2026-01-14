@@ -11,61 +11,47 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
   imports: [CommonModule, ReactiveFormsModule, NzFormModule, NzInputModule, MonacoJsonEditorComponent],
   template: `
     <form nz-form [formGroup]="group" class="inspector-form" nzLayout="vertical">
-      <div class="inspector-accordion">
-        <section class="inspector-panel" [class.open]="sectionsOpen.general">
-          <button type="button" class="inspector-panel__header" (click)="toggleSection('general')" [attr.aria-expanded]="sectionsOpen.general">
-            <span>Général</span>
-            <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
-          </button>
-          <div class="inspector-panel__content">
-            <div class="inspector-panel__inner">
-              <nz-form-item>
-                <nz-form-label nzFor="step_title" nzTooltipTitle="Titre affiché pour l'étape">
-                  <span>Titre de l’étape</span>
-                </nz-form-label>
-                <nz-form-control><input nz-input id="step_title" formControlName="title"/></nz-form-control>
-              </nz-form-item>
+      <nav class="inspector-tabs" role="tablist" aria-label="Onglets de l’inspecteur">
+        <button type="button" class="tab-btn" [class.active]="activeTab==='general'" (click)="setTab('general')" role="tab" [attr.aria-selected]="activeTab==='general'">Général</button>
+        <button type="button" class="tab-btn" [class.active]="activeTab==='logic'" (click)="setTab('logic')" role="tab" [attr.aria-selected]="activeTab==='logic'">Logique</button>
+        <button type="button" class="tab-btn" [class.active]="activeTab==='json'" (click)="setTab('json')" role="tab" [attr.aria-selected]="activeTab==='json'">JSON</button>
+      </nav>
+
+      <ng-container *ngIf="activeTab==='general'">
+        <div class="inspector-accordion">
+          <div class="inspector-panel__inner">
+            <nz-form-item>
+              <nz-form-label nzFor="step_title" nzTooltipTitle="Titre affiché pour l'étape">
+                <span>Titre de l’étape</span>
+              </nz-form-label>
+              <nz-form-control><input nz-input id="step_title" formControlName="title"/></nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="activeTab==='logic'">
+        <div class="inspector-tab logic-tab">
+          <div class="ins-section-header">
+            <div class="card-title">
+              <span class="t">Conditions</span>
+              <span class="s">Visibilité de l’étape</span>
             </div>
           </div>
-        </section>
+          <nz-form-item>
+            <nz-form-label nzTooltipTitle="Règle JSON pour l’affichage (visibleIf)">
+              <span>visibleIf (JSON)</span>
+            </nz-form-label>
+            <nz-form-control><monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)"></monaco-json-editor></nz-form-control>
+          </nz-form-item>
+        </div>
+      </ng-container>
 
-
-
-        <section class="inspector-panel" [class.open]="sectionsOpen.advanced">
-          <button type="button" class="inspector-panel__header" (click)="toggleSection('advanced')" [attr.aria-expanded]="sectionsOpen.advanced">
-            <span>Avancé</span>
-            <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
-          </button>
-          <div class="inspector-panel__content">
-            <div class="inspector-panel__inner">
-              <div class="ins-section-header">
-                <div class="card-title">
-                  <span class="t">Conditions</span>
-                  <span class="s">Visibilité de l’étape</span>
-                </div>
-              </div>
-              <nz-form-item>
-                <nz-form-label nzTooltipTitle="Règle JSON pour l’affichage (visibleIf)">
-                  <span>visibleIf (JSON)</span>
-                </nz-form-label>
-                <nz-form-control><monaco-json-editor [value]="$any(group.controls['visibleIf'].value)" (valueChange)="group.get('visibleIf')?.setValue($event)"></monaco-json-editor></nz-form-control>
-              </nz-form-item>
-            </div>
-          </div>
-        </section>
-
-        <section class="inspector-panel" [class.open]="sectionsOpen.params">
-          <button type="button" class="inspector-panel__header" (click)="toggleSection('params')" [attr.aria-expanded]="sectionsOpen.params">
-            <span>Paramètres</span>
-            <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
-          </button>
-          <div class="inspector-panel__content">
-            <div class="inspector-panel__inner">
-              <pre class="json">{{ group.value | json }}</pre>
-            </div>
-          </div>
-        </section>
-      </div>
+      <ng-container *ngIf="activeTab==='json'">
+        <div class="inspector-tab json-tab">
+          <pre class="json">{{ group.value | json }}</pre>
+        </div>
+      </ng-container>
     </form>
   `
   ,
@@ -74,13 +60,7 @@ import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 export class InspectorStepComponent {
   @Input({ required: true }) group!: FormGroup;
 
-  sectionsOpen = {
-    general: true,
-    advanced: false,
-    params: false,
-  };
+  activeTab: 'general'|'logic'|'json' = 'general';
 
-  toggleSection(key: keyof InspectorStepComponent['sectionsOpen']) {
-    this.sectionsOpen[key] = !this.sectionsOpen[key];
-  }
+  setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 }

@@ -33,13 +33,12 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   actionsSpacing!: FormGroup;
   buttonSpacing!: FormGroup;
   private subs: Subscription[] = [];
+  activeTab: 'general'|'logic'|'json' = 'general';
   sectionsOpen = {
-    general: true,
     ui: false,
     spacing: false,
     actions: false,
     summary: false,
-    params: false,
   };
 
   ngOnInit(): void {
@@ -61,6 +60,8 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   toggleSection(key: keyof InspectorFormSettingsComponent['sectionsOpen']) {
     this.sectionsOpen[key] = !this.sectionsOpen[key];
   }
+
+  setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 
   private createSpacingGroup(prefix: string): FormGroup {
     const g = new FormGroup({

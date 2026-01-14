@@ -8,8 +8,50 @@
 }
 .card-title .t { font-weight: 600; font-size: 14px; }
 .card-title .s { font-size: 12px; color: #64748b; }
-.ins-section-header { display:flex; justify-content:center; padding:6px 12px 8px; margin:8px 0; border-bottom:1px solid #E2E1E4; }
+.ins-section-header { display:flex; justify-content:flex-start; padding:6px 0 8px; margin:8px 0; border-bottom:0; }
 .ins-mini-header { display:flex; justify-content:center; padding:4px 12px 6px; margin:6px 0; border-bottom:1px solid #eee; }
+.inspector-tabs {
+  display: flex;
+  gap: 14px;
+  padding: 0 6px;
+  margin-bottom: 6px;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+}
+.inspector-tabs .tab-btn {
+  flex: 1 1 0;
+  background: transparent;
+  border: 0;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 2px 10px;
+  position: relative;
+  cursor: pointer;
+}
+.inspector-tabs .tab-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: #1677ff;
+  border-radius: 999px;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.inspector-tabs .tab-btn.active {
+  color: #1677ff;
+}
+.inspector-tabs .tab-btn.active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.inspector-tab { padding-top: 8px; }
+.logic-tab { padding: 0 8px; }
+.json-tab { padding: 0 8px; }
 .ins-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 1280px) { .ins-grid { grid-template-columns: 1fr; } }
 .ins-grid .ant-form-item { margin-bottom: 8px; }
