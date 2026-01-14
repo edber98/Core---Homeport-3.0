@@ -1291,20 +1291,23 @@ export class DynamicFormBuilderComponent implements OnChanges {
 
   // ---------- Ajouts rapides (basés sur la sélection) ----------
   quickAdd(type: FieldType): void {
+    const f = this.newField(type);
     if (this.selected && this.isSection(this.selected)) {
       this.selected.fields = this.selected.fields || [];
-      this.selected.fields.push(this.newField(type));
+      this.selected.fields.push(f);
     } else if (this.selected && this.isStep(this.selected)) {
       (this.selected as any).fields = (this.selected as any).fields || [];
-      (this.selected as any).fields.push(this.newField(type));
+      (this.selected as any).fields.push(f);
     } else if (this.schema.steps?.length) {
       const step = this.schema.steps[this.schema.steps.length - 1];
       (step as any).fields = (step as any).fields || [];
-      (step as any).fields.push(this.newField(type));
+      (step as any).fields.push(f);
     } else {
       this.ensureFlatMode();
-      this.schema.fields!.push(this.newField(type));
+      this.schema.fields!.push(f);
     }
+    this.selectedField = f;
+    this.select(f);
     this.refresh();
   }
 

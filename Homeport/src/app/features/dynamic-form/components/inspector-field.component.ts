@@ -100,7 +100,7 @@ import { Subscription } from 'rxjs';
 
           <section class="inspector-panel" [class.open]="sectionsOpen.ui">
             <button type="button" class="inspector-panel__header" (click)="toggleSection('ui')" [attr.aria-expanded]="sectionsOpen.ui">
-              <span>UI</span>
+              <span>Styles</span>
               <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
             </button>
             <div class="inspector-panel__content">
