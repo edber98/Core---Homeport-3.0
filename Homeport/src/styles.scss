@@ -199,6 +199,183 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
 .unsaved-leave-modal .ant-modal-confirm-title {
   font-weight: 700;
 }
+
+/* Inspector accordion: global so drawers/overlays inherit the behavior */
+.inspector-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 40vh;
+}
+.inspector-panel {
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  background: #fff;
+  overflow: hidden;
+}
+.inspector-panel:last-child { border-bottom: 0; }
+.inspector-panel__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 12px;
+  border: 0;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+  transition: background-color .15s ease, color .15s ease;
+}
+.inspector-panel__icon {
+  font-size: 13px;
+  color: #64748b;
+  transition: transform .2s ease, color .2s ease;
+}
+.inspector-panel.open .inspector-panel__icon {
+  transform: rotate(180deg);
+  color: #1677ff;
+}
+.inspector-panel__content {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows .18s ease;
+}
+.inspector-panel.open .inspector-panel__content { grid-template-rows: 1fr; }
+.inspector-panel__inner {
+  overflow: hidden;
+  padding: 0 12px;
+}
+.inspector-panel.open .inspector-panel__inner { padding: 10px 12px 12px; }
+
+/* Drawer fallback for the accordion animation */
+.ant-drawer-body .inspector-panel__content {
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  transition: none;
+}
+.ant-drawer-body .inspector-panel.open .inspector-panel__content {
+  max-height: 2000px;
+}
+
+/* Inspector form styling (match desktop look on mobile/drawers) */
+.inspector-form nz-form-item { margin-bottom: 10px; }
+.inspector-form .ant-form-item { padding: 4px 6px; border-radius: 6px; transition: background-color .12s ease; }
+.inspector-form .ant-form-item-label > label { color: #6b7280; font-weight: 500; }
+.inspector-form .ant-input,
+.inspector-form .ant-select-selector,
+.inspector-form .ant-input-number,
+.inspector-form .ant-picker,
+.inspector-form .ant-switch {
+  background: #f3f7ff;
+  border-color: #d9e4ff;
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+.inspector-form .ant-input:hover,
+.inspector-form .ant-select-selector:hover,
+.inspector-form .ant-input-number:hover,
+.inspector-form .ant-picker:hover {
+  border-color: #d1d5db;
+}
+.inspector-form .ant-input:focus,
+.inspector-form .ant-select-focused .ant-select-selector,
+.inspector-form .ant-input-number-focused,
+.inspector-form .ant-switch-checked {
+  box-shadow: 0 0 0 2px rgba(17,17,17,0.08);
+}
+.inspector-form .ant-switch.ant-switch-checked {
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+.inspector-form .ant-switch:not(.ant-switch-checked) {
+  background-color: #dbe8ff;
+  border-color: #9dbdff;
+}
+.inspector-form .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+.inspector-form .ant-checkbox:not(.ant-checkbox-checked) .ant-checkbox-inner {
+  border: 1px solid #9dbdff !important;
+  background-color: #e7f0ff;
+}
+.inspector-form .ins-section-header { display: flex; justify-content: flex-start; padding: 6px 0 8px 6px; margin: 8px 0; border-bottom: 0; }
+.inspector-form .ins-section-header .card-title { align-items: flex-start; text-align: left; }
+.inspector-form .ins-section-header .card-title .t { color: #111; }
+.inspector-form .ins-mini-header {
+  display: flex;
+  justify-content: flex-start !important;
+  padding: 4px 0 6px 6px !important;
+  margin: 6px 0 !important;
+  border-bottom: 0 !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+.inspector-form .ins-mini-header .card-title { align-items: flex-start; text-align: left; }
+.inspector-form .ins-mini-header .card-title .t { font-size: 13px; }
+.inspector-form .ins-mini-header .card-title .s { font-size: 11px; }
+.inspector-form .ant-divider { margin: 8px 0; }
+.inspector-form .group-title,
+.inspector-form h3.group-title,
+.inspector-form h4.group-title {
+  position: sticky; top: 0; z-index: 1;
+  background: #fff; padding: 6px 4px; margin: 6px 0; border-bottom: 1px solid #e5e7eb;
+}
+.inspector-form .toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.inspector-form .toggle-row .ant-form-item-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.inspector-form .toggle-row .ant-form-item-label {
+  flex: 1 1 auto;
+  padding: 0;
+  margin: 0;
+}
+.inspector-form .toggle-row .ant-form-item-control {
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 0;
+}
+.inspector-form .toggle-row .ant-form-item-control-input-content {
+  display: flex;
+  justify-content: flex-end;
+}
+.inspector-form .toggle-row .ant-form-item-label,
+.inspector-form .toggle-row .ant-form-item-control {
+  width: auto;
+  max-width: none;
+}
+.inspector-form .switch-left .ant-form-item-control-input-content {
+  justify-content: flex-start;
+}
+.inspector-form .json {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 10px;
+  max-height: 240px;
+  overflow: auto;
+  font-size: 12px;
+}
+.inspector-empty { color: #64748b; font-size: 12px; padding: 4px 0; }
+
+/* Keep 2-column layout for expression options inside the mobile drawer */
+.ant-drawer-body .inspector-form .ins-grid.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .unsaved-leave-modal .ant-modal-confirm-body-wrapper {
   padding-top: 6px;
 }
@@ -469,7 +646,7 @@ body {
 .btn-row { display: flex; gap: 8px; width: 100%; overflow: hidden; align-items: center; }
 .btn-row > .apple-btn { flex: 1 1 0; min-width: 0; }
 
-/* Drawer (responsive) — remove outer chrome on left-panel cards only, keep header separator */
+/* Drawer (responsive) — remove outer chrome on left-panel cards only */
 .ant-drawer .ant-drawer-body .card.ant-card {
   border: 0 !important;
   box-shadow: none !important;
@@ -477,7 +654,14 @@ body {
   background: transparent !important;
 }
 .ant-drawer .ant-drawer-body .card.ant-card > .ant-card-head {
-  border-bottom: 1px solid #E2E1E4 !important;
+  border-bottom: 0 !important;
+}
+.ant-drawer .ant-drawer-body .card.ant-card .card-title .t {
+  color: #6b7280 !important;
+  font-size: 16px;
+}
+.ant-drawer .ant-drawer-body .card.ant-card .card-title {
+  margin-top: 6px;
 }
 
 /* Lock body scroll while custom hp-drawer open */

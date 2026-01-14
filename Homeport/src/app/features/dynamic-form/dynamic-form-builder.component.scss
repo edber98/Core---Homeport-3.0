@@ -513,13 +513,6 @@
 :host ::ng-deep .inspector-form .ant-form-item { margin-bottom: 6px; }
 :host ::ng-deep .right .ant-card .inspector-form { max-width: none; margin: 0; }
 :host ::ng-deep .inspector-form .ant-form-item-label > label { color: #6b7280; font-weight: 500; }
-/* Accordion sections for inspector (shared across child components) */
-:host ::ng-deep .inspector-accordion {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding-bottom: 40vh;
-}
 :host ::ng-deep .right .card.no-chrome .ant-card-body {
   padding: 0;
 }
@@ -537,58 +530,6 @@
 :host ::ng-deep .left .left-panel-card .card-title .t {
   color: #6b7280;
   font-size: 16px;
-}
-:host ::ng-deep .inspector-panel {
-  border-left: 0;
-  border-right: 0;
-  border-top: 0;
-  border-bottom: 1px solid #e5e7eb;
-  border-radius: 0;
-  background: #fff;
-  overflow: hidden;
-}
-:host ::ng-deep .inspector-panel:last-child {
-  border-bottom: 0;
-}
-:host ::ng-deep .inspector-panel__header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 12px;
-  border: 0;
-  background: #fff;
-  cursor: pointer;
-  text-align: left;
-  font-weight: 600;
-  color: #0f172a;
-  transition: background-color .15s ease, color .15s ease;
-}
-:host ::ng-deep .inspector-panel__icon {
-  font-size: 13px;
-  color: #64748b;
-  transition: transform .2s ease, color .2s ease;
-}
-:host ::ng-deep .inspector-panel.open .inspector-panel__icon {
-  transform: rotate(180deg);
-  color: #1677ff;
-}
-:host ::ng-deep .inspector-panel__content {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  transition: grid-template-rows .18s ease;
-}
-:host ::ng-deep .inspector-panel.open .inspector-panel__content {
-  grid-template-rows: 1fr;
-}
-:host ::ng-deep .inspector-panel__inner {
-  overflow: hidden;
-  padding: 0 12px;
-}
-:host ::ng-deep .inspector-panel.open .inspector-panel__inner {
-  padding: 10px 12px 12px;
 }
 :host ::ng-deep .inspector-form .toggle-row {
   display: flex;
