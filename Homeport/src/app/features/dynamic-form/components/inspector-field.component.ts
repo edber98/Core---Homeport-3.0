@@ -76,13 +76,16 @@ import { Subscription } from 'rxjs';
                   <nz-form-control><textarea nz-input rows="2" id="fld_desc" formControlName="description"></textarea></nz-form-control>
                 </nz-form-item>
                 <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
-                  <nz-form-label nzTooltipTitle="Liste des options (JSON)"><span>Options (JSON)</span></nz-form-label>
-                  <nz-form-control>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <monaco-json-editor [value]="$any(group.controls['options'].value)" (valueChange)="group.get('options')?.setValue($event)" [height]="160" style="flex:1"></monaco-json-editor>
-                      <button type="button" nz-button nzSize="small" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Builder…</button>
-                    </div>
-                  </nz-form-control>
+                  <nz-form-label>
+                    <span class="inline-label-with-btn">
+                      <span>Options</span>
+                      <span nz-tooltip nzTooltipTitle="Configurer les options" class="label-tip">
+                        <i nz-icon nzType="question-circle"></i>
+                      </span>
+                      <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" (click)="openOptions.emit(); $event.preventDefault(); $event.stopPropagation()">Configurer</button>
+                    </span>
+                  </nz-form-label>
+                  <nz-form-control></nz-form-control>
                 </nz-form-item>
               </ng-container>
 
