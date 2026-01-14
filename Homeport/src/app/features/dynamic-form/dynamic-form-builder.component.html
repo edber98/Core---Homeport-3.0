@@ -8,13 +8,15 @@
         </div>
       </ng-template>
       <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
-        <div class="left-panel-title">Actions</div>
-        <div class="actions-grid">
-          <button nz-button nzType="default" nzSize="small"
+        <div class="actions-top">
+          <button nz-button nzType="default" nzSize="small" class="form-settings-btn"
                   (click)="select(schema)" aria-label="Paramètres du formulaire">
             <i class="fa-solid fa-sliders"></i>
-            <span class="quick-label">Form</span>
+            <span>Paramètres du formulaire</span>
           </button>
+        </div>
+        <div class="left-panel-title">Actions</div>
+        <div class="actions-grid">
           <button nz-button nzType="default" nzSize="small"
                   (click)="addStep()" aria-label="Ajouter une étape">
             <i class="fa-solid fa-list-ol"></i>
@@ -170,24 +172,25 @@
               </nz-collapse-panel>
               <nz-collapse-panel nzHeader="Formulaire entier" [nzActive]="true">
                 <ng-container *ngIf="formScenarios?.length; else noItems3">
-                  <div style="display:flex; flex-direction:column; gap:6px;">
-                    <div *ngFor="let sc of formScenarios" style="display:flex; align-items:center; gap:8px;">
-                      <span style="font-weight:600;">{{ sc.label }}</span>
-                      <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-                      <span style="flex:1"></span>
-                      <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyFormScenario(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                  <div class="scenario-list">
+                    <div *ngFor="let sc of formScenarios" class="scenario-item">
+                      <div class="scenario-item__head">
+                        <span class="scenario-item__title">{{ sc.label }}</span>
+                        <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyFormScenario(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                      </div>
+                      <div class="scenario-item__desc">{{ sc.description }}</div>
                     </div>
                   </div>
                 </ng-container>
                 <ng-template #noItems3><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
               </nz-collapse-panel>
               <nz-collapse-panel nzHeader="Conditions & Simulation" [nzActive]="true">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                  <label style="display:flex; align-items:center; gap:6px;">
+                <div class="scenario-sim-toggle">
+                  <label class="scenario-sim-toggle__row">
                     <span>Activer la simulation</span>
                     <nz-switch [(ngModel)]="previewUseSim" [ngModelOptions]="{standalone:true}"></nz-switch>
                   </label>
-                  <button nz-button nzSize="small" (click)="resetSimulation()">Réinitialiser</button>
+                  <button nz-button nzSize="small" class="scenario-sim-toggle__reset" (click)="resetSimulation()">Réinitialiser</button>
                 </div>
               </nz-collapse-panel>
               <nz-collapse-panel nzHeader="Contrôles" [nzActive]="true">
