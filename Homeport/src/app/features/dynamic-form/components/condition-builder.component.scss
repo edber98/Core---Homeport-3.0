@@ -78,6 +78,11 @@
 .qb-rule nz-select[ng-reflect-nz-mode], .qb-rule nz-select { min-width: 140px; }
 .qb-rule .op { width: 80px; }
 .qb-rule .val { min-width: 140px; }
+:host ::ng-deep .condition-builder-modal .qb-rule .ant-input,
+:host ::ng-deep .condition-builder-modal .qb-rule .ant-select-selector {
+  background: #f3f7ff;
+  border-color: #d9e4ff;
+}
 .qb-group-head { display: inline-flex; gap: 8px; align-items: center; width: 100%; justify-content: space-between; }
 .qb-group .qb-logic { margin-bottom: 4px; }
 .qb-remove {

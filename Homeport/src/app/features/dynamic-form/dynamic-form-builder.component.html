@@ -505,7 +505,7 @@
   </ng-container>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="1120" [nzWrapClassName]="'condition-builder-modal'" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
+<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="1120" [nzWrapClassName]="'condition-builder-modal'" [nzOkType]="'primary'" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
   <ng-container *nzModalContent>
     <div class="condition-modal">
       <div class="condition-modal__builder">
@@ -516,6 +516,8 @@
                           (changeCondKind)="changeCondKind($event.index, $event.kind)"
                           (addSubRule)="addSubRule($event)"
                           (addSubGroup)="addSubGroup($event)"
+                          (addNestedRule)="addNestedRule($event.index, $event.subIndex)"
+                          (addNestedGroup)="addNestedGroup($event.index, $event.subIndex)"
                           (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
       </div>
       <aside class="condition-modal__preview" aria-label="JSON preview">

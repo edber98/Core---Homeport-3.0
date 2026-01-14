@@ -711,6 +711,23 @@
   display: flex;
   flex-direction: column;
 }
+::ng-deep .ant-modal-wrap.condition-builder-modal .ant-modal-footer .ant-btn-primary,
+::ng-deep .ant-modal-wrap.condition-builder-modal .ant-modal-footer .ant-btn-primary:not(:disabled):not(.ant-btn-loading) {
+  background: #1677ff !important;
+  border-color: #1677ff !important;
+  color: #fff !important;
+}
+::ng-deep .ant-modal-wrap.condition-builder-modal .ant-modal-footer .ant-btn-primary:hover:not(:disabled),
+::ng-deep .ant-modal-wrap.condition-builder-modal .ant-modal-footer .ant-btn-primary:focus-visible:not(:disabled) {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+}
+:host ::ng-deep .condition-builder-modal .qb-rule .ant-input,
+:host ::ng-deep .condition-builder-modal .qb-rule .ant-input-affix-wrapper,
+:host ::ng-deep .condition-builder-modal .qb-rule .ant-select-selector {
+  background: #f3f7ff;
+  border-color: #d9e4ff;
+}
 .condition-modal {
   display: flex;
   gap: 12px;

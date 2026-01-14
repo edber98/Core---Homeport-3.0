@@ -53,6 +53,14 @@ export class ConditionFormService {
   addSubRuleAt(form: FormGroup, i: number) { this.addSubRule(this.rootItems(form), i); }
   addSubGroupAt(form: FormGroup, i: number) { this.addSubGroup(this.rootItems(form), i); }
   removeSubAtRoot(form: FormGroup, i: number, j: number) { this.removeSubAt(this.rootItems(form), i, j); }
+  addSubRuleAtNested(form: FormGroup, i: number, j: number) {
+    const arr = this.subItemsAtNested(form, i, j);
+    if (arr) arr.push(this.newRow('rule'));
+  }
+  addSubGroupAtNested(form: FormGroup, i: number, j: number) {
+    const arr = this.subItemsAtNested(form, i, j);
+    if (arr) arr.push(this.newRow('group'));
+  }
 
   buildNodeFromForm(grp: FormGroup): any {
     const kind = grp.get('kind')?.value;
@@ -93,5 +101,16 @@ export class ConditionFormService {
   buildJsonString(conditionForm: FormGroup): string {
     const obj = this.buildConditionObject(conditionForm);
     return JSON.stringify(obj);
+  }
+
+  private subItemsAtNested(form: FormGroup, i: number, j: number): FormArray | null {
+    try {
+      const root = this.rootItems(form).at(i) as FormGroup;
+      const arr = root.get('items') as FormArray | null;
+      const nested = arr?.at(j) as FormGroup | undefined;
+      return (nested?.get('items') as FormArray) || null;
+    } catch {
+      return null;
+    }
   }
 }

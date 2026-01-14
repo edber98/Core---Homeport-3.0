@@ -26,6 +26,8 @@ export class ConditionBuilderComponent {
   @Output() addSubRule = new EventEmitter<number>();
   @Output() addSubGroup = new EventEmitter<number>();
   @Output() removeSubAt = new EventEmitter<{ index: number; subIndex: number }>();
+  @Output() addNestedRule = new EventEmitter<{ index: number; subIndex: number }>();
+  @Output() addNestedGroup = new EventEmitter<{ index: number; subIndex: number }>();
 
   get items(): FormArray { return this.group.get('items') as FormArray; }
   subItemsAt(i: number): FormArray { return (this.items.at(i).get('items') as FormArray); }

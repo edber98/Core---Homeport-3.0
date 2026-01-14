@@ -1077,6 +1077,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
   addSubRule(i: number) { this.condSvc.addSubRuleAt(this.conditionForm, i); }
   addSubGroup(i: number) { this.condSvc.addSubGroupAt(this.conditionForm, i); }
   removeSubAt(i: number, j: number) { this.condSvc.removeSubAtRoot(this.conditionForm, i, j); }
+  addNestedRule(i: number, j: number) { this.condSvc.addSubRuleAtNested(this.conditionForm, i, j); }
+  addNestedGroup(i: number, j: number) { this.condSvc.addSubGroupAtNested(this.conditionForm, i, j); }
 
   // ---------- Sélection / patch inspector ----------
   select(obj: StepConfig | SectionConfig | FieldConfig | FormSchema): void {
