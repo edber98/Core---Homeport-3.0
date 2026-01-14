@@ -632,10 +632,10 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
           const chunk = ev.data?.chunk; if (chunk?.content) send({ type: 'message', role: 'assistant', text: chunk.content });
         }
            if (ev.event === 'on_chat_model_start') {
-          console.log("end")
+          console.log("start")
         }
           if (ev.event === 'on_chat_model_end') {
-          console.log("end")
+          console.log(JSON.stringify(ev))
         }
         if (ev.event === 'on_chat_model_stream') {
           console.log("stream")
