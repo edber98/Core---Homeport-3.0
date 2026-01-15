@@ -50,6 +50,15 @@
 .inspector-tab { padding-top: 8px; }
 .logic-tab { padding: 0 8px; }
 .json-tab { padding: 0 8px; }
+.inline-checks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 0 6px;
+}
+.inline-checks label[nz-checkbox][disabled] {
+  opacity: 0.45;
+}
 
 /* Section headers inside this inspector panel, mimic nz-card small header rhythm */
 .ins-section-header {

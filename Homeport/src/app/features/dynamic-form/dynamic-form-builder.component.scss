@@ -52,6 +52,15 @@
   margin: 0 0 8px;
   border-bottom: 1px solid #E2E1E4;
 }
+.left-panel .sub-header.left-tab-title {
+  padding: 0 0 8px;
+  margin: 0 0 8px;
+  border-bottom: 0;
+}
+:host ::ng-deep .left-panel .left-tab-card.no-title-pad .ant-card-head-title,
+:host ::ng-deep .left-panel .left-tab-card.no-title-pad.ant-card-small > .ant-card-head > .ant-card-head-wrapper > .ant-card-head-title {
+  padding: 0;
+}
 .left-panel .actions-grid,
 .left-panel .actions-top {
   display: grid;

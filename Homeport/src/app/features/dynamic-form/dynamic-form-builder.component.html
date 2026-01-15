@@ -138,12 +138,14 @@
 
         <ng-container *ngIf="leftTab === 'scenarios'">
           <ng-template #scenariosTitle>
-            <div class="card-title">
-              <span class="t">Scénarios de test</span>
-              <span class="s">Préremplissage & Simulation</span>
+            <div class="sub-header left-tab-title">
+              <div class="card-title">
+                <span class="t">Scénarios de test</span>
+                <span class="s">Préremplissage & Simulation</span>
+              </div>
             </div>
           </ng-template>
-          <nz-card [nzTitle]="scenariosTitle" nzSize="small" class="card md left-tab-card">
+          <nz-card [nzTitle]="scenariosTitle" nzSize="small" class="card md left-tab-card no-title-pad">
             <nz-collapse nzGhost>
               <nz-collapse-panel nzHeader="Hypothèses de test" [nzActive]="true">
                 <ng-container *ngIf="scenarios?.length; else noItems1">
@@ -214,12 +216,14 @@
 
         <ng-container *ngIf="leftTab === 'context'">
           <ng-template #ctxJsonTitle>
-            <div class="card-title">
-              <span class="t">Contexte (ctx)</span>
-              <span class="s">Expressions json/$json, env/$env…</span>
+            <div class="sub-header left-tab-title">
+              <div class="card-title">
+                <span class="t">Contexte (ctx)</span>
+                <span class="s">Expressions json/$json, env/$env…</span>
+              </div>
             </div>
           </ng-template>
-          <nz-card [nzTitle]="ctxJsonTitle" nzSize="small" class="card mt left-tab-card">
+          <nz-card [nzTitle]="ctxJsonTitle" nzSize="small" class="card mt left-tab-card no-title-pad">
             <monaco-json-editor [value]="ctxJson" (valueChange)="onCtxChange($event)" [height]="180"></monaco-json-editor>
             <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
           </nz-card>

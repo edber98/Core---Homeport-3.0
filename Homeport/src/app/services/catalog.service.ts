@@ -466,6 +466,17 @@ export class CatalogService {
     return of(true).pipe(delay(CatalogService.LATENCY));
   }
 
+  deleteForm(id: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.formsApi.delete(id).pipe(map(() => true));
+    }
+    const list = this.load<FormSummary[]>(this.FORM_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.FORM_LIST_KEY, next);
+    try { localStorage.removeItem(this.FORM_DOC_KEY + id); } catch {}
+    return of(true).pipe(delay(CatalogService.LATENCY));
+  }
+
   // ===== Admin / Settings
   resetAll(): Observable<boolean> {
     try {

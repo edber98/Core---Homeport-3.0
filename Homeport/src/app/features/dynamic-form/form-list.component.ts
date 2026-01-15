@@ -8,16 +8,18 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { UiMessageService } from '../../services/ui-message.service';
 
 type FormItem = { id: string; name: string; description?: string };
 
 @Component({
   selector: 'form-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzPopconfirmModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -59,6 +61,17 @@ type FormItem = { id: string; name: string; description?: string };
             <button class="icon-btn" (click)="openViewer(it)" title="Viewer">
               <i class="fa-regular fa-eye"></i>
             </button>
+            <button class="icon-btn"
+                    nz-popconfirm
+                    [nzPopconfirmTitle]="'Supprimer ' + it.name + ' ?'"
+                    nzOkText="Supprimer"
+                    nzCancelText="Annuler"
+                    nzPopconfirmPlacement="topLeft"
+                    (nzOnConfirm)="removeForm(it)"
+                    (click)="$event.stopPropagation()"
+                    title="Supprimer">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -66,7 +79,7 @@ type FormItem = { id: string; name: string; description?: string };
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
-        <form nz-form nzLayout="vertical">
+        <form nz-form nzLayout="vertical" (ngSubmit)="createForm()">
           <nz-form-item>
             <nz-form-label>Titre</nz-form-label>
             <nz-form-control>
@@ -80,8 +93,8 @@ type FormItem = { id: string; name: string; description?: string };
             </nz-form-control>
           </nz-form-item>
           <div class="modal-actions">
-            <button nz-button (click)="closeCreate()">Annuler</button>
-            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createForm()">Créer</button>
+            <button nz-button type="button" (click)="closeCreate()">Annuler</button>
+            <button nz-button type="submit" nzType="primary" [disabled]="!canCreate() || creating">Créer</button>
           </div>
           <div class="error" *ngIf="createError">{{ createError }}</div>
         </form>
@@ -152,7 +165,7 @@ export class FormListComponent implements OnInit, OnDestroy {
   draft: { name: string; description?: string } = { name: '', description: '' };
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) {}
 
   private autoOpened = false;
   ngOnInit() {
@@ -207,6 +220,12 @@ export class FormListComponent implements OnInit, OnDestroy {
 
   openBuilder(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id } }); }
   openViewer(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id, preview: '1' } }); }
+  removeForm(item: FormSummary) {
+    this.catalog.deleteForm(item.id).subscribe({
+      next: () => { this.ui.success('Formulaire supprimé'); this.load(); },
+      error: () => { this.ui.error('Échec de la suppression'); }
+    });
+  }
   openCreate() { this.createVisible = true; this.createError = null; this.draft = { name: '', description: '' }; }
   closeCreate() { if (!this.creating) this.createVisible = false; }
   canCreate() { return !!(this.draft.name && this.draft.name.trim().length >= 2); }

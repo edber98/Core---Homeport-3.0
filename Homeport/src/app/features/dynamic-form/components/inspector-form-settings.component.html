@@ -16,20 +16,10 @@
             <input nz-input id="form_title" formControlName="title" />
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-          <nz-form-control>
-            <label nz-checkbox formControlName="displayTitle">
-              Afficher le titre dans le formulaire
-            </label>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item *ngIf="group.get('displayTitle')?.value">
-          <nz-form-control>
-            <label nz-checkbox formControlName="centerTitle">
-              Centrer le titre
-            </label>
-          </nz-form-control>
-        </nz-form-item>
+        <div class="inline-checks">
+          <label nz-checkbox formControlName="displayTitle">Afficher le titre</label>
+          <label nz-checkbox formControlName="centerTitle" [nzDisabled]="!group.get('displayTitle')?.value">Centrer</label>
+        </div>
 
         <nz-form-item>
           <nz-form-label nzFor="form_description" nzTooltipTitle="Description du formulaire (métadonnée)">
@@ -39,20 +29,10 @@
             <input nz-input id="form_description" formControlName="form_description" />
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-          <nz-form-control>
-            <label nz-checkbox formControlName="displayDescription">
-              Afficher la description dans le formulaire
-            </label>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item *ngIf="group.get('displayDescription')?.value">
-          <nz-form-control>
-            <label nz-checkbox formControlName="centerDescription">
-              Centrer la description
-            </label>
-          </nz-form-control>
-        </nz-form-item>
+        <div class="inline-checks">
+          <label nz-checkbox formControlName="displayDescription">Afficher la description</label>
+          <label nz-checkbox formControlName="centerDescription" [nzDisabled]="!group.get('displayDescription')?.value">Centrer</label>
+        </div>
       </div>
 
       <section class="inspector-panel" [class.open]="sectionsOpen.ui">
