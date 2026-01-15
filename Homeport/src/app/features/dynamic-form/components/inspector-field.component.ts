@@ -216,6 +216,11 @@ import { Subscription } from 'rxjs';
                   </div>
                 </ng-container>
 
+                <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
+                  <div class="ins-section-header"><div class="card-title"><span class="t">Espacement</span><span class="s">Marges & padding</span></div></div>
+                  <app-spacing-editor [group]="group"></app-spacing-editor>
+                </ng-container>
+
                 <div class="ins-section-header"><div class="card-title"><span class="t">Colonnes</span><span class="s">Tailles responsives</span></div></div>
                 <div class="ins-grid cols-5">
                   <nz-form-item>
@@ -242,24 +247,6 @@ import { Subscription } from 'rxjs';
               </div>
             </div>
           </section>
-
-          <section class="inspector-panel" [class.open]="sectionsOpen.spacing">
-            <button type="button" class="inspector-panel__header" (click)="toggleSection('spacing')" [attr.aria-expanded]="sectionsOpen.spacing">
-              <span>Espacement</span>
-              <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
-            </button>
-            <div class="inspector-panel__content">
-              <div class="inspector-panel__inner">
-                <ng-container *ngIf="group.get('type')?.value !== 'textblock'; else noFieldSpacing">
-                  <app-spacing-editor [group]="group"></app-spacing-editor>
-                </ng-container>
-                <ng-template #noFieldSpacing>
-                  <div class="inspector-empty">Aucun réglage d’espacement pour ce type.</div>
-                </ng-template>
-              </div>
-            </div>
-          </section>
-
 
           <section class="inspector-panel" [class.open]="sectionsOpen.advanced">
             <button type="button" class="inspector-panel__header" (click)="toggleSection('advanced')" [attr.aria-expanded]="sectionsOpen.advanced">
@@ -423,7 +410,6 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   activeTab: 'general'|'logic'|'json' = 'general';
   sectionsOpen = {
     ui: false,
-    spacing: false,
     advanced: false,
   };
 

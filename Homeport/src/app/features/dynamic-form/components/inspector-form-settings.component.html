@@ -95,17 +95,7 @@
                 <nz-input-number id="ui_widthPx" formControlName="ui_widthPx" [nzMin]="0" style="width:100%"></nz-input-number>
               </nz-form-control>
             </nz-form-item>
-          </div>
-        </div>
-      </section>
-
-      <section class="inspector-panel" [class.open]="sectionsOpen.spacing">
-        <button type="button" class="inspector-panel__header" (click)="toggleSection('spacing')" [attr.aria-expanded]="sectionsOpen.spacing">
-          <span>Espacement</span>
-          <i class="fa-solid fa-chevron-down inspector-panel__icon"></i>
-        </button>
-        <div class="inspector-panel__content">
-          <div class="inspector-panel__inner">
+            <div class="ins-section-header"><div class="card-title"><span class="t">Espacement</span><span class="s">Marges & padding</span></div></div>
             <app-spacing-editor [group]="formSpacing"></app-spacing-editor>
           </div>
         </div>

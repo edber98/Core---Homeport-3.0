@@ -36,7 +36,6 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   activeTab: 'general'|'logic'|'json' = 'general';
   sectionsOpen = {
     ui: false,
-    spacing: false,
     actions: false,
     summary: false,
   };
