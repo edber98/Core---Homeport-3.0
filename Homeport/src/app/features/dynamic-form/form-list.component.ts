@@ -10,6 +10,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 type FormItem = { id: string; name: string; description?: string };
 
@@ -176,21 +177,27 @@ export class FormListComponent implements OnInit, OnDestroy {
 
   load() {
     this.loading = true; this.error = null;
-    this.catalog.listForms().subscribe({
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.loading = false; return; }
+    this.catalog.listForms(wsId).subscribe({
       next: items => {
         this.zone.run(() => {
           const list = items || [];
-          try {
-            const counts: any = {};
-            (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
-            console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
-          } catch {}
-          const filtered = list.filter(f => {
-            const ws = this.acl.ensureResourceWorkspace('form', f.id);
-            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-          });
-          try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
-          this.forms = filtered;
+          if (!environment.useBackend) {
+            try {
+              const counts: any = {};
+              (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
+              console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
+            } catch {}
+            const filtered = list.filter(f => {
+              const ws = this.acl.ensureResourceWorkspace('form', f.id);
+              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+            });
+            try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
+            this.forms = filtered;
+          } else {
+            this.forms = list;
+          }
         });
       },
       error: () => { this.zone.run(() => { this.error = 'Impossible de charger les formulaires.'; try { console.debug('[FormList] error loading'); } catch {} }); },
@@ -211,17 +218,24 @@ export class FormListComponent implements OnInit, OnDestroy {
   createForm() {
     if (!this.canCreate()) return;
     this.creating = true; this.createError = null;
-    const id = this.makeIdFromName(this.draft.name);
     const title = (this.draft.name || '').trim();
     const uiDescription = (this.draft.description || '').trim();
-    const doc = { id, name: title, description: uiDescription, schema: { title, description: uiDescription || undefined, fields: [] } };
-    this.catalog.saveForm(doc).subscribe({
-      next: () => {
+    const schema = { title, description: uiDescription || undefined, fields: [] };
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.creating = false; this.createError = 'Workspace introuvable.'; return; }
+    const localDoc = { id: this.makeIdFromName(this.draft.name), name: title, description: uiDescription, schema };
+    const create$ = environment.useBackend
+      ? this.catalog.createForm(wsId, title, uiDescription, schema)
+      : this.catalog.saveForm(localDoc);
+    create$.subscribe({
+      next: (created: any) => {
         this.zone.run(() => {
           // Attach to currently selected workspace
           const ws = this.acl.currentWorkspaceId();
-          this.acl.setResourceWorkspace('form', id, ws);
-          this.creating = false; this.createVisible = false; this.load(); this.openBuilder({ id, name: doc.name, description: doc.description });
+          const createdDoc = environment.useBackend ? (created as FormSummary) : (localDoc as FormSummary);
+          if (!environment.useBackend) this.acl.setResourceWorkspace('form', createdDoc.id, ws);
+          this.creating = false; this.createVisible = false; this.load();
+          this.openBuilder({ id: createdDoc.id, name: createdDoc.name, description: createdDoc.description });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
       },

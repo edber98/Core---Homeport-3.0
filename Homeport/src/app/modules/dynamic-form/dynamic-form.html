@@ -7,6 +7,10 @@
   style="padding: 2px;"
   [ngStyle]="containerStyle"
   (focusout)="onFormFocusOut($event)">
+  <div class="df-header" *ngIf="showTitle || showDescription">
+    <h2 class="df-title" *ngIf="showTitle">{{ schema.title }}</h2>
+    <p class="df-desc" *ngIf="showDescription">{{ schema.description }}</p>
+  </div>
 
   <!-- ===== Mode STEPS si présent ===== -->
   <ng-container *ngIf="visibleSteps.length; else rootMode">

@@ -355,6 +355,8 @@ export class DynamicForm implements OnInit, OnChanges {
   // ===== Résumé (getters)
   get summaryEnabled(): boolean { return !!this.schema.summary?.enabled; }
   get summaryTitle(): string { return this.schema.summary?.title || 'Résumé'; }
+  get showTitle(): boolean { return (this.schema?.displayTitle ?? true) && !!this.schema?.title; }
+  get showDescription(): boolean { return (this.schema?.displayDescription ?? true) && !!this.schema?.description; }
   get realStepsCount(): number { return this.visibleSteps.length; }
   get summaryIndex(): number { return this.realStepsCount + (this.summaryEnabled ? 1 : 0) - 1; }
   get summaryModel() {

@@ -6,6 +6,7 @@ import { ProvidersBackendService } from './providers-backend.service';
 import { NodeTemplatesBackendService } from './node-templates-backend.service';
 import { CredentialsBackendService } from './credentials-backend.service';
 import { FlowsBackendService } from './flows-backend.service';
+import { FormsBackendService } from './forms-backend.service';
 
 export type FlowStatus = 'draft' | 'test' | 'production';
 export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean; invalid?: boolean; validationErrors?: any[] };
@@ -84,6 +85,7 @@ export class CatalogService {
     private templatesApi: NodeTemplatesBackendService,
     private credsApi: CredentialsBackendService,
     private flowsApi: FlowsBackendService,
+    private formsApi: FormsBackendService,
   ) { if (!environment.useBackend) this.ensureSeed(); }
 
   // ===== Public API (Flows)
@@ -162,12 +164,36 @@ export class CatalogService {
   }
 
   // ===== Public API (Forms)
-  listForms(): Observable<FormSummary[]> { return of(this.load<FormSummary[]>(this.FORM_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  listForms(wsId?: string): Observable<FormSummary[]> {
+    if (environment.useBackend) {
+      const workspaceId = wsId || '';
+      if (!workspaceId) return of([]);
+      return this.formsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
+        id: f.id,
+        name: f.name,
+        description: (f as any).description || '',
+      } as FormSummary))));
+    }
+    return of(this.load<FormSummary[]>(this.FORM_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+  }
   getForm(id: string): Observable<FormDoc> {
+    if (environment.useBackend) {
+      return this.formsApi.get(id).pipe(map(f => ({
+        id: f.id,
+        name: f.name,
+        description: (f as any).description || '',
+        schema: (f as any).schema || {},
+      } as FormDoc)));
+    }
     const doc = this.load<FormDoc | null>(this.FORM_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Form not found'));
   }
   saveForm(doc: FormDoc): Observable<FormDoc> {
+    if (environment.useBackend) {
+      if (!doc?.id) return throwError(() => new Error('Missing id'));
+      const payload = { name: doc.name, description: doc.description, schema: doc.schema || {} } as any;
+      return this.formsApi.update(doc.id, payload).pipe(map(() => doc));
+    }
     if (!doc?.id) return throwError(() => new Error('Missing id'));
     this.save(this.FORM_DOC_KEY + doc.id, doc);
     const list = this.load<FormSummary[]>(this.FORM_LIST_KEY, []);
@@ -176,6 +202,27 @@ export class CatalogService {
     if (idx >= 0) list[idx] = summary; else list.push(summary);
     this.save(this.FORM_LIST_KEY, list);
     return of(doc).pipe(delay(CatalogService.LATENCY));
+  }
+  createForm(wsId: string, name: string, description: string = '', schema: any = {}): Observable<FormDoc> {
+    if (!environment.useBackend) {
+      const id = (name || 'form') + '-' + Date.now().toString(36);
+      const doc: FormDoc = { id, name, description, schema };
+      return this.saveForm(doc);
+    }
+    const payload = { name, description, schema } as any;
+    return this.formsApi.create(wsId, payload).pipe(map((f: any) => ({
+      id: String((f && (f.id || f._id)) || ''),
+      name: f?.name || name,
+      description: (f as any)?.description || description || '',
+      schema: (f as any)?.schema || schema,
+    } as FormDoc)));
+  }
+  transferForm(formId: string, destWorkspaceId: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.formsApi.update(formId, { workspaceId: destWorkspaceId }).pipe(map(() => true));
+    }
+    try { (window as any).acl?.setResourceWorkspace?.('form', formId, destWorkspaceId); } catch {}
+    return of(true);
   }
 
   // ===== Public API (Node Templates)

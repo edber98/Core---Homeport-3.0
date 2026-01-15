@@ -16,6 +16,7 @@ import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { NodeAssistantChatComponent } from '../components/node-assistant-chat.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'flow-advanced-center-panel',
@@ -542,17 +543,23 @@ export class FlowAdvancedCenterPanelComponent {
   loadForms() {
     if (this.formsLoading) return;
     this.formsLoading = true;
-    this.catalog.listForms().subscribe({
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.formsLoading = false; this.forms = []; return; }
+    this.catalog.listForms(wsId).subscribe({
       next: (list) => {
         // Align with /forms page: only show forms accessible in current workspace
         const all = Array.isArray(list) ? list : [];
-        try {
-          const filtered = all.filter(f => {
-            const ws = this.acl.ensureResourceWorkspace('form', f.id);
-            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-          });
-          this.forms = filtered;
-        } catch {
+        if (!environment.useBackend) {
+          try {
+            const filtered = all.filter(f => {
+              const ws = this.acl.ensureResourceWorkspace('form', f.id);
+              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+            });
+            this.forms = filtered;
+          } catch {
+            this.forms = all;
+          }
+        } else {
           this.forms = all;
         }
         if (this.selectedFormId && !this.forms.some(f => f.id === this.selectedFormId)) {

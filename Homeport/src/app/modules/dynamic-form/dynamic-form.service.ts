@@ -143,6 +143,9 @@ export interface SummaryConfig {
 
 export interface FormSchema {
     title?: string;
+    description?: string;
+    displayTitle?: boolean;
+    displayDescription?: boolean;
     ui?: FormUI;
     steps?: StepConfig[];
     fields?: FieldConfig[];

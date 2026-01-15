@@ -16,6 +16,13 @@
             <input nz-input id="form_title" formControlName="title" />
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <label nz-checkbox formControlName="displayTitle">
+              Afficher le titre dans le formulaire
+            </label>
+          </nz-form-control>
+        </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzFor="form_description" nzTooltipTitle="Description du formulaire (métadonnée)">
@@ -23,6 +30,13 @@
           </nz-form-label>
           <nz-form-control>
             <input nz-input id="form_description" formControlName="form_description" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <label nz-checkbox formControlName="displayDescription">
+              Afficher la description dans le formulaire
+            </label>
           </nz-form-control>
         </nz-form-item>
       </div>

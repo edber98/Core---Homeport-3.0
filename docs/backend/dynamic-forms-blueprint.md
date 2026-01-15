@@ -50,7 +50,7 @@ Emprunté de `src/app/modules/dynamic-form/dynamic-form.service.ts`.
   - `ButtonUI = { text?: string; style?: Record<string, any>; enabled?: boolean; ariaLabel?: string }`
   - `FormUI = { layout?: 'horizontal'|'vertical'|'inline'; labelAlign?: 'left'|'right'; labelsOnTop?: boolean; labelCol?: { span?: number; offset?: number }; controlCol?: { span?: number; offset?: number }; widthPx?: number; containerStyle?: Record<string, any>; actions?: { showReset?: boolean; showCancel?: boolean; submitText?: string; cancelText?: string; resetText?: string; actionsStyle?: Record<string, any>; buttonStyle?: Record<string, any>; submitBtn?: ButtonUI; cancelBtn?: ButtonUI; resetBtn?: ButtonUI } }`
   - `SummaryConfig = { enabled: boolean; title?: string; includeHidden?: boolean; dateFormat?: string }`
-  - `FormSchema = { title?: string; ui?: FormUI; steps?: StepConfig[]; fields?: FieldConfig[]; summary?: SummaryConfig }`
+- `FormSchema = { title?: string; description?: string; displayTitle?: boolean; displayDescription?: boolean; ui?: FormUI; steps?: StepConfig[]; fields?: FieldConfig[]; summary?: SummaryConfig }`
 
 
 ## 2) Règles (visibleIf / requiredIf / disabledIf)

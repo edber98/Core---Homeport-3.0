@@ -454,6 +454,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       // commun / titre
       title: [''],
       form_description: [''],
+      displayTitle: [true],
+      displayDescription: [true],
 
       // STEP
       visibleIf: [''],
@@ -556,8 +558,11 @@ export class DynamicFormBuilderComponent implements OnChanges {
         if (this.selected === this.schema) {
         // titre global
         this.schema.title = v.title || undefined;
-        // description doc (métadonnée)
+        // description (schema + métadonnée)
+        this.schema.description = v.form_description || undefined;
         this.currentFormDesc = v.form_description || '';
+        this.schema.displayTitle = (v.displayTitle !== null && v.displayTitle !== undefined) ? !!v.displayTitle : true;
+        this.schema.displayDescription = (v.displayDescription !== null && v.displayDescription !== undefined) ? !!v.displayDescription : true;
 
         // UI
         const mkStyle = (prefix: string) => {
@@ -1089,7 +1094,9 @@ export class DynamicFormBuilderComponent implements OnChanges {
       // Onglet "Form Settings"
       this.inspector.patchValue({
         title: this.schema.title ?? '',
-        form_description: this.currentFormDesc ?? '',
+        form_description: this.currentFormDesc || (this.schema as any).description || '',
+        displayTitle: this.schema.displayTitle ?? true,
+        displayDescription: this.schema.displayDescription ?? true,
         ui_layout: this.schema.ui?.layout ?? 'horizontal',
         ui_labelAlign: this.schema.ui?.labelAlign ?? 'left',
         ui_labelsOnTop: !!this.schema.ui?.labelsOnTop,
@@ -2383,6 +2390,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
             this.currentFormName = doc.name || '';
             this.currentFormDesc = doc.description || '';
             const s: any = (doc as any).schema || { title: doc.name || 'Formulaire', fields: [] };
+            if (this.currentFormDesc && s.description == null) s.description = this.currentFormDesc;
             this.model = s; this.schema = JSON.parse(JSON.stringify(s)); this.select(this.schema);
             if (this.applyTplPreset) this.applyTemplateDefaults();
             this.refresh();

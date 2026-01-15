@@ -51,6 +51,7 @@ module.exports = function(){
   r.get('/workspaces/:wsId/elements', async (req, res) => {
     const { Types } = require('mongoose');
     const Flow = require('../../db/models/flow.model');
+    const Form = require('../../db/models/form.model');
     const Credential = require('../../db/models/credential.model');
     const WorkspaceMembership = require('../../db/models/workspace-membership.model');
     const wsId = String(req.params.wsId || '');
@@ -59,15 +60,15 @@ module.exports = function(){
     const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
     if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
     // Fetch flows and credentials in parallel
-    const [flows, creds] = await Promise.all([
+    const [flows, creds, forms] = await Promise.all([
       Flow.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).limit(500).lean(),
       Credential.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).limit(500).select('-secret').lean(),
+      Form.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).limit(500).lean(),
     ]);
     res.apiOk({
       flows: (flows || []).map(f => ({ id: String(f._id), name: f.name })),
       credentials: (creds || []).map(c => ({ id: String(c._id), name: c.name, providerKey: c.providerKey })),
-      // Forms and websites are not yet backed by DB in this project; return empty arrays for consistency
-      forms: [],
+      forms: (forms || []).map(f => ({ id: String(f._id), name: f.name })),
       websites: [],
     });
   });
