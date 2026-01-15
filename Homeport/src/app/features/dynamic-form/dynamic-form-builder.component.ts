@@ -268,8 +268,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
     // section styles forms
     const mkStyleForm = () => this.fb.group({
       color: [''], fontSize: [null],
-      m_top: [null], m_right: [null], m_bottom: [null], m_left: [null],
-      p_top: [null], p_right: [null], p_bottom: [null], p_left: [null],
+      m_top: [0], m_right: [0], m_bottom: [0], m_left: [0],
+      p_top: [0], p_right: [0], p_bottom: [0], p_left: [0],
     });
     this.titleStyleForm = mkStyleForm();
     this.descStyleForm = mkStyleForm();
@@ -303,8 +303,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.titleStyleForm.patchValue({
       color: st.color || '',
       fontSize: this.pickStyleNumber(st.fontSize),
-      m_top: this.pickStyleNumber(st.marginTop), m_right: this.pickStyleNumber(st.marginRight), m_bottom: this.pickStyleNumber(st.marginBottom), m_left: this.pickStyleNumber(st.marginLeft),
-      p_top: this.pickStyleNumber(st.paddingTop), p_right: this.pickStyleNumber(st.paddingRight), p_bottom: this.pickStyleNumber(st.paddingBottom), p_left: this.pickStyleNumber(st.paddingLeft),
+      m_top: this.pickStyleNumber(st.marginTop) ?? 0, m_right: this.pickStyleNumber(st.marginRight) ?? 0, m_bottom: this.pickStyleNumber(st.marginBottom) ?? 0, m_left: this.pickStyleNumber(st.marginLeft) ?? 0,
+      p_top: this.pickStyleNumber(st.paddingTop) ?? 0, p_right: this.pickStyleNumber(st.paddingRight) ?? 0, p_bottom: this.pickStyleNumber(st.paddingBottom) ?? 0, p_left: this.pickStyleNumber(st.paddingLeft) ?? 0,
     }, { emitEvent: false });
     this.titleStyleModalVisible = true;
   }
@@ -330,8 +330,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
     this.descStyleForm.patchValue({
       color: st.color || '',
       fontSize: this.pickStyleNumber(st.fontSize),
-      m_top: this.pickStyleNumber(st.marginTop), m_right: this.pickStyleNumber(st.marginRight), m_bottom: this.pickStyleNumber(st.marginBottom), m_left: this.pickStyleNumber(st.marginLeft),
-      p_top: this.pickStyleNumber(st.paddingTop), p_right: this.pickStyleNumber(st.paddingRight), p_bottom: this.pickStyleNumber(st.paddingBottom), p_left: this.pickStyleNumber(st.paddingLeft),
+      m_top: this.pickStyleNumber(st.marginTop) ?? 0, m_right: this.pickStyleNumber(st.marginRight) ?? 0, m_bottom: this.pickStyleNumber(st.marginBottom) ?? 0, m_left: this.pickStyleNumber(st.marginLeft) ?? 0,
+      p_top: this.pickStyleNumber(st.paddingTop) ?? 0, p_right: this.pickStyleNumber(st.paddingRight) ?? 0, p_bottom: this.pickStyleNumber(st.paddingBottom) ?? 0, p_left: this.pickStyleNumber(st.paddingLeft) ?? 0,
     }, { emitEvent: false });
     this.descStyleModalVisible = true;
   }
@@ -366,14 +366,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
   openCustomize(key: string) {
     const g = this.fb.group({});
     const add = (k: string, init: any = null) => g.addControl(k, this.fb.control(init));
-    const addSpacing = () => ['m_top','m_right','m_bottom','m_left','p_top','p_right','p_bottom','p_left'].forEach(k => add(k, null));
+    const addSpacing = () => ['m_top','m_right','m_bottom','m_left','p_top','p_right','p_bottom','p_left'].forEach(k => add(k, 0));
     const patchStyle = (st?: Record<string, any>) => {
       const pick = (prop: string) => this.pickStyleNumber(st?.[prop]);
       g.patchValue({
         color: st?.['color'] ?? '', fontSize: this.pickStyleNumber(st?.['fontSize']),
         borderWidth: this.pickStyleNumber(st?.['borderWidth']), borderRadius: this.pickStyleNumber(st?.['borderRadius']), borderColor: st?.['borderColor'] ?? '', boxShadow: st?.['boxShadow'] ?? '',
-        m_top: pick('marginTop'), m_right: pick('marginRight'), m_bottom: pick('marginBottom'), m_left: pick('marginLeft'),
-        p_top: pick('paddingTop'), p_right: pick('paddingRight'), p_bottom: pick('paddingBottom'), p_left: pick('paddingLeft'),
+        m_top: pick('marginTop') ?? 0, m_right: pick('marginRight') ?? 0, m_bottom: pick('marginBottom') ?? 0, m_left: pick('marginLeft') ?? 0,
+        p_top: pick('paddingTop') ?? 0, p_right: pick('paddingRight') ?? 0, p_bottom: pick('paddingBottom') ?? 0, p_left: pick('paddingLeft') ?? 0,
       }, { emitEvent: false });
     };
 
@@ -512,8 +512,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       col_lg: [12],
       col_xl: [12],
       // Spacing (fields only)
-      m_top: [null], m_right: [null], m_bottom: [null], m_left: [null],
-      p_top: [null], p_right: [null], p_bottom: [null], p_left: [null],
+      m_top: [0], m_right: [0], m_bottom: [0], m_left: [0],
+      p_top: [0], p_right: [0], p_bottom: [0], p_left: [0],
 
       // UI (form settings)
       ui_layout: ['horizontal'],
@@ -523,15 +523,15 @@ export class DynamicFormBuilderComponent implements OnChanges {
       ui_controlColSpan: [16],
       ui_widthPx: [1040],
       // UI spacing for form container
-      ui_form_m_top: [null], ui_form_m_right: [null], ui_form_m_bottom: [null], ui_form_m_left: [null],
-      ui_form_p_top: [null], ui_form_p_right: [null], ui_form_p_bottom: [null], ui_form_p_left: [null],
+      ui_form_m_top: [0], ui_form_m_right: [0], ui_form_m_bottom: [0], ui_form_m_left: [0],
+      ui_form_p_top: [0], ui_form_p_right: [0], ui_form_p_bottom: [0], ui_form_p_left: [0],
       // Actions/buttons options
       ui_showReset: [false],
       ui_submitText: [''], ui_resetText: [''],
-      ui_actions_m_top: [null], ui_actions_m_right: [null], ui_actions_m_bottom: [null], ui_actions_m_left: [null],
-      ui_actions_p_top: [null], ui_actions_p_right: [null], ui_actions_p_bottom: [null], ui_actions_p_left: [null],
-      ui_button_m_top: [null], ui_button_m_right: [null], ui_button_m_bottom: [null], ui_button_m_left: [null],
-      ui_button_p_top: [null], ui_button_p_right: [null], ui_button_p_bottom: [null], ui_button_p_left: [null],
+      ui_actions_m_top: [0], ui_actions_m_right: [0], ui_actions_m_bottom: [0], ui_actions_m_left: [0],
+      ui_actions_p_top: [0], ui_actions_p_right: [0], ui_actions_p_bottom: [0], ui_actions_p_left: [0],
+      ui_button_m_top: [0], ui_button_m_right: [0], ui_button_m_bottom: [0], ui_button_m_left: [0],
+      ui_button_p_top: [0], ui_button_p_right: [0], ui_button_p_bottom: [0], ui_button_p_left: [0],
 
       // Summary (form settings)
       summary_enabled: [false],
@@ -1096,33 +1096,33 @@ export class DynamicFormBuilderComponent implements OnChanges {
         ui_labelColSpan: this.schema.ui?.labelCol?.span ?? 8,
         ui_controlColSpan: this.schema.ui?.controlCol?.span ?? 16,
         ui_widthPx: this.schema.ui?.widthPx ?? 1040,
-        ui_form_m_top: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginTop']),
-        ui_form_m_right: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginRight']),
-        ui_form_m_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginBottom']),
-        ui_form_m_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginLeft']),
-        ui_form_p_top: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingTop']),
-        ui_form_p_right: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingRight']),
-        ui_form_p_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingBottom']),
-        ui_form_p_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingLeft']),
+        ui_form_m_top: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginTop']) ?? 0,
+        ui_form_m_right: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginRight']) ?? 0,
+        ui_form_m_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginBottom']) ?? 0,
+        ui_form_m_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['marginLeft']) ?? 0,
+        ui_form_p_top: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingTop']) ?? 0,
+        ui_form_p_right: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingRight']) ?? 0,
+        ui_form_p_bottom: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingBottom']) ?? 0,
+        ui_form_p_left: this.pickStyleNumber(this.schema.ui?.containerStyle?.['paddingLeft']) ?? 0,
         ui_showReset: !!this.schema.ui?.actions?.showReset,
         ui_submitText: this.schema.ui?.actions?.submitText ?? '',
         ui_resetText: this.schema.ui?.actions?.resetText ?? '',
-        ui_actions_m_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginTop']),
-        ui_actions_m_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginRight']),
-        ui_actions_m_bottom: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginBottom']),
-        ui_actions_m_left: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginLeft']),
-        ui_actions_p_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingTop']),
-        ui_actions_p_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingRight']),
-        ui_actions_p_bottom: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingBottom']),
-        ui_actions_p_left: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingLeft']),
-        ui_button_m_top: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginTop']),
-        ui_button_m_right: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginRight']),
-        ui_button_m_bottom: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginBottom']),
-        ui_button_m_left: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginLeft']),
-        ui_button_p_top: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingTop']),
-        ui_button_p_right: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingRight']),
-        ui_button_p_bottom: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingBottom']),
-        ui_button_p_left: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingLeft']),
+        ui_actions_m_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginTop']) ?? 0,
+        ui_actions_m_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginRight']) ?? 0,
+        ui_actions_m_bottom: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginBottom']) ?? 0,
+        ui_actions_m_left: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['marginLeft']) ?? 0,
+        ui_actions_p_top: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingTop']) ?? 0,
+        ui_actions_p_right: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingRight']) ?? 0,
+        ui_actions_p_bottom: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingBottom']) ?? 0,
+        ui_actions_p_left: this.pickStyleNumber(this.schema.ui?.actions?.actionsStyle?.['paddingLeft']) ?? 0,
+        ui_button_m_top: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginTop']) ?? 0,
+        ui_button_m_right: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginRight']) ?? 0,
+        ui_button_m_bottom: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginBottom']) ?? 0,
+        ui_button_m_left: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['marginLeft']) ?? 0,
+        ui_button_p_top: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingTop']) ?? 0,
+        ui_button_p_right: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingRight']) ?? 0,
+        ui_button_p_bottom: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingBottom']) ?? 0,
+        ui_button_p_left: this.pickStyleNumber(this.schema.ui?.actions?.buttonStyle?.['paddingLeft']) ?? 0,
         summary_enabled: !!this.schema.summary?.enabled,
         summary_title: this.schema.summary?.title ?? '',
         summary_includeHidden: !!this.schema.summary?.includeHidden,
@@ -1238,14 +1238,14 @@ export class DynamicFormBuilderComponent implements OnChanges {
         col_md: (obj as any).col?.md ?? 12,
         col_lg: (obj as any).col?.lg ?? 12,
         col_xl: (obj as any).col?.xl ?? 12,
-        m_top: this.pickStyleNumber((obj as any).itemStyle?.marginTop),
-        m_right: this.pickStyleNumber((obj as any).itemStyle?.marginRight),
-        m_bottom: this.pickStyleNumber((obj as any).itemStyle?.marginBottom),
-        m_left: this.pickStyleNumber((obj as any).itemStyle?.marginLeft),
-        p_top: this.pickStyleNumber((obj as any).itemStyle?.paddingTop),
-        p_right: this.pickStyleNumber((obj as any).itemStyle?.paddingRight),
-        p_bottom: this.pickStyleNumber((obj as any).itemStyle?.paddingBottom),
-        p_left: this.pickStyleNumber((obj as any).itemStyle?.paddingLeft),
+        m_top: this.pickStyleNumber((obj as any).itemStyle?.marginTop) ?? 0,
+        m_right: this.pickStyleNumber((obj as any).itemStyle?.marginRight) ?? 0,
+        m_bottom: this.pickStyleNumber((obj as any).itemStyle?.marginBottom) ?? 0,
+        m_left: this.pickStyleNumber((obj as any).itemStyle?.marginLeft) ?? 0,
+        p_top: this.pickStyleNumber((obj as any).itemStyle?.paddingTop) ?? 0,
+        p_right: this.pickStyleNumber((obj as any).itemStyle?.paddingRight) ?? 0,
+        p_bottom: this.pickStyleNumber((obj as any).itemStyle?.paddingBottom) ?? 0,
+        p_left: this.pickStyleNumber((obj as any).itemStyle?.paddingLeft) ?? 0,
         fld_labelColor: (obj as any).labelStyle?.color ?? '',
         fld_labelFontSize: this.pickStyleNumber((obj as any).labelStyle?.fontSize),
         tb_textColor: (obj as any).textStyle?.color ?? '',

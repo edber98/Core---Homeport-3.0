@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 @Component({
   selector: 'app-prefixed-spacing-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NzInputNumberModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './prefixed-spacing-editor.component.html',
   styleUrls: ['./spacing-editor.component.scss']
 })

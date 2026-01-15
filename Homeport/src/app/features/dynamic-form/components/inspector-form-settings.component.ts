@@ -68,15 +68,16 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 
   private createSpacingGroup(prefix: string): FormGroup {
+    const pick = (name: string) => this.group.get(`${prefix}${name}`)?.value ?? 0;
     const g = new FormGroup({
-      m_top: new FormControl(this.group.get(`${prefix}m_top`)?.value),
-      m_right: new FormControl(this.group.get(`${prefix}m_right`)?.value),
-      m_bottom: new FormControl(this.group.get(`${prefix}m_bottom`)?.value),
-      m_left: new FormControl(this.group.get(`${prefix}m_left`)?.value),
-      p_top: new FormControl(this.group.get(`${prefix}p_top`)?.value),
-      p_right: new FormControl(this.group.get(`${prefix}p_right`)?.value),
-      p_bottom: new FormControl(this.group.get(`${prefix}p_bottom`)?.value),
-      p_left: new FormControl(this.group.get(`${prefix}p_left`)?.value),
+      m_top: new FormControl(pick('m_top')),
+      m_right: new FormControl(pick('m_right')),
+      m_bottom: new FormControl(pick('m_bottom')),
+      m_left: new FormControl(pick('m_left')),
+      p_top: new FormControl(pick('p_top')),
+      p_right: new FormControl(pick('p_right')),
+      p_bottom: new FormControl(pick('p_bottom')),
+      p_left: new FormControl(pick('p_left')),
     });
     return g;
   }
