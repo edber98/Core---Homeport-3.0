@@ -23,6 +23,13 @@
             </label>
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item *ngIf="group.get('displayTitle')?.value">
+          <nz-form-control>
+            <label nz-checkbox formControlName="centerTitle">
+              Centrer le titre
+            </label>
+          </nz-form-control>
+        </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzFor="form_description" nzTooltipTitle="Description du formulaire (métadonnée)">
@@ -36,6 +43,13 @@
           <nz-form-control>
             <label nz-checkbox formControlName="displayDescription">
               Afficher la description dans le formulaire
+            </label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="group.get('displayDescription')?.value">
+          <nz-form-control>
+            <label nz-checkbox formControlName="centerDescription">
+              Centrer la description
             </label>
           </nz-form-control>
         </nz-form-item>

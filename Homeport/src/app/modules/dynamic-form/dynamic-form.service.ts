@@ -146,6 +146,8 @@ export interface FormSchema {
     description?: string;
     displayTitle?: boolean;
     displayDescription?: boolean;
+    centerTitle?: boolean;
+    centerDescription?: boolean;
     ui?: FormUI;
     steps?: StepConfig[];
     fields?: FieldConfig[];

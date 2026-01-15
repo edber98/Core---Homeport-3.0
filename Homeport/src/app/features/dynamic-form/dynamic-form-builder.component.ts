@@ -456,6 +456,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
       form_description: [''],
       displayTitle: [true],
       displayDescription: [true],
+      centerTitle: [false],
+      centerDescription: [false],
 
       // STEP
       visibleIf: [''],
@@ -563,6 +565,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
         this.currentFormDesc = v.form_description || '';
         this.schema.displayTitle = (v.displayTitle !== null && v.displayTitle !== undefined) ? !!v.displayTitle : true;
         this.schema.displayDescription = (v.displayDescription !== null && v.displayDescription !== undefined) ? !!v.displayDescription : true;
+        this.schema.centerTitle = this.schema.displayTitle ? !!v.centerTitle : false;
+        this.schema.centerDescription = this.schema.displayDescription ? !!v.centerDescription : false;
 
         // UI
         const mkStyle = (prefix: string) => {
@@ -1097,6 +1101,8 @@ export class DynamicFormBuilderComponent implements OnChanges {
         form_description: this.currentFormDesc || (this.schema as any).description || '',
         displayTitle: this.schema.displayTitle ?? true,
         displayDescription: this.schema.displayDescription ?? true,
+        centerTitle: !!this.schema.centerTitle,
+        centerDescription: !!this.schema.centerDescription,
         ui_layout: this.schema.ui?.layout ?? 'horizontal',
         ui_labelAlign: this.schema.ui?.labelAlign ?? 'left',
         ui_labelsOnTop: !!this.schema.ui?.labelsOnTop,
