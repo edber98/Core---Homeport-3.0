@@ -28,6 +28,16 @@ export class BuilderFactoryService {
       base.key = `${type}_${Math.random().toString(36).slice(2,7)}`;
       base.label = type;
       base.col = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 };
+      base.itemStyle = {
+        marginTop: '8px',
+        marginBottom: '8px',
+        marginLeft: '4px',
+        marginRight: '4px',
+        paddingTop: '4px',
+        paddingBottom: '4px',
+        paddingLeft: '8px',
+        paddingRight: '8px',
+      };
       if (type === 'select' || type === 'radio') {
         base.options = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
         base.default = 'option1';

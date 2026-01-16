@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -46,6 +46,7 @@ export class Fields implements OnInit, OnDestroy {
   get exprEnabled() { return this.exprMode === 'expr'; }
   // Secret input visibility
   secretVisible = false;
+  isLgUp = false;
 
   // Final flag used for ExpressionEditor preview errors: combine global + field-level
   get showPreviewErrors(): boolean {
@@ -63,6 +64,7 @@ export class Fields implements OnInit, OnDestroy {
 
   private sub: any;
   ngOnInit(): void {
+    this.updateViewport();
     const k = this.fieldKey;
     // Initial default mode: honor explicit defaultMode first, fallback to auto-detect
     const exprCfg = (this.field as any)?.expression || {};
@@ -88,6 +90,12 @@ export class Fields implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
+  @HostListener('window:resize')
+  onResize() { this.updateViewport(); }
+  private updateViewport(): void {
+    if (typeof window === 'undefined') return;
+    this.isLgUp = window.innerWidth >= 992;
+  }
 
   /** champ required ? */
   get requiredFlag(): boolean {
@@ -104,8 +112,20 @@ export class Fields implements OnInit, OnDestroy {
   }
 
   /** spans/offsets calculés */
-  get labelSpan(): number { return this.labelsOnTop ? 24 : (this.ui?.labelCol?.span ?? 8); }
+  get labelSpan(): number {
+    if (this.labelsOnTop) return 24;
+    const base = this.ui?.labelCol?.span ?? 8;
+    const controlBase = this.ui?.controlCol?.span ?? 16;
+    if (this.isLgUp && base === 8 && controlBase === 16) return 6;
+    return base;
+  }
   get labelOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.labelCol?.offset ?? 0); }
-  get controlSpan(): number { return this.labelsOnTop ? 24 : (this.ui?.controlCol?.span ?? 16); }
+  get controlSpan(): number {
+    if (this.labelsOnTop) return 24;
+    const base = this.ui?.controlCol?.span ?? 16;
+    const labelBase = this.ui?.labelCol?.span ?? 8;
+    if (this.isLgUp && labelBase === 8 && base === 16) return 18;
+    return base;
+  }
   get controlOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.controlCol?.offset ?? 0); }
 }
