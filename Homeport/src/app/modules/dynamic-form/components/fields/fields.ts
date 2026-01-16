@@ -10,6 +10,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { NzCronExpressionModule } from 'ng-zorro-antd/cron-expression';
 import { ExpressionEditorComponent } from '../../../expression-editor/expression-editor';
 import {
   FieldConfig,
@@ -25,7 +26,7 @@ import {
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule,
-    NzSegmentedModule, ExpressionEditorComponent
+    NzSegmentedModule, NzCronExpressionModule, ExpressionEditorComponent
   ],
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']

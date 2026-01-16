@@ -83,6 +83,7 @@ export class ContextPanelComponent {
       case 'textarea': return 'fa-solid fa-align-left';
       case 'number': return 'fa-solid fa-hashtag';
       case 'date': return 'fa-regular fa-calendar';
+      case 'cron': return 'fa-regular fa-clock';
       case 'select': return 'fa-solid fa-caret-down';
       case 'radio': return 'fa-regular fa-circle-dot';
       case 'checkbox': return 'fa-regular fa-square-check';

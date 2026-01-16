@@ -30,6 +30,14 @@
   font-size: var(--df-label-font-size) !important;
 }
 
+/* Cron: reduce spacing between label and control */
+:host ::ng-deep .df-form-item.df-cron .ant-form-item-label {
+  padding-bottom: 4px;
+}
+:host ::ng-deep .df-form-item.df-cron .ant-form-item-control {
+  margin-top: 0;
+}
+
 /* Fond bleu tres clair pour tous les champs */
 :host ::ng-deep .df-form-item .ant-input,
 :host ::ng-deep .df-form-item textarea.ant-input,

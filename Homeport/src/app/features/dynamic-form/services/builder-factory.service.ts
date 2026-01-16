@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import type { FieldConfig, SectionConfig, StepConfig } from '../../../modules/dynamic-form/dynamic-form.service';
 
-export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'textblock';
+export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'cron'|'textblock';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderFactoryService {
@@ -32,8 +32,13 @@ export class BuilderFactoryService {
         base.options = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
         base.default = 'option1';
       } else if (type === 'number') base.default = 0;
+      else if (type === 'cron') base.default = '';
       else if (type === 'checkbox') base.default = false;
       else base.default = '';
+      if (type === 'cron') {
+        base.cron = { type: 'linux', size: 'default', borderless: false, collapseDisable: false };
+        base.col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
+      }
     }
     return base as FieldConfig;
   }

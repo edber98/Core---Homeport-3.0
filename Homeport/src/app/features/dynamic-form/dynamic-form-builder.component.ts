@@ -60,7 +60,7 @@ import type {
 
 type FieldType =
   | 'text' | 'textarea' | 'number' | 'date'
-  | 'select' | 'radio' | 'checkbox' | 'textblock';
+  | 'select' | 'radio' | 'checkbox' | 'cron' | 'textblock';
 
 type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Array<{ label: string; run: () => void }>; };
 
@@ -503,6 +503,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
       expression_inline: [true],
       placeholder: [''],
       descriptionField: [''],   // description propre au champ
+      cron_type: ['linux'],
+      cron_size: ['default'],
+      cron_borderless: [false],
+      cron_collapseDisable: [false],
       default: [''],
       options: [''],
       textHtml: [''],
@@ -693,16 +697,31 @@ export class DynamicFormBuilderComponent implements OnChanges {
           const d = this.fieldTypeDefaults(f.type as FieldType);
           // patch inspector defaults for options/default/placeholder
           this.patching = true;
-          this.inspector.patchValue({
+          const typePatch: any = {
             placeholder: d.placeholder ?? '',
             default: d.defaultValue ?? '',
             options: d.optionsJson ?? ''
-          }, { emitEvent: false });
+          };
+          if (f.type === 'cron') {
+            typePatch.col_xs = 24;
+            typePatch.col_sm = 24;
+            typePatch.col_md = 24;
+            typePatch.col_lg = 24;
+            typePatch.col_xl = 24;
+          }
+          this.inspector.patchValue(typePatch, { emitEvent: false });
           this.patching = false;
           // also set on object immediately
           (f as any).placeholder = d.placeholder ?? undefined;
           (f as any).default = d.defaultValue;
           if (d.optionsArr) (f as any).options = d.optionsArr;
+          if (f.type === 'cron' && !(f as any).cron) {
+            (f as any).cron = { type: 'linux', size: 'default', borderless: false, collapseDisable: false };
+          }
+          if (f.type === 'cron') {
+            (f as any).col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
+          }
+          if (f.type !== 'cron') delete (f as any).cron;
           // Petite impulsion supplémentaire pour forcer le rebuild de l'aperçu (type change)
           setTimeout(() => this.refresh());
         }
@@ -760,6 +779,16 @@ export class DynamicFormBuilderComponent implements OnChanges {
         }
         (f as any).placeholder = v.placeholder || undefined;
         (f as any).description = v.descriptionField || undefined;
+        if (f.type === 'cron') {
+          (f as any).cron = {
+            type: (v.cron_type === 'spring') ? 'spring' : 'linux',
+            size: (['large','small','default'].includes(v.cron_size)) ? v.cron_size : 'default',
+            borderless: !!v.cron_borderless,
+            collapseDisable: !!v.cron_collapseDisable,
+          };
+        } else {
+          delete (f as any).cron;
+        }
           (f as any).default = v.default ?? undefined;
           (f as any).options = this.parseJson(v.options);
           (f as any).validators = this.parseJson(v.validators);
@@ -992,6 +1021,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       case 'number': return { placeholder: '0', defaultValue: 0 } as any;
       case 'date': return { defaultValue: null } as any;
       case 'checkbox': return { defaultValue: false } as any;
+      case 'cron': return { placeholder: '*/5 * * * *', defaultValue: '' } as any;
       case 'select':
       case 'radio': {
         const opts = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
@@ -1238,6 +1268,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
         expression_inline: ((obj as any).expression?.inline !== false),
         placeholder: (obj as any).placeholder ?? '',
         descriptionField: (obj as any).description ?? '',
+        cron_type: (obj as any).cron?.type ?? 'linux',
+        cron_size: (obj as any).cron?.size ?? 'default',
+        cron_borderless: !!(obj as any).cron?.borderless,
+        cron_collapseDisable: !!(obj as any).cron?.collapseDisable,
         default: (obj as any).default ?? '',
         options: this.stringifyJson((obj as any).options),
         textHtml: (obj as any).textHtml ?? '',

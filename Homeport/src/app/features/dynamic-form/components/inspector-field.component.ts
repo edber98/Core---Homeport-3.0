@@ -39,6 +39,7 @@ import { Subscription } from 'rxjs';
                     <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
                     <nz-option nzValue="number" nzLabel="number"></nz-option>
                     <nz-option nzValue="date" nzLabel="date"></nz-option>
+                    <nz-option nzValue="cron" nzLabel="cron"></nz-option>
                     <nz-option nzValue="select" nzLabel="select"></nz-option>
                     <nz-option nzValue="radio" nzLabel="radio"></nz-option>
                     <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
@@ -76,6 +77,39 @@ import { Subscription } from 'rxjs';
                 <nz-form-label nzFor="fld_desc" nzTooltipTitle="Aide sous le champ"><span>Description</span></nz-form-label>
                 <nz-form-control><textarea nz-input rows="2" id="fld_desc" formControlName="description"></textarea></nz-form-control>
               </nz-form-item>
+              <ng-container *ngIf="group.get('type')?.value==='cron'">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Type de règle cron"><span>Type cron</span></nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="cron_type">
+                        <nz-option nzValue="linux" nzLabel="linux"></nz-option>
+                        <nz-option nzValue="spring" nzLabel="spring"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Taille du champ"><span>Taille</span></nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="cron_size">
+                        <nz-option nzValue="default" nzLabel="default"></nz-option>
+                        <nz-option nzValue="small" nzLabel="small"></nz-option>
+                        <nz-option nzValue="large" nzLabel="large"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Masquer la bordure"><span>Sans bordure</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="cron_borderless"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Masquer l’accordéon"><span>Sans accordéon</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="cron_collapseDisable"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                </div>
+              </ng-container>
               <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                 <nz-form-label>
                   <span class="inline-label-with-btn">

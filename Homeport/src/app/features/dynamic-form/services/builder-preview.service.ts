@@ -150,6 +150,7 @@ export class BuilderPreviewService {
       case 'checkbox': return true;
       case 'number': return 1;
       case 'date': return new Date();
+      case 'cron': return '0 * * * *';
       case 'select':
       case 'radio': return f?.options?.[0]?.value ?? 'x';
       default: return 'x';

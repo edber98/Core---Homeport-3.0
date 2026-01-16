@@ -1,6 +1,7 @@
 <div [formGroup]="form">
   <nz-form-item
     class="df-form-item"
+    [class.df-cron]="field.type === 'cron'"
     [class.df-textblock]="field.type === 'textblock'"
     [style.--df-label-color]="$any(field).labelStyle?.color || null"
     [style.--df-label-font-size]="$any(field).labelStyle?.fontSize || null">
@@ -94,6 +95,13 @@
 
                   <nz-date-picker *ngIf="field.type==='date'"
                                   style="width: 100%;" [formControlName]="key"></nz-date-picker>
+
+                  <nz-cron-expression *ngIf="field.type==='cron'"
+                                      [formControlName]="key"
+                                      [nzType]="$any(field).cron?.type || 'linux'"
+                                      [nzSize]="$any(field).cron?.size || 'default'"
+                                      [nzBorderless]="$any(field).cron?.borderless || false"
+                                      [nzCollapseDisable]="$any(field).cron?.collapseDisable || false"></nz-cron-expression>
 
                   <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
                     <nz-option *ngFor="let opt of (field.options || [])"

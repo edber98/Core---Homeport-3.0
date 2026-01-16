@@ -62,6 +62,11 @@
             <span class="quick-label">Date</span>
           </button>
           <button nz-button nzSize="small"
+                  (click)="quickAdd('cron')" [disabled]="!canQuickAddField" aria-label="Ajouter cron">
+            <i class="fa-regular fa-clock"></i>
+            <span class="quick-label">Cron</span>
+          </button>
+          <button nz-button nzSize="small"
                   (click)="quickAdd('select')" [disabled]="!canQuickAddField" aria-label="Ajouter sélecteur">
             <i class="fa-solid fa-caret-down"></i>
             <span class="quick-label">Select</span>

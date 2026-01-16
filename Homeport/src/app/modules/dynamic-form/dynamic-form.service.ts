@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -19,6 +19,12 @@ export interface FieldConfigCommon {
     placeholder?: string;
     description?: string;
     options?: { label: string; value: any }[]; // select/radio
+    cron?: {
+        type?: 'linux' | 'spring';
+        size?: 'large' | 'small' | 'default';
+        borderless?: boolean;
+        collapseDisable?: boolean;
+    };
     default?: any;
     validators?: FieldValidator[];
     visibleIf?: JSONVal;
