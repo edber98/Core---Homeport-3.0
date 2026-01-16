@@ -503,10 +503,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
       expression_inline: [true],
       placeholder: [''],
       descriptionField: [''],   // description propre au champ
-      cron_type: ['linux'],
+      cron_showSeconds: [false],
       cron_size: ['default'],
       cron_borderless: [false],
-      cron_collapseDisable: [false],
+      cron_showAccordion: [true],
       default: [''],
       options: [''],
       textHtml: [''],
@@ -781,10 +781,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
         (f as any).description = v.descriptionField || undefined;
         if (f.type === 'cron') {
           (f as any).cron = {
-            type: (v.cron_type === 'spring') ? 'spring' : 'linux',
+            type: v.cron_showSeconds ? 'spring' : 'linux',
             size: (['large','small','default'].includes(v.cron_size)) ? v.cron_size : 'default',
             borderless: !!v.cron_borderless,
-            collapseDisable: !!v.cron_collapseDisable,
+            collapseDisable: !v.cron_showAccordion,
           };
         } else {
           delete (f as any).cron;
@@ -1268,10 +1268,10 @@ export class DynamicFormBuilderComponent implements OnChanges {
         expression_inline: ((obj as any).expression?.inline !== false),
         placeholder: (obj as any).placeholder ?? '',
         descriptionField: (obj as any).description ?? '',
-        cron_type: (obj as any).cron?.type ?? 'linux',
+        cron_showSeconds: ((obj as any).cron?.type === 'spring'),
         cron_size: (obj as any).cron?.size ?? 'default',
         cron_borderless: !!(obj as any).cron?.borderless,
-        cron_collapseDisable: !!(obj as any).cron?.collapseDisable,
+        cron_showAccordion: !((obj as any).cron?.collapseDisable),
         default: (obj as any).default ?? '',
         options: this.stringifyJson((obj as any).options),
         textHtml: (obj as any).textHtml ?? '',

@@ -8,6 +8,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -18,7 +19,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'inspector-field',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzSwitchModule, NzColorPickerModule, NzToolTipModule, NzIconModule, SpacingEditorComponent, MonacoJsonEditorComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzFormModule, NzInputModule, NzSelectModule, NzInputNumberModule, NzDividerModule, NzSwitchModule, NzCheckboxModule, NzColorPickerModule, NzToolTipModule, NzIconModule, SpacingEditorComponent, MonacoJsonEditorComponent],
   template: `
     <form nz-form [formGroup]="group" class="inspector-form" nzLayout="vertical">
       <nav class="inspector-tabs" role="tablist" aria-label="Onglets de l’inspecteur">
@@ -78,37 +79,21 @@ import { Subscription } from 'rxjs';
                 <nz-form-control><textarea nz-input rows="2" id="fld_desc" formControlName="description"></textarea></nz-form-control>
               </nz-form-item>
               <ng-container *ngIf="group.get('type')?.value==='cron'">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                  <nz-form-item>
-                    <nz-form-label nzTooltipTitle="Type de règle cron"><span>Type cron</span></nz-form-label>
-                    <nz-form-control>
-                      <nz-select formControlName="cron_type">
-                        <nz-option nzValue="linux" nzLabel="linux"></nz-option>
-                        <nz-option nzValue="spring" nzLabel="spring"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-label nzTooltipTitle="Taille du champ"><span>Taille</span></nz-form-label>
-                    <nz-form-control>
-                      <nz-select formControlName="cron_size">
-                        <nz-option nzValue="default" nzLabel="default"></nz-option>
-                        <nz-option nzValue="small" nzLabel="small"></nz-option>
-                        <nz-option nzValue="large" nzLabel="large"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                  <nz-form-item class="switch-left">
-                    <nz-form-label nzTooltipTitle="Masquer la bordure"><span>Sans bordure</span></nz-form-label>
-                    <nz-form-control><nz-switch formControlName="cron_borderless"></nz-switch></nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item class="switch-left">
-                    <nz-form-label nzTooltipTitle="Masquer l’accordéon"><span>Sans accordéon</span></nz-form-label>
-                    <nz-form-control><nz-switch formControlName="cron_collapseDisable"></nz-switch></nz-form-control>
-                  </nz-form-item>
-                </div>
+                <nz-form-item>
+                  <nz-form-control>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; align-items:center; column-gap:16px;">
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span nz-tooltip [nzTooltipTitle]="'Activer l’affichage des secondes dans l’expression'">Avec secondes</span>
+                        <label nz-checkbox formControlName="cron_showSeconds"></label>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span nz-tooltip [nzTooltipTitle]="'Afficher l’accordéon des règles cron'">Accordéon</span>
+                        <label nz-checkbox formControlName="cron_showAccordion"></label>
+                      </div>
+                    </div>
+                  </nz-form-control>
+                </nz-form-item>
+                
               </ng-container>
               <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                 <nz-form-label>
@@ -158,6 +143,27 @@ import { Subscription } from 'rxjs';
                       <nz-switch formControlName="expression_allow"></nz-switch>
                     </nz-form-control>
                   </nz-form-item>
+                  <ng-container *ngIf="group.get('type')?.value==='cron'">
+                    <div class="ins-section-header">
+                      <div class="card-title"><span class="t">Cron — Style</span><span class="s">Taille & bordure</span></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                      <nz-form-item>
+                        <nz-form-label nzTooltipTitle="Taille du composant cron"><span>Taille du cron</span></nz-form-label>
+                        <nz-form-control>
+                          <nz-select formControlName="cron_size">
+                            <nz-option nzValue="default" nzLabel="default"></nz-option>
+                            <nz-option nzValue="small" nzLabel="small"></nz-option>
+                            <nz-option nzValue="large" nzLabel="large"></nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item class="switch-left">
+                        <nz-form-label nzTooltipTitle="Masquer la bordure du composant cron"><span>Bordure du cron</span></nz-form-label>
+                        <nz-form-control><nz-switch formControlName="cron_borderless"></nz-switch></nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </ng-container>
                   <ng-container *ngIf="group.get('expression_allow')?.value === true">
                     <div class="ins-section-header"><div class="card-title"><span class="t">Expressions — Options</span><span class="s">Comportement de l’éditeur</span></div></div>
                     <div class="ins-grid cols-2">
