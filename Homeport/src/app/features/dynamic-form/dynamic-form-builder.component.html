@@ -367,32 +367,88 @@
     <nz-card [nzTitle]="inspectorTitle" nzSize="small" class="card no-chrome" *ngIf="selected">
       <nz-tabs nzSize="small" class="inspector-tabs">
         <!-- PROPS OBJET -->
-        <nz-tab nzTitle="Propriétés" *ngIf="selected !== schema">
+        <nz-tab nzTitle="Contenu" *ngIf="selected !== schema">
           <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
-            <!-- STEP -->
-            <ng-container *ngIf="isStep(selected)">
-              <inspector-step [group]="inspector"></inspector-step>
-            </ng-container>
-
-            <!-- SECTION -->
-            <ng-container *ngIf="isSection(selected)">
-              <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
-            </ng-container>
-
-            <!-- FIELD -->
-            <ng-container *ngIf="isField(selected)">
-              <inspector-field [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
-            </ng-container>
+            <!-- Champ: toujours visible, sans collapse -->
+            <inspector-field *ngIf="isField(selected)" [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" [showLogicEditors]="false" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
+            <!-- Étape / Section: en collapses -->
+            <nz-collapse nzGhost *ngIf="!isField(selected)">
+              <nz-collapse-panel *ngIf="isStep(selected)" nzHeader="Étape">
+                <inspector-step [group]="inspector"></inspector-step>
+              </nz-collapse-panel>
+              <nz-collapse-panel *ngIf="isSection(selected)" nzHeader="Section">
+                <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
+              </nz-collapse-panel>
+            </nz-collapse>
           </form>
         </nz-tab>
 
+        <!-- LOGIC TAB -->
+        <nz-tab nzTitle="Logique" *ngIf="selected !== schema">
+          <div class="inspector-logic">
+            <nz-collapse nzGhost>
+              <nz-collapse-panel nzHeader="Conditions d’affichage" [nzActive]="true">
+                <!-- Step: visibleIf -->
+                <div *ngIf="isStep(selected)" class="editor-block span-2">
+                  <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition d’affichage de l’étape (JSON)">
+                    <div class="title">visibleIf (JSON)</div>
+                    <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openConditionBuilder('visibleIf')">
+                      <i class="fa-solid fa-wand-magic-sparkles"></i>
+                      <span style="margin-left:6px">Builder</span>
+                    </button>
+                  </div>
+                  <monaco-json-editor [value]="$any(inspector.controls['visibleIf']?.value)" (valueChange)="inspector.get('visibleIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+                </div>
+
+                <!-- Field: visibleIf -->
+                <div *ngIf="isField(selected)" class="editor-block span-2">
+                  <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition d’affichage du champ (JSON)">
+                    <div class="title">visibleIf (JSON)</div>
+                    <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openConditionBuilder('visibleIf')">
+                      <i class="fa-solid fa-wand-magic-sparkles"></i>
+                      <span style="margin-left:6px">Builder</span>
+                    </button>
+                  </div>
+                  <monaco-json-editor [value]="$any(inspector.controls['visibleIf']?.value)" (valueChange)="inspector.get('visibleIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+                </div>
+              </nz-collapse-panel>
+
+              <nz-collapse-panel nzHeader="Contraintes (obligation, désactivation)" [nzActive]="true" *ngIf="isField(selected)">
+                <!-- Field: requiredIf -->
+                <div class="editor-block span-2">
+                  <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition rendant le champ obligatoire (JSON)">
+                    <div class="title">requiredIf (JSON)</div>
+                    <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openConditionBuilder('requiredIf')">
+                      <i class="fa-solid fa-wand-magic-sparkles"></i>
+                      <span style="margin-left:6px">Builder</span>
+                    </button>
+                  </div>
+                  <monaco-json-editor [value]="$any(inspector.controls['requiredIf']?.value)" (valueChange)="inspector.get('requiredIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+                </div>
+
+                <!-- Field: disabledIf -->
+                <div class="editor-block span-2">
+                  <div class="editor-toolbar" nz-tooltip nzTooltipTitle="Condition de désactivation du champ (JSON)">
+                    <div class="title">disabledIf (JSON)</div>
+                    <button type="button" nz-button nzSize="small" class="apple-btn" (click)="openConditionBuilder('disabledIf')">
+                      <i class="fa-solid fa-wand-magic-sparkles"></i>
+                      <span style="margin-left:6px">Builder</span>
+                    </button>
+                  </div>
+                  <monaco-json-editor [value]="$any(inspector.controls['disabledIf']?.value)" (valueChange)="inspector.get('disabledIf')?.setValue($event)" [height]="160"></monaco-json-editor>
+                </div>
+              </nz-collapse-panel>
+            </nz-collapse>
+          </div>
+        </nz-tab>
+
         <!-- FORM SETTINGS (UI + SUMMARY) -->
-        <nz-tab nzTitle="Customisations" *ngIf="selected === schema">
+        <nz-tab nzTitle="Style" *ngIf="selected === schema">
           <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
         </nz-tab>
 
         <!-- APERCU JSON -->
-        <nz-tab nzTitle="Paramètres">
+        <nz-tab nzTitle="JSON">
           <pre class="json">{{ schema | json }}</pre>
         </nz-tab>
       </nz-tabs>

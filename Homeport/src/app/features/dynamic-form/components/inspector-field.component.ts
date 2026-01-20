@@ -244,6 +244,7 @@ import { Subscription } from 'rxjs';
           </nz-form-control>
         </nz-form-item>
 
+        <ng-container *ngIf="showLogicEditors">
         <div class="ins-section-header"><div class="card-title"><span class="t">Conditions</span><span class="s">Affichage & validation</span></div></div>
         <div class="ins-grid span-2">
           <div class="editor-block span-2">
@@ -277,6 +278,7 @@ import { Subscription } from 'rxjs';
             <monaco-json-editor [value]="$any(group.controls['disabledIf'].value)" (valueChange)="group.get('disabledIf')?.setValue($event)" [height]="160"></monaco-json-editor>
           </div>
         </div>
+        </ng-container>
 
         <div class="ins-section-header"><div class="card-title"><span class="t">Colonnes</span><span class="s">Tailles responsives</span></div></div>
         <div class="ins-grid cols-5">
@@ -354,6 +356,7 @@ import { Subscription } from 'rxjs';
 export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   @Input({ required: true }) group!: FormGroup;
   @Input() keyDuplicateMessage: string | null = null;
+  @Input() showLogicEditors: boolean = true;
   @Output() openOptions = new EventEmitter<void>();
   @Output() openCondition = new EventEmitter<'visibleIf'|'requiredIf'|'disabledIf'>();
 
