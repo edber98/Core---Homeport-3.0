@@ -26,6 +26,8 @@ function buildApp(opts = {}){
     seedAllMemory(store);
     app.use((req, _res, next) => { req.store = store; next(); });
     app.use('/auth', require('./modules/auth')(store));
+    // Public auth alias under /api to match frontend prod base (no auth middleware here)
+    app.use('/api/auth', require('./modules/auth')(store));
     app.use('/api', require('./modules/core')(store));
     app.use('/api', require('./modules/flows')(store));
     // AI Console (threads, messages, context) in memory mode
@@ -51,6 +53,8 @@ function buildApp(opts = {}){
       next();
     });
     app.use('/auth', require('./modules/db/auth')());
+    // Public auth alias under /api to match frontend prod base (no auth middleware here)
+    app.use('/api/auth', require('./modules/db/auth')());
     app.use('/api', require('./modules/db/core')());
     app.use('/api', require('./modules/db/flows')());
     app.use('/api', require('./modules/db/providers')());
