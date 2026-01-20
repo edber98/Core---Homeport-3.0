@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { openSse, SseStream } from '../shared/chat/sse-client';
 import { AccessControlService } from './access-control.service';
 import { AuthTokenService } from './auth-token.service';
@@ -29,7 +29,7 @@ export class AiArgsAgentService {
     if (params.threadId) q.set('threadId', params.threadId);
     const wsId = this.acl.currentWorkspaceId?.(); if (wsId) q.set('workspaceId', wsId);
     const tok = this.auth.token; if (tok) q.set('token', tok);
-    const url = `${environment.apiBaseUrl}/api/ai/args/stream?${q.toString()}`;
+    const url = `${apiBase()}/ai/args/stream?${q.toString()}`;
     const stream: SseStream<ArgsAgentEvent> = openSse<ArgsAgentEvent>({
       zone: this.zone,
       url,

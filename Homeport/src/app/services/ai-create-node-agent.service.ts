@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { AccessControlService } from './access-control.service';
 import { AuthTokenService } from './auth-token.service';
 import { openSse, SseStream } from '../shared/chat/sse-client';
@@ -46,7 +46,7 @@ export class AiCreateNodeAgentService {
       try { const json = JSON.stringify(params.seedGraph); const b64 = btoa(unescape(encodeURIComponent(json))); q.set('seed', b64); } catch {}
     }
     // Prefer alias path to avoid potential blockers on "create-node"
-    const url = `${environment.apiBaseUrl}/api/ai/node-create/stream?${q.toString()}`;
+    const url = `${apiBase()}/ai/node-create/stream?${q.toString()}`;
     try { console.log('[ai-create-node][frontend] open SSE', { url, hasPrompt: !!params.prompt, hasSeed: !!params.seedGraph, sourceId: params.sourceId, sourceHandle: params.sourceHandle, threadId: params.threadId, flowId: params.flowId }); } catch {}
     const stream: SseStream<CreateNodeEvent> = openSse<CreateNodeEvent>({
       zone: this.zone,
