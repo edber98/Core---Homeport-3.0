@@ -18,15 +18,14 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
   template: `
     <div class="right-panel" [class.drawer-mode]="mode==='drawer'">
       <div class="inspector-meta" style="padding: 8px; padding-top: 0px; overflow: auto;">
-        <div class="panel-heading">
-          <div class="card-title left">
+        <div class="panel-heading main-title">
+          <div class="card-title">
             <span class="t">Navigation & Contrôles</span>
             <span class="s">Inspecteur</span>
           </div>
         </div>
         <form nz-form nzLayout="vertical" class="meta-form">
-          <nz-form-item>
-            <nz-form-label>En service</nz-form-label>
+          <nz-form-item class="enabled-row">
             <nz-form-control>
               <label class="enabled single-line">
                 <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="currentFlowEnabledChange.emit($event); metaChange.emit()" name="flowEnabledPanelTop" />
@@ -69,7 +68,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                   <nz-option nzValue="test" nzLabel="test"></nz-option>
                   <nz-option nzValue="production" nzLabel="production"></nz-option>
                 </nz-select>
-                <button nz-button class="apple-btn btn-save black" nzType="default" type="button" (click)="save.emit()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
+                <button nz-button class="apple-btn btn-save" nzType="default" type="button" (click)="save.emit()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
                   <i class="fa-solid fa-floppy-disk"></i><span class="lbl"></span>
                 </button>
               </div>
@@ -85,7 +84,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                            (nzScrollToBottom)="loadMoreRuns.emit()">
                   <nz-option *ngFor="let r of recentRuns" [nzValue]="r.id" [nzLabel]="(r.startedAt | date:'medium':'':'fr-FR') + ' — ' + (r.status || '—')"></nz-option>
                 </nz-select>
-                <button nz-button nzType="default" nzSize="small" class="load-btn" [disabled]="!selectedRecentId" (click)="selectedRecentId && selectRun.emit(selectedRecentId)" title="Charger">
+                <button nz-button nzType="default" nzSize="small" class="apple-btn load-btn" [disabled]="!selectedRecentId" (click)="selectedRecentId && selectRun.emit(selectedRecentId)" title="Charger">
                   <i class="fa-solid fa-download"></i>
                 </button>
               </div>
@@ -94,11 +93,11 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 <div class="row"><span class="k">Début</span><span class="v">{{ currentOrSelected()?.startedAt | date:'medium':'':'fr-FR' }}</span></div>
                 <div class="row"><span class="k">Fin</span><span class="v">{{ currentOrSelected()?.finishedAt | date:'medium':'':'fr-FR' }}</span></div>
                 <div class="actions-wrap">
-                  <button nz-button nzSize="small" (click)="clearRun.emit()"><i class="fa-regular fa-trash-can"></i><span>Effacer</span></button>
-                  <button *ngIf="(currentOrSelected()?.status||'') !== 'running'" nz-button nzType="primary" nzSize="small" (click)="restart.emit()">
+                  <button nz-button nzSize="small" class="apple-btn" (click)="clearRun.emit()"><i class="fa-regular fa-trash-can"></i><span>Effacer</span></button>
+                  <button *ngIf="(currentOrSelected()?.status||'') !== 'running'" nz-button nzType="primary" nzSize="small" class="apple-btn run-btn" (click)="restart.emit()">
                     <i class="fa-solid fa-play"></i><span>Lancer</span>
                   </button>
-                  <button *ngIf="(currentOrSelected()?.status||'') === 'running'" nz-button nzType="default" nzDanger nzSize="small" (click)="stop.emit()">
+                  <button *ngIf="(currentOrSelected()?.status||'') === 'running'" nz-button nzType="default" nzDanger nzSize="small" class="apple-btn" (click)="stop.emit()">
                     <i class="fa-solid fa-stop"></i><span>Stop</span>
                   </button>
                 </div>
@@ -142,10 +141,10 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 </ng-container>
               </ng-template>
               <div class="actions-line icon-only end" *ngIf="(selectedList.length||0) <= 1">
-                <button nz-button nzSize="small" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur (v1)" aria-label="Ouvrir l’éditeur (v1)"><i class="fa-regular fa-pen-to-square"></i></button>
-                <button nz-button nzSize="small" (click)="openAdvancedV2.emit()" title="Ouvrir l’éditeur avancé (v2)" aria-label="Ouvrir l’éditeur avancé (v2)"><i class="fa-solid fa-up-right-from-square"></i></button>
-                <button nz-button nzSize="small" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
-                <button nz-button nzSize="small" nzDanger (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
+                <button nz-button nzSize="small" class="apple-btn" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur (v1)" aria-label="Ouvrir l’éditeur (v1)"><i class="fa-regular fa-pen-to-square"></i></button>
+                <button nz-button nzSize="small" class="apple-btn" (click)="openAdvancedV2.emit()" title="Ouvrir l’éditeur avancé (v2)" aria-label="Ouvrir l’éditeur avancé (v2)"><i class="fa-solid fa-up-right-from-square"></i></button>
+                <button nz-button nzSize="small" class="apple-btn" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
+                <button nz-button nzSize="small" nzDanger class="apple-btn" (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
               </div>
             </div>
 
@@ -235,25 +234,74 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
   `,
   styles: [`
     :host { display:block; min-height:0; }
-    .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; }
+    .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; background:#fff; }
     .panel-scroll { height: 100%; overflow: auto; padding: 8px; }
     .inspector-meta .meta-form { font-size: 12px; padding: 0 4px; margin-top: 8px; }
     .inspector-meta .meta-form .ant-form-item { margin-bottom: 10px; }
-    ::ng-deep .meta-form .ant-form-item-label > label { font-weight: 600; font-size: 12px; }
+    .inspector-meta .meta-form .enabled-row { margin-bottom: 0; }
+    :host ::ng-deep .meta-form .ant-form-item { padding: 4px 6px; border-radius: 6px; transition: background-color .12s ease; }
+    :host ::ng-deep .meta-form .ant-form-item-label > label { color: #6b7280; font-weight: 500; font-size: 12px; }
+    :host ::ng-deep .meta-form .ant-input,
+    :host ::ng-deep .meta-form .ant-select-selector,
+    :host ::ng-deep .meta-form .ant-input-number,
+    :host ::ng-deep .meta-form .ant-picker,
+    :host ::ng-deep .meta-form .ant-switch {
+      background: #f3f7ff;
+      border-color: #d9e4ff;
+      transition: box-shadow .12s ease, border-color .12s ease;
+    }
+    :host ::ng-deep .meta-form .ant-input:hover,
+    :host ::ng-deep .meta-form .ant-select-selector:hover,
+    :host ::ng-deep .meta-form .ant-input-number:hover,
+    :host ::ng-deep .meta-form .ant-picker:hover {
+      border-color: #d1d5db;
+    }
+    :host ::ng-deep .meta-form .ant-input:focus,
+    :host ::ng-deep .meta-form .ant-select-focused .ant-select-selector,
+    :host ::ng-deep .meta-form .ant-input-number-focused,
+    :host ::ng-deep .meta-form .ant-picker-focused,
+    :host ::ng-deep .meta-form .ant-switch-checked {
+      box-shadow: 0 0 0 2px rgba(17,17,17,0.08);
+    }
+    :host ::ng-deep .meta-form .ant-switch.ant-switch-checked {
+      background-color: #1677ff;
+      border-color: #1677ff;
+    }
+    :host ::ng-deep .meta-form .ant-switch:not(.ant-switch-checked) {
+      background-color: #dbe8ff;
+      border-color: #9dbdff;
+    }
+    :host ::ng-deep .meta-form .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: #1677ff;
+      border-color: #1677ff;
+    }
+    :host ::ng-deep .meta-form .ant-checkbox:not(.ant-checkbox-checked) .ant-checkbox-inner {
+      border: 1px solid #9dbdff !important;
+      background-color: #e7f0ff;
+    }
     .exec-row { display:flex; gap: 8px; align-items:center; }
     .exec-row .apple-btn { display:inline-flex; align-items:center; gap:6px; border-radius:8px; }
     .exec-row .apple-btn.icon-only { width:34px; height:34px; justify-content:center; }
     .exec-row .apple-btn .lbl { display:none; }
     .s { font-size:12px; color:#64748b; }
+    .inspector-meta label.enabled { display:inline-flex; gap: 10px; }
     .exec-status { margin-top: 6px; }
     .exec-status .row { display:flex; justify-content:space-between; padding: 4px 0; }
     .exec-status .row .k { color:#6b7280; }
     .actions-wrap { display:flex; flex-wrap: wrap; gap:8px; justify-content:flex-end; margin-top:6px; }
     .actions-wrap button { display:inline-flex; align-items:center; gap:6px; }
+    .actions-wrap .run-btn { background:#1677ff !important; color:#fff !important; border-color:#1677ff !important; }
+    .actions-wrap .run-btn:hover { background:#0f66e8 !important; border-color:#0f66e8 !important; }
+    :host ::ng-deep .inspector-meta .apple-btn:hover:not([disabled]) {
+      background: #e8f1ff !important;
+      border-color: #c7dbff !important;
+      color: #0b5ed7 !important;
+      box-shadow: 0 6px 14px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
     .pub-row { align-items:center; }
-    .btn-save.black { background:#111; color:#fff; border-color:#111; }
     .pub-row { display:flex; gap:8px; align-items:center; }
-    .recent .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin:6px 0 8px; }
+    .recent .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:0; margin:6px 0 8px; }
     .recent .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .recent-list { display:flex; flex-direction:column; gap:8px; padding:8px 0; }
     .recent-list .r { display:flex; gap:8px; align-items:center; font-size:12px; padding:4px 6px; border-radius:6px; }
@@ -271,10 +319,13 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .load-more { margin-top: 6px; display:flex; justify-content:flex-end; }
 
     /* Node inspector (inline) */
-    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom: 1px solid #E2E1E4; }
+    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom: 0; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:14px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
+    .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; }
+    .panel-heading.main-title .card-title .t { font-weight:700; font-size:14px; color:#000; }
+    .panel-heading.main-title .card-title .s { font-size:11px; color:#64748b; }
     .inspector-node { padding: 0 8px; }
     .inspector-node .rows { display:flex; flex-direction:column; gap:8px; }
     .inspector-node .rows.simple .row { display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #f2f2f2; padding: 6px 0; }

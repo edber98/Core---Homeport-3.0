@@ -39,7 +39,7 @@ import { NzTimelineModule } from 'ng-zorro-antd/timeline';
   styles: [`
     .timeline-root { display:flex; flex-direction:column; gap:0px; margin-top:8px; }
     /* Panel heading matches other panels */
-    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; }
+    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; margin:6px 0 8px; border-bottom:0; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:14px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }

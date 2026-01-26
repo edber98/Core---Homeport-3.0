@@ -23,10 +23,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       <div class="args-title-row">
         <div class="args-title">Arguments renseignés</div>
         <div class="title-actions">
-          <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" type="button" (click)="openFilledModal.emit()" aria-label="Voir en grand">
+          <button nz-button nzSize="small" class="apple-btn icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" type="button" (click)="openFilledModal.emit()" aria-label="Voir en grand">
             <i class="fa-solid fa-circle-info"></i>
           </button>
-          <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" type="button" (click)="openFilledJson.emit()" aria-label="Voir en JSON">
+          <button nz-button nzSize="small" class="apple-btn icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" type="button" (click)="openFilledJson.emit()" aria-label="Voir en JSON">
             <i class="fa-solid fa-code"></i>
           </button>
         </div>
@@ -43,10 +43,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       <div class="args-title-row">
         <div class="args-title">Arguments utilisés</div>
         <div class="title-actions">
-          <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" type="button" (click)="openUsedModal.emit()" aria-label="Voir en grand">
+          <button nz-button nzSize="small" class="apple-btn icon-btn" nz-tooltip nzTooltipTitle="Voir en grand" type="button" (click)="openUsedModal.emit()" aria-label="Voir en grand">
             <i class="fa-solid fa-circle-info"></i>
           </button>
-          <button nz-button nzSize="small" class="icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" type="button" (click)="openUsedJson.emit()" aria-label="Voir en JSON">
+          <button nz-button nzSize="small" class="apple-btn icon-btn" nz-tooltip nzTooltipTitle="Voir en JSON" type="button" (click)="openUsedJson.emit()" aria-label="Voir en JSON">
             <i class="fa-solid fa-code"></i>
           </button>
         </div>
