@@ -15,7 +15,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       <div class="palette-search">
         <input nz-input [ngModel]="query" (ngModelChange)="queryChange.emit($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
       </div>
-      <div class="palette-scroll">
+      <div class="palette-scroll" *ngIf="!activeGroup">
       <div class="search-results" *ngIf="hasQuery(); else browseMode">
         <ng-container *ngFor="let g of filteredGroups(); let gi = index; trackBy: trackGroupFn">
           <div class="group-title search-group-title">
@@ -81,7 +81,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
         <div class="empty" *ngIf="filteredGroups().length === 0">Aucun nœud trouvé.</div>
       </div>
       <ng-template #browseMode>
-        <div class="groups" *ngIf="!activeGroup; else groupItems">
+        <div class="groups" *ngIf="!activeGroup">
           <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
           <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
             <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
@@ -97,8 +97,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       </ng-template>
       </div>
 
-      <ng-template #groupItems>
-        <div class="group-overlay">
+        <div class="group-overlay" *ngIf="activeGroup">
           <div class="palette-topbar group-topbar">
             <button type="button" class="back-btn" (click)="closeGroup()" aria-label="Retour aux groupes">
               <i class="fa-solid fa-arrow-left"></i>
@@ -117,11 +116,12 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
             <input nz-input [ngModel]="query" (ngModelChange)="queryChange.emit($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
           </div>
           <div class="group-overlay-scroll">
-          <div class="items" cdkDropList [id]="(mode === 'drawer' ? 'drawer_group_' : 'outside_group_') + activeGroupIndex"
-               [cdkDropListData]="activeGroup?.items || []" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
+          <div class="items" *ngIf="activeGroupItems().length > 0"
+               cdkDropList [id]="(mode === 'drawer' ? 'drawer_group_' : 'outside_group_') + activeGroupIndex"
+               [cdkDropListData]="activeGroupItems()" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
                [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
                (cdkDropListDropped)="null">
-            <div class="item" *ngFor="let it of (activeGroup?.items || []); trackBy: trackItemFn"
+            <div class="item" *ngFor="let it of activeGroupItems(); trackBy: trackItemFn"
                  [class.dragging]="isDraggingFn?.(it)"
                  [class.disabled]="isItemDisabledFn?.(it)"
                  [attr.aria-disabled]="isItemDisabledFn?.(it) ? true : null"
@@ -167,9 +167,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
               </div>
             </div>
           </div>
+          <div class="empty" *ngIf="activeGroupItems().length === 0">Aucun nœud trouvé.</div>
           </div>
         </div>
-      </ng-template>
     </aside>
   `,
   styles: [`
@@ -306,6 +306,24 @@ export class FlowPalettePanelComponent {
       if (items.length) out.push({ group: g, items });
     });
     return out;
+  }
+  activeGroupItems(): any[] {
+    if (!this.activeGroup) return [];
+    const items = this.activeGroup?.items || [];
+    if (!this.hasQuery()) return items;
+    const q = (this.query || '').toLowerCase();
+    return items.filter((it: any) => {
+      const label = String(it?.label || '');
+      const tpl = it?.template || {};
+      const hay = [
+        label,
+        tpl?.name,
+        tpl?.type,
+        tpl?.subtitle,
+        tpl?.description
+      ].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
   }
   openGroup(g: any, index: number): void {
     this.activeGroup = g;
