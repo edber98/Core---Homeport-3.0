@@ -11,7 +11,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   imports: [CommonModule, FormsModule, DragDropModule, NzInputModule, NzToolTipModule],
   template: `
     <aside class="palette" [class.drawer-mode]="mode==='drawer'">
-      <div class="palette-topbar centered">Nouveau noeud</div>
+      <div class="palette-topbar centered">
+        <span class="t">Nouveau noeud</span>
+        <span class="s">Groupes & Templates</span>
+      </div>
       <div class="palette-search">
         <input nz-input [ngModel]="query" (ngModelChange)="queryChange.emit($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
       </div>
@@ -167,7 +170,12 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
               </div>
             </div>
           </div>
-          <div class="empty" *ngIf="activeGroupItems().length === 0">Aucun nœud trouvé.</div>
+          <div class="empty" *ngIf="activeGroupItems().length === 0">
+            <div>Aucun nœud trouvé dans ce groupe.</div>
+            <button *ngIf="hasQuery()" type="button" class="apple-btn" (click)="searchGlobal()" aria-label="Rechercher dans tous les groupes">
+              Rechercher dans tous les groupes
+            </button>
+          </div>
           </div>
         </div>
     </aside>
@@ -178,8 +186,10 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .palette { border: none; border-radius: 0; padding: 12px; padding-right: 9px; background: #ffffff; padding-top: 0 !important; height: 100%; overflow: auto; position: relative; }
     .palette { display:flex; flex-direction:column; }
     .palette.drawer-mode { height: 100%; overflow: auto; }
-    .palette .palette-topbar { width: calc(100% + 21px); margin: 0 -9px 0 -12px; background:#fff; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:8px; border-bottom: 0; }
+    .palette .palette-topbar { width: calc(100% + 21px); margin: 0 -9px 0 -12px; background:#fff; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:0; border-bottom: 0; flex-direction:column; }
     .palette .palette-topbar.centered { justify-content:center; }
+    .palette .palette-topbar .t { font-weight:700; font-size:18px; color:#111; line-height:1.1; }
+    .palette .palette-topbar .s { font-size:13px; color:#64748b; line-height:1.2; }
     .palette .palette-search { margin: 6px 0 14px; }
     :host ::ng-deep .palette .palette-search .ant-input:focus,
     :host ::ng-deep .palette .palette-search .ant-input-focused {
@@ -240,7 +250,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .palette .search-group-title .group-name { font-weight:700; font-size: 14px; color:#111; }
     .palette .mini-icon { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-right:6px; }
     .palette .mini-icon .mini { font-size: 15px; line-height: 1; color:#64748b; }
-    .palette .empty { color:#94a3b8; font-size: 12px; padding: 6px 2px; }
+    .palette .empty { color:#94a3b8; font-size: 12px; padding: 6px 2px; display:flex; flex-direction:column; gap:8px; }
     .palette .items { display:flex; flex-direction:column; gap:8px; }
     .palette .item { display:flex; align-items:center; gap:10px; padding: 14px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04); position: relative; transition: border-color .3s ease; }
     .palette .item.disabled { opacity: .5; cursor: not-allowed; }
@@ -332,6 +342,9 @@ export class FlowPalettePanelComponent {
   closeGroup(): void {
     this.activeGroup = null;
     this.activeGroupIndex = -1;
+  }
+  searchGlobal(): void {
+    this.closeGroup();
   }
   openAiIconUrl = 'https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0';
   isOpenAiGroup(g: any): boolean {

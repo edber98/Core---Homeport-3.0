@@ -323,9 +323,10 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:14px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
-    .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; }
-    .panel-heading.main-title .card-title .t { font-weight:700; font-size:14px; color:#000; }
-    .panel-heading.main-title .card-title .s { font-size:11px; color:#64748b; }
+    .panel-heading.main-title { justify-content:center; padding:10px 0; }
+    .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; line-height:1.1; }
+    .panel-heading.main-title .card-title .t { font-weight:700; font-size:18px; color:#000; }
+    .panel-heading.main-title .card-title .s { font-size:13px; color:#64748b; }
     .inspector-node { padding: 0 8px; }
     .inspector-node .rows { display:flex; flex-direction:column; gap:8px; }
     .inspector-node .rows.simple .row { display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #f2f2f2; padding: 6px 0; }
