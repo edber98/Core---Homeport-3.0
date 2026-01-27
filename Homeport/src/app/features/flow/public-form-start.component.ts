@@ -9,6 +9,7 @@ import { CatalogService } from '../../services/catalog.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { apiBase } from '../../shared/api-base';
 
 @Component({
   standalone: true,
@@ -173,8 +174,8 @@ export class PublicFormStartComponent {
   private trackPublicRunSSE() {
     if (!this.runId) { this.error = 'Run introuvable'; this.running = false; this.done = true; return; }
     try {
-      const base = (window as any)?.env?.apiBaseUrl || (location.origin.replace(/\/$/, ''));
-      const url = `${base}/api/public/runs/${encodeURIComponent(this.runId)}/stream`;
+      // Utiliser apiBase() (origin + suffix en prod, env.apiBaseUrl en dev)
+      const url = `${apiBase()}/public/runs/${encodeURIComponent(this.runId)}/stream`;
       const es = new EventSource(url);
       es.addEventListener('live', (evt: MessageEvent) => {
         try {

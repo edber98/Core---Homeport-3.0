@@ -70,22 +70,23 @@
 .icon-toolbar i { font-size: 14px; line-height: 1; }
 
 .icon-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 36px);
+  grid-auto-rows: 36px;
+  gap: 10px;
 }
 .icon-grid button[nz-button] {
   border: 1px solid #e5e7eb;
   background: #fff;
   color: #0f172a;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-}
+  }
 .icon-toolbar button[nz-button][disabled] {
   opacity: .45;
   filter: grayscale(0.35);
@@ -152,6 +153,13 @@
 .tree-node-text {
   flex: 1 1 auto;
 }
+
+/* Card body spacing for tabs */
+:host ::ng-deep .ant-tabs-content-holder {
+  padding-top: 6px;
+}
+/* Make tree area scrollable within card */
+.tree { max-height: 320px; overflow: auto; padding: 4px 0; }
 
 /* Structure tree: selected node in blue (instead of gray) */
 :host ::ng-deep .tree .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected,

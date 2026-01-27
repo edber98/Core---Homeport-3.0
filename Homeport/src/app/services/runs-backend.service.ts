@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { AuthTokenService } from './auth-token.service';
 
 export interface BackendRun {
@@ -58,9 +58,9 @@ export class RunsBackendService {
 
   // Open an SSE stream for a given runId and emit parsed LiveEvents
   stream(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
-    const base = environment.apiBaseUrl.replace(/\/$/, '');
+    const base = apiBase();
     const token = this.auth.token;
-    const url = `${base}/api/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+    const url = `${base}/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
     const source = new EventSource(url);
     // Basic logs for debugging SSE lifecycle
     try { console.log('[frontend][sse] open', { runId, url }); } catch {}
@@ -91,9 +91,9 @@ export class RunsBackendService {
   }
   getAdhoc(runId: string): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/test/runs/${encodeURIComponent(runId)}`); }
   streamAdhoc(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
-    const base = environment.apiBaseUrl.replace(/\/$/, '');
+    const base = apiBase();
     const token = this.auth.token;
-    const url = `${base}/api/test/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+    const url = `${base}/test/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
     const source = new EventSource(url);
     const on = (cb: (ev: any) => void) => {
       const handler = (evt: MessageEvent) => { try { const parsed = JSON.parse(evt.data); cb(parsed); } catch {} };

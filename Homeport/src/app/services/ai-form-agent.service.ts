@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { AuthTokenService } from './auth-token.service';
 import { openSse, SseStream } from '../shared/chat/sse-client';
 
@@ -43,7 +43,7 @@ export class AiFormAgentService {
     if (params.seedSchema && typeof params.seedSchema === 'object') {
       try { const json = JSON.stringify(params.seedSchema); const b64 = btoa(unescape(encodeURIComponent(json))); q.set('seed', b64); } catch {}
     }
-    const url = `${environment.apiBaseUrl}/api/ai/form/build/stream?${q.toString()}`;
+    const url = `${apiBase()}/ai/form/build/stream?${q.toString()}`;
     const stream: SseStream<AgentEvent> = openSse<AgentEvent>({
       zone: this.zone,
       url,

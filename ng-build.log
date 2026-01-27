@@ -1,261 +1,361 @@
 ❯ Building...
 ✔ Building...
-Application bundle generation failed. [8.458 seconds]
+Initial chunk files   | Names                          |  Raw size | Estimated transfer size
+styles-6CJI5M7N.css   | styles                         | 629.33 kB |                57.59 kB
+chunk-HHU7VY4T.js     | -                              | 182.41 kB |                52.96 kB
+chunk-4ZODL4QN.js     | -                              | 157.03 kB |                36.54 kB
+main-4WJK5YO2.js      | main                           |  92.47 kB |                21.52 kB
+chunk-FUWSXZZL.js     | -                              |  87.06 kB |                16.80 kB
+chunk-UEPM62CC.js     | -                              |  79.31 kB |                19.69 kB
+chunk-6GFUKQDE.js     | -                              |  73.79 kB |                21.62 kB
+chunk-XYTPAKLN.js     | -                              |  69.50 kB |                15.86 kB
+chunk-S5M4DBZA.js     | -                              |  65.05 kB |                19.65 kB
+chunk-BN7AXZ57.js     | -                              |  64.90 kB |                17.75 kB
+chunk-IXR4UGPM.js     | -                              |  63.48 kB |                17.01 kB
+chunk-YIXZ6QPZ.js     | -                              |  57.88 kB |                13.70 kB
+chunk-H5JJEFDN.js     | -                              |  53.25 kB |                12.79 kB
+chunk-GK57L6TY.js     | -                              |  50.60 kB |                 9.78 kB
+polyfills-B6TNHZQ6.js | polyfills                      |  34.58 kB |                11.32 kB
+chunk-A2PZJWT3.js     | -                              |  34.40 kB |                 7.30 kB
+chunk-WWAWLRSS.js     | -                              |  32.60 kB |                 7.86 kB
+chunk-MEENXYT3.js     | -                              |  23.08 kB |                 6.01 kB
+chunk-T3MXGSMM.js     | -                              |  21.88 kB |                 4.79 kB
+chunk-VEX2RDDG.js     | -                              |  19.86 kB |                 5.08 kB
+chunk-NH3DOQLZ.js     | -                              |  15.01 kB |                 4.43 kB
+chunk-LU45DTUG.js     | -                              |  14.93 kB |                 4.23 kB
+chunk-EXXGS2IA.js     | -                              |  14.12 kB |                 3.54 kB
+chunk-K667LRAP.js     | -                              |  12.43 kB |                 3.39 kB
+chunk-OQLWQCO7.js     | -                              |  12.07 kB |                 3.40 kB
+chunk-2XOCQGUX.js     | -                              |   9.29 kB |                 3.12 kB
+chunk-IQD5EI5P.js     | -                              |   8.15 kB |                 2.51 kB
+chunk-HKIPOK2P.js     | -                              |   7.51 kB |                 2.24 kB
+chunk-JKLO6X25.js     | -                              |   6.78 kB |                 1.76 kB
+chunk-BN3CYYDH.js     | -                              |   6.38 kB |                 2.17 kB
+chunk-YEXCV7IW.js     | -                              |   5.49 kB |                 1.90 kB
+chunk-OL2K3ESM.js     | -                              |   5.18 kB |                 1.15 kB
+chunk-3H6LJHE3.js     | -                              |   4.82 kB |                 1.60 kB
+chunk-YUIAPYYF.js     | -                              |   4.13 kB |                 1.06 kB
+chunk-ZDXAM45H.js     | -                              |   4.07 kB |                 1.04 kB
+chunk-AYGCMRIO.js     | -                              |   3.25 kB |                 1.21 kB
+chunk-WK37AKWQ.js     | -                              |   2.78 kB |               961 bytes
+chunk-KHV3HENT.js     | -                              |   2.28 kB |               934 bytes
+chunk-KFTLZOM4.js     | -                              |   1.58 kB |               653 bytes
+chunk-7U7UFLVE.js     | -                              |   1.56 kB |               620 bytes
+chunk-JPJQ7RYX.js     | -                              |   1.43 kB |               655 bytes
+chunk-SGN5SC6Z.js     | -                              | 981 bytes |               981 bytes
+chunk-FQUK62NC.js     | -                              | 911 bytes |               911 bytes
+chunk-F5B43XCD.js     | -                              | 848 bytes |               848 bytes
+chunk-UZBKM3XA.js     | -                              | 797 bytes |               797 bytes
+chunk-OG4RIMZK.js     | -                              | 737 bytes |               737 bytes
+chunk-HAH3R645.js     | -                              | 493 bytes |               493 bytes
+chunk-VJTENCPY.js     | -                              | 493 bytes |               493 bytes
+chunk-AEMPYBB3.js     | -                              | 382 bytes |               382 bytes
+chunk-AAKPWWZA.js     | -                              | 361 bytes |               361 bytes
+chunk-KAUPSB2Y.js     | -                              |  95 bytes |                95 bytes
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: GlobalLoadingComponent is not used within the template of App[0m [1m[35m[plugin angular-compiler][0m
+                      | Initial total                  |   2.04 MB |               424.30 kB
+
+Lazy chunk files      | Names                          |  Raw size | Estimated transfer size
+chunk-ADP25CJ4.js     | flow-builder-component         | 656.35 kB |               123.36 kB
+chunk-VSFXFOE5.js     | -                              | 305.95 kB |                84.36 kB
+chunk-OOIHOMZQ.js     | dynamic-form-builder-component | 257.29 kB |                46.25 kB
+chunk-3GGUPWB6.js     | -                              | 196.55 kB |                31.68 kB
+chunk-DPF6UWC7.js     | ui-builder-component           | 109.78 kB |                23.16 kB
+chunk-DSA7MGEQ.js     | -                              | 101.29 kB |                13.71 kB
+chunk-KJ2NLDVE.js     | dashboard-stats                | 100.81 kB |                21.29 kB
+chunk-2L3R6V2A.js     | node-template-editor-component |  57.09 kB |                14.11 kB
+chunk-L66VIYAN.js     | -                              |  56.27 kB |                13.96 kB
+chunk-VZ5S4KV2.js     | -                              |  55.10 kB |                 6.32 kB
+chunk-6WWGYEUO.js     | -                              |  52.09 kB |                12.77 kB
+chunk-CBQP3UUG.js     | flow-execution-component       |  49.30 kB |                11.07 kB
+chunk-QZ7UHKCK.js     | -                              |  47.55 kB |                10.44 kB
+chunk-OKCLDF3T.js     | -                              |  39.18 kB |                 8.94 kB
+chunk-FJUZPOSM.js     | workspace-list-component       |  29.29 kB |                 6.70 kB
+...and 62 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [10.427 seconds]
+
+▲ [WARNING] NG8113: GlobalLoadingComponent is not used within the template of App [plugin angular-compiler]
 
     src/app/app.ts:8:33:
-[37m      8 │   imports: [RouterOutlet, Vflow, [32mGlobalLoadingComponent[37m],
-        ╵                                  [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+      8 │   imports: [RouterOutlet, Vflow, GlobalLoadingComponent],
+        ╵                                  ~~~~~~~~~~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/catalog/app-provider-editor.component.ts:28:35:
-[37m      28 │ ...    <span class="s">{{ form?.[32mvalue[37m?.title || form?.value?.name ...
-         ╵                                 [32m~~~~~[0m
+      28 │ ...    <span class="s">{{ form?.value?.title || form?.value?.name ...
+         ╵                                 ~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/catalog/app-provider-editor.component.ts:28:57:
-[37m      28 │ ...>{{ form?.value?.title || form?.[32mvalue[37m?.name || 'Nouveau' }}</span>
-         ╵                                    [32m~~~~~[0m
+      28 │ ...>{{ form?.value?.title || form?.value?.name || 'Nouveau' }}</span>
+         ╵                                    ~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: FormTableViewerComponent is not used within the template of AppProviderViewerComponent[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8113: FormTableViewerComponent is not used within the template of AppProviderViewerComponent [plugin angular-compiler]
 
     src/app/features/catalog/app-provider-viewer.component.ts:17:69:
-[37m      17 │ ...odule, NzTagModule, [32mFormTableViewerComponent[37m, RecordsTableCompo...
-         ╵                        [32m~~~~~~~~~~~~~~~~~~~~~~~~[0m
+      17 │ ...odule, NzTagModule, FormTableViewerComponent, RecordsTableCompo...
+         ╵                        ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: DynamicForm is not used within the template of CredentialViewerComponent[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8113: DynamicForm is not used within the template of CredentialViewerComponent [plugin angular-compiler]
 
     src/app/features/credentials/credential-viewer.component.ts:15:112:
-[37m      15 │ ...TableViewerComponent, CredentialEditDialogComponent, [32mDynamicForm[37m],
-         ╵                                                         [32m~~~~~~~~~~~[0m
+      15 │ ...TableViewerComponent, CredentialEditDialogComponent, DynamicForm],
+         ╵                                                         ~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/credentials/credential-viewer.component.ts:47:112:
-[37m      47 │ ...tDoc" [workspaceId]="doc?.[32mworkspaceId[37m || null" (closed)="editVi...
-         ╵                              [32m~~~~~~~~~~~[0m
+      47 │ ...tDoc" [workspaceId]="doc?.workspaceId || null" (closed)="editVi...
+         ╵                              ~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.html:400:85:
+      400 │ ...ector.controls['visibleIf']?.value)" (valueChange)="inspector....
+          ╵                                 ~~~~~
+
+  Warning occurs in the template of component DynamicFormBuilderComponent.
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.ts:107:15:
+      107 │   templateUrl: './dynamic-form-builder.component.html',
+          ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.html:412:85:
+      412 │ ...ector.controls['visibleIf']?.value)" (valueChange)="inspector....
+          ╵                                 ~~~~~
+
+  Warning occurs in the template of component DynamicFormBuilderComponent.
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.ts:107:15:
+      107 │   templateUrl: './dynamic-form-builder.component.html',
+          ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.html:426:86:
+      426 │ ...ctor.controls['requiredIf']?.value)" (valueChange)="inspector....
+          ╵                                 ~~~~~
+
+  Warning occurs in the template of component DynamicFormBuilderComponent.
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.ts:107:15:
+      107 │   templateUrl: './dynamic-form-builder.component.html',
+          ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.html:438:86:
+      438 │ ...ctor.controls['disabledIf']?.value)" (valueChange)="inspector....
+          ╵                                 ~~~~~
+
+  Warning occurs in the template of component DynamicFormBuilderComponent.
+
+    src/app/features/dynamic-form/dynamic-form-builder.component.ts:107:15:
+      107 │   templateUrl: './dynamic-form-builder.component.html',
+          ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/advanced-editor/flow-advanced-center-panel.component.ts:197:116:
-[37m      197 │ ...rios && simScenarios[simSelectedIndex]?.[32mmatch[37m?.handleId) || null"
-          ╵                                            [32m~~~~~[0m
+      197 │ ...rios && simScenarios[simSelectedIndex]?.match?.handleId) || null"
+          ╵                                            ~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDuplicate member "friendlyName" in class body[0m [duplicate-class-member]
-
-    src/app/features/flow/components/node-assistant-chat.component.ts:501:12:
-[37m      501 │     private [32mfriendlyName[37m(func: string): string {
-          ╵             [32m~~~~~~~~~~~~[0m
-
-  The original member "friendlyName" is here:
-
-    src/app/features/flow/components/node-assistant-chat.component.ts:241:12:
-[37m      241 │     private [32mfriendlyName[37m(func: string): string {
-          ╵             [32m~~~~~~~~~~~~[0m
-
-
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLink is not used within the template of FlowAiConsoleComponent[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8113: RouterLink is not used within the template of FlowAiConsoleComponent [plugin angular-compiler]
 
     src/app/features/flow/flow-ai-console.component.ts:22:39:
-[37m      22 │ ...CommonModule, FormsModule, [32mRouterLink[37m, RouterLinkActive, NzButt...
-         ╵                               [32m~~~~~~~~~~[0m
+      22 │ ...CommonModule, FormsModule, RouterLink, RouterLinkActive, NzButt...
+         ╵                               ~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: RouterLinkActive is not used within the template of FlowAiConsoleComponent[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8113: RouterLinkActive is not used within the template of FlowAiConsoleComponent [plugin angular-compiler]
 
     src/app/features/flow/flow-ai-console.component.ts:22:51:
-[37m      22 │ ...ormsModule, RouterLink, [32mRouterLinkActive[37m, NzButtonModule, NzInp...
-         ╵                            [32m~~~~~~~~~~~~~~~~[0m
+      22 │ ...ormsModule, RouterLink, RouterLinkActive, NzButtonModule, NzInp...
+         ╵                            ~~~~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-builder.component.html:99:134:
-[37m      99 │ ...node.id, ctx.node.data.model)?.[32mlength[37m || 0) > 0) ? 'none' : '' }">
-         ╵                                   [32m~~~~~~[0m
+      99 │ ...node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+         ╵                                   ~~~~~~
 
   Warning occurs in the template of component FlowBuilderComponent.
 
     src/app/features/flow/flow-builder.component.ts:48:15:
-[37m      48 │   templateUrl: [32m'./flow-builder.component.html'[37m,
-         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+      48 │   templateUrl: './flow-builder.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: VflowSafariForeignObjectPatchDirective is not used within the template of FlowBuilderComponent[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8113: VflowSafariForeignObjectPatchDirective is not used within the template of FlowBuilderComponent [plugin angular-compiler]
 
     src/app/features/flow/flow-builder.component.ts:47:25:
-[37m      47 │ ...CommonModule,[32mVflowSafariForeignObjectPatchDirective[37m, FormsModul...
-         ╵                 [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+      47 │ ...CommonModule,VflowSafariForeignObjectPatchDirective, FormsModul...
+         ╵                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:135:61:
-[37m      135 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.[32mid[37m }}</div>
-          ╵                                                          [32m~~[0m
+      135 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
+          ╵                                                          ~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:138:51:
-[37m      138 │ ...Color]="selectedBackendRun?.[32mstatus[37m==='success' ? 'green' : (se...
-          ╵                                [32m~~~~~~[0m
+      138 │ ...Color]="selectedBackendRun?.status==='success' ? 'green' : (se...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:138:103:
-[37m      138 │ ...een' : (selectedBackendRun?.[32mstatus[37m==='error' ? 'red' : (select...
-          ╵                                [32m~~~~~~[0m
+      138 │ ...een' : (selectedBackendRun?.status==='error' ? 'red' : (select...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:138:151:
-[37m      138 │ ...red' : (selectedBackendRun?.[32mstatus[37m==='running' ? 'blue' : (sel...
-          ╵                                [32m~~~~~~[0m
+      138 │ ...red' : (selectedBackendRun?.status==='running' ? 'blue' : (sel...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:138:202:
-[37m      138 │ ...lue' : (selectedBackendRun?.[32mstatus[37m==='cancelled' ? 'default' :...
-          ╵                                [32m~~~~~~[0m
+      138 │ ...lue' : (selectedBackendRun?.status==='cancelled' ? 'default' :...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:138:293:
-[37m      138 │ ...)))" class="status-tag">{{ selectedBackendRun?.[32mstatus[37m }}</nz-tag>
-          ╵                                                   [32m~~~~~~[0m
+      138 │ ...)))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
+          ╵                                                   ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:147:88:
-[37m      147 │ ...urationMs != null">{{ selectedBackendRun?.[32mdurationMs[37m }} ms</span>
-          ╵                                              [32m~~~~~~~~~~[0m
+      147 │ ...urationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+          ╵                                              ~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:148:94:
-[37m      148 │ ...= null"> · {{ selectedBackendRun?[32m.nodesExecute[37md }} nœuds</span>
-          ╵                                     [32m~~~~~~~~~~~~~[0m
+      148 │ ...= null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+          ╵                                     ~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:149:92:
-[37m      149 │ ...t != null"> · {{ selectedBackendRun?[32m.eventsCoun[37mt }} évts</span>
-          ╵                                        [32m~~~~~~~~~~~[0m
+      149 │ ...t != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
+          ╵                                        ~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:227:61:
-[37m      227 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.[32mid[37m }}</div>
-          ╵                                                          [32m~~[0m
+      227 │ ...       <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
+          ╵                                                          ~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:230:51:
-[37m      230 │ ...Color]="selectedBackendRun?.[32mstatus[37m==='success' ? 'green' : (se...
-          ╵                                [32m~~~~~~[0m
+      230 │ ...Color]="selectedBackendRun?.status==='success' ? 'green' : (se...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:230:103:
-[37m      230 │ ...een' : (selectedBackendRun?.[32mstatus[37m==='error' ? 'red' : (select...
-          ╵                                [32m~~~~~~[0m
+      230 │ ...een' : (selectedBackendRun?.status==='error' ? 'red' : (select...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:230:151:
-[37m      230 │ ...red' : (selectedBackendRun?.[32mstatus[37m==='running' ? 'blue' : (sel...
-          ╵                                [32m~~~~~~[0m
+      230 │ ...red' : (selectedBackendRun?.status==='running' ? 'blue' : (sel...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:230:202:
-[37m      230 │ ...lue' : (selectedBackendRun?.[32mstatus[37m==='cancelled' ? 'default' :...
-          ╵                                [32m~~~~~~[0m
+      230 │ ...lue' : (selectedBackendRun?.status==='cancelled' ? 'default' :...
+          ╵                                ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:230:293:
-[37m      230 │ ...)))" class="status-tag">{{ selectedBackendRun?.[32mstatus[37m }}</nz-tag>
-          ╵                                                   [32m~~~~~~[0m
+      230 │ ...)))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
+          ╵                                                   ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:239:88:
-[37m      239 │ ...urationMs != null">{{ selectedBackendRun?.[32mdurationMs[37m }} ms</span>
-          ╵                                              [32m~~~~~~~~~~[0m
+      239 │ ...urationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+          ╵                                              ~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:240:94:
-[37m      240 │ ...= null"> · {{ selectedBackendRun?[32m.nodesExecute[37md }} nœuds</span>
-          ╵                                     [32m~~~~~~~~~~~~~[0m
+      240 │ ...= null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+          ╵                                     ~~~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-execution.component.ts:241:92:
-[37m      241 │ ...t != null"> · {{ selectedBackendRun?[32m.eventsCoun[37mt }} évts</span>
-          ╵                                        [32m~~~~~~~~~~~[0m
+      241 │ ...t != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
+          ╵                                        ~~~~~~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/flow-viewer.component.ts:52:133:
-[37m      52 │ ...node.id, ctx.node.data.model)?.[32mlength[37m || 0) > 0) ? 'none' : '' }">
-         ╵                                   [32m~~~~~~[0m
+      52 │ ...node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+         ╵                                   ~~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/node-template-editor.component.ts:36:35:
-[37m      36 │ ...    <span class="s">{{ form?.[32mvalue[37m?.title || form?.value?.name ...
-         ╵                                 [32m~~~~~[0m
+      36 │ ...    <span class="s">{{ form?.value?.title || form?.value?.name ...
+         ╵                                 ~~~~~
 
 
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator.[0m [1m[35m[plugin angular-compiler][0m
+▲ [WARNING] NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be replaced with the '.' operator. [plugin angular-compiler]
 
     src/app/features/flow/node-template-editor.component.ts:36:57:
-[37m      36 │ ...>{{ form?.value?.title || form?.[32mvalue[37m?.name || 'Nouveau' }}</span>
-         ╵                                    [32m~~~~~[0m
+      36 │ ...>{{ form?.value?.title || form?.value?.name || 'Nouveau' }}</span>
+         ╵                                    ~~~~~
 
 
-[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS2393: Duplicate function implementation.[0m [1m[35m[plugin angular-compiler][0m
-
-    src/app/features/flow/components/node-assistant-chat.component.ts:183:10:
-[37m      183 │   private [32mfriendlyName[37m(func: string): string {
-          ╵           [32m~~~~~~~~~~~~[0m
-
-
-[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mTS2393: Duplicate function implementation.[0m [1m[35m[plugin angular-compiler][0m
-
-    src/app/features/flow/components/node-assistant-chat.component.ts:340:10:
-[37m      340 │   private [32mfriendlyName[37m(func: string): string {
-          ╵           [32m~~~~~~~~~~~~[0m
-
+Output location: /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/Homeport/dist/homeport
 

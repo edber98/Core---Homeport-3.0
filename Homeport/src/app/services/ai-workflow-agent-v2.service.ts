@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccessControlService } from './access-control.service';
 import { AuthTokenService } from './auth-token.service';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { openSse, SseStream } from '../shared/chat/sse-client';
 
 export type WorkflowAgentV2Event =
@@ -38,7 +38,7 @@ export class AiWorkflowAgentV2Service {
     if (params.flowId) q.set('flowId', params.flowId);
     if (params.action) q.set('action', params.action);
     if (params.threadId) q.set('threadId', params.threadId);
-    const url = `${environment.apiBaseUrl}/api/ai/workflow/stream?${q.toString()}`;
+    const url = `${apiBase()}/ai/workflow/stream?${q.toString()}`;
     try { console.log('[AiWorkflowAgentV2Service] SSE url', url); } catch {}
     const stream: SseStream<WorkflowAgentV2Event> = openSse<WorkflowAgentV2Event>({
       zone: this.zone,

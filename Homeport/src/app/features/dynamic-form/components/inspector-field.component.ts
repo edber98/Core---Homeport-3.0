@@ -444,6 +444,7 @@ import { Subscription } from 'rxjs';
 export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
   @Input({ required: true }) group!: FormGroup;
   @Input() keyDuplicateMessage: string | null = null;
+  @Input() showLogicEditors: boolean = true;
   @Output() openOptions = new EventEmitter<void>();
   @Output() openCondition = new EventEmitter<'visibleIf'|'requiredIf'|'disabledIf'>();
 
