@@ -3,6 +3,7 @@ const cors = require('cors');
 let morgan = null; try { morgan = require('morgan'); } catch { morgan = null; }
 const { errorHandler } = require('./middlewares/error-handler');
 const { seedAllMemory, seedMongoIfEmpty } = require('./seed');
+const { authMiddleware, requireCompanyScope } = require('./auth/jwt');
 
 function buildApp(opts = {}){
   const app = express();
@@ -33,6 +34,37 @@ function buildApp(opts = {}){
     // AI Console (threads, messages, context) in memory mode
     app.use('/api', require('./modules/ai-console')(store));
     app.use('/api', require('./modules/runs')(store));
+    // Alias SSE stream without /api prefix for EventSource clients
+    app.get('/runs/:runId/stream', authMiddleware(store), requireCompanyScope(), (req, res) => {
+      const { runId } = req.params; const run = store.runs.get(runId);
+      if (!run) { console.warn(`[runs][mem][alias] stream: run not found runId=${runId} reqId=${req.requestId}`); return res.apiError(404, 'run_not_found', 'Run not found'); }
+      const ws = store.workspaces.get(run.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'run not found' });
+      console.log(`[runs][mem][alias] stream open: runId=${runId} events=${(run.events||[]).length} reqId=${req.requestId}`);
+
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders && res.flushHeaders();
+
+      const sendEvent = (ev) => { res.write(`event: ${ev.type}\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
+      for (const ev of (run.events || [])) sendEvent(ev);
+      let lastCount = (run.events || []).length;
+      const interval = setInterval(() => {
+        const r = store.runs.get(runId);
+        if (!r) { clearInterval(interval); try{ res.end(); }catch{} return; }
+        if ((r.events?.length || 0) > lastCount){
+          for (let i = lastCount; i < r.events.length; i++) sendEvent(r.events[i]);
+          lastCount = r.events.length;
+        }
+        res.write(`event: heartbeat\n`);
+        res.write(`data: ${JSON.stringify({ ts: Date.now(), status: r.status })}\n\n`);
+        if (r.status === 'success' || r.status === 'error' || r.status === 'cancelled'){
+          clearInterval(interval);
+          try{ res.end(); }catch{}
+        }
+      }, 300);
+      req.on('close', () => clearInterval(interval));
+    });
     // Flow simulation (memory)
     app.use('/api', require('./modules/simulate')(store));
     // Layout (ELK) for memory mode
@@ -66,6 +98,47 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/import-manifest')());
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
+    // Alias SSE stream without /api prefix (DB mode)
+    app.get('/runs/:runId/stream', authMiddleware(), requireCompanyScope(), async (req, res) => {
+      const { Types } = require('mongoose');
+      const Run = require('./db/models/run.model');
+      const RunEvent = require('./db/models/run-event.model');
+      const Workspace = require('./db/models/workspace.model');
+      const WorkspaceMembership = require('./db/models/workspace-membership.model');
+      const rid = String(req.params.runId);
+      let run = null;
+      if (Types.ObjectId.isValid(rid)) run = await Run.findById(rid);
+      if (!run) run = await Run.findOne({ id: rid });
+      if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+      const ws = await Workspace.findById(run.workspaceId);
+      if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'run_not_found', 'Run not found');
+      const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+      if (!member) return res.apiError(403, 'not_a_member', 'User not a workspace member');
+
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders && res.flushHeaders();
+      console.log(`[runs][db][alias] stream open: runId=${String(run._id)} events=${(run.events||[]).length} reqId=${req.requestId}`);
+
+      const sendLive = (ev) => { res.write(`event: live\n`); res.write(`data: ${JSON.stringify(ev)}\n\n`); };
+      let lastSeq = 0;
+      const history = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+      for (const ev of history){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+      try { const doc0 = await Run.findById(run._id).lean(); if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status, startedAt: doc0.startedAt, finishedAt: doc0.finishedAt, durationMs: doc0.durationMs } }); } catch {}
+      const interval = setInterval(async () => {
+        const doc = await Run.findById(run._id).lean();
+        if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
+        const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
+        for (const ev of news){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
+        sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status, startedAt: doc.startedAt, finishedAt: doc.finishedAt, durationMs: doc.durationMs } });
+        if (doc.status === 'success' || doc.status === 'error' || doc.status === 'cancelled' || doc.status === 'timed_out'){
+          clearInterval(interval);
+          try{ res.end(); }catch{}
+        }
+      }, 300);
+      req.on('close', () => { clearInterval(interval); console.log(`[runs][db][alias] stream closed: runId=${String(run._id)} reqId=${req.requestId}`); });
+    });
     // AI Console (threads, messages, context) in DB mode
     app.use('/api', require('./modules/db/ai-console')());
     // Flow simulation (db)

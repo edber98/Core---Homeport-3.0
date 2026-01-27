@@ -11,7 +11,20 @@ function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m 
 function isTemplateLike(s){ return typeof s === 'string' && /\{\{[\s\S]*?\}\}/.test(s); }
 function isTruthyText(s){ if (s == null) return false; const t = String(s).trim(); if (t === '') return false; const low = t.toLowerCase(); if (low==='false'||low==='0'||low==='null'||low==='undefined'||low==='nan') return false; return true; }
 function buildEvalContext(initialContext, msg){
-  return { ...initialContext, msg, payload: msg.payload, _nodes: msg._nodes };
+  const ctx = { ...initialContext, msg, payload: msg.payload, _nodes: msg._nodes };
+  // Expose node results at top-level for template access like {{ start_form_xxx.email }}
+  try {
+    if (msg && typeof msg === 'object'){
+      for (const [k, v] of Object.entries(msg)){
+        if (k === 'payload' || k === '_nodes') continue;
+        // Keep only simple identifier-like keys to avoid leaking internals
+        if (typeof k === 'string' && /^[A-Za-z0-9_]+$/.test(k) && !(k in ctx)){
+          ctx[k] = v;
+        }
+      }
+    }
+  } catch {}
+  return ctx;
 }
 function renderTemplate(value, evalCtx){ if (typeof value !== 'string') return value; return evaluateTemplateDetailed(value, evalCtx).text; }
 function deepRender(obj, evalCtx){
