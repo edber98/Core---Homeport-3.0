@@ -1,15 +1,11 @@
-
-> homeport-backend@0.1.0 test
-> CI_NO_DB=1 node --test
-
-✔ src/modules/db/test-runs.js (81.737041ms)
-✖ workspace templatesAllowed force validation disables flows and creates notifications (0.165542ms)
-✖ import manifest upserts provider and templates; transfer remaps node ids (0.178458ms)
-✖ login works and lists company workspaces (0.164833ms)
+✔ src/modules/db/test-runs.js (123.18175ms)
+✖ workspace templatesAllowed force validation disables flows and creates notifications (0.428167ms)
+✖ import manifest upserts provider and templates; transfer remaps node ids (0.168416ms)
+✖ login works and lists company workspaces (0.16625ms)
 [engine] start.result.keys { node: 'n_start', keys: [] }
 [engine] start { node: 'n_start', argsPre: {}, argsPost: null }
-✖ engine v2: incoming by handle for memory -> agent (4.942375ms)
-✖ create and run a simple flow (0.165ms)
+✖ engine v2: incoming by handle for memory -> agent (6.993375ms)
+✖ create and run a simple flow (0.162166ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 1
@@ -17,12 +13,12 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 131.40475
+ℹ duration_ms 182.916042
 
 ✖ failing tests:
 
 test at test-db/force_and_notifications.test.js:19:1
-✖ workspace templatesAllowed force validation disables flows and creates notifications (0.165542ms)
+✖ workspace templatesAllowed force validation disables flows and creates notifications (0.428167ms)
   /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
           const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
                         ^^
@@ -37,10 +33,10 @@ test at test-db/force_and_notifications.test.js:19:1
       at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
       at Module.require (node:internal/modules/cjs/loader:1449:12)
       at require (node:internal/modules/helpers:135:16)
-      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:36:21)
 
 test at test-db/import_manifest_and_transfer.test.js:23:1
-✖ import manifest upserts provider and templates; transfer remaps node ids (0.178458ms)
+✖ import manifest upserts provider and templates; transfer remaps node ids (0.168416ms)
   /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
           const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
                         ^^
@@ -55,10 +51,10 @@ test at test-db/import_manifest_and_transfer.test.js:23:1
       at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
       at Module.require (node:internal/modules/cjs/loader:1449:12)
       at require (node:internal/modules/helpers:135:16)
-      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:36:21)
 
 test at test/auth_and_core.test.js:21:1
-✖ login works and lists company workspaces (0.164833ms)
+✖ login works and lists company workspaces (0.16625ms)
   /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
           const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
                         ^^
@@ -73,10 +69,10 @@ test at test/auth_and_core.test.js:21:1
       at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
       at Module.require (node:internal/modules/cjs/loader:1449:12)
       at require (node:internal/modules/helpers:135:16)
-      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:36:21)
 
 test at test/engine_v2_handles.test.js:4:1
-✖ engine v2: incoming by handle for memory -> agent (4.942375ms)
+✖ engine v2: incoming by handle for memory -> agent (6.993375ms)
   AssertionError [ERR_ASSERTION]: agent should produce ok payload
       at TestContext.<anonymous> (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/test/engine_v2_handles.test.js:31:10)
       at async Test.run (node:internal/test_runner/test:1069:7)
@@ -89,7 +85,7 @@ test at test/engine_v2_handles.test.js:4:1
   }
 
 test at test/flows_and_runs.test.js:24:1
-✖ create and run a simple flow (0.165ms)
+✖ create and run a simple flow (0.162166ms)
   /Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/modules/runs.js:263
           const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
                         ^^
@@ -104,4 +100,4 @@ test at test/flows_and_runs.test.js:24:1
       at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
       at Module.require (node:internal/modules/cjs/loader:1449:12)
       at require (node:internal/modules/helpers:135:16)
-      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:33:21)
+      at buildApp (/Users/edouardbernier/Documents/Projets/i55/Projet/Core 2.0/Application/Homeport 1.0/API/src/app.js:36:21)
