@@ -4266,6 +4266,16 @@ export class FlowBuilderComponent {
     }
   }
   private pendingAdvancedModel: any = null;
+  advancedDialogModel(): any {
+    try {
+      const sel = this.selectedModel;
+      const pending = this.pendingAdvancedModel;
+      if (pending && sel && String(pending.id) === String(sel.id)) return pending;
+      return sel;
+    } catch {
+      return this.selectedModel;
+    }
+  }
   closeAdvancedEditor() {
     const m = this.pendingAdvancedModel;
     this.advancedOpen = false;
