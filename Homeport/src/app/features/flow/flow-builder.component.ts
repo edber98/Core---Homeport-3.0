@@ -4270,7 +4270,8 @@ export class FlowBuilderComponent {
     try {
       const sel = this.selectedModel;
       const pending = this.pendingAdvancedModel;
-      if (pending && sel && String(pending.id) === String(sel.id)) return pending;
+      const selType = String(sel?.templateObj?.type || '').toLowerCase();
+      if (pending && sel && String(pending.id) === String(sel.id) && selType === 'start_form') return pending;
       return sel;
     } catch {
       return this.selectedModel;

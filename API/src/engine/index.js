@@ -1,5 +1,5 @@
 // Engine minimal adapted from provided example; emits events to a callback
-const { evaluateTemplateDetailed, evaluateExpression } = require('./expression-sandbox');
+const { evaluateTemplateDetailed, evaluateExpression, tokenizeIslands } = require('./expression-sandbox');
 const { registry } = require('../plugins/registry');
 
 function log(step, data) { const payload = data === undefined ? '' : (typeof data === 'string' ? data : JSON.stringify(data)); console.log(`[engine] ${step} ${payload}`); }
@@ -8,6 +8,13 @@ function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
+function buildExprFromTemplate(raw){
+  try {
+    const parts = tokenizeIslands(String(raw));
+    if (!parts.some(p => p.type === 'island')) return null;
+    return parts.map(p => (p.type === 'island' ? `(${p.expr})` : p.value)).join('');
+  } catch { return null; }
+}
 function isTemplateLike(s){ return typeof s === 'string' && /\{\{[\s\S]*?\}\}/.test(s); }
 function isTruthyText(s){ if (s == null) return false; const t = String(s).trim(); if (t === '') return false; const low = t.toLowerCase(); if (low==='false'||low==='0'||low==='null'||low==='undefined'||low==='nan') return false; return true; }
 function buildEvalContext(initialContext, msg){
@@ -93,6 +100,14 @@ function evaluateCondition(node, initialContext, msg){
         if (lit === '' || lit === 'false' || lit === '0') { continue; }
         const val = evaluateExpression(raw, buildEvalContext(initialContext, msg)); if (val) { matches.push(name); if (mode==='firstMatch') break; }
         continue;
+      }
+      const exprCandidate = buildExprFromTemplate(raw);
+      if (exprCandidate && /[=!<>]=|[<>]|\&\&|\|\|/.test(exprCandidate)) {
+        try {
+          const val = evaluateExpression(exprCandidate, buildEvalContext(initialContext, msg));
+          if (val) { matches.push(name); if (mode==='firstMatch') break; }
+          continue;
+        } catch {}
       }
       const rendered = evaluateTemplateDetailed(raw, buildEvalContext(initialContext, msg)).text;
       if (isTruthyText(rendered)) { matches.push(name); if (mode==='firstMatch') break; }
