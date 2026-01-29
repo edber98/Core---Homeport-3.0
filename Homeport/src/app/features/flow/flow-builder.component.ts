@@ -5044,6 +5044,9 @@ export class FlowBuilderComponent {
           } catch {}
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           this.backendRunStatus = 'done';
+          this.testStatus = 'idle';
+          this.testStartedAt = null;
+          this.testDurationMs = null;
           try { s.close(); } catch {}
           // Update right panel meta and recent runs list
           try {
