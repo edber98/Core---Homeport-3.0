@@ -34,7 +34,7 @@ export class RunsBackendService {
     return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, p);
   }
   cancel(runId: string): Observable<any> { return this.api.post<any>(`/api/runs/${encodeURIComponent(runId)}/cancel`, {}); }
-  listByFlow(flowId: string, params?: { status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
+  listByFlow(flowId: string, params?: { status?: string; page?: number; offset?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/flows/${encodeURIComponent(flowId)}/runs`, params);
   }
   listByWorkspace(wsId: string, params?: { flowId?: string; status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {

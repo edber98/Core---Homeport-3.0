@@ -5391,11 +5391,19 @@ export class FlowBuilderComponent {
       if (!fid || this.runsLoading) return;
       if (reset) { this.runsPage = 1; this.recentRuns = []; this.runsHasMore = true; }
       this.runsLoading = true;
-      this.runsApi.listByFlow(fid, { page: this.runsPage, limit: this.runsLimit, sort: '-startedAt' }).subscribe({
+      const offset = Math.max(0, (this.runsPage - 1) * this.runsLimit);
+      this.runsApi.listByFlow(fid, { offset, limit: this.runsLimit, sort: '-startedAt' }).subscribe({
         next: (list) => this.zone.run(() => {
           const arr = Array.isArray(list) ? list : [];
           const mapped = arr.map(r => ({ id: (r as any).id, status: (r as any).status, startedAt: (r as any).startedAt, finishedAt: (r as any).finishedAt }));
-          this.recentRuns = [...this.recentRuns, ...mapped];
+          const existing = new Set((this.recentRuns || []).map(r => String(r?.id || '')));
+          const deduped = mapped.filter(r => !existing.has(String(r?.id || '')));
+          const merged = [...this.recentRuns, ...deduped];
+          const toTs = (d: any) => {
+            const v = Date.parse(String(d || ''));
+            return Number.isFinite(v) ? v : 0;
+          };
+          this.recentRuns = merged.sort((a, b) => toTs(b?.startedAt) - toTs(a?.startedAt));
           this.runsHasMore = arr.length >= this.runsLimit;
           if (arr.length >= this.runsLimit) this.runsPage += 1;
           this.runsLoading = false;
@@ -5404,7 +5412,10 @@ export class FlowBuilderComponent {
       });
     } catch { this.runsLoading = false; }
   }
-  onLoadMoreRuns() { this.fetchRuns(false); }
+  onLoadMoreRuns() {
+    if (!this.runsHasMore || this.runsLoading) return;
+    this.fetchRuns(false);
+  }
   // no search field per request
   stopLastRun() {
     try {

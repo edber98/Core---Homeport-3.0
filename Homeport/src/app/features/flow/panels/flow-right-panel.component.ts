@@ -17,7 +17,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
   imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzSelectModule, NzButtonModule, NzToolTipModule, NzModalModule, MonacoJsonEditorComponent, FlowHistoryTimelineComponent, NodeInspectorItemComponent],
   template: `
     <div class="right-panel" [class.drawer-mode]="mode==='drawer'">
-      <div class="inspector-meta" style="padding: 8px; padding-top: 0px; overflow: auto;">
+      <div class="inspector-meta" style="padding: 12px; padding-top: 0px; overflow: auto;">
         <div class="panel-heading main-title">
           <div class="card-title">
             <span class="t">Navigation & Contrôles</span>
@@ -81,7 +81,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
             <nz-form-control>
               <div class="exec-select-row">
                 <nz-select class="flex-1" [(ngModel)]="selectedRecentId" name="recentRunSelect" nzPlaceHolder="Choisir une exécution"
-                           (nzScrollToBottom)="loadMoreRuns.emit()">
+                           (nzScrollToBottom)="runsHasMore && loadMoreRuns.emit()">
                   <nz-option *ngFor="let r of recentRuns" [nzValue]="r.id" [nzLabel]="(r.startedAt | date:'medium':'':'fr-FR') + ' — ' + (r.status || '—')"></nz-option>
                 </nz-select>
                 <button nz-button nzType="default" nzSize="small" class="apple-btn load-btn" [disabled]="!selectedRecentId" (click)="selectedRecentId && selectRun.emit(selectedRecentId)" title="Charger">
@@ -89,18 +89,39 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 </button>
               </div>
               <div class="sel-status mono">
-                <div class="row"><span class="k">Statut</span><span class="v">{{ currentOrSelected()?.status || '—' }}</span></div>
-                <div class="row"><span class="k">Début</span><span class="v">{{ currentOrSelected()?.startedAt | date:'medium':'':'fr-FR' }}</span></div>
-                <div class="row"><span class="k">Fin</span><span class="v">{{ currentOrSelected()?.finishedAt | date:'medium':'':'fr-FR' }}</span></div>
-                <div class="actions-wrap">
-                  <button nz-button nzSize="small" class="apple-btn" (click)="clearRun.emit()"><i class="fa-regular fa-trash-can"></i><span>Effacer</span></button>
-                  <button *ngIf="(currentOrSelected()?.status||'') !== 'running'" nz-button nzType="primary" nzSize="small" class="apple-btn run-btn" (click)="restart.emit()">
-                    <i class="fa-solid fa-play"></i><span>Lancer</span>
-                  </button>
-                  <button *ngIf="(currentOrSelected()?.status||'') === 'running'" nz-button nzType="default" nzDanger nzSize="small" class="apple-btn" (click)="stop.emit()">
-                    <i class="fa-solid fa-stop"></i><span>Stop</span>
-                  </button>
+                <div class="sel-status-head">
+                  <span class="k">Statut</span>
+                  <span class="status-pill"
+                    [ngClass]="{
+                      ok: (currentOrSelected()?.status || '') === 'success',
+                      err: (currentOrSelected()?.status || '') === 'error' || (currentOrSelected()?.status || '') === 'failed',
+                      run: (currentOrSelected()?.status || '') === 'running',
+                      warn: (currentOrSelected()?.status || '') === 'cancelled' || (currentOrSelected()?.status || '') === 'canceled' || (currentOrSelected()?.status || '') === 'skipped',
+                      idle: !(currentOrSelected()?.status)
+                    }">
+                    <span class="dot"></span>
+                    <span class="lbl">{{ currentOrSelected()?.status || '—' }}</span>
+                  </span>
                 </div>
+                <div class="sel-status-grid">
+                  <div class="cell">
+                    <span class="k">Début</span>
+                    <span class="v">{{ currentOrSelected()?.startedAt | date:'medium':'':'fr-FR' }}</span>
+                  </div>
+                  <div class="cell">
+                    <span class="k">Fin</span>
+                    <span class="v">{{ currentOrSelected()?.finishedAt | date:'medium':'':'fr-FR' }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sel-actions">
+                <button *ngIf="(currentOrSelected()?.status||'') !== 'running'" nz-button nzType="primary" nzSize="small" class="apple-btn run-btn" (click)="restart.emit()">
+                  <i class="fa-solid fa-play"></i><span>Lancer</span>
+                </button>
+                <button *ngIf="(currentOrSelected()?.status||'') === 'running'" nz-button nzType="default" nzDanger nzSize="small" class="apple-btn run-btn" (click)="stop.emit()">
+                  <i class="fa-solid fa-stop"></i><span>Stop</span>
+                </button>
+                <button nz-button nzSize="small" class="apple-btn clear-btn" (click)="clearRun.emit()"><i class="fa-regular fa-trash-can"></i><span>Effacer</span></button>
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -190,10 +211,12 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
           </div>
         </div>
 
-        <flow-history-timeline [pastItems]="timelinePastItems" [futureItems]="timelineFutureItems"
-          (hoverPast)="hoverPast.emit($event)" (hoverFuture)="hoverFuture.emit($event)"
-          (leave)="leave.emit()" (clickPast)="clickPast.emit($event)"
-          (clickFuture)="clickFuture.emit($event)"></flow-history-timeline>
+        <div class="history-wrap">
+          <flow-history-timeline [pastItems]="timelinePastItems" [futureItems]="timelineFutureItems"
+            (hoverPast)="hoverPast.emit($event)" (hoverFuture)="hoverFuture.emit($event)"
+            (leave)="leave.emit()" (clickPast)="clickPast.emit($event)"
+            (clickFuture)="clickFuture.emit($event)"></flow-history-timeline>
+        </div>
 
         <!-- Modals: view large for each args block -->
         <nz-modal [(nzVisible)]="showFilledModal" nzTitle="Arguments renseignés" (nzOnCancel)="showFilledModal=false" (nzOnOk)="showFilledModal=false" [nzWidth]="860">
@@ -236,7 +259,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     :host { display:block; min-height:0; }
     .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; background:#fff; }
     .panel-scroll { height: 100%; overflow: auto; padding: 8px; }
-    .inspector-meta .meta-form { font-size: 12px; padding: 0 4px; margin-top: 8px; }
+    .inspector-meta .meta-form { font-size: 12px; padding: 0; margin-top: 8px; }
     .inspector-meta .meta-form .ant-form-item { margin-bottom: 10px; }
     .inspector-meta .meta-form .enabled-row { margin-bottom: 0; }
     :host ::ng-deep .meta-form .ant-form-item { padding: 4px 6px; border-radius: 6px; transition: background-color .12s ease; }
@@ -301,25 +324,44 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     }
     .pub-row { align-items:center; }
     .pub-row { display:flex; gap:8px; align-items:center; }
-    .recent .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:0; margin:6px 0 8px; }
+    .recent .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 6px 8px; border-bottom:0; margin:6px 0 8px; }
     .recent .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
-    .recent-list { display:flex; flex-direction:column; gap:8px; padding:8px 0; }
+    .recent-list { display:flex; flex-direction:column; gap:8px; padding:8px 6px; }
     .recent-list .r { display:flex; gap:8px; align-items:center; font-size:12px; padding:4px 6px; border-radius:6px; }
     .recent-list .r.active { background:#f1f5f9; }
     .recent-list .r .time { color:#6b7280; min-width: 160px; }
     .exec-select-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
     .exec-select-row .flex-1 { flex:1 1 auto; min-width: 0; }
     .exec-select-row .load-btn { display:inline-flex; align-items:center; justify-content:center; }
-    .sel-status { margin-top: 4px; }
-    .sel-status .row { display:flex; justify-content:space-between; padding: 2px 0; }
-    .sel-status .row .k { color:#6b7280; }
+    .sel-status { margin-top: 18px; padding: 8px 10px; border-radius:10px; background: #f8fafc; border: 1px solid #eef2f7; }
+    .sel-status .k { color:#6b7280; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    .sel-status .v { color:#111; font-size:12px; }
+    .sel-status-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
+    .sel-status-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px 12px; }
+    .sel-status-grid .cell { display:flex; flex-direction:column; gap:2px; padding:6px 8px; border-radius:8px; background:#fff; border:1px solid #f1f5f9; }
+    .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; background:#eef2f7; color:#64748b; border:1px solid #e2e8f0; }
+    .status-pill .dot { width:6px; height:6px; border-radius:50%; background: currentColor; box-shadow: 0 0 0 2px rgba(0,0,0,0.04); }
+    .status-pill.ok { color:#15803d; background:#ecfdf5; border-color:#bbf7d0; }
+    .status-pill.err { color:#b42318; background:#fff1f2; border-color:#fecdd3; }
+    .status-pill.run { color:#0369a1; background:#e0f2fe; border-color:#bae6fd; }
+    .status-pill.warn { color:#a16207; background:#fef9c3; border-color:#fde68a; }
+    .status-pill.idle { color:#6b7280; background:#f1f5f9; border-color:#e2e8f0; }
+    .sel-actions { display:flex; justify-content:flex-start; align-items:center; gap:8px; margin-top:10px; }
+    .sel-actions .apple-btn { display:inline-flex; align-items:center; gap:6px; }
+    .sel-actions .clear-btn:hover:not([disabled]) {
+      background:#fee2e2 !important;
+      border-color:#fecaca !important;
+      color:#b91c1c !important;
+      box-shadow: 0 6px 14px rgba(239,68,68,0.18);
+      transform: translateY(-1px);
+    }
     .recent-list .r .status.ok { color:#16a34a; }
     .recent-list .r .status.err { color:#ef4444; }
     .recent-list .r .status.run { color:#0ea5e9; }
     .load-more { margin-top: 6px; display:flex; justify-content:flex-end; }
 
     /* Node inspector (inline) */
-    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom: 0; }
+    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 6px 8px; border-bottom: 0; }
     .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
     .panel-heading .card-title .t { font-weight:600; font-size:14px; }
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
@@ -327,7 +369,8 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; line-height:1.1; }
     .panel-heading.main-title .card-title .t { font-weight:700; font-size:18px; color:#000; }
     .panel-heading.main-title .card-title .s { font-size:13px; color:#64748b; }
-    .inspector-node { padding: 0 8px; }
+    .inspector-node { padding: 0 6px; }
+    .history-wrap { padding: 0 6px 8px; }
     .inspector-node .rows { display:flex; flex-direction:column; gap:8px; }
     .inspector-node .rows.simple .row { display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #f2f2f2; padding: 6px 0; }
     .inspector-node .row .k { color:#6b7280; font-size:12px; font-weight:600; }
