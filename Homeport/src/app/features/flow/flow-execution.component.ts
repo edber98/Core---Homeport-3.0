@@ -35,12 +35,15 @@ import { backAwareCurve } from './edge-curves';
         </div>
       </div>
       <div class="mode-row apple">
+        <div class="mode-label">Mode:</div>
         <nz-select class="mode-select" [(ngModel)]="mode" nzSize="small">
           <nz-option nzValue="test" nzLabel="test"></nz-option>
           <nz-option nzValue="prod" nzLabel="prod"></nz-option>
         </nz-select>
-        <button nz-button nzSize="small" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
-        <button nz-button nzType="primary" nzSize="small" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
+        <div class="mode-actions">
+          <button nz-button nzSize="small" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
+          <button nz-button nzType="primary" nzSize="small" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
+        </div>
       </div>
       <div class="kpis">
         <div class="kpi"><div class="n">{{ flowStats.success || 0 }}</div><div class="l">Réussis</div></div>
@@ -55,7 +58,12 @@ import { backAwareCurve } from './edge-curves';
           <div class="line2">{{ r.startedAt | date:'short' }} · {{ r.durationMs || 0 }} ms</div>
         </li>
       </ul>
-      <div class="panel-subtitle">Historique (backend)</div>
+      <div class="section-heading">
+        <div class="card-title left">
+          <span class="t">Historique</span>
+          <span class="s">Backend</span>
+        </div>
+      </div>
       <div class="exec-list" (scroll)="onListScroll($event)" (click)="closeMenu()">
         <div class="exec-day" *ngFor="let g of groupedBackendRuns(); trackBy: trackExecGroup">
           <div class="exec-day-title">{{ g.label }}</div>
@@ -136,35 +144,43 @@ import { backAwareCurve } from './edge-curves';
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
         <aside class="details-panel" *ngIf="rightPanelOpen && selectedBackendRun" #detailsPanel>
-          <div class="panel-heading">
+          <div class="panel-heading details-heading">
             <div class="card-title">
               <div class="t">Exécution</div>
+              <div class="panel-subtitle">Détails de l'exécution</div>
+            </div>
+          </div>
+          <div class="execution-summary">
+            <div class="details-meta">
               <div class="s" *ngIf="selectedBackendRun?.startedAt as s">{{ s | date:'medium' }}</div>
               <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
+              <div class="panel-actions">
+                <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
+                <button nz-button nzSize="small" class="action-btn" (click)="expandAllAttempts()" title="Développer tout">
+                  <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                </button>
+                <button nz-button nzSize="small" class="action-btn" (click)="collapseAllAttempts()" title="Replier tout">
+                  <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+                </button>
+              </div>
             </div>
-            <div class="spacer"></div>
-            <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
-            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
-              <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-            </button>
-            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
-              <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
-            </button>
-          </div>
-          <div class="run-meta">
-            <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
-            <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
-            <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
-          </div>
-          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
-            <div class="hdr">
-              <span class="nid">{{ a.nodeId }}</span>
-              <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+            <div class="run-meta">
+              <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+              <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
             </div>
-            <div class="sub">
-              <span class="dur">{{ a.durationMs || 0 }} ms</span>
-              <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
-              <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+          </div>
+          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index" [class.expanded]="expanded[i]">
+            <div class="attempt-head">
+              <div class="hdr">
+                <span class="nid">{{ a.nodeId }}</span>
+                <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+              </div>
+              <div class="sub">
+                <span class="dur">{{ a.durationMs || 0 }} ms</span>
+                <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
+                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+              </div>
             </div>
             <div class="io" *ngIf="expanded[i]">
               <div>
@@ -228,35 +244,43 @@ import { backAwareCurve } from './edge-curves';
       [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
       <ng-container *nzDrawerContent>
         <div class="details-panel" *ngIf="selectedBackendRun">
-          <div class="panel-heading">
+          <div class="panel-heading details-heading">
             <div class="card-title">
               <div class="t">Exécution</div>
+              <div class="panel-subtitle">Détails de l'exécution</div>
+            </div>
+          </div>
+          <div class="execution-summary">
+            <div class="details-meta">
               <div class="s" *ngIf="selectedBackendRun?.startedAt as s">{{ s | date:'medium' }}</div>
               <div class="s mono">ID: {{ selectedBackendRun?.id }}</div>
+              <div class="panel-actions">
+                <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
+                <button nz-button nzSize="small" class="action-btn" (click)="expandAllAttempts()" title="Développer tout">
+                  <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                </button>
+                <button nz-button nzSize="small" class="action-btn" (click)="collapseAllAttempts()" title="Replier tout">
+                  <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+                </button>
+              </div>
             </div>
-            <div class="spacer"></div>
-            <nz-tag [nzColor]="selectedBackendRun?.status==='success' ? 'green' : (selectedBackendRun?.status==='error' ? 'red' : (selectedBackendRun?.status==='running' ? 'blue' : (selectedBackendRun?.status==='cancelled' ? 'default' : 'default')))" class="status-tag">{{ selectedBackendRun?.status }}</nz-tag>
-            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="expandAllAttempts()" title="Développer tout">
-              <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-            </button>
-            <button nz-button nzType="text" nzSize="small" nzShape="circle" (click)="collapseAllAttempts()" title="Replier tout">
-              <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
-            </button>
-          </div>
-          <div class="run-meta">
-            <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
-            <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
-            <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
-          </div>
-          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index">
-            <div class="hdr">
-              <span class="nid">{{ a.nodeId }}</span>
-              <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+            <div class="run-meta">
+              <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
+              <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
+              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
             </div>
-            <div class="sub">
-              <span class="dur">{{ a.durationMs || 0 }} ms</span>
-              <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
-              <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+          </div>
+          <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index" [class.expanded]="expanded[i]">
+            <div class="attempt-head">
+              <div class="hdr">
+                <span class="nid">{{ a.nodeId }}</span>
+                <span class="st" [ngClass]="a.status || 'success'">{{ a.status || 'success' }}</span>
+              </div>
+              <div class="sub">
+                <span class="dur">{{ a.durationMs || 0 }} ms</span>
+                <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
+                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+              </div>
             </div>
             <div class="io" *ngIf="expanded[i]">
               <div>
@@ -330,8 +354,14 @@ import { backAwareCurve } from './edge-curves';
     .side.executions .panel-heading .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
     .side.executions .panel-heading .card-title .t { font-weight:700; font-size:18px; margin: 0; color:#111; line-height:1.1; }
     .side.executions .panel-heading .card-title .s { font-size:13px; color:#64748b; margin: 0; line-height:1.2; }
+    .side.executions .section-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 0; border-bottom:0; margin:0; }
+    .side.executions .section-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+    .side.executions .section-heading .card-title .t { font-weight:600; font-size:14px; }
+    .side.executions .section-heading .card-title .s { font-size:12px; color:#64748b; }
     .panel-subtitle { font-weight:600; font-size:12px; color:#444; margin: 8px 0 6px; opacity:.9; }
-    .mode-row { display:flex; gap:6px; align-items:center; margin: 6px 0 10px; }
+    .mode-row { display:flex; gap:6px; align-items:center; justify-content:flex-start; margin: 6px 0 10px; }
+    .mode-row .mode-label { font-size:12px; color:#6b7280; line-height:1.1; }
+    .mode-row .mode-actions { display:inline-flex; gap:6px; align-items:center; margin-left:auto; }
     .mode-row .mode-select { flex:0 0 96px; min-width: 96px; }
     :host ::ng-deep .mode-row .mode-select .ant-select-selector {
       background: #f3f7ff;
@@ -343,7 +373,14 @@ import { backAwareCurve } from './edge-curves';
       padding: 0 8px;
     }
     :host ::ng-deep .mode-row .mode-select .ant-select-selector:hover { border-color:#d1d5db; }
-    :host ::ng-deep .mode-row .ant-select-focused .ant-select-selector { box-shadow: 0 0 0 2px rgba(17,17,17,0.08); }
+    :host ::ng-deep .mode-row .ant-select-focused .ant-select-selector {
+      border-color:#1677ff;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+    }
+    :host ::ng-deep .mode-row .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+      border-color:#1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.18) !important;
+    }
     :host ::ng-deep .mode-row .mode-select .ant-select-selection-item { line-height: 26px; }
     :host ::ng-deep .ant-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
       background: #e8f1ff;
@@ -465,19 +502,99 @@ import { backAwareCurve } from './edge-curves';
     .attempt .sub .dur { white-space: nowrap; }
     .attempt .sub .when { white-space: nowrap; }
     .attempt .sub .toggle { margin-left:auto; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
+    .backend-attempt { background:#f3f7ff; }
+    .backend-attempt .attempt-head {
+      position: sticky;
+      top: -12px;
+      z-index: 5;
+      background:#f3f7ff;
+      padding:8px;
+      margin:-8px -8px 0;
+      border-radius:10px;
+    }
+    .backend-attempt.expanded .attempt-head {
+      margin:-8px -8px 6px;
+      border-bottom:1px solid #e2e8f0;
+      border-radius:10px 10px 0 0;
+    }
     .backend-attempt .hdr .st { margin-left:auto; }
-    .attempt .io { display:grid; grid-template-columns: 1fr; gap:8px; margin-top:6px; }
+    .attempt .io { display:grid; grid-template-columns: 1fr; gap:8px; margin-top:6px; min-width: 0; }
+    .attempt .io > div { min-width: 0; }
     .attempt .io .k { font-size:12px; color:#8c8c8c; margin-bottom:4px; }
-    pre { background:#fafafa; border:1px solid #eee; border-radius:6px; padding:6px; font-size:11px; overflow:auto; }
+    pre { background:#fafafa; border:1px solid #eee; border-radius:6px; padding:6px; font-size:11px; overflow:auto; max-width: 100%; }
     .viewer { position: relative; height:100%; min-height: 0; overflow: hidden; padding-bottom: 0 !important; }
     .viewer-layout { display:grid; grid-template-columns: 1fr 0; height:100%; min-height: 0; transition: grid-template-columns .25s ease; }
     .viewer-layout.show-details { grid-template-columns: 1fr 320px; }
     .viewer-canvas-wrap { height:100%; min-height: 0; }
     .viewer-canvas { height: 100%; display:block; }
     .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:12px; min-width: 0; }
-    .details-panel .panel-heading { display:flex; align-items:center; gap:8px; margin: 0 0 8px; padding-bottom:8px; border-bottom:1px solid #E2E1E4; }
-    .details-panel .panel-heading .spacer { flex:1 1 auto; }
-    .details-panel .panel-heading .status-tag { text-transform: lowercase; }
+    .details-panel .panel-heading.details-heading {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      margin: 0 0 8px;
+      padding-bottom:8px;
+      border-bottom:0;
+    }
+    .details-panel .panel-heading.details-heading .card-title {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      line-height:1.2;
+    }
+    .details-panel .panel-heading.details-heading .card-title .t { font-weight:700; font-size:18px; margin: 0; color:#111; line-height:1.1; }
+    .details-panel .panel-heading.details-heading .card-title .s { font-size:13px; color:#64748b; margin: 0; line-height:1.2; }
+    .details-panel .panel-heading.details-heading .panel-subtitle { margin: 0; }
+    .details-panel .details-meta {
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      margin: 6px 0 8px;
+    }
+    .details-panel .details-meta .panel-actions {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .details-panel .execution-summary { margin-bottom: 8px; }
+    .details-panel .details-meta .panel-actions .action-btn.ant-btn {
+      border:1px solid #e5e7eb;
+      background:#fff;
+      border-radius:10px;
+      padding:6px 8px;
+      font-size:12px;
+      height:auto;
+      line-height: 1;
+      transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
+    }
+    .details-panel .details-meta .panel-actions .action-btn.ant-btn:hover {
+      border-color:#c7dbff;
+      background:#e8f1ff;
+      color:#0b5ed7;
+      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
+    .details-panel .attempt .sub .toggle {
+      border:1px solid #e5e7eb;
+      background:#fff;
+      border-radius:10px;
+      padding:6px 8px;
+      font-size:12px;
+      height:auto;
+      line-height: 1;
+      transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
+    }
+    .details-panel .attempt .sub .toggle:hover {
+      border-color:#c7dbff;
+      background:#e8f1ff;
+      color:#0b5ed7;
+      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
+    .details-panel .panel-heading.details-heading .status-tag { text-transform: lowercase; }
     .details-panel .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; color:#6b7280; font-size:12px; }
     .details-panel h6 { margin: 12px 0 6px; }
     .loading-overlay { position:absolute; inset:0; background: rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index: 10; }
