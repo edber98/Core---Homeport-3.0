@@ -4,6 +4,7 @@ import { FlowViewerComponent } from './flow-viewer.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { FormsModule } from '@angular/forms';
 import { FlowRunService, ExecutionRun, ExecutionMode } from '../../services/flow-run.service';
@@ -22,7 +23,7 @@ import { backAwareCurve } from './edge-curves';
 @Component({
   selector: 'flow-execution',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzDrawerModule, NzButtonModule, NzTagModule],
+  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzDrawerModule, NzButtonModule, NzTagModule, NzSelectModule],
   template: `
   <div class="flow-exec">
     <!-- Reusable left panel content (desktop + drawer) -->
@@ -34,10 +35,10 @@ import { backAwareCurve } from './edge-curves';
         </div>
       </div>
       <div class="mode-row apple">
-        <select class="mode-select" [(ngModel)]="mode">
-          <option value="test">test</option>
-          <option value="prod">prod</option>
-        </select>
+        <nz-select class="mode-select" [(ngModel)]="mode" nzSize="small">
+          <nz-option nzValue="test" nzLabel="test"></nz-option>
+          <nz-option nzValue="prod" nzLabel="prod"></nz-option>
+        </nz-select>
         <button nz-button nzSize="small" (click)="onRun()" title="Lancer (local)" aria-label="Lancer (local)"><i class="fa-solid fa-play"></i></button>
         <button nz-button nzType="primary" nzSize="small" (click)="runBackend()" title="Lancer (backend)" aria-label="Lancer (backend)"><i class="fa-solid fa-rocket"></i></button>
       </div>
@@ -55,25 +56,32 @@ import { backAwareCurve } from './edge-curves';
         </li>
       </ul>
       <div class="panel-subtitle">Historique (backend)</div>
-      <div class="exec-list" (scroll)="onListScroll($event)">
-        <div class="exec-item" *ngFor="let b of backendFlowRuns; trackBy: trackBackendRun" [class.active]="selectedBackendRun?.id === b.id" (click)="selectBackendRun(b)">
-          <div class="row top">
-            <div class="left">
-              <nz-tag [nzColor]="b.status==='success' ? 'green' : (b.status==='error' ? 'red' : (b.status==='running' ? 'blue' : 'default'))">{{ b.status }}</nz-tag>
+      <div class="exec-list" (scroll)="onListScroll($event)" (click)="closeMenu()">
+        <div class="exec-day" *ngFor="let g of groupedBackendRuns(); trackBy: trackExecGroup">
+          <div class="exec-day-title">{{ g.label }}</div>
+          <div class="exec-item" *ngFor="let b of g.items; trackBy: trackBackendRun"
+            [class.active]="selectedBackendRun?.id === b.id"
+            (click)="selectBackendRun(b)"
+            (contextmenu)="onExecContextMenu(b, $event)">
+            <div class="exec-actions-top">
               <span class="start" *ngIf="b.startedAt as s">{{ s | date:'medium' }}</span>
+              <button class="kebab" type="button" aria-label="Actions" (click)="toggleMenu(b, $event)">⋯</button>
             </div>
-            <div class="right">
-              <button nz-button nzSize="small" (click)="onViewRunClick(b); $event.stopPropagation()" title="Voir détails"><i class="fa-solid fa-eye"></i></button>
-              <button nz-button nzSize="small" nzDanger (click)="cancelBackend(b.id); $event.stopPropagation()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
-              <button nz-button nzSize="small" (click)="openInEditor(b); $event.stopPropagation()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
+            <div class="row header">
+              <nz-tag class="status-tag" [nzColor]="b.status==='success' ? 'green' : (b.status==='error' ? 'red' : (b.status==='running' ? 'blue' : 'default'))">{{ b.status }}</nz-tag>
             </div>
-          </div>
-          <div class="row bottom">
-            <div class="id mono">ID: {{ b.id }}</div>
-            <div class="meta" *ngIf="b.durationMs != null || b.nodesExecuted != null || b.eventsCount != null">
+            <div class="row meta" *ngIf="b.durationMs != null || b.nodesExecuted != null || b.eventsCount != null">
               <span *ngIf="b.durationMs != null">{{ b.durationMs }} ms</span>
               <span *ngIf="b.nodesExecuted != null"> · {{ b.nodesExecuted }} nœuds</span>
               <span *ngIf="b.eventsCount != null"> · {{ b.eventsCount }} évts</span>
+            </div>
+            <div class="row id mono">ID: {{ b.id }}</div>
+            <div class="exec-actions-menu" *ngIf="activeMenuId === b.id"
+              [ngStyle]="{ left: menuX + 'px', top: menuY + 'px' }"
+              (click)="$event.stopPropagation()">
+              <button nz-button nzSize="small" (click)="onViewRunClick(b); closeMenu()" title="Voir détails"><i class="fa-solid fa-eye"></i></button>
+              <button nz-button nzSize="small" nzDanger (click)="cancelBackend(b.id); closeMenu()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
+              <button nz-button nzSize="small" (click)="openInEditor(b); closeMenu()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
             </div>
           </div>
         </div>
@@ -301,29 +309,140 @@ import { backAwareCurve } from './edge-curves';
         .flow-exec { height: 100dvh; min-height: 100dvh; }
       }
     }
-    .side.executions { border: none; border-radius: 0; padding: 12px; padding-top: 0; background: #ffffff; overflow: auto; min-height: 0; }
-    /* Align headers to builder styles */
-    .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:1px solid #E2E1E4; margin: 0 0 8px; }
-    .panel-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
-    .panel-heading .card-title .t { font-weight:600; font-size:13px; margin: 0; }
-    .panel-heading .card-title .s { font-size:12px; color:#64748b; margin: 0; }
+    .side.executions { border: none; border-radius: 0; padding: 12px; padding-right: 9px; padding-top: 0 !important; background: #ffffff; overflow: auto; min-height: 0; }
+    /* Align left panel to builder palette topbar styles */
+    .side.executions .panel-heading {
+      width: calc(100% + 21px);
+      margin: 0 -9px 0 -12px;
+      background:#fff;
+      padding:10px 12px;
+      font-weight:700;
+      font-size:18px;
+      color:#111;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:0;
+      border-bottom:0;
+      flex-direction:column;
+      text-align:center;
+    }
+    .side.executions .panel-heading .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
+    .side.executions .panel-heading .card-title .t { font-weight:700; font-size:18px; margin: 0; color:#111; line-height:1.1; }
+    .side.executions .panel-heading .card-title .s { font-size:13px; color:#64748b; margin: 0; line-height:1.2; }
     .panel-subtitle { font-weight:600; font-size:12px; color:#444; margin: 8px 0 6px; opacity:.9; }
-    .mode-row { display:flex; gap:6px; align-items:center; margin-bottom:8px; }
-    .mode-row .mode-select { flex:0 0 76px; padding:3px 6px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; font-size:12px; }
-    .mode-row .icon-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; }
+    .mode-row { display:flex; gap:6px; align-items:center; margin: 6px 0 10px; }
+    .mode-row .mode-select { flex:0 0 96px; min-width: 96px; }
+    :host ::ng-deep .mode-row .mode-select .ant-select-selector {
+      background: #f3f7ff;
+      border-color: #d9e4ff;
+      transition: box-shadow .12s ease, border-color .12s ease;
+      border-radius: 8px;
+      font-size: 12px;
+      height: 28px;
+      padding: 0 8px;
+    }
+    :host ::ng-deep .mode-row .mode-select .ant-select-selector:hover { border-color:#d1d5db; }
+    :host ::ng-deep .mode-row .ant-select-focused .ant-select-selector { box-shadow: 0 0 0 2px rgba(17,17,17,0.08); }
+    :host ::ng-deep .mode-row .mode-select .ant-select-selection-item { line-height: 26px; }
+    :host ::ng-deep .ant-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+      background: #e8f1ff;
+      color: #0b5ed7;
+    }
+    :host ::ng-deep .ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+      background: #dbe8ff;
+      color: #0b5ed7;
+    }
+    .mode-row .ant-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; height:auto; line-height: 1; transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
+    .mode-row .ant-btn:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .mode-row .ant-btn-primary { background:#1677ff; border-color:#1677ff; color:#fff; }
+    .mode-row .ant-btn-primary:hover { background:#0b5ed7; border-color:#0b5ed7; color:#fff; box-shadow:0 4px 12px rgba(22,119,255,0.22); }
+    .exec-item .row.top .right .ant-btn { transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
+    .exec-item .row.top .right .ant-btn:hover {
+      border-color:#c7dbff;
+      background:#e8f1ff;
+      color:#0b5ed7;
+      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
+    .exec-item .row.top .right .ant-btn-dangerous:hover {
+      border-color:#fecaca;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:0 4px 12px rgba(239,68,68,0.18);
+    }
     /* KPIs wrap on multiple lines responsively */
     .kpis { display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:8px; margin: 6px 0 10px; }
     .kpi { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px; text-align:center; }
     .kpi .n { font-weight:700; font-size:14px; color:#111; }
     .kpi .l { font-size:11px; color:#6b7280; }
     .exec-list { list-style: none; padding: 0; margin: 8px 0; display:flex; flex-direction:column; gap:8px; }
-    .exec-item { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
-    .exec-item.active { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
-    .exec-item .row.top { display:flex; align-items:center; gap:8px; }
-    .exec-item .row.top .left { display:flex; align-items:center; gap:8px; min-width: 0; }
-    .exec-item .row.top .right { margin-left:auto; display:inline-flex; gap:6px; }
-    .exec-item .row.bottom { display:flex; align-items:center; gap:8px; color:#6b7280; font-size:12px; }
-    .exec-item .row.bottom .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#374151; }
+    .exec-item { position: relative; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px; cursor:pointer; display:flex; flex-direction:column; gap:4px; }
+    .exec-item .exec-actions-top {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .exec-item .exec-actions-top .start { color:#111; font-size:12px; font-weight:700; }
+    .exec-item .kebab {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      color: #6b7280;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .exec-item .kebab:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .exec-actions-menu {
+      position: fixed;
+      z-index: 50;
+      display: inline-flex;
+      gap: 6px;
+      padding: 8px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+    .exec-item.active { border-color:#1677ff; background:#f3f7ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
+    .exec-day { display:flex; flex-direction:column; gap:8px; }
+    .exec-day-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #374151;
+      margin: 6px 2px 2px;
+      text-transform: capitalize;
+    }
+    .exec-item .row { display:flex; align-items:center; gap:8px; }
+    .exec-item .row.header { justify-content:flex-start; }
+    .exec-item .status-tag { text-transform: lowercase; }
+    .exec-item .row.header .start { color:#111; font-size:12px; font-weight:700; }
+    .exec-item .row.id { color:#1677ff; font-size:12px; }
+    .exec-item .row .id.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .exec-item .row.meta { color:#6b7280; font-size:12px; }
+    .exec-actions-menu .ant-btn { transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
+    .exec-actions-menu .ant-btn:hover {
+      border-color:#c7dbff;
+      background:#e8f1ff;
+      color:#0b5ed7;
+      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
+    .exec-actions-menu .ant-btn-dangerous:hover {
+      border-color:#fecaca;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:0 4px 12px rgba(239,68,68,0.18);
+    }
     .exec-item .badge.st { border:1px solid #e5e7eb; padding:2px 6px; border-radius:6px; font-size:12px; text-transform: lowercase; }
     .exec-item .badge.st.success { color:#0f5132; background:#d1e7dd; border-color:#badbcc; }
     .exec-item .badge.st.error { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
@@ -387,6 +506,9 @@ import { backAwareCurve } from './edge-curves';
 export class FlowExecutionComponent {
   leftDrawer = false;
   rightDrawer = false;
+  activeMenuId: string | null = null;
+  menuX = 0;
+  menuY = 0;
   private mq?: MediaQueryList;
   private mqHandler?: (e: MediaQueryListEvent) => void;
   isTabletOrBelow = false;
@@ -488,6 +610,28 @@ export class FlowExecutionComponent {
     // Do not auto-open panels; user opens with FAB (mobile -> drawer, desktop -> rightPanelOpen)
     if (this.isTabletOrBelow) { this.rightDrawer = true; }
     else { this.rightPanelOpen = !this.rightPanelOpen; try { this.cdr.detectChanges(); } catch {} }
+  }
+  toggleMenu(b: BackendRun, ev: MouseEvent) {
+    ev.stopPropagation();
+    if (this.activeMenuId === b.id) { this.activeMenuId = null; return; }
+    const target = ev.currentTarget as HTMLElement | null;
+    if (target && typeof (target as any).getBoundingClientRect === 'function') {
+      const rect = target.getBoundingClientRect();
+      this.menuX = rect.right;
+      this.menuY = rect.bottom;
+    } else {
+      this.menuX = ev.clientX;
+      this.menuY = ev.clientY;
+    }
+    this.activeMenuId = b.id;
+  }
+  closeMenu() { this.activeMenuId = null; }
+  onExecContextMenu(b: BackendRun, ev: MouseEvent) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.menuX = ev.clientX;
+    this.menuY = ev.clientY;
+    this.activeMenuId = b.id;
   }
   private templatesMap = new Map<string, any>();
   // Match builder visuals
@@ -603,6 +747,23 @@ export class FlowExecutionComponent {
   private flowRunsLoading = false;
   private flowRunsHasMore = true;
   trackBackendRun(index: number, b: BackendRun) { return b && (b as any).id; }
+  trackExecGroup(index: number, g: { key: string }) { return g?.key || index; }
+  groupedBackendRuns() {
+    const runs = this.backendFlowRuns || [];
+    const groups = new Map<string, { key: string; label: string; items: BackendRun[] }>();
+    for (const r of runs) {
+      const dt = r?.startedAt ? new Date(r.startedAt as any) : null;
+      const key = dt ? dt.toLocaleDateString('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'unknown';
+      const label = dt ? this.formatExecDateLabel(dt) : 'Date inconnue';
+      if (!groups.has(key)) groups.set(key, { key, label, items: [] });
+      groups.get(key)!.items.push(r);
+    }
+    return Array.from(groups.values());
+  }
+  private formatExecDateLabel(d: Date) {
+    const label = d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long' });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
   private loadBackendRuns(flowId?: string, append: boolean = false) {
     const fid = flowId || this.currentFlowId || undefined;
     const wsId = this.acl.currentWorkspaceId() || undefined;
@@ -753,7 +914,10 @@ export class FlowExecutionComponent {
     // Center after graph + attempts/events loaded
     this.pendingCenter = true;
     // Desktop: auto-open right panel on selection; Mobile: do not auto-open drawer
-    if (!this.isTabletOrBelow) { this.rightPanelOpen = true; try { this.cdr.detectChanges(); } catch {} }
+    if (!this.isTabletOrBelow) {
+      this.rightPanelOpen = true;
+      try { this.cdr.detectChanges(); } catch {}
+    }
     const fid = b?.flowId || null;
     if (fid && (!this.currentGraph || String(this.currentGraph.id) !== String(fid))) {
       this.loadingFlowDoc = true;
