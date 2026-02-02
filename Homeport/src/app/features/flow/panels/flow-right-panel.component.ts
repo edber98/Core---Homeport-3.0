@@ -280,11 +280,15 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
       border-color: #d1d5db;
     }
     :host ::ng-deep .meta-form .ant-input:focus,
-    :host ::ng-deep .meta-form .ant-select-focused .ant-select-selector,
     :host ::ng-deep .meta-form .ant-input-number-focused,
     :host ::ng-deep .meta-form .ant-picker-focused,
     :host ::ng-deep .meta-form .ant-switch-checked {
       box-shadow: 0 0 0 2px rgba(17,17,17,0.08);
+    }
+    :host ::ng-deep .meta-form .ant-select-focused .ant-select-selector,
+    :host ::ng-deep .meta-form .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
     }
     :host ::ng-deep .meta-form .ant-switch.ant-switch-checked {
       background-color: #1677ff;

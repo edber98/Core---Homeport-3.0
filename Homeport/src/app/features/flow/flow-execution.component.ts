@@ -81,7 +81,7 @@ import { backAwareCurve } from './edge-curves';
             <div class="row meta" *ngIf="b.durationMs != null || b.nodesExecuted != null || b.eventsCount != null">
               <span *ngIf="b.durationMs != null">{{ b.durationMs }} ms</span>
               <span *ngIf="b.nodesExecuted != null"> · {{ b.nodesExecuted }} nœuds</span>
-              <span *ngIf="b.eventsCount != null"> · {{ b.eventsCount }} évts</span>
+              <span *ngIf="b.eventsCount != null"> · {{ b.eventsCount }} évènements</span>
             </div>
             <div class="row id mono">ID: {{ b.id }}</div>
             <div class="exec-actions-menu" *ngIf="activeMenuId === b.id"
@@ -167,7 +167,7 @@ import { backAwareCurve } from './edge-curves';
             <div class="run-meta">
               <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
               <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
-              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
+              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évènements</span>
             </div>
           </div>
           <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index" [class.expanded]="expanded[i]">
@@ -209,11 +209,16 @@ import { backAwareCurve } from './edge-curves';
               </div>
             </div>
           </div>
-          <h6>Journal (brut)</h6>
+          <div class="section-heading details-section">
+            <div class="card-title left">
+              <span class="t">Journal brut</span>
+              <span class="s">Tous les évènements</span>
+            </div>
+          </div>
           <div class="attempt" *ngFor="let ev of backendEvents">
             <div class="hdr">
               <span class="nid">{{ ev?.data?.nodeId || ev?.type }}</span>
-              <span class="dur">{{ ev?.ts || ev?.data?.ts || '' }}</span>
+              <span class="dur" *ngIf="(ev?.ts || ev?.data?.ts) as ts">{{ ts | date:'d MMM y, HH:mm:ss' }}</span>
             </div>
             <pre>{{ ev | json }}</pre>
           </div>
@@ -267,7 +272,7 @@ import { backAwareCurve } from './edge-curves';
             <div class="run-meta">
               <span *ngIf="selectedBackendRun?.durationMs != null">{{ selectedBackendRun?.durationMs }} ms</span>
               <span *ngIf="selectedBackendRun?.nodesExecuted != null"> · {{ selectedBackendRun?.nodesExecuted }} nœuds</span>
-              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évts</span>
+              <span *ngIf="selectedBackendRun?.eventsCount != null"> · {{ selectedBackendRun?.eventsCount }} évènements</span>
             </div>
           </div>
           <div class="attempt backend-attempt" *ngFor="let a of backendAttempts; let i = index" [class.expanded]="expanded[i]">
@@ -371,6 +376,8 @@ import { backAwareCurve } from './edge-curves';
       font-size: 12px;
       height: 28px;
       padding: 0 8px;
+      display: flex;
+      align-items: center;
     }
     :host ::ng-deep .mode-row .mode-select .ant-select-selector:hover { border-color:#d1d5db; }
     :host ::ng-deep .mode-row .ant-select-focused .ant-select-selector {
@@ -382,6 +389,11 @@ import { backAwareCurve } from './edge-curves';
       box-shadow: 0 0 0 2px rgba(22,119,255,0.18) !important;
     }
     :host ::ng-deep .mode-row .mode-select .ant-select-selection-item { line-height: 26px; }
+    :host ::ng-deep .mode-row .mode-select .ant-select-selection-item,
+    :host ::ng-deep .mode-row .mode-select .ant-select-selection-search {
+      display: flex;
+      align-items: center;
+    }
     :host ::ng-deep .ant-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
       background: #e8f1ff;
       color: #0b5ed7;
@@ -494,8 +506,13 @@ import { backAwareCurve } from './edge-curves';
     .attempt .hdr .nid { font-weight:600; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .attempt .sub { display:flex; gap:8px; align-items:center; font-size:12px; color:#8c8c8c; margin-top:4px; flex-wrap: wrap; }
     .attempt .hdr .st { padding:2px 6px; border-radius:6px; border:1px solid #e5e7eb; }
-    .attempt .hdr .st.success { color:#0f5132; background:#d1e7dd; border-color:#badbcc; }
-    .attempt .hdr .st.error { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
+    .attempt .hdr .st.success { color:#15803d; background:#ecfdf5; border-color:#bbf7d0; }
+    :host ::ng-deep .ant-tag.ant-tag-green {
+      color: #15803d;
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+    }
+    .attempt .hdr .st.error { color:#cf1322; background:#fff1f0; border-color:#ffa39e; }
     .attempt .hdr .dur { margin-left:auto; color:#8c8c8c; white-space: nowrap; }
     .attempt .hdr .when { color:#8c8c8c; white-space: nowrap; }
     .attempt .hdr .toggle { margin-left:8px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
@@ -595,6 +612,24 @@ import { backAwareCurve } from './edge-curves';
       transform: translateY(-1px);
     }
     .details-panel .panel-heading.details-heading .status-tag { text-transform: lowercase; }
+    .details-panel .section-heading.details-section {
+      display:flex;
+      align-items:flex-end;
+      font-weight:600;
+      font-size:13px;
+      color:#111;
+      padding:6px 6px 8px 0;
+      border-bottom:0;
+      margin:14px 0 0;
+    }
+    .details-panel .section-heading.details-section .card-title {
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      line-height:1.2;
+    }
+    .details-panel .section-heading.details-section .card-title .t { font-weight:600; font-size:14px; }
+    .details-panel .section-heading.details-section .card-title .s { font-size:12px; color:#64748b; }
     .details-panel .run-meta { display:flex; flex-wrap: wrap; gap:6px; margin-bottom:10px; color:#6b7280; font-size:12px; }
     .details-panel h6 { margin: 12px 0 6px; }
     .loading-overlay { position:absolute; inset:0; background: rgba(255,255,255,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index: 10; }
