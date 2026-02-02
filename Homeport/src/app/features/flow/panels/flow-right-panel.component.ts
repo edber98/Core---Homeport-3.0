@@ -130,13 +130,14 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
 
         <!-- Section Nœud / Paramètres - visible uniquement si un nœud est sélectionné -->
         <ng-container *ngIf="selected || (selectedList.length||0) > 1">
-          <div class="panel-heading">
-            <div class="card-title left">
-              <span class="t">{{ (selectedList.length||0) > 1 ? 'Nœuds' : 'Nœud' }}</span>
-              <span class="s">Paramètres</span>
+          <div class="node-panel">
+            <div class="panel-heading node-heading">
+              <div class="card-title left">
+                <span class="t">{{ (selectedList.length||0) > 1 ? 'Nœuds' : 'Nœud' }}</span>
+                <span class="s">Paramètres</span>
+              </div>
             </div>
-          </div>
-          <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+            <div class="inspector-node" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
             <div class="rows simple" *ngIf="(selectedList.length||0) <= 1; else multiSlides">
               <div *ngIf="(selectedList.length||0) <= 1; else multiMeta">
                 <node-inspector-item [model]="selectedModel"
@@ -165,7 +166,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 <button nz-button nzSize="small" class="apple-btn" (click)="openAdvanced.emit()" title="Ouvrir l’éditeur (v1)" aria-label="Ouvrir l’éditeur (v1)"><i class="fa-regular fa-pen-to-square"></i></button>
                 <button nz-button nzSize="small" class="apple-btn" (click)="openAdvancedV2.emit()" title="Ouvrir l’éditeur avancé (v2)" aria-label="Ouvrir l’éditeur avancé (v2)"><i class="fa-solid fa-up-right-from-square"></i></button>
                 <button nz-button nzSize="small" class="apple-btn" (click)="showJsonViewer = !showJsonViewer" [title]="showJsonViewer ? 'Masquer le JSON' : 'Voir le JSON'" aria-label="Voir le JSON"><i class="fa-solid fa-code"></i></button>
-                <button nz-button nzSize="small" nzDanger class="apple-btn" (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
+                <button nz-button nzSize="small" nzDanger class="apple-btn danger-btn" (click)="delete.emit()" title="Supprimer" aria-label="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
               </div>
             </div>
 
@@ -193,6 +194,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
                 </div>
               </div>
             </ng-template>
+            </div>
           </div>
         </ng-container>
 
@@ -337,7 +339,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .exec-select-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
     .exec-select-row .flex-1 { flex:1 1 auto; min-width: 0; }
     .exec-select-row .load-btn { display:inline-flex; align-items:center; justify-content:center; }
-    .sel-status { margin-top: 18px; padding: 8px 10px; border-radius:10px; background: #f8fafc; border: 1px solid #eef2f7; }
+    .sel-status { margin-top: 18px; padding: 8px 10px; border-radius:10px; background: #f3f7ff; border: 1px solid #eef2f7; }
     .sel-status .k { color:#6b7280; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
     .sel-status .v { color:#111; font-size:12px; }
     .sel-status-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
@@ -359,6 +361,13 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
       box-shadow: 0 6px 14px rgba(239,68,68,0.18);
       transform: translateY(-1px);
     }
+    .inspector-node .actions-line .danger-btn:hover:not([disabled]) {
+      background:#fee2e2 !important;
+      border-color:#fecaca !important;
+      color:#b91c1c !important;
+      box-shadow: 0 6px 14px rgba(239,68,68,0.18);
+      transform: translateY(-1px);
+    }
     .recent-list .r .status.ok { color:#16a34a; }
     .recent-list .r .status.err { color:#ef4444; }
     .recent-list .r .status.run { color:#0ea5e9; }
@@ -373,7 +382,10 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; line-height:1.1; }
     .panel-heading.main-title .card-title .t { font-weight:700; font-size:18px; color:#000; }
     .panel-heading.main-title .card-title .s { font-size:13px; color:#64748b; }
-    .inspector-node { padding: 0 6px; }
+    .node-panel { margin: 8px 6px 12px; padding: 0; border-radius: 0; background: transparent; border: 0; }
+    .node-panel .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:0; margin:12px 0 8px; }
+    .node-panel .panel-heading .card-title .s { font-size:12px; color:#64748b; text-transform:none; letter-spacing:normal; }
+    .inspector-node { padding: 0 2px; }
     .history-wrap { padding: 0 6px 8px; }
     .inspector-node .rows { display:flex; flex-direction:column; gap:8px; }
     .inspector-node .rows.simple .row { display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #f2f2f2; padding: 6px 0; }
@@ -388,6 +400,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .inspector-node .args-list .label { color:#6b7280; font-size:12px; font-weight:600; }
     .inspector-node .args-list .value { color:#111; font-size:12px; max-width: 60%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
     .inspector-node .kv-list { display:flex; flex-direction:column; gap:6px; margin-top: 8px; }
+    .inspector-node .kv-list { padding:8px; border-radius:10px; background:#ffffff; }
     .inspector-node .kv-list .kv { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
     .inspector-node .kv-list .label { color:#6b7280; font-size:12px; font-weight:600; }
     .inspector-node .kv-list .value { color:#111; font-size:12px; max-width: 60%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
@@ -416,6 +429,18 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .modal-args .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .modal-args .label { color:#6b7280; font-size:13px; font-weight:600; }
     .modal-args .value { color:#111; font-size:13px; max-width: 70%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
+    :host ::ng-deep .ant-modal-footer .ant-btn-primary {
+      background:#1677ff !important;
+      border-color:#1677ff !important;
+    }
+    :host ::ng-deep .ant-modal-footer .ant-btn-primary:hover {
+      background:#0f66e8 !important;
+      border-color:#0f66e8 !important;
+    }
+    :host ::ng-deep .ant-modal-footer .ant-btn:hover {
+      border-color:#1677ff !important;
+      color:#1677ff !important;
+    }
   `]
 })
 export class FlowRightPanelComponent implements OnChanges {

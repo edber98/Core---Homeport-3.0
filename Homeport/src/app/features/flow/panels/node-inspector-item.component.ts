@@ -64,17 +64,22 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     </div>
   `,
   styles: [`
-    .kv-list { display:flex; flex-direction:column; gap:6px; margin-top: 8px; }
-    .kv { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
-    .label { color:#6b7280; font-size:12px; font-weight:600; }
+    .kv-list { display:flex; flex-direction:column; gap:6px; margin-top: 6px; padding:0; border-radius:10px; background:#ffffff; }
+    .kv { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .label { color:#6b7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
     .value { color:#111; font-size:12px; max-width: 60%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
     .value.err { color:#b42318; white-space:normal; }
-    .args { margin-top: 8px; }
-    .args-title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
-    .args-title { font-weight:600; font-size:12px; color:#111; }
-    .args-list { display:flex; flex-direction:column; gap:6px; }
-    .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .args { margin-top: 14px; padding:8px; border-radius:10px; background:#f3f7ff; border:1px solid #e2e8f0; }
+    .args-title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 6px 0; border-bottom:0; margin-bottom:6px; background:#f3f7ff; }
+    .args-title { font-weight:700; font-size:12px; color:#111; }
+    .args-list { display:flex; flex-direction:column; gap:0; padding:0 6px; }
+    .arg { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; padding:6px 8px; border-bottom:1px dashed #f1f5f9; background:#ffffff; border-radius:0; }
+    .arg:first-child { border-top-left-radius:6px; border-top-right-radius:6px; }
+    .arg:last-child { border-bottom-left-radius:6px; border-bottom-right-radius:6px; border-bottom:0; }
+    .arg:last-child { border-bottom:0; }
     .title-actions .icon-btn { width:26px; height:26px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+    .title-actions { display:inline-flex; gap:6px; }
+    .json-box.slim { border:1px solid #eef2f7; border-radius:10px; background:#ffffff; padding:8px; }
   `]
 })
 export class NodeInspectorItemComponent {

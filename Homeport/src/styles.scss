@@ -412,6 +412,19 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
   background: #ef4444;
   border-color: #ef4444;
 }
+.ant-modal-footer .ant-btn-primary {
+  background: #1677ff !important;
+  border-color: #1677ff !important;
+}
+.ant-modal-footer .ant-btn-primary:hover,
+.ant-modal-footer .ant-btn-primary:focus-visible {
+  background: #0f66e8 !important;
+  border-color: #0f66e8 !important;
+}
+.ant-modal-footer .ant-btn:hover {
+  border-color: #1677ff !important;
+  color: #1677ff !important;
+}
 @font-face {
     font-family: 'Sarine';
     src: url('../public/fronts/sarine-medium.ttf') format('truetype');
