@@ -1,7 +1,8 @@
 .spacing {
   display: flex;
   justify-content: center;
-  max-width: 260px;
+  width: 100%;
+  margin: 8px 0;
 }
 
 .box-model {
@@ -20,6 +21,7 @@
   border: 1px solid #e2e8f0;
   z-index: 3;
 }
+
 .connector-svg {
   position: absolute;
   inset: 0;
@@ -28,10 +30,12 @@
   pointer-events: none;
   z-index: 5;
 }
+
 .connector-svg line {
   stroke: #cbd5e1;
   stroke-width: 1.2;
 }
+
 .label.content {
   position: absolute;
   inset: 66px;
@@ -45,6 +49,7 @@
   pointer-events: none;
   z-index: 4;
 }
+
 .label.margin,
 .label.padding {
   position: absolute;
@@ -55,8 +60,16 @@
   pointer-events: none;
   z-index: 6;
 }
-.label.margin { top: 6px; left: 8px; }
-.label.padding { top: 30px; left: 34px; }
+
+.label.margin {
+  top: 6px;
+  left: 8px;
+}
+
+.label.padding {
+  top: 30px;
+  left: 34px;
+}
 
 .field {
   position: absolute;
@@ -64,18 +77,70 @@
   align-items: center;
   justify-content: center;
 }
-.field.margin { z-index: 1; }
-.field.padding { z-index: 2; }
 
-.field.margin.top { left: 0; top: 0; width: 220px; height: 26px; }
-.field.margin.right { left: 194px; top: 0; width: 26px; height: 180px; }
-.field.margin.bottom { left: 0; top: 154px; width: 220px; height: 26px; }
-.field.margin.left { left: 0; top: 0; width: 26px; height: 180px; }
+.field.margin {
+  z-index: 1;
+}
 
-.field.padding.top { left: 26px; top: 26px; width: 168px; height: 40px; }
-.field.padding.right { left: 154px; top: 26px; width: 40px; height: 128px; }
-.field.padding.bottom { left: 26px; top: 114px; width: 168px; height: 40px; }
-.field.padding.left { left: 26px; top: 26px; width: 40px; height: 128px; }
+.field.padding {
+  z-index: 2;
+}
+
+.field.margin.top {
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 26px;
+}
+
+.field.margin.right {
+  left: 194px;
+  top: 0;
+  width: 26px;
+  height: 180px;
+}
+
+.field.margin.bottom {
+  left: 0;
+  top: 154px;
+  width: 220px;
+  height: 26px;
+}
+
+.field.margin.left {
+  left: 0;
+  top: 0;
+  width: 26px;
+  height: 180px;
+}
+
+.field.padding.top {
+  left: 26px;
+  top: 26px;
+  width: 168px;
+  height: 40px;
+}
+
+.field.padding.right {
+  left: 154px;
+  top: 26px;
+  width: 40px;
+  height: 128px;
+}
+
+.field.padding.bottom {
+  left: 26px;
+  top: 114px;
+  width: 168px;
+  height: 40px;
+}
+
+.field.padding.left {
+  left: 26px;
+  top: 26px;
+  width: 40px;
+  height: 128px;
+}
 
 .spacing-input {
   width: 100%;
@@ -92,26 +157,47 @@
   cursor: text;
   appearance: textfield;
 }
-.field.margin .spacing-input { background: #f8fafc; border-color: #cbd5e1; }
-.field.padding .spacing-input { background: #eef2ff; border-color: #c7d2fe; }
-.spacing-input:focus { border-color: #94a3b8; }
+
+.field.margin .spacing-input {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.field.padding .spacing-input {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+.spacing-input:focus {
+  border-color: #94a3b8;
+}
+
 .spacing-input::-webkit-outer-spin-button,
-.spacing-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.spacing-input[type=number] { -moz-appearance: textfield; }
+.spacing-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.spacing-input[type=number] {
+  -moz-appearance: textfield;
+}
 
 .field.margin.top .spacing-input,
 .field.margin.bottom .spacing-input {
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 88% 100%, 12% 100%);
   clip-path: polygon(0% 0%, 100% 0%, 88% 100%, 12% 100%);
 }
+
 .field.margin.bottom .spacing-input {
   -webkit-clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
   clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
 }
+
 .field.margin.left .spacing-input {
   -webkit-clip-path: polygon(0% 0%, 100% 14%, 100% 86%, 0% 100%);
   clip-path: polygon(0% 0%, 100% 14%, 100% 86%, 0% 100%);
 }
+
 .field.margin.right .spacing-input {
   -webkit-clip-path: polygon(0% 14%, 100% 0%, 100% 100%, 0% 86%);
   clip-path: polygon(0% 14%, 100% 0%, 100% 100%, 0% 86%);
@@ -122,18 +208,22 @@
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 76% 100%, 24% 100%);
   clip-path: polygon(0% 0%, 100% 0%, 76% 100%, 24% 100%);
 }
+
 .field.padding.bottom .spacing-input {
   -webkit-clip-path: polygon(24% 0%, 76% 0%, 100% 100%, 0% 100%);
   clip-path: polygon(24% 0%, 76% 0%, 100% 100%, 0% 100%);
 }
+
 .field.padding.left .spacing-input {
   -webkit-clip-path: polygon(0% 0%, 100% 31%, 100% 69%, 0% 100%);
   clip-path: polygon(0% 0%, 100% 31%, 100% 69%, 0% 100%);
 }
+
 .field.padding.right .spacing-input {
   -webkit-clip-path: polygon(0% 31%, 100% 0%, 100% 100%, 0% 69%);
   clip-path: polygon(0% 31%, 100% 0%, 100% 100%, 0% 69%);
 }
+
 .connector-svg line.padding {
   stroke: #818cf8;
   stroke-width: 2.2;
