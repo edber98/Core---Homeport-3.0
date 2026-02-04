@@ -475,6 +475,37 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       }
       // Store function result under msg[nodeId] and mirror to payload
       const isError = !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+      if (isError && result && typeof result === 'object' && !('displayMessage' in result)) {
+        const rawMsg = (result && (result.error || result.message)) ? String(result.error || result.message) : '';
+        const msg = rawMsg.toLowerCase();
+        const status = Number(result.status || result.statusCode);
+        let display = '';
+        if (status === 400) display = "Requête invalide. Vérifiez les paramètres.";
+        else if (status === 401) display = "Authentification requise. Vérifiez vos identifiants.";
+        else if (status === 403) display = "Accès refusé. Vérifiez vos permissions.";
+        else if (status === 404) display = "Ressource introuvable. Vérifiez l’URL ou l’identifiant.";
+        else if (status === 409) display = "Conflit détecté. L’état de la ressource a changé.";
+        else if (status === 422) display = "Données invalides. Vérifiez les champs requis.";
+        else if (status === 429) display = "Trop de requêtes. Réessayez plus tard.";
+        else if (status === 500) display = "Erreur serveur. Réessayez plus tard.";
+        else if (status === 502) display = "Mauvaise passerelle. Le service en amont ne répond pas.";
+        else if (status === 503) display = "Service indisponible. Réessayez plus tard.";
+        else if (status === 504) display = "Timeout côté service. Réessayez plus tard.";
+        else if (status >= 500 && status <= 599) display = "Service externe indisponible. Réessayez plus tard.";
+        if (!display) {
+          if (msg.includes('timeout') || msg.includes('timed out')) display = "Timeout. Le service a mis trop de temps à répondre.";
+          else if (msg.includes('rate limit') || msg.includes('too many requests')) display = "Trop de requêtes. Réessayez plus tard.";
+          else if (/\bunauthorized\b|\btoken\b|\boauth\b|\binvalid_grant\b/.test(msg)) display = "Authentification requise. Vérifiez vos identifiants.";
+          else if (msg.includes('forbidden') || msg.includes('permission')) display = "Accès refusé. Vérifiez vos permissions.";
+          else if (msg.includes('not found') || msg.includes('introuvable')) display = "Ressource introuvable. Vérifiez l’URL ou l’identifiant.";
+          else if (msg.includes('invalid') || msg.includes('missing') || msg.includes('required')) display = "Données invalides. Vérifiez les champs requis.";
+          else if (/\b(econnrefused|econnreset|enotfound|eai_again)\b|\bssl\b|\btls\b|\bhandshake\b|wrong version number|\bnetwork\b|\bconnection\b|\bconnect\b/.test(msg)) {
+            display = "Erreur réseau. Vérifiez la connexion.";
+          }
+        }
+        if (!display) display = "Erreur inattendue. Voir détails.";
+        result.displayMessage = display;
+      }
       nodeLog.error = isError ? (result && result.error ? String(result.error) : 'error') : undefined;
       nodeLog.result = result;
       msg[node.id] = result;

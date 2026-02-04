@@ -293,10 +293,38 @@
               </div>
             </ng-template>
             <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
-              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
-              <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
+              <ng-container *ngIf="st.lastStatus === 'error'; else execBadgePlain">
+                <div class="exec-badge-inner"
+                  nz-popover
+                  nzPopoverTrigger="hover"
+                  [nzPopoverContent]="execErrorTooltipTpl"
+                  [nzPopoverOverlayClassName]="'exec-err-tooltip'"
+                  (mouseenter)="setExecErrorTooltipNode(ctx.node.id)">
+                  <i class="fa-solid fa-triangle-exclamation err" title="Etat dernière exécution"></i>
+                  <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
+                </div>
+              </ng-container>
+              <ng-template #execBadgePlain>
+                <div class="exec-badge-inner">
+                  <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
+                  <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
+                </div>
+              </ng-template>
             </div>
             </div>
+            <ng-template #execErrorTooltipTpl>
+              <div class="exec-err-pop">
+                <div class="msg">{{ execErrorDisplay(execTooltipNodeId) }}</div>
+                <button type="button" class="details-btn" (click)="toggleExecErrorDetails($event)">
+                  {{ execTooltipExpanded ? 'Masquer les détails' : 'Détails' }}
+                </button>
+                <ng-container *ngIf="execTooltipExpanded">
+                  <div class="details" *ngIf="execErrorDetails(execTooltipNodeId) as d">
+                    <div class="text">{{ d }}</div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-template>
      
         </ng-template>
         <ng-template let-ctx connectionTemplate>
