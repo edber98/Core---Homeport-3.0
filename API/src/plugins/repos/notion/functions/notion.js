@@ -1,6 +1,227 @@
 const DEFAULT_BASE_URL = 'https://api.notion.com';
 const DEFAULT_VERSION = '2025-09-03';
 
+function normalizeNotionError(err, res, data, meta) {
+  try {
+    const status = Number(err?.status || err?.statusCode || err?.response?.status || res?.status);
+    const payload = data ?? err?.response?.data ?? err?.error ?? err?.cause ?? err?.body ?? null;
+    let message = err?.message;
+    if (payload?.message) message = payload.message;
+    else if (typeof payload === 'string') message = payload;
+    let inferredStatus = Number.isFinite(status) ? status : undefined;
+    if (!Number.isFinite(inferredStatus) && typeof message === 'string') {
+      let m = message.match(/^(\d{3})\b/);
+      if (!m) m = message.match(/\bstatus\s*[:=]?\s*(\d{3})\b/i);
+      if (!m) m = message.match(/\bcode\s*[:=]?\s*(\d{3})\b/i);
+      if (m) inferredStatus = Number(m[1]);
+    }
+    const code = payload?.code || err?.code;
+    const type = payload?.type;
+    return {
+      status: Number.isFinite(inferredStatus) ? inferredStatus : undefined,
+      message: message ? String(message) : '',
+      code,
+      type,
+      path: meta?.path,
+      method: meta?.method,
+      details: payload
+    };
+  } catch {
+    return { message: err?.message ? String(err.message) : '' };
+  }
+}
+
+function mapNotionError(info) {
+  const raw = String(info?.message || '').trim();
+  const msg = raw.toLowerCase();
+  const status = info?.status;
+  let code = info?.code ? String(info.code) : undefined;
+  let displayMessage = '';
+
+  // Local config errors
+  if (!displayMessage && msg.includes('missing notion access token')) {
+    displayMessage = 'Jeton Notion manquant. Ajoutez-le dans les credentials.';
+    code = code || 'missing_access_token';
+  }
+  if (!displayMessage && msg.includes('missing notion clientid/clientsecret')) {
+    displayMessage = 'Identifiants OAuth Notion manquants (client_id / client_secret).';
+    code = code || 'missing_oauth_client';
+  }
+
+  // Notion code-based mapping
+  if (!displayMessage && code) {
+    const c = code.toLowerCase();
+    if (c === 'invalid_json') displayMessage = 'JSON invalide. Vérifiez le corps de la requête.';
+    else if (c === 'invalid_request_url') displayMessage = 'URL de requête invalide.';
+    else if (c === 'invalid_request') displayMessage = 'Requête non supportée. Vérifiez l’endpoint et les paramètres.';
+    else if (c === 'invalid_grant') displayMessage = 'Grant OAuth invalide ou expiré. Vérifiez le code/refresh token.';
+    else if (c === 'validation_error') {
+      const detail = extractValidationDetail(raw, info?.details);
+      if (detail) displayMessage = detail;
+      else displayMessage = 'Données invalides. Vérifiez les champs requis.';
+    }
+    else if (c === 'missing_version') displayMessage = 'En-tête Notion-Version manquant ou invalide.';
+    else if (c === 'unauthorized') displayMessage = 'Authentification requise. Vérifiez votre token.';
+    else if (c === 'restricted_resource') displayMessage = 'Accès refusé. Vérifiez vos permissions.';
+    else if (c === 'object_not_found') {
+      const t = inferNotFoundTarget(info);
+      if (t?.kind && t.id) displayMessage = `Ressource introuvable: ${t.kind} (ID ${t.id}). Vérifiez le partage et l’identifiant.`;
+      else if (t?.kind) displayMessage = `Ressource introuvable: ${t.kind}. Vérifiez le partage et l’identifiant.`;
+      else displayMessage = 'Ressource introuvable ou non partagée avec l’intégration.';
+    }
+    else if (c === 'conflict_error') displayMessage = 'Conflit détecté. Réessayez après actualisation.';
+    else if (c === 'rate_limited') displayMessage = 'Trop de requêtes. Réessayez plus tard.';
+    else if (c === 'internal_server_error') displayMessage = 'Erreur Notion côté serveur. Réessayez plus tard.';
+    else if (c === 'bad_gateway') displayMessage = 'Erreur de passerelle Notion. Réessayez plus tard.';
+    else if (c === 'service_unavailable' || c === 'database_connection_unavailable') displayMessage = 'Notion est indisponible. Réessayez plus tard.';
+    else if (c === 'gateway_timeout') displayMessage = 'Timeout Notion. Réessayez plus tard.';
+  }
+
+  // Status-based mapping
+  if (!displayMessage && status === 400) {
+    const detail = extractValidationDetail(raw, info?.details);
+    displayMessage = detail || 'Requête invalide. Vérifiez les paramètres.';
+  }
+  else if (!displayMessage && status === 401) displayMessage = 'Authentification requise. Vérifiez votre token.';
+  else if (!displayMessage && status === 403) displayMessage = 'Accès refusé. Vérifiez vos permissions.';
+  else if (!displayMessage && status === 404) {
+    const t = inferNotFoundTarget(info);
+    if (t?.kind && t.id) displayMessage = `Ressource introuvable: ${t.kind} (ID ${t.id}). Vérifiez le partage et l’identifiant.`;
+    else if (t?.kind) displayMessage = `Ressource introuvable: ${t.kind}. Vérifiez le partage et l’identifiant.`;
+    else displayMessage = 'Ressource introuvable.';
+  }
+  else if (!displayMessage && status === 409) displayMessage = 'Conflit détecté. Réessayez plus tard.';
+  else if (!displayMessage && status === 429) displayMessage = 'Trop de requêtes. Réessayez plus tard.';
+  else if (!displayMessage && status === 500) displayMessage = 'Erreur Notion côté serveur. Réessayez plus tard.';
+  else if (!displayMessage && status === 502) displayMessage = 'Erreur de passerelle Notion. Réessayez plus tard.';
+  else if (!displayMessage && status === 503) displayMessage = 'Notion est indisponible. Réessayez plus tard.';
+  else if (!displayMessage && status === 504) displayMessage = 'Timeout Notion. Réessayez plus tard.';
+  else if (!displayMessage && typeof status === 'number' && status >= 500 && status <= 599) {
+    displayMessage = 'Service Notion indisponible. Réessayez plus tard.';
+  }
+
+  // Message-based fallback
+  if (!displayMessage) {
+    if (/invalid_json/.test(msg)) displayMessage = 'JSON invalide. Vérifiez le corps de la requête.';
+    else if (/missing notion-version|notion-version/.test(msg)) displayMessage = 'En-tête Notion-Version manquant ou invalide.';
+    else if (/unauthorized|invalid token|token is invalid/.test(msg)) displayMessage = 'Authentification requise. Vérifiez votre token.';
+    else if (/permission|restricted resource|forbidden/.test(msg)) displayMessage = 'Accès refusé. Vérifiez vos permissions.';
+    else if (/not found|object_not_found/.test(msg)) {
+      const t = inferNotFoundTarget(info);
+      if (t?.kind && t.id) displayMessage = `Ressource introuvable: ${t.kind} (ID ${t.id}). Vérifiez le partage et l’identifiant.`;
+      else if (t?.kind) displayMessage = `Ressource introuvable: ${t.kind}. Vérifiez le partage et l’identifiant.`;
+      else displayMessage = 'Ressource introuvable ou non partagée avec l’intégration.';
+    }
+    else if (/rate limit|rate_limited|too many requests/.test(msg)) displayMessage = 'Trop de requêtes. Réessayez plus tard.';
+    else {
+      const detail = extractValidationDetail(raw, info?.details);
+      if (detail) displayMessage = detail;
+    }
+  }
+
+  const out = { ok: false, error: raw || 'Notion error' };
+  if (typeof status === 'number') out.status = status;
+  if (code) out.code = code;
+  if (info?.type) out.type = info.type;
+  if (displayMessage) out.displayMessage = displayMessage;
+  return out;
+}
+
+function extractValidationDetail(rawMessage, details) {
+  const parts = [];
+  if (rawMessage) parts.push(String(rawMessage));
+  const extra = extractDetailsText(details);
+  if (extra) parts.push(extra);
+  const text = parts.join(' ').trim();
+  if (!text) return '';
+  const m = text.match(/body failed validation\.?\s*fix one:\s*([\s\S]*)/i);
+  const detail = m ? m[1] : text;
+
+  // Common field-specific hints
+  if (/body\.parent\.page_id\s+should be a valid uuid/i.test(detail)) {
+    return 'ID de page invalide. Utilisez un UUID Notion valide (avec tirets).';
+  }
+  if (/body\.parent\.database_id\s+should be a valid uuid/i.test(detail)) {
+    return 'ID de database invalide. Utilisez un UUID Notion valide (avec tirets).';
+  }
+  if (/body\.parent\.data_source_id\s+should be a valid uuid/i.test(detail)) {
+    return 'ID de data source invalide. Utilisez un UUID Notion valide (avec tirets).';
+  }
+  if (/body\.parent\.page_id\s+should be defined/i.test(detail)) {
+    return 'Parent manquant: définissez `parent.page_id` (ou utilisez `parentDatabaseId`).';
+  }
+  if (/body\.parent\.database_id\s+should be defined/i.test(detail)) {
+    return 'Parent manquant: définissez `parent.database_id` (ou utilisez `parentPageId`).';
+  }
+  if (/body\.parent\.data_source_id\s+should be defined/i.test(detail)) {
+    return 'Parent manquant: définissez `parent.data_source_id`.';
+  }
+  if (/body\.parent\s+should be defined/i.test(detail)) {
+    return 'Parent manquant: définissez `parent.page_id` ou `parent.database_id`.';
+  }
+  if (/body\.properties\s+should be defined/i.test(detail)) {
+    return 'Propriétés manquantes: définissez `properties` ou utilisez `titleText`.';
+  }
+  if (/body\.properties\..*title/i.test(detail)) {
+    return 'Propriété Titre invalide. Vérifiez le nom de la propriété Title dans la database.';
+  }
+
+  // Fallback: return first sentence if present
+  const short = detail.split('. ').filter(Boolean)[0];
+  if (!short || /body failed validation\b/i.test(short)) return '';
+  return `Données invalides: ${short.trim()}.`;
+}
+
+function extractDetailsText(details) {
+  if (!details) return '';
+  if (typeof details === 'string') return details;
+  if (typeof details === 'object') {
+    if (details.message) return String(details.message);
+    const arr =
+      details.details ||
+      details.validation_errors ||
+      details.errors ||
+      details.issues ||
+      null;
+    if (Array.isArray(arr)) {
+      return arr.map((e) => {
+        if (!e) return '';
+        if (typeof e === 'string') return e;
+        if (e.message) return e.message;
+        if (e.error) return e.error;
+        if (e.path && e.msg) return `${e.path}: ${e.msg}`;
+        return JSON.stringify(e);
+      }).filter(Boolean).join(' ');
+    }
+  }
+  return '';
+}
+
+function inferNotFoundTarget(info) {
+  const msg = String(info?.message || '').toLowerCase();
+  const path = String(info?.path || '').toLowerCase();
+  const idMatch = String(info?.message || '').match(/with id:?\s*([a-z0-9-]+)/i);
+  const id = idMatch ? idMatch[1] : null;
+
+  if (msg.includes('database')) return { kind: 'database', id };
+  if (msg.includes('data source') || msg.includes('datasource') || msg.includes('data_source')) return { kind: 'data source', id };
+  if (msg.includes('page')) return { kind: 'page', id };
+  if (msg.includes('block')) return { kind: 'bloc', id };
+  if (msg.includes('user')) return { kind: 'utilisateur', id };
+  if (msg.includes('comment')) return { kind: 'commentaire', id };
+  if (msg.includes('file upload') || msg.includes('file_upload')) return { kind: 'upload de fichier', id };
+
+  if (path.includes('/databases/')) return { kind: 'database', id: id || path.split('/databases/')[1]?.split('/')[0] || null };
+  if (path.includes('/data_sources/')) return { kind: 'data source', id: id || path.split('/data_sources/')[1]?.split('/')[0] || null };
+  if (path.includes('/pages/')) return { kind: 'page', id: id || path.split('/pages/')[1]?.split('/')[0] || null };
+  if (path.includes('/blocks/')) return { kind: 'bloc', id: id || path.split('/blocks/')[1]?.split('/')[0] || null };
+  if (path.includes('/users/')) return { kind: 'utilisateur', id: id || path.split('/users/')[1]?.split('/')[0] || null };
+  if (path.includes('/comments')) return { kind: 'commentaire', id };
+  if (path.includes('/file_uploads/')) return { kind: 'upload de fichier', id: id || path.split('/file_uploads/')[1]?.split('/')[0] || null };
+
+  return { kind: 'ressource', id };
+}
+
 function normalizeBaseUrl(url) {
   const value = String(url || '').trim();
   return value ? value.replace(/\/+$/, '') : DEFAULT_BASE_URL;
@@ -124,7 +345,7 @@ async function notionRequest(opts, options) {
   const authType = cfg.authType || 'bearer';
   if (authType === 'bearer') {
     const token = cfg.token || creds.accessToken || creds.token;
-    if (!token) return { ok: false, error: 'Missing Notion access token.' };
+    if (!token) return mapNotionError({ message: 'Missing Notion access token.', path: path, method });
     headers.Authorization = `Bearer ${token}`;
     if (cfg.useNotionVersion !== false) {
       const version = cfg.notionVersion || creds.notionVersion || creds.version || DEFAULT_VERSION;
@@ -133,7 +354,7 @@ async function notionRequest(opts, options) {
   } else if (authType === 'basic') {
     const clientId = cfg.clientId || creds.clientId;
     const clientSecret = cfg.clientSecret || creds.clientSecret;
-    if (!clientId || !clientSecret) return { ok: false, error: 'Missing Notion clientId/clientSecret.' };
+    if (!clientId || !clientSecret) return mapNotionError({ message: 'Missing Notion clientId/clientSecret.', path: path, method });
     const basic = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
     headers.Authorization = `Basic ${basic}`;
   }
@@ -157,7 +378,7 @@ async function notionRequest(opts, options) {
   try {
     res = await fetch(url, { method, headers, body: bodyToSend });
   } catch (error) {
-    return { ok: false, error: error && error.message ? error.message : String(error) };
+    return mapNotionError(normalizeNotionError(error, null, null, { path, method }));
   }
 
   const responseHeaders = {};
@@ -174,8 +395,9 @@ async function notionRequest(opts, options) {
   }
 
   if (!res.ok) {
-    const errorMsg = (data && (data.message || data.error || data.code)) ? (data.message || data.error || data.code) : `HTTP ${res.status}`;
-    return { ok: false, status: res.status, error: errorMsg, details: data, headers: responseHeaders };
+    const info = normalizeNotionError({ status: res.status, message: data && (data.message || data.error || data.code), code: data && data.code }, res, data, { path, method });
+    const mapped = mapNotionError(info);
+    return { ...mapped, details: data, headers: responseHeaders };
   }
 
   return { ok: true, status: res.status, data, headers: responseHeaders };
@@ -198,7 +420,7 @@ function makeHandler(config) {
         useNotionVersion: cfg.useNotionVersion
       });
     } catch (error) {
-      return { ok: false, error: error && error.message ? error.message : String(error) };
+      return mapNotionError(normalizeNotionError(error));
     }
   };
 }
