@@ -1,39 +1,3662 @@
 {
-  "repo": { "name": "zoom", "type": "local", "label": "Zoom" },
+  "repo": {
+    "name": "zoom",
+    "type": "local",
+    "label": "Zoom"
+  },
   "providers": [
     {
       "key": "zoom",
       "name": "Zoom",
       "title": "Zoom",
       "iconClass": "fa-solid fa-video",
-      "color": "#2D8CFF",
-      "tags": ["meetings"],
-      "categories": ["Communication"],
+      "color": "#0B5CFF",
+      "tags": [
+        "zoom",
+        "meeting",
+        "video",
+        "webinar"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants Zoom OAuth/JWT",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Identifiants Zoom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "accountId", "label": "ID du compte", "description": "Identifiant du compte Zoom.", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "ID client", "description": "Client ID OAuth.", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "description": "Client secret OAuth.", "col": { "xs": 24 }, "secret": true }
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "Account ID",
+            "description": "Identifiant du compte Zoom (Server-to-Server OAuth).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "description": "Client ID de l'application Zoom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client secret",
+            "description": "Client secret de l'application Zoom.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "zoom_create_meeting", "name": "zoomCreateMeeting", "schemaVersion": 2, "title": "Créer une réunion", "type": "function", "nodeKind": "function", "category": "Zoom", "providerKey": "zoom",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Créer une réunion Zoom", "args": { "title": "Créer une réunion", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"topic","label":"Sujet","description":"Sujet/titre de la réunion.","col":{"xs":24}},
-        {"type":"select","key":"type","label":"Type","description":"Type de réunion (planifiée/instantanée).","col":{"xs":24},"options":[{"label":"Planifiée","value":2},{"label":"Instantanée","value":1}]},
-        {"type":"datetime","key":"startTime","label":"Heure de début","description":"Date et heure de début.","col":{"xs":24}},
-        {"type":"number","key":"duration","label":"Durée (min)","description":"Durée de la réunion en minutes.","col":{"xs":24},"default":30}
-      ] } },
-    { "key": "zoom_webhook_event", "name": "zoomWebhookEvent", "schemaVersion": 2, "title": "Webhook participant", "subtitle": "Déclencheur", "type": "event", "category": "Zoom", "providerKey": "zoom",
-      "description": "Déclenchement via webhook Zoom (participant, réunion)", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","description":"Chemin d\u2019URL pour recevoir les webhooks.","col":{"xs":24},"default":"/hooks/zoom"}
-      ] } }
-  ]
+    {
+      "key": "zoom_meeting_create",
+      "name": "zoomMeetingCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réunion",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle réunion Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_meeting"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Sujet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Sujet de la réunion."
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 2,
+            "options": [
+              {
+                "label": "Instantanée",
+                "value": 1
+              },
+              {
+                "label": "Planifiée",
+                "value": 2
+              },
+              {
+                "label": "Récurrente",
+                "value": 8
+              }
+            ],
+            "description": "Type de réunion."
+          },
+          {
+            "type": "text",
+            "key": "start_time",
+            "label": "Date de début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date/heure ISO 8601 (ex: 2024-01-15T10:00:00Z)."
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée (min)",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 60,
+            "description": "Durée en minutes."
+          },
+          {
+            "type": "text",
+            "key": "timezone",
+            "label": "Fuseau horaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Fuseau horaire (ex: Europe/Paris)."
+          },
+          {
+            "type": "textarea",
+            "key": "agenda",
+            "label": "Agenda",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description détaillée de la réunion."
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Mot de passe de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_get",
+      "name": "zoomMeetingGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une réunion",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une réunion Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_meeting"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_update",
+      "name": "zoomMeetingUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une réunion",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une réunion Zoom existante",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_meeting"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          },
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Sujet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau sujet."
+          },
+          {
+            "type": "text",
+            "key": "start_time",
+            "label": "Date de début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle date/heure ISO 8601."
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée (min)",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle durée en minutes."
+          },
+          {
+            "type": "textarea",
+            "key": "agenda",
+            "label": "Agenda",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvel agenda."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_delete",
+      "name": "zoomMeetingDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une réunion",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une réunion Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion à supprimer."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meetings_list",
+      "name": "zoomMeetingsList",
+      "schemaVersion": 2,
+      "title": "Lister les réunions",
+      "subtitle": "Réunions",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les réunions d'un utilisateur Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_meetings"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les réunions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "scheduled",
+            "options": [
+              {
+                "label": "Planifiées",
+                "value": "scheduled"
+              },
+              {
+                "label": "En cours",
+                "value": "live"
+              },
+              {
+                "label": "À venir",
+                "value": "upcoming"
+              }
+            ],
+            "description": "Type de réunions à lister."
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_registrants_list",
+      "name": "zoomMeetingRegistrantsList",
+      "schemaVersion": 2,
+      "title": "Lister les inscrits",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-user-check",
+      "description": "Lister les inscrits d'une réunion Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_registrants"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les inscrits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_participants_list",
+      "name": "zoomMeetingParticipantsList",
+      "schemaVersion": 2,
+      "title": "Lister les participants",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-users",
+      "description": "Lister les participants d'une réunion passée",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_participants"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les participants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion passée."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_webinar_create",
+      "name": "zoomWebinarCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webinaire",
+      "subtitle": "Webinaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau webinaire Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_webinar"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un webinaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Sujet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Sujet du webinaire."
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 5,
+            "options": [
+              {
+                "label": "Webinaire",
+                "value": 5
+              },
+              {
+                "label": "Récurrent",
+                "value": 6
+              }
+            ],
+            "description": "Type de webinaire."
+          },
+          {
+            "type": "text",
+            "key": "start_time",
+            "label": "Date de début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date/heure ISO 8601."
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée (min)",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 60,
+            "description": "Durée en minutes."
+          },
+          {
+            "type": "textarea",
+            "key": "agenda",
+            "label": "Agenda",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description du webinaire."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_webinar_get",
+      "name": "zoomWebinarGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un webinaire",
+      "subtitle": "Webinaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un webinaire Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_webinar"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un webinaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webinarId",
+            "label": "ID webinaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du webinaire."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_webinar_update",
+      "name": "zoomWebinarUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un webinaire",
+      "subtitle": "Webinaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un webinaire Zoom existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_webinar"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un webinaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webinarId",
+            "label": "ID webinaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du webinaire."
+          },
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Sujet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau sujet."
+          },
+          {
+            "type": "text",
+            "key": "start_time",
+            "label": "Date de début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle date/heure."
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée (min)",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle durée."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_webinar_delete",
+      "name": "zoomWebinarDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webinaire",
+      "subtitle": "Webinaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un webinaire Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un webinaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webinarId",
+            "label": "ID webinaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du webinaire à supprimer."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_webinars_list",
+      "name": "zoomWebinarsList",
+      "schemaVersion": 2,
+      "title": "Lister les webinaires",
+      "subtitle": "Webinaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les webinaires d'un utilisateur Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_webinars"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les webinaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_user_get",
+      "name": "zoomUserGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-user",
+      "description": "Récupérer les détails d'un utilisateur Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_users_list",
+      "name": "zoomUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-users",
+      "description": "Lister les utilisateurs du compte Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_users"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "active",
+            "options": [
+              {
+                "label": "Actif",
+                "value": "active"
+              },
+              {
+                "label": "Inactif",
+                "value": "inactive"
+              },
+              {
+                "label": "En attente",
+                "value": "pending"
+              }
+            ],
+            "description": "Filtre par statut."
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_user_get_settings",
+      "name": "zoomUserGetSettings",
+      "schemaVersion": 2,
+      "title": "Paramètres utilisateur",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-gear",
+      "description": "Récupérer les paramètres d'un utilisateur Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Paramètres utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_user_update",
+      "name": "zoomUserUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un utilisateur",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier les informations d'un utilisateur Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "ID de l'utilisateur."
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Prénom de l'utilisateur."
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de l'utilisateur."
+          },
+          {
+            "type": "text",
+            "key": "dept",
+            "label": "Département",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Département."
+          },
+          {
+            "type": "text",
+            "key": "job_title",
+            "label": "Titre du poste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Titre du poste."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_recordings_list",
+      "name": "zoomRecordingsList",
+      "schemaVersion": 2,
+      "title": "Lister les enregistrements",
+      "subtitle": "Enregistrements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Enregistrements",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les enregistrements cloud d'un utilisateur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_recordings"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Date début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date de début (YYYY-MM-DD)."
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Date fin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date de fin (YYYY-MM-DD)."
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_meeting_recordings",
+      "name": "zoomMeetingRecordings",
+      "schemaVersion": 2,
+      "title": "Enregistrements d'une réunion",
+      "subtitle": "Enregistrements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Enregistrements",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-video",
+      "description": "Récupérer les enregistrements d'une réunion",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_recordings"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Enregistrements d'une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_recording_delete",
+      "name": "zoomRecordingDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un enregistrement",
+      "subtitle": "Enregistrements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Enregistrements",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer les enregistrements d'une réunion",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un enregistrement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_recording_get_settings",
+      "name": "zoomRecordingGetSettings",
+      "schemaVersion": 2,
+      "title": "Paramètres d'enregistrement",
+      "subtitle": "Enregistrements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Enregistrements",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-gear",
+      "description": "Récupérer les paramètres de partage d'un enregistrement",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Paramètres d'enregistrement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la réunion."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_dashboard_meetings",
+      "name": "zoomDashboardMeetings",
+      "schemaVersion": 2,
+      "title": "Tableau de bord réunions",
+      "subtitle": "Tableau de bord",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-chart-bar",
+      "description": "Récupérer les métriques des réunions",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_reports"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Tableau de bord réunions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Date début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Date de début (YYYY-MM-DD)."
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Date fin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Date de fin (YYYY-MM-DD)."
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "past",
+            "options": [
+              {
+                "label": "Passées",
+                "value": "past"
+              },
+              {
+                "label": "En cours",
+                "value": "live"
+              }
+            ],
+            "description": "Type de réunions."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_reports_meetings",
+      "name": "zoomReportsMeetings",
+      "schemaVersion": 2,
+      "title": "Rapport des réunions",
+      "subtitle": "Rapports",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-file-lines",
+      "description": "Récupérer le rapport des réunions d'un utilisateur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_reports"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Rapport des réunions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "me",
+            "description": "ID de l'utilisateur ou \"me\"."
+          },
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Date début",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Date de début (YYYY-MM-DD)."
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Date fin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Date de fin (YYYY-MM-DD)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_phone_users_list",
+      "name": "zoomPhoneUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs téléphone",
+      "subtitle": "Téléphone",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-phone",
+      "description": "Lister les utilisateurs Zoom Phone",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_users"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les utilisateurs téléphone",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "activate",
+            "options": [
+              {
+                "label": "Activé",
+                "value": "activate"
+              },
+              {
+                "label": "Désactivé",
+                "value": "deactivate"
+              }
+            ],
+            "description": "Filtre par statut."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_contacts_list",
+      "name": "zoomContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Contacts",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-address-book",
+      "description": "Lister les contacts Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_contacts"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "company",
+            "options": [
+              {
+                "label": "Entreprise",
+                "value": "company"
+              },
+              {
+                "label": "Externe",
+                "value": "external"
+              }
+            ],
+            "description": "Type de contacts."
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": 30,
+            "description": "Nombre de résultats par page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "zoom_contact_get",
+      "name": "zoomContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "subtitle": "Contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Contacts",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-user",
+      "description": "Récupérer les détails d'un contact Zoom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_contact"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du contact."
+          }
+        ]
+      }
+    }
+  ],
+  "variables": {
+    "zoom_meeting": {
+      "title": "Réunion Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet de la réunion."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de réunion."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "text",
+              "key": "timezone",
+              "label": "Fuseau horaire",
+              "col": {
+                "xs": 24
+              },
+              "description": "Fuseau horaire."
+            },
+            {
+              "type": "text",
+              "key": "join_url",
+              "label": "URL de participation",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien pour rejoindre la réunion."
+            },
+            {
+              "type": "text",
+              "key": "password",
+              "label": "Mot de passe",
+              "col": {
+                "xs": 24
+              },
+              "description": "Mot de passe de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "host_id",
+              "label": "ID hôte",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de l'hôte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_meetings": {
+      "title": "Réunions Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Réunions",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet de la réunion."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de réunion."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "text",
+              "key": "timezone",
+              "label": "Fuseau horaire",
+              "col": {
+                "xs": 24
+              },
+              "description": "Fuseau horaire."
+            },
+            {
+              "type": "text",
+              "key": "join_url",
+              "label": "URL de participation",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien pour rejoindre la réunion."
+            },
+            {
+              "type": "text",
+              "key": "password",
+              "label": "Mot de passe",
+              "col": {
+                "xs": 24
+              },
+              "description": "Mot de passe de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "host_id",
+              "label": "ID hôte",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de l'hôte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_webinar": {
+      "title": "Webinaire Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du webinaire."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet du webinaire."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de webinaire."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "text",
+              "key": "join_url",
+              "label": "URL de participation",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien pour rejoindre le webinaire."
+            },
+            {
+              "type": "text",
+              "key": "host_id",
+              "label": "ID hôte",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de l'hôte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_webinars": {
+      "title": "Webinaires Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Webinaires",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du webinaire."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet du webinaire."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de webinaire."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "text",
+              "key": "join_url",
+              "label": "URL de participation",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien pour rejoindre le webinaire."
+            },
+            {
+              "type": "text",
+              "key": "host_id",
+              "label": "ID hôte",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de l'hôte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_user": {
+      "title": "Utilisateur Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de licence."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut du compte."
+            },
+            {
+              "type": "text",
+              "key": "dept",
+              "label": "Département",
+              "col": {
+                "xs": 24
+              },
+              "description": "Département."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_users": {
+      "title": "Utilisateurs Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de l'utilisateur."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "number",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de licence."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut du compte."
+            },
+            {
+              "type": "text",
+              "key": "dept",
+              "label": "Département",
+              "col": {
+                "xs": 24
+              },
+              "description": "Département."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_recording": {
+      "title": "Enregistrement Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'enregistrement."
+            },
+            {
+              "type": "text",
+              "key": "meeting_id",
+              "label": "ID réunion",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "recording_start",
+              "label": "Début enregistrement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "text",
+              "key": "recording_end",
+              "label": "Fin enregistrement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de fin."
+            },
+            {
+              "type": "text",
+              "key": "file_type",
+              "label": "Type de fichier",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de fichier (MP4, M4A, etc.)."
+            },
+            {
+              "type": "text",
+              "key": "download_url",
+              "label": "URL de téléchargement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien de téléchargement."
+            },
+            {
+              "type": "number",
+              "key": "file_size",
+              "label": "Taille du fichier",
+              "col": {
+                "xs": 24
+              },
+              "description": "Taille en octets."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de l'enregistrement."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_recordings": {
+      "title": "Enregistrements Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Enregistrements",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'enregistrement."
+            },
+            {
+              "type": "text",
+              "key": "meeting_id",
+              "label": "ID réunion",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "recording_start",
+              "label": "Début enregistrement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "text",
+              "key": "recording_end",
+              "label": "Fin enregistrement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de fin."
+            },
+            {
+              "type": "text",
+              "key": "file_type",
+              "label": "Type de fichier",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type de fichier (MP4, M4A, etc.)."
+            },
+            {
+              "type": "text",
+              "key": "download_url",
+              "label": "URL de téléchargement",
+              "col": {
+                "xs": 24
+              },
+              "description": "Lien de téléchargement."
+            },
+            {
+              "type": "number",
+              "key": "file_size",
+              "label": "Taille du fichier",
+              "col": {
+                "xs": 24
+              },
+              "description": "Taille en octets."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de l'enregistrement."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_participant": {
+      "title": "Participant Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du participant."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du participant."
+            },
+            {
+              "type": "text",
+              "key": "user_email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "join_time",
+              "label": "Heure d'arrivée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure d'arrivée."
+            },
+            {
+              "type": "text",
+              "key": "leave_time",
+              "label": "Heure de départ",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de départ."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en secondes."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_participants": {
+      "title": "Participants Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Participants",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du participant."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du participant."
+            },
+            {
+              "type": "text",
+              "key": "user_email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "join_time",
+              "label": "Heure d'arrivée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure d'arrivée."
+            },
+            {
+              "type": "text",
+              "key": "leave_time",
+              "label": "Heure de départ",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de départ."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en secondes."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_registrant": {
+      "title": "Inscrit Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'inscrit."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de l'inscription."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_registrants": {
+      "title": "Inscrits Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Inscrits",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'inscrit."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom."
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Statut de l'inscription."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_contact": {
+      "title": "Contact Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du contact."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom."
+            },
+            {
+              "type": "text",
+              "key": "phone_number",
+              "label": "Téléphone",
+              "col": {
+                "xs": 24
+              },
+              "description": "Numéro de téléphone."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_contacts": {
+      "title": "Contacts Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Contacts",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du contact."
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              },
+              "description": "Adresse email."
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Prénom."
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom."
+            },
+            {
+              "type": "text",
+              "key": "phone_number",
+              "label": "Téléphone",
+              "col": {
+                "xs": 24
+              },
+              "description": "Numéro de téléphone."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_report": {
+      "title": "Rapport Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "text",
+              "key": "end_time",
+              "label": "Date de fin",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de fin."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "number",
+              "key": "participants_count",
+              "label": "Nombre de participants",
+              "col": {
+                "xs": 24
+              },
+              "description": "Total de participants."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_reports": {
+      "title": "Rapports Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Rapports",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique."
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Sujet de la réunion."
+            },
+            {
+              "type": "text",
+              "key": "start_time",
+              "label": "Date de début",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de début."
+            },
+            {
+              "type": "text",
+              "key": "end_time",
+              "label": "Date de fin",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date/heure de fin."
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Durée en minutes."
+            },
+            {
+              "type": "number",
+              "key": "participants_count",
+              "label": "Nombre de participants",
+              "col": {
+                "xs": 24
+              },
+              "description": "Total de participants."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zoom_result": {
+      "title": "Résultat Zoom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "col": {
+            "xs": 24
+          },
+          "description": "Succès de la requête."
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code de statut HTTP."
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              },
+              "description": "Code de statut."
+            },
+            {
+              "type": "text",
+              "key": "message",
+              "label": "Message",
+              "col": {
+                "xs": 24
+              },
+              "description": "Message de retour."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  }
 }

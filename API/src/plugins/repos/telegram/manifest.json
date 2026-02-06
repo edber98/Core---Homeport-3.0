@@ -1,0 +1,3116 @@
+{
+  "repo": {
+    "name": "telegram",
+    "type": "local",
+    "label": "Telegram Bot"
+  },
+  "providers": [
+    {
+      "key": "telegram",
+      "name": "Telegram Bot",
+      "title": "Telegram Bot",
+      "iconClass": "fa-brands fa-telegram",
+      "color": "#26A5E4",
+      "tags": [
+        "telegram",
+        "bot",
+        "messaging",
+        "chat"
+      ],
+      "categories": [
+        "Communication"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Telegram Bot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "botToken",
+            "label": "Token du bot",
+            "description": "Token obtenu via @BotFather (ex: 123456:ABC-DEF...)",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "tg_send_message",
+      "name": "tgSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-paper-plane",
+      "description": "Envoyer un message texte via le bot Telegram",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "parse_mode",
+            "label": "Mode d'analyse",
+            "description": "Format du texte.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "HTML",
+                "value": "HTML"
+              },
+              {
+                "label": "Markdown",
+                "value": "Markdown"
+              },
+              {
+                "label": "MarkdownV2",
+                "value": "MarkdownV2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "disable_web_page_preview",
+            "label": "Désactiver l'aperçu des liens",
+            "description": "Désactiver l'aperçu des pages web.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "disable_notification",
+            "label": "Notification silencieuse",
+            "description": "Envoyer sans notification sonore.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reply_to_message_id",
+            "label": "ID du message de réponse",
+            "description": "ID du message auquel répondre.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_forward_message",
+      "name": "tgForwardMessage",
+      "schemaVersion": 2,
+      "title": "Transférer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-share",
+      "description": "Transférer un message d'un chat à un autre",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Transférer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat destinataire",
+            "description": "Chat vers lequel transférer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from_chat_id",
+            "label": "ID du chat source",
+            "description": "Chat depuis lequel transférer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à transférer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "disable_notification",
+            "label": "Notification silencieuse",
+            "description": "Envoyer sans notification sonore.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_copy_message",
+      "name": "tgCopyMessage",
+      "schemaVersion": 2,
+      "title": "Copier un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-copy",
+      "description": "Copier un message d'un chat à un autre (sans lien vers l'original)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Copier un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat destinataire",
+            "description": "Chat vers lequel copier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from_chat_id",
+            "label": "ID du chat source",
+            "description": "Chat depuis lequel copier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à copier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Nouvelle légende pour le message.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_edit_message",
+      "name": "tgEditMessage",
+      "schemaVersion": 2,
+      "title": "Modifier un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier le texte d'un message existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Nouveau contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "parse_mode",
+            "label": "Mode d'analyse",
+            "description": "Format du texte.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "HTML",
+                "value": "HTML"
+              },
+              {
+                "label": "Markdown",
+                "value": "Markdown"
+              },
+              {
+                "label": "MarkdownV2",
+                "value": "MarkdownV2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_delete_message",
+      "name": "tgDeleteMessage",
+      "schemaVersion": 2,
+      "title": "Supprimer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un message dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_photo",
+      "name": "tgSendPhoto",
+      "schemaVersion": 2,
+      "title": "Envoyer une photo",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-image",
+      "description": "Envoyer une photo via le bot Telegram",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une photo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "photo",
+            "label": "Photo",
+            "description": "URL ou file_id de la photo.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende de la photo.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "parse_mode",
+            "label": "Mode d'analyse",
+            "description": "Format de la légende.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "HTML",
+                "value": "HTML"
+              },
+              {
+                "label": "Markdown",
+                "value": "Markdown"
+              },
+              {
+                "label": "MarkdownV2",
+                "value": "MarkdownV2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_document",
+      "name": "tgSendDocument",
+      "schemaVersion": 2,
+      "title": "Envoyer un document",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-file",
+      "description": "Envoyer un document via le bot Telegram",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "document",
+            "label": "Document",
+            "description": "URL ou file_id du document.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende du document.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_location",
+      "name": "tgSendLocation",
+      "schemaVersion": 2,
+      "title": "Envoyer une localisation",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-location-dot",
+      "description": "Envoyer une localisation géographique",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une localisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "latitude",
+            "label": "Latitude",
+            "description": "Latitude de la position.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "longitude",
+            "label": "Longitude",
+            "description": "Longitude de la position.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "live_period",
+            "label": "Durée en direct",
+            "description": "Période en secondes pour la localisation en direct (60-86400).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_inline_keyboard",
+      "name": "tgSendInlineKeyboard",
+      "schemaVersion": 2,
+      "title": "Envoyer un clavier en ligne",
+      "subtitle": "Clavier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clavier en ligne",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-keyboard",
+      "description": "Envoyer un message avec un clavier en ligne (boutons)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un clavier en ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "buttons",
+            "label": "Boutons (JSON)",
+            "description": "JSON du clavier: [[{\"text\":\"Btn\",\"callback_data\":\"data\"}]]",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_answer_callback",
+      "name": "tgAnswerCallback",
+      "schemaVersion": 2,
+      "title": "Répondre au callback",
+      "subtitle": "Clavier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clavier en ligne",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-reply",
+      "description": "Répondre à une requête de callback (bouton pressé)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Répondre au callback",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callback_query_id",
+            "label": "ID du callback",
+            "description": "Identifiant de la requête callback.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "description": "Texte de notification à afficher.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "show_alert",
+            "label": "Afficher une alerte",
+            "description": "Afficher en tant qu'alerte au lieu d'une notification.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_edit_reply_markup",
+      "name": "tgEditReplyMarkup",
+      "schemaVersion": 2,
+      "title": "Modifier le clavier en ligne",
+      "subtitle": "Clavier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clavier en ligne",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifier le clavier en ligne d'un message existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier le clavier en ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message dont modifier le clavier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "buttons",
+            "label": "Boutons (JSON)",
+            "description": "JSON du clavier: [[{\"text\":\"Btn\",\"callback_data\":\"data\"}]]",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_get_chat",
+      "name": "tgGetChat",
+      "schemaVersion": 2,
+      "title": "Obtenir un chat",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-comments",
+      "description": "Obtenir les informations d'un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_chat"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_get_chat_members_count",
+      "name": "tgGetChatMembersCount",
+      "schemaVersion": 2,
+      "title": "Compter les membres",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-users",
+      "description": "Obtenir le nombre de membres d'un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Compter les membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_get_chat_member",
+      "name": "tgGetChatMember",
+      "schemaVersion": 2,
+      "title": "Obtenir un membre",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-user",
+      "description": "Obtenir les informations d'un membre d'un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_member"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_ban_chat_member",
+      "name": "tgBanChatMember",
+      "schemaVersion": 2,
+      "title": "Bannir un membre",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-ban",
+      "description": "Bannir un membre d'un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Bannir un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur à bannir.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "until_date",
+            "label": "Date de fin",
+            "description": "Date Unix de levée du bannissement (0 = permanent).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_unban_chat_member",
+      "name": "tgUnbanChatMember",
+      "schemaVersion": 2,
+      "title": "Débannir un membre",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-user-check",
+      "description": "Débannir un membre d'un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Débannir un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur à débannir.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "only_if_banned",
+            "label": "Seulement si banni",
+            "description": "Débannir uniquement si l'utilisateur est banni.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_set_chat_title",
+      "name": "tgSetChatTitle",
+      "schemaVersion": 2,
+      "title": "Définir le titre du chat",
+      "subtitle": "Chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Gestion du chat",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-heading",
+      "description": "Modifier le titre d'un chat de groupe ou canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Définir le titre du chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_get_me",
+      "name": "tgGetMe",
+      "schemaVersion": 2,
+      "title": "Obtenir les infos du bot",
+      "subtitle": "Bot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Informations du bot",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-robot",
+      "description": "Obtenir les informations du bot connecté",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_bot"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir les infos du bot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "tg_get_updates",
+      "name": "tgGetUpdates",
+      "schemaVersion": 2,
+      "title": "Récupérer les mises à jour",
+      "subtitle": "Bot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Informations du bot",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-arrows-rotate",
+      "description": "Récupérer les mises à jour en attente (long polling)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_update"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer les mises à jour",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Identifiant de la première mise à jour à retourner.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats (1-100).",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
+            "description": "Délai d'attente en secondes (long polling).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "allowed_updates",
+            "label": "Types autorisés",
+            "description": "Types de mises à jour autorisés (JSON, ex: [\"message\",\"callback_query\"]).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_set_webhook",
+      "name": "tgSetWebhook",
+      "schemaVersion": 2,
+      "title": "Configurer le webhook",
+      "subtitle": "Bot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Informations du bot",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-link",
+      "description": "Configurer l'URL du webhook pour recevoir les mises à jour",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Configurer le webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL HTTPS du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "allowed_updates",
+            "label": "Types autorisés",
+            "description": "Types de mises à jour autorisés (JSON).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_connections",
+            "label": "Connexions max",
+            "description": "Nombre maximum de connexions simultanées (1-100).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "secret_token",
+            "label": "Jeton secret",
+            "description": "Jeton secret pour vérifier les requêtes entrantes.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_sticker",
+      "name": "tgSendSticker",
+      "schemaVersion": 2,
+      "title": "Envoyer un autocollant",
+      "subtitle": "Médias",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Autocollants et médias",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-note-sticky",
+      "description": "Envoyer un autocollant (sticker) via le bot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un autocollant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sticker",
+            "label": "Autocollant",
+            "description": "file_id ou URL HTTP de l'autocollant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_video",
+      "name": "tgSendVideo",
+      "schemaVersion": 2,
+      "title": "Envoyer une vidéo",
+      "subtitle": "Médias",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Autocollants et médias",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-video",
+      "description": "Envoyer une vidéo via le bot Telegram",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "video",
+            "label": "Vidéo",
+            "description": "URL ou file_id de la vidéo.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende de la vidéo.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée",
+            "description": "Durée de la vidéo en secondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "width",
+            "label": "Largeur",
+            "description": "Largeur de la vidéo.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "height",
+            "label": "Hauteur",
+            "description": "Hauteur de la vidéo.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_voice",
+      "name": "tgSendVoice",
+      "schemaVersion": 2,
+      "title": "Envoyer un message vocal",
+      "subtitle": "Médias",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Autocollants et médias",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-microphone",
+      "description": "Envoyer un message vocal via le bot Telegram",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un message vocal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "voice",
+            "label": "Message vocal",
+            "description": "URL ou file_id du message vocal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende du message vocal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée",
+            "description": "Durée du message vocal en secondes.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_poll",
+      "name": "tgSendPoll",
+      "schemaVersion": 2,
+      "title": "Envoyer un sondage",
+      "subtitle": "Sondages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sondages et contacts",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-square-poll-vertical",
+      "description": "Envoyer un sondage dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_poll"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un sondage",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "question",
+            "label": "Question",
+            "description": "Question du sondage.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options (JSON)",
+            "description": "Tableau JSON de chaînes (ex: [\"Oui\",\"Non\",\"Peut-être\"]).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_anonymous",
+            "label": "Anonyme",
+            "description": "Sondage anonyme.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de sondage.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "regular",
+                "value": "regular"
+              },
+              {
+                "label": "quiz",
+                "value": "quiz"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "allows_multiple_answers",
+            "label": "Réponses multiples",
+            "description": "Autoriser les réponses multiples.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_contact",
+      "name": "tgSendContact",
+      "schemaVersion": 2,
+      "title": "Envoyer un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sondages et contacts",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-address-card",
+      "description": "Envoyer une fiche contact dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "phone_number",
+            "label": "Numéro de téléphone",
+            "description": "Numéro de téléphone du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "description": "Nom de famille du contact.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_send_venue",
+      "name": "tgSendVenue",
+      "schemaVersion": 2,
+      "title": "Envoyer un lieu",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sondages et contacts",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-map-pin",
+      "description": "Envoyer un lieu (venue) dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un lieu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "latitude",
+            "label": "Latitude",
+            "description": "Latitude du lieu.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "longitude",
+            "label": "Longitude",
+            "description": "Longitude du lieu.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nom du lieu.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Adresse du lieu.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_pin_message",
+      "name": "tgPinMessage",
+      "schemaVersion": 2,
+      "title": "Épingler un message",
+      "subtitle": "Épinglage",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Épinglage",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-thumbtack",
+      "description": "Épingler un message dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Épingler un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à épingler.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "disable_notification",
+            "label": "Notification silencieuse",
+            "description": "Épingler sans notification sonore.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_unpin_message",
+      "name": "tgUnpinMessage",
+      "schemaVersion": 2,
+      "title": "Désépingler un message",
+      "subtitle": "Épinglage",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Épinglage",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-thumbtack fa-rotate-90",
+      "description": "Désépingler un message dans un chat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Désépingler un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "description": "Identifiant du chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Message à désépingler (vide = le plus récent).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "tg_webhook_event",
+      "name": "tgWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-bolt",
+      "description": "Déclenchement via webhook Telegram entrant",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_update"
+        }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir les webhooks.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/telegram"
+          }
+        ]
+      }
+    }
+  ],
+  "variables": {
+    "tg_message": {
+      "title": "Message Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "message_id",
+          "label": "ID du message",
+          "description": "Identifiant unique du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "chat_id",
+          "label": "ID du chat",
+          "description": "Identifiant du chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "from_id",
+          "label": "ID de l'expéditeur",
+          "description": "Identifiant de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "from_username",
+          "label": "Nom d'utilisateur",
+          "description": "Nom d'utilisateur de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu textuel du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Horodatage du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reply_to_message_id",
+          "label": "ID du message de réponse",
+          "description": "ID du message auquel on répond.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_messages": {
+      "title": "Messages Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de messages.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_chat": {
+      "title": "Chat Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant unique du chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de chat (private, group, supergroup, channel).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre du chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom d'utilisateur",
+          "description": "Nom d'utilisateur du chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "first_name",
+          "label": "Prénom",
+          "description": "Prénom associé au chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "last_name",
+          "label": "Nom",
+          "description": "Nom de famille associé au chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du chat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "member_count",
+          "label": "Nombre de membres",
+          "description": "Nombre de membres du chat.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_chats": {
+      "title": "Chats Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de chats.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_user": {
+      "title": "Utilisateur Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant unique de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "is_bot",
+          "label": "Est un bot",
+          "description": "Indique si l'utilisateur est un bot.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "first_name",
+          "label": "Prénom",
+          "description": "Prénom de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "last_name",
+          "label": "Nom",
+          "description": "Nom de famille de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom d'utilisateur",
+          "description": "Nom d'utilisateur Telegram.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "language_code",
+          "label": "Code de langue",
+          "description": "Code de langue IETF de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_users": {
+      "title": "Utilisateurs Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau d'utilisateurs.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_callback": {
+      "title": "Callback Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "callback_query_id",
+          "label": "ID du callback",
+          "description": "Identifiant de la requête callback.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "from_id",
+          "label": "ID de l'expéditeur",
+          "description": "Identifiant de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_id",
+          "label": "ID du message",
+          "description": "Identifiant du message associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "chat_id",
+          "label": "ID du chat",
+          "description": "Identifiant du chat associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données du callback.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_update": {
+      "title": "Mise à jour Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "update_id",
+          "label": "ID de mise à jour",
+          "description": "Identifiant unique de la mise à jour.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_text",
+          "label": "Texte du message",
+          "description": "Texte du message ou données de callback.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_chat_id",
+          "label": "ID du chat",
+          "description": "Identifiant du chat du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_from_id",
+          "label": "ID de l'expéditeur",
+          "description": "Identifiant de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "callback_data",
+          "label": "Données du callback",
+          "description": "Données du callback (si applicable).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_poll": {
+      "title": "Sondage Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant unique du sondage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "question",
+          "label": "Question",
+          "description": "Question du sondage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "options",
+          "label": "Options",
+          "description": "Options du sondage (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "total_voter_count",
+          "label": "Nombre de votants",
+          "description": "Nombre total de votants.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "is_anonymous",
+          "label": "Anonyme",
+          "description": "Sondage anonyme.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de sondage (regular ou quiz).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_file": {
+      "title": "Fichier Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "file_id",
+          "label": "ID du fichier",
+          "description": "Identifiant unique du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file_unique_id",
+          "label": "ID unique du fichier",
+          "description": "Identifiant unique persistant du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "file_size",
+          "label": "Taille du fichier",
+          "description": "Taille du fichier en octets.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file_path",
+          "label": "Chemin du fichier",
+          "description": "Chemin relatif du fichier sur les serveurs Telegram.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_member": {
+      "title": "Membre Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "user_id",
+          "label": "ID de l'utilisateur",
+          "description": "Identifiant de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du membre (creator, administrator, member, etc.).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "is_anonymous",
+          "label": "Anonyme",
+          "description": "Membre anonyme.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_webhook": {
+      "title": "Webhook Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "has_custom_certificate",
+          "label": "Certificat personnalisé",
+          "description": "Utilise un certificat personnalisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "pending_update_count",
+          "label": "Mises à jour en attente",
+          "description": "Nombre de mises à jour en attente.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "max_connections",
+          "label": "Connexions max",
+          "description": "Nombre maximum de connexions.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_result": {
+      "title": "Résultat Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de résultat.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tg_bot": {
+      "title": "Bot Telegram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant unique du bot.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "is_bot",
+          "label": "Est un bot",
+          "description": "Toujours vrai pour un bot.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "first_name",
+          "label": "Prénom",
+          "description": "Prénom du bot.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom d'utilisateur",
+          "description": "Nom d'utilisateur du bot.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "can_join_groups",
+          "label": "Peut rejoindre des groupes",
+          "description": "Le bot peut rejoindre des groupes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "can_read_all_group_messages",
+          "label": "Lit tous les messages",
+          "description": "Le bot peut lire tous les messages de groupe.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  }
+}

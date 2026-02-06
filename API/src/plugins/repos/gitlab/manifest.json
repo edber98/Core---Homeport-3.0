@@ -1,0 +1,5413 @@
+{
+  "repo": {
+    "name": "gitlab",
+    "type": "local",
+    "label": "GitLab"
+  },
+  "providers": [
+    {
+      "key": "gitlab",
+      "name": "GitLab",
+      "title": "GitLab",
+      "iconClass": "fa-brands fa-gitlab",
+      "color": "#FC6D26",
+      "tags": [
+        "gitlab",
+        "code",
+        "repo",
+        "git",
+        "devops",
+        "ci"
+      ],
+      "categories": [
+        "Development"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants GitLab",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL GitLab",
+            "description": "URL de l'instance (ex: https://gitlab.com)",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://gitlab.com",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Personal access token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "gitlab_project_get",
+      "name": "gitlabProjectGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projects",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_project"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_projects_list",
+      "name": "gitlabProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projects",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des projets GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_projects"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par nom ou chemin.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "owned",
+            "label": "Mes projets",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Uniquement les projets dont je suis propriétaire.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "membership",
+            "label": "Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Uniquement les projets dont je suis membre.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_project_create",
+      "name": "gitlabProjectCreate",
+      "schemaVersion": 2,
+      "title": "Créer un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projects",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_project"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description du projet.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "visibility",
+            "label": "Visibilité",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Niveau de visibilité du projet.",
+            "default": "private",
+            "options": [
+              {
+                "label": "private",
+                "value": "private"
+              },
+              {
+                "label": "internal",
+                "value": "internal"
+              },
+              {
+                "label": "public",
+                "value": "public"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "initialize_with_readme",
+            "label": "Initialiser avec README",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Créer un fichier README.md initial.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_project_update",
+      "name": "gitlabProjectUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projects",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un projet GitLab existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_project"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom du projet.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description du projet.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "visibility",
+            "label": "Visibilité",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Niveau de visibilité du projet.",
+            "options": [
+              {
+                "label": "private",
+                "value": "private"
+              },
+              {
+                "label": "internal",
+                "value": "internal"
+              },
+              {
+                "label": "public",
+                "value": "public"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_project_delete",
+      "name": "gitlabProjectDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projects",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_issue_create",
+      "name": "gitlabIssueCreate",
+      "schemaVersion": 2,
+      "title": "Créer une issue",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle issue dans un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_issue"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Titre de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description de l'issue (markdown).",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Labels séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee_ids",
+            "label": "Assignés",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des assignés séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "milestone_id",
+            "label": "ID milestone",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du jalon.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "confidential",
+            "label": "Confidentielle",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer l'issue comme confidentielle.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_issue_get",
+      "name": "gitlabIssueGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une issue",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_issue"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_issue_update",
+      "name": "gitlabIssueUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une issue",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une issue GitLab existante",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_issue"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau titre de l'issue.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description de l'issue.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "state_event",
+            "label": "Événement d'état",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Changer l'état de l'issue.",
+            "options": [
+              {
+                "label": "close",
+                "value": "close"
+              },
+              {
+                "label": "reopen",
+                "value": "reopen"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Labels séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee_ids",
+            "label": "Assignés",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des assignés séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_issues_list",
+      "name": "gitlabIssuesList",
+      "schemaVersion": 2,
+      "title": "Lister les issues",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des issues d'un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_issues"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les issues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "state",
+            "label": "État",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par état.",
+            "options": [
+              {
+                "label": "opened",
+                "value": "opened"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              },
+              {
+                "label": "all",
+                "value": "all"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par labels (séparés par des virgules).",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Rechercher dans le titre et la description.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_issue_note_create",
+      "name": "gitlabIssueNoteCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire à une issue",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter un commentaire (note) à une issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un commentaire à une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Contenu du commentaire (markdown).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_mr_create",
+      "name": "gitlabMrCreate",
+      "schemaVersion": 2,
+      "title": "Créer une merge request",
+      "subtitle": "Merge Request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge Requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle merge request dans un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_mr"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une merge request",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Titre de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "source_branch",
+            "label": "Branche source",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la branche source.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "target_branch",
+            "label": "Branche cible",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la branche cible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description de la merge request (markdown).",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee_id",
+            "label": "ID assigné",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'utilisateur assigné.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Labels séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_mr_get",
+      "name": "gitlabMrGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une merge request",
+      "subtitle": "Merge Request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge Requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_mr"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une merge request",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID merge request",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_mr_update",
+      "name": "gitlabMrUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une merge request",
+      "subtitle": "Merge Request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge Requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une merge request GitLab existante",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_mr"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une merge request",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID merge request",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau titre de la merge request.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description de la merge request.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "state_event",
+            "label": "Événement d'état",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Changer l'état de la merge request.",
+            "options": [
+              {
+                "label": "close",
+                "value": "close"
+              },
+              {
+                "label": "reopen",
+                "value": "reopen"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Labels séparés par des virgules.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_mrs_list",
+      "name": "gitlabMrsList",
+      "schemaVersion": 2,
+      "title": "Lister les merge requests",
+      "subtitle": "Merge Request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge Requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des merge requests d'un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_mrs"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les merge requests",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "state",
+            "label": "État",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par état.",
+            "options": [
+              {
+                "label": "opened",
+                "value": "opened"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              },
+              {
+                "label": "merged",
+                "value": "merged"
+              },
+              {
+                "label": "all",
+                "value": "all"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par labels (séparés par des virgules).",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Rechercher dans le titre et la description.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_mr_merge",
+      "name": "gitlabMrMerge",
+      "schemaVersion": 2,
+      "title": "Fusionner une merge request",
+      "subtitle": "Merge Request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge Requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-code-merge",
+      "description": "Fusionner (merge) une merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_mr"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Fusionner une merge request",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID merge request",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Numéro interne de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "merge_commit_message",
+            "label": "Message de commit",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Message personnalisé pour le commit de merge.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "squash",
+            "label": "Squash",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Écraser les commits en un seul.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "should_remove_source_branch",
+            "label": "Supprimer la branche source",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Supprimer la branche source après le merge.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_pipelines_list",
+      "name": "gitlabPipelinesList",
+      "schemaVersion": 2,
+      "title": "Lister les pipelines",
+      "subtitle": "Pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipelines",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des pipelines d'un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_pipelines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les pipelines",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par branche ou tag.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par statut du pipeline.",
+            "options": [
+              {
+                "label": "created",
+                "value": "created"
+              },
+              {
+                "label": "pending",
+                "value": "pending"
+              },
+              {
+                "label": "running",
+                "value": "running"
+              },
+              {
+                "label": "success",
+                "value": "success"
+              },
+              {
+                "label": "failed",
+                "value": "failed"
+              },
+              {
+                "label": "canceled",
+                "value": "canceled"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_pipeline_get",
+      "name": "gitlabPipelineGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un pipeline",
+      "subtitle": "Pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipelines",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un pipeline GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_pipeline"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipelineId",
+            "label": "ID pipeline",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du pipeline.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_pipeline_create",
+      "name": "gitlabPipelineCreate",
+      "schemaVersion": 2,
+      "title": "Créer un pipeline",
+      "subtitle": "Pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipelines",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Déclencher un nouveau pipeline dans un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_pipeline"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche ou tag sur lequel lancer le pipeline.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_pipeline_retry",
+      "name": "gitlabPipelineRetry",
+      "schemaVersion": 2,
+      "title": "Relancer un pipeline",
+      "subtitle": "Pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipelines",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-rotate-right",
+      "description": "Relancer tous les jobs échoués d'un pipeline GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_pipeline"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Relancer un pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipelineId",
+            "label": "ID pipeline",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du pipeline.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_branches_list",
+      "name": "gitlabBranchesList",
+      "schemaVersion": 2,
+      "title": "Lister les branches",
+      "subtitle": "Branche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Branches",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des branches d'un dépôt GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_branches"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les branches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer les branches par nom.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_branch_create",
+      "name": "gitlabBranchCreate",
+      "schemaVersion": 2,
+      "title": "Créer une branche",
+      "subtitle": "Branche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Branches",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle branche dans un dépôt GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_branch"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une branche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Nom de la branche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la nouvelle branche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche ou SHA source.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_branch_delete",
+      "name": "gitlabBranchDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une branche",
+      "subtitle": "Branche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Branches",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une branche d'un dépôt GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une branche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Nom de la branche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la branche à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_commits_list",
+      "name": "gitlabCommitsList",
+      "schemaVersion": 2,
+      "title": "Lister les commits",
+      "subtitle": "Commit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commits",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des commits d'un dépôt GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_commits"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les commits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "ref_name",
+            "label": "Référence",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche ou tag.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "since",
+            "label": "Depuis",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date ISO 8601 de début (ex: 2024-01-01T00:00:00Z).",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "until",
+            "label": "Jusqu'à",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date ISO 8601 de fin.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_commit_get",
+      "name": "gitlabCommitGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un commit",
+      "subtitle": "Commit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commits",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un commit GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_commit"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un commit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "sha",
+            "label": "SHA",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "SHA du commit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_releases_list",
+      "name": "gitlabReleasesList",
+      "schemaVersion": 2,
+      "title": "Lister les releases",
+      "subtitle": "Release",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Releases",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des releases d'un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_releases"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les releases",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_release_create",
+      "name": "gitlabReleaseCreate",
+      "schemaVersion": 2,
+      "title": "Créer une release",
+      "subtitle": "Release",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Releases",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle release dans un projet GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_release"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une release",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "tag_name",
+            "label": "Tag",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom du tag pour la release.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la release.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Notes de release (markdown).",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_user_get",
+      "name": "gitlabUserGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Users",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer le profil d'un utilisateur GitLab (courant si aucun ID)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'utilisateur (vide = utilisateur courant).",
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_users_list",
+      "name": "gitlabUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Users",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des utilisateurs GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_users"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Rechercher par nom ou email.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_groups_list",
+      "name": "gitlabGroupsList",
+      "schemaVersion": 2,
+      "title": "Lister les groupes",
+      "subtitle": "Groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Groups",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des groupes GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_groups"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les groupes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Rechercher par nom.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre de résultats par page (max 100).",
+            "default": 20,
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gitlab_group_get",
+      "name": "gitlabGroupGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un groupe",
+      "subtitle": "Groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Groups",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un groupe GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_group"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "ID groupe",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du groupe.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "variables": {
+    "gitlab_project": {
+      "title": "Projet GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Projet",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name_with_namespace",
+              "label": "Nom complet",
+              "description": "Nom avec namespace.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "description": "Chemin du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path_with_namespace",
+              "label": "Chemin complet",
+              "description": "Chemin avec namespace.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "description": "Niveau de visibilité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du projet dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "http_url_to_repo",
+              "label": "URL HTTP",
+              "description": "URL HTTP du dépôt.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ssh_url_to_repo",
+              "label": "URL SSH",
+              "description": "URL SSH du dépôt.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "default_branch",
+              "label": "Branche par défaut",
+              "description": "Branche par défaut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "last_activity_at",
+              "label": "Dernière activité",
+              "description": "Date de dernière activité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "star_count",
+              "label": "Étoiles",
+              "description": "Nombre d'étoiles.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "forks_count",
+              "label": "Forks",
+              "description": "Nombre de forks.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_projects": {
+      "title": "Projets GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Projets",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name_with_namespace",
+              "label": "Nom complet",
+              "description": "Nom avec namespace.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "description": "Chemin du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path_with_namespace",
+              "label": "Chemin complet",
+              "description": "Chemin avec namespace.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "description": "Niveau de visibilité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du projet dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "http_url_to_repo",
+              "label": "URL HTTP",
+              "description": "URL HTTP du dépôt.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ssh_url_to_repo",
+              "label": "URL SSH",
+              "description": "URL SSH du dépôt.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "default_branch",
+              "label": "Branche par défaut",
+              "description": "Branche par défaut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "last_activity_at",
+              "label": "Dernière activité",
+              "description": "Date de dernière activité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "star_count",
+              "label": "Étoiles",
+              "description": "Nombre d'étoiles.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "forks_count",
+              "label": "Forks",
+              "description": "Nombre de forks.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_issue": {
+      "title": "Issue GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Issue",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État de l'issue (opened/closed).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "labels",
+              "label": "Labels",
+              "description": "Labels de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de l'issue dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "closed_at",
+              "label": "Date de fermeture",
+              "description": "Date de fermeture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "confidential",
+              "label": "Confidentielle",
+              "description": "Issue confidentielle.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_issues": {
+      "title": "Issues GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Issues",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État de l'issue (opened/closed).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "labels",
+              "label": "Labels",
+              "description": "Labels de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de l'issue dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "closed_at",
+              "label": "Date de fermeture",
+              "description": "Date de fermeture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "confidential",
+              "label": "Confidentielle",
+              "description": "Issue confidentielle.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_mr": {
+      "title": "Merge request GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Merge",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "source_branch",
+              "label": "Branche source",
+              "description": "Branche source.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "target_branch",
+              "label": "Branche cible",
+              "description": "Branche cible.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "labels",
+              "label": "Labels",
+              "description": "Labels de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de la merge request dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "merge_status",
+              "label": "Statut de merge",
+              "description": "Statut de fusion.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "merged_at",
+              "label": "Date de fusion",
+              "description": "Date de fusion.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_mrs": {
+      "title": "Merge requests GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Merge",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "source_branch",
+              "label": "Branche source",
+              "description": "Branche source.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "target_branch",
+              "label": "Branche cible",
+              "description": "Branche cible.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "labels",
+              "label": "Labels",
+              "description": "Labels de la merge request.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de la merge request dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "merge_status",
+              "label": "Statut de merge",
+              "description": "Statut de fusion.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "merged_at",
+              "label": "Date de fusion",
+              "description": "Date de fusion.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_pipeline": {
+      "title": "Pipeline GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Pipeline",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut du pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ref",
+              "label": "Référence",
+              "description": "Branche ou tag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "sha",
+              "label": "SHA",
+              "description": "SHA du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du pipeline dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "started_at",
+              "label": "Date de début",
+              "description": "Date de début d'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "finished_at",
+              "label": "Date de fin",
+              "description": "Date de fin d'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "description": "Durée en secondes.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_pipelines": {
+      "title": "Pipelines GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Pipelines",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "iid",
+              "label": "IID",
+              "description": "Identifiant interne dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut du pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ref",
+              "label": "Référence",
+              "description": "Branche ou tag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "sha",
+              "label": "SHA",
+              "description": "SHA du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du pipeline dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "started_at",
+              "label": "Date de début",
+              "description": "Date de début d'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "finished_at",
+              "label": "Date de fin",
+              "description": "Date de fin d'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "duration",
+              "label": "Durée",
+              "description": "Durée en secondes.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_branch": {
+      "title": "Branche GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Branche",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la branche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "merged",
+              "label": "Fusionnée",
+              "description": "Branche fusionnée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "protected",
+              "label": "Protégée",
+              "description": "Branche protégée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de la branche dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_branches": {
+      "title": "Branches GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Branches",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la branche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "merged",
+              "label": "Fusionnée",
+              "description": "Branche fusionnée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "protected",
+              "label": "Protégée",
+              "description": "Branche protégée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL de la branche dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_commit": {
+      "title": "Commit GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commit",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "SHA complet du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "short_id",
+              "label": "ID court",
+              "description": "SHA court du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "message",
+              "label": "Message",
+              "description": "Message complet du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author_name",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author_email",
+              "label": "Email auteur",
+              "description": "Email de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "authored_date",
+              "label": "Date d'auteur",
+              "description": "Date de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "committed_date",
+              "label": "Date de commit",
+              "description": "Date du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du commit dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_commits": {
+      "title": "Commits GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commits",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "SHA complet du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "short_id",
+              "label": "ID court",
+              "description": "SHA court du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "message",
+              "label": "Message",
+              "description": "Message complet du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author_name",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author_email",
+              "label": "Email auteur",
+              "description": "Email de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "authored_date",
+              "label": "Date d'auteur",
+              "description": "Date de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "committed_date",
+              "label": "Date de commit",
+              "description": "Date du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du commit dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_release": {
+      "title": "Release GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Release",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "tag_name",
+              "label": "Tag",
+              "description": "Nom du tag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la release.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Notes de release.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "released_at",
+              "label": "Date de publication",
+              "description": "Date de publication.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_releases": {
+      "title": "Releases GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Releases",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "tag_name",
+              "label": "Tag",
+              "description": "Nom du tag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la release.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Notes de release.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "released_at",
+              "label": "Date de publication",
+              "description": "Date de publication.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_user": {
+      "title": "Utilisateur GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateur",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de l'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom d'utilisateur",
+              "description": "Nom d'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom complet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État du compte.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "avatar_url",
+              "label": "Avatar",
+              "description": "URL de l'avatar.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du profil dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_users": {
+      "title": "Utilisateurs GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique de l'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom d'utilisateur",
+              "description": "Nom d'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom complet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État du compte.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "avatar_url",
+              "label": "Avatar",
+              "description": "URL de l'avatar.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du profil dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_group": {
+      "title": "Groupe GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Groupe",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "description": "Chemin du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "full_name",
+              "label": "Nom complet",
+              "description": "Nom complet avec hiérarchie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "full_path",
+              "label": "Chemin complet",
+              "description": "Chemin complet avec hiérarchie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "description": "Niveau de visibilité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du groupe dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_groups": {
+      "title": "Groupes GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Groupes",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "description": "Chemin du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "full_name",
+              "label": "Nom complet",
+              "description": "Nom complet avec hiérarchie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "full_path",
+              "label": "Chemin complet",
+              "description": "Chemin complet avec hiérarchie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "description": "Niveau de visibilité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du groupe dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    },
+    "gitlab_note": {
+      "title": "Commentaire GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commentaire",
+          "key": "data",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du commentaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu du commentaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "system",
+              "label": "Système",
+              "description": "Commentaire système.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_result": {
+      "title": "Résultat GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Résultat",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "message",
+              "label": "Message",
+              "description": "Message de retour.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,25 +1,1057 @@
 {
-  "repo": { "name": "slack", "type": "local", "label": "Slack" },
+  "repo": {
+    "name": "slack",
+    "type": "local",
+    "label": "Slack"
+  },
   "variables": {
     "slack_message": {
       "title": "Message Slack",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "channel", "label": "Canal", "description": "Identifiant du canal (ex.: C12345)", "col": { "xs": 24 } },
-        { "type": "text", "key": "ts", "label": "Timestamp", "description": "Horodatage du message (TS Slack).", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu textuel du message.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "blocks", "label": "Blocs (JSON)", "description": "Blocs du message au format JSON.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "channel",
+          "label": "Canal",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du canal."
+        },
+        {
+          "type": "text",
+          "key": "ts",
+          "label": "Timestamp",
+          "col": {
+            "xs": 24
+          },
+          "description": "Horodatage du message."
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          },
+          "description": "Contenu textuel du message."
+        },
+        {
+          "type": "text",
+          "key": "user",
+          "label": "Utilisateur",
+          "col": {
+            "xs": 24
+          },
+          "description": "ID de l'auteur du message."
+        },
+        {
+          "type": "text",
+          "key": "thread_ts",
+          "label": "Thread TS",
+          "col": {
+            "xs": 24
+          },
+          "description": "Horodatage du fil de discussion."
+        },
+        {
+          "type": "text",
+          "key": "permalink",
+          "label": "Permalien",
+          "col": {
+            "xs": 24
+          },
+          "description": "Lien permanent vers le message."
+        }
+      ]
+    },
+    "slack_messages": {
+      "title": "Messages Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Messages Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "channel",
+              "label": "Canal",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ts",
+              "label": "Timestamp",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "user",
+              "label": "Utilisateur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "thread_ts",
+              "label": "Thread TS",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "permalink",
+              "label": "Permalien",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_channel": {
+      "title": "Canal Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du canal."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du canal."
+        },
+        {
+          "type": "checkbox",
+          "key": "is_private",
+          "label": "Privé",
+          "col": {
+            "xs": 24
+          },
+          "description": "Canal privé."
+        },
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          },
+          "description": "Sujet du canal."
+        },
+        {
+          "type": "text",
+          "key": "purpose",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          },
+          "description": "Description du canal."
+        },
+        {
+          "type": "number",
+          "key": "num_members",
+          "label": "Membres",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre de membres."
+        }
+      ]
+    },
+    "slack_channels": {
+      "title": "Canaux Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Canaux Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "channels",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_private",
+              "label": "Privé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "purpose",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "num_members",
+              "label": "Membres",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_user": {
+      "title": "Utilisateur Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de l'utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom d'utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "real_name",
+          "label": "Nom complet",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom complet de l'utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Courriel",
+          "col": {
+            "xs": 24
+          },
+          "description": "Adresse courriel."
+        },
+        {
+          "type": "checkbox",
+          "key": "is_admin",
+          "label": "Admin",
+          "col": {
+            "xs": 24
+          },
+          "description": "Est administrateur."
+        },
+        {
+          "type": "checkbox",
+          "key": "is_bot",
+          "label": "Bot",
+          "col": {
+            "xs": 24
+          },
+          "description": "Est un bot."
+        }
+      ]
+    },
+    "slack_users": {
+      "title": "Utilisateurs Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "real_name",
+              "label": "Nom complet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Courriel",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_admin",
+              "label": "Admin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_bot",
+              "label": "Bot",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_user_profile": {
+      "title": "Profil utilisateur Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "real_name",
+          "label": "Nom complet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "display_name",
+          "label": "Nom affiché",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Courriel",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status_text",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status_emoji",
+          "label": "Emoji de statut",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_reaction": {
+      "title": "Réaction Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom de l'emoji."
+        },
+        {
+          "type": "number",
+          "key": "count",
+          "label": "Nombre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre de réactions."
+        },
+        {
+          "type": "textarea",
+          "key": "users",
+          "label": "Utilisateurs",
+          "col": {
+            "xs": 24
+          },
+          "description": "Liste des utilisateurs ayant réagi."
+        }
+      ]
+    },
+    "slack_reactions": {
+      "title": "Réactions Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Réactions Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "reactions",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "count",
+              "label": "Nombre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "users",
+              "label": "Utilisateurs",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "slack_file": {
       "title": "Fichier Slack",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du fichier Slack.", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du fichier.", "col": { "xs": 24 } },
-        { "type": "text", "key": "mimetype", "label": "Type", "description": "Type MIME du fichier.", "col": { "xs": 24 } },
-        { "type": "number", "key": "size", "label": "Taille (octets)", "description": "Taille du fichier en octets.", "col": { "xs": 24 } },
-        { "type": "text", "key": "url_private", "label": "URL privée", "description": "URL privée de téléchargement du fichier.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du fichier."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du fichier."
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Titre du fichier."
+        },
+        {
+          "type": "text",
+          "key": "mimetype",
+          "label": "Type MIME",
+          "col": {
+            "xs": 24
+          },
+          "description": "Type MIME du fichier."
+        },
+        {
+          "type": "number",
+          "key": "size",
+          "label": "Taille (octets)",
+          "col": {
+            "xs": 24
+          },
+          "description": "Taille du fichier en octets."
+        },
+        {
+          "type": "text",
+          "key": "url_private",
+          "label": "URL privée",
+          "col": {
+            "xs": 24
+          },
+          "description": "URL privée de téléchargement."
+        },
+        {
+          "type": "text",
+          "key": "permalink",
+          "label": "Permalien",
+          "col": {
+            "xs": 24
+          },
+          "description": "Lien permanent vers le fichier."
+        }
+      ]
+    },
+    "slack_files": {
+      "title": "Fichiers Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fichiers Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mimetype",
+              "label": "Type MIME",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "size",
+              "label": "Taille (octets)",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url_private",
+              "label": "URL privée",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "permalink",
+              "label": "Permalien",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_pin": {
+      "title": "Épingle Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "channel",
+          "label": "Canal",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_ts",
+          "label": "Timestamp du message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message_text",
+          "label": "Texte du message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_pins": {
+      "title": "Épingles Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Épingles Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "pins",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "channel",
+              "label": "Canal",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "message_ts",
+              "label": "Timestamp du message",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "message_text",
+              "label": "Texte du message",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_reminder": {
+      "title": "Rappel Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du rappel."
+        },
+        {
+          "type": "text",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          },
+          "description": "Contenu du rappel."
+        },
+        {
+          "type": "text",
+          "key": "time",
+          "label": "Heure",
+          "col": {
+            "xs": 24
+          },
+          "description": "Heure programmée."
+        },
+        {
+          "type": "text",
+          "key": "complete_ts",
+          "label": "Complété",
+          "col": {
+            "xs": 24
+          },
+          "description": "Horodatage de complétion."
+        }
+      ]
+    },
+    "slack_reminders": {
+      "title": "Rappels Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Rappels Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "reminders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "time",
+              "label": "Heure",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "complete_ts",
+              "label": "Complété",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_bookmark": {
+      "title": "Signet Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du signet."
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Titre du signet."
+        },
+        {
+          "type": "text",
+          "key": "link",
+          "label": "Lien",
+          "col": {
+            "xs": 24
+          },
+          "description": "URL du signet."
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          },
+          "description": "Type de signet."
+        }
+      ]
+    },
+    "slack_bookmarks": {
+      "title": "Signets Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Signets Slack",
+          "description": "Liste",
+          "mode": "array",
+          "key": "bookmarks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "link",
+              "label": "Lien",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "slack_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'opération."
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          },
+          "description": "Message de retour."
+        }
+      ]
+    },
+    "slack_permalink": {
+      "title": "Permalien Slack",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "channel",
+          "label": "Canal",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "permalink",
+          "label": "Permalien",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -30,49 +1062,2030 @@
       "title": "Slack",
       "iconClass": "fa-brands fa-slack",
       "color": "#4A154B",
-      "tags": ["chat", "collaboration"],
-      "categories": ["Communication"],
+      "tags": [
+        "slack",
+        "messaging",
+        "chat",
+        "communication"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants de l’application Slack",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Identifiants Slack",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "botToken", "label": "Jeton bot (xoxb-)", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "signingSecret", "label": "Secret de signature", "col": { "xs": 24 }, "secret": true },
-          { "type": "text", "key": "appId", "label": "ID d’app", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "botToken",
+            "label": "Bot token",
+            "description": "Token du bot Slack (xoxb-...)",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "slack_post_message", "name": "slackPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_message" }],
-      "description": "Publier un message dans un canal ou DM", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"channel","label":"Canal/DM","description":"Identifiant du canal ou utilisateur (DM).","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"text","label":"Texte","description":"Contenu textuel du message.","col":{"xs":24}},
-        {"type":"textarea","key":"blocks","label":"Blocs (JSON)","description":"Bloc(s) de mise en forme JSON.","col":{"xs":24},"default":"[]"}
-      ] } },
-    { "key": "slack_reply_in_thread", "name": "slackReplyInThread", "schemaVersion": 2, "title": "Répondre dans un fil", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_message" }],
-      "description": "Répondre dans un fil", "args": { "title": "Fil", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"channel","label":"Canal","description":"Identifiant du canal.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"text","key":"threadTs","label":"TS du fil","description":"Horodatage du message parent.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"text","label":"Texte","description":"Contenu de la réponse.","col":{"xs":24}}
-      ] } },
-    { "key": "slack_upload_file", "name": "slackUploadFile", "schemaVersion": 2, "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "Slack", "providerKey": "slack",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["file","payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:slack_file" }],
-      "description": "Téléverser un fichier sur Slack", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"channels","label":"Canaux (séparés par des virgules)","description":"Liste des canaux ciblés.","col":{"xs":24}},
-        {"type":"text","key":"filename","label":"Nom de fichier","description":"Nom du fichier à afficher.","col":{"xs":24}},
-        {"type":"textarea","key":"content","label":"Contenu (texte)","description":"Contenu texte du fichier.","col":{"xs":24}}
-      ] } },
-    { "key": "slack_slash_command", "name": "slackSlashCommand", "schemaVersion": 2, "title": "Commande slash", "subtitle": "Déclencheur", "type": "event", "category": "Slack", "providerKey": "slack",
-      "description": "Déclenchement sur commande slash", "args": { "title": "Commande slash", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"command","label":"Commande (ex. /hp)","description":"Commande à écouter (ex.: /hp).","col":{"xs":24}},
-        {"type":"text","key":"path","label":"Chemin d’endpoint","description":"Chemin d’URL du webhook entrant.","col":{"xs":24},"default":"/hooks/slack"}
-      ] } }
+    {
+      "key": "slack_post_message",
+      "name": "slackPostMessage",
+      "schemaVersion": 2,
+      "title": "Publier un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_message"
+        }
+      ],
+      "description": "Publie un message dans un canal ou un DM Slack.",
+      "args": {
+        "title": "Publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal ou utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu textuel du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "thread_ts",
+            "label": "Thread TS",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du fil (optionnel, pour répondre)."
+          },
+          {
+            "type": "checkbox",
+            "key": "unfurl_links",
+            "label": "Déplier les liens",
+            "col": {
+              "xs": 24
+            },
+            "description": "Activer le dépliage des aperçus de liens."
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_update_message",
+      "name": "slackUpdateMessage",
+      "schemaVersion": 2,
+      "title": "Modifier un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_message"
+        }
+      ],
+      "description": "Modifie un message existant dans un canal Slack.",
+      "args": {
+        "title": "Modification",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ts",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau contenu du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_delete_message",
+      "name": "slackDeleteMessage",
+      "schemaVersion": 2,
+      "title": "Supprimer un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Supprime un message d'un canal Slack.",
+      "args": {
+        "title": "Suppression",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ts",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_reply_message",
+      "name": "slackReplyMessage",
+      "schemaVersion": 2,
+      "title": "Répondre dans un fil",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_message"
+        }
+      ],
+      "description": "Répond dans un fil de discussion Slack.",
+      "args": {
+        "title": "Réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "thread_ts",
+            "label": "Thread TS",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message parent.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu de la réponse.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_permalink",
+      "name": "slackGetPermalink",
+      "schemaVersion": 2,
+      "title": "Obtenir le permalien",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_permalink"
+        }
+      ],
+      "description": "Récupère le lien permanent d'un message Slack.",
+      "args": {
+        "title": "Permalien",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_ts",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_schedule_message",
+      "name": "slackScheduleMessage",
+      "schemaVersion": 2,
+      "title": "Planifier un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_message"
+        }
+      ],
+      "description": "Planifie l'envoi d'un message à une heure précise.",
+      "args": {
+        "title": "Planification",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "post_at",
+            "label": "Heure d'envoi (unix)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Timestamp Unix pour l'envoi programmé.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_post_ephemeral",
+      "name": "slackPostEphemeral",
+      "schemaVersion": 2,
+      "title": "Envoyer un message éphémère",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Envoie un message éphémère visible uniquement par un utilisateur.",
+      "args": {
+        "title": "Message éphémère",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de l'utilisateur cible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu du message éphémère.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_create_channel",
+      "name": "slackCreateChannel",
+      "schemaVersion": 2,
+      "title": "Créer un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_channel"
+        }
+      ],
+      "description": "Crée un nouveau canal Slack.",
+      "args": {
+        "title": "Création de canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du canal à créer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_private",
+            "label": "Privé",
+            "col": {
+              "xs": 24
+            },
+            "description": "Créer un canal privé."
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_channels",
+      "name": "slackListChannels",
+      "schemaVersion": 2,
+      "title": "Lister les canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_channels"
+        }
+      ],
+      "description": "Liste les canaux Slack disponibles.",
+      "args": {
+        "title": "Liste des canaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "types",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de canaux à lister.",
+            "options": [
+              {
+                "label": "Canaux publics",
+                "value": "public_channel"
+              },
+              {
+                "label": "Canaux privés",
+                "value": "private_channel"
+              },
+              {
+                "label": "Messages de groupe",
+                "value": "mpim"
+              },
+              {
+                "label": "Messages directs",
+                "value": "im"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats.",
+            "default": 100
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_channel",
+      "name": "slackGetChannel",
+      "schemaVersion": 2,
+      "title": "Obtenir un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_channel"
+        }
+      ],
+      "description": "Récupère les informations d'un canal Slack.",
+      "args": {
+        "title": "Détails du canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_archive_channel",
+      "name": "slackArchiveChannel",
+      "schemaVersion": 2,
+      "title": "Archiver un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Archive un canal Slack.",
+      "args": {
+        "title": "Archivage",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal à archiver.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_invite_to_channel",
+      "name": "slackInviteToChannel",
+      "schemaVersion": 2,
+      "title": "Inviter dans un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_channel"
+        }
+      ],
+      "description": "Invite des utilisateurs dans un canal Slack.",
+      "args": {
+        "title": "Invitation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "users",
+            "label": "Utilisateurs",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs des utilisateurs (séparés par des virgules).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_users",
+      "name": "slackListUsers",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_users"
+        }
+      ],
+      "description": "Liste les utilisateurs de l'espace de travail Slack.",
+      "args": {
+        "title": "Liste des utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats.",
+            "default": 100
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_user",
+      "name": "slackGetUser",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_user"
+        }
+      ],
+      "description": "Récupère les informations d'un utilisateur Slack.",
+      "args": {
+        "title": "Détails de l'utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "user",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de l'utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_user_profile",
+      "name": "slackGetUserProfile",
+      "schemaVersion": 2,
+      "title": "Obtenir le profil utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_user_profile"
+        }
+      ],
+      "description": "Récupère le profil détaillé d'un utilisateur Slack.",
+      "args": {
+        "title": "Profil utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "user",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de l'utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_lookup_by_email",
+      "name": "slackLookupByEmail",
+      "schemaVersion": 2,
+      "title": "Rechercher par courriel",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_user"
+        }
+      ],
+      "description": "Recherche un utilisateur Slack par adresse courriel.",
+      "args": {
+        "title": "Recherche par courriel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Courriel",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresse courriel de l'utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_add_reaction",
+      "name": "slackAddReaction",
+      "schemaVersion": 2,
+      "title": "Ajouter une réaction",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Ajoute une réaction emoji à un message Slack.",
+      "args": {
+        "title": "Réaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Emoji",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de l'emoji (sans les deux-points).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_remove_reaction",
+      "name": "slackRemoveReaction",
+      "schemaVersion": 2,
+      "title": "Retirer une réaction",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Retire une réaction emoji d'un message Slack.",
+      "args": {
+        "title": "Retrait de réaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Emoji",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de l'emoji à retirer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_reactions",
+      "name": "slackGetReactions",
+      "schemaVersion": 2,
+      "title": "Obtenir les réactions",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_reactions"
+        }
+      ],
+      "description": "Récupère les réactions d'un message Slack.",
+      "args": {
+        "title": "Réactions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_upload_file",
+      "name": "slackUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_file"
+        }
+      ],
+      "description": "Téléverse un fichier sur Slack.",
+      "args": {
+        "title": "Téléversement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channels",
+            "label": "Canaux",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiants des canaux (séparés par des virgules)."
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre du fichier."
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu textuel du fichier."
+          },
+          {
+            "type": "text",
+            "key": "filename",
+            "label": "Nom de fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du fichier à afficher."
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_files",
+      "name": "slackListFiles",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_files"
+        }
+      ],
+      "description": "Liste les fichiers de l'espace de travail Slack.",
+      "args": {
+        "title": "Liste des fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par canal (optionnel)."
+          },
+          {
+            "type": "select",
+            "key": "types",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de fichiers.",
+            "options": [
+              {
+                "label": "Tous",
+                "value": "all"
+              },
+              {
+                "label": "Images",
+                "value": "images"
+              },
+              {
+                "label": "Google Docs",
+                "value": "gdocs"
+              },
+              {
+                "label": "PDF",
+                "value": "pdfs"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Nombre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de fichiers.",
+            "default": 20
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_get_file",
+      "name": "slackGetFile",
+      "schemaVersion": 2,
+      "title": "Obtenir un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_file"
+        }
+      ],
+      "description": "Récupère les informations d'un fichier Slack.",
+      "args": {
+        "title": "Détails du fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "file",
+            "label": "ID du fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du fichier Slack.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_delete_file",
+      "name": "slackDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Supprime un fichier de Slack.",
+      "args": {
+        "title": "Suppression de fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "file",
+            "label": "ID du fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du fichier à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_pin_message",
+      "name": "slackPinMessage",
+      "schemaVersion": 2,
+      "title": "Épingler un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Épingle un message dans un canal Slack.",
+      "args": {
+        "title": "Épinglage",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "col": {
+              "xs": 24
+            },
+            "description": "Horodatage du message à épingler.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_pins",
+      "name": "slackListPins",
+      "schemaVersion": 2,
+      "title": "Lister les épingles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_pins"
+        }
+      ],
+      "description": "Liste les messages épinglés d'un canal Slack.",
+      "args": {
+        "title": "Épingles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_create_reminder",
+      "name": "slackCreateReminder",
+      "schemaVersion": 2,
+      "title": "Créer un rappel",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_reminder"
+        }
+      ],
+      "description": "Crée un rappel Slack.",
+      "args": {
+        "title": "Rappel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu du rappel.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "time",
+            "label": "Heure",
+            "col": {
+              "xs": 24
+            },
+            "description": "Heure du rappel (timestamp Unix ou langage naturel).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de l'utilisateur (optionnel)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_reminders",
+      "name": "slackListReminders",
+      "schemaVersion": 2,
+      "title": "Lister les rappels",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_reminders"
+        }
+      ],
+      "description": "Liste les rappels Slack de l'utilisateur.",
+      "args": {
+        "title": "Rappels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "slack_delete_reminder",
+      "name": "slackDeleteReminder",
+      "schemaVersion": 2,
+      "title": "Supprimer un rappel",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_result"
+        }
+      ],
+      "description": "Supprime un rappel Slack.",
+      "args": {
+        "title": "Suppression de rappel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "reminder",
+            "label": "ID du rappel",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du rappel à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_add_bookmark",
+      "name": "slackAddBookmark",
+      "schemaVersion": 2,
+      "title": "Ajouter un signet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_bookmark"
+        }
+      ],
+      "description": "Ajoute un signet à un canal Slack.",
+      "args": {
+        "title": "Signet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre du signet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "link",
+            "label": "Lien",
+            "col": {
+              "xs": 24
+            },
+            "description": "URL du signet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de signet.",
+            "default": "link"
+          }
+        ]
+      }
+    },
+    {
+      "key": "slack_list_bookmarks",
+      "name": "slackListBookmarks",
+      "schemaVersion": 2,
+      "title": "Lister les signets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_bookmarks"
+        }
+      ],
+      "description": "Liste les signets d'un canal Slack.",
+      "args": {
+        "title": "Signets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du canal.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
   ]
 }

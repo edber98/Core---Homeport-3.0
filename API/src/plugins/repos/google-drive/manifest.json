@@ -1,45 +1,3697 @@
 {
-  "repo": { "name": "google-drive", "type": "local", "label": "Google Drive" },
+  "repo": {
+    "name": "google-drive",
+    "type": "local",
+    "label": "Google Drive / Docs / Sheets"
+  },
+  "variables": {
+    "gdrive_file": {
+      "title": "Fichier Google Drive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mimeType",
+          "label": "Type MIME",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webViewLink",
+          "label": "Lien web",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdTime",
+          "label": "Date création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "modifiedTime",
+          "label": "Date modification",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "parents",
+          "label": "Dossier parent",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdrive_files": {
+      "title": "Fichiers Google Drive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fichiers Google Drive",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "webViewLink",
+              "label": "Lien web",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdTime",
+              "label": "Date création",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "modifiedTime",
+              "label": "Date modification",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "parents",
+              "label": "Dossier parent",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdrive_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdrive_link": {
+      "title": "Lien de partage",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webViewLink",
+          "label": "Lien web",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webContentLink",
+          "label": "Lien téléchargement",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdocs_doc": {
+      "title": "Document Google Docs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "documentId",
+          "label": "Document ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "revisionId",
+          "label": "Revision ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "content",
+          "label": "Contenu",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdocs_content": {
+      "title": "Contenu Google Docs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "documentId",
+          "label": "Document ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdocs_result": {
+      "title": "Résultat Docs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gdocs_export": {
+      "title": "Export PDF",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "documentId",
+          "label": "Document ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu (base64)",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mimeType",
+          "label": "Type MIME",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gsheets_spreadsheet": {
+      "title": "Spreadsheet",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "spreadsheetId",
+          "label": "Spreadsheet ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sheetId",
+          "label": "Sheet ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sheetTitle",
+          "label": "Nom feuille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gsheets_values": {
+      "title": "Valeurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "range",
+          "label": "Plage",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "majorDimension",
+          "label": "Dimension",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "values",
+          "label": "Valeurs (JSON)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gsheets_result": {
+      "title": "Résultat Sheets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "updatedRange",
+          "label": "Plage mise à jour",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "updatedRows",
+          "label": "Lignes mises à jour",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gsheets_sheet": {
+      "title": "Feuille",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "sheetId",
+          "label": "Sheet ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "index",
+          "label": "Index",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "columnCount",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gsheets_sheets": {
+      "title": "Feuilles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Feuilles",
+          "description": "Liste",
+          "mode": "array",
+          "key": "sheets",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "sheetId",
+              "label": "Sheet ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "index",
+              "label": "Index",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "rowCount",
+              "label": "Lignes",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "columnCount",
+              "label": "Colonnes",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_calendar": {
+      "title": "Calendrier Google",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timeZone",
+          "label": "Fuseau horaire",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "accessRole",
+          "label": "Rôle d'accès",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_calendars": {
+      "title": "Calendriers Google",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Calendriers",
+          "description": "Liste",
+          "mode": "array",
+          "key": "calendars",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "timeZone",
+              "label": "Fuseau horaire",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "accessRole",
+              "label": "Rôle d'accès",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_event": {
+      "title": "Événement Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "location",
+          "label": "Lieu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "start",
+          "label": "Début",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "end",
+          "label": "Fin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "htmlLink",
+          "label": "Lien",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "creator",
+          "label": "Créateur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "organizer",
+          "label": "Organisateur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "attendees",
+          "label": "Participants",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_events": {
+      "title": "Événements Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Événements",
+          "description": "Liste",
+          "mode": "array",
+          "key": "events",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "location",
+              "label": "Lieu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "start",
+              "label": "Début",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "end",
+              "label": "Fin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "htmlLink",
+              "label": "Lien",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_result": {
+      "title": "Résultat Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
-    { "key": "googleDrive", "name": "Google Drive", "title": "Google Drive", "iconClass": "fa-brands fa-google-drive", "color": "#0F9D58", "tags": ["storage"], "categories": ["Docs & Drive"], "hasCredentials": true,
-      "credentialsForm": { "title": "OAuth Google", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"clientId","label":"ID client","description":"Identifiant client OAuth.","col":{"xs":24}},
-        {"type":"text","key":"clientSecret","label":"Secret client","description":"Secret client OAuth.","col":{"xs":24},"secret":true},
-        {"type":"text","key":"refreshToken","label":"Jeton d’actualisation","description":"Jeton d\u2019actualisation OAuth.","col":{"xs":24},"secret":true}
-      ] } },
-    { "key": "googleDocs", "name": "Google Docs", "title": "Google Docs", "iconClass": "fa-brands fa-google", "color": "#4285F4", "tags": ["docs"], "categories": ["Docs & Drive"], "hasCredentials": true },
-    { "key": "googleSheets", "name": "Google Sheets", "title": "Google Sheets", "iconClass": "fa-brands fa-google", "color": "#34A853", "tags": ["sheets"], "categories": ["Docs & Drive"], "hasCredentials": true }
+    {
+      "key": "googleDrive",
+      "name": "Google Drive",
+      "title": "Google Drive",
+      "iconClass": "fa-brands fa-google-drive",
+      "color": "#4285F4",
+      "tags": [
+        "google",
+        "drive",
+        "files",
+        "storage"
+      ],
+      "categories": [
+        "Cloud Storage"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Google OAuth2",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client Secret",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh Token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "googleDocs",
+      "name": "Google Docs",
+      "title": "Google Docs",
+      "iconClass": "fa-solid fa-file-lines",
+      "color": "#4285F4",
+      "tags": [
+        "google",
+        "docs",
+        "documents"
+      ],
+      "categories": [
+        "Documents"
+      ],
+      "hasCredentials": false
+    },
+    {
+      "key": "googleSheets",
+      "name": "Google Sheets",
+      "title": "Google Sheets",
+      "iconClass": "fa-solid fa-table",
+      "color": "#0F9D58",
+      "tags": [
+        "google",
+        "sheets",
+        "spreadsheet"
+      ],
+      "categories": [
+        "Spreadsheets"
+      ],
+      "hasCredentials": false
+    },
+    {
+      "key": "googleCalendar",
+      "name": "Google Calendar",
+      "title": "Google Calendar",
+      "iconClass": "fa-solid fa-calendar-days",
+      "color": "#4285F4",
+      "tags": [
+        "google",
+        "calendar",
+        "events"
+      ],
+      "categories": [
+        "Calendar"
+      ],
+      "hasCredentials": false
+    }
   ],
   "nodeTemplates": [
-    { "key": "gdrive_upload_file", "name": "gdriveUploadFile", "schemaVersion": 2, "title": "Téléverser un fichier", "type": "function", "nodeKind": "function", "category": "Google Drive", "providerKey": "googleDrive",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any","file"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Téléverser un fichier vers Drive", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"name","label":"Nom","description":"Nom du fichier sur Drive.","col":{"xs":24}},
-        {"type":"text","key":"mimeType","label":"Type MIME","description":"Type MIME du contenu.","col":{"xs":24},"default":"application/octet-stream"},
-        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","description":"Contenu du fichier en base64 ou texte.","col":{"xs":24}}
-      ] } },
-    { "key": "gdrive_share_link", "name": "gdriveShareLink", "schemaVersion": 2, "title": "Créer un lien de partage", "type": "function", "nodeKind": "function", "category": "Google Drive", "providerKey": "googleDrive",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any","file"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Créer ou récupérer un lien partageable", "args": { "title": "Partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"fileId","label":"ID du fichier","description":"Identifiant du fichier Google Drive.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"role","label":"Rôle","description":"Permissions du lien partageable.","col":{"xs":24},"options":[{"label":"lecteur","value":"reader"},{"label":"éditeur","value":"writer"}],"default":"reader"}
-      ] } },
-    { "key": "gdocs_create_doc", "name": "gdocsCreateDoc", "schemaVersion": 2, "title": "Créer un document", "type": "function", "nodeKind": "function", "category": "Google Docs", "providerKey": "googleDocs",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Créer un document Google", "args": { "title": "Créer un document", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"title","label":"Titre","description":"Titre du document.","col":{"xs":24}},
-        {"type":"textarea","key":"body","label":"Corps (texte brut)","description":"Contenu initial en texte brut.","col":{"xs":24}}
-      ] } },
-    { "key": "gsheets_append_rows", "name": "gsheetsAppendRows", "schemaVersion": 2, "title": "Ajouter des lignes", "type": "function", "nodeKind": "function", "category": "Google Sheets", "providerKey": "googleSheets",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Ajouter des lignes à une feuille", "args": { "title": "Ajout", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"spreadsheetId","label":"ID du classeur","description":"Identifiant du classeur Google Sheets.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"text","key":"range","label":"Plage (ex. Feuille1!A1)","description":"Plage cible (ex.: Feuille1!A1).","col":{"xs":24}},
-        {"type":"textarea","key":"rows","label":"Lignes (tableau JSON)","description":"Lignes à ajouter (tableau JSON).","col":{"xs":24},"default":"[]"}
-      ] } }
+    {
+      "key": "gdrive_list_files",
+      "name": "gdriveListFiles",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fichiers dans Google Drive.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Dossier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier (vide = racine)."
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de fichiers a retourner.",
+            "default": 100
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "col": {
+              "xs": 24
+            },
+            "description": "Requête de recherche Drive (q parameter)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_get_file",
+      "name": "gdriveGetFile",
+      "schemaVersion": 2,
+      "title": "Obtenir un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les metadonnées d'un fichier.",
+      "args": {
+        "title": "Obtenir un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_upload_file",
+      "name": "gdriveUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Upload un fichier sur Google Drive.",
+      "args": {
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du fichier a créer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Dossier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier destination."
+          },
+          {
+            "type": "text",
+            "key": "mimeType",
+            "label": "Type MIME",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type MIME du fichier."
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du fichier (texte ou base64).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_download_file",
+      "name": "gdriveDownloadFile",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Telecharge le contenu d'un fichier.",
+      "args": {
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier a télécharger.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "exportMimeType",
+            "label": "Format export",
+            "col": {
+              "xs": 24
+            },
+            "description": "MIME type d'export (pour Google Docs)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_delete_file",
+      "name": "gdriveDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un fichier de Google Drive.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier a supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_create_folder",
+      "name": "gdriveCreateFolder",
+      "schemaVersion": 2,
+      "title": "Créer un dossier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau dossier.",
+      "args": {
+        "title": "Créer un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du dossier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du dossier a créer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parentId",
+            "label": "Dossier parent ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier parent."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_move_file",
+      "name": "gdriveMoveFile",
+      "schemaVersion": 2,
+      "title": "Déplacer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Deplace un fichier vers un autre dossier.",
+      "args": {
+        "title": "Déplacer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "newParentId",
+            "label": "Nouveau dossier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier destination.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "oldParentId",
+            "label": "Ancien dossier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de l'ancien dossier parent."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_copy_file",
+      "name": "gdriveCopyFile",
+      "schemaVersion": 2,
+      "title": "Copier un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Copie un fichier.",
+      "args": {
+        "title": "Copier un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier a copier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nouveau nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de la copie."
+          },
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Dossier destination",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier destination."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_share_file",
+      "name": "gdriveShareFile",
+      "schemaVersion": 2,
+      "title": "Partager un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_link"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un lien de partage.",
+      "args": {
+        "title": "Partager un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "role",
+            "label": "Role",
+            "options": [
+              {
+                "label": "Lecteur",
+                "value": "reader"
+              },
+              {
+                "label": "Commentateur",
+                "value": "commenter"
+              },
+              {
+                "label": "Editeur",
+                "value": "writer"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Role de partage."
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "options": [
+              {
+                "label": "Tout le monde",
+                "value": "anyone"
+              },
+              {
+                "label": "Utilisateur",
+                "value": "user"
+              },
+              {
+                "label": "Domaine",
+                "value": "domain"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de partage."
+          },
+          {
+            "type": "text",
+            "key": "emailAddress",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Email du destinataire (si type=user)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdrive_search",
+      "name": "gdriveSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Drive",
+      "providerKey": "googleDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdrive_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche dans Google Drive.",
+      "args": {
+        "title": "Rechercher des fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Terme de recherche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats.",
+            "default": 50
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_create_doc",
+      "name": "gdocsCreateDoc",
+      "schemaVersion": 2,
+      "title": "Créer un document",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_doc"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau Google Doc.",
+      "args": {
+        "title": "Créer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu initial",
+            "description": "Texte initial du document.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_get_doc",
+      "name": "gdocsGetDoc",
+      "schemaVersion": 2,
+      "title": "Obtenir un document",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_doc"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les metadonnées d'un Google Doc.",
+      "args": {
+        "title": "Obtenir un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_append_text",
+      "name": "gdocsAppendText",
+      "schemaVersion": 2,
+      "title": "Ajouter du texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajouté du texte a la fin d'un document.",
+      "args": {
+        "title": "Ajouter du texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Texte a ajouter.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_replace_text",
+      "name": "gdocsReplaceText",
+      "schemaVersion": 2,
+      "title": "Remplacer du texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Remplace du texte dans un document.",
+      "args": {
+        "title": "Remplacer du texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Texte a chercher",
+            "col": {
+              "xs": 24
+            },
+            "description": "Texte a remplacer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "replacement",
+            "label": "Remplacement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau texte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_get_content",
+      "name": "gdocsGetContent",
+      "schemaVersion": 2,
+      "title": "Lire le contenu",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_content"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lit le contenu texte d'un document.",
+      "args": {
+        "title": "Lire le contenu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gdocs_export_pdf",
+      "name": "gdocsExportPdf",
+      "schemaVersion": 2,
+      "title": "Exporter en PDF",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Docs",
+      "providerKey": "googleDocs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gdocs_export"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Exporte un document en PDF.",
+      "args": {
+        "title": "Exporter en PDF",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du document.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_create_spreadsheet",
+      "name": "gsheetsCreateSpreadsheet",
+      "schemaVersion": 2,
+      "title": "Créer un spreadsheet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_spreadsheet"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau Google Sheets.",
+      "args": {
+        "title": "Créer un spreadsheet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_get_spreadsheet",
+      "name": "gsheetsGetSpreadsheet",
+      "schemaVersion": 2,
+      "title": "Obtenir un spreadsheet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_spreadsheet"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les informations d'un spreadsheet.",
+      "args": {
+        "title": "Obtenir un spreadsheet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_get_values",
+      "name": "gsheetsGetValues",
+      "schemaVersion": 2,
+      "title": "Lire des valeurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_values"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lit les valeurs d'une plage de cellules.",
+      "args": {
+        "title": "Lire des valeurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "range",
+            "label": "Plage",
+            "col": {
+              "xs": 24
+            },
+            "description": "Plage de cellules (ex: Sheet1!A1:D10).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_update_values",
+      "name": "gsheetsUpdateValues",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des valeurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour les valeurs d'une plage.",
+      "args": {
+        "title": "Mettre à jour des valeurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "range",
+            "label": "Plage",
+            "col": {
+              "xs": 24
+            },
+            "description": "Plage de cellules (ex: Sheet1!A1:D10).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "values",
+            "label": "Valeurs (JSON)",
+            "description": "Tableau 2D de valeurs en JSON. Ex: [[\"A\",\"B\"],[1,2]]",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_append_rows",
+      "name": "gsheetsAppendRows",
+      "schemaVersion": 2,
+      "title": "Ajouter des lignes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajouté des lignes a la fin d'une feuille.",
+      "args": {
+        "title": "Ajouter des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "range",
+            "label": "Plage",
+            "col": {
+              "xs": 24
+            },
+            "description": "Feuille cible (ex: Sheet1).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "values",
+            "label": "Valeurs (JSON)",
+            "description": "Tableau 2D de lignes a ajouter.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_clear_range",
+      "name": "gsheetsClearRange",
+      "schemaVersion": 2,
+      "title": "Effacer une plage",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Efface les valeurs d'une plage.",
+      "args": {
+        "title": "Effacer une plage",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "range",
+            "label": "Plage",
+            "col": {
+              "xs": 24
+            },
+            "description": "Plage a effacer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_add_sheet",
+      "name": "gsheetsAddSheet",
+      "schemaVersion": 2,
+      "title": "Ajouter une feuille",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_sheet"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajouté une nouvelle feuille au spreadsheet.",
+      "args": {
+        "title": "Ajouter une feuille",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Nom de la feuille",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de la nouvelle feuille.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_delete_sheet",
+      "name": "gsheetsDeleteSheet",
+      "schemaVersion": 2,
+      "title": "Supprimer une feuille",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une feuille du spreadsheet.",
+      "args": {
+        "title": "Supprimer une feuille",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "sheetId",
+            "label": "Sheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID numerique de la feuille.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_copy_sheet",
+      "name": "gsheetsCopySheet",
+      "schemaVersion": 2,
+      "title": "Copier une feuille",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_sheet"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Copie une feuille vers un autre spreadsheet.",
+      "args": {
+        "title": "Copier une feuille",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet source.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "sheetId",
+            "label": "Sheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID de la feuille a copier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destinationSpreadsheetId",
+            "label": "Destination ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet destination.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gsheets_get_sheet_list",
+      "name": "gsheetsGetSheetList",
+      "schemaVersion": 2,
+      "title": "Lister les feuilles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Sheets",
+      "providerKey": "googleSheets",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gsheets_sheets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste toutes les feuilles d'un spreadsheet.",
+      "args": {
+        "title": "Lister les feuilles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spreadsheetId",
+            "label": "Spreadsheet ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du spreadsheet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_list_calendars",
+      "name": "gcalListCalendars",
+      "schemaVersion": 2,
+      "title": "Lister les calendriers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendars"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les calendriers de l'utilisateur.",
+      "args": {
+        "title": "Lister les calendriers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "gcal_get_calendar",
+      "name": "gcalGetCalendar",
+      "schemaVersion": 2,
+      "title": "Obtenir un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les détails d'un calendrier.",
+      "args": {
+        "title": "Obtenir un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_create_calendar",
+      "name": "gcalCreateCalendar",
+      "schemaVersion": 2,
+      "title": "Créer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau calendrier.",
+      "args": {
+        "title": "Créer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timeZone",
+            "label": "Fuseau horaire",
+            "col": {
+              "xs": 24
+            },
+            "description": "Ex: America/Montreal"
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_delete_calendar",
+      "name": "gcalDeleteCalendar",
+      "schemaVersion": 2,
+      "title": "Supprimer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un calendrier.",
+      "args": {
+        "title": "Supprimer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_list_events",
+      "name": "gcalListEvents",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements d'un calendrier.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "text",
+            "key": "timeMin",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601 (ex: 2024-01-01T00:00:00Z)."
+          },
+          {
+            "type": "text",
+            "key": "timeMax",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601."
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre max d'événements."
+          },
+          {
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Terme de recherche."
+          },
+          {
+            "type": "checkbox",
+            "key": "singleEvents",
+            "label": "Événements uniques",
+            "col": {
+              "xs": 24
+            },
+            "default": true,
+            "description": "Développer les événements récurrents."
+          },
+          {
+            "type": "select",
+            "key": "orderBy",
+            "label": "Trier par",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Date de début",
+                "value": "startTime"
+              },
+              {
+                "label": "Dernière modification",
+                "value": "updated"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_get_event",
+      "name": "gcalGetEvent",
+      "schemaVersion": 2,
+      "title": "Obtenir un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les détails d'un événement.",
+      "args": {
+        "title": "Obtenir un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_create_event",
+      "name": "gcalCreateEvent",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel événement dans un calendrier.",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_dateTime",
+            "label": "Début (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601."
+          },
+          {
+            "type": "text",
+            "key": "start_timeZone",
+            "label": "Fuseau horaire début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Ex: America/Montreal"
+          },
+          {
+            "type": "text",
+            "key": "end_dateTime",
+            "label": "Fin (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601."
+          },
+          {
+            "type": "text",
+            "key": "end_timeZone",
+            "label": "Fuseau horaire fin",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attendees",
+            "label": "Participants",
+            "col": {
+              "xs": 24
+            },
+            "description": "Emails séparés par des virgules."
+          },
+          {
+            "type": "text",
+            "key": "recurrence",
+            "label": "Récurrence",
+            "col": {
+              "xs": 24
+            },
+            "description": "Règle RRULE (ex: RRULE:FREQ=WEEKLY;COUNT=5)."
+          },
+          {
+            "type": "number",
+            "key": "reminders_minutes",
+            "label": "Rappel (minutes)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Minutes avant l'événement."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_update_event",
+      "name": "gcalUpdateEvent",
+      "schemaVersion": 2,
+      "title": "Modifier un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un événement existant.",
+      "args": {
+        "title": "Modifier un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_dateTime",
+            "label": "Début (date/heure)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_dateTime",
+            "label": "Fin (date/heure)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attendees",
+            "label": "Participants",
+            "col": {
+              "xs": 24
+            },
+            "description": "Emails séparés par des virgules."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_delete_event",
+      "name": "gcalDeleteEvent",
+      "schemaVersion": 2,
+      "title": "Supprimer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un événement.",
+      "args": {
+        "title": "Supprimer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_quick_add",
+      "name": "gcalQuickAdd",
+      "schemaVersion": 2,
+      "title": "Ajout rapide",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un événement à partir d'une phrase.",
+      "args": {
+        "title": "Ajout rapide",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Ex: \"Réunion demain 15h\"."
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_move_event",
+      "name": "gcalMoveEvent",
+      "schemaVersion": 2,
+      "title": "Déplacer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déplace un événement vers un autre calendrier.",
+      "args": {
+        "title": "Déplacer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier source ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destinationCalendarId",
+            "label": "Calendrier destination ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "gcal_event_instances",
+      "name": "gcalEventInstances",
+      "schemaVersion": 2,
+      "title": "Instances d'un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les instances d'un événement récurrent.",
+      "args": {
+        "title": "Instances d'un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timeMin",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601."
+          },
+          {
+            "type": "text",
+            "key": "timeMax",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601."
+          }
+        ]
+      }
+    }
   ]
 }

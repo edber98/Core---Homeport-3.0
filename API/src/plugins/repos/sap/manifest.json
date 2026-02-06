@@ -1,0 +1,3422 @@
+{
+  "repo": {
+    "name": "sap",
+    "type": "local",
+    "label": "SAP"
+  },
+  "variables": {
+    "sap_bp": {
+      "title": "Business Partner SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "BusinessPartner",
+          "label": "Business Partner",
+          "description": "Identifiant du partenaire commercial.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BusinessPartnerFullName",
+          "label": "Nom complet",
+          "description": "Nom complet du partenaire commercial.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BusinessPartnerCategory",
+          "label": "Catégorie",
+          "description": "1=Personne, 2=Organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "FirstName",
+          "label": "Prénom",
+          "description": "Prénom (si personne).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "LastName",
+          "label": "Nom",
+          "description": "Nom de famille (si personne).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "OrganizationBPName1",
+          "label": "Nom organisation",
+          "description": "Nom de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SearchTerm1",
+          "label": "Terme de recherche",
+          "description": "Terme de recherche.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_bps": {
+      "title": "Business Partners",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Business Partners",
+          "description": "Liste des partenaires commerciaux",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "BusinessPartner",
+              "label": "Business Partner",
+              "description": "Identifiant du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BusinessPartnerFullName",
+              "label": "Nom complet",
+              "description": "Nom complet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BusinessPartnerCategory",
+              "label": "Catégorie",
+              "description": "1=Personne, 2=Organisation.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "FirstName",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "LastName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "OrganizationBPName1",
+              "label": "Nom organisation",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "SearchTerm1",
+              "label": "Terme de recherche",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_sales_order": {
+      "title": "Commande de vente SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "SalesOrder",
+          "label": "Sales Order",
+          "description": "Numéro de commande de vente.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SalesOrderType",
+          "label": "Type",
+          "description": "Type de commande.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SoldToParty",
+          "label": "Client",
+          "description": "Partenaire commercial.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "PurchaseOrderByCustomer",
+          "label": "PO Client",
+          "description": "Numéro de commande du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "NetAmount",
+          "label": "Montant net",
+          "description": "Montant net.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TransactionCurrency",
+          "label": "Devise",
+          "description": "Devise de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "OverallStatus",
+          "label": "Statut global",
+          "description": "Statut global de la commande.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_sales_orders": {
+      "title": "Commandes de vente",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commandes de vente",
+          "description": "Liste des commandes de vente",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "SalesOrder",
+              "label": "Sales Order",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "SalesOrderType",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "SoldToParty",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "PurchaseOrderByCustomer",
+              "label": "PO Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "NetAmount",
+              "label": "Montant net",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TransactionCurrency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "OverallStatus",
+              "label": "Statut global",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_sales_order_item": {
+      "title": "Poste de commande de vente",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "SalesOrder",
+          "label": "Sales Order",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SalesOrderItem",
+          "label": "Poste",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Material",
+          "label": "Article",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "RequestedQuantity",
+          "label": "Quantite demandee",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "NetAmount",
+          "label": "Montant net",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TransactionCurrency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_purchase_order": {
+      "title": "Commande d'achat SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "PurchaseOrder",
+          "label": "Purchase Order",
+          "description": "Numéro de commande d'achat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "PurchaseOrderType",
+          "label": "Type",
+          "description": "Type de commande.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Supplier",
+          "label": "Fournisseur",
+          "description": "Numéro fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CompanyCode",
+          "label": "Société",
+          "description": "Code société.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "PurchasingOrganization",
+          "label": "Org. Achats",
+          "description": "Organisation d'achats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "NetPriceAmount",
+          "label": "Montant net",
+          "description": "Montant net.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "DocumentCurrency",
+          "label": "Devise",
+          "description": "Devise du document.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_purchase_orders": {
+      "title": "Commandes d'achat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commandes d'achat",
+          "description": "Liste des commandes d'achat",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "PurchaseOrder",
+              "label": "Purchase Order",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "PurchaseOrderType",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Supplier",
+              "label": "Fournisseur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CompanyCode",
+              "label": "Société",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "PurchasingOrganization",
+              "label": "Org. Achats",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "NetPriceAmount",
+              "label": "Montant net",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "DocumentCurrency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_material": {
+      "title": "Articlé SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "Product",
+          "label": "Article",
+          "description": "Numéro d'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ProductType",
+          "label": "Type",
+          "description": "Type d'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "IndustrySector",
+          "label": "Secteur",
+          "description": "Secteur industriel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BaseUnit",
+          "label": "Unite de base",
+          "description": "Unite de mesure de base.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ProductDescription",
+          "label": "Description",
+          "description": "Description de l'article.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_materials": {
+      "title": "Articles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Articles",
+          "description": "Liste des articles",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "Product",
+              "label": "Article",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ProductType",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "IndustrySector",
+              "label": "Secteur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BaseUnit",
+              "label": "Unite de base",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ProductDescription",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_billing_doc": {
+      "title": "Document de facturation SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "BillingDocument",
+          "label": "Document",
+          "description": "Numéro du document de facturation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BillingDocumentType",
+          "label": "Type",
+          "description": "Type de document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SoldToParty",
+          "label": "Client",
+          "description": "Partenaire commercial.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "NetAmount",
+          "label": "Montant net",
+          "description": "Montant net.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TransactionCurrency",
+          "label": "Devise",
+          "description": "Devise de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_billing_docs": {
+      "title": "Documents de facturation",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Documents de facturation",
+          "description": "Liste des documents de facturation",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "BillingDocument",
+              "label": "Document",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BillingDocumentType",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "SoldToParty",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "NetAmount",
+              "label": "Montant net",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TransactionCurrency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_billing_item": {
+      "title": "Poste de facturation SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "BillingDocument",
+          "label": "Document",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BillingDocumentItem",
+          "label": "Poste",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Material",
+          "label": "Article",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "NetAmount",
+          "label": "Montant net",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TransactionCurrency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BillingQuantity",
+          "label": "Quantite",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_billing_items": {
+      "title": "Postes de facturation",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Postes de facturation",
+          "description": "Liste des postes de facturation",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "BillingDocument",
+              "label": "Document",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BillingDocumentItem",
+              "label": "Poste",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Material",
+              "label": "Article",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "NetAmount",
+              "label": "Montant net",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TransactionCurrency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "BillingQuantity",
+              "label": "Quantite",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_gl_account": {
+      "title": "Compte général SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ChartOfAccounts",
+          "label": "Plan comptable",
+          "description": "Code du plan comptable.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "GLAccount",
+          "label": "Compte général",
+          "description": "Numéro du compte général.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "GLAccountName",
+          "label": "Nom",
+          "description": "Nom du compte général.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_gl_accounts": {
+      "title": "Comptes generaux",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Comptes generaux",
+          "description": "Liste des comptes generaux",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "ChartOfAccounts",
+              "label": "Plan comptable",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "GLAccount",
+              "label": "Compte général",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "GLAccountName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_cost_center": {
+      "title": "Centre de couts SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ControllingArea",
+          "label": "Perimetre analytique",
+          "description": "Code du perimetre analytique.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CostCenter",
+          "label": "Centre de couts",
+          "description": "Numéro du centre de couts.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CostCenterName",
+          "label": "Nom",
+          "description": "Nom du centre de couts.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ValidityStartDate",
+          "label": "Début validite",
+          "description": "Date de début de validite.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ValidityEndDate",
+          "label": "Fin validite",
+          "description": "Date de fin de validite.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_cost_centers": {
+      "title": "Centres de couts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Centres de couts",
+          "description": "Liste des centres de couts",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "ControllingArea",
+              "label": "Perimetre analytique",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CostCenter",
+              "label": "Centre de couts",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CostCenterName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ValidityStartDate",
+              "label": "Début validite",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ValidityEndDate",
+              "label": "Fin validite",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_production_order": {
+      "title": "Ordre de fabrication SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ManufacturingOrder",
+          "label": "Ordre de fabrication",
+          "description": "Numéro de l'ordre de fabrication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Material",
+          "label": "Article",
+          "description": "Articlé fabrique.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TotalQuantity",
+          "label": "Quantite totale",
+          "description": "Quantite totale planifiee.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "MfgOrderPlannedStartDate",
+          "label": "Début planifie",
+          "description": "Date de début planifiee.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "MfgOrderPlannedEndDate",
+          "label": "Fin planifiee",
+          "description": "Date de fin planifiee.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ManufacturingOrderStatus",
+          "label": "Statut",
+          "description": "Statut de l'ordre.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_production_orders": {
+      "title": "Ordres de fabrication",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Ordres de fabrication",
+          "description": "Liste des ordres de fabrication",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "ManufacturingOrder",
+              "label": "Ordre de fabrication",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Material",
+              "label": "Article",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TotalQuantity",
+              "label": "Quantite totale",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "MfgOrderPlannedStartDate",
+              "label": "Début planifie",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "MfgOrderPlannedEndDate",
+              "label": "Fin planifiee",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ManufacturingOrderStatus",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_result": {
+      "title": "Résultat SAP",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'operation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sap_generic": {
+      "title": "Réponse OData generique",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données",
+          "description": "Données retournees par le service OData.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "sap",
+      "name": "SAP",
+      "title": "SAP",
+      "iconClass": "fa-solid fa-building",
+      "color": "#0FAAFF",
+      "tags": [
+        "sap",
+        "erp",
+        "s4hana",
+        "business"
+      ],
+      "categories": [
+        "ERP"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants SAP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL",
+            "description": "URL du système SAP (ex: https://my-sap.com:443)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "client",
+            "label": "Client SAP",
+            "description": "Numéro de client SAP (ex: 100).",
+            "col": {
+              "xs": 24
+            },
+            "default": "100"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "sap_bp_create",
+      "name": "sapBpCreate",
+      "schemaVersion": 2,
+      "title": "Créer un Business Partner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_bp"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau partenaire commercial dans SAP.",
+      "args": {
+        "title": "Créer un Business Partner",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "BusinessPartnerFullName",
+            "label": "Nom complet",
+            "description": "Nom complet du partenaire commercial.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "BusinessPartnerCategory",
+            "label": "Catégorie",
+            "description": "1=Personne, 2=Organisation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Personne",
+                "value": "1"
+              },
+              {
+                "label": "Organisation",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "FirstName",
+            "label": "Prénom",
+            "description": "Prénom (si personne).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "LastName",
+            "label": "Nom",
+            "description": "Nom de famille (si personne).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "OrganizationBPName1",
+            "label": "Nom organisation",
+            "description": "Nom de l'organisation.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_bp_get",
+      "name": "sapBpGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un Business Partner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_bp"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un partenaire commercial SAP.",
+      "args": {
+        "title": "Obtenir un Business Partner",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "businessPartner",
+            "label": "Business Partner",
+            "description": "Identifiant du partenaire commercial.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_bp_update",
+      "name": "sapBpUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un Business Partner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié un partenaire commercial existant dans SAP.",
+      "args": {
+        "title": "Modifier un Business Partner",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "businessPartner",
+            "label": "Business Partner",
+            "description": "Identifiant du partenaire a modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "BusinessPartnerFullName",
+            "label": "Nom complet",
+            "description": "Nouveau nom complet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "SearchTerm1",
+            "label": "Terme de recherche",
+            "description": "Nouveau terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_bp_delete",
+      "name": "sapBpDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un Business Partner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un partenaire commercial de SAP.",
+      "args": {
+        "title": "Supprimer un Business Partner",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "businessPartner",
+            "label": "Business Partner",
+            "description": "Identifiant du partenaire a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_bp_list",
+      "name": "sapBpList",
+      "schemaVersion": 2,
+      "title": "Lister les Business Partners",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_bps"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les partenaires commerciaux SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les Business Partners",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_sales_order_create",
+      "name": "sapSalesOrderCreate",
+      "schemaVersion": 2,
+      "title": "Créer une commande de vente",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_sales_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle commande de vente dans SAP.",
+      "args": {
+        "title": "Créer une commande de vente",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "SalesOrderType",
+            "label": "Type de commande",
+            "description": "Type de commande (ex: OR).",
+            "col": {
+              "xs": 12
+            },
+            "default": "OR",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "SoldToParty",
+            "label": "Client (Sold-To Party)",
+            "description": "Numéro du partenaire commercial.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "PurchaseOrderByCustomer",
+            "label": "PO Client",
+            "description": "Référence de commande du client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "SalesOrganization",
+            "label": "Organisation commerciale",
+            "description": "Code de l'organisation commerciale.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "DistributionChannel",
+            "label": "Canal de distribution",
+            "description": "Code du canal de distribution.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "OrganizationDivision",
+            "label": "Division",
+            "description": "Code de la division.",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_sales_order_get",
+      "name": "sapSalesOrderGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une commande de vente",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_sales_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'une commande de vente SAP.",
+      "args": {
+        "title": "Obtenir une commande de vente",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "salesOrder",
+            "label": "Sales Order",
+            "description": "Numéro de commande de vente.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_sales_order_update",
+      "name": "sapSalesOrderUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une commande de vente",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié une commande de vente existante dans SAP.",
+      "args": {
+        "title": "Modifier une commande de vente",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "salesOrder",
+            "label": "Sales Order",
+            "description": "Numéro de commande de vente a modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "PurchaseOrderByCustomer",
+            "label": "PO Client",
+            "description": "Nouvelle référence de commande du client.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_sales_order_item_add",
+      "name": "sapSalesOrderItemAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter un poste de commande",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_sales_order_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajouté un poste a une commande de vente SAP.",
+      "args": {
+        "title": "Ajouter un poste de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "SalesOrder",
+            "label": "Sales Order",
+            "description": "Numéro de commande de vente.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Material",
+            "label": "Article",
+            "description": "Numéro de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "RequestedQuantity",
+            "label": "Quantite",
+            "description": "Quantite demandee.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "SalesOrderItemCategory",
+            "label": "Catégorie de poste",
+            "description": "Catégorie du poste de commande.",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_sales_orders_list",
+      "name": "sapSalesOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les commandes de vente",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_sales_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commandes de vente SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les commandes de vente",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_purchase_order_create",
+      "name": "sapPurchaseOrderCreate",
+      "schemaVersion": 2,
+      "title": "Créer une commande d'achat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_purchase_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle commande d'achat dans SAP.",
+      "args": {
+        "title": "Créer une commande d'achat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "CompanyCode",
+            "label": "Société",
+            "description": "Code de la société.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "PurchaseOrderType",
+            "label": "Type de commande",
+            "description": "Type de commande (ex: NB).",
+            "col": {
+              "xs": 12
+            },
+            "default": "NB"
+          },
+          {
+            "type": "text",
+            "key": "Supplier",
+            "label": "Fournisseur",
+            "description": "Numéro du fournisseur.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "PurchasingOrganization",
+            "label": "Org. Achats",
+            "description": "Organisation d'achats.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "PurchasingGroup",
+            "label": "Groupe d'achats",
+            "description": "Groupe d'achats.",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_purchase_order_get",
+      "name": "sapPurchaseOrderGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une commande d'achat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_purchase_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'une commande d'achat SAP.",
+      "args": {
+        "title": "Obtenir une commande d'achat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "purchaseOrder",
+            "label": "Purchase Order",
+            "description": "Numéro de commande d'achat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_purchase_order_update",
+      "name": "sapPurchaseOrderUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une commande d'achat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié une commande d'achat existante dans SAP.",
+      "args": {
+        "title": "Modifier une commande d'achat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "purchaseOrder",
+            "label": "Purchase Order",
+            "description": "Numéro de commande a modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Supplier",
+            "label": "Fournisseur",
+            "description": "Nouveau numéro fournisseur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_purchase_orders_list",
+      "name": "sapPurchaseOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les commandes d'achat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_purchase_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commandes d'achat SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les commandes d'achat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_material_create",
+      "name": "sapMaterialCreate",
+      "schemaVersion": 2,
+      "title": "Créer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_material"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel articlé (produit) dans SAP.",
+      "args": {
+        "title": "Créer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Product",
+            "label": "Article",
+            "description": "Numéro de l'article.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ProductType",
+            "label": "Type",
+            "description": "Type d'article.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "IndustrySector",
+            "label": "Secteur",
+            "description": "Secteur industriel.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "BaseUnit",
+            "label": "Unite de base",
+            "description": "Unite de mesure de base (ex: EA, KG).",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_material_get",
+      "name": "sapMaterialGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_material"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un articlé SAP.",
+      "args": {
+        "title": "Obtenir un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "material",
+            "label": "Article",
+            "description": "Numéro de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_material_update",
+      "name": "sapMaterialUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié un articlé existant dans SAP.",
+      "args": {
+        "title": "Modifier un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "material",
+            "label": "Article",
+            "description": "Numéro de l'articlé a modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ProductType",
+            "label": "Type",
+            "description": "Nouveau type d'article.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "BaseUnit",
+            "label": "Unite de base",
+            "description": "Nouvelle unite de mesure.",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_materials_list",
+      "name": "sapMaterialsList",
+      "schemaVersion": 2,
+      "title": "Lister les articles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_materials"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les articles SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les articles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_billing_doc_get",
+      "name": "sapBillingDocGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un document de facturation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_billing_doc"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un document de facturation SAP.",
+      "args": {
+        "title": "Obtenir un document de facturation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "billingDocument",
+            "label": "Document",
+            "description": "Numéro du document de facturation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_billing_docs_list",
+      "name": "sapBillingDocsList",
+      "schemaVersion": 2,
+      "title": "Lister les documents de facturation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_billing_docs"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les documents de facturation SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les documents de facturation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_billing_doc_items_list",
+      "name": "sapBillingDocItemsList",
+      "schemaVersion": 2,
+      "title": "Lister les postes de facturation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_billing_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les postes d'un document de facturation SAP.",
+      "args": {
+        "title": "Lister les postes de facturation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "billingDocument",
+            "label": "Document",
+            "description": "Numéro du document de facturation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_gl_account_get",
+      "name": "sapGlAccountGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un compte général",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_gl_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un compte général SAP.",
+      "args": {
+        "title": "Obtenir un compte général",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chartOfAccounts",
+            "label": "Plan comptable",
+            "description": "Code du plan comptable.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "glAccount",
+            "label": "Compte général",
+            "description": "Numéro du compte général.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_gl_accounts_list",
+      "name": "sapGlAccountsList",
+      "schemaVersion": 2,
+      "title": "Lister les comptes generaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_gl_accounts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les comptes generaux SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les comptes generaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chartOfAccounts",
+            "label": "Plan comptable",
+            "description": "Filtrer par plan comptable.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_cost_center_get",
+      "name": "sapCostCenterGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un centre de couts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_cost_center"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un centre de couts SAP.",
+      "args": {
+        "title": "Obtenir un centre de couts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "controllingArea",
+            "label": "Perimetre analytique",
+            "description": "Code du perimetre analytique.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "costCenter",
+            "label": "Centre de couts",
+            "description": "Numéro du centre de couts.",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_cost_centers_list",
+      "name": "sapCostCentersList",
+      "schemaVersion": 2,
+      "title": "Lister les centres de couts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_cost_centers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les centres de couts SAP avec pagination.",
+      "args": {
+        "title": "Lister les centres de couts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "controllingArea",
+            "label": "Perimetre analytique",
+            "description": "Filtrer par perimetre analytique.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_production_order_get",
+      "name": "sapProductionOrderGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un ordre de fabrication",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_production_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un ordre de fabrication SAP.",
+      "args": {
+        "title": "Obtenir un ordre de fabrication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "manufacturingOrder",
+            "label": "Ordre de fabrication",
+            "description": "Numéro de l'ordre de fabrication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_production_order_confirm",
+      "name": "sapProductionOrderConfirm",
+      "schemaVersion": 2,
+      "title": "Confirmer un ordre de fabrication",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une confirmation pour un ordre de fabrication SAP.",
+      "args": {
+        "title": "Confirmer un ordre de fabrication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "manufacturingOrder",
+            "label": "Ordre de fabrication",
+            "description": "Numéro de l'ordre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "orderOperation",
+            "label": "Operation",
+            "description": "Numéro d'operation.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "yieldQuantity",
+            "label": "Quantite produite",
+            "description": "Quantite confirmee.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "unitOfMeasure",
+            "label": "Unite de mesure",
+            "description": "Unite de mesure (ex: EA, KG).",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_production_orders_list",
+      "name": "sapProductionOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les ordres de fabrication",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_production_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les ordres de fabrication SAP avec pagination et filtre.",
+      "args": {
+        "title": "Lister les ordres de fabrication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats ($top).",
+            "col": {
+              "xs": 12
+            },
+            "default": 20
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Offset",
+            "description": "Nombre de résultats a sauter ($skip).",
+            "col": {
+              "xs": 12
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Expression de filtre OData ($filter).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_odata_get",
+      "name": "sapOdataGet",
+      "schemaVersion": 2,
+      "title": "Requête OData GET",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_generic"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Execute une requête GET OData generique sur SAP.",
+      "args": {
+        "title": "Requête OData GET",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin OData",
+            "description": "Chemin complet OData (ex: /sap/opu/odata/sap/API_BUSINESS_PARTNER/A_BusinessPartner).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "sap_odata_post",
+      "name": "sapOdataPost",
+      "schemaVersion": 2,
+      "title": "Requête OData POST",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SAP",
+      "providerKey": "sap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sap_generic"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Execute une requête POST OData generique sur SAP.",
+      "args": {
+        "title": "Requête OData POST",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin OData",
+            "description": "Chemin complet OData.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Corps (JSON)",
+            "description": "Corps de la requête en JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

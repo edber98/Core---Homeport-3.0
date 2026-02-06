@@ -1,6 +1,24 @@
-# Checklist: Creer un nouveau node de A a Z
+# Checklist : Créer un nouveau node de A à Z
 
-## Etape 1: Decider ou placer le plugin
+## RÈGLE OBLIGATOIRE : Accents français et majuscules
+
+**TOUJOURS** écrire en français correct avec accents dans :
+- `title`, `description`, `label`, `subtitle`, credentialsForm `title`
+- Exemples corrects : "Créer un contact", "Récupérer un fichier", "Supprimer un élément"
+- Exemples INCORRECTS : "Creer un contact", "Recuperer un fichier", "Creer Un Contact"
+
+**Règles de majuscules** :
+- Seulement le premier mot en majuscule + noms propres
+- ✅ "Créer un contact" / "Lister les projets" / "Envoyer un message Slack"
+- ❌ "Créer Un Contact" / "Lister Les Projets"
+
+**Mots courants avec accents** :
+- Créer, Récupérer, Supprimer, Télécharger, Déplacer, Général, Résultat
+- Identifiants, Clé API, Paramètre, Données, Échéance, Référence
+- Numéro, Téléphone, Adresse, Société, Catégorie, Priorité
+- Éléments, Résumé, Événement, Déclencher, Précédent, Système
+
+## Étape 1 : Décider où placer le plugin
 
 - [ ] **Plugin existant?** Ajouter au manifest d'un plugin existant dans `API/src/plugins/local/` ou `repos/`
 - [ ] **Nouveau plugin?** Creer un nouveau dossier:

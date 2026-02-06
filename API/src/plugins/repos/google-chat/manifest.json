@@ -1,40 +1,318 @@
 {
-  "repo": { "name": "google-chat", "type": "local", "label": "Google Chat" },
+  "repo": {
+    "name": "google-chat",
+    "type": "local",
+    "label": "Google Chat"
+  },
+  "variables": {
+    "gchat_result": {
+      "title": "Résultat Google Chat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gchat_webhook_data": {
+      "title": "Données webhook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "eventTime",
+          "label": "Date",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "spaceName",
+          "label": "Espace",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "senderName",
+          "label": "Expéditeur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "messageText",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "googlechat",
       "name": "Google Chat",
       "title": "Google Chat",
       "iconClass": "fa-brands fa-google",
-      "color": "#34A853",
-      "tags": ["chat"],
-      "categories": ["Communication"],
+      "color": "#00AC47",
+      "tags": [
+        "google",
+        "chat",
+        "messaging"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Webhook Google Chat",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Identifiants Google Chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "webhookUrl", "label": "URL du webhook", "description": "URL du webhook entrant Google Chat.", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+          {
+            "type": "text",
+            "key": "webhookUrl",
+            "label": "Webhook URL",
+            "description": "URL du webhook Google Chat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "googlechat_post_message", "name": "googlechatPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Publier un message dans Google Chat", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"textarea","key":"text","label":"Texte","description":"Contenu du message.","col":{"xs":24}}
-      ] } },
-    { "key": "googlechat_card_message", "name": "googlechatCardMessage", "schemaVersion": 2, "title": "Message carte", "type": "function", "nodeKind": "function", "category": "Google Chat", "providerKey": "googlechat",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Publier une carte sur Google Chat", "args": { "title": "Carte", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"textarea","key":"card","label":"JSON de la carte","description":"Payload de la carte au format JSON.","col":{"xs":24},"default":"{}"}
-      ] } },
-    { "key": "googlechat_incoming_webhook", "name": "googlechatIncomingWebhook", "schemaVersion": 2, "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Google Chat", "providerKey": "googlechat",
-      "description": "Déclenchement sur webhook entrant", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","description":"Chemin d’URL pour recevoir le webhook.","col":{"xs":24},"default":"/hooks/google-chat"}
-      ] } }
+    {
+      "key": "googlechat_post_message",
+      "name": "googlechatPostMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Chat",
+      "providerKey": "googlechat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gchat_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un message texte via le webhook Google Chat.",
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Message",
+            "description": "Texte du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "googlechat_card_message",
+      "name": "googlechatCardMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer une carte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Chat",
+      "providerKey": "googlechat",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gchat_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un message avec carte via le webhook Google Chat.",
+      "args": {
+        "title": "Envoyer une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de la carte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subtitle",
+            "label": "Sous-titre",
+            "description": "Sous-titre de la carte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "Image URL",
+            "description": "URL de l'image.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Contenu",
+            "description": "Texte du contenu de la carte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "buttonText",
+            "label": "Texte du bouton",
+            "description": "Texte du bouton d'action.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "buttonUrl",
+            "label": "URL du bouton",
+            "description": "URL cible du bouton.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "googlechat_incoming_webhook",
+      "name": "googlechatIncomingWebhook",
+      "schemaVersion": 2,
+      "title": "Webhook entrant",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Google Chat",
+      "providerKey": "googlechat",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Received",
+          "type": "payload",
+          "schema": "$var:gchat_webhook_data"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un message entrant via webhook Google Chat.",
+      "args": {
+        "title": "Webhook entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook (ex: /googlechat).",
+            "col": {
+              "xs": 24
+            },
+            "default": "/googlechat"
+          }
+        ]
+      }
+    }
   ]
 }
