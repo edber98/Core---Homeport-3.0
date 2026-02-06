@@ -1,0 +1,2479 @@
+{
+  "repo": {
+    "name": "woocommerce",
+    "type": "local",
+    "label": "WooCommerce"
+  },
+  "variables": {
+    "wc_order": {
+      "title": "Commande WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la commande."
+        },
+        {
+          "type": "text",
+          "key": "number",
+          "label": "Numéro",
+          "col": {
+            "xs": 24
+          },
+          "description": "Numéro de commande."
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de la commande."
+        },
+        {
+          "type": "text",
+          "key": "total",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant total."
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code devise."
+        },
+        {
+          "type": "text",
+          "key": "billing_email",
+          "label": "Email facturation",
+          "col": {
+            "xs": 24
+          },
+          "description": "Email de facturation."
+        },
+        {
+          "type": "text",
+          "key": "payment_method",
+          "label": "Méthode de paiement",
+          "col": {
+            "xs": 24
+          },
+          "description": "Méthode de paiement."
+        },
+        {
+          "type": "text",
+          "key": "date_created",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "wc_orders": {
+      "title": "Commandes WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commandes",
+          "description": "Liste des commandes",
+          "mode": "array",
+          "key": "orders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "number",
+              "label": "Numéro",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "total",
+              "label": "Total",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "billing_email",
+              "label": "Email facturation",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "payment_method",
+              "label": "Méthode de paiement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_created",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wc_product": {
+      "title": "Produit WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du produit."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du produit."
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          },
+          "description": "Type de produit."
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut du produit."
+        },
+        {
+          "type": "text",
+          "key": "price",
+          "label": "Prix",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prix du produit."
+        },
+        {
+          "type": "text",
+          "key": "sku",
+          "label": "SKU",
+          "col": {
+            "xs": 24
+          },
+          "description": "Référence SKU."
+        },
+        {
+          "type": "number",
+          "key": "stock_quantity",
+          "label": "Stock",
+          "col": {
+            "xs": 24
+          },
+          "description": "Quantité en stock."
+        },
+        {
+          "type": "text",
+          "key": "date_created",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "wc_products": {
+      "title": "Produits WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Produits",
+          "description": "Liste des produits",
+          "mode": "array",
+          "key": "products",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "price",
+              "label": "Prix",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "sku",
+              "label": "SKU",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "stock_quantity",
+              "label": "Stock",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_created",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wc_customer": {
+      "title": "Client WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du client."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          },
+          "description": "Adresse e-mail."
+        },
+        {
+          "type": "text",
+          "key": "first_name",
+          "label": "Prénom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prénom du client."
+        },
+        {
+          "type": "text",
+          "key": "last_name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du client."
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom d'utilisateur",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom d'utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "date_created",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "wc_customers": {
+      "title": "Clients WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom d'utilisateur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_created",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wc_category": {
+      "title": "Catégorie WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la catégorie."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom de la catégorie."
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "col": {
+            "xs": 24
+          },
+          "description": "Slug URL."
+        },
+        {
+          "type": "number",
+          "key": "count",
+          "label": "Nombre de produits",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre de produits dans la catégorie."
+        }
+      ]
+    },
+    "wc_categories": {
+      "title": "Catégories WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Liste des catégories",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "count",
+              "label": "Nombre de produits",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wc_coupon": {
+      "title": "Coupon WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du coupon."
+        },
+        {
+          "type": "text",
+          "key": "code",
+          "label": "Code",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code du coupon."
+        },
+        {
+          "type": "text",
+          "key": "discount_type",
+          "label": "Type de remise",
+          "col": {
+            "xs": 24
+          },
+          "description": "Type de remise."
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant de la remise."
+        },
+        {
+          "type": "text",
+          "key": "date_expires",
+          "label": "Date d'expiration",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date d'expiration du coupon."
+        }
+      ]
+    },
+    "wc_coupons": {
+      "title": "Coupons WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Coupons",
+          "description": "Liste des coupons",
+          "mode": "array",
+          "key": "coupons",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code",
+              "label": "Code",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "discount_type",
+              "label": "Type de remise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_expires",
+              "label": "Date d'expiration",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wc_report": {
+      "title": "Rapport WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "total_sales",
+          "label": "Ventes totales",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant total des ventes."
+        },
+        {
+          "type": "text",
+          "key": "total_orders",
+          "label": "Nb commandes",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre total de commandes."
+        },
+        {
+          "type": "text",
+          "key": "total_items",
+          "label": "Nb articles",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre total d'articles vendus."
+        }
+      ]
+    },
+    "wc_result": {
+      "title": "Résultat WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'opération."
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          },
+          "description": "Message de retour."
+        }
+      ]
+    },
+    "wc_event": {
+      "title": "Événement WooCommerce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          },
+          "description": "Sujet du webhook."
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la ressource."
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          },
+          "description": "Données du webhook."
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "woocommerce",
+      "name": "WooCommerce",
+      "title": "WooCommerce",
+      "iconClass": "fa-brands fa-wordpress",
+      "color": "#96588A",
+      "tags": [
+        "woocommerce",
+        "ecommerce",
+        "wordpress"
+      ],
+      "categories": [
+        "E-commerce"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants WooCommerce",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "storeUrl",
+            "label": "URL du store",
+            "col": {
+              "xs": 24
+            },
+            "description": "URL du store WooCommerce (ex: https://mon-shop.com).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "consumerKey",
+            "label": "Consumer Key",
+            "col": {
+              "xs": 24
+            },
+            "description": "Clé consommateur WooCommerce.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "consumerSecret",
+            "label": "Consumer Secret",
+            "col": {
+              "xs": 24
+            },
+            "description": "Secret consommateur WooCommerce.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "wc_order_get",
+      "name": "wcOrderGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une commande",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une commande WooCommerce.",
+      "args": {
+        "title": "Récupérer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_orders_list",
+      "name": "wcOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les commandes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commandes WooCommerce.",
+      "args": {
+        "title": "Lister les commandes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats par page (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_order_create",
+      "name": "wcOrderCreate",
+      "schemaVersion": 2,
+      "title": "Créer une commande",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle commande WooCommerce.",
+      "args": {
+        "title": "Créer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "billing_email",
+            "label": "Email facturation",
+            "col": {
+              "xs": 24
+            },
+            "description": "Email de facturation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "payment_method",
+            "label": "Méthode de paiement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Méthode de paiement."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Statut initial de la commande."
+          },
+          {
+            "type": "textarea",
+            "key": "line_items",
+            "label": "Articles (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Articles de la commande au format JSON."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_order_update",
+      "name": "wcOrderUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une commande",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une commande WooCommerce.",
+      "args": {
+        "title": "Modifier une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau statut."
+          },
+          {
+            "type": "textarea",
+            "key": "meta_data",
+            "label": "Metadata (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Metadata au format JSON."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_order_delete",
+      "name": "wcOrderDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une commande",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une commande WooCommerce.",
+      "args": {
+        "title": "Supprimer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_product_get",
+      "name": "wcProductGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un produit WooCommerce.",
+      "args": {
+        "title": "Récupérer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_products_list",
+      "name": "wcProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_products"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les produits WooCommerce.",
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats par page (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut."
+          },
+          {
+            "type": "text",
+            "key": "category",
+            "label": "Catégorie",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par ID catégorie."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_product_create",
+      "name": "wcProductCreate",
+      "schemaVersion": 2,
+      "title": "Créer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau produit WooCommerce.",
+      "args": {
+        "title": "Créer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de produit (simple, grouped, external, variable)."
+          },
+          {
+            "type": "text",
+            "key": "regular_price",
+            "label": "Prix",
+            "col": {
+              "xs": 24
+            },
+            "description": "Prix du produit."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description du produit."
+          },
+          {
+            "type": "text",
+            "key": "sku",
+            "label": "SKU",
+            "col": {
+              "xs": 24
+            },
+            "description": "Référence SKU."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Statut (publish, draft, pending, private)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_product_update",
+      "name": "wcProductUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un produit WooCommerce.",
+      "args": {
+        "title": "Modifier un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          },
+          {
+            "type": "text",
+            "key": "regular_price",
+            "label": "Prix",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau prix."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "text",
+            "key": "sku",
+            "label": "SKU",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle référence SKU."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau statut."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_product_delete",
+      "name": "wcProductDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un produit WooCommerce.",
+      "args": {
+        "title": "Supprimer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_customer_get",
+      "name": "wcCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un client WooCommerce.",
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_customers_list",
+      "name": "wcCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les clients WooCommerce.",
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats par page (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Rechercher par terme."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_customer_create",
+      "name": "wcCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau client WooCommerce.",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresse e-mail du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Prénom du client."
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du client."
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Nom d'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom d'utilisateur."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_customer_update",
+      "name": "wcCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un client WooCommerce.",
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle adresse e-mail."
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau prénom."
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_category_get",
+      "name": "wcCategoryGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une catégorie",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une catégorie WooCommerce.",
+      "args": {
+        "title": "Récupérer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la catégorie.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_categories_list",
+      "name": "wcCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_categories"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les catégories WooCommerce.",
+      "args": {
+        "title": "Lister les catégories",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats par page (1-100)."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_category_create",
+      "name": "wcCategoryCreate",
+      "schemaVersion": 2,
+      "title": "Créer une catégorie",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle catégorie WooCommerce.",
+      "args": {
+        "title": "Créer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de la catégorie.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug",
+            "col": {
+              "xs": 24
+            },
+            "description": "Slug URL."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description de la catégorie."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_coupon_get",
+      "name": "wcCouponGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un coupon",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Coupons",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_coupon"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un coupon WooCommerce.",
+      "args": {
+        "title": "Récupérer un coupon",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "couponId",
+            "label": "ID coupon",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du coupon.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_coupons_list",
+      "name": "wcCouponsList",
+      "schemaVersion": 2,
+      "title": "Lister les coupons",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Coupons",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_coupons"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les coupons WooCommerce.",
+      "args": {
+        "title": "Lister les coupons",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de résultats par page (1-100)."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_coupon_create",
+      "name": "wcCouponCreate",
+      "schemaVersion": 2,
+      "title": "Créer un coupon",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Coupons",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_coupon"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau coupon WooCommerce.",
+      "args": {
+        "title": "Créer un coupon",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "col": {
+              "xs": 24
+            },
+            "description": "Code du coupon.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "discount_type",
+            "label": "Type de remise",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type (percent, fixed_cart, fixed_product)."
+          },
+          {
+            "type": "text",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Montant de la remise.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "date_expires",
+            "label": "Date d'expiration",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date d'expiration (YYYY-MM-DD)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_coupon_delete",
+      "name": "wcCouponDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un coupon",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Coupons",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un coupon WooCommerce.",
+      "args": {
+        "title": "Supprimer un coupon",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "couponId",
+            "label": "ID coupon",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du coupon.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_report_sales",
+      "name": "wcReportSales",
+      "schemaVersion": 2,
+      "title": "Rapport de ventes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_report"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère le rapport de ventes WooCommerce.",
+      "args": {
+        "title": "Rapport de ventes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "date_min",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de début (YYYY-MM-DD)."
+          },
+          {
+            "type": "text",
+            "key": "date_max",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de fin (YYYY-MM-DD)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_report_top_sellers",
+      "name": "wcReportTopSellers",
+      "schemaVersion": 2,
+      "title": "Meilleurs vendeurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_report"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les meilleurs vendeurs WooCommerce.",
+      "args": {
+        "title": "Meilleurs vendeurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "date_min",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de début (YYYY-MM-DD)."
+          },
+          {
+            "type": "text",
+            "key": "date_max",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de fin (YYYY-MM-DD)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "wc_shipping_zones_list",
+      "name": "wcShippingZonesList",
+      "schemaVersion": 2,
+      "title": "Lister les zones d'expédition",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Expédition",
+      "providerKey": "woocommerce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les zones d'expédition WooCommerce.",
+      "args": {
+        "title": "Lister les zones d'expédition",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "wc_webhook_event",
+      "name": "wcWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "woocommerce",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenchement via webhook WooCommerce entrant.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/woocommerce"
+          }
+        ]
+      }
+    }
+  ]
+}

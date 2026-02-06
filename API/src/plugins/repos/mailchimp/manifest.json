@@ -1,0 +1,2597 @@
+{
+  "repo": {
+    "name": "mailchimp",
+    "type": "local",
+    "label": "Mailchimp"
+  },
+  "variables": {
+    "mc_list": {
+      "title": "Audience Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l audience.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l audience.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "memberCount",
+          "label": "Membres",
+          "description": "Nombre de membres.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dateCreated",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_lists": {
+      "title": "Audiences",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Audiences",
+          "description": "Liste des audiences",
+          "mode": "array",
+          "key": "lists",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "memberCount",
+              "label": "Membres",
+              "description": "Nombre de membres.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dateCreated",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_member": {
+      "title": "Membre Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du membre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstName",
+          "label": "Prénom",
+          "description": "Prénom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastName",
+          "label": "Nom",
+          "description": "Nom de famille.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut d abonnement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "tags",
+          "label": "Tags",
+          "description": "Tags associés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_members": {
+      "title": "Membres",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Membres",
+          "description": "Liste des membres",
+          "mode": "array",
+          "key": "members",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "firstName",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_campaign": {
+      "title": "Campagne Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sendTime",
+          "label": "Date d envoi",
+          "description": "Date d envoi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createTime",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_campaigns": {
+      "title": "Campagnes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Campagnes",
+          "description": "Liste des campagnes",
+          "mode": "array",
+          "key": "campaigns",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createTime",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_template": {
+      "title": "Template Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dateCreated",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_templates": {
+      "title": "Templates",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Templates",
+          "description": "Liste des templates",
+          "mode": "array",
+          "key": "templates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dateCreated",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_tag": {
+      "title": "Tag Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du tag.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_tags": {
+      "title": "Tags",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tags",
+          "description": "Liste des tags",
+          "mode": "array",
+          "key": "tags",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_segment": {
+      "title": "Segment Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du segment.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du segment.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "memberCount",
+          "label": "Membres",
+          "description": "Nombre de membres.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_segments": {
+      "title": "Segments",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Segments",
+          "description": "Liste des segments",
+          "mode": "array",
+          "key": "segments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "memberCount",
+              "label": "Membres",
+              "description": "Nombre de membres.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_report": {
+      "title": "Rapport Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du rapport.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "campaignTitle",
+          "label": "Titre campagne",
+          "description": "Titre de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "opens",
+          "label": "Ouvertures",
+          "description": "Nombre d ouvertures.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "clicks",
+          "label": "Clics",
+          "description": "Nombre de clics.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sendTime",
+          "label": "Date d envoi",
+          "description": "Date d envoi.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "mc_event": {
+      "title": "Événement Mailchimp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Email concerné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "listId",
+          "label": "Liste ID",
+          "description": "Identifiant de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de l événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "mailchimp",
+      "name": "Mailchimp",
+      "title": "Mailchimp",
+      "iconClass": "fa-brands fa-mailchimp",
+      "color": "#FFE01B",
+      "tags": [
+        "mailchimp",
+        "email",
+        "marketing",
+        "newsletter"
+      ],
+      "categories": [
+        "Marketing"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Mailchimp",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Mailchimp (ex: xxx-us21).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "mc_list_get",
+      "name": "mcListGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une audience",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d une audience Mailchimp.",
+      "args": {
+        "title": "Récupérer une audience",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_lists_list",
+      "name": "mcListsList",
+      "schemaVersion": 2,
+      "title": "Lister les audiences",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_lists"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les audiences Mailchimp.",
+      "args": {
+        "title": "Lister les audiences",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_list_create",
+      "name": "mcListCreate",
+      "schemaVersion": 2,
+      "title": "Créer une audience",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle audience Mailchimp.",
+      "args": {
+        "title": "Créer une audience",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "permission_reminder",
+            "label": "Rappel permission",
+            "description": "Texte de rappel de permission.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from_name",
+            "label": "Nom expéditeur",
+            "description": "Nom de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from_email",
+            "label": "Email expéditeur",
+            "description": "Email de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Langue",
+            "description": "Langue (ex: fr).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_member_add",
+      "name": "mcMemberAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_member"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un membre à une audience Mailchimp.",
+      "args": {
+        "title": "Ajouter un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Nom de famille.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Statut d abonnement.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Abonné",
+                "value": "subscribed"
+              },
+              {
+                "label": "En attente",
+                "value": "pending"
+              },
+              {
+                "label": "Désabonné",
+                "value": "unsubscribed"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_member_get",
+      "name": "mcMemberGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_member"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un membre d une audience Mailchimp.",
+      "args": {
+        "title": "Récupérer un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_member_update",
+      "name": "mcMemberUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_member"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un membre d une audience Mailchimp.",
+      "args": {
+        "title": "Modifier un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Nouveau prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Abonné",
+                "value": "subscribed"
+              },
+              {
+                "label": "Désabonné",
+                "value": "unsubscribed"
+              },
+              {
+                "label": "Nettoyé",
+                "value": "cleaned"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_member_delete",
+      "name": "mcMemberDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un membre d une audience Mailchimp.",
+      "args": {
+        "title": "Supprimer un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_members_list",
+      "name": "mcMembersList",
+      "schemaVersion": 2,
+      "title": "Lister les membres",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_members"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les membres d une audience Mailchimp.",
+      "args": {
+        "title": "Lister les membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_member_search",
+      "name": "mcMemberSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_members"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche un membre Mailchimp par email ou nom.",
+      "args": {
+        "title": "Rechercher un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche (email ou nom).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaign_create",
+      "name": "mcCampaignCreate",
+      "schemaVersion": 2,
+      "title": "Créer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_campaign"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle campagne Mailchimp.",
+      "args": {
+        "title": "Créer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from_name",
+            "label": "Nom expéditeur",
+            "description": "Nom de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reply_to",
+            "label": "Répondre à",
+            "description": "Adresse de réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre interne de la campagne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "ID du template à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaign_get",
+      "name": "mcCampaignGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_campaign"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d une campagne Mailchimp.",
+      "args": {
+        "title": "Récupérer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaigns_list",
+      "name": "mcCampaignsList",
+      "schemaVersion": 2,
+      "title": "Lister les campagnes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_campaigns"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les campagnes Mailchimp.",
+      "args": {
+        "title": "Lister les campagnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Brouillon",
+                "value": "save"
+              },
+              {
+                "label": "Envoyée",
+                "value": "sent"
+              },
+              {
+                "label": "En pause",
+                "value": "paused"
+              },
+              {
+                "label": "Planifiée",
+                "value": "schedule"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaign_send",
+      "name": "mcCampaignSend",
+      "schemaVersion": 2,
+      "title": "Envoyer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie une campagne Mailchimp.",
+      "args": {
+        "title": "Envoyer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaign_schedule",
+      "name": "mcCampaignSchedule",
+      "schemaVersion": 2,
+      "title": "Planifier une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Planifie l envoi d une campagne Mailchimp.",
+      "args": {
+        "title": "Planifier une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "scheduleTime",
+            "label": "Date et heure",
+            "description": "Date et heure d envoi (ISO 8601).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_campaign_unschedule",
+      "name": "mcCampaignUnschedule",
+      "schemaVersion": 2,
+      "title": "Déplanifier une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule la planification d une campagne Mailchimp.",
+      "args": {
+        "title": "Déplanifier une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_templates_list",
+      "name": "mcTemplatesList",
+      "schemaVersion": 2,
+      "title": "Lister les templates",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_templates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les templates Mailchimp.",
+      "args": {
+        "title": "Lister les templates",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_template_get",
+      "name": "mcTemplateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un template",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_template"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d un template Mailchimp.",
+      "args": {
+        "title": "Récupérer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "Identifiant du template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_tags_list",
+      "name": "mcTagsList",
+      "schemaVersion": 2,
+      "title": "Lister les tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_tags"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tags d une audience Mailchimp.",
+      "args": {
+        "title": "Lister les tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_tag_add",
+      "name": "mcTagAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter un tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un tag à un membre Mailchimp.",
+      "args": {
+        "title": "Ajouter un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Nom du tag à ajouter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_tag_remove",
+      "name": "mcTagRemove",
+      "schemaVersion": 2,
+      "title": "Retirer un tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire un tag d un membre Mailchimp.",
+      "args": {
+        "title": "Retirer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du membre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Nom du tag à retirer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_segments_list",
+      "name": "mcSegmentsList",
+      "schemaVersion": 2,
+      "title": "Lister les segments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_segments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les segments d une audience Mailchimp.",
+      "args": {
+        "title": "Lister les segments",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_segment_get",
+      "name": "mcSegmentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un segment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_segment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un segment d une audience Mailchimp.",
+      "args": {
+        "title": "Récupérer un segment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "segmentId",
+            "label": "Segment ID",
+            "description": "Identifiant du segment.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_reports_list",
+      "name": "mcReportsList",
+      "schemaVersion": 2,
+      "title": "Lister les rapports",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les rapports de campagnes Mailchimp.",
+      "args": {
+        "title": "Lister les rapports",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_report_get",
+      "name": "mcReportGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un rapport",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_report"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un rapport de campagne Mailchimp.",
+      "args": {
+        "title": "Récupérer un rapport",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "mc_webhook_event",
+      "name": "mcWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook Mailchimp",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "subtitle": "Déclencheur",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_event"
+        }
+      ],
+      "description": "Déclenché lors d un événement webhook Mailchimp.",
+      "args": {
+        "title": "Événement webhook Mailchimp",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "eventType",
+            "label": "Type d événement",
+            "description": "Type d événement à surveiller.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Abonnement",
+                "value": "subscribe"
+              },
+              {
+                "label": "Désabonnement",
+                "value": "unsubscribe"
+              },
+              {
+                "label": "Profil mis à jour",
+                "value": "profile"
+              },
+              {
+                "label": "E-mail nettoyé",
+                "value": "cleaned"
+              },
+              {
+                "label": "Campagne envoyée",
+                "value": "campaign"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

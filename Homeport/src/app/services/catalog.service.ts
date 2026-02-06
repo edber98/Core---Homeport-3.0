@@ -181,7 +181,7 @@ export class CatalogService {
   // ===== Public API (Node Templates)
   listNodeTemplates(): Observable<NodeTemplate[]> {
     if (environment.useBackend) {
-      return this.templatesApi.list({ page: 1, limit: 500 }).pipe(map(list => (list || []).map(t => {
+      return this.templatesApi.list({ page: 1, limit: 2000 }).pipe(map(list => (list || []).map(t => {
         const sanitize = (s: string) => (String(s || '').trim().replace(/\s+/g, '_'));
         const nameNoSpace = sanitize(t.name || t.key);
         const tpl: NodeTemplate = {

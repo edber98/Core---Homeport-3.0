@@ -1,0 +1,240 @@
+{
+  "repo": { "name": "mistral", "type": "local", "label": "Mistral AI" },
+  "variables": {
+    "mistral_completion": {
+      "title": "Complétion Mistral",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de la complétion.", "col": { "xs": 24 } },
+        { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle utilisé.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu texte de la réponse.", "col": { "xs": 24 } },
+        { "type": "text", "key": "finishReason", "label": "Raison de fin", "description": "Raison de fin de génération.", "col": { "xs": 24 } },
+        { "type": "number", "key": "promptTokens", "label": "Tokens prompt", "description": "Nombre de tokens du prompt.", "col": { "xs": 24 } },
+        { "type": "number", "key": "completionTokens", "label": "Tokens complétion", "description": "Nombre de tokens générés.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalTokens", "label": "Tokens total", "description": "Total des tokens.", "col": { "xs": 24 } }
+      ]
+    },
+    "mistral_embedding": {
+      "title": "Embedding Mistral",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d'embedding.", "col": { "xs": 24 } },
+        { "type": "number", "key": "vectorsCount", "label": "# Vecteurs", "description": "Nombre de vecteurs.", "col": { "xs": 24 } },
+        { "type": "number", "key": "dimensions", "label": "Dimensions", "description": "Dimension des vecteurs.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "vectors", "label": "Vecteurs (JSON)", "description": "Vecteurs encodés en JSON.", "col": { "xs": 24 } }
+      ]
+    },
+    "mistral_models": {
+      "title": "Modèles Mistral",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Modèles", "description": "Liste des modèles disponibles", "mode": "array", "key": "models",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "object", "label": "Objet", "description": "Type d'objet.", "col": { "xs": 24 } },
+            { "type": "text", "key": "created", "label": "Créé le", "description": "Timestamp de création.", "col": { "xs": 24 } },
+            { "type": "text", "key": "ownedBy", "label": "Propriétaire", "description": "Propriétaire du modèle.", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "mistral_result": {
+      "title": "Résultat Mistral",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu texte.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "json", "label": "JSON", "description": "Réponse JSON parsée.", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "mistral",
+      "name": "Mistral",
+      "title": "Mistral AI",
+      "iconClass": "fa-solid fa-wand-magic-sparkles",
+      "color": "#FF7000",
+      "tags": ["ai", "llm"],
+      "categories": ["AI"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Mistral",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "apiKey", "label": "API Key", "description": "Clé API Mistral.", "col": { "xs": 24 }, "secret": true, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "baseUrl", "label": "Base URL (optionnel)", "description": "URL alternative de l'API.", "col": { "xs": 24 } },
+          { "type": "text", "key": "defaultModel", "label": "Modèle par défaut", "description": "Modèle par défaut.", "col": { "xs": 24 }, "default": "mistral-small-latest" }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "mistral_create_completion",
+      "name": "mistralCreateCompletion",
+      "schemaVersion": 2,
+      "title": "Créer une complétion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_completion" }],
+      "description": "Générer une complétion de chat via Mistral AI.",
+      "args": {
+        "title": "Créer une complétion",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle (ex.: mistral-small-latest).", "col": { "xs": 24 }, "default": "mistral-small-latest" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Instructions système.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "textarea", "key": "messages", "label": "Messages (JSON)", "description": "Tableau JSON de messages (optionnel).", "col": { "xs": 24 } },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité (0-2).", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens.", "col": { "xs": 24 } },
+          { "type": "number", "key": "topP", "label": "Top P", "description": "Nucleus sampling.", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "mistral_create_completion_stream",
+      "name": "mistralCreateCompletionStream",
+      "schemaVersion": 2,
+      "title": "Créer une complétion (stream)",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_result" }],
+      "description": "Générer une complétion en streaming.",
+      "args": {
+        "title": "Créer une complétion (stream)",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle.", "col": { "xs": 24 }, "default": "mistral-small-latest" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Instructions système.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité (0-2).", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens.", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "mistral_create_completion_tools",
+      "name": "mistralCreateCompletionTools",
+      "schemaVersion": 2,
+      "title": "Créer une complétion (tools)",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_completion" }],
+      "description": "Générer une complétion avec appel d'outils.",
+      "args": {
+        "title": "Créer une complétion (tools)",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle.", "col": { "xs": 24 }, "default": "mistral-small-latest" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Instructions système.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "textarea", "key": "messages", "label": "Messages (JSON)", "description": "Tableau JSON de messages (optionnel).", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "tools", "label": "Outils (JSON)", "description": "Tableau JSON des outils.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "toolChoice", "label": "Choix outil", "description": "Stratégie de sélection (auto, any, none).", "col": { "xs": 24 }, "default": "auto" },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité (0-2).", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens.", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "mistral_create_completion_json",
+      "name": "mistralCreateCompletionJson",
+      "schemaVersion": 2,
+      "title": "Créer une complétion (JSON)",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_result" }],
+      "description": "Générer une réponse en format JSON structuré.",
+      "args": {
+        "title": "Créer une complétion (JSON)",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle.", "col": { "xs": 24 }, "default": "mistral-small-latest" },
+          { "type": "textarea", "key": "system", "label": "Système", "description": "Instructions système.", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur (doit demander du JSON).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité (0-2).", "col": { "xs": 24 }, "default": 0.7 },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens.", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "mistral_create_embedding",
+      "name": "mistralCreateEmbedding",
+      "schemaVersion": 2,
+      "title": "Créer un embedding",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_embedding" }],
+      "description": "Générer des vecteurs d'embedding via Mistral.",
+      "args": {
+        "title": "Créer un embedding",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d'embedding (ex.: mistral-embed).", "col": { "xs": 24 }, "default": "mistral-embed" },
+          { "type": "textarea", "key": "input", "label": "Texte", "description": "Texte ou tableau JSON de textes.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "mistral_list_models",
+      "name": "mistralListModels",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_models" }],
+      "description": "Récupérer la liste des modèles disponibles.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "mistral_agent_completion",
+      "name": "mistralAgentCompletion",
+      "schemaVersion": 2,
+      "title": "Complétion agent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mistral_completion" }],
+      "description": "Générer une complétion via un agent Mistral.",
+      "args": {
+        "title": "Complétion agent",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "agentId", "label": "Agent ID", "description": "Identifiant de l'agent Mistral.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "textarea", "key": "prompt", "label": "Prompt", "description": "Message utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "textarea", "key": "messages", "label": "Messages (JSON)", "description": "Tableau JSON de messages (optionnel).", "col": { "xs": 24 } },
+          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens.", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ]
+}

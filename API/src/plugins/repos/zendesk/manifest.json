@@ -1,0 +1,2437 @@
+{
+  "repo": {
+    "name": "zendesk",
+    "type": "local",
+    "label": "Zendesk"
+  },
+  "variables": {
+    "zd_ticket": {
+      "title": "Ticket Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Priorité du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assigneeId",
+          "label": "Assigné ID",
+          "description": "Identifiant de l agent assigné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "requesterId",
+          "label": "Demandeur ID",
+          "description": "Identifiant du demandeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_tickets": {
+      "title": "Tickets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tickets",
+          "description": "Liste des tickets",
+          "mode": "array",
+          "key": "tickets",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_user": {
+      "title": "Utilisateur Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom complet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "role",
+          "label": "Rôle",
+          "description": "Rôle de l utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_users": {
+      "title": "Utilisateurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "role",
+              "label": "Rôle",
+              "description": "Rôle.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_org": {
+      "title": "Organisation Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "domainNames",
+          "label": "Domaines",
+          "description": "Noms de domaine.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_orgs": {
+      "title": "Organisations",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Organisations",
+          "description": "Liste des organisations",
+          "mode": "array",
+          "key": "organizations",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "domainNames",
+              "label": "Domaines",
+              "description": "Domaines.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_group": {
+      "title": "Groupe Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du groupe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_groups": {
+      "title": "Groupes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Groupes",
+          "description": "Liste des groupes",
+          "mode": "array",
+          "key": "groups",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_comment": {
+      "title": "Commentaire Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "authorId",
+          "label": "Auteur ID",
+          "description": "Identifiant de l auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "public",
+          "label": "Public",
+          "description": "Commentaire public ou privé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_comments": {
+      "title": "Commentaires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "authorId",
+              "label": "Auteur ID",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "public",
+              "label": "Public",
+              "description": "Public.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_macro": {
+      "title": "Macro Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la macro.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Macro active.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_macros": {
+      "title": "Macros",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Macros",
+          "description": "Liste des macros",
+          "mode": "array",
+          "key": "macros",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "zd_event": {
+      "title": "Événement Zendesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ticketId",
+          "label": "Ticket ID",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de l événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "zendesk",
+      "name": "Zendesk",
+      "title": "Zendesk",
+      "iconClass": "fa-solid fa-headset",
+      "color": "#03363D",
+      "tags": [
+        "zendesk",
+        "support",
+        "helpdesk",
+        "tickets"
+      ],
+      "categories": [
+        "Support"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Zendesk",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subdomain",
+            "label": "Sous-domaine",
+            "description": "Sous-domaine Zendesk (ex: monentreprise).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail de l agent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "Token API",
+            "description": "Token API Zendesk.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "zd_ticket_create",
+      "name": "zdTicketCreate",
+      "schemaVersion": 2,
+      "title": "Créer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau ticket Zendesk.",
+      "args": {
+        "title": "Créer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Priorité du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Urgente",
+                "value": "urgent"
+              },
+              {
+                "label": "Haute",
+                "value": "high"
+              },
+              {
+                "label": "Normale",
+                "value": "normal"
+              },
+              {
+                "label": "Basse",
+                "value": "low"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "requesterId",
+            "label": "Demandeur ID",
+            "description": "ID du demandeur (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné ID",
+            "description": "ID de l agent assigné (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Tags séparés par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_ticket_get",
+      "name": "zdTicketGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un ticket Zendesk par son ID.",
+      "args": {
+        "title": "Récupérer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_ticket_update",
+      "name": "zdTicketUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un ticket Zendesk.",
+      "args": {
+        "title": "Modifier un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Nouveau sujet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Nouveau",
+                "value": "new"
+              },
+              {
+                "label": "Ouvert",
+                "value": "open"
+              },
+              {
+                "label": "En attente",
+                "value": "pending"
+              },
+              {
+                "label": "Résolu",
+                "value": "solved"
+              },
+              {
+                "label": "Fermé",
+                "value": "closed"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Urgente",
+                "value": "urgent"
+              },
+              {
+                "label": "Haute",
+                "value": "high"
+              },
+              {
+                "label": "Normale",
+                "value": "normal"
+              },
+              {
+                "label": "Basse",
+                "value": "low"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné ID",
+            "description": "Nouvel agent assigné.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "comment",
+            "label": "Commentaire",
+            "description": "Ajouter un commentaire.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_ticket_delete",
+      "name": "zdTicketDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un ticket Zendesk.",
+      "args": {
+        "title": "Supprimer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_tickets_list",
+      "name": "zdTicketsList",
+      "schemaVersion": 2,
+      "title": "Lister les tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tickets Zendesk.",
+      "args": {
+        "title": "Lister les tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre par page (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_ticket_search",
+      "name": "zdTicketSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des tickets Zendesk.",
+      "args": {
+        "title": "Rechercher des tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Requête de recherche Zendesk.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_user_create",
+      "name": "zdUserCreate",
+      "schemaVersion": 2,
+      "title": "Créer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel utilisateur Zendesk.",
+      "args": {
+        "title": "Créer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom complet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "role",
+            "label": "Rôle",
+            "description": "Rôle de l utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Utilisateur final",
+                "value": "end-user"
+              },
+              {
+                "label": "Agent",
+                "value": "agent"
+              },
+              {
+                "label": "Administrateur",
+                "value": "admin"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_user_get",
+      "name": "zdUserGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un utilisateur Zendesk.",
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "userId",
+            "label": "Utilisateur ID",
+            "description": "Identifiant de l utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_user_update",
+      "name": "zdUserUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un utilisateur Zendesk.",
+      "args": {
+        "title": "Modifier un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "userId",
+            "label": "Utilisateur ID",
+            "description": "Identifiant de l utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvel email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_users_list",
+      "name": "zdUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs Zendesk.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre par page (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_user_search",
+      "name": "zdUserSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des utilisateurs Zendesk.",
+      "args": {
+        "title": "Rechercher des utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_organization_create",
+      "name": "zdOrganizationCreate",
+      "schemaVersion": 2,
+      "title": "Créer une organisation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle organisation Zendesk.",
+      "args": {
+        "title": "Créer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "domainNames",
+            "label": "Domaines",
+            "description": "Noms de domaine (séparés par virgules).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_organization_get",
+      "name": "zdOrganizationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une organisation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une organisation Zendesk.",
+      "args": {
+        "title": "Récupérer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "orgId",
+            "label": "Organisation ID",
+            "description": "Identifiant de l organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_organizations_list",
+      "name": "zdOrganizationsList",
+      "schemaVersion": 2,
+      "title": "Lister les organisations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_orgs"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les organisations Zendesk.",
+      "args": {
+        "title": "Lister les organisations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre par page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_group_get",
+      "name": "zdGroupGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_group"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un groupe Zendesk.",
+      "args": {
+        "title": "Récupérer un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "groupId",
+            "label": "Groupe ID",
+            "description": "Identifiant du groupe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_groups_list",
+      "name": "zdGroupsList",
+      "schemaVersion": 2,
+      "title": "Lister les groupes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_groups"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les groupes Zendesk.",
+      "args": {
+        "title": "Lister les groupes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "zd_comment_create",
+      "name": "zdCommentCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à un ticket Zendesk.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "description": "Contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "public",
+            "label": "Public",
+            "description": "Commentaire public ou privé.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Public",
+                "value": "true"
+              },
+              {
+                "label": "Privé",
+                "value": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_comments_list",
+      "name": "zdCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_comments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commentaires d un ticket Zendesk.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_tags_add",
+      "name": "zdTagsAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter des tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute des tags à un ticket Zendesk.",
+      "args": {
+        "title": "Ajouter des tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Tags à ajouter (séparés par virgules).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_tags_remove",
+      "name": "zdTagsRemove",
+      "schemaVersion": 2,
+      "title": "Retirer des tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire des tags d un ticket Zendesk.",
+      "args": {
+        "title": "Retirer des tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Tags à retirer (séparés par virgules).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_macros_list",
+      "name": "zdMacrosList",
+      "schemaVersion": 2,
+      "title": "Lister les macros",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_macros"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les macros Zendesk.",
+      "args": {
+        "title": "Lister les macros",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "zd_macro_apply",
+      "name": "zdMacroApply",
+      "schemaVersion": 2,
+      "title": "Appliquer une macro",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Applique une macro à un ticket Zendesk.",
+      "args": {
+        "title": "Appliquer une macro",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "macroId",
+            "label": "Macro ID",
+            "description": "Identifiant de la macro.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_satisfaction_list",
+      "name": "zdSatisfactionList",
+      "schemaVersion": 2,
+      "title": "Lister les notes de satisfaction",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les notes de satisfaction Zendesk.",
+      "args": {
+        "title": "Lister les notes de satisfaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "zd_webhook_event",
+      "name": "zdWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook Zendesk",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "subtitle": "Déclencheur",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_event"
+        }
+      ],
+      "description": "Déclenché lors d un événement webhook Zendesk.",
+      "args": {
+        "title": "Événement webhook Zendesk",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "eventType",
+            "label": "Type d événement",
+            "description": "Type d événement à surveiller.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Ticket créé",
+                "value": "ticket_created"
+              },
+              {
+                "label": "Ticket mis à jour",
+                "value": "ticket_updated"
+              },
+              {
+                "label": "Commentaire ajouté",
+                "value": "comment_added"
+              },
+              {
+                "label": "Utilisateur créé",
+                "value": "user_created"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

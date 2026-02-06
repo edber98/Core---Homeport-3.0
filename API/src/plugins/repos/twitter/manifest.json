@@ -1,0 +1,425 @@
+{
+  "repo": { "name": "twitter", "type": "local", "label": "Twitter / X" },
+  "variables": {
+    "tw_tweet": {
+      "title": "Tweet",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du tweet.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu du tweet.", "col": { "xs": 24 } },
+        { "type": "text", "key": "authorId", "label": "Auteur ID", "description": "ID de l'auteur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdAt", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } },
+        { "type": "text", "key": "lang", "label": "Langue", "description": "Langue du tweet.", "col": { "xs": 24 } },
+        { "type": "number", "key": "likes", "label": "Likes", "description": "Nombre de likes.", "col": { "xs": 24 } },
+        { "type": "number", "key": "retweets", "label": "Retweets", "description": "Nombre de retweets.", "col": { "xs": 24 } },
+        { "type": "number", "key": "replies", "label": "Réponses", "description": "Nombre de réponses.", "col": { "xs": 24 } },
+        { "type": "number", "key": "impressions", "label": "Impressions", "description": "Nombre d'impressions.", "col": { "xs": 24 } }
+      ]
+    },
+    "tw_tweets": {
+      "title": "Tweets",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Tweets", "description": "Liste des tweets", "mode": "array", "key": "tweets",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu.", "col": { "xs": 24 } },
+            { "type": "text", "key": "authorId", "label": "Auteur ID", "description": "Auteur.", "col": { "xs": 24 } },
+            { "type": "text", "key": "createdAt", "label": "Date création", "description": "Date.", "col": { "xs": 24 } },
+            { "type": "number", "key": "likes", "label": "Likes", "description": "Likes.", "col": { "xs": 24 } },
+            { "type": "number", "key": "retweets", "label": "Retweets", "description": "Retweets.", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "tw_user": {
+      "title": "Utilisateur Twitter",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom d'affichage.", "col": { "xs": 24 } },
+        { "type": "text", "key": "username", "label": "Nom d'utilisateur", "description": "@username.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Bio", "description": "Biographie.", "col": { "xs": 24 } },
+        { "type": "text", "key": "profileImageUrl", "label": "Photo de profil", "description": "URL de la photo.", "col": { "xs": 24 } },
+        { "type": "number", "key": "followers", "label": "Abonnés", "description": "Nombre d'abonnés.", "col": { "xs": 24 } },
+        { "type": "number", "key": "following", "label": "Abonnements", "description": "Nombre d'abonnements.", "col": { "xs": 24 } },
+        { "type": "number", "key": "tweetCount", "label": "Tweets", "description": "Nombre de tweets.", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdAt", "label": "Date création", "description": "Date de création du compte.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "verified", "label": "Vérifié", "description": "Compte vérifié.", "col": { "xs": 24 } }
+      ]
+    },
+    "tw_users": {
+      "title": "Utilisateurs Twitter",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Utilisateurs", "description": "Liste des utilisateurs", "mode": "array", "key": "users",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "username", "label": "Username", "description": "@username.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Bio", "description": "Bio.", "col": { "xs": 24 } },
+            { "type": "number", "key": "followers", "label": "Abonnés", "description": "Abonnés.", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "tw_list": {
+      "title": "Liste Twitter",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de la liste.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la liste.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+        { "type": "text", "key": "ownerId", "label": "Propriétaire ID", "description": "ID du propriétaire.", "col": { "xs": 24 } },
+        { "type": "number", "key": "followerCount", "label": "Abonnés", "description": "Nombre d'abonnés.", "col": { "xs": 24 } },
+        { "type": "number", "key": "memberCount", "label": "Membres", "description": "Nombre de membres.", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdAt", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } }
+      ]
+    },
+    "tw_result": {
+      "title": "Résultat Twitter",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu texte.", "col": { "xs": 24 } },
+        { "type": "number", "key": "resultCount", "label": "Total", "description": "Nombre de résultats.", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "twitter",
+      "name": "Twitter",
+      "title": "Twitter / X",
+      "iconClass": "fa-brands fa-x-twitter",
+      "color": "#000000",
+      "tags": ["social", "marketing"],
+      "categories": ["Social Media"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Twitter / X",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "bearerToken", "label": "Bearer Token", "description": "Token Bearer OAuth 2.0.", "col": { "xs": 24 }, "secret": true, "validators": [{ "type": "required" }] }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "twitter_create_tweet",
+      "name": "twitterCreateTweet",
+      "schemaVersion": 2,
+      "title": "Créer un tweet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweet" }],
+      "description": "Publier un nouveau tweet.",
+      "args": {
+        "title": "Créer un tweet",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu du tweet (max 280 car.).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "replyToId", "label": "Répondre à (ID)", "description": "ID du tweet auquel répondre (optionnel).", "col": { "xs": 24 } },
+          { "type": "text", "key": "quoteTweetId", "label": "Citation (ID)", "description": "ID du tweet à citer (optionnel).", "col": { "xs": 24 } }
+        ]
+      }
+    },
+    {
+      "key": "twitter_get_tweet",
+      "name": "twitterGetTweet",
+      "schemaVersion": 2,
+      "title": "Récupérer un tweet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweet" }],
+      "description": "Récupérer les détails d'un tweet.",
+      "args": {
+        "title": "Récupérer un tweet",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "tweetId", "label": "Tweet ID", "description": "Identifiant du tweet.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_delete_tweet",
+      "name": "twitterDeleteTweet",
+      "schemaVersion": 2,
+      "title": "Supprimer un tweet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_result" }],
+      "description": "Supprimer un tweet.",
+      "args": {
+        "title": "Supprimer un tweet",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "tweetId", "label": "Tweet ID", "description": "Identifiant du tweet.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_search_tweets",
+      "name": "twitterSearchTweets",
+      "schemaVersion": 2,
+      "title": "Rechercher des tweets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweets" }],
+      "description": "Rechercher des tweets récents.",
+      "args": {
+        "title": "Rechercher des tweets",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "query", "label": "Requête", "description": "Requête de recherche.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum (10-100).", "col": { "xs": 24 }, "default": 10 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_list_user_tweets",
+      "name": "twitterListUserTweets",
+      "schemaVersion": 2,
+      "title": "Lister les tweets d'un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweets" }],
+      "description": "Récupérer les tweets d'un utilisateur.",
+      "args": {
+        "title": "Lister les tweets d'un utilisateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "User ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum.", "col": { "xs": 24 }, "default": 10 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_list_mentions",
+      "name": "twitterListMentions",
+      "schemaVersion": 2,
+      "title": "Lister les mentions",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweets" }],
+      "description": "Récupérer les mentions d'un utilisateur.",
+      "args": {
+        "title": "Lister les mentions",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "User ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum.", "col": { "xs": 24 }, "default": 10 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_get_user",
+      "name": "twitterGetUser",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_user" }],
+      "description": "Récupérer un utilisateur par son @username.",
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "username", "label": "Username", "description": "Nom d'utilisateur (@username sans le @).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_get_me",
+      "name": "twitterGetMe",
+      "schemaVersion": 2,
+      "title": "Récupérer mon profil",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_user" }],
+      "description": "Récupérer le profil de l'utilisateur connecté.",
+      "args": {
+        "title": "Récupérer mon profil",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": []
+      }
+    },
+    {
+      "key": "twitter_list_followers",
+      "name": "twitterListFollowers",
+      "schemaVersion": 2,
+      "title": "Lister les abonnés",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_users" }],
+      "description": "Récupérer les abonnés d'un utilisateur.",
+      "args": {
+        "title": "Lister les abonnés",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "User ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum (1-1000).", "col": { "xs": 24 }, "default": 100 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_list_following",
+      "name": "twitterListFollowing",
+      "schemaVersion": 2,
+      "title": "Lister les abonnements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_users" }],
+      "description": "Récupérer les abonnements d'un utilisateur.",
+      "args": {
+        "title": "Lister les abonnements",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "User ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum (1-1000).", "col": { "xs": 24 }, "default": 100 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_follow_user",
+      "name": "twitterFollowUser",
+      "schemaVersion": 2,
+      "title": "Suivre un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_result" }],
+      "description": "Suivre un utilisateur.",
+      "args": {
+        "title": "Suivre un utilisateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "Votre User ID", "description": "Votre identifiant utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "targetUserId", "label": "Cible User ID", "description": "ID de l'utilisateur à suivre.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_unfollow_user",
+      "name": "twitterUnfollowUser",
+      "schemaVersion": 2,
+      "title": "Ne plus suivre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_result" }],
+      "description": "Ne plus suivre un utilisateur.",
+      "args": {
+        "title": "Ne plus suivre",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "Votre User ID", "description": "Votre identifiant utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "targetUserId", "label": "Cible User ID", "description": "ID de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_get_list",
+      "name": "twitterGetList",
+      "schemaVersion": 2,
+      "title": "Récupérer une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_list" }],
+      "description": "Récupérer les détails d'une liste.",
+      "args": {
+        "title": "Récupérer une liste",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "listId", "label": "List ID", "description": "Identifiant de la liste.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ]
+      }
+    },
+    {
+      "key": "twitter_list_tweets",
+      "name": "twitterListTweets",
+      "schemaVersion": 2,
+      "title": "Lister les tweets d'une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweets" }],
+      "description": "Récupérer les tweets d'une liste.",
+      "args": {
+        "title": "Lister les tweets d'une liste",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "listId", "label": "List ID", "description": "Identifiant de la liste.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum.", "col": { "xs": 24 }, "default": 10 }
+        ]
+      }
+    },
+    {
+      "key": "twitter_list_bookmarks",
+      "name": "twitterListBookmarks",
+      "schemaVersion": 2,
+      "title": "Lister les signets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:tw_tweets" }],
+      "description": "Récupérer les tweets mis en signet.",
+      "args": {
+        "title": "Lister les signets",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "userId", "label": "User ID", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "maxResults", "label": "Max résultats", "description": "Nombre maximum.", "col": { "xs": 24 }, "default": 10 }
+        ]
+      }
+    }
+  ]
+}

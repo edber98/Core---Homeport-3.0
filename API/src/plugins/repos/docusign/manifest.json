@@ -1,0 +1,1595 @@
+{
+  "repo": {
+    "name": "docusign",
+    "type": "local",
+    "label": "DocuSign"
+  },
+  "variables": {
+    "ds_envelope": {
+      "title": "Enveloppe DocuSign",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "envelopeId",
+          "label": "ID",
+          "description": "Identifiant de l'enveloppe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'enveloppe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "emailSubject",
+          "label": "Sujet",
+          "description": "Sujet de l'e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "senderName",
+          "label": "Expéditeur",
+          "description": "Nom de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sentDateTime",
+          "label": "Date envoi",
+          "description": "Date d'envoi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdDateTime",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_envelopes": {
+      "title": "Enveloppes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Enveloppes",
+          "description": "Liste des enveloppes",
+          "mode": "array",
+          "key": "envelopes",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "envelopeId",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "emailSubject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "senderName",
+              "label": "Expéditeur",
+              "description": "Expéditeur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "sentDateTime",
+              "label": "Date envoi",
+              "description": "Date d'envoi.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdDateTime",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_recipient": {
+      "title": "Destinataire DocuSign",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "recipientId",
+          "label": "ID",
+          "description": "Identifiant du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de signature.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "routingOrder",
+          "label": "Ordre",
+          "description": "Ordre de routage.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_recipients": {
+      "title": "Destinataires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Destinataires",
+          "description": "Liste des destinataires",
+          "mode": "array",
+          "key": "recipients",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "recipientId",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "routingOrder",
+              "label": "Ordre",
+              "description": "Ordre.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_template": {
+      "title": "Modèle DocuSign",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "templateId",
+          "label": "ID",
+          "description": "Identifiant du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "shared",
+          "label": "Partagé",
+          "description": "Modèle partagé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_templates": {
+      "title": "Modèles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Modèles",
+          "description": "Liste des modèles",
+          "mode": "array",
+          "key": "templates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "templateId",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "shared",
+              "label": "Partagé",
+              "description": "Partagé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_document": {
+      "title": "Document DocuSign",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "documentId",
+          "label": "ID",
+          "description": "Identifiant du document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "order",
+          "label": "Ordre",
+          "description": "Ordre du document.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_documents": {
+      "title": "Documents",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Documents",
+          "description": "Liste des documents",
+          "mode": "array",
+          "key": "documents",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "documentId",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "order",
+              "label": "Ordre",
+              "description": "Ordre.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_signing_url": {
+      "title": "URL de signature",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de signature.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ds_event": {
+      "title": "Événement DocuSign",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "envelopeId",
+          "label": "Enveloppe ID",
+          "description": "Identifiant de l'enveloppe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'enveloppe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "recipientEmail",
+          "label": "Email destinataire",
+          "description": "Email du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "docusign",
+      "name": "DocuSign",
+      "title": "DocuSign",
+      "iconClass": "fa-solid fa-file-signature",
+      "color": "#FFC829",
+      "tags": [
+        "docusign",
+        "signature",
+        "esign",
+        "documents"
+      ],
+      "categories": [
+        "Signature électronique"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants DocuSign",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access token",
+            "description": "Token d'accès DocuSign.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "Account ID",
+            "description": "Identifiant du compte DocuSign.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "basePath",
+            "label": "Base path",
+            "description": "URL de base (ex: https://demo.docusign.net).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "https://demo.docusign.net"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "docusign_envelope_create",
+      "name": "docusignEnvelopeCreate",
+      "schemaVersion": 2,
+      "title": "Créer une enveloppe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_envelope"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle enveloppe DocuSign.",
+      "args": {
+        "title": "Créer une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "emailSubject",
+            "label": "Sujet",
+            "description": "Sujet de l'e-mail de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "Identifiant du modèle (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "signerEmail",
+            "label": "Email signataire",
+            "description": "Adresse e-mail du signataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "signerName",
+            "label": "Nom signataire",
+            "description": "Nom du signataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Statut initial (created ou sent).",
+            "col": {
+              "xs": 24
+            },
+            "default": "created"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_envelope_get",
+      "name": "docusignEnvelopeGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une enveloppe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_envelope"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une enveloppe DocuSign par son ID.",
+      "args": {
+        "title": "Récupérer une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_envelopes_list",
+      "name": "docusignEnvelopesList",
+      "schemaVersion": 2,
+      "title": "Lister les enveloppes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_envelopes"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les enveloppes DocuSign avec filtres.",
+      "args": {
+        "title": "Lister les enveloppes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fromDate",
+            "label": "Date début",
+            "description": "Date de début (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "toDate",
+            "label": "Date fin",
+            "description": "Date de fin (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut (created, sent, completed).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_envelope_send",
+      "name": "docusignEnvelopeSend",
+      "schemaVersion": 2,
+      "title": "Envoyer une enveloppe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_envelope"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie une enveloppe DocuSign en changeant son statut à sent.",
+      "args": {
+        "title": "Envoyer une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_envelope_void",
+      "name": "docusignEnvelopeVoid",
+      "schemaVersion": 2,
+      "title": "Annuler une enveloppe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule (void) une enveloppe DocuSign.",
+      "args": {
+        "title": "Annuler une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "voidedReason",
+            "label": "Raison",
+            "description": "Raison de l'annulation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_envelope_documents_download",
+      "name": "docusignEnvelopeDocumentsDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger les documents",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Télécharge les documents d'une enveloppe (base64).",
+      "args": {
+        "title": "Télécharger les documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "Document ID",
+            "description": "ID du document (combined pour tous).",
+            "col": {
+              "xs": 24
+            },
+            "default": "combined"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_recipients_list",
+      "name": "docusignRecipientsList",
+      "schemaVersion": 2,
+      "title": "Lister les destinataires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_recipients"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les destinataires d'une enveloppe.",
+      "args": {
+        "title": "Lister les destinataires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_recipients_update",
+      "name": "docusignRecipientsUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier les destinataires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour les destinataires d'une enveloppe.",
+      "args": {
+        "title": "Modifier les destinataires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "signerEmail",
+            "label": "Email signataire",
+            "description": "Nouvel e-mail du signataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "signerName",
+            "label": "Nom signataire",
+            "description": "Nouveau nom du signataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "Recipient ID",
+            "description": "Identifiant du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_template_get",
+      "name": "docusignTemplateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un modèle",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_template"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un modèle DocuSign par son ID.",
+      "args": {
+        "title": "Récupérer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_templates_list",
+      "name": "docusignTemplatesList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_templates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les modèles DocuSign disponibles.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "searchText",
+            "label": "Recherche",
+            "description": "Texte de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_documents_list",
+      "name": "docusignDocumentsList",
+      "schemaVersion": 2,
+      "title": "Lister les documents",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_documents"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les documents d'une enveloppe.",
+      "args": {
+        "title": "Lister les documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_tabs_list",
+      "name": "docusignTabsList",
+      "schemaVersion": 2,
+      "title": "Lister les onglets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les onglets (champs) d'un destinataire.",
+      "args": {
+        "title": "Lister les onglets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "Recipient ID",
+            "description": "Identifiant du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_signing_url_create",
+      "name": "docusignSigningUrlCreate",
+      "schemaVersion": 2,
+      "title": "Créer une URL de signature",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_signing_url"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Génère une URL de signature embarquée.",
+      "args": {
+        "title": "Créer une URL de signature",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "description": "Identifiant de l'enveloppe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recipientEmail",
+            "label": "Email",
+            "description": "E-mail du signataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recipientName",
+            "label": "Nom",
+            "description": "Nom du signataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientUserId",
+            "label": "Client User ID",
+            "description": "Identifiant client du signataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "returnUrl",
+            "label": "URL de retour",
+            "description": "URL de redirection après signature.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "docusign_webhook_event",
+      "name": "docusignWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenché lors d'un événement DocuSign via webhook.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    }
+  ]
+}

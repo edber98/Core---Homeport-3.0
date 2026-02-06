@@ -1,0 +1,125 @@
+{
+  "repo": { "name": "airtable", "type": "local", "label": "Airtable" },
+  "variables": {
+    "airtable_record": {
+      "title": "Enregistrement Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de l'enregistrement.", "col": { "xs": 24 } },
+        { "type": "text", "key": "fields", "label": "Champs", "description": "Champs de l'enregistrement (JSON).", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdTime", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_records": {
+      "title": "Enregistrements", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "section", "title": "Enregistrements", "description": "Liste des enregistrements", "mode": "array", "key": "records", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "fields", "label": "Champs", "description": "Champs (JSON).", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdTime", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } }
+      ], "col": { "xs": 24 } }]
+    },
+    "airtable_table": {
+      "title": "Table Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de la table.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la table.", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "description": "Description de la table.", "col": { "xs": 24 } },
+        { "type": "text", "key": "primaryFieldId", "label": "Champ principal ID", "description": "Identifiant du champ principal.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_tables": {
+      "title": "Tables", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "section", "title": "Tables", "description": "Liste des tables", "mode": "array", "key": "tables", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+        { "type": "text", "key": "primaryFieldId", "label": "Champ principal ID", "description": "Champ principal.", "col": { "xs": 24 } }
+      ], "col": { "xs": 24 } }]
+    },
+    "airtable_field": {
+      "title": "Champ Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du champ.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du champ.", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type du champ.", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "description": "Description du champ.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_fields": {
+      "title": "Champs", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "section", "title": "Champs", "description": "Liste des champs", "mode": "array", "key": "fields", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type.", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } }
+      ], "col": { "xs": 24 } }]
+    },
+    "airtable_base": {
+      "title": "Base Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de la base.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la base.", "col": { "xs": 24 } },
+        { "type": "text", "key": "permissionLevel", "label": "Niveau de permission", "description": "Niveau de permission.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_bases": {
+      "title": "Bases", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "section", "title": "Bases", "description": "Liste des bases", "mode": "array", "key": "bases", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+        { "type": "text", "key": "permissionLevel", "label": "Niveau de permission", "description": "Permission.", "col": { "xs": 24 } }
+      ], "col": { "xs": 24 } }]
+    },
+    "airtable_view": {
+      "title": "Vue Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant de la vue.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la vue.", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type de la vue.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_views": {
+      "title": "Vues", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "section", "title": "Vues", "description": "Liste des vues", "mode": "array", "key": "views", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type.", "col": { "xs": 24 } }
+      ], "col": { "xs": 24 } }]
+    },
+    "airtable_result": {
+      "title": "Résultat", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de l'opération.", "col": { "xs": 24 } },
+        { "type": "text", "key": "message", "label": "Message", "description": "Message de retour.", "col": { "xs": 24 } }
+      ]
+    },
+    "airtable_event": {
+      "title": "Événement Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "type", "label": "Type", "description": "Type d'événement.", "col": { "xs": 24 } },
+        { "type": "text", "key": "data", "label": "Données", "description": "Données de l'événement (JSON).", "col": { "xs": 24 } },
+        { "type": "text", "key": "timestamp", "label": "Horodatage", "description": "Horodatage de l'événement.", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [{
+    "key": "airtable", "name": "Airtable", "title": "Airtable", "iconClass": "fa-solid fa-table-cells", "color": "#18BFFF",
+    "tags": ["airtable", "base de données", "tableur"], "categories": ["Base de données"],
+    "hasCredentials": true, "credentialsForm": { "title": "Identifiants Airtable", "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [{ "type": "text", "key": "personalAccessToken", "label": "Personal Access Token", "description": "Token d'accès personnel Airtable.", "col": { "xs": 24 }, "secret": true, "validators": [{ "type": "required" }] }] }
+  }],
+  "nodeTemplates": [
+    { "key": "airtable_record_create", "name": "airtableRecordCreate", "schemaVersion": 2, "title": "Créer un enregistrement", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_record" }], "authorize_skip_error": true, "description": "Crée un nouvel enregistrement dans une table Airtable.", "args": { "title": "Créer un enregistrement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "fields", "label": "Champs", "description": "Champs de l'enregistrement (JSON).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_record_get", "name": "airtableRecordGet", "schemaVersion": 2, "title": "Obtenir un enregistrement", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_record" }], "authorize_skip_error": true, "description": "Récupère un enregistrement par son ID.", "args": { "title": "Obtenir un enregistrement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "recordId", "label": "Record ID", "description": "Identifiant de l'enregistrement.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_record_update", "name": "airtableRecordUpdate", "schemaVersion": 2, "title": "Modifier un enregistrement", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_record" }], "authorize_skip_error": true, "description": "Met à jour un enregistrement existant.", "args": { "title": "Modifier un enregistrement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "recordId", "label": "Record ID", "description": "Identifiant de l'enregistrement.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "fields", "label": "Champs", "description": "Champs à mettre à jour (JSON).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_record_delete", "name": "airtableRecordDelete", "schemaVersion": 2, "title": "Supprimer un enregistrement", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_result" }], "authorize_skip_error": true, "description": "Supprime un enregistrement Airtable.", "args": { "title": "Supprimer un enregistrement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "recordId", "label": "Record ID", "description": "Identifiant de l'enregistrement à supprimer.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_records_list", "name": "airtableRecordsList", "schemaVersion": 2, "title": "Lister les enregistrements", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_records" }], "authorize_skip_error": true, "description": "Liste les enregistrements d'une table.", "args": { "title": "Lister les enregistrements", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "view", "label": "Vue", "description": "Nom ou ID de la vue (optionnel).", "col": { "xs": 24 } }, { "type": "number", "key": "maxRecords", "label": "Max enregistrements", "description": "Nombre max de résultats.", "col": { "xs": 24 } }, { "type": "text", "key": "filterByFormula", "label": "Formule de filtre", "description": "Formule Airtable pour filtrer.", "col": { "xs": 24 } }] } },
+    { "key": "airtable_table_get", "name": "airtableTableGet", "schemaVersion": 2, "title": "Obtenir une table", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_table" }], "authorize_skip_error": true, "description": "Récupère les métadonnées d'une table.", "args": { "title": "Obtenir une table", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_tables_list", "name": "airtableTablesList", "schemaVersion": 2, "title": "Lister les tables", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_tables" }], "authorize_skip_error": true, "description": "Liste les tables d'une base.", "args": { "title": "Lister les tables", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_table_create", "name": "airtableTableCreate", "schemaVersion": 2, "title": "Créer une table", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_table" }], "authorize_skip_error": true, "description": "Crée une nouvelle table dans une base.", "args": { "title": "Créer une table", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "description", "label": "Description", "description": "Description de la table.", "col": { "xs": 24 } }, { "type": "text", "key": "fields", "label": "Champs", "description": "Définition des champs (JSON).", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_field_create", "name": "airtableFieldCreate", "schemaVersion": 2, "title": "Créer un champ", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_field" }], "authorize_skip_error": true, "description": "Crée un nouveau champ dans une table.", "args": { "title": "Créer un champ", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "name", "label": "Nom", "description": "Nom du champ.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "type", "label": "Type", "description": "Type du champ.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "description", "label": "Description", "description": "Description du champ.", "col": { "xs": 24 } }] } },
+    { "key": "airtable_fields_list", "name": "airtableFieldsList", "schemaVersion": 2, "title": "Lister les champs", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_fields" }], "authorize_skip_error": true, "description": "Liste les champs d'une table.", "args": { "title": "Lister les champs", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_bases_list", "name": "airtableBasesList", "schemaVersion": 2, "title": "Lister les bases", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_bases" }], "authorize_skip_error": true, "description": "Liste les bases accessibles.", "args": { "title": "Lister les bases", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [] } },
+    { "key": "airtable_views_list", "name": "airtableViewsList", "schemaVersion": 2, "title": "Lister les vues", "type": "function", "nodeKind": "function", "category": "Airtable", "providerKey": "airtable", "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:airtable_views" }], "authorize_skip_error": true, "description": "Liste les vues d'une table.", "args": { "title": "Lister les vues", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "baseId", "label": "Base ID", "description": "Identifiant de la base.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "tableIdOrName", "label": "Table ID ou nom", "description": "Identifiant ou nom de la table.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }] } },
+    { "key": "airtable_webhook_event", "name": "airtableWebhookEvent", "schemaVersion": 2, "title": "Événement entrant", "subtitle": "Déclencheur", "type": "event", "nodeKind": "event", "category": "Airtable", "providerKey": "airtable", "inputHandles": [], "outputHandles": [{ "id": "ok", "name": "Received", "type": "payload", "schema": "$var:airtable_event" }], "authorize_skip_error": true, "description": "Reçoit un événement entrant Airtable.", "args": { "title": "Événement entrant", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "path", "label": "Chemin", "description": "Chemin du webhook.", "col": { "xs": 24 }, "default": "/airtable" }] } }
+  ]
+}

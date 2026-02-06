@@ -14,7 +14,7 @@ module.exports = function(){
   r.get('/node-templates', async (req, res) => {
     const { category } = req.query;
     let { limit = 100, page = 1 } = req.query;
-    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    limit = Math.max(1, Math.min(2000, Number(limit) || 100));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
     const query = category ? { category } : {};

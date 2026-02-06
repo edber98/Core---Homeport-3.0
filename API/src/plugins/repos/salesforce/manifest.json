@@ -1,0 +1,3239 @@
+{
+  "repo": {
+    "name": "salesforce",
+    "type": "local",
+    "label": "Salesforce"
+  },
+  "variables": {
+    "sf_account": {
+      "title": "Compte Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Name",
+          "label": "Nom",
+          "description": "Nom du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Industry",
+          "label": "Industrie",
+          "description": "Secteur d'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Website",
+          "label": "Site web",
+          "description": "Site web du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "BillingCity",
+          "label": "Ville",
+          "description": "Ville de facturation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création du compte.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_accounts": {
+      "title": "Comptes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Comptes",
+          "description": "Liste des comptes",
+          "mode": "array",
+          "key": "accounts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Industry",
+              "label": "Industrie",
+              "description": "Secteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Website",
+              "label": "Site web",
+              "description": "Site web.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_contact": {
+      "title": "Contact Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "FirstName",
+          "label": "Prénom",
+          "description": "Prénom du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "LastName",
+          "label": "Nom",
+          "description": "Nom de famille du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Email",
+          "label": "Email",
+          "description": "Adresse e-mail du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "AccountId",
+          "label": "ID compte",
+          "description": "Identifiant du compte associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création du contact.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "contacts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "FirstName",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "LastName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "AccountId",
+              "label": "ID compte",
+              "description": "Compte associé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_opportunity": {
+      "title": "Opportunité Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'opportunité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Name",
+          "label": "Nom",
+          "description": "Nom de l'opportunité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Amount",
+          "label": "Montant",
+          "description": "Montant de l'opportunité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "StageName",
+          "label": "Étape",
+          "description": "Étape de l'opportunité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CloseDate",
+          "label": "Date fermeture",
+          "description": "Date de fermeture prévue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "AccountId",
+          "label": "ID compte",
+          "description": "Identifiant du compte associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_opportunities": {
+      "title": "Opportunités",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Opportunités",
+          "description": "Liste des opportunités",
+          "mode": "array",
+          "key": "opportunities",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "StageName",
+              "label": "Étape",
+              "description": "Étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CloseDate",
+              "label": "Date fermeture",
+              "description": "Date de fermeture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "AccountId",
+              "label": "ID compte",
+              "description": "Compte associé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_lead": {
+      "title": "Lead Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "FirstName",
+          "label": "Prénom",
+          "description": "Prénom du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "LastName",
+          "label": "Nom",
+          "description": "Nom de famille du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Email",
+          "label": "Email",
+          "description": "Adresse e-mail du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Company",
+          "label": "Entreprise",
+          "description": "Entreprise du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Status",
+          "label": "Statut",
+          "description": "Statut du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création du lead.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_leads": {
+      "title": "Leads",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Leads",
+          "description": "Liste des leads",
+          "mode": "array",
+          "key": "leads",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "FirstName",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "LastName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Company",
+              "label": "Entreprise",
+              "description": "Entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_case": {
+      "title": "Case Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du case.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Subject",
+          "label": "Sujet",
+          "description": "Sujet du case.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Description",
+          "label": "Description",
+          "description": "Description du case.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Status",
+          "label": "Statut",
+          "description": "Statut du case.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Priority",
+          "label": "Priorité",
+          "description": "Priorité du case.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ContactId",
+          "label": "ID contact",
+          "description": "Contact associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_cases": {
+      "title": "Cases",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Cases",
+          "description": "Liste des cases",
+          "mode": "array",
+          "key": "cases",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ContactId",
+              "label": "ID contact",
+              "description": "Contact associé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_task": {
+      "title": "Tâche Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Subject",
+          "label": "Sujet",
+          "description": "Sujet de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Status",
+          "label": "Statut",
+          "description": "Statut de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Priority",
+          "label": "Priorité",
+          "description": "Priorité de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "WhoId",
+          "label": "ID contact",
+          "description": "Contact associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "WhatId",
+          "label": "ID objet",
+          "description": "Objet associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ActivityDate",
+          "label": "Date activité",
+          "description": "Date de l'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedDate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_tasks": {
+      "title": "Tâches",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tâches",
+          "description": "Liste des tâches",
+          "mode": "array",
+          "key": "tasks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "WhoId",
+              "label": "ID contact",
+              "description": "Contact.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ActivityDate",
+              "label": "Date activité",
+              "description": "Date activité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedDate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_query_result": {
+      "title": "Résultat SOQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalSize",
+          "label": "Total",
+          "description": "Nombre total de résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "done",
+          "label": "Terminé",
+          "description": "Indique si la requête est terminée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "records",
+          "label": "Enregistrements",
+          "description": "Données retournées (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sf_event": {
+      "title": "Événement Salesforce",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "objectType",
+          "label": "Type objet",
+          "description": "Type d'objet concerné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "objectId",
+          "label": "ID objet",
+          "description": "Identifiant de l'objet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "salesforce",
+      "name": "Salesforce",
+      "title": "Salesforce",
+      "iconClass": "fa-brands fa-salesforce",
+      "color": "#00A1E0",
+      "tags": [
+        "salesforce",
+        "crm",
+        "sales",
+        "cloud"
+      ],
+      "categories": [
+        "CRM"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Salesforce",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "instanceUrl",
+            "label": "Instance URL",
+            "description": "URL de votre instance Salesforce (ex: https://mycompany.salesforce.com).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "description": "ID client de l'application connectée.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client secret",
+            "description": "Secret client de l'application connectée.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh token",
+            "description": "Token de rafraîchissement OAuth2.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "salesforce_account_create",
+      "name": "salesforceAccountCreate",
+      "schemaVersion": 2,
+      "title": "Créer un compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau compte dans Salesforce.",
+      "args": {
+        "title": "Créer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nom du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Industry",
+            "label": "Industrie",
+            "description": "Secteur d'activité.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Website",
+            "label": "Site web",
+            "description": "Site web du compte.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_account_get",
+      "name": "salesforceAccountGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un compte Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_account_update",
+      "name": "salesforceAccountUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un compte existant dans Salesforce.",
+      "args": {
+        "title": "Modifier un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Industry",
+            "label": "Industrie",
+            "description": "Nouveau secteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Website",
+            "label": "Site web",
+            "description": "Nouveau site web.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_account_delete",
+      "name": "salesforceAccountDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un compte Salesforce.",
+      "args": {
+        "title": "Supprimer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "description": "Identifiant du compte à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_accounts_list",
+      "name": "salesforceAccountsList",
+      "schemaVersion": 2,
+      "title": "Lister les comptes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_accounts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les comptes Salesforce.",
+      "args": {
+        "title": "Lister les comptes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contact_create",
+      "name": "salesforceContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact dans Salesforce.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "LastName",
+            "label": "Nom",
+            "description": "Nom de famille du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "FirstName",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "AccountId",
+            "label": "ID compte",
+            "description": "Identifiant du compte associé.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contact_get",
+      "name": "salesforceContactGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contact_update",
+      "name": "salesforceContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un contact existant dans Salesforce.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "FirstName",
+            "label": "Prénom",
+            "description": "Nouveau prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "LastName",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Email",
+            "label": "Email",
+            "description": "Nouvelle adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contact_delete",
+      "name": "salesforceContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contact Salesforce.",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contacts_list",
+      "name": "salesforceContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les contacts Salesforce.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_contact_search",
+      "name": "salesforceContactSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des contacts Salesforce par mot-clé.",
+      "args": {
+        "title": "Rechercher des contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_opportunity_create",
+      "name": "salesforceOpportunityCreate",
+      "schemaVersion": 2,
+      "title": "Créer une opportunité",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_opportunity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle opportunité dans Salesforce.",
+      "args": {
+        "title": "Créer une opportunité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nom de l'opportunité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "StageName",
+            "label": "Étape",
+            "description": "Étape de l'opportunité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "CloseDate",
+            "label": "Date fermeture",
+            "description": "Date de fermeture (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Amount",
+            "label": "Montant",
+            "description": "Montant de l'opportunité.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "AccountId",
+            "label": "ID compte",
+            "description": "Identifiant du compte associé.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_opportunity_get",
+      "name": "salesforceOpportunityGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une opportunité",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_opportunity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une opportunité Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir une opportunité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "opportunityId",
+            "label": "ID opportunité",
+            "description": "Identifiant de l'opportunité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_opportunity_update",
+      "name": "salesforceOpportunityUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une opportunité",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_opportunity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une opportunité existante dans Salesforce.",
+      "args": {
+        "title": "Modifier une opportunité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "opportunityId",
+            "label": "ID opportunité",
+            "description": "Identifiant de l'opportunité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Amount",
+            "label": "Montant",
+            "description": "Nouveau montant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "StageName",
+            "label": "Étape",
+            "description": "Nouvelle étape.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "CloseDate",
+            "label": "Date fermeture",
+            "description": "Nouvelle date de fermeture.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_opportunity_delete",
+      "name": "salesforceOpportunityDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une opportunité",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une opportunité Salesforce.",
+      "args": {
+        "title": "Supprimer une opportunité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "opportunityId",
+            "label": "ID opportunité",
+            "description": "Identifiant de l'opportunité à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_opportunities_list",
+      "name": "salesforceOpportunitiesList",
+      "schemaVersion": 2,
+      "title": "Lister les opportunités",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_opportunities"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les opportunités Salesforce.",
+      "args": {
+        "title": "Lister les opportunités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_lead_create",
+      "name": "salesforceLeadCreate",
+      "schemaVersion": 2,
+      "title": "Créer un lead",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_lead"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau lead dans Salesforce.",
+      "args": {
+        "title": "Créer un lead",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "LastName",
+            "label": "Nom",
+            "description": "Nom de famille du lead.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Company",
+            "label": "Entreprise",
+            "description": "Entreprise du lead.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "FirstName",
+            "label": "Prénom",
+            "description": "Prénom du lead.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "description": "Statut du lead.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_lead_get",
+      "name": "salesforceLeadGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un lead",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_lead"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un lead Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir un lead",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "leadId",
+            "label": "ID lead",
+            "description": "Identifiant du lead.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_lead_update",
+      "name": "salesforceLeadUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un lead",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_lead"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un lead existant dans Salesforce.",
+      "args": {
+        "title": "Modifier un lead",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "leadId",
+            "label": "ID lead",
+            "description": "Identifiant du lead.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "FirstName",
+            "label": "Prénom",
+            "description": "Nouveau prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "LastName",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Email",
+            "label": "Email",
+            "description": "Nouvelle adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_lead_delete",
+      "name": "salesforceLeadDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un lead",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un lead Salesforce.",
+      "args": {
+        "title": "Supprimer un lead",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "leadId",
+            "label": "ID lead",
+            "description": "Identifiant du lead à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_leads_list",
+      "name": "salesforceLeadsList",
+      "schemaVersion": 2,
+      "title": "Lister les leads",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_leads"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les leads Salesforce.",
+      "args": {
+        "title": "Lister les leads",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_lead_convert",
+      "name": "salesforceLeadConvert",
+      "schemaVersion": 2,
+      "title": "Convertir un lead",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Convertit un lead en contact/compte/opportunité.",
+      "args": {
+        "title": "Convertir un lead",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "leadId",
+            "label": "ID lead",
+            "description": "Identifiant du lead à convertir.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "convertedStatus",
+            "label": "Statut converti",
+            "description": "Statut de conversion (ex: Qualified).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "description": "ID de compte existant (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "switch",
+            "key": "createOpportunity",
+            "label": "Créer opportunité",
+            "description": "Créer une opportunité lors de la conversion.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_case_create",
+      "name": "salesforceCaseCreate",
+      "schemaVersion": 2,
+      "title": "Créer un case",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_case"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau case dans Salesforce.",
+      "args": {
+        "title": "Créer un case",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Sujet",
+            "description": "Sujet du case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Description",
+            "label": "Description",
+            "description": "Description du case.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "description": "Statut du case.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Priority",
+            "label": "Priorité",
+            "description": "Priorité du case.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ContactId",
+            "label": "ID contact",
+            "description": "Contact associé.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_case_get",
+      "name": "salesforceCaseGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un case",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_case"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un case Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir un case",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "caseId",
+            "label": "ID case",
+            "description": "Identifiant du case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_case_update",
+      "name": "salesforceCaseUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un case",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_case"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un case existant dans Salesforce.",
+      "args": {
+        "title": "Modifier un case",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "caseId",
+            "label": "ID case",
+            "description": "Identifiant du case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Sujet",
+            "description": "Nouveau sujet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_cases_list",
+      "name": "salesforceCasesList",
+      "schemaVersion": 2,
+      "title": "Lister les cases",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_cases"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les cases Salesforce.",
+      "args": {
+        "title": "Lister les cases",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_task_create",
+      "name": "salesforceTaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle tâche dans Salesforce.",
+      "args": {
+        "title": "Créer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Sujet",
+            "description": "Sujet de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "description": "Statut de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Priority",
+            "label": "Priorité",
+            "description": "Priorité de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "WhoId",
+            "label": "ID contact",
+            "description": "Contact associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "WhatId",
+            "label": "ID objet",
+            "description": "Objet associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ActivityDate",
+            "label": "Date activité",
+            "description": "Date de l'activité (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_task_get",
+      "name": "salesforceTaskGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une tâche Salesforce par son ID.",
+      "args": {
+        "title": "Obtenir une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_tasks_list",
+      "name": "salesforceTasksList",
+      "schemaVersion": 2,
+      "title": "Lister les tâches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_tasks"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tâches Salesforce.",
+      "args": {
+        "title": "Lister les tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_soql_query",
+      "name": "salesforceSoqlQuery",
+      "schemaVersion": 2,
+      "title": "Requête SOQL",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_query_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Exécute une requête SOQL personnalisée.",
+      "args": {
+        "title": "Requête SOQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête SOQL",
+            "description": "Requête SOQL à exécuter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "salesforce_webhook_event",
+      "name": "salesforceWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "salesforce",
+      "icon": "fa-solid fa-bolt",
+      "description": "Déclenchement via webhook Salesforce entrant",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_event"
+        }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir les webhooks.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

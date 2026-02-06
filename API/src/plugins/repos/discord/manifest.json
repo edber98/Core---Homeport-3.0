@@ -1,0 +1,1527 @@
+{
+  "repo": {
+    "name": "discord",
+    "type": "local",
+    "label": "Discord Bot"
+  },
+  "providers": [
+    {
+      "key": "discord",
+      "name": "Discord Bot",
+      "title": "Discord Bot",
+      "iconClass": "fa-brands fa-discord",
+      "color": "#5865F2",
+      "tags": [
+        "discord",
+        "bot",
+        "messaging",
+        "chat"
+      ],
+      "categories": [
+        "Communication"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Discord Bot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "botToken",
+            "label": "Token du bot",
+            "description": "Token obtenu via le portail développeur Discord.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "discord_send_message",
+      "name": "discordSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-paper-plane",
+      "description": "Envoyer un message dans un canal Discord",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal destinataire.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du message.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "checkbox",
+            "key": "tts",
+            "label": "Text-to-speech",
+            "description": "Envoyer en mode text-to-speech.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "embed_json",
+            "label": "Embeds (JSON)",
+            "description": "Tableau JSON d'embeds Discord.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_get_message",
+      "name": "discordGetMessage",
+      "schemaVersion": 2,
+      "title": "Récupérer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-envelope-open-text",
+      "description": "Récupérer un message spécifique par son ID",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Identifiant du message.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_edit_message",
+      "name": "discordEditMessage",
+      "schemaVersion": 2,
+      "title": "Modifier un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un message existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Identifiant du message à modifier.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu du message.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "embed_json",
+            "label": "Embeds (JSON)",
+            "description": "Tableau JSON d'embeds Discord.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_delete_message",
+      "name": "discordDeleteMessage",
+      "schemaVersion": 2,
+      "title": "Supprimer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un message dans un canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Identifiant du message à supprimer.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_messages",
+      "name": "discordListMessages",
+      "schemaVersion": 2,
+      "title": "Lister les messages",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les messages d'un canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_messages"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de messages (1-100).",
+            "col": { "xs": 24 },
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "before",
+            "label": "Avant (ID)",
+            "description": "Récupérer les messages avant cet ID.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Après (ID)",
+            "description": "Récupérer les messages après cet ID.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_react_message",
+      "name": "discordReactMessage",
+      "schemaVersion": 2,
+      "title": "Réagir à un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-face-smile",
+      "description": "Ajouter une réaction emoji à un message",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Réagir à un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message",
+            "description": "Identifiant du message.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "emoji",
+            "label": "Emoji",
+            "description": "Emoji Unicode ou format nom:id pour emoji personnalisé.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_get_channel",
+      "name": "discordGetChannel",
+      "schemaVersion": 2,
+      "title": "Obtenir un canal",
+      "subtitle": "Canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Canaux",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-hashtag",
+      "description": "Obtenir les informations d'un canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_channel"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_channels",
+      "name": "discordListChannels",
+      "schemaVersion": 2,
+      "title": "Lister les canaux",
+      "subtitle": "Canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Canaux",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-bars",
+      "description": "Lister les canaux d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_channels"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les canaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_create_channel",
+      "name": "discordCreateChannel",
+      "schemaVersion": 2,
+      "title": "Créer un canal",
+      "subtitle": "Canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Canaux",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau canal dans un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_channel"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du canal",
+            "description": "Nom du canal à créer.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type de canal",
+            "description": "Type de canal Discord.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "Texte (0)", "value": "0" },
+              { "label": "Voix (2)", "value": "2" },
+              { "label": "Catégorie (4)", "value": "4" },
+              { "label": "Annonces (5)", "value": "5" },
+              { "label": "Forum (15)", "value": "15" }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "topic",
+            "label": "Sujet",
+            "description": "Sujet du canal.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "parent_id",
+            "label": "ID de la catégorie",
+            "description": "ID de la catégorie parente.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_modify_channel",
+      "name": "discordModifyChannel",
+      "schemaVersion": 2,
+      "title": "Modifier un canal",
+      "subtitle": "Canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Canaux",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifier les paramètres d'un canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_channel"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal à modifier.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom du canal.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "topic",
+            "label": "Sujet",
+            "description": "Nouveau sujet du canal.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "checkbox",
+            "key": "nsfw",
+            "label": "NSFW",
+            "description": "Marquer le canal comme NSFW.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "number",
+            "key": "rate_limit_per_user",
+            "label": "Slowmode (secondes)",
+            "description": "Délai entre les messages (0-21600).",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_delete_channel",
+      "name": "discordDeleteChannel",
+      "schemaVersion": 2,
+      "title": "Supprimer un canal",
+      "subtitle": "Canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Canaux",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-trash-can",
+      "description": "Supprimer un canal Discord",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal à supprimer.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_get_guild",
+      "name": "discordGetGuild",
+      "schemaVersion": 2,
+      "title": "Obtenir un serveur",
+      "subtitle": "Serveurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Serveurs",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-server",
+      "description": "Obtenir les informations d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_guild"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un serveur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_guild_channels",
+      "name": "discordListGuildChannels",
+      "schemaVersion": 2,
+      "title": "Lister les canaux du serveur",
+      "subtitle": "Serveurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Serveurs",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-bars-staggered",
+      "description": "Lister tous les canaux d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_channels"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les canaux du serveur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_guild_members",
+      "name": "discordListGuildMembers",
+      "schemaVersion": 2,
+      "title": "Lister les membres du serveur",
+      "subtitle": "Serveurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Serveurs",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-users",
+      "description": "Lister les membres d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_members"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les membres du serveur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de membres (1-1000).",
+            "col": { "xs": 24 },
+            "default": 100
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Après (ID)",
+            "description": "Récupérer les membres après cet ID.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_roles",
+      "name": "discordListRoles",
+      "schemaVersion": 2,
+      "title": "Lister les rôles",
+      "subtitle": "Rôles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rôles",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-shield-halved",
+      "description": "Lister les rôles d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_roles"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les rôles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_create_role",
+      "name": "discordCreateRole",
+      "schemaVersion": 2,
+      "title": "Créer un rôle",
+      "subtitle": "Rôles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rôles",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-plus-circle",
+      "description": "Créer un nouveau rôle dans un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_role"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un rôle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du rôle",
+            "description": "Nom du rôle à créer.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "number",
+            "key": "color",
+            "label": "Couleur (décimal)",
+            "description": "Couleur du rôle en décimal (ex: 16711680 pour rouge).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "checkbox",
+            "key": "hoist",
+            "label": "Afficher séparément",
+            "description": "Afficher le rôle séparément dans la liste des membres.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "checkbox",
+            "key": "mentionable",
+            "label": "Mentionnable",
+            "description": "Permettre à tout le monde de mentionner ce rôle.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_add_role_to_member",
+      "name": "discordAddRoleToMember",
+      "schemaVersion": 2,
+      "title": "Ajouter un rôle à un membre",
+      "subtitle": "Rôles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rôles",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-user-plus",
+      "description": "Ajouter un rôle à un membre du serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un rôle à un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "role_id",
+            "label": "ID du rôle",
+            "description": "Identifiant du rôle à ajouter.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_get_user",
+      "name": "discordGetUser",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "subtitle": "Utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-user",
+      "description": "Obtenir les informations d'un utilisateur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_get_me",
+      "name": "discordGetMe",
+      "schemaVersion": 2,
+      "title": "Obtenir les infos du bot",
+      "subtitle": "Utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-robot",
+      "description": "Obtenir les informations du bot connecté",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir les infos du bot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "discord_create_thread",
+      "name": "discordCreateThread",
+      "schemaVersion": 2,
+      "title": "Créer un fil de discussion",
+      "subtitle": "Fils",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fils de discussion",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-comments",
+      "description": "Créer un fil de discussion dans un canal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_thread"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un fil de discussion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID du canal",
+            "description": "Identifiant du canal parent.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du fil",
+            "description": "Nom du fil de discussion.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID du message (optionnel)",
+            "description": "Créer un fil à partir d'un message existant.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "select",
+            "key": "auto_archive_duration",
+            "label": "Archivage automatique",
+            "description": "Durée d'inactivité avant archivage.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "1 heure", "value": "60" },
+              { "label": "24 heures", "value": "1440" },
+              { "label": "3 jours", "value": "4320" },
+              { "label": "1 semaine", "value": "10080" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_list_threads",
+      "name": "discordListThreads",
+      "schemaVersion": 2,
+      "title": "Lister les fils actifs",
+      "subtitle": "Fils",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fils de discussion",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-list-ul",
+      "description": "Lister les fils de discussion actifs d'un serveur",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_threads"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les fils actifs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID du serveur",
+            "description": "Identifiant du serveur (guild).",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_execute_webhook",
+      "name": "discordExecuteWebhook",
+      "schemaVersion": 2,
+      "title": "Exécuter un webhook",
+      "subtitle": "Webhooks",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webhooks",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-globe",
+      "description": "Envoyer un message via une URL de webhook Discord",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": ["payload", "any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Exécuter un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webhook_url",
+            "label": "URL du webhook",
+            "description": "URL complète du webhook Discord.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du message.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Nom d'utilisateur",
+            "description": "Nom d'utilisateur affiché pour le webhook.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "avatar_url",
+            "label": "URL de l'avatar",
+            "description": "URL de l'image d'avatar pour le webhook.",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "embed_json",
+            "label": "Embeds (JSON)",
+            "description": "Tableau JSON d'embeds Discord.",
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    },
+    {
+      "key": "discord_webhook_event",
+      "name": "discordWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "discord",
+      "icon": "fa-solid fa-bolt",
+      "description": "Déclenchement via webhook Discord entrant",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_event"
+        }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir les webhooks.",
+            "col": { "xs": 24 },
+            "default": "/discord"
+          }
+        ]
+      }
+    }
+  ],
+  "variables": {
+    "discord_message": {
+      "title": "Message Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique du message.", "col": { "xs": 24 } },
+        { "type": "text", "key": "channel_id", "label": "ID du canal", "description": "Identifiant du canal.", "col": { "xs": 24 } },
+        { "type": "text", "key": "author_id", "label": "ID de l'auteur", "description": "Identifiant de l'auteur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "author_username", "label": "Nom d'utilisateur", "description": "Nom d'utilisateur de l'auteur.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "content", "label": "Contenu", "description": "Contenu textuel du message.", "col": { "xs": 24 } },
+        { "type": "text", "key": "timestamp", "label": "Horodatage", "description": "Date et heure du message.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "tts", "label": "TTS", "description": "Message text-to-speech.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_messages": {
+      "title": "Messages Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de messages.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_channel": {
+      "title": "Canal Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique du canal.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du canal.", "col": { "xs": 24 } },
+        { "type": "number", "key": "type", "label": "Type", "description": "Type de canal (0=texte, 2=voix, etc.).", "col": { "xs": 24 } },
+        { "type": "text", "key": "guild_id", "label": "ID du serveur", "description": "Identifiant du serveur.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "topic", "label": "Sujet", "description": "Sujet du canal.", "col": { "xs": 24 } },
+        { "type": "text", "key": "parent_id", "label": "ID de la catégorie", "description": "Identifiant de la catégorie parente.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "nsfw", "label": "NSFW", "description": "Canal NSFW.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_channels": {
+      "title": "Canaux Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de canaux.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_guild": {
+      "title": "Serveur Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique du serveur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du serveur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "icon", "label": "Icône", "description": "Hash de l'icône du serveur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "owner_id", "label": "ID du propriétaire", "description": "Identifiant du propriétaire.", "col": { "xs": 24 } },
+        { "type": "number", "key": "member_count", "label": "Nombre de membres", "description": "Nombre de membres du serveur.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_members": {
+      "title": "Membres Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de membres.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_role": {
+      "title": "Rôle Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique du rôle.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du rôle.", "col": { "xs": 24 } },
+        { "type": "number", "key": "color", "label": "Couleur", "description": "Couleur du rôle en décimal.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "hoist", "label": "Affiché séparément", "description": "Rôle affiché séparément.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "mentionable", "label": "Mentionnable", "description": "Rôle mentionnable.", "col": { "xs": 24 } },
+        { "type": "number", "key": "position", "label": "Position", "description": "Position du rôle.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_roles": {
+      "title": "Rôles Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de rôles.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_user": {
+      "title": "Utilisateur Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique de l'utilisateur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "username", "label": "Nom d'utilisateur", "description": "Nom d'utilisateur Discord.", "col": { "xs": 24 } },
+        { "type": "text", "key": "discriminator", "label": "Discriminateur", "description": "Tag discriminant (#0000).", "col": { "xs": 24 } },
+        { "type": "text", "key": "avatar", "label": "Avatar", "description": "Hash de l'avatar.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "bot", "label": "Est un bot", "description": "Indique si l'utilisateur est un bot.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_thread": {
+      "title": "Fil de discussion Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique du fil.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du fil de discussion.", "col": { "xs": 24 } },
+        { "type": "text", "key": "parent_id", "label": "ID du canal parent", "description": "Identifiant du canal parent.", "col": { "xs": 24 } },
+        { "type": "text", "key": "owner_id", "label": "ID du créateur", "description": "Identifiant du créateur du fil.", "col": { "xs": 24 } },
+        { "type": "number", "key": "message_count", "label": "Nombre de messages", "description": "Nombre de messages dans le fil.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_threads": {
+      "title": "Fils de discussion Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de fils de discussion.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_result": {
+      "title": "Résultat Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de l'opération.", "col": { "xs": 24 } },
+        { "type": "text", "key": "message", "label": "Message", "description": "Message de résultat.", "col": { "xs": 24 } }
+      ]
+    },
+    "discord_event": {
+      "title": "Événement Discord",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "event_type", "label": "Type d'événement", "description": "Type d'événement Discord (MESSAGE_CREATE, etc.).", "col": { "xs": 24 } },
+        { "type": "text", "key": "guild_id", "label": "ID du serveur", "description": "Identifiant du serveur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "channel_id", "label": "ID du canal", "description": "Identifiant du canal.", "col": { "xs": 24 } },
+        { "type": "text", "key": "user_id", "label": "ID de l'utilisateur", "description": "Identifiant de l'utilisateur.", "col": { "xs": 24 } },
+        { "type": "text", "key": "username", "label": "Nom d'utilisateur", "description": "Nom d'utilisateur.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "content", "label": "Contenu", "description": "Contenu du message.", "col": { "xs": 24 } },
+        { "type": "text", "key": "message_id", "label": "ID du message", "description": "Identifiant du message.", "col": { "xs": 24 } }
+      ]
+    }
+  }
+}

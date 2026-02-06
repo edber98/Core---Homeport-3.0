@@ -1,0 +1,2633 @@
+{
+  "repo": {
+    "name": "pennylane",
+    "type": "local",
+    "label": "Pennylane"
+  },
+  "variables": {
+    "pl_customer": {
+      "title": "Client Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Email du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "address",
+          "label": "Adresse",
+          "description": "Adresse du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "country",
+          "label": "Pays",
+          "description": "Code pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "registration_number",
+          "label": "SIRET",
+          "description": "Numéro SIRET.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vat_number",
+          "label": "TVA",
+          "description": "Numéro de TVA.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_customers": {
+      "title": "Clients",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "country",
+              "label": "Pays",
+              "description": "Pays.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_supplier": {
+      "title": "Fournisseur Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Email du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "address",
+          "label": "Adresse",
+          "description": "Adresse du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "country",
+          "label": "Pays",
+          "description": "Code pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "registration_number",
+          "label": "SIRET",
+          "description": "Numéro SIRET.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vat_number",
+          "label": "TVA",
+          "description": "Numéro de TVA.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_suppliers": {
+      "title": "Fournisseurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fournisseurs",
+          "description": "Liste des fournisseurs",
+          "mode": "array",
+          "key": "suppliers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "country",
+              "label": "Pays",
+              "description": "Pays.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_invoice": {
+      "title": "Facture Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "invoice_number",
+          "label": "Numéro",
+          "description": "Numéro de facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "label",
+          "label": "Libellé",
+          "description": "Libellé de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "deadline",
+          "label": "Échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer_id",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_invoices": {
+      "title": "Factures",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Factures",
+          "description": "Liste des factures",
+          "mode": "array",
+          "key": "invoices",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "invoice_number",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Libellé",
+              "description": "Libellé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_estimate": {
+      "title": "Devis Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "estimate_number",
+          "label": "Numéro",
+          "description": "Numéro du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "label",
+          "label": "Libellé",
+          "description": "Libellé du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Date du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer_id",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_estimates": {
+      "title": "Devis",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Devis",
+          "description": "Liste des devis",
+          "mode": "array",
+          "key": "estimates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "estimate_number",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Libellé",
+              "description": "Libellé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_product": {
+      "title": "Produit Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du produit.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "label",
+          "label": "Libellé",
+          "description": "Libellé du produit.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du produit.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "unit",
+          "label": "Unité",
+          "description": "Unité de mesure.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "price",
+          "label": "Prix",
+          "description": "Prix unitaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vat_rate",
+          "label": "Taux TVA",
+          "description": "Taux de TVA.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "description": "Référence du produit.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_products": {
+      "title": "Produits",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Produits",
+          "description": "Liste des produits",
+          "mode": "array",
+          "key": "products",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Libellé",
+              "description": "Libellé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "price",
+              "label": "Prix",
+              "description": "Prix.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "unit",
+              "label": "Unité",
+              "description": "Unité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reference",
+              "label": "Référence",
+              "description": "Référence.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_category": {
+      "title": "Catégorie Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "label",
+          "label": "Libellé",
+          "description": "Libellé de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_label",
+          "label": "Groupe",
+          "description": "Groupe de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_categories": {
+      "title": "Catégories",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Liste des catégories",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Libellé",
+              "description": "Libellé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "group_label",
+              "label": "Groupe",
+              "description": "Groupe.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pl_event": {
+      "title": "Événement Pennylane",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "pennylane",
+      "name": "Pennylane",
+      "title": "Pennylane",
+      "iconClass": "fa-solid fa-coins",
+      "color": "#1B2559",
+      "tags": [
+        "pennylane",
+        "comptabilité",
+        "facturation",
+        "finance"
+      ],
+      "categories": [
+        "Comptabilité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Pennylane",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Pennylane (Bearer token).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "pl_customer_create",
+      "name": "plCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "pennylane",
+      "description": "Crée un nouveau client Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Adresse.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays (FR, etc.).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "registration_number",
+            "label": "SIRET",
+            "description": "Numéro SIRET.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "vat_number",
+            "label": "TVA",
+            "description": "Numéro de TVA.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_customer_get",
+      "name": "plCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "pennylane",
+      "description": "Récupère un client par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_customer_update",
+      "name": "plCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "pennylane",
+      "description": "Modifie un client existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvel email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Nouvelle adresse.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_customers_list",
+      "name": "plCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "pennylane",
+      "description": "Liste les clients Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "description": "Filtrer par nom ou email.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_supplier_create",
+      "name": "plSupplierCreate",
+      "schemaVersion": 2,
+      "title": "Créer un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "pennylane",
+      "description": "Crée un nouveau fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_supplier"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Adresse.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_supplier_get",
+      "name": "plSupplierGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "pennylane",
+      "description": "Récupère un fournisseur par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_supplier"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "supplierId",
+            "label": "ID du fournisseur",
+            "description": "Identifiant du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_supplier_update",
+      "name": "plSupplierUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "pennylane",
+      "description": "Modifie un fournisseur existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_supplier"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "supplierId",
+            "label": "ID du fournisseur",
+            "description": "Identifiant du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvel email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_suppliers_list",
+      "name": "plSuppliersList",
+      "schemaVersion": 2,
+      "title": "Lister les fournisseurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "pennylane",
+      "description": "Liste les fournisseurs Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_suppliers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les fournisseurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_invoice_create",
+      "name": "plInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "pennylane",
+      "description": "Crée une nouvelle facture.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customer_id",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Libellé de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "Date de la facture (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "deadline",
+            "label": "Échéance",
+            "description": "Date d'échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise (EUR, USD, etc.).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_invoice_get",
+      "name": "plInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "pennylane",
+      "description": "Récupère une facture par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_invoices_list",
+      "name": "plInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "pennylane",
+      "description": "Liste les factures Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les factures",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_invoice_finalize",
+      "name": "plInvoiceFinalize",
+      "schemaVersion": 2,
+      "title": "Finaliser une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "pennylane",
+      "description": "Finalise une facture brouillon.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Finaliser une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_customer_invoice_create",
+      "name": "plCustomerInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures client",
+      "providerKey": "pennylane",
+      "description": "Crée une facture client.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une facture client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customer_id",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Libellé de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "Date (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "deadline",
+            "label": "Échéance",
+            "description": "Échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_customer_invoices_list",
+      "name": "plCustomerInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures client",
+      "providerKey": "pennylane",
+      "description": "Liste les factures client.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les factures client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_supplier_invoice_create",
+      "name": "plSupplierInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "pennylane",
+      "description": "Crée une facture fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une facture fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "supplier_id",
+            "label": "ID du fournisseur",
+            "description": "Identifiant du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Libellé de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "Date (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "deadline",
+            "label": "Échéance",
+            "description": "Échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_supplier_invoices_list",
+      "name": "plSupplierInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "pennylane",
+      "description": "Liste les factures fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les factures fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_estimate_create",
+      "name": "plEstimateCreate",
+      "schemaVersion": 2,
+      "title": "Créer un devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "pennylane",
+      "description": "Crée un nouveau devis.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_estimate"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customer_id",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Libellé du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "Date du devis (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_estimate_get",
+      "name": "plEstimateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "pennylane",
+      "description": "Récupère un devis par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_estimate"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "estimateId",
+            "label": "ID du devis",
+            "description": "Identifiant du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_estimates_list",
+      "name": "plEstimatesList",
+      "schemaVersion": 2,
+      "title": "Lister les devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "pennylane",
+      "description": "Liste les devis Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_estimates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_product_create",
+      "name": "plProductCreate",
+      "schemaVersion": 2,
+      "title": "Créer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "pennylane",
+      "description": "Crée un nouveau produit.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Libellé du produit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "unit",
+            "label": "Unité",
+            "description": "Unité de mesure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "price",
+            "label": "Prix",
+            "description": "Prix unitaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "vat_rate",
+            "label": "Taux TVA",
+            "description": "Taux de TVA (ex: FR_200).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "description": "Référence du produit.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_products_list",
+      "name": "plProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "pennylane",
+      "description": "Liste les produits Pennylane.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_products"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_categories_list",
+      "name": "plCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "pennylane",
+      "description": "Liste les catégories comptables.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_categories"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les catégories",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pl_payment_methods_list",
+      "name": "plPaymentMethodsList",
+      "schemaVersion": 2,
+      "title": "Lister les moyens de paiement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Paiements",
+      "providerKey": "pennylane",
+      "description": "Liste les moyens de paiement.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les moyens de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "pl_webhook_event",
+      "name": "plWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "pennylane",
+      "description": "Déclenchement via webhook Pennylane entrant.",
+      "subtitle": "Déclencheur",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
