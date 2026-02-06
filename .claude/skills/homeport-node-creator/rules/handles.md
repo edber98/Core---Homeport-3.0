@@ -53,21 +53,18 @@ Points de sortie des resultats.
     "id": "ok",                    // REQUIS - identifiant (utilise pour le routage)
     "name": "Success",             // REQUIS - label affiche
     "type": "payload",             // Type de donnee produit
-    "schema": "$var:schema_name"   // OPTIONNEL - reference a un schema de variable
+    "schema": "$var:schema_name"   // OBLIGATOIRE - reference a un schema de variable
   }
 ]
 ```
 
 ### Patterns courants d'output
 
-**Standard (succes seul):**
-```json
-[{ "id": "ok", "name": "Success", "type": "payload" }]
-```
+**IMPORTANT: Chaque outputHandle DOIT toujours avoir un `schema` decrivant la structure exacte de la reponse retournee par le handler.** Le schema permet au frontend d'afficher les champs disponibles et aux utilisateurs de glisser-deposer les chemins dans les expressions.
 
-**Avec schema de sortie:**
+**Standard (avec schema obligatoire):**
 ```json
-[{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:http_response" }]
+[{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:mon_schema" }]
 ```
 
 **Succes + Erreur (quand authorize_catch_error: true):**

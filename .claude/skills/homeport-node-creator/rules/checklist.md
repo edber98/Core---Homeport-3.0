@@ -42,18 +42,23 @@
   - [ ] `args` avec le formulaire de configuration
   - [ ] `authorize_catch_error: true` si le node peut echouer
 
-## Etape 4: Definir les variables (si besoin)
+## Etape 4: Definir les variables (OBLIGATOIRE)
 
-- [ ] Si schema de sortie reutilisable, ajouter dans `manifest.json` > `variables`:
+- [ ] **TOUJOURS** definir un schema de sortie pour chaque type de reponse dans `manifest.json` > `variables`:
   ```json
   "variables": {
     "mon_schema": {
       "title": "...",
-      "fields": [ ... ]
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "col": { "xs": 24 } },
+        { "type": "number", "key": "status", "label": "Status HTTP", "col": { "xs": 24 } },
+        { "type": "section", "title": "Data", "key": "data", "fields": [ ... ], "col": { "xs": 24 } }
+      ]
     }
   }
   ```
-- [ ] Referencir dans outputHandles: `"schema": "$var:mon_schema"`
+- [ ] Pour les reponses tableau, utiliser `"mode": "array"` sur la section `data`
+- [ ] Referencier dans outputHandles: `"schema": "$var:mon_schema"` (OBLIGATOIRE sur chaque output)
 
 ## Etape 5: Ecrire le handler JS
 

@@ -139,8 +139,98 @@ Les variables peuvent etre definies:
 }
 ```
 
+## OBLIGATOIRE: Chaque outputHandle doit avoir un schema
+
+Chaque outputHandle de type `payload` DOIT toujours avoir un `"schema": "$var:nom"` qui decrit precisement la structure de la reponse du handler. Cela permet au frontend d'afficher les champs disponibles et aux utilisateurs de glisser-deposer les chemins dans les expressions.
+
+## Schemas pour objets imbriques (sections)
+
+Pour decrire une reponse avec un objet imbrique, utiliser `"type": "section"`:
+
+```json
+"mon_objet_response": {
+  "title": "Reponse",
+  "fields": [
+    { "type": "checkbox", "key": "ok", "label": "OK", "col": { "xs": 24 } },
+    { "type": "number", "key": "status", "label": "Status HTTP", "col": { "xs": 24 } },
+    {
+      "type": "section",
+      "title": "Data",
+      "key": "data",
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } }
+      ],
+      "col": { "xs": 24 }
+    }
+  ]
+}
+```
+
+Cela genere les chemins: `ok`, `status`, `data.id`, `data.name` dans le viewer.
+
+## Schemas pour tableaux d'objets (section + mode array)
+
+Pour une reponse contenant un tableau d'objets, ajouter `"mode": "array"` a la section:
+
+```json
+"mes_objets_response": {
+  "title": "Reponse liste",
+  "fields": [
+    { "type": "checkbox", "key": "ok", "label": "OK", "col": { "xs": 24 } },
+    { "type": "number", "key": "status", "label": "Status HTTP", "col": { "xs": 24 } },
+    {
+      "type": "section",
+      "title": "Objets",
+      "key": "data",
+      "mode": "array",
+      "array": { "initialItems": 0, "minItems": 0 },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } }
+      ],
+      "col": { "xs": 24 }
+    }
+  ]
+}
+```
+
+Cela genere les chemins: `ok`, `status`, `data[0].id`, `data[0].name`.
+
+## Schemas pour reponses complexes (objets imbriques multiples)
+
+Pour une reponse contenant plusieurs tableaux (ex: recherche):
+
+```json
+"search_response": {
+  "title": "Resultat de recherche",
+  "fields": [
+    { "type": "checkbox", "key": "ok", "label": "OK", "col": { "xs": 24 } },
+    {
+      "type": "section", "title": "Data", "key": "data",
+      "fields": [
+        {
+          "type": "section", "title": "Items A", "key": "itemsA",
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [ ... ],
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section", "title": "Items B", "key": "itemsB",
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [ ... ],
+          "col": { "xs": 24 }
+        }
+      ],
+      "col": { "xs": 24 }
+    }
+  ]
+}
+```
+
 ## Quand utiliser des variables
 
+- **TOUJOURS** definir un schema pour chaque type de reponse unique retourne par les handlers
 - Quand plusieurs nodes partagent le meme schema de sortie (ex: plusieurs nodes OpenAI retournent `llm_text`)
 - Pour des schemas complexes qui encombreraient le nodeTemplate
-- Pour documenter clairement la structure de sortie d'un node
+- Creer des variantes singulier/pluriel quand un handler retourne soit un objet, soit un tableau (ex: `trello_board` / `trello_boards`)
