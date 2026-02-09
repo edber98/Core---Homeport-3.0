@@ -694,7 +694,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Formulaires"
     },
     {
       "key": "typeform_form_get",
@@ -752,7 +753,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Formulaires"
     },
     {
       "key": "typeform_forms_list",
@@ -832,7 +834,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Formulaires"
     },
     {
       "key": "typeform_form_update",
@@ -908,7 +911,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Formulaires"
     },
     {
       "key": "typeform_form_delete",
@@ -966,7 +970,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Formulaires"
     },
     {
       "key": "typeform_responses_list",
@@ -1060,7 +1065,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Réponses"
     },
     {
       "key": "typeform_response_get",
@@ -1132,7 +1138,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Réponses"
     },
     {
       "key": "typeform_response_delete",
@@ -1204,7 +1211,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Réponses"
     },
     {
       "key": "typeform_workspaces_list",
@@ -1275,7 +1283,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Espaces de travail"
     },
     {
       "key": "typeform_workspace_get",
@@ -1333,7 +1342,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Espaces de travail"
     },
     {
       "key": "typeform_themes_list",
@@ -1395,7 +1405,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Thèmes"
     },
     {
       "key": "typeform_images_list",
@@ -1438,7 +1449,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Images"
     },
     {
       "key": "typeform_image_upload",
@@ -1510,7 +1522,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Images"
     },
     {
       "key": "typeform_webhook_event",
@@ -1543,7 +1556,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

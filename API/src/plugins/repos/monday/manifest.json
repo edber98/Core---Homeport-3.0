@@ -936,7 +936,8 @@
       "tags": [
         "monday",
         "création"
-      ]
+      ],
+      "group": "Items"
     },
     {
       "key": "monday_item_get",
@@ -994,7 +995,8 @@
       "tags": [
         "monday",
         "lecture"
-      ]
+      ],
+      "group": "Items"
     },
     {
       "key": "monday_item_update",
@@ -1080,7 +1082,8 @@
       "tags": [
         "monday",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Items"
     },
     {
       "key": "monday_item_delete",
@@ -1138,7 +1141,8 @@
       "tags": [
         "monday",
         "suppression"
-      ]
+      ],
+      "group": "Items"
     },
     {
       "key": "monday_items_list",
@@ -1205,7 +1209,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Items"
     },
     {
       "key": "monday_board_get",
@@ -1263,7 +1268,8 @@
       "tags": [
         "monday",
         "lecture"
-      ]
+      ],
+      "group": "Boards"
     },
     {
       "key": "monday_boards_list",
@@ -1316,7 +1322,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Boards"
     },
     {
       "key": "monday_group_create",
@@ -1397,7 +1404,8 @@
       "tags": [
         "monday",
         "création"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "monday_groups_list",
@@ -1455,7 +1463,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "monday_columns_list",
@@ -1513,7 +1522,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Colonnes"
     },
     {
       "key": "monday_column_create_value",
@@ -1613,7 +1623,8 @@
       "tags": [
         "monday",
         "création"
-      ]
+      ],
+      "group": "Colonnes"
     },
     {
       "key": "monday_column_change_value",
@@ -1713,7 +1724,8 @@
       "tags": [
         "monday",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Colonnes"
     },
     {
       "key": "monday_subitem_create",
@@ -1794,7 +1806,8 @@
       "tags": [
         "monday",
         "création"
-      ]
+      ],
+      "group": "Sous-items"
     },
     {
       "key": "monday_subitems_list",
@@ -1852,7 +1865,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Sous-items"
     },
     {
       "key": "monday_users_list",
@@ -1905,7 +1919,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "monday_update_create",
@@ -1977,7 +1992,8 @@
       "tags": [
         "monday",
         "création"
-      ]
+      ],
+      "group": "Mises à jour"
     },
     {
       "key": "monday_updates_list",
@@ -2044,7 +2060,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Mises à jour"
     },
     {
       "key": "monday_workspaces_list",
@@ -2097,7 +2114,8 @@
       "tags": [
         "monday",
         "liste"
-      ]
+      ],
+      "group": "Espaces de travail"
     },
     {
       "key": "monday_webhook_event",
@@ -2142,7 +2160,8 @@
       "tags": [
         "monday",
         "événement"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

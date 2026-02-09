@@ -10,7 +10,6 @@
       "name": "Discord Bot",
       "title": "Discord Bot",
       "iconClass": "fa-brands fa-discord",
-      
       "color": "#8d8d92",
       "tags": [
         "discord",
@@ -140,7 +139,8 @@
       "tags": [
         "envoi",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_get_message",
@@ -214,7 +214,8 @@
       "tags": [
         "lecture",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_edit_message",
@@ -306,7 +307,8 @@
       "tags": [
         "mise-à-jour",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_delete_message",
@@ -380,7 +382,8 @@
       "tags": [
         "suppression",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_list_messages",
@@ -468,7 +471,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_react_message",
@@ -556,7 +560,8 @@
       "tags": [
         "création",
         "discord"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "discord_get_channel",
@@ -616,7 +621,8 @@
       "tags": [
         "lecture",
         "discord"
-      ]
+      ],
+      "group": "Canaux"
     },
     {
       "key": "discord_list_channels",
@@ -676,7 +682,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Canaux"
     },
     {
       "key": "discord_create_channel",
@@ -799,7 +806,8 @@
       "tags": [
         "création",
         "discord"
-      ]
+      ],
+      "group": "Canaux"
     },
     {
       "key": "discord_modify_channel",
@@ -895,7 +903,8 @@
       "tags": [
         "mise-à-jour",
         "discord"
-      ]
+      ],
+      "group": "Canaux"
     },
     {
       "key": "discord_delete_channel",
@@ -955,7 +964,8 @@
       "tags": [
         "suppression",
         "discord"
-      ]
+      ],
+      "group": "Canaux"
     },
     {
       "key": "discord_get_guild",
@@ -1015,7 +1025,8 @@
       "tags": [
         "lecture",
         "discord"
-      ]
+      ],
+      "group": "Serveurs"
     },
     {
       "key": "discord_list_guild_channels",
@@ -1075,7 +1086,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Serveurs"
     },
     {
       "key": "discord_list_guild_members",
@@ -1154,7 +1166,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Serveurs"
     },
     {
       "key": "discord_list_roles",
@@ -1214,7 +1227,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Rôles"
     },
     {
       "key": "discord_create_role",
@@ -1315,7 +1329,8 @@
       "tags": [
         "création",
         "discord"
-      ]
+      ],
+      "group": "Rôles"
     },
     {
       "key": "discord_add_role_to_member",
@@ -1403,7 +1418,8 @@
       "tags": [
         "mise-à-jour",
         "discord"
-      ]
+      ],
+      "group": "Rôles"
     },
     {
       "key": "discord_get_user",
@@ -1463,7 +1479,8 @@
       "tags": [
         "lecture",
         "discord"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "discord_get_me",
@@ -1508,7 +1525,8 @@
       "tags": [
         "lecture",
         "discord"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "discord_create_thread",
@@ -1618,7 +1636,8 @@
       "tags": [
         "création",
         "discord"
-      ]
+      ],
+      "group": "Fils de discussion"
     },
     {
       "key": "discord_list_threads",
@@ -1678,7 +1697,8 @@
       "tags": [
         "liste",
         "discord"
-      ]
+      ],
+      "group": "Fils de discussion"
     },
     {
       "key": "discord_execute_webhook",
@@ -1774,7 +1794,8 @@
       "tags": [
         "envoi",
         "discord"
-      ]
+      ],
+      "group": "Webhooks"
     },
     {
       "key": "discord_webhook_event",
@@ -1818,7 +1839,8 @@
       "tags": [
         "événement",
         "discord"
-      ]
+      ],
+      "group": "Événements"
     }
   ],
   "variables": {

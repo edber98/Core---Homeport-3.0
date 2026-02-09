@@ -1103,7 +1103,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_orders_list",
@@ -1174,7 +1175,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_order_create",
@@ -1250,7 +1252,8 @@
       "tags": [
         "Shopify",
         "création"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_order_update",
@@ -1335,7 +1338,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_order_cancel",
@@ -1402,7 +1406,8 @@
       "tags": [
         "Shopify",
         "suppression"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_order_close",
@@ -1460,7 +1465,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_orders_count",
@@ -1513,7 +1519,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "shopify_product_get",
@@ -1571,7 +1578,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_products_list",
@@ -1651,7 +1659,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_product_create",
@@ -1745,7 +1754,8 @@
       "tags": [
         "Shopify",
         "création"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_product_update",
@@ -1848,7 +1858,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_product_delete",
@@ -1906,7 +1917,8 @@
       "tags": [
         "Shopify",
         "suppression"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_products_count",
@@ -1968,7 +1980,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "shopify_customer_get",
@@ -2026,7 +2039,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "shopify_customers_list",
@@ -2088,7 +2102,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "shopify_customer_create",
@@ -2173,7 +2188,8 @@
       "tags": [
         "Shopify",
         "création"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "shopify_customer_update",
@@ -2267,7 +2283,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "shopify_customers_search",
@@ -2334,7 +2351,8 @@
       "tags": [
         "Shopify",
         "recherche"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "shopify_inventory_levels_list",
@@ -2396,7 +2414,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Inventaire"
     },
     {
       "key": "shopify_inventory_adjust",
@@ -2482,7 +2501,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Inventaire"
     },
     {
       "key": "shopify_inventory_set",
@@ -2568,7 +2588,8 @@
       "tags": [
         "Shopify",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Inventaire"
     },
     {
       "key": "shopify_collection_get",
@@ -2626,7 +2647,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Collections"
     },
     {
       "key": "shopify_collections_list",
@@ -2688,7 +2710,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Collections"
     },
     {
       "key": "shopify_fulfillment_create",
@@ -2773,7 +2796,8 @@
       "tags": [
         "Shopify",
         "création"
-      ]
+      ],
+      "group": "Expéditions"
     },
     {
       "key": "shopify_fulfillments_list",
@@ -2840,7 +2864,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Expéditions"
     },
     {
       "key": "shopify_variants_list",
@@ -2907,7 +2932,8 @@
       "tags": [
         "Shopify",
         "liste"
-      ]
+      ],
+      "group": "Variantes"
     },
     {
       "key": "shopify_variant_get",
@@ -2965,7 +2991,8 @@
       "tags": [
         "Shopify",
         "lecture"
-      ]
+      ],
+      "group": "Variantes"
     },
     {
       "key": "shopify_webhook_event",
@@ -3010,7 +3037,8 @@
       "tags": [
         "Shopify",
         "événement"
-      ]
+      ],
+      "group": "Déclencheur"
     }
   ]
 }

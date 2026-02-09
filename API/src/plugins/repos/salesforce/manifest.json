@@ -1264,7 +1264,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Comptes"
     },
     {
       "key": "salesforce_account_get",
@@ -1322,7 +1323,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Comptes"
     },
     {
       "key": "salesforce_account_update",
@@ -1416,7 +1418,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Comptes"
     },
     {
       "key": "salesforce_account_delete",
@@ -1474,7 +1477,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Comptes"
     },
     {
       "key": "salesforce_accounts_list",
@@ -1527,7 +1531,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Comptes"
     },
     {
       "key": "salesforce_contact_create",
@@ -1621,7 +1626,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_contact_get",
@@ -1679,7 +1685,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_contact_update",
@@ -1773,7 +1780,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_contact_delete",
@@ -1831,7 +1839,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_contacts_list",
@@ -1884,7 +1893,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_contact_search",
@@ -1951,7 +1961,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Contacts"
     },
     {
       "key": "salesforce_opportunity_create",
@@ -2055,7 +2066,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Opportunités"
     },
     {
       "key": "salesforce_opportunity_get",
@@ -2113,7 +2125,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Opportunités"
     },
     {
       "key": "salesforce_opportunity_update",
@@ -2207,7 +2220,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Opportunités"
     },
     {
       "key": "salesforce_opportunity_delete",
@@ -2265,7 +2279,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Opportunités"
     },
     {
       "key": "salesforce_opportunities_list",
@@ -2318,7 +2333,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Opportunités"
     },
     {
       "key": "salesforce_lead_create",
@@ -2426,7 +2442,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_lead_get",
@@ -2484,7 +2501,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_lead_update",
@@ -2587,7 +2605,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_lead_delete",
@@ -2645,7 +2664,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_leads_list",
@@ -2698,7 +2718,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_lead_convert",
@@ -2783,7 +2804,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "salesforce_case_create",
@@ -2877,7 +2899,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Cases"
     },
     {
       "key": "salesforce_case_get",
@@ -2935,7 +2958,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Cases"
     },
     {
       "key": "salesforce_case_update",
@@ -3020,7 +3044,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Cases"
     },
     {
       "key": "salesforce_cases_list",
@@ -3073,7 +3098,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Cases"
     },
     {
       "key": "salesforce_task_create",
@@ -3176,7 +3202,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tâches"
     },
     {
       "key": "salesforce_task_get",
@@ -3234,7 +3261,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tâches"
     },
     {
       "key": "salesforce_tasks_list",
@@ -3287,7 +3315,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tâches"
     },
     {
       "key": "salesforce_soql_query",
@@ -3345,7 +3374,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "SOQL"
     },
     {
       "key": "salesforce_webhook_event",
@@ -3388,7 +3418,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

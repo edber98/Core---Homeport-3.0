@@ -1630,7 +1630,8 @@
             ]
           }
         ]
-      }
+      },
+      "iconUrl": "https://cdn.simpleicons.org/stripe"
     }
   ],
   "nodeTemplates": [
@@ -1721,7 +1722,13 @@
             "description": "Metadata au format JSON."
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_customer_get",
@@ -1774,7 +1781,13 @@
             "description": "Identifiant du client (cus_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_customer_update",
@@ -1863,7 +1876,13 @@
             "description": "Nouveau numéro de téléphone."
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_customer_delete",
@@ -1916,7 +1935,13 @@
             "description": "Identifiant du client (cus_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "suppression",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_customers_list",
@@ -1982,7 +2007,13 @@
             "description": "Filtrer par adresse e-mail."
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_product_create",
@@ -2053,7 +2084,13 @@
             "description": "Produit actif (true/false)."
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "group": "Produits",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_product_get",
@@ -2106,7 +2143,13 @@
             "description": "Identifiant du produit (prod_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "group": "Produits",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_product_update",
@@ -2186,7 +2229,13 @@
             "description": "Produit actif (true/false)."
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "group": "Produits",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_products_list",
@@ -2252,7 +2301,13 @@
             "description": "Filtrer par statut actif."
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "group": "Produits",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_price_create",
@@ -2342,7 +2397,13 @@
             "description": "day, week, month, year (vide = paiement unique)."
           }
         ]
-      }
+      },
+      "subtitle": "Prix",
+      "group": "Prix",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_price_get",
@@ -2395,7 +2456,13 @@
             "description": "Identifiant du prix (price_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Prix",
+      "group": "Prix",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_prices_list",
@@ -2470,7 +2537,13 @@
             "description": "Filtrer par statut actif."
           }
         ]
-      }
+      },
+      "subtitle": "Prix",
+      "group": "Prix",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_payment_intent_create",
@@ -2564,7 +2637,13 @@
             "description": "Types de paiement separes par virgule (ex: card)."
           }
         ]
-      }
+      },
+      "subtitle": "Paiements",
+      "group": "Paiements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_payment_intent_get",
@@ -2617,7 +2696,13 @@
             "description": "Identifiant du payment intent (pi_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Paiements",
+      "group": "Paiements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_payment_intent_confirm",
@@ -2679,7 +2764,13 @@
             "description": "Identifiant de la methode de paiement (pm_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Paiements",
+      "group": "Paiements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_payment_intent_cancel",
@@ -2732,7 +2823,13 @@
             "description": "Identifiant du payment intent (pi_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Paiements",
+      "group": "Paiements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_payment_intents_list",
@@ -2798,7 +2895,13 @@
             "description": "Filtrer par client."
           }
         ]
-      }
+      },
+      "subtitle": "Paiements",
+      "group": "Paiements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_subscription_create",
@@ -2874,7 +2977,13 @@
             "description": "Nombre de jours d'essai gratuit."
           }
         ]
-      }
+      },
+      "subtitle": "Abonnements",
+      "group": "Abonnements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_subscription_get",
@@ -2927,7 +3036,13 @@
             "description": "Identifiant de l'abonnement (sub_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Abonnements",
+      "group": "Abonnements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_subscription_update",
@@ -2998,7 +3113,13 @@
             "description": "Timestamp de fin d'essai ou 'now'."
           }
         ]
-      }
+      },
+      "subtitle": "Abonnements",
+      "group": "Abonnements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_subscription_cancel",
@@ -3051,7 +3172,13 @@
             "description": "Identifiant de l'abonnement (sub_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Abonnements",
+      "group": "Abonnements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_subscriptions_list",
@@ -3126,7 +3253,13 @@
             "description": "Filtrer par statut (active, past_due, canceled, etc.)."
           }
         ]
-      }
+      },
+      "subtitle": "Abonnements",
+      "group": "Abonnements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_invoice_create",
@@ -3197,7 +3330,13 @@
             "description": "Avancer automatiquement la facture."
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_invoice_get",
@@ -3250,7 +3389,13 @@
             "description": "Identifiant de la facture (in_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_invoice_finalize",
@@ -3303,7 +3448,13 @@
             "description": "Identifiant de la facture (in_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_invoice_pay",
@@ -3356,7 +3507,13 @@
             "description": "Identifiant de la facture (in_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_invoices_list",
@@ -3431,7 +3588,13 @@
             "description": "Filtrer par statut (draft, open, paid, void, uncollectible)."
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_charge_get",
@@ -3484,7 +3647,13 @@
             "description": "Identifiant de la charge (ch_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Charges",
+      "group": "Charges",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_charges_list",
@@ -3550,7 +3719,13 @@
             "description": "Filtrer par client."
           }
         ]
-      }
+      },
+      "subtitle": "Charges",
+      "group": "Charges",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_refund_create",
@@ -3625,7 +3800,13 @@
             "description": "duplicate, fraudulent, requested_by_customer."
           }
         ]
-      }
+      },
+      "subtitle": "Remboursements",
+      "group": "Remboursements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_refund_get",
@@ -3678,7 +3859,13 @@
             "description": "Identifiant du remboursement (re_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Remboursements",
+      "group": "Remboursements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_refunds_list",
@@ -3744,7 +3931,13 @@
             "description": "Filtrer par charge."
           }
         ]
-      }
+      },
+      "subtitle": "Remboursements",
+      "group": "Remboursements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_checkout_session_create",
@@ -3853,7 +4046,13 @@
             "description": "Identifiant du client (cus_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Checkout",
+      "group": "Checkout",
+      "tags": [
+        "création",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_checkout_session_get",
@@ -3906,7 +4105,13 @@
             "description": "Identifiant de la session (cs_...)."
           }
         ]
-      }
+      },
+      "subtitle": "Checkout",
+      "group": "Checkout",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_checkout_sessions_list",
@@ -3963,7 +4168,13 @@
             "description": "Curseur de pagination."
           }
         ]
-      }
+      },
+      "subtitle": "Checkout",
+      "group": "Checkout",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_balance_get",
@@ -4001,7 +4212,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Solde",
+      "group": "Solde",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
     },
     {
       "key": "stripe_balance_transactions_list",
@@ -4067,7 +4284,13 @@
             "description": "Filtrer par type de transaction."
           }
         ]
-      }
+      },
+      "subtitle": "Solde",
+      "group": "Solde",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
     }
   ]
 }

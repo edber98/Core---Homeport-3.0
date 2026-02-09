@@ -744,7 +744,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Événements"
     },
     {
       "key": "calendly_event_get",
@@ -802,7 +803,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Événements"
     },
     {
       "key": "calendly_event_cancel",
@@ -869,7 +871,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Événements"
     },
     {
       "key": "calendly_event_types_list",
@@ -949,7 +952,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Types d'événements"
     },
     {
       "key": "calendly_event_type_get",
@@ -1007,7 +1011,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Types d'événements"
     },
     {
       "key": "calendly_invitees_list",
@@ -1083,7 +1088,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Invités"
     },
     {
       "key": "calendly_invitee_get",
@@ -1141,7 +1147,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Invités"
     },
     {
       "key": "calendly_user_get_me",
@@ -1184,7 +1191,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "calendly_scheduling_link_create",
@@ -1262,7 +1270,8 @@
             "default": "1"
           }
         ]
-      }
+      },
+      "group": "Liens de planification"
     },
     {
       "key": "calendly_organization_get",
@@ -1305,7 +1314,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Organisation"
     },
     {
       "key": "calendly_organization_members_list",
@@ -1367,7 +1377,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Organisation"
     },
     {
       "key": "calendly_webhook_create",
@@ -1449,7 +1460,8 @@
             "default": "user"
           }
         ]
-      }
+      },
+      "group": "Webhooks"
     },
     {
       "key": "calendly_webhooks_list",
@@ -1503,7 +1515,8 @@
             "default": "user"
           }
         ]
-      }
+      },
+      "group": "Webhooks"
     },
     {
       "key": "calendly_webhook_delete",
@@ -1561,7 +1574,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Webhooks"
     },
     {
       "key": "calendly_webhook_event",
@@ -1594,7 +1608,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

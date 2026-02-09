@@ -135,7 +135,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_send_template",
@@ -228,7 +229,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Templates"
     },
     {
       "key": "wa_send_image",
@@ -315,7 +317,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_send_document",
@@ -411,7 +414,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_send_location",
@@ -517,7 +521,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_send_contact",
@@ -604,7 +609,8 @@
       "tags": [
         "envoi",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_mark_read",
@@ -664,7 +670,8 @@
       "tags": [
         "mise-à-jour",
         "whatsapp"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "wa_list_templates",
@@ -734,7 +741,8 @@
       "tags": [
         "liste",
         "whatsapp"
-      ]
+      ],
+      "group": "Templates"
     },
     {
       "key": "wa_upload_media",
@@ -817,7 +825,8 @@
       "tags": [
         "création",
         "whatsapp"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wa_get_media",
@@ -877,7 +886,8 @@
       "tags": [
         "lecture",
         "whatsapp"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wa_list_phone_numbers",
@@ -937,7 +947,8 @@
       "tags": [
         "liste",
         "whatsapp"
-      ]
+      ],
+      "group": "Numéros"
     },
     {
       "key": "wa_get_business_profile",
@@ -982,7 +993,8 @@
       "tags": [
         "lecture",
         "whatsapp"
-      ]
+      ],
+      "group": "Profil"
     },
     {
       "key": "wa_update_business_profile",
@@ -1073,7 +1085,8 @@
       "tags": [
         "mise-à-jour",
         "whatsapp"
-      ]
+      ],
+      "group": "Profil"
     },
     {
       "key": "wa_webhook_event",
@@ -1117,7 +1130,8 @@
       "tags": [
         "événement",
         "whatsapp"
-      ]
+      ],
+      "group": "Événements"
     }
   ],
   "variables": {

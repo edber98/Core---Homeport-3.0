@@ -1948,7 +1948,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_customer_get",
@@ -2001,7 +2007,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_customer_update",
@@ -2126,7 +2138,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
     },
     {
       "key": "atera_customer_delete",
@@ -2179,7 +2197,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
     },
     {
       "key": "atera_customers_list",
@@ -2236,7 +2260,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "group": "Clients",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_contact_create",
@@ -2343,7 +2373,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_contact_get",
@@ -2396,7 +2432,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_contact_update",
@@ -2485,7 +2527,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
     },
     {
       "key": "atera_contact_delete",
@@ -2538,7 +2586,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
     },
     {
       "key": "atera_contacts_list",
@@ -2595,7 +2649,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_ticket_create",
@@ -2725,7 +2785,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_ticket_get",
@@ -2778,7 +2844,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_ticket_update",
@@ -2885,7 +2957,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
     },
     {
       "key": "atera_ticket_delete",
@@ -2938,7 +3016,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
     },
     {
       "key": "atera_tickets_list",
@@ -3013,7 +3097,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_ticket_add_comment",
@@ -3107,7 +3197,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_agent_get",
@@ -3160,7 +3256,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Agents",
+      "group": "Agents",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_agents_list",
@@ -3217,7 +3319,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Agents",
+      "group": "Agents",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_agent_delete",
@@ -3270,7 +3378,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Agents",
+      "group": "Agents",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
     },
     {
       "key": "atera_alert_get",
@@ -3323,7 +3437,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Alertes",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_alerts_list",
@@ -3389,7 +3509,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Alertes",
+      "group": "Alertes",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_alert_close",
@@ -3442,7 +3568,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Alertes",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_alerts_count",
@@ -3480,7 +3612,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Alertes",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_device_get",
@@ -3533,7 +3671,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Appareils",
+      "group": "Appareils",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_devices_list",
@@ -3599,7 +3743,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Appareils",
+      "group": "Appareils",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_device_by_agent",
@@ -3670,7 +3820,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Appareils",
+      "group": "Appareils",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_contract_create",
@@ -3773,7 +3929,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contrats",
+      "group": "Contrats",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_contract_get",
@@ -3826,7 +3988,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contrats",
+      "group": "Contrats",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_contracts_list",
@@ -3883,7 +4051,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contrats",
+      "group": "Contrats",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_contract_delete",
@@ -3936,7 +4110,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contrats",
+      "group": "Contrats",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
     },
     {
       "key": "atera_kb_create",
@@ -4011,7 +4191,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Base de connaissances",
+      "group": "Base de connaissances",
+      "tags": [
+        "création",
+        "atera"
+      ]
     },
     {
       "key": "atera_kb_get",
@@ -4064,7 +4250,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Base de connaissances",
+      "group": "Base de connaissances",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_kb_list",
@@ -4121,7 +4313,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Base de connaissances",
+      "group": "Base de connaissances",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_department_get",
@@ -4174,7 +4372,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Départements",
+      "group": "Départements",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_departments_list",
@@ -4231,7 +4435,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Départements",
+      "group": "Départements",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_rates_get",
@@ -4288,7 +4498,14 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tarifs",
+      "group": "Tarifs",
+      "tags": [
+        "lecture",
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_billing_contact_get",
@@ -4341,7 +4558,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_invoice_get",
@@ -4398,7 +4621,14 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_custom_value_get",
@@ -4451,7 +4681,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Champs personnalisés",
+      "group": "Champs personnalisés",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
     },
     {
       "key": "atera_custom_values_list",
@@ -4489,7 +4725,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Champs personnalisés",
+      "group": "Champs personnalisés",
+      "tags": [
+        "liste",
+        "atera"
+      ]
     },
     {
       "key": "atera_custom_value_update",
@@ -4570,7 +4812,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Champs personnalisés",
+      "group": "Champs personnalisés",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
     }
   ]
 }

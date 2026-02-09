@@ -1,90 +1,421 @@
 {
-  "repo": { "name": "openproject", "type": "local", "label": "OpenProject" },
+  "repo": {
+    "name": "openproject",
+    "type": "local",
+    "label": "OpenProject"
+  },
   "variables": {
     "op_project": {
       "title": "Projet OpenProject",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant numérique du projet.", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du projet.", "col": { "xs": 24 } },
-        { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique du projet.", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut actuel du projet.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "description": "Description du projet (markdown).", "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant numérique du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "identifier",
+          "label": "Identifiant",
+          "description": "Identifiant unique du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut actuel du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du projet (markdown).",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "op_projects": {
       "title": "Projets",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "section", "title": "Projets", "description": "Liste des projets", "mode": "array", "key": "projects", "array": { "initialItems": 0, "minItems": 0 },
+        {
+          "type": "section",
+          "title": "Projets",
+          "description": "Liste des projets",
+          "mode": "array",
+          "key": "projects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant numérique du projet.", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "description": "Nom du projet.", "col": { "xs": 24 } },
-            { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique du projet.", "col": { "xs": 24 } },
-            { "type": "text", "key": "status", "label": "Statut", "description": "Statut du projet.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "description", "label": "Description", "description": "Description du projet.", "col": { "xs": 24 } }
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant numérique du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "identifier",
+              "label": "Identifiant",
+              "description": "Identifiant unique du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du projet.",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "op_task": {
       "title": "Tâche OpenProject",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de la tâche.", "col": { "xs": 24 } },
-        { "type": "text", "key": "subject", "label": "Sujet", "description": "Titre/sujet de la tâche.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "description": "Description détaillée (markdown).", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de la tâche.", "col": { "xs": 24 } },
-        { "type": "text", "key": "priority", "label": "Priorité", "description": "Niveau de priorité.", "col": { "xs": 24 } },
-        { "type": "text", "key": "startDate", "label": "Début", "description": "Date de début (YYYY-MM-DD).", "col": { "xs": 24 } },
-        { "type": "text", "key": "dueDate", "label": "Fin", "description": "Date d\u2019échéance (YYYY-MM-DD).", "col": { "xs": 24 } },
-        { "type": "text", "key": "project", "label": "Projet", "description": "Projet associé.", "col": { "xs": 24 } },
-        { "type": "text", "key": "assignee", "label": "Assigné", "description": "Personne assignée.", "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Titre/sujet de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description détaillée (markdown).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Niveau de priorité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startDate",
+          "label": "Début",
+          "description": "Date de début (YYYY-MM-DD).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dueDate",
+          "label": "Fin",
+          "description": "Date d’échéance (YYYY-MM-DD).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project",
+          "label": "Projet",
+          "description": "Projet associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assignee",
+          "label": "Assigné",
+          "description": "Personne assignée.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "op_tasks": {
       "title": "Tâches",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "section", "title": "Tâches", "description": "Liste des tâches", "mode": "array", "key": "tasks", "array": { "initialItems": 0, "minItems": 0 },
+        {
+          "type": "section",
+          "title": "Tâches",
+          "description": "Liste des tâches",
+          "mode": "array",
+          "key": "tasks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de la tâche.", "col": { "xs": 24 } },
-            { "type": "text", "key": "subject", "label": "Sujet", "description": "Titre/sujet de la tâche.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "description", "label": "Description", "description": "Description de la tâche.", "col": { "xs": 24 } },
-            { "type": "text", "key": "status", "label": "Statut", "description": "Statut de la tâche.", "col": { "xs": 24 } },
-            { "type": "text", "key": "priority", "label": "Priorité", "description": "Niveau de priorité.", "col": { "xs": 24 } },
-            { "type": "text", "key": "startDate", "label": "Début", "description": "Date de début (YYYY-MM-DD).", "col": { "xs": 24 } },
-            { "type": "text", "key": "dueDate", "label": "Fin", "description": "Date d\u2019échéance (YYYY-MM-DD).", "col": { "xs": 24 } },
-            { "type": "text", "key": "project", "label": "Projet", "description": "Projet associé.", "col": { "xs": 24 } },
-            { "type": "text", "key": "assignee", "label": "Assigné", "description": "Personne assignée.", "col": { "xs": 24 } }
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Titre/sujet de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Niveau de priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "startDate",
+              "label": "Début",
+              "description": "Date de début (YYYY-MM-DD).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dueDate",
+              "label": "Fin",
+              "description": "Date d’échéance (YYYY-MM-DD).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "project",
+              "label": "Projet",
+              "description": "Projet associé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignee",
+              "label": "Assigné",
+              "description": "Personne assignée.",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "op_user": {
       "title": "Utilisateur",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de l\u2019utilisateur." },
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom complet de l\u2019utilisateur." },
-        { "type": "text", "key": "email", "label": "Email", "description": "Adresse e-mail." },
-        { "type": "text", "key": "login", "label": "Login", "description": "Identifiant de connexion." }
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l’utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom complet de l’utilisateur."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail."
+        },
+        {
+          "type": "text",
+          "key": "login",
+          "label": "Login",
+          "description": "Identifiant de connexion."
+        }
       ]
     },
     "op_users": {
       "title": "Utilisateurs",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "section", "title": "Utilisateurs", "description": "Liste des utilisateurs", "mode": "array", "key": "users", "array": { "initialItems": 0, "minItems": 0 },
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant de l\u2019utilisateur.", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "description": "Nom complet.", "col": { "xs": 24 } },
-            { "type": "text", "key": "email", "label": "Email", "description": "Adresse e-mail.", "col": { "xs": 24 } },
-            { "type": "text", "key": "login", "label": "Login", "description": "Identifiant de connexion.", "col": { "xs": 24 } }
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de l’utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom complet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse e-mail.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "login",
+              "label": "Login",
+              "description": "Identifiant de connexion.",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     }
@@ -96,16 +427,51 @@
       "title": "OpenProject",
       "iconClass": "fa-solid fa-diagram-project",
       "color": "#1f6feb",
-      "iconUrl": "https://www.openproject.org/assets/images/press/openproject-logo-centered-white-transparent-1-7f8083b8.png",
-      "tags": ["openproject", "project", "tasks"],
-      "categories": ["Project Management"],
+      "iconUrl": "https://cdn.simpleicons.org/openproject",
+      "tags": [
+        "openproject",
+        "project",
+        "tasks"
+      ],
+      "categories": [
+        "Project Management"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants OpenProject",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "baseUrl", "label": "Base URL", "col": { "xs": 24 }, "default": "https://openproject.c4rbon.group/api/v3", "validators": [{"type":"required"}] },
-          { "type": "text", "key": "apiKey", "label": "API Key", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] }
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://openproject.c4rbon.group/api/v3",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
       }
     }
@@ -115,24 +481,83 @@
       "key": "create_openproject_project",
       "name": "createOpenProjectProject",
       "schemaVersion": 2,
-      "title": "Creer un projet",
+      "title": "Créer un projet",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_project" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_project"
+        }
+      ],
       "authorize_skip_error": true,
-      "description": "Cree un projet dans OpenProject.",
+      "description": "Crée un projet dans OpenProject.",
       "args": {
-        "title": "Creer un projet",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Créer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "name", "label": "Nom du projet", "description": "Nom lisible du projet.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "identifier", "label": "Identifiant", "description": "Identifiant unique (slug).", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Description du projet en markdown.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du projet",
+            "description": "Nom lisible du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "identifier",
+            "label": "Identifiant",
+            "description": "Identifiant unique (slug).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description (markdown)",
+            "description": "Description du projet en markdown.",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
-      }
+      },
+      "subtitle": "Projets",
+      "group": "Projets",
+      "tags": [
+        "création",
+        "OpenProject"
+      ]
     },
     {
       "key": "list_openproject_projects",
@@ -143,44 +568,184 @@
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_projects" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_projects"
+        }
+      ],
       "authorize_skip_error": true,
       "description": "Liste tous les projets disponibles sur OpenProject.",
       "args": {
         "title": "Lister les projets",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": []
-      }
+      },
+      "subtitle": "Projets",
+      "group": "Projets",
+      "tags": [
+        "liste",
+        "OpenProject"
+      ]
     },
     {
       "key": "add_openproject_task",
       "name": "addOpenProjectTask",
       "schemaVersion": 2,
-      "title": "Ajouter une tache",
+      "title": "Ajouter une tâche",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_task" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_task"
+        }
+      ],
       "authorize_skip_error": true,
-      "description": "Ajoute une nouvelle tache a un projet OpenProject.",
+      "description": "Ajoute une nouvelle tâche à un projet OpenProject.",
       "args": {
-        "title": "Ajouter une tache",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Ajouter une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "title", "label": "Titre", "description": "Titre de la tâche.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Description détaillée (markdown).", "col": { "xs": 24 } },
-          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "description": "Date de début prévue.", "col": { "xs": 24 } },
-          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "description": "Date d’échéance.", "col": { "xs": 24 } },
-          { "type": "number", "key": "type_id", "label": "Type ID", "description": "Identifiant du type de tâche.", "col": { "xs": 24 }, "default": 1 },
-          { "type": "number", "key": "status_id", "label": "Statut ID", "description": "Identifiant du statut.", "col": { "xs": 24 }, "default": 1 },
-          { "type": "number", "key": "priority_id", "label": "Priorite ID", "description": "Identifiant de priorité.", "col": { "xs": 24 }, "default": 8 },
-          { "type": "number", "key": "project_id", "label": "Projet ID", "description": "Identifiant du projet.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "user_id", "label": "Assigne ID", "description": "Identifiant de l’assigné.", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description (markdown)",
+            "description": "Description détaillée (markdown).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startDate",
+            "label": "Date de debut (YYYY-MM-DD)",
+            "description": "Date de début prévue.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dueDate",
+            "label": "Date limite (YYYY-MM-DD)",
+            "description": "Date d’échéance.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "type_id",
+            "label": "Type ID",
+            "description": "Identifiant du type de tâche.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "status_id",
+            "label": "Statut ID",
+            "description": "Identifiant du statut.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "priority_id",
+            "label": "Priorite ID",
+            "description": "Identifiant de priorité.",
+            "col": {
+              "xs": 24
+            },
+            "default": 8
+          },
+          {
+            "type": "number",
+            "key": "project_id",
+            "label": "Projet ID",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "user_id",
+            "label": "Assigne ID",
+            "description": "Identifiant de l’assigné.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "création",
+        "OpenProject"
+      ]
     },
     {
       "key": "search_many_openproject_users",
@@ -191,37 +756,102 @@
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_users" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_users"
+        }
+      ],
       "authorize_skip_error": true,
       "description": "Liste les utilisateurs OpenProject.",
       "args": {
         "title": "Lister les utilisateurs",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": []
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "recherche",
+        "OpenProject"
+      ]
     },
     {
       "key": "list_openproject_tasks",
       "name": "listOpenProjectTasks",
       "schemaVersion": 2,
-      "title": "Lister les taches",
+      "title": "Lister les tâches",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_tasks" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_tasks"
+        }
+      ],
       "authorize_skip_error": true,
-      "description": "Liste les taches OpenProject, avec filtres optionnels.",
+      "description": "Liste les tâches OpenProject, avec filtres optionnels.",
       "args": {
-        "title": "Lister les taches",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Lister les tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "number", "key": "project_id", "label": "Projet ID", "col": { "xs": 24 } },
-          { "type": "number", "key": "user_id", "label": "Assigne ID", "col": { "xs": 24 } }
+          {
+            "type": "number",
+            "key": "project_id",
+            "label": "Projet ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "user_id",
+            "label": "Assigne ID",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "liste",
+        "OpenProject"
+      ]
     },
     {
       "key": "list_openproject_task_statuses",
@@ -232,15 +862,40 @@
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_projects" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_projects"
+        }
+      ],
       "authorize_skip_error": true,
-      "description": "Liste les statuts de taches OpenProject.",
+      "description": "Liste les statuts de tâches OpenProject.",
       "args": {
         "title": "Lister les statuts",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": []
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "liste",
+        "OpenProject"
+      ]
     },
     {
       "key": "list_openproject_task_types",
@@ -251,46 +906,170 @@
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:op_task" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_task"
+        }
+      ],
       "authorize_skip_error": true,
-      "description": "Liste les types de taches OpenProject.",
+      "description": "Liste les types de tâches OpenProject.",
       "args": {
         "title": "Lister les types",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": []
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "liste",
+        "OpenProject"
+      ]
     },
     {
       "key": "update_openproject_task",
       "name": "updateOpenProjectTask",
       "schemaVersion": 2,
-      "title": "Modifier une tache",
+      "title": "Modifier une tâche",
       "type": "function",
       "nodeKind": "function",
       "category": "OpenProject",
       "providerKey": "openproject",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
       ],
       "authorize_skip_error": true,
-      "description": "Modifie une tache existante dans OpenProject.",
+      "description": "Modifie une tâche existante dans OpenProject.",
       "args": {
-        "title": "Modifier une tache",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Modifier une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "number", "key": "task_id", "label": "Tache ID", "description": "Identifiant de la tâche à modifier.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "title", "label": "Titre", "description": "Nouveau titre (optionnel).", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "description", "label": "Description (markdown)", "description": "Nouvelle description (markdown).", "col": { "xs": 24 } },
-          { "type": "text", "key": "startDate", "label": "Date de debut (YYYY-MM-DD)", "description": "Nouvelle date de début.", "col": { "xs": 24 } },
-          { "type": "text", "key": "dueDate", "label": "Date limite (YYYY-MM-DD)", "description": "Nouvelle date d’échéance.", "col": { "xs": 24 } },
-          { "type": "number", "key": "type_id", "label": "Type ID", "description": "Identifiant du type (optionnel).", "col": { "xs": 24 } },
-          { "type": "number", "key": "status_id", "label": "Statut ID", "description": "Identifiant du statut (optionnel).", "col": { "xs": 24 } },
-          { "type": "number", "key": "priority_id", "label": "Priorite ID", "description": "Identifiant de priorité (optionnel).", "col": { "xs": 24 } },
-          { "type": "number", "key": "user_id", "label": "Assigne ID", "description": "Identifiant du nouvel assigné (optionnel).", "col": { "xs": 24 } }
+          {
+            "type": "number",
+            "key": "task_id",
+            "label": "Tache ID",
+            "description": "Identifiant de la tâche à modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description (markdown)",
+            "description": "Nouvelle description (markdown).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startDate",
+            "label": "Date de debut (YYYY-MM-DD)",
+            "description": "Nouvelle date de début.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dueDate",
+            "label": "Date limite (YYYY-MM-DD)",
+            "description": "Nouvelle date d’échéance.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "type_id",
+            "label": "Type ID",
+            "description": "Identifiant du type (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "status_id",
+            "label": "Statut ID",
+            "description": "Identifiant du statut (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority_id",
+            "label": "Priorite ID",
+            "description": "Identifiant de priorité (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "user_id",
+            "label": "Assigne ID",
+            "description": "Identifiant du nouvel assigné (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "mise-à-jour",
+        "OpenProject"
+      ]
     }
   ]
 }

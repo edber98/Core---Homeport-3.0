@@ -60,7 +60,8 @@
             ]
           }
         ]
-      }
+      },
+      "iconUrl": "https://cdn.simpleicons.org/gitlab"
     }
   ],
   "nodeTemplates": [
@@ -123,7 +124,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projet",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_projects_list",
@@ -222,7 +228,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projet",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_project_create",
@@ -340,7 +351,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projet",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_project_update",
@@ -457,7 +473,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projet",
+      "tags": [
+        "mise-à-jour",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_project_delete",
@@ -518,7 +539,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projet",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_issue_create",
@@ -668,7 +694,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Issue",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_issue_get",
@@ -748,7 +779,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Issue",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_issue_update",
@@ -908,7 +944,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Issue",
+      "tags": [
+        "mise-à-jour",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_issues_list",
@@ -1040,7 +1081,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Issue",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_issue_note_create",
@@ -1139,7 +1185,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Issue",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_mr_create",
@@ -1299,7 +1350,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Merge Request",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_mr_get",
@@ -1379,7 +1435,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Merge Request",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_mr_update",
@@ -1525,7 +1586,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Merge Request",
+      "tags": [
+        "mise-à-jour",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_mrs_list",
@@ -1661,7 +1727,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Merge Request",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_mr_merge",
@@ -1783,7 +1854,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Merge Request",
+      "tags": [
+        "mise-à-jour",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_pipelines_list",
@@ -1913,7 +1989,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pipeline",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_pipeline_get",
@@ -1993,7 +2074,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pipeline",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_pipeline_create",
@@ -2073,7 +2159,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pipeline",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_pipeline_retry",
@@ -2153,7 +2244,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pipeline",
+      "tags": [
+        "mise-à-jour",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_branches_list",
@@ -2243,7 +2339,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Branche",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_branch_create",
@@ -2342,7 +2443,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Branche",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_branch_delete",
@@ -2422,7 +2528,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Branche",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_commits_list",
@@ -2540,7 +2651,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Commit",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_commit_get",
@@ -2620,7 +2736,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Commit",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_releases_list",
@@ -2696,7 +2817,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Release",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_release_create",
@@ -2804,7 +2930,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Release",
+      "tags": [
+        "création",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_user_get",
@@ -2860,7 +2991,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Utilisateur",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_users_list",
@@ -2931,7 +3067,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Utilisateur",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_groups_list",
@@ -3002,7 +3143,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Groupe",
+      "tags": [
+        "liste",
+        "GitLab"
+      ]
     },
     {
       "key": "gitlab_group_get",
@@ -3063,7 +3209,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Groupe",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ]
     }
   ],
   "variables": {

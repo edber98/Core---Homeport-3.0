@@ -472,7 +472,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Profil"
     },
     {
       "key": "linkedin_create_text_post",
@@ -564,7 +565,8 @@
             "default": "PUBLIC"
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "linkedin_create_image_post",
@@ -674,7 +676,8 @@
             "default": "PUBLIC"
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "linkedin_create_article_post",
@@ -793,7 +796,8 @@
             "default": "PUBLIC"
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "linkedin_list_posts",
@@ -860,7 +864,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "linkedin_delete_post",
@@ -917,7 +922,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "linkedin_get_organization",
@@ -974,7 +980,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "linkedin_list_org_posts",
@@ -1041,7 +1048,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "linkedin_create_comment",
@@ -1126,7 +1134,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "linkedin_list_comments",
@@ -1183,7 +1192,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "linkedin_list_reactions",
@@ -1240,7 +1250,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Réactions"
     }
   ]
 }

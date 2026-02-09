@@ -1404,7 +1404,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "qb_customer_get",
@@ -1462,7 +1463,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "qb_customer_update",
@@ -1556,7 +1558,8 @@
       "tags": [
         "mise-à-jour",
         "quickbooks"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "qb_customers_list",
@@ -1618,7 +1621,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "qb_customer_query",
@@ -1676,7 +1680,8 @@
       "tags": [
         "recherche",
         "quickbooks"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "qb_invoice_create",
@@ -1761,7 +1766,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_invoice_get",
@@ -1819,7 +1825,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_invoice_update",
@@ -1909,7 +1916,8 @@
       "tags": [
         "mise-à-jour",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_invoice_delete",
@@ -1981,7 +1989,8 @@
       "tags": [
         "suppression",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_invoices_list",
@@ -2043,7 +2052,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_invoice_send_email",
@@ -2110,7 +2120,8 @@
       "tags": [
         "envoi",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "qb_payment_create",
@@ -2200,7 +2211,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Paiements"
     },
     {
       "key": "qb_payment_get",
@@ -2258,7 +2270,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Paiements"
     },
     {
       "key": "qb_payments_list",
@@ -2320,7 +2333,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Paiements"
     },
     {
       "key": "qb_item_create",
@@ -2423,7 +2437,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "qb_item_get",
@@ -2481,7 +2496,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "qb_item_update",
@@ -2580,7 +2596,8 @@
       "tags": [
         "mise-à-jour",
         "quickbooks"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "qb_items_list",
@@ -2642,7 +2659,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "qb_vendor_create",
@@ -2727,7 +2745,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "qb_vendor_get",
@@ -2785,7 +2804,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "qb_vendors_list",
@@ -2847,7 +2867,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "qb_bill_create",
@@ -2932,7 +2953,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures fournisseurs"
     },
     {
       "key": "qb_bill_get",
@@ -2990,7 +3012,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures fournisseurs"
     },
     {
       "key": "qb_bills_list",
@@ -3052,7 +3075,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Factures fournisseurs"
     },
     {
       "key": "qb_account_get",
@@ -3110,7 +3134,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Comptes"
     },
     {
       "key": "qb_accounts_list",
@@ -3172,7 +3197,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Comptes"
     },
     {
       "key": "qb_report_profit_loss",
@@ -3234,7 +3260,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Rapports"
     },
     {
       "key": "qb_report_balance_sheet",
@@ -3296,7 +3323,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Rapports"
     },
     {
       "key": "qb_estimate_create",
@@ -3381,7 +3409,8 @@
       "tags": [
         "création",
         "quickbooks"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "qb_estimate_get",
@@ -3439,7 +3468,8 @@
       "tags": [
         "lecture",
         "quickbooks"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "qb_estimates_list",
@@ -3501,7 +3531,8 @@
       "tags": [
         "liste",
         "quickbooks"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "qb_webhook_event",
@@ -3544,7 +3575,8 @@
       "tags": [
         "événement",
         "quickbooks"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

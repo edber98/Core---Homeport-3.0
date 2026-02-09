@@ -1299,7 +1299,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_deal_get",
@@ -1357,7 +1358,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_deal_update",
@@ -1451,7 +1453,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_deal_delete",
@@ -1509,7 +1512,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_deals_list",
@@ -1571,7 +1575,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_deal_search",
@@ -1638,7 +1643,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Deals"
     },
     {
       "key": "pipedrive_person_create",
@@ -1723,7 +1729,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_person_get",
@@ -1781,7 +1788,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_person_update",
@@ -1866,7 +1874,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_person_delete",
@@ -1924,7 +1933,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_persons_list",
@@ -1986,7 +1996,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_person_search",
@@ -2053,7 +2064,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Personnes"
     },
     {
       "key": "pipedrive_organization_create",
@@ -2120,7 +2132,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "pipedrive_organization_get",
@@ -2178,7 +2191,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "pipedrive_organization_update",
@@ -2254,7 +2268,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "pipedrive_organization_delete",
@@ -2312,7 +2327,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "pipedrive_organizations_list",
@@ -2374,7 +2390,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Organisations"
     },
     {
       "key": "pipedrive_activity_create",
@@ -2491,7 +2508,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Activités"
     },
     {
       "key": "pipedrive_activity_get",
@@ -2549,7 +2567,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Activités"
     },
     {
       "key": "pipedrive_activity_update",
@@ -2643,7 +2662,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Activités"
     },
     {
       "key": "pipedrive_activity_delete",
@@ -2701,7 +2721,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Activités"
     },
     {
       "key": "pipedrive_activities_list",
@@ -2763,7 +2784,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Activités"
     },
     {
       "key": "pipedrive_pipelines_list",
@@ -2806,7 +2828,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Pipelines"
     },
     {
       "key": "pipedrive_stages_list",
@@ -2859,7 +2882,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Étapes"
     },
     {
       "key": "pipedrive_note_create",
@@ -2944,7 +2968,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Notes"
     },
     {
       "key": "pipedrive_notes_list",
@@ -3006,7 +3031,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Notes"
     },
     {
       "key": "pipedrive_products_list",
@@ -3068,7 +3094,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Produits"
     },
     {
       "key": "pipedrive_users_list",
@@ -3111,7 +3138,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "pipedrive_webhook_event",
@@ -3154,7 +3182,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

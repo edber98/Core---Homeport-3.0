@@ -889,7 +889,8 @@
       "tags": [
         "création",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_contact_get",
@@ -947,7 +948,8 @@
       "tags": [
         "lecture",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_contact_update",
@@ -1041,7 +1043,8 @@
       "tags": [
         "mise-à-jour",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_contact_delete",
@@ -1099,7 +1102,8 @@
       "tags": [
         "suppression",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_contacts_list",
@@ -1161,7 +1165,8 @@
       "tags": [
         "liste",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_contacts_import",
@@ -1233,7 +1238,8 @@
       "tags": [
         "importation",
         "brevo"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "brevo_list_create",
@@ -1305,7 +1311,8 @@
       "tags": [
         "création",
         "brevo"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "brevo_list_get",
@@ -1363,7 +1370,8 @@
       "tags": [
         "lecture",
         "brevo"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "brevo_lists_list",
@@ -1425,7 +1433,8 @@
       "tags": [
         "liste",
         "brevo"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "brevo_list_add_contacts",
@@ -1497,7 +1506,8 @@
       "tags": [
         "mise-à-jour",
         "brevo"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "brevo_campaign_create",
@@ -1629,7 +1639,8 @@
       "tags": [
         "création",
         "brevo"
-      ]
+      ],
+      "group": "Campagnes"
     },
     {
       "key": "brevo_campaign_get",
@@ -1687,7 +1698,8 @@
       "tags": [
         "lecture",
         "brevo"
-      ]
+      ],
+      "group": "Campagnes"
     },
     {
       "key": "brevo_campaigns_list",
@@ -1776,7 +1788,8 @@
       "tags": [
         "liste",
         "brevo"
-      ]
+      ],
+      "group": "Campagnes"
     },
     {
       "key": "brevo_campaign_send_test",
@@ -1848,7 +1861,8 @@
       "tags": [
         "envoi",
         "brevo"
-      ]
+      ],
+      "group": "Campagnes"
     },
     {
       "key": "brevo_campaign_send_now",
@@ -1906,7 +1920,8 @@
       "tags": [
         "envoi",
         "brevo"
-      ]
+      ],
+      "group": "Campagnes"
     },
     {
       "key": "brevo_transactional_send",
@@ -2028,7 +2043,8 @@
       "tags": [
         "envoi",
         "brevo"
-      ]
+      ],
+      "group": "Emails transactionnels"
     },
     {
       "key": "brevo_smtp_stats",
@@ -2090,7 +2106,8 @@
       "tags": [
         "lecture",
         "brevo"
-      ]
+      ],
+      "group": "Statistiques"
     },
     {
       "key": "brevo_templates_list",
@@ -2152,7 +2169,8 @@
       "tags": [
         "liste",
         "brevo"
-      ]
+      ],
+      "group": "Templates"
     },
     {
       "key": "brevo_template_get",
@@ -2210,7 +2228,8 @@
       "tags": [
         "lecture",
         "brevo"
-      ]
+      ],
+      "group": "Templates"
     },
     {
       "key": "brevo_senders_list",
@@ -2253,7 +2272,8 @@
       "tags": [
         "liste",
         "brevo"
-      ]
+      ],
+      "group": "Expéditeurs"
     },
     {
       "key": "brevo_webhook_event",
@@ -2321,7 +2341,8 @@
       "tags": [
         "événement",
         "brevo"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

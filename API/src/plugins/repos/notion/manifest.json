@@ -959,7 +959,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_page_get",
@@ -1017,7 +1018,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_page_update",
@@ -1089,7 +1091,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_page_archive",
@@ -1147,7 +1150,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_page_list_children",
@@ -1214,7 +1218,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_database_create",
@@ -1300,7 +1305,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Bases de données"
     },
     {
       "key": "notion_database_get",
@@ -1358,7 +1364,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Bases de données"
     },
     {
       "key": "notion_database_query",
@@ -1443,7 +1450,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Bases de données"
     },
     {
       "key": "notion_database_update",
@@ -1519,7 +1527,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Bases de données"
     },
     {
       "key": "notion_block_get",
@@ -1577,7 +1586,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Blocs"
     },
     {
       "key": "notion_block_list_children",
@@ -1644,7 +1654,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Blocs"
     },
     {
       "key": "notion_block_append",
@@ -1716,7 +1727,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Blocs"
     },
     {
       "key": "notion_block_update",
@@ -1788,7 +1800,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Blocs"
     },
     {
       "key": "notion_block_delete",
@@ -1846,7 +1859,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Blocs"
     },
     {
       "key": "notion_user_get",
@@ -1904,7 +1918,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "notion_users_list",
@@ -1957,7 +1972,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "notion_search",
@@ -2033,7 +2049,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Recherche"
     },
     {
       "key": "notion_comment_create",
@@ -2109,7 +2126,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "notion_comments_list",
@@ -2176,7 +2194,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "notion_webhook_event",
@@ -2221,7 +2240,8 @@
             "default": "/notion"
           }
         ]
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

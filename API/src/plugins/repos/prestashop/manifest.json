@@ -882,7 +882,8 @@
       "tags": [
         "PrestaShop",
         "lecture"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "ps_orders_list",
@@ -944,7 +945,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "ps_product_get",
@@ -1002,7 +1004,8 @@
       "tags": [
         "PrestaShop",
         "lecture"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "ps_products_list",
@@ -1064,7 +1067,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "ps_product_create",
@@ -1154,7 +1158,8 @@
       "tags": [
         "PrestaShop",
         "création"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "ps_product_update",
@@ -1248,7 +1253,8 @@
       "tags": [
         "PrestaShop",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "ps_customer_get",
@@ -1306,7 +1312,8 @@
       "tags": [
         "PrestaShop",
         "lecture"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "ps_customers_list",
@@ -1368,7 +1375,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "ps_customer_create",
@@ -1468,7 +1476,8 @@
       "tags": [
         "PrestaShop",
         "création"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "ps_category_get",
@@ -1526,7 +1535,8 @@
       "tags": [
         "PrestaShop",
         "lecture"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "ps_categories_list",
@@ -1588,7 +1598,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "ps_cart_rule_get",
@@ -1646,7 +1657,8 @@
       "tags": [
         "PrestaShop",
         "lecture"
-      ]
+      ],
+      "group": "Règles panier"
     },
     {
       "key": "ps_cart_rules_list",
@@ -1708,7 +1720,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Règles panier"
     },
     {
       "key": "ps_cart_rule_create",
@@ -1807,7 +1820,8 @@
       "tags": [
         "PrestaShop",
         "création"
-      ]
+      ],
+      "group": "Règles panier"
     },
     {
       "key": "ps_stock_list",
@@ -1869,7 +1883,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Stock"
     },
     {
       "key": "ps_carriers_list",
@@ -1912,7 +1927,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Transporteurs"
     },
     {
       "key": "ps_manufacturers_list",
@@ -1955,7 +1971,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Fabricants"
     },
     {
       "key": "ps_order_states_list",
@@ -1998,7 +2015,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "ps_suppliers_list",
@@ -2041,7 +2059,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "ps_languages_list",
@@ -2084,7 +2103,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Langues"
     },
     {
       "key": "ps_countries_list",
@@ -2127,7 +2147,8 @@
       "tags": [
         "PrestaShop",
         "liste"
-      ]
+      ],
+      "group": "Pays"
     },
     {
       "key": "ps_webhook_event",
@@ -2172,7 +2193,8 @@
       "tags": [
         "PrestaShop",
         "événement"
-      ]
+      ],
+      "group": "Déclencheur"
     }
   ]
 }

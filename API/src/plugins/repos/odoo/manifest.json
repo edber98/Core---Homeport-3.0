@@ -200,7 +200,12 @@
             "default": false
           }
         ]
-      }
+      },
+      "group": "Partenaire",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_partner_get",
@@ -256,7 +261,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Partenaire",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_partner_update",
@@ -357,7 +367,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Partenaire",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_partner_delete",
@@ -413,7 +428,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Partenaire",
+      "tags": [
+        "suppression",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_partners_list",
@@ -484,7 +504,12 @@
             "default": false
           }
         ]
-      }
+      },
+      "group": "Partenaire",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_product_create",
@@ -591,7 +616,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Produit",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_product_get",
@@ -647,7 +677,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Produit",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_product_update",
@@ -730,7 +765,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Produit",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_product_delete",
@@ -786,7 +826,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Produit",
+      "tags": [
+        "suppression",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_products_list",
@@ -865,7 +910,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Produit",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_sale_order_create",
@@ -939,7 +989,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Ventes",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_sale_order_get",
@@ -995,7 +1050,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Ventes",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_sale_order_confirm",
@@ -1051,7 +1111,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Ventes",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_sale_order_cancel",
@@ -1107,7 +1172,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Ventes",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_sale_orders_list",
@@ -1203,7 +1273,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Ventes",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_purchase_order_create",
@@ -1268,7 +1343,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Achats",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_purchase_order_get",
@@ -1324,7 +1404,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Achats",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_purchase_order_confirm",
@@ -1380,7 +1465,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Achats",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_purchase_orders_list",
@@ -1467,7 +1557,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Achats",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_invoice_create",
@@ -1560,7 +1655,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Factures",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_invoice_get",
@@ -1616,7 +1716,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_invoice_post",
@@ -1672,7 +1777,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Factures",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_invoice_cancel",
@@ -1728,7 +1838,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Factures",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_invoices_list",
@@ -1847,7 +1962,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Factures",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_lead_create",
@@ -1948,7 +2068,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "CRM",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_lead_get",
@@ -2004,7 +2129,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "CRM",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_lead_update",
@@ -2087,7 +2217,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "CRM",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_lead_won",
@@ -2143,7 +2278,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "CRM",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_leads_list",
@@ -2227,7 +2367,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "CRM",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_project_create",
@@ -2301,7 +2446,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Projets",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_project_get",
@@ -2357,7 +2507,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Projets",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_task_create",
@@ -2463,7 +2618,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tâches",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_task_update",
@@ -2555,7 +2715,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tâches",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_tasks_list",
@@ -2625,7 +2790,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tâches",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_stock_picking_create",
@@ -2699,7 +2869,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Stock",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_stock_picking_get",
@@ -2755,7 +2930,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Stock",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_stock_quant_list",
@@ -2825,7 +3005,12 @@
             "default": 50
           }
         ]
-      }
+      },
+      "group": "Stock",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_stock_pickings_list",
@@ -2921,7 +3106,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Stock",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_ticket_create",
@@ -3032,7 +3222,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Helpdesk",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_ticket_get",
@@ -3088,7 +3283,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Helpdesk",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_ticket_update",
@@ -3198,7 +3398,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Helpdesk",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_ticket_close",
@@ -3254,7 +3459,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Helpdesk",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_tickets_list",
@@ -3355,7 +3565,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Helpdesk",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_employee_create",
@@ -3447,7 +3662,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "RH",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_employee_get",
@@ -3503,7 +3723,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "RH",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_employee_update",
@@ -3586,7 +3811,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "RH",
+      "tags": [
+        "mise-à-jour",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_employees_list",
@@ -3647,7 +3877,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "RH",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_mrp_production_create",
@@ -3726,7 +3961,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Fabrication",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_mrp_production_get",
@@ -3782,7 +4022,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Fabrication",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_mrp_productions_list",
@@ -3878,7 +4123,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Fabrication",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_account_list",
@@ -3939,7 +4189,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Comptabilite",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_journal_list",
@@ -4026,7 +4281,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Comptabilite",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_execute",
@@ -4114,7 +4374,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Generique",
+      "tags": [
+        "lecture",
+        "odoo"
+      ]
     },
     {
       "key": "odoo_search_read",
@@ -4208,7 +4473,13 @@
             "default": 0
           }
         ]
-      }
+      },
+      "group": "Generique",
+      "tags": [
+        "recherche",
+        "lecture",
+        "odoo"
+      ]
     }
   ],
   "variables": {

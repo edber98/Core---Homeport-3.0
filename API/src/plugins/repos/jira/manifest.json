@@ -947,7 +947,8 @@
       "tags": [
         "jira",
         "création"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_get",
@@ -1005,7 +1006,8 @@
       "tags": [
         "jira",
         "lecture"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_update",
@@ -1099,7 +1101,8 @@
       "tags": [
         "jira",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_delete",
@@ -1157,7 +1160,8 @@
       "tags": [
         "jira",
         "suppression"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issues_list",
@@ -1224,7 +1228,8 @@
       "tags": [
         "jira",
         "liste"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_search_jql",
@@ -1291,7 +1296,8 @@
       "tags": [
         "jira",
         "recherche"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_add_comment",
@@ -1363,7 +1369,8 @@
       "tags": [
         "jira",
         "création"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_issue_transition",
@@ -1435,7 +1442,8 @@
       "tags": [
         "jira",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "jira_project_get",
@@ -1493,7 +1501,8 @@
       "tags": [
         "jira",
         "lecture"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "jira_projects_list",
@@ -1546,7 +1555,8 @@
       "tags": [
         "jira",
         "liste"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "jira_boards_list",
@@ -1599,7 +1609,8 @@
       "tags": [
         "jira",
         "liste"
-      ]
+      ],
+      "group": "Boards"
     },
     {
       "key": "jira_board_get",
@@ -1657,7 +1668,8 @@
       "tags": [
         "jira",
         "lecture"
-      ]
+      ],
+      "group": "Boards"
     },
     {
       "key": "jira_sprints_list",
@@ -1724,7 +1736,8 @@
       "tags": [
         "jira",
         "liste"
-      ]
+      ],
+      "group": "Sprints"
     },
     {
       "key": "jira_sprint_get",
@@ -1782,7 +1795,8 @@
       "tags": [
         "jira",
         "lecture"
-      ]
+      ],
+      "group": "Sprints"
     },
     {
       "key": "jira_sprint_create",
@@ -1881,7 +1895,8 @@
       "tags": [
         "jira",
         "création"
-      ]
+      ],
+      "group": "Sprints"
     },
     {
       "key": "jira_user_search",
@@ -1939,7 +1954,8 @@
       "tags": [
         "jira",
         "recherche"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "jira_user_get_myself",
@@ -1982,7 +1998,8 @@
       "tags": [
         "jira",
         "lecture"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "jira_worklog_add",
@@ -2063,7 +2080,8 @@
       "tags": [
         "jira",
         "création"
-      ]
+      ],
+      "group": "Worklogs"
     },
     {
       "key": "jira_webhook_event",
@@ -2108,7 +2126,8 @@
       "tags": [
         "jira",
         "événement"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

@@ -931,7 +931,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "wc_orders_list",
@@ -1002,7 +1003,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "wc_order_create",
@@ -1087,7 +1089,8 @@
       "tags": [
         "WooCommerce",
         "création"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "wc_order_update",
@@ -1163,7 +1166,8 @@
       "tags": [
         "WooCommerce",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "wc_order_delete",
@@ -1221,7 +1225,8 @@
       "tags": [
         "WooCommerce",
         "suppression"
-      ]
+      ],
+      "group": "Commandes"
     },
     {
       "key": "wc_product_get",
@@ -1279,7 +1284,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "wc_products_list",
@@ -1359,7 +1365,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "wc_product_create",
@@ -1462,7 +1469,8 @@
       "tags": [
         "WooCommerce",
         "création"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "wc_product_update",
@@ -1565,7 +1573,8 @@
       "tags": [
         "WooCommerce",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "wc_product_delete",
@@ -1623,7 +1632,8 @@
       "tags": [
         "WooCommerce",
         "suppression"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "wc_customer_get",
@@ -1681,7 +1691,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "wc_customers_list",
@@ -1752,7 +1763,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "wc_customer_create",
@@ -1837,7 +1849,8 @@
       "tags": [
         "WooCommerce",
         "création"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "wc_customer_update",
@@ -1922,7 +1935,8 @@
       "tags": [
         "WooCommerce",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "wc_category_get",
@@ -1980,7 +1994,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wc_categories_list",
@@ -2042,7 +2057,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wc_category_create",
@@ -2118,7 +2134,8 @@
       "tags": [
         "WooCommerce",
         "création"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wc_coupon_get",
@@ -2176,7 +2193,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Coupons"
     },
     {
       "key": "wc_coupons_list",
@@ -2238,7 +2256,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Coupons"
     },
     {
       "key": "wc_coupon_create",
@@ -2328,7 +2347,8 @@
       "tags": [
         "WooCommerce",
         "création"
-      ]
+      ],
+      "group": "Coupons"
     },
     {
       "key": "wc_coupon_delete",
@@ -2386,7 +2406,8 @@
       "tags": [
         "WooCommerce",
         "suppression"
-      ]
+      ],
+      "group": "Coupons"
     },
     {
       "key": "wc_report_sales",
@@ -2448,7 +2469,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Rapports"
     },
     {
       "key": "wc_report_top_sellers",
@@ -2510,7 +2532,8 @@
       "tags": [
         "WooCommerce",
         "lecture"
-      ]
+      ],
+      "group": "Rapports"
     },
     {
       "key": "wc_shipping_zones_list",
@@ -2553,7 +2576,8 @@
       "tags": [
         "WooCommerce",
         "liste"
-      ]
+      ],
+      "group": "Expéditions"
     },
     {
       "key": "wc_webhook_event",
@@ -2598,7 +2622,8 @@
       "tags": [
         "WooCommerce",
         "événement"
-      ]
+      ],
+      "group": "Déclencheur"
     }
   ]
 }

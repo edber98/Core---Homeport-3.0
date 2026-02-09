@@ -1105,7 +1105,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_contact_get",
@@ -1158,7 +1164,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_contact_update",
@@ -1247,7 +1259,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_contact_delete",
@@ -1300,7 +1318,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_contact_search",
@@ -1362,7 +1386,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_contacts_list",
@@ -1419,7 +1449,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "group": "Contacts",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_company_create",
@@ -1499,7 +1535,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_company_get",
@@ -1552,7 +1594,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_company_update",
@@ -1632,7 +1680,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_company_delete",
@@ -1685,7 +1739,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_company_search",
@@ -1747,7 +1807,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_companies_list",
@@ -1804,7 +1870,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "group": "Entreprises",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deal_create",
@@ -1884,7 +1956,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deal_get",
@@ -1937,7 +2015,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deal_update",
@@ -2017,7 +2101,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deal_delete",
@@ -2070,7 +2160,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deal_search",
@@ -2132,7 +2228,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_deals_list",
@@ -2189,7 +2291,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Deals",
+      "group": "Deals",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_ticket_create",
@@ -2278,7 +2386,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_ticket_get",
@@ -2331,7 +2445,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_ticket_update",
@@ -2411,7 +2531,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_ticket_delete",
@@ -2464,7 +2590,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_tickets_list",
@@ -2521,7 +2653,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "group": "Tickets",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_note_create",
@@ -2601,7 +2739,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Notes",
+      "group": "Notes",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_task_create",
@@ -2681,7 +2825,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tâches",
+      "group": "Tâches",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_meeting_create",
@@ -2761,7 +2911,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Réunions",
+      "group": "Réunions",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_call_create",
@@ -2841,7 +2997,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Appels",
+      "group": "Appels",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_pipelines_list",
@@ -2904,7 +3066,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Pipelines",
+      "group": "Pipelines",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_pipeline_stages_list",
@@ -2981,7 +3149,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Pipelines",
+      "group": "Pipelines",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     },
     {
       "key": "hubspot_owners_list",
@@ -3047,7 +3221,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Propriétaires",
+      "group": "Propriétaires",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
     }
   ]
 }

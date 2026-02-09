@@ -86,6 +86,7 @@
       "name": "Google Chat",
       "title": "Google Chat",
       "iconClass": "fa-brands fa-google",
+      "iconUrl": "https://cdn.simpleicons.org/googlechat",
       "color": "#00AC47",
       "tags": [
         "google",
@@ -173,7 +174,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Google Chat"
+      ]
     },
     {
       "key": "googlechat_card_message",
@@ -271,7 +278,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Google Chat"
+      ]
     },
     {
       "key": "googlechat_incoming_webhook",
@@ -312,7 +325,12 @@
             "default": "/googlechat"
           }
         ]
-      }
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "Google Chat"
+      ]
     }
   ]
 }

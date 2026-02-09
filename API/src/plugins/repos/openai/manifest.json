@@ -1,48 +1,178 @@
 {
-  "repo": { "name": "openai", "type": "local", "label": "OpenAI" },
+  "repo": {
+    "name": "openai",
+    "type": "local",
+    "label": "OpenAI"
+  },
   "variables": {
     "llm_text": {
       "title": "Réponse (texte)",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
-      "fields": [ { "type": "textarea", "key": "text", "label": "Texte", "description": "Texte généré par le modèle.", "col": { "xs": 24 } } ]
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte généré par le modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     },
     "ai_memory": {
       "title": "Mémoire AI",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "array", "key": "texts", "label": "Texts", "description": "Liste de textes mémorisés.", "col": { "xs": 24 }, "item": { "type": "text", "key": "_", "label": "Texte", "description": "Entrée texte de la mémoire." } },
-        { "type": "number", "key": "dimensions", "label": "Dimensions", "description": "Dimension des vecteurs d\u2019embedding.", "col": { "xs": 24 } },
-        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "description": "Nombre de vecteurs stockés.", "col": { "xs": 24 } }
+        {
+          "type": "array",
+          "key": "texts",
+          "label": "Texts",
+          "description": "Liste de textes mémorisés.",
+          "col": {
+            "xs": 24
+          },
+          "item": {
+            "type": "text",
+            "key": "_",
+            "label": "Texte",
+            "description": "Entrée texte de la mémoire."
+          }
+        },
+        {
+          "type": "number",
+          "key": "dimensions",
+          "label": "Dimensions",
+          "description": "Dimension des vecteurs d’embedding.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "vectorsCount",
+          "label": "# Vectors",
+          "description": "Nombre de vecteurs stockés.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "ai_vectors": {
       "title": "Vecteurs (embeddings)",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "vectorsCount", "label": "# Vectors", "description": "Nombre de vecteurs générés.", "col": { "xs": 24 } },
-        { "type": "number", "key": "dimensions", "label": "Dimensions", "description": "Dimension des vecteurs.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "vectors", "label": "Vectors (JSON)", "description": "Vecteurs encodés en JSON (tableau de nombres).", "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "vectorsCount",
+          "label": "# Vectors",
+          "description": "Nombre de vecteurs générés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "dimensions",
+          "label": "Dimensions",
+          "description": "Dimension des vecteurs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "vectors",
+          "label": "Vectors (JSON)",
+          "description": "Vecteurs encodés en JSON (tableau de nombres).",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "images": {
       "title": "Images générées",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "array", "key": "images", "label": "Images", "description": "Liste des images générées.", "col": { "xs": 24 }, "item": {
-          "type": "section", "key": "_", "label": "Image", "description": "Détails d\u2019une image générée.", "fields": [
-            { "type": "text", "key": "url", "label": "URL", "description": "URL publique/privée de l\u2019image." },
-            { "type": "textarea", "key": "b64", "label": "Base64", "description": "Données de l\u2019image encodées en Base64." }
-          ]
-        } }
+        {
+          "type": "array",
+          "key": "images",
+          "label": "Images",
+          "description": "Liste des images générées.",
+          "col": {
+            "xs": 24
+          },
+          "item": {
+            "type": "section",
+            "key": "_",
+            "label": "Image",
+            "description": "Détails d’une image générée.",
+            "fields": [
+              {
+                "type": "text",
+                "key": "url",
+                "label": "URL",
+                "description": "URL publique/privée de l’image."
+              },
+              {
+                "type": "textarea",
+                "key": "b64",
+                "label": "Base64",
+                "description": "Données de l’image encodées en Base64."
+              }
+            ]
+          }
+        }
       ]
     },
     "ai_tool": {
       "title": "Outil (LangChain)",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom lisible de l\u2019outil.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "description": "Description fonctionnelle de l\u2019outil.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "schema", "label": "Paramètres (JSON Schema)", "description": "Schéma JSON des paramètres de l\u2019outil.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom lisible de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description fonctionnelle de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "schema",
+          "label": "Paramètres (JSON Schema)",
+          "description": "Schéma JSON des paramètres de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -54,17 +184,64 @@
       "iconClass": "fa-brands fa-openai",
       "iconUrl": "https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0",
       "color": "#10A37F",
-      "tags": ["ai", "llm"],
-      "categories": ["AI"],
+      "tags": [
+        "ai",
+        "llm"
+      ],
+      "categories": [
+        "AI"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants OpenAI",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "apiKey", "label": "API Key", "description": "Clé API OpenAI.", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "baseUrl", "label": "Base URL (optionnel)", "description": "URL alternative de l’API (optionnel).", "col": { "xs": 24 } },
-          { "type": "text", "key": "organization", "label": "Organization (optionnel)", "description": "ID d’organisation OpenAI (si requis).", "col": { "xs": 24 } },
-          { "type": "text", "key": "defaultModel", "label": "Modèle par défaut", "description": "Modèle utilisé par défaut.", "col": { "xs": 24 }, "default": "gpt-4o-mini" }
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API OpenAI.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL (optionnel)",
+            "description": "URL alternative de l’API (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization",
+            "label": "Organization (optionnel)",
+            "description": "ID d’organisation OpenAI (si requis).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "defaultModel",
+            "label": "Modèle par défaut",
+            "description": "Modèle utilisé par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          }
         ]
       }
     }
@@ -79,20 +256,91 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:llm_text" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
       "description": "Générer une complétion de chat (messages System/User)",
       "args": {
         "title": "Chat Completion",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle (ex.: gpt-4o-mini).", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
-          { "type": "textarea", "key": "system", "label": "Système", "description": "Contexte système (instructions).", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "prompt", "label": "Prompt (User)", "description": "Message utilisateur / consigne.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité de la génération (0-2).", "col": { "xs": 24 }, "default": 0.7 },
-          { "type": "number", "key": "maxTokens", "label": "Max tokens", "description": "Limite de tokens de sortie.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle (ex.: gpt-4o-mini).",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Contexte système (instructions).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur / consigne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-2).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens de sortie.",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
-      }
+      },
+      "subtitle": "Complétions",
+      "group": "Complétions",
+      "tags": [
+        "openai"
+      ]
     },
     {
       "key": "openai_memory_static",
@@ -103,15 +351,43 @@
       "nodeKind": "memory",
       "category": "AI",
       "providerKey": "openai",
-      "outputHandles": [ { "id": "memory", "name": "Memory", "type": "ai_memory", "schema": "$var:ai_memory" } ],
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
       "description": "Définir une mémoire statique (texte)",
       "args": {
         "title": "Memory (Static)",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "textarea", "key": "text", "label": "Texte de mémoire", "description": "Contenu texte stocké dans la mémoire.", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] }
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte de mémoire",
+            "description": "Contenu texte stocké dans la mémoire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
-      }
+      },
+      "subtitle": "Mémoire",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
     },
     {
       "key": "openai_memory_merge",
@@ -122,16 +398,49 @@
       "nodeKind": "memory",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [ { "id": "in", "name": "Memory", "type": "ai_memory", "accepts": ["ai_memory"] } ],
-      "outputHandles": [ { "id": "memory", "name": "Memory", "type": "ai_memory", "schema": "$var:ai_memory" } ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "Memory",
+          "type": "ai_memory",
+          "accepts": [
+            "ai_memory"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
       "description": "Fusionner ou relayer des mémoires AI",
       "args": {
         "title": "Memory Merge",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "checkbox", "key": "dedupe", "label": "Supprimer doublons", "description": "Déduplique les textes similaires.", "col": { "xs": 24 }, "default": true }
+          {
+            "type": "checkbox",
+            "key": "dedupe",
+            "label": "Supprimer doublons",
+            "description": "Déduplique les textes similaires.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
         ]
-      }
+      },
+      "subtitle": "Mémoire",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
     },
     {
       "key": "openai_tool_define",
@@ -142,17 +451,62 @@
       "nodeKind": "tool_ai",
       "category": "AI",
       "providerKey": "openai",
-      "outputHandles": [ { "id": "tool", "name": "Tool", "type": "ai_tool", "schema": "$var:ai_tool" } ],
+      "outputHandles": [
+        {
+          "id": "tool",
+          "name": "Tool",
+          "type": "ai_tool",
+          "schema": "$var:ai_tool"
+        }
+      ],
       "description": "Définir un outil LangChain (nom, description, schéma)",
       "args": {
         "title": "Tool (LangChain)",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "name", "label": "Nom de l'outil", "description": "Nom unique et lisible de l\u2019outil.", "col": { "xs": 24 }, "validators": [ { "type": "required" } ] },
-          { "type": "textarea", "key": "description", "label": "Description", "description": "Description de l\u2019outil et de son usage.", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "parameters", "label": "Paramètres (JSON Schema)", "description": "Schéma JSON des paramètres.", "col": { "xs": 24 }, "default": "{}" }
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom de l'outil",
+            "description": "Nom unique et lisible de l’outil.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l’outil et de son usage.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "parameters",
+            "label": "Paramètres (JSON Schema)",
+            "description": "Schéma JSON des paramètres.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
         ]
-      }
+      },
+      "subtitle": "Outils",
+      "group": "Outils",
+      "tags": [
+        "openai"
+      ]
     },
     {
       "key": "openai_embeddings",
@@ -163,17 +517,63 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_vector", "schema": "$var:ai_vectors" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "ai_vector",
+          "schema": "$var:ai_vectors"
+        }
+      ],
       "description": "Générer des vecteurs d’embedding",
       "args": {
         "title": "Embeddings",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d\u2019embeddings (ex.: text-embedding-3-small).", "col": { "xs": 24 }, "default": "text-embedding-3-small" },
-          { "type": "textarea", "key": "input", "label": "Texte (ou JSON array)", "description": "Texte unique ou tableau JSON de textes.", "col": { "xs": 24 }, "validators": [{"type":"required"}] }
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle d’embeddings (ex.: text-embedding-3-small).",
+            "col": {
+              "xs": 24
+            },
+            "default": "text-embedding-3-small"
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte (ou JSON array)",
+            "description": "Texte unique ou tableau JSON de textes.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
-      }
+      },
+      "subtitle": "Embeddings",
+      "group": "Embeddings",
+      "tags": [
+        "openai"
+      ]
     },
     {
       "key": "openai_image_generate",
@@ -184,24 +584,89 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "ai_image", "schema": "$var:images" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "ai_image",
+          "schema": "$var:images"
+        }
+      ],
       "description": "Générer une image à partir d’un prompt",
       "args": {
         "title": "Image Generate",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "description": "Modèle d\u2019image (ex.: gpt-image-1).", "col": { "xs": 24 }, "default": "gpt-image-1" },
-          { "type": "textarea", "key": "prompt", "label": "Prompt", "description": "Description de l\u2019image souhaitée.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "select", "key": "size", "label": "Taille", "description": "Taille de sortie de l\u2019image.", "col": { "xs": 24 }, "options": [
-            { "label": "256x256", "value": "256x256" },
-            { "label": "512x512", "value": "512x512" },
-            { "label": "1024x1024", "value": "1024x1024" }
-          ], "default": "1024x1024" }
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle d’image (ex.: gpt-image-1).",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-image-1"
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Description de l’image souhaitée.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "size",
+            "label": "Taille",
+            "description": "Taille de sortie de l’image.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "256x256",
+                "value": "256x256"
+              },
+              {
+                "label": "512x512",
+                "value": "512x512"
+              },
+              {
+                "label": "1024x1024",
+                "value": "1024x1024"
+              }
+            ],
+            "default": "1024x1024"
+          }
         ]
-      }
-    }
-    ,
+      },
+      "subtitle": "Images",
+      "group": "Images",
+      "tags": [
+        "création",
+        "openai"
+      ]
+    },
     {
       "key": "openai_memory_embed",
       "name": "openaiMemoryEmbed",
@@ -212,20 +677,58 @@
       "category": "AI",
       "providerKey": "openai",
       "inputHandles": [
-        { "id": "in", "name": "Text", "type": "text", "accepts": ["text"] }
+        {
+          "id": "in",
+          "name": "Text",
+          "type": "text",
+          "accepts": [
+            "text"
+          ]
+        }
       ],
-      "outputHandles": [ { "id": "memory", "name": "Memory", "type": "ai_memory", "schema": "$var:ai_memory" } ],
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
       "description": "Indexer un texte en vecteurs (embeddings)",
       "args": {
         "title": "Memory Embeddings",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "textarea", "key": "text", "label": "Texte (si non fourni en entrée)", "description": "Texte à indexer si non fourni par l\u2019entrée.", "col": { "xs": 24 } },
-          { "type": "text", "key": "model", "label": "Modèle d'embeddings", "description": "Modèle utilisé pour l\u2019indexation.", "col": { "xs": 24 }, "default": "text-embedding-3-small" }
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte (si non fourni en entrée)",
+            "description": "Texte à indexer si non fourni par l’entrée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle d'embeddings",
+            "description": "Modèle utilisé pour l’indexation.",
+            "col": {
+              "xs": 24
+            },
+            "default": "text-embedding-3-small"
+          }
         ]
-      }
-    }
-    ,
+      },
+      "subtitle": "Mémoire",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
+    },
     {
       "key": "openai_agent",
       "name": "openaiAgent",
@@ -236,24 +739,102 @@
       "category": "AI",
       "providerKey": "openai",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
       ],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:llm_text" } ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
       "linkedHandles": [
-        { "id": "tools", "name": "Tools", "type": "ai_tool", "multiple": true, "accepts": ["ai_tool"] },
-        { "id": "memory", "name": "Memory", "type": "ai_memory", "multiple": true, "accepts": ["ai_memory"] }
+        {
+          "id": "tools",
+          "name": "Tools",
+          "type": "ai_tool",
+          "multiple": true,
+          "accepts": [
+            "ai_tool"
+          ]
+        },
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "multiple": true,
+          "accepts": [
+            "ai_memory"
+          ]
+        }
       ],
       "description": "Agent OpenAI consommant Memory/Tools",
       "args": {
         "title": "Agent OpenAI",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "model", "label": "Modèle", "description": "Identifiant du modèle (ex.: gpt-4o-mini).", "col": { "xs": 24 }, "default": "gpt-4o-mini" },
-          { "type": "textarea", "key": "system", "label": "Système", "description": "Contexte système pour l’agent.", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "prompt", "label": "Prompt", "description": "Instruction de départ pour l’utilisateur.", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "temperature", "label": "Température", "description": "Créativité de la génération (0-2).", "col": { "xs": 24 }, "default": 0.7 }
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle (ex.: gpt-4o-mini).",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Contexte système pour l’agent.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction de départ pour l’utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-2).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          }
         ]
-      }
+      },
+      "subtitle": "Agent",
+      "group": "Agent",
+      "tags": [
+        "openai"
+      ]
     }
   ]
 }

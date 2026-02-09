@@ -961,7 +961,8 @@
       "tags": [
         "asana",
         "création"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "asana_task_get",
@@ -1019,7 +1020,8 @@
       "tags": [
         "asana",
         "lecture"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "asana_task_update",
@@ -1122,7 +1124,8 @@
       "tags": [
         "asana",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "asana_task_delete",
@@ -1180,7 +1183,8 @@
       "tags": [
         "asana",
         "suppression"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "asana_tasks_list",
@@ -1247,7 +1251,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "asana_project_create",
@@ -1337,7 +1342,8 @@
       "tags": [
         "asana",
         "création"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "asana_project_get",
@@ -1395,7 +1401,8 @@
       "tags": [
         "asana",
         "lecture"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "asana_projects_list",
@@ -1462,7 +1469,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "asana_section_create",
@@ -1534,7 +1542,8 @@
       "tags": [
         "asana",
         "création"
-      ]
+      ],
+      "group": "Sections"
     },
     {
       "key": "asana_sections_list",
@@ -1592,7 +1601,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Sections"
     },
     {
       "key": "asana_tag_create",
@@ -1673,7 +1683,8 @@
       "tags": [
         "asana",
         "création"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "asana_tags_list",
@@ -1740,7 +1751,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "asana_user_get",
@@ -1798,7 +1810,8 @@
       "tags": [
         "asana",
         "lecture"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "asana_users_list_workspace",
@@ -1865,7 +1878,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "asana_workspaces_list",
@@ -1908,7 +1922,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Espaces de travail"
     },
     {
       "key": "asana_story_create",
@@ -1980,7 +1995,8 @@
       "tags": [
         "asana",
         "création"
-      ]
+      ],
+      "group": "Stories"
     },
     {
       "key": "asana_stories_list",
@@ -2038,7 +2054,8 @@
       "tags": [
         "asana",
         "liste"
-      ]
+      ],
+      "group": "Stories"
     },
     {
       "key": "asana_webhook_event",
@@ -2083,7 +2100,8 @@
       "tags": [
         "asana",
         "événement"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

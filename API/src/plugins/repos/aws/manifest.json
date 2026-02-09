@@ -614,7 +614,8 @@
             "default": "application/octet-stream"
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_get_object",
@@ -684,7 +685,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_delete_object",
@@ -754,7 +756,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_list_objects",
@@ -828,7 +831,8 @@
             "default": 1000
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_copy_object",
@@ -924,7 +928,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_head_object",
@@ -994,7 +999,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_s3_list_buckets",
@@ -1037,7 +1043,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Buckets"
     },
     {
       "key": "aws_s3_create_bucket",
@@ -1102,7 +1109,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Buckets"
     },
     {
       "key": "aws_s3_delete_bucket",
@@ -1159,7 +1167,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Buckets"
     },
     {
       "key": "aws_s3_presigned_url",
@@ -1257,7 +1266,8 @@
             "default": 3600
           }
         ]
-      }
+      },
+      "group": "Objets"
     },
     {
       "key": "aws_ses_send_email",
@@ -1373,7 +1383,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Emails"
     },
     {
       "key": "aws_ses_send_templated",
@@ -1464,7 +1475,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Emails"
     },
     {
       "key": "aws_ses_send_raw",
@@ -1521,7 +1533,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Emails"
     },
     {
       "key": "aws_ses_create_template",
@@ -1607,7 +1620,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Templates"
     },
     {
       "key": "aws_ses_get_template",
@@ -1664,7 +1678,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Templates"
     },
     {
       "key": "aws_ses_list_templates",
@@ -1717,7 +1732,8 @@
             "default": 50
           }
         ]
-      }
+      },
+      "group": "Templates"
     },
     {
       "key": "aws_ses_delete_template",
@@ -1774,7 +1790,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Templates"
     },
     {
       "key": "aws_ses_list_identities",
@@ -1836,7 +1853,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Identités"
     }
   ]
 }

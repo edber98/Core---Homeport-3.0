@@ -1095,7 +1095,8 @@
             ]
           }
         ]
-      }
+      },
+      "iconUrl": "https://cdn.simpleicons.org/slack"
     }
   ],
   "nodeTemplates": [
@@ -1182,7 +1183,13 @@
             "description": "Activer le dépliage des aperçus de liens."
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_update_message",
@@ -1263,7 +1270,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "mise-à-jour",
+        "slack"
+      ]
     },
     {
       "key": "slack_delete_message",
@@ -1330,7 +1343,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "suppression",
+        "slack"
+      ]
     },
     {
       "key": "slack_reply_message",
@@ -1411,7 +1430,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_permalink",
@@ -1478,7 +1503,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_schedule_message",
@@ -1559,7 +1590,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_post_ephemeral",
@@ -1640,7 +1677,14 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_create_channel",
@@ -1702,7 +1746,13 @@
             "description": "Créer un canal privé."
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "création",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_channels",
@@ -1778,7 +1828,13 @@
             "default": 100
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "liste",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_channel",
@@ -1831,7 +1887,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_archive_channel",
@@ -1884,7 +1946,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "mise-à-jour",
+        "slack"
+      ]
     },
     {
       "key": "slack_invite_to_channel",
@@ -1951,7 +2019,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_users",
@@ -2000,7 +2074,13 @@
             "default": 100
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_user",
@@ -2053,7 +2133,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_user_profile",
@@ -2106,7 +2192,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_lookup_by_email",
@@ -2159,7 +2251,14 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "recherche",
+        "recherche",
+        "slack"
+      ]
     },
     {
       "key": "slack_add_reaction",
@@ -2240,7 +2339,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Réactions",
+      "group": "Réactions",
+      "tags": [
+        "création",
+        "slack"
+      ]
     },
     {
       "key": "slack_remove_reaction",
@@ -2321,7 +2426,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Réactions",
+      "group": "Réactions",
+      "tags": [
+        "suppression",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_reactions",
@@ -2388,7 +2499,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Réactions",
+      "group": "Réactions",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_upload_file",
@@ -2463,7 +2580,13 @@
             "description": "Nom du fichier à afficher."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "envoi",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_files",
@@ -2548,7 +2671,13 @@
             "default": 20
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "liste",
+        "slack"
+      ]
     },
     {
       "key": "slack_get_file",
@@ -2601,7 +2730,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "slack"
+      ]
     },
     {
       "key": "slack_delete_file",
@@ -2654,7 +2789,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "slack"
+      ]
     },
     {
       "key": "slack_pin_message",
@@ -2721,7 +2862,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Épingles",
+      "group": "Épingles",
+      "tags": [
+        "mise-à-jour",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_pins",
@@ -2774,7 +2921,14 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Épingles",
+      "group": "Épingles",
+      "tags": [
+        "liste",
+        "mise-à-jour",
+        "slack"
+      ]
     },
     {
       "key": "slack_create_reminder",
@@ -2850,7 +3004,13 @@
             "description": "ID de l'utilisateur (optionnel)."
           }
         ]
-      }
+      },
+      "subtitle": "Rappels",
+      "group": "Rappels",
+      "tags": [
+        "création",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_reminders",
@@ -2888,7 +3048,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Rappels",
+      "group": "Rappels",
+      "tags": [
+        "liste",
+        "slack"
+      ]
     },
     {
       "key": "slack_delete_reminder",
@@ -2941,7 +3107,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Rappels",
+      "group": "Rappels",
+      "tags": [
+        "suppression",
+        "slack"
+      ]
     },
     {
       "key": "slack_add_bookmark",
@@ -3032,7 +3204,13 @@
             "default": "link"
           }
         ]
-      }
+      },
+      "subtitle": "Signets",
+      "group": "Signets",
+      "tags": [
+        "création",
+        "slack"
+      ]
     },
     {
       "key": "slack_list_bookmarks",
@@ -3085,7 +3263,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Signets",
+      "group": "Signets",
+      "tags": [
+        "liste",
+        "slack"
+      ]
     }
   ]
 }

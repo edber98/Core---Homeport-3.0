@@ -393,7 +393,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Complétions"
     },
     {
       "key": "mistral_create_completion_stream",
@@ -488,7 +489,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Complétions"
     },
     {
       "key": "mistral_create_completion_tools",
@@ -616,7 +618,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Complétions"
     },
     {
       "key": "mistral_create_completion_json",
@@ -711,7 +714,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Complétions"
     },
     {
       "key": "mistral_create_embedding",
@@ -778,7 +782,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Embeddings"
     },
     {
       "key": "mistral_list_models",
@@ -820,7 +825,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Modèles"
     },
     {
       "key": "mistral_agent_completion",
@@ -909,7 +915,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Agents"
     }
   ]
 }

@@ -1782,7 +1782,8 @@
             ]
           }
         ]
-      }
+      },
+      "iconUrl": "https://cdn.simpleicons.org/github"
     }
   ],
   "nodeTemplates": [
@@ -1857,7 +1858,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Dépôts",
+      "group": "Dépôts",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_repos_list",
@@ -1976,7 +1983,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Dépôts",
+      "group": "Dépôts",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_repo_create",
@@ -2068,7 +2081,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Dépôts",
+      "group": "Dépôts",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_repo_forks_list",
@@ -2153,7 +2172,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Dépôts",
+      "group": "Dépôts",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_repo_fork",
@@ -2238,7 +2263,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Dépôts",
+      "group": "Dépôts",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issue_create",
@@ -2376,7 +2407,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issue_get",
@@ -2466,7 +2503,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issue_update",
@@ -2626,7 +2669,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "mise-à-jour",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issues_list",
@@ -2787,7 +2836,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issue_comment_create",
@@ -2894,7 +2949,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_issue_comments_list",
@@ -2996,7 +3057,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Issues",
+      "group": "Issues",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_pr_create",
@@ -3144,7 +3211,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pull requests",
+      "group": "Pull requests",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_pr_get",
@@ -3234,7 +3307,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Pull requests",
+      "group": "Pull requests",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_pr_update",
@@ -3382,7 +3461,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pull requests",
+      "group": "Pull requests",
+      "tags": [
+        "mise-à-jour",
+        "GitHub"
+      ]
     },
     {
       "key": "github_prs_list",
@@ -3547,7 +3632,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pull requests",
+      "group": "Pull requests",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_pr_merge",
@@ -3687,7 +3778,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pull requests",
+      "group": "Pull requests",
+      "tags": [
+        "mise-à-jour",
+        "GitHub"
+      ]
     },
     {
       "key": "github_branches_list",
@@ -3772,7 +3869,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Branches",
+      "group": "Branches",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_branch_get",
@@ -3862,7 +3965,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Branches",
+      "group": "Branches",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_branch_create",
@@ -3969,7 +4078,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Branches",
+      "group": "Branches",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_commits_list",
@@ -4102,7 +4217,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commits",
+      "group": "Commits",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_commit_get",
@@ -4192,7 +4313,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commits",
+      "group": "Commits",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_release_create",
@@ -4342,7 +4469,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Releases",
+      "group": "Releases",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     },
     {
       "key": "github_releases_list",
@@ -4427,7 +4560,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Releases",
+      "group": "Releases",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_release_get",
@@ -4517,7 +4656,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Releases",
+      "group": "Releases",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_user_get",
@@ -4568,7 +4713,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ]
     },
     {
       "key": "github_user_repos_list",
@@ -4692,7 +4843,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_workflows_list",
@@ -4765,7 +4922,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Workflows",
+      "group": "Workflows",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_workflow_dispatch",
@@ -4884,7 +5047,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Workflows",
+      "group": "Workflows",
+      "tags": [
+        "envoi",
+        "GitHub"
+      ]
     },
     {
       "key": "github_labels_list",
@@ -4957,7 +5126,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Labels",
+      "group": "Labels",
+      "tags": [
+        "liste",
+        "GitHub"
+      ]
     },
     {
       "key": "github_label_create",
@@ -5071,7 +5246,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Labels",
+      "group": "Labels",
+      "tags": [
+        "création",
+        "GitHub"
+      ]
     }
   ]
 }

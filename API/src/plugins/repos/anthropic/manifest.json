@@ -446,7 +446,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages"
     },
     {
       "key": "anthropic_create_message_stream",
@@ -551,7 +552,8 @@
             "default": 0.7
           }
         ]
-      }
+      },
+      "group": "Messages"
     },
     {
       "key": "anthropic_create_message_tools",
@@ -670,7 +672,8 @@
             "default": 0.7
           }
         ]
-      }
+      },
+      "group": "Messages"
     },
     {
       "key": "anthropic_create_message_vision",
@@ -808,7 +811,8 @@
             "default": 0.7
           }
         ]
-      }
+      },
+      "group": "Messages"
     },
     {
       "key": "anthropic_list_models",
@@ -861,7 +865,8 @@
             "default": 20
           }
         ]
-      }
+      },
+      "group": "Modèles"
     },
     {
       "key": "anthropic_get_model",
@@ -918,7 +923,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Modèles"
     },
     {
       "key": "anthropic_count_tokens",
@@ -1003,7 +1009,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tokens"
     }
   ]
 }

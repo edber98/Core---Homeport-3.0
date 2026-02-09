@@ -1147,6 +1147,7 @@
       "name": "Microsoft 365",
       "title": "Microsoft 365",
       "iconClass": "fa-brands fa-microsoft",
+      "iconUrl": "https://cdn.simpleicons.org/microsoft",
       "color": "#0078D4",
       "tags": [
         "microsoft",
@@ -1319,7 +1320,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_reply_message",
@@ -1410,7 +1417,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_send_chat_message",
@@ -1475,7 +1488,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_messages",
@@ -1549,7 +1568,13 @@
             "default": 50
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_get_message",
@@ -1627,7 +1652,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_create_channel",
@@ -1722,7 +1753,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_channels",
@@ -1774,7 +1811,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_get_channel",
@@ -1839,7 +1882,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_delete_channel",
@@ -1904,7 +1953,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Canaux",
+      "group": "Canaux",
+      "tags": [
+        "suppression",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_teams",
@@ -1942,7 +1997,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Équipes",
+      "group": "Équipes",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_get_team",
@@ -1994,7 +2055,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Équipes",
+      "group": "Équipes",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_members",
@@ -2046,7 +2113,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Équipes",
+      "group": "Équipes",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_add_member",
@@ -2129,7 +2202,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Équipes",
+      "group": "Équipes",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_create_meeting",
@@ -2218,7 +2297,13 @@
             "description": "Adresses email séparées par des virgules."
           }
         ]
-      }
+      },
+      "subtitle": "Réunions",
+      "group": "Réunions",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_get_meeting",
@@ -2270,7 +2355,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Réunions",
+      "group": "Réunions",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_meetings",
@@ -2317,7 +2408,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Réunions",
+      "group": "Réunions",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_create_chat",
@@ -2391,7 +2488,13 @@
             "description": "User IDs séparés par des virgules."
           }
         ]
-      }
+      },
+      "subtitle": "Chats",
+      "group": "Chats",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_list_chats",
@@ -2438,7 +2541,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Chats",
+      "group": "Chats",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_teams_get_chat",
@@ -2490,7 +2599,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Chats",
+      "group": "Chats",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
     },
     {
       "key": "ms_sp_get_site",
@@ -2542,7 +2657,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Sites",
+      "group": "Sites",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_search_sites",
@@ -2594,7 +2715,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Sites",
+      "group": "Sites",
+      "tags": [
+        "recherche",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_list_subsites",
@@ -2646,7 +2773,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Sites",
+      "group": "Sites",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_create_list",
@@ -2729,7 +2862,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "group": "Listes",
+      "tags": [
+        "création",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_get_list",
@@ -2794,7 +2933,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "group": "Listes",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_list_items",
@@ -2867,7 +3012,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "group": "Listes",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_create_item",
@@ -2941,7 +3092,13 @@
             "description": "Champs de l'élément au format JSON."
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "group": "Listes",
+      "tags": [
+        "création",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_update_item",
@@ -3028,7 +3185,13 @@
             "description": "Champs à mettre à jour au format JSON."
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "group": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_list_files",
@@ -3089,7 +3252,13 @@
             "description": "ID du dossier (vide = racine)."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_get_file",
@@ -3154,7 +3323,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_upload_file",
@@ -3229,7 +3404,13 @@
             "description": "Contenu du fichier (texte ou base64)."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "téléversement",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_download_file",
@@ -3294,7 +3475,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "téléchargement",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_sp_delete_file",
@@ -3359,7 +3546,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "SharePoint"
+      ]
     },
     {
       "key": "ms_users_list",
@@ -3415,7 +3608,13 @@
             "description": "Filtre OData (ex: startsWith(displayName,'A'))."
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "Microsoft 365"
+      ]
     },
     {
       "key": "ms_user_get",
@@ -3467,7 +3666,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "Microsoft 365"
+      ]
     },
     {
       "key": "ms_user_get_me",
@@ -3505,7 +3710,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "Microsoft 365"
+      ]
     }
   ]
 }

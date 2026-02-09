@@ -1,67 +1,275 @@
 {
-  "repo": { "name": "email", "type": "local", "label": "Email" },
+  "repo": {
+    "name": "email",
+    "type": "local",
+    "label": "Email"
+  },
   "variables": {
     "email_message": {
       "title": "Message e-mail",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "messageId", "label": "Message ID", "description": "Identifiant unique du message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "from", "label": "De", "description": "Adresse de l\u2019expéditeur.", "col": { "xs": 24 } },
-        { "type": "text", "key": "to", "label": "À", "description": "Adresse(s) du destinataire.", "col": { "xs": 24 } },
-        { "type": "text", "key": "subject", "label": "Objet", "description": "Sujet du message.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu texte brut du message.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "html", "label": "Corps (HTML)", "description": "Contenu HTML du message.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "attachments", "label": "Pièces jointes (JSON)", "description": "Pièces jointes encodées en JSON.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "Identifiant unique du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "from",
+          "label": "De",
+          "description": "Adresse de l’expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "to",
+          "label": "À",
+          "description": "Adresse(s) du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Objet",
+          "description": "Sujet du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu texte brut du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "html",
+          "label": "Corps (HTML)",
+          "description": "Contenu HTML du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "attachments",
+          "label": "Pièces jointes (JSON)",
+          "description": "Pièces jointes encodées en JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "email_messages": {
       "title": "Messages",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "section", "title": "Messages", "description": "Liste des messages", "mode": "array", "key": "messages", "array": { "initialItems": 0, "minItems": 0 },
+        {
+          "type": "section",
+          "title": "Messages",
+          "description": "Liste des messages",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "messageId", "label": "Message ID", "description": "Identifiant du message.", "col": { "xs": 24 } },
-            { "type": "text", "key": "from", "label": "De", "description": "Expéditeur.", "col": { "xs": 24 } },
-            { "type": "text", "key": "to", "label": "À", "description": "Destinataire(s).", "col": { "xs": 24 } },
-            { "type": "text", "key": "subject", "label": "Objet", "description": "Sujet du message.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "text", "label": "Texte", "description": "Aperçu du contenu texte.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "messageId",
+              "label": "Message ID",
+              "description": "Identifiant du message.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "from",
+              "label": "De",
+              "description": "Expéditeur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "to",
+              "label": "À",
+              "description": "Destinataire(s).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Objet",
+              "description": "Sujet du message.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Aperçu du contenu texte.",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "email_send_result": {
       "title": "Résultat d’envoi",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "sent", "label": "Envoyé", "description": "Indique si l\u2019envoi a réussi.", "col": { "xs": 24 } },
-        { "type": "text", "key": "messageId", "label": "Message ID", "description": "Identifiant attribué à l\u2019envoi.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "envelope", "label": "Envelope (JSON)", "description": "Détails techniques d\u2019envoi (JSON).", "col": { "xs": 24 } },
-        { "type": "text", "key": "response", "label": "Réponse", "description": "Réponse fournie par le serveur SMTP.", "col": { "xs": 24 } }
+        {
+          "type": "checkbox",
+          "key": "sent",
+          "label": "Envoyé",
+          "description": "Indique si l’envoi a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "Identifiant attribué à l’envoi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "envelope",
+          "label": "Envelope (JSON)",
+          "description": "Détails techniques d’envoi (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse fournie par le serveur SMTP.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "email_labels": {
       "title": "Labels",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "section", "title": "Labels", "description": "Liste des labels", "mode": "array", "key": "labels", "array": { "initialItems": 0, "minItems": 0 },
-          "fields": [ { "type": "text", "key": "label", "label": "Label", "description": "Nom du libellé.", "col": { "xs": 24 } } ],
-          "col": { "xs": 24 }
+        {
+          "type": "section",
+          "title": "Labels",
+          "description": "Liste des labels",
+          "mode": "array",
+          "key": "labels",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Label",
+              "description": "Nom du libellé.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "email_action": {
       "title": "Action",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "added", "label": "Ajouté", "description": "Le libellé a été ajouté.", "col": { "xs": 24 } },
-        { "type": "checkbox", "key": "removed", "label": "Supprimé", "description": "Le libellé a été supprimé.", "col": { "xs": 24 } }
+        {
+          "type": "checkbox",
+          "key": "added",
+          "label": "Ajouté",
+          "description": "Le libellé a été ajouté.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "removed",
+          "label": "Supprimé",
+          "description": "Le libellé a été supprimé.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "email_event": {
       "title": "Événement",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
-      "fields": [ { "type": "text", "key": "event", "label": "Event", "description": "Type d\u2019événement e-mail.", "col": { "xs": 24 } } ]
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Event",
+          "description": "Type d’événement e-mail.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -70,22 +278,106 @@
       "name": "SMTP/IMAP",
       "title": "E-mail (SMTP/IMAP)",
       "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://cdn.simpleicons.org/gmail",
       "color": "#ef4444",
-      "tags": ["email"],
-      "categories": ["Communication"],
+      "tags": [
+        "email"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants SMTP/IMAP",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "smtpHost", "label": "Hôte SMTP", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "number", "key": "smtpPort", "label": "Port SMTP", "col": { "xs": 24 }, "default": 587 },
-          { "type": "checkbox", "key": "smtpSecure", "label": "TLS SMTP", "col": { "xs": 24 }, "default": true },
-          { "type": "text", "key": "imapHost", "label": "Hôte IMAP", "col": { "xs": 24 } },
-          { "type": "number", "key": "imapPort", "label": "Port IMAP", "col": { "xs": 24 }, "default": 993 },
-          { "type": "checkbox", "key": "imapSecure", "label": "TLS IMAP", "col": { "xs": 24 }, "default": true },
-          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "col": { "xs": 24 }, "validators": [{"type":"required"}] },
-          { "type": "text", "key": "password", "label": "Mot de passe", "col": { "xs": 24 }, "secret": true, "validators": [{"type":"required"}] }
+          {
+            "type": "text",
+            "key": "smtpHost",
+            "label": "Hôte SMTP",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "smtpPort",
+            "label": "Port SMTP",
+            "col": {
+              "xs": 24
+            },
+            "default": 587
+          },
+          {
+            "type": "checkbox",
+            "key": "smtpSecure",
+            "label": "TLS SMTP",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "text",
+            "key": "imapHost",
+            "label": "Hôte IMAP",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "imapPort",
+            "label": "Port IMAP",
+            "col": {
+              "xs": 24
+            },
+            "default": 993
+          },
+          {
+            "type": "checkbox",
+            "key": "imapSecure",
+            "label": "TLS IMAP",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Nom d’utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ]
       }
     },
@@ -94,17 +386,49 @@
       "name": "Gmail",
       "title": "Gmail",
       "iconClass": "fa-brands fa-google",
+      "iconUrl": "https://cdn.simpleicons.org/gmail",
       "color": "#ea4335",
-      "tags": ["email", "gmail"],
-      "categories": ["Communication"],
+      "tags": [
+        "email",
+        "gmail"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "OAuth Gmail",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true },
-          { "type": "text", "key": "refreshToken", "label": "Jeton d’actualisation", "col": { "xs": 24 }, "secret": true }
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Jeton d’actualisation",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
         ]
       }
     },
@@ -113,69 +437,490 @@
       "name": "Outlook",
       "title": "Microsoft Outlook",
       "iconClass": "fa-brands fa-microsoft",
+      "iconUrl": "https://cdn.simpleicons.org/microsoftoutlook",
       "color": "#2563eb",
-      "tags": ["email", "outlook"],
-      "categories": ["Communication"],
+      "tags": [
+        "email",
+        "outlook"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "OAuth Microsoft",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "tenantId", "label": "ID du tenant", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true }
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "ID du tenant",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "email_send", "name": "emailSend", "schemaVersion": 2, "title": "Envoyer un e-mail", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
+    {
+      "key": "email_send",
+      "name": "emailSend",
+      "schemaVersion": 2,
+      "title": "Envoyer un e-mail",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "smtp_imap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_send_result" },
-        { "id": "err", "name": "Error", "type": "error" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:email_send_result"
+        },
+        {
+          "id": "err",
+          "name": "Error",
+          "type": "error"
+        }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer un e-mail avec pièces jointes", "args": { "title": "Envoyer un e-mail", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"from","label":"De","description":"Adresse de l’expéditeur.","col":{"xs":24}},
-        {"type":"text","key":"to","label":"À","description":"Adresse(s) du destinataire.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"text","key":"cc","label":"CC","description":"Copie carbone (optionnel).","col":{"xs":24}},
-        {"type":"text","key":"bcc","label":"BCC","description":"Copie carbone cachée (optionnel).","col":{"xs":24}},
-        {"type":"text","key":"subject","label":"Objet","description":"Sujet du message.","col":{"xs":24}},
-        {"type":"textarea","key":"text","label":"Corps (texte)","description":"Contenu en texte brut.","col":{"xs":24}},
-        {"type":"textarea","key":"html","label":"Corps (HTML)","description":"Contenu HTML.","col":{"xs":24}},
-        {"type":"textarea","key":"attachments","label":"Pièces jointes (tableau JSON)","description":"Liste des pièces jointes (JSON).","col":{"xs":24},"default":"[]"}
-      ] } },
-    { "key": "email_read", "name": "emailRead", "schemaVersion": 2, "title": "Lire les e-mails", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "smtp_imap",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Messages", "type": "payload", "schema": "$var:email_messages" }],
-      "description": "Lire des e-mails via IMAP avec filtre", "args": { "title": "Lecture", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"mailbox","label":"Boîte","description":"Dossier à lire (ex.: INBOX).","col":{"xs":24},"default":"INBOX"},
-        {"type":"text","key":"search","label":"Requête de recherche","description":"Critères IMAP (ex.: UNSEEN).","col":{"xs":24},"default":"UNSEEN"},
-        {"type":"number","key":"limit","label":"Limite","description":"Nombre maximum de messages.","col":{"xs":24},"default":10}
-      ] } },
-    { "key": "email_new_message", "name": "emailNewMessage", "schemaVersion": 2, "title": "Nouvel e-mail", "subtitle": "Déclencheur", "type": "event", "nodeKind": "event", "category": "E-mail", "providerKey": "smtp_imap",
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_event" }],
-      "description": "Déclenché à la réception d’un message IMAP", "args": { "title": "Déclencheur IMAP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"mailbox","label":"Boîte","description":"Dossier surveillé (ex.: INBOX).","col":{"xs":24},"default":"INBOX"}
-      ] } },
-    { "key": "email_list_labels", "name": "emailListLabels", "schemaVersion": 2, "title": "Lister les libellés", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Labels", "type": "payload", "schema": "$var:email_labels" }],
-      "description": "Lister les libellés Gmail", "args": { "title": "Libellés", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [] } },
-    { "key": "email_add_label", "name": "emailAddLabel", "schemaVersion": 2, "title": "Ajouter un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_action" }],
-      "description": "Ajouter un libellé Gmail à un message", "args": { "title": "Ajouter un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"messageId","label":"ID du message","description":"Identifiant du message Gmail.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"text","key":"label","label":"Libellé","description":"Nom du libellé.","col":{"xs":24},"validators":[{"type":"required"}]}
-      ] } },
-    { "key": "email_remove_label", "name": "emailRemoveLabel", "schemaVersion": 2, "title": "Retirer un libellé", "type": "function", "nodeKind": "function", "category": "E-mail", "providerKey": "gmail",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["any","payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:email_action" }],
-      "description": "Retirer un libellé Gmail d’un message", "args": { "title": "Retirer un libellé", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"messageId","label":"ID du message","description":"Identifiant du message Gmail.","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"text","key":"label","label":"Libellé","description":"Nom du libellé à retirer.","col":{"xs":24},"validators":[{"type":"required"}]}
-      ] } }
+      "description": "Envoyer un e-mail avec pièces jointes",
+      "args": {
+        "title": "Envoyer un e-mail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "from",
+            "label": "De",
+            "description": "Adresse de l’expéditeur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "À",
+            "description": "Adresse(s) du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cc",
+            "label": "CC",
+            "description": "Copie carbone (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bcc",
+            "label": "BCC",
+            "description": "Copie carbone cachée (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Objet",
+            "description": "Sujet du message.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Corps (texte)",
+            "description": "Contenu en texte brut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "html",
+            "label": "Corps (HTML)",
+            "description": "Contenu HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes (tableau JSON)",
+            "description": "Liste des pièces jointes (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          }
+        ]
+      },
+      "subtitle": "Envoi",
+      "group": "Envoi",
+      "tags": [
+        "envoi",
+        "email"
+      ]
+    },
+    {
+      "key": "email_read",
+      "name": "emailRead",
+      "schemaVersion": 2,
+      "title": "Lire les e-mails",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "smtp_imap",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Messages",
+          "type": "payload",
+          "schema": "$var:email_messages"
+        }
+      ],
+      "description": "Lire des e-mails via IMAP avec filtre",
+      "args": {
+        "title": "Lecture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mailbox",
+            "label": "Boîte",
+            "description": "Dossier à lire (ex.: INBOX).",
+            "col": {
+              "xs": 24
+            },
+            "default": "INBOX"
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Requête de recherche",
+            "description": "Critères IMAP (ex.: UNSEEN).",
+            "col": {
+              "xs": 24
+            },
+            "default": "UNSEEN"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de messages.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          }
+        ]
+      },
+      "subtitle": "Lecture",
+      "group": "Lecture",
+      "tags": [
+        "téléchargement",
+        "email"
+      ]
+    },
+    {
+      "key": "email_new_message",
+      "name": "emailNewMessage",
+      "schemaVersion": 2,
+      "title": "Nouvel e-mail",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "E-mail",
+      "providerKey": "smtp_imap",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:email_event"
+        }
+      ],
+      "description": "Déclenché à la réception d’un message IMAP",
+      "args": {
+        "title": "Déclencheur IMAP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mailbox",
+            "label": "Boîte",
+            "description": "Dossier surveillé (ex.: INBOX).",
+            "col": {
+              "xs": 24
+            },
+            "default": "INBOX"
+          }
+        ]
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "email"
+      ]
+    },
+    {
+      "key": "email_list_labels",
+      "name": "emailListLabels",
+      "schemaVersion": 2,
+      "title": "Lister les libellés",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "gmail",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Labels",
+          "type": "payload",
+          "schema": "$var:email_labels"
+        }
+      ],
+      "description": "Lister les libellés Gmail",
+      "args": {
+        "title": "Libellés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      },
+      "subtitle": "Libellés",
+      "group": "Libellés",
+      "tags": [
+        "liste",
+        "email"
+      ]
+    },
+    {
+      "key": "email_add_label",
+      "name": "emailAddLabel",
+      "schemaVersion": 2,
+      "title": "Ajouter un libellé",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "gmail",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:email_action"
+        }
+      ],
+      "description": "Ajouter un libellé Gmail à un message",
+      "args": {
+        "title": "Ajouter un libellé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "ID du message",
+            "description": "Identifiant du message Gmail.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Nom du libellé.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Libellés",
+      "group": "Libellés",
+      "tags": [
+        "création",
+        "email"
+      ]
+    },
+    {
+      "key": "email_remove_label",
+      "name": "emailRemoveLabel",
+      "schemaVersion": 2,
+      "title": "Retirer un libellé",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "gmail",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:email_action"
+        }
+      ],
+      "description": "Retirer un libellé Gmail d’un message",
+      "args": {
+        "title": "Retirer un libellé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "ID du message",
+            "description": "Identifiant du message Gmail.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Nom du libellé à retirer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Libellés",
+      "group": "Libellés",
+      "tags": [
+        "suppression",
+        "email"
+      ]
+    }
   ]
 }

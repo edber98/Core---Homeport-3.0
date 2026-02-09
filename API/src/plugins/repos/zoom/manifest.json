@@ -10,6 +10,7 @@
       "name": "Zoom",
       "title": "Zoom",
       "iconClass": "fa-solid fa-video",
+      "iconUrl": "https://cdn.simpleicons.org/zoom",
       "color": "#0B5CFF",
       "tags": [
         "zoom",
@@ -226,7 +227,12 @@
             "description": "Mot de passe de la réunion."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "création",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_get",
@@ -284,7 +290,12 @@
             "description": "Identifiant de la réunion."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_update",
@@ -386,7 +397,12 @@
             "description": "Nouvel agenda."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "mise-à-jour",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_delete",
@@ -444,7 +460,12 @@
             "description": "Identifiant de la réunion à supprimer."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "suppression",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meetings_list",
@@ -536,7 +557,12 @@
             "description": "Nombre de résultats par page."
           }
         ]
-      }
+      },
+      "group": "Réunions",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_registrants_list",
@@ -594,7 +620,12 @@
             "description": "Identifiant de la réunion."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_participants_list",
@@ -652,7 +683,12 @@
             "description": "Identifiant de la réunion passée."
           }
         ]
-      }
+      },
+      "group": "Réunion",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_webinar_create",
@@ -778,7 +814,12 @@
             "description": "Description du webinaire."
           }
         ]
-      }
+      },
+      "group": "Webinaire",
+      "tags": [
+        "création",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_webinar_get",
@@ -836,7 +877,12 @@
             "description": "Identifiant du webinaire."
           }
         ]
-      }
+      },
+      "group": "Webinaire",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_webinar_update",
@@ -927,7 +973,12 @@
             "description": "Nouvelle durée."
           }
         ]
-      }
+      },
+      "group": "Webinaire",
+      "tags": [
+        "mise-à-jour",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_webinar_delete",
@@ -985,7 +1036,12 @@
             "description": "Identifiant du webinaire à supprimer."
           }
         ]
-      }
+      },
+      "group": "Webinaire",
+      "tags": [
+        "suppression",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_webinars_list",
@@ -1051,7 +1107,12 @@
             "description": "Nombre de résultats par page."
           }
         ]
-      }
+      },
+      "group": "Webinaires",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_user_get",
@@ -1105,7 +1166,12 @@
             "description": "ID de l'utilisateur ou \"me\"."
           }
         ]
-      }
+      },
+      "group": "Utilisateur",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_users_list",
@@ -1185,7 +1251,12 @@
             "description": "Nombre de résultats par page."
           }
         ]
-      }
+      },
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_user_get_settings",
@@ -1239,7 +1310,12 @@
             "description": "ID de l'utilisateur ou \"me\"."
           }
         ]
-      }
+      },
+      "group": "Utilisateur",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_user_update",
@@ -1341,7 +1417,12 @@
             "description": "Titre du poste."
           }
         ]
-      }
+      },
+      "group": "Utilisateur",
+      "tags": [
+        "mise-à-jour",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_recordings_list",
@@ -1429,7 +1510,13 @@
             "description": "Nombre de résultats par page."
           }
         ]
-      }
+      },
+      "group": "Enregistrements",
+      "tags": [
+        "liste",
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_meeting_recordings",
@@ -1487,7 +1574,12 @@
             "description": "Identifiant de la réunion."
           }
         ]
-      }
+      },
+      "group": "Enregistrements",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_recording_delete",
@@ -1545,7 +1637,13 @@
             "description": "Identifiant de la réunion."
           }
         ]
-      }
+      },
+      "group": "Enregistrements",
+      "tags": [
+        "suppression",
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_recording_get_settings",
@@ -1603,7 +1701,12 @@
             "description": "Identifiant de la réunion."
           }
         ]
-      }
+      },
+      "group": "Enregistrements",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_dashboard_meetings",
@@ -1699,7 +1802,12 @@
             "description": "Type de réunions."
           }
         ]
-      }
+      },
+      "group": "Tableau de bord",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_reports_meetings",
@@ -1785,7 +1893,12 @@
             "description": "Date de fin (YYYY-MM-DD)."
           }
         ]
-      }
+      },
+      "group": "Rapports",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_phone_users_list",
@@ -1861,7 +1974,12 @@
             "description": "Filtre par statut."
           }
         ]
-      }
+      },
+      "group": "Téléphone",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_contacts_list",
@@ -1937,7 +2055,12 @@
             "description": "Nombre de résultats par page."
           }
         ]
-      }
+      },
+      "group": "Contacts",
+      "tags": [
+        "liste",
+        "zoom"
+      ]
     },
     {
       "key": "zoom_contact_get",
@@ -1995,7 +2118,12 @@
             "description": "Identifiant du contact."
           }
         ]
-      }
+      },
+      "group": "Contact",
+      "tags": [
+        "lecture",
+        "zoom"
+      ]
     }
   ],
   "variables": {

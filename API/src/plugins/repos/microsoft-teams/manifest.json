@@ -1,47 +1,251 @@
 {
-  "repo": { "name": "microsoft-teams", "type": "local", "label": "Microsoft Teams" },
+  "repo": {
+    "name": "microsoft-teams",
+    "type": "local",
+    "label": "Microsoft Teams"
+  },
   "providers": [
     {
       "key": "msteams",
       "name": "Microsoft Teams",
       "title": "Microsoft Teams",
       "iconClass": "fa-brands fa-microsoft",
+      "iconUrl": "https://cdn.simpleicons.org/microsoftteams",
       "color": "#6264A7",
-      "tags": ["teams", "chat"],
-      "categories": ["Communication"],
+      "tags": [
+        "teams",
+        "chat"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Microsoft Graph",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "tenantId", "label": "ID du tenant", "description": "ID du tenant Microsoft.", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "ID client", "description": "Client ID OAuth.", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "description": "Client secret OAuth.", "col": { "xs": 24 }, "secret": true },
-          { "type": "text", "key": "incomingWebhookUrl", "label": "URL du webhook entrant", "description": "URL du webhook entrant Teams.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "ID du tenant",
+            "description": "ID du tenant Microsoft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "description": "Client ID OAuth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Client secret OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "incomingWebhookUrl",
+            "label": "URL du webhook entrant",
+            "description": "URL du webhook entrant Teams.",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "teams_post_message", "name": "teamsPostMessage", "schemaVersion": 2, "title": "Publier un message", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Publier un message dans un canal Teams", "args": { "title": "Publication", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"teamId","label":"ID de l’équipe","description":"Identifiant de l\u2019équipe.","col":{"xs":24}},
-        {"type":"text","key":"channelId","label":"ID du canal","description":"Identifiant du canal.","col":{"xs":24}},
-        {"type":"textarea","key":"text","label":"Texte","description":"Contenu du message.","col":{"xs":24}}
-      ] } },
-    { "key": "teams_adaptive_card", "name": "teamsAdaptiveCard", "schemaVersion": 2, "title": "Carte adaptative", "type": "function", "nodeKind": "function", "category": "Teams", "providerKey": "msteams",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "payload", "accepts": ["payload","any"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload" }],
-      "description": "Envoyer une carte adaptative", "args": { "title": "Carte adaptative", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"teamId","label":"ID de l’équipe","description":"Identifiant de l\u2019équipe.","col":{"xs":24}},
-        {"type":"text","key":"channelId","label":"ID du canal","description":"Identifiant du canal.","col":{"xs":24}},
-        {"type":"textarea","key":"card","label":"JSON de la carte","description":"Payload de la carte (JSON).","col":{"xs":24},"default":"{}"}
-      ] } },
-    { "key": "teams_incoming_webhook", "name": "teamsIncomingWebhook", "schemaVersion": 2, "title": "Webhook entrant", "subtitle": "Déclencheur", "type": "event", "category": "Teams", "providerKey": "msteams",
-      "description": "Déclenchement sur webhook entrant", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","description":"Chemin d’URL pour recevoir le webhook.","col":{"xs":24},"default":"/hooks/teams"}
-      ] } }
+    {
+      "key": "teams_post_message",
+      "name": "teamsPostMessage",
+      "schemaVersion": 2,
+      "title": "Publier un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams",
+      "providerKey": "msteams",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Publier un message dans un canal Teams",
+      "args": {
+        "title": "Publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID de l’équipe",
+            "description": "Identifiant de l’équipe.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "teams_adaptive_card",
+      "name": "teamsAdaptiveCard",
+      "schemaVersion": 2,
+      "title": "Carte adaptative",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams",
+      "providerKey": "msteams",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Envoyer une carte adaptative",
+      "args": {
+        "title": "Carte adaptative",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID de l’équipe",
+            "description": "Identifiant de l’équipe.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "ID du canal",
+            "description": "Identifiant du canal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "card",
+            "label": "JSON de la carte",
+            "description": "Payload de la carte (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ]
+      },
+      "subtitle": "Messages",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "teams_incoming_webhook",
+      "name": "teamsIncomingWebhook",
+      "schemaVersion": 2,
+      "title": "Webhook entrant",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "category": "Teams",
+      "providerKey": "msteams",
+      "description": "Déclenchement sur webhook entrant",
+      "args": {
+        "title": "Webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d’endpoint",
+            "description": "Chemin d’URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/hooks/teams"
+          }
+        ]
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "Microsoft Teams"
+      ]
+    }
   ]
 }

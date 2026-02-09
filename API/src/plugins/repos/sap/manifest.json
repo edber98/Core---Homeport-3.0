@@ -1284,7 +1284,7 @@
       "name": "SAP",
       "title": "SAP",
       "iconClass": "fa-solid fa-building",
-       "iconUrl": "https://www.mac-group.com/wp-content/uploads/2018/02/SAP-Logo.svg.png",
+      "iconUrl": "https://cdn.simpleicons.org/sap",
       "color": "#0FAAFF",
       "tags": [
         "sap",
@@ -1456,7 +1456,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Business Partners",
+      "group": "Business Partners",
+      "tags": [
+        "création",
+        "SAP"
+      ]
     },
     {
       "key": "sap_bp_get",
@@ -1509,7 +1515,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Business Partners",
+      "group": "Business Partners",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_bp_update",
@@ -1580,7 +1592,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Business Partners",
+      "group": "Business Partners",
+      "tags": [
+        "mise-à-jour",
+        "SAP"
+      ]
     },
     {
       "key": "sap_bp_delete",
@@ -1633,7 +1651,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Business Partners",
+      "group": "Business Partners",
+      "tags": [
+        "suppression",
+        "SAP"
+      ]
     },
     {
       "key": "sap_bp_list",
@@ -1701,7 +1725,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Business Partners",
+      "group": "Business Partners",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_sales_order_create",
@@ -1805,7 +1835,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes de vente",
+      "group": "Commandes de vente",
+      "tags": [
+        "création",
+        "SAP"
+      ]
     },
     {
       "key": "sap_sales_order_get",
@@ -1858,7 +1894,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commandes de vente",
+      "group": "Commandes de vente",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_sales_order_update",
@@ -1920,7 +1962,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes de vente",
+      "group": "Commandes de vente",
+      "tags": [
+        "mise-à-jour",
+        "SAP"
+      ]
     },
     {
       "key": "sap_sales_order_item_add",
@@ -2005,7 +2053,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes de vente",
+      "group": "Commandes de vente",
+      "tags": [
+        "création",
+        "SAP"
+      ]
     },
     {
       "key": "sap_sales_orders_list",
@@ -2073,7 +2127,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes de vente",
+      "group": "Commandes de vente",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_purchase_order_create",
@@ -2168,7 +2228,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes d'achat",
+      "group": "Commandes d'achat",
+      "tags": [
+        "création",
+        "SAP"
+      ]
     },
     {
       "key": "sap_purchase_order_get",
@@ -2221,7 +2287,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commandes d'achat",
+      "group": "Commandes d'achat",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_purchase_order_update",
@@ -2283,7 +2355,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes d'achat",
+      "group": "Commandes d'achat",
+      "tags": [
+        "mise-à-jour",
+        "SAP"
+      ]
     },
     {
       "key": "sap_purchase_orders_list",
@@ -2351,7 +2429,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commandes d'achat",
+      "group": "Commandes d'achat",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_material_create",
@@ -2436,7 +2520,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "group": "Articles",
+      "tags": [
+        "création",
+        "SAP"
+      ]
     },
     {
       "key": "sap_material_get",
@@ -2489,7 +2579,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "group": "Articles",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_material_update",
@@ -2560,7 +2656,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "group": "Articles",
+      "tags": [
+        "mise-à-jour",
+        "SAP"
+      ]
     },
     {
       "key": "sap_materials_list",
@@ -2628,7 +2730,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "group": "Articles",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_billing_doc_get",
@@ -2681,7 +2789,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Facturation",
+      "group": "Facturation",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_billing_docs_list",
@@ -2749,7 +2863,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Facturation",
+      "group": "Facturation",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_billing_doc_items_list",
@@ -2822,7 +2942,13 @@
             "default": 0
           }
         ]
-      }
+      },
+      "subtitle": "Facturation",
+      "group": "Facturation",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_gl_account_get",
@@ -2889,7 +3015,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Comptabilité",
+      "group": "Comptabilité",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_gl_accounts_list",
@@ -2966,7 +3098,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Comptabilité",
+      "group": "Comptabilité",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_cost_center_get",
@@ -3033,7 +3171,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Comptabilité",
+      "group": "Comptabilité",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_cost_centers_list",
@@ -3101,7 +3245,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Comptabilité",
+      "group": "Comptabilité",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_production_order_get",
@@ -3154,7 +3304,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Production",
+      "group": "Production",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_production_order_confirm",
@@ -3234,7 +3390,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Production",
+      "group": "Production",
+      "tags": [
+        "mise-à-jour",
+        "SAP"
+      ]
     },
     {
       "key": "sap_production_orders_list",
@@ -3302,7 +3464,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Production",
+      "group": "Production",
+      "tags": [
+        "liste",
+        "SAP"
+      ]
     },
     {
       "key": "sap_odata_get",
@@ -3355,7 +3523,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "OData",
+      "group": "OData",
+      "tags": [
+        "lecture",
+        "SAP"
+      ]
     },
     {
       "key": "sap_odata_post",
@@ -3417,7 +3591,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "OData",
+      "group": "OData",
+      "tags": [
+        "envoi",
+        "SAP"
+      ]
     }
   ]
 }

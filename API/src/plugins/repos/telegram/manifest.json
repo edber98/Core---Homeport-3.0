@@ -10,6 +10,7 @@
       "name": "Telegram Bot",
       "title": "Telegram Bot",
       "iconClass": "fa-brands fa-telegram",
+      "iconUrl": "https://cdn.simpleicons.org/telegram",
       "color": "#26A5E4",
       "tags": [
         "telegram",
@@ -166,7 +167,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_forward_message",
@@ -259,7 +265,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_copy_message",
@@ -352,7 +363,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_edit_message",
@@ -459,7 +475,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_delete_message",
@@ -529,7 +550,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "suppression",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_photo",
@@ -631,7 +657,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_document",
@@ -710,7 +741,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_location",
@@ -803,7 +839,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_inline_keyboard",
@@ -882,7 +923,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Clavier",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_answer_callback",
@@ -956,7 +1002,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Clavier",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_edit_reply_markup",
@@ -1035,7 +1086,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Clavier",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_get_chat",
@@ -1091,7 +1147,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "lecture",
+        "telegram"
+      ]
     },
     {
       "key": "tg_get_chat_members_count",
@@ -1147,7 +1208,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "lecture",
+        "telegram"
+      ]
     },
     {
       "key": "tg_get_chat_member",
@@ -1217,7 +1283,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "lecture",
+        "telegram"
+      ]
     },
     {
       "key": "tg_ban_chat_member",
@@ -1296,7 +1367,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_unban_chat_member",
@@ -1376,7 +1452,12 @@
             "default": true
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_set_chat_title",
@@ -1446,7 +1527,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Chat",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_get_me",
@@ -1487,7 +1573,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Bot",
+      "tags": [
+        "lecture",
+        "telegram"
+      ]
     },
     {
       "key": "tg_get_updates",
@@ -1566,7 +1657,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Bot",
+      "tags": [
+        "lecture",
+        "telegram"
+      ]
     },
     {
       "key": "tg_set_webhook",
@@ -1649,7 +1745,13 @@
             }
           }
         ]
-      }
+      },
+      "group": "Bot",
+      "tags": [
+        "mise-à-jour",
+        "événement",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_sticker",
@@ -1719,7 +1821,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Médias",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_video",
@@ -1825,7 +1932,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Médias",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_voice",
@@ -1913,7 +2025,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Médias",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_poll",
@@ -2035,7 +2152,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Sondages",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_contact",
@@ -2128,7 +2250,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Contacts",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_send_venue",
@@ -2240,7 +2367,12 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Contacts",
+      "tags": [
+        "envoi",
+        "telegram"
+      ]
     },
     {
       "key": "tg_pin_message",
@@ -2319,7 +2451,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Épinglage",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_unpin_message",
@@ -2384,7 +2521,12 @@
             }
           }
         ]
-      }
+      },
+      "group": "Épinglage",
+      "tags": [
+        "mise-à-jour",
+        "telegram"
+      ]
     },
     {
       "key": "tg_webhook_event",
@@ -2424,7 +2566,12 @@
             "default": "/telegram"
           }
         ]
-      }
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "telegram"
+      ]
     }
   ],
   "variables": {

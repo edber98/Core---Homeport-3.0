@@ -159,7 +159,8 @@
       "tags": [
         "envoi",
         "twilio"
-      ]
+      ],
+      "group": "SMS"
     },
     {
       "key": "twilio_list_sms",
@@ -233,7 +234,8 @@
       "tags": [
         "liste",
         "twilio"
-      ]
+      ],
+      "group": "SMS"
     },
     {
       "key": "twilio_create_call",
@@ -334,7 +336,8 @@
       "tags": [
         "création",
         "twilio"
-      ]
+      ],
+      "group": "Appels"
     },
     {
       "key": "twilio_get_call",
@@ -394,7 +397,8 @@
       "tags": [
         "lecture",
         "twilio"
-      ]
+      ],
+      "group": "Appels"
     },
     {
       "key": "twilio_list_calls",
@@ -507,7 +511,8 @@
       "tags": [
         "liste",
         "twilio"
-      ]
+      ],
+      "group": "Appels"
     },
     {
       "key": "twilio_list_phone_numbers",
@@ -563,7 +568,8 @@
       "tags": [
         "liste",
         "twilio"
-      ]
+      ],
+      "group": "Numéros"
     },
     {
       "key": "twilio_get_phone_number",
@@ -623,7 +629,8 @@
       "tags": [
         "lecture",
         "twilio"
-      ]
+      ],
+      "group": "Numéros"
     },
     {
       "key": "twilio_get_message",
@@ -683,7 +690,8 @@
       "tags": [
         "lecture",
         "twilio"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "twilio_delete_message",
@@ -743,7 +751,8 @@
       "tags": [
         "suppression",
         "twilio"
-      ]
+      ],
+      "group": "Messages"
     },
     {
       "key": "twilio_create_verify_service",
@@ -813,7 +822,8 @@
       "tags": [
         "création",
         "twilio"
-      ]
+      ],
+      "group": "Vérification"
     },
     {
       "key": "twilio_create_verification",
@@ -919,7 +929,8 @@
       "tags": [
         "envoi",
         "twilio"
-      ]
+      ],
+      "group": "Vérification"
     },
     {
       "key": "twilio_check_verification",
@@ -1007,7 +1018,8 @@
       "tags": [
         "lecture",
         "twilio"
-      ]
+      ],
+      "group": "Vérification"
     },
     {
       "key": "twilio_phone_lookup",
@@ -1076,7 +1088,8 @@
       "tags": [
         "recherche",
         "twilio"
-      ]
+      ],
+      "group": "Recherche"
     },
     {
       "key": "twilio_webhook_event",
@@ -1120,7 +1133,8 @@
       "tags": [
         "événement",
         "twilio"
-      ]
+      ],
+      "group": "Événements"
     }
   ],
   "variables": {

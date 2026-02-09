@@ -409,7 +409,8 @@
             "description": "Requête SQL à exécuter."
           }
         ]
-      }
+      },
+      "group": "Requêtes"
     },
     {
       "key": "sql_execute_parameterized",
@@ -476,7 +477,8 @@
             "description": "Tableau de valeurs pour les paramètres."
           }
         ]
-      }
+      },
+      "group": "Requêtes"
     },
     {
       "key": "sql_list_tables",
@@ -529,7 +531,8 @@
             "description": "Schéma à lister (PostgreSQL). Défaut: public."
           }
         ]
-      }
+      },
+      "group": "Tables"
     },
     {
       "key": "sql_describe_table",
@@ -595,7 +598,8 @@
             "description": "Schéma (PostgreSQL). Défaut: public."
           }
         ]
-      }
+      },
+      "group": "Tables"
     },
     {
       "key": "sql_select",
@@ -698,7 +702,8 @@
             "default": 0
           }
         ]
-      }
+      },
+      "group": "Données"
     },
     {
       "key": "sql_insert",
@@ -769,7 +774,8 @@
             "description": "Objet clé-valeur des données."
           }
         ]
-      }
+      },
+      "group": "Données"
     },
     {
       "key": "sql_update",
@@ -854,7 +860,8 @@
             "description": "Condition de filtrage."
           }
         ]
-      }
+      },
+      "group": "Données"
     },
     {
       "key": "sql_delete",
@@ -925,7 +932,8 @@
             "description": "Condition de filtrage."
           }
         ]
-      }
+      },
+      "group": "Données"
     },
     {
       "key": "sql_call_procedure",
@@ -991,7 +999,8 @@
             "description": "Tableau de paramètres."
           }
         ]
-      }
+      },
+      "group": "Procédures"
     }
   ]
 }

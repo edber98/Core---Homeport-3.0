@@ -867,7 +867,8 @@
       "tags": [
         "clickup",
         "création"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "clickup_task_get",
@@ -925,7 +926,8 @@
       "tags": [
         "clickup",
         "lecture"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "clickup_task_update",
@@ -1028,7 +1030,8 @@
       "tags": [
         "clickup",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "clickup_task_delete",
@@ -1086,7 +1089,8 @@
       "tags": [
         "clickup",
         "suppression"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "clickup_tasks_list",
@@ -1144,7 +1148,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Tâches"
     },
     {
       "key": "clickup_list_create",
@@ -1225,7 +1230,8 @@
       "tags": [
         "clickup",
         "création"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "clickup_list_get",
@@ -1283,7 +1289,8 @@
       "tags": [
         "clickup",
         "lecture"
-      ]
+      ],
+      "group": "Listes"
     },
     {
       "key": "clickup_folder_create",
@@ -1355,7 +1362,8 @@
       "tags": [
         "clickup",
         "création"
-      ]
+      ],
+      "group": "Dossiers"
     },
     {
       "key": "clickup_folder_get",
@@ -1413,7 +1421,8 @@
       "tags": [
         "clickup",
         "lecture"
-      ]
+      ],
+      "group": "Dossiers"
     },
     {
       "key": "clickup_folders_list",
@@ -1471,7 +1480,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Dossiers"
     },
     {
       "key": "clickup_space_get",
@@ -1529,7 +1539,8 @@
       "tags": [
         "clickup",
         "lecture"
-      ]
+      ],
+      "group": "Espaces"
     },
     {
       "key": "clickup_spaces_list",
@@ -1587,7 +1598,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Espaces"
     },
     {
       "key": "clickup_teams_list",
@@ -1630,7 +1642,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Équipes"
     },
     {
       "key": "clickup_comment_create",
@@ -1702,7 +1715,8 @@
       "tags": [
         "clickup",
         "création"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "clickup_comments_list",
@@ -1760,7 +1774,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "clickup_tags_list",
@@ -1818,7 +1833,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "clickup_time_entry_create",
@@ -1908,7 +1924,8 @@
       "tags": [
         "clickup",
         "création"
-      ]
+      ],
+      "group": "Temps"
     },
     {
       "key": "clickup_time_entries_list",
@@ -1966,7 +1983,8 @@
       "tags": [
         "clickup",
         "liste"
-      ]
+      ],
+      "group": "Temps"
     },
     {
       "key": "clickup_webhook_event",
@@ -2011,7 +2029,8 @@
       "tags": [
         "clickup",
         "événement"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

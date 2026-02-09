@@ -1076,7 +1076,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "pl_customer_get",
@@ -1134,7 +1135,8 @@
       "tags": [
         "lecture",
         "pennylane"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "pl_customer_update",
@@ -1228,7 +1230,8 @@
       "tags": [
         "mise-à-jour",
         "pennylane"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "pl_customers_list",
@@ -1299,7 +1302,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Clients"
     },
     {
       "key": "pl_supplier_create",
@@ -1393,7 +1397,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "pl_supplier_get",
@@ -1451,7 +1456,8 @@
       "tags": [
         "lecture",
         "pennylane"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "pl_supplier_update",
@@ -1536,7 +1542,8 @@
       "tags": [
         "mise-à-jour",
         "pennylane"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "pl_suppliers_list",
@@ -1598,7 +1605,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Fournisseurs"
     },
     {
       "key": "pl_invoice_create",
@@ -1697,7 +1705,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "pl_invoice_get",
@@ -1755,7 +1764,8 @@
       "tags": [
         "lecture",
         "pennylane"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "pl_invoices_list",
@@ -1826,7 +1836,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "pl_invoice_finalize",
@@ -1884,7 +1895,8 @@
       "tags": [
         "finalisation",
         "pennylane"
-      ]
+      ],
+      "group": "Factures"
     },
     {
       "key": "pl_customer_invoice_create",
@@ -1983,7 +1995,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Factures clients"
     },
     {
       "key": "pl_customer_invoices_list",
@@ -2054,7 +2067,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Factures clients"
     },
     {
       "key": "pl_supplier_invoice_create",
@@ -2153,7 +2167,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Factures fournisseurs"
     },
     {
       "key": "pl_supplier_invoices_list",
@@ -2224,7 +2239,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Factures fournisseurs"
     },
     {
       "key": "pl_estimate_create",
@@ -2314,7 +2330,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "pl_estimate_get",
@@ -2372,7 +2389,8 @@
       "tags": [
         "lecture",
         "pennylane"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "pl_estimates_list",
@@ -2434,7 +2452,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Devis"
     },
     {
       "key": "pl_product_create",
@@ -2537,7 +2556,8 @@
       "tags": [
         "création",
         "pennylane"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "pl_products_list",
@@ -2599,7 +2619,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Produits"
     },
     {
       "key": "pl_categories_list",
@@ -2661,7 +2682,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "pl_payment_methods_list",
@@ -2704,7 +2726,8 @@
       "tags": [
         "liste",
         "pennylane"
-      ]
+      ],
+      "group": "Moyens de paiement"
     },
     {
       "key": "pl_webhook_event",
@@ -2747,7 +2770,8 @@
       "tags": [
         "événement",
         "pennylane"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

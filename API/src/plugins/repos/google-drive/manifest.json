@@ -910,6 +910,7 @@
       "name": "Google Drive",
       "title": "Google Drive",
       "iconClass": "fa-brands fa-google-drive",
+      "iconUrl": "https://cdn.simpleicons.org/googledrive",
       "color": "#4285F4",
       "tags": [
         "google",
@@ -977,6 +978,7 @@
       "name": "Google Docs",
       "title": "Google Docs",
       "iconClass": "fa-solid fa-file-lines",
+      "iconUrl": "https://cdn.simpleicons.org/googledocs",
       "color": "#4285F4",
       "tags": [
         "google",
@@ -993,6 +995,7 @@
       "name": "Google Sheets",
       "title": "Google Sheets",
       "iconClass": "fa-solid fa-table",
+      "iconUrl": "https://cdn.simpleicons.org/googlesheets",
       "color": "#0F9D58",
       "tags": [
         "google",
@@ -1009,6 +1012,7 @@
       "name": "Google Calendar",
       "title": "Google Calendar",
       "iconClass": "fa-solid fa-calendar-days",
+      "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
       "color": "#4285F4",
       "tags": [
         "google",
@@ -1087,7 +1091,13 @@
             "description": "Requête de recherche Drive (q parameter)."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "liste",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_get_file",
@@ -1140,7 +1150,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_upload_file",
@@ -1220,7 +1236,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "téléversement",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_download_file",
@@ -1282,7 +1304,13 @@
             "description": "MIME type d'export (pour Google Docs)."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "téléchargement",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_delete_file",
@@ -1335,7 +1363,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_create_folder",
@@ -1397,7 +1431,13 @@
             "description": "ID du dossier parent."
           }
         ]
-      }
+      },
+      "subtitle": "Dossiers",
+      "group": "Dossiers",
+      "tags": [
+        "création",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_move_file",
@@ -1473,7 +1513,13 @@
             "description": "ID de l'ancien dossier parent."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "mise-à-jour",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_copy_file",
@@ -1544,7 +1590,13 @@
             "description": "ID du dossier destination."
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "création",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_share_file",
@@ -1652,7 +1704,13 @@
             "description": "Email du destinataire (si type=user)."
           }
         ]
-      }
+      },
+      "subtitle": "Permissions",
+      "group": "Permissions",
+      "tags": [
+        "mise-à-jour",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdrive_search",
@@ -1715,7 +1773,13 @@
             "default": 50
           }
         ]
-      }
+      },
+      "subtitle": "Fichiers",
+      "group": "Fichiers",
+      "tags": [
+        "recherche",
+        "Google Drive"
+      ]
     },
     {
       "key": "gdocs_create_doc",
@@ -1777,7 +1841,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "création",
+        "Google Docs"
+      ]
     },
     {
       "key": "gdocs_get_doc",
@@ -1830,7 +1900,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "lecture",
+        "Google Docs"
+      ]
     },
     {
       "key": "gdocs_append_text",
@@ -1892,7 +1968,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "mise-à-jour",
+        "Google Docs"
+      ]
     },
     {
       "key": "gdocs_replace_text",
@@ -1973,7 +2055,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "mise-à-jour",
+        "Google Docs"
+      ]
     },
     {
       "key": "gdocs_get_content",
@@ -2026,7 +2114,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "lecture",
+        "Google Docs"
+      ]
     },
     {
       "key": "gdocs_export_pdf",
@@ -2079,7 +2173,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Documents",
+      "group": "Documents",
+      "tags": [
+        "téléchargement",
+        "Google Docs"
+      ]
     },
     {
       "key": "gsheets_create_spreadsheet",
@@ -2132,7 +2232,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "création",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_get_spreadsheet",
@@ -2185,7 +2291,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "lecture",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_get_values",
@@ -2252,7 +2364,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "lecture",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_update_values",
@@ -2328,7 +2446,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "mise-à-jour",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_append_rows",
@@ -2404,7 +2528,13 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "création",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_clear_range",
@@ -2471,7 +2601,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "suppression",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_add_sheet",
@@ -2538,7 +2674,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "création",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_delete_sheet",
@@ -2605,7 +2747,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "suppression",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_copy_sheet",
@@ -2686,7 +2834,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "création",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gsheets_get_sheet_list",
@@ -2739,7 +2893,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Feuilles de calcul",
+      "group": "Feuilles de calcul",
+      "tags": [
+        "liste",
+        "Google Sheets"
+      ]
     },
     {
       "key": "gcal_list_calendars",
@@ -2777,7 +2937,13 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Calendrier",
+      "group": "Calendrier",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_get_calendar",
@@ -2829,7 +2995,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Calendrier",
+      "group": "Calendrier",
+      "tags": [
+        "lecture",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_create_calendar",
@@ -2898,7 +3070,13 @@
             "description": "Ex: America/Montreal"
           }
         ]
-      }
+      },
+      "subtitle": "Calendrier",
+      "group": "Calendrier",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_delete_calendar",
@@ -2950,7 +3128,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Calendrier",
+      "group": "Calendrier",
+      "tags": [
+        "suppression",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_list_events",
@@ -3068,7 +3252,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_get_event",
@@ -3133,7 +3323,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "lecture",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_create_event",
@@ -3288,7 +3484,13 @@
             "description": "Minutes avant l'événement."
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_update_event",
@@ -3402,7 +3604,13 @@
             "description": "Emails séparés par des virgules."
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "mise-à-jour",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_delete_event",
@@ -3467,7 +3675,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "suppression",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_quick_add",
@@ -3530,7 +3744,13 @@
             "description": "Ex: \"Réunion demain 15h\"."
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_move_event",
@@ -3608,7 +3828,13 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "mise-à-jour",
+        "Google Calendar"
+      ]
     },
     {
       "key": "gcal_event_instances",
@@ -3691,7 +3917,13 @@
             "description": "Format ISO 8601."
           }
         ]
-      }
+      },
+      "subtitle": "Événements",
+      "group": "Événements",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
     }
   ]
 }

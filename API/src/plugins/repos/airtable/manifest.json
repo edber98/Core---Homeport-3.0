@@ -673,7 +673,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Enregistrements"
     },
     {
       "key": "airtable_record_get",
@@ -759,7 +760,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Enregistrements"
     },
     {
       "key": "airtable_record_update",
@@ -859,7 +861,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Enregistrements"
     },
     {
       "key": "airtable_record_delete",
@@ -945,7 +948,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Enregistrements"
     },
     {
       "key": "airtable_records_list",
@@ -1044,7 +1048,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Enregistrements"
     },
     {
       "key": "airtable_table_get",
@@ -1116,7 +1121,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tables"
     },
     {
       "key": "airtable_tables_list",
@@ -1174,7 +1180,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tables"
     },
     {
       "key": "airtable_table_create",
@@ -1269,7 +1276,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tables"
     },
     {
       "key": "airtable_field_create",
@@ -1378,7 +1386,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Champs"
     },
     {
       "key": "airtable_fields_list",
@@ -1450,7 +1459,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Champs"
     },
     {
       "key": "airtable_bases_list",
@@ -1493,7 +1503,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Bases"
     },
     {
       "key": "airtable_views_list",
@@ -1565,7 +1576,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Vues"
     },
     {
       "key": "airtable_webhook_event",
@@ -1610,7 +1622,8 @@
             "default": "/airtable"
           }
         ]
-      }
+      },
+      "group": "Événements"
     }
   ]
 }

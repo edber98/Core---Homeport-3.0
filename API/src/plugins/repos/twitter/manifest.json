@@ -569,7 +569,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_get_tweet",
@@ -626,7 +627,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_delete_tweet",
@@ -683,7 +685,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_search_tweets",
@@ -750,7 +753,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_list_user_tweets",
@@ -817,7 +821,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_list_mentions",
@@ -884,7 +889,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Tweets"
     },
     {
       "key": "twitter_get_user",
@@ -941,7 +947,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "twitter_get_me",
@@ -983,7 +990,8 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "group": "Utilisateurs"
     },
     {
       "key": "twitter_list_followers",
@@ -1050,7 +1058,8 @@
             "default": 100
           }
         ]
-      }
+      },
+      "group": "Abonnements"
     },
     {
       "key": "twitter_list_following",
@@ -1117,7 +1126,8 @@
             "default": 100
           }
         ]
-      }
+      },
+      "group": "Abonnements"
     },
     {
       "key": "twitter_follow_user",
@@ -1188,7 +1198,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Abonnements"
     },
     {
       "key": "twitter_unfollow_user",
@@ -1259,7 +1270,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Abonnements"
     },
     {
       "key": "twitter_get_list",
@@ -1316,7 +1328,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Listes"
     },
     {
       "key": "twitter_list_tweets",
@@ -1383,7 +1396,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Listes"
     },
     {
       "key": "twitter_list_bookmarks",
@@ -1450,7 +1464,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Signets"
     }
   ]
 }

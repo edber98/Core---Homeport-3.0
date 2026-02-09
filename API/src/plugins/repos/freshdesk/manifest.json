@@ -1010,7 +1010,8 @@
       "tags": [
         "création",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_ticket_get",
@@ -1068,7 +1069,8 @@
       "tags": [
         "lecture",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_ticket_update",
@@ -1198,7 +1200,8 @@
       "tags": [
         "mise-à-jour",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_ticket_delete",
@@ -1256,7 +1259,8 @@
       "tags": [
         "suppression",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_tickets_list",
@@ -1318,7 +1322,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_ticket_search",
@@ -1376,7 +1381,8 @@
       "tags": [
         "recherche",
         "freshdesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "fd_contact_create",
@@ -1461,7 +1467,8 @@
       "tags": [
         "création",
         "freshdesk"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "fd_contact_get",
@@ -1519,7 +1526,8 @@
       "tags": [
         "lecture",
         "freshdesk"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "fd_contact_update",
@@ -1604,7 +1612,8 @@
       "tags": [
         "mise-à-jour",
         "freshdesk"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "fd_contacts_list",
@@ -1666,7 +1675,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Contacts"
     },
     {
       "key": "fd_company_create",
@@ -1742,7 +1752,8 @@
       "tags": [
         "création",
         "freshdesk"
-      ]
+      ],
+      "group": "Entreprises"
     },
     {
       "key": "fd_company_get",
@@ -1800,7 +1811,8 @@
       "tags": [
         "lecture",
         "freshdesk"
-      ]
+      ],
+      "group": "Entreprises"
     },
     {
       "key": "fd_companies_list",
@@ -1853,7 +1865,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Entreprises"
     },
     {
       "key": "fd_agent_get",
@@ -1911,7 +1924,8 @@
       "tags": [
         "lecture",
         "freshdesk"
-      ]
+      ],
+      "group": "Agents"
     },
     {
       "key": "fd_agents_list",
@@ -1964,7 +1978,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Agents"
     },
     {
       "key": "fd_group_get",
@@ -2022,7 +2037,8 @@
       "tags": [
         "lecture",
         "freshdesk"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "fd_groups_list",
@@ -2065,7 +2081,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "fd_note_create",
@@ -2156,7 +2173,8 @@
       "tags": [
         "création",
         "freshdesk"
-      ]
+      ],
+      "group": "Notes"
     },
     {
       "key": "fd_notes_list",
@@ -2214,7 +2232,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Notes"
     },
     {
       "key": "fd_time_entry_create",
@@ -2295,7 +2314,8 @@
       "tags": [
         "création",
         "freshdesk"
-      ]
+      ],
+      "group": "Temps"
     },
     {
       "key": "fd_time_entries_list",
@@ -2353,7 +2373,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Temps"
     },
     {
       "key": "fd_satisfaction_list",
@@ -2406,7 +2427,8 @@
       "tags": [
         "liste",
         "freshdesk"
-      ]
+      ],
+      "group": "Satisfaction"
     },
     {
       "key": "fd_webhook_event",
@@ -2466,7 +2488,8 @@
       "tags": [
         "événement",
         "freshdesk"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

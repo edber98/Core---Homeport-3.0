@@ -1210,7 +1210,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "wp_post_get",
@@ -1268,7 +1269,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "wp_post_update",
@@ -1362,7 +1364,8 @@
       "tags": [
         "mise-à-jour",
         "wordpress"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "wp_post_delete",
@@ -1420,7 +1423,8 @@
       "tags": [
         "suppression",
         "wordpress"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "wp_posts_list",
@@ -1500,7 +1504,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Articles"
     },
     {
       "key": "wp_page_create",
@@ -1585,7 +1590,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Pages"
     },
     {
       "key": "wp_page_get",
@@ -1643,7 +1649,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Pages"
     },
     {
       "key": "wp_page_update",
@@ -1728,7 +1735,8 @@
       "tags": [
         "mise-à-jour",
         "wordpress"
-      ]
+      ],
+      "group": "Pages"
     },
     {
       "key": "wp_page_delete",
@@ -1786,7 +1794,8 @@
       "tags": [
         "suppression",
         "wordpress"
-      ]
+      ],
+      "group": "Pages"
     },
     {
       "key": "wp_pages_list",
@@ -1866,7 +1875,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Pages"
     },
     {
       "key": "wp_media_upload",
@@ -1942,7 +1952,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wp_media_get",
@@ -2000,7 +2011,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wp_media_list",
@@ -2071,7 +2083,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wp_media_delete",
@@ -2129,7 +2142,8 @@
       "tags": [
         "suppression",
         "wordpress"
-      ]
+      ],
+      "group": "Médias"
     },
     {
       "key": "wp_category_create",
@@ -2205,7 +2219,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wp_category_get",
@@ -2263,7 +2278,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wp_categories_list",
@@ -2325,7 +2341,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Catégories"
     },
     {
       "key": "wp_tag_create",
@@ -2392,7 +2409,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "wp_tags_list",
@@ -2454,7 +2472,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "wp_comment_create",
@@ -2544,7 +2563,8 @@
       "tags": [
         "création",
         "wordpress"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "wp_comment_get",
@@ -2602,7 +2622,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "wp_comments_list",
@@ -2673,7 +2694,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "wp_comment_update",
@@ -2749,7 +2771,8 @@
       "tags": [
         "mise-à-jour",
         "wordpress"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "wp_user_get",
@@ -2807,7 +2830,8 @@
       "tags": [
         "lecture",
         "wordpress"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "wp_users_list",
@@ -2869,7 +2893,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "wp_plugins_list",
@@ -2922,7 +2947,8 @@
       "tags": [
         "liste",
         "wordpress"
-      ]
+      ],
+      "group": "Extensions"
     },
     {
       "key": "wp_webhook_event",
@@ -2965,7 +2991,8 @@
       "tags": [
         "événement",
         "wordpress"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

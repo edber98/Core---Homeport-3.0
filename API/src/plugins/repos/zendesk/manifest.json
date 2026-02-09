@@ -1001,7 +1001,8 @@
       "tags": [
         "création",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_ticket_get",
@@ -1059,7 +1060,8 @@
       "tags": [
         "lecture",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_ticket_update",
@@ -1202,7 +1204,8 @@
       "tags": [
         "mise-à-jour",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_ticket_delete",
@@ -1260,7 +1263,8 @@
       "tags": [
         "suppression",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_tickets_list",
@@ -1322,7 +1326,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_ticket_search",
@@ -1380,7 +1385,8 @@
       "tags": [
         "recherche",
         "zendesk"
-      ]
+      ],
+      "group": "Tickets"
     },
     {
       "key": "zd_user_create",
@@ -1479,7 +1485,8 @@
       "tags": [
         "création",
         "zendesk"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "zd_user_get",
@@ -1537,7 +1544,8 @@
       "tags": [
         "lecture",
         "zendesk"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "zd_user_update",
@@ -1622,7 +1630,8 @@
       "tags": [
         "mise-à-jour",
         "zendesk"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "zd_users_list",
@@ -1684,7 +1693,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "zd_user_search",
@@ -1742,7 +1752,8 @@
       "tags": [
         "recherche",
         "zendesk"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "zd_organization_create",
@@ -1809,7 +1820,8 @@
       "tags": [
         "création",
         "zendesk"
-      ]
+      ],
+      "group": "Organisations"
     },
     {
       "key": "zd_organization_get",
@@ -1867,7 +1879,8 @@
       "tags": [
         "lecture",
         "zendesk"
-      ]
+      ],
+      "group": "Organisations"
     },
     {
       "key": "zd_organizations_list",
@@ -1929,7 +1942,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Organisations"
     },
     {
       "key": "zd_group_get",
@@ -1987,7 +2001,8 @@
       "tags": [
         "lecture",
         "zendesk"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "zd_groups_list",
@@ -2030,7 +2045,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Groupes"
     },
     {
       "key": "zd_comment_create",
@@ -2121,7 +2137,8 @@
       "tags": [
         "création",
         "zendesk"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "zd_comments_list",
@@ -2179,7 +2196,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "zd_tags_add",
@@ -2251,7 +2269,8 @@
       "tags": [
         "création",
         "zendesk"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "zd_tags_remove",
@@ -2323,7 +2342,8 @@
       "tags": [
         "suppression",
         "zendesk"
-      ]
+      ],
+      "group": "Tags"
     },
     {
       "key": "zd_macros_list",
@@ -2366,7 +2386,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Macros"
     },
     {
       "key": "zd_macro_apply",
@@ -2438,7 +2459,8 @@
       "tags": [
         "lecture",
         "zendesk"
-      ]
+      ],
+      "group": "Macros"
     },
     {
       "key": "zd_satisfaction_list",
@@ -2491,7 +2513,8 @@
       "tags": [
         "liste",
         "zendesk"
-      ]
+      ],
+      "group": "Satisfaction"
     },
     {
       "key": "zd_webhook_event",
@@ -2551,7 +2574,8 @@
       "tags": [
         "événement",
         "zendesk"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }

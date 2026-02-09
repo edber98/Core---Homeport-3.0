@@ -512,7 +512,8 @@
             "default": 0
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_insert",
@@ -583,7 +584,8 @@
             "description": "Objet ou tableau d'objets."
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_update",
@@ -667,7 +669,8 @@
             "description": "Filtre PostgREST (ex: id=eq.123)."
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_upsert",
@@ -746,7 +749,8 @@
             "description": "Colonnes pour la détection de conflit (ex: id)."
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_delete",
@@ -817,7 +821,8 @@
             "description": "Filtre PostgREST (ex: id=eq.123)."
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_rpc_call",
@@ -883,7 +888,8 @@
             "description": "Objet de paramètres."
           }
         ]
-      }
+      },
+      "group": "Base de données"
     },
     {
       "key": "supa_auth_sign_up",
@@ -970,7 +976,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Authentification"
     },
     {
       "key": "supa_auth_sign_in",
@@ -1041,7 +1048,8 @@
             "secret": true
           }
         ]
-      }
+      },
+      "group": "Authentification"
     },
     {
       "key": "supa_auth_get_user",
@@ -1098,7 +1106,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Authentification"
     },
     {
       "key": "supa_auth_list_users",
@@ -1160,7 +1169,8 @@
             "default": 50
           }
         ]
-      }
+      },
+      "group": "Authentification"
     },
     {
       "key": "supa_auth_delete_user",
@@ -1217,7 +1227,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Authentification"
     },
     {
       "key": "supa_storage_upload",
@@ -1304,7 +1315,8 @@
             "default": "application/octet-stream"
           }
         ]
-      }
+      },
+      "group": "Stockage"
     },
     {
       "key": "supa_storage_download",
@@ -1374,7 +1386,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Stockage"
     },
     {
       "key": "supa_storage_list",
@@ -1448,7 +1461,8 @@
             "default": 100
           }
         ]
-      }
+      },
+      "group": "Stockage"
     },
     {
       "key": "supa_storage_delete",
@@ -1518,7 +1532,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Stockage"
     }
   ]
 }

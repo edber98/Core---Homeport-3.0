@@ -824,7 +824,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Pages"
     },
     {
       "key": "facebook_list_page_posts",
@@ -891,7 +892,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "facebook_list_feed",
@@ -958,7 +960,8 @@
             "default": 10
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "facebook_create_post",
@@ -1039,7 +1042,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "facebook_get_post",
@@ -1096,7 +1100,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "facebook_delete_post",
@@ -1153,7 +1158,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Publications"
     },
     {
       "key": "facebook_create_comment",
@@ -1224,7 +1230,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "facebook_list_comments",
@@ -1291,7 +1298,8 @@
             "default": 25
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "facebook_delete_comment",
@@ -1348,7 +1356,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Commentaires"
     },
     {
       "key": "facebook_upload_photo",
@@ -1429,7 +1438,8 @@
             }
           }
         ]
-      }
+      },
+      "group": "Photos"
     },
     {
       "key": "facebook_list_photos",
@@ -1496,7 +1506,8 @@
             "default": 25
           }
         ]
-      }
+      },
+      "group": "Photos"
     },
     {
       "key": "facebook_send_message",
@@ -1581,7 +1592,8 @@
             ]
           }
         ]
-      }
+      },
+      "group": "Messenger"
     },
     {
       "key": "facebook_list_leads",
@@ -1648,7 +1660,8 @@
             "default": 25
           }
         ]
-      }
+      },
+      "group": "Leads"
     },
     {
       "key": "facebook_page_insights",
@@ -1739,7 +1752,8 @@
             "default": "day"
           }
         ]
-      }
+      },
+      "group": "Insights"
     },
     {
       "key": "facebook_create_custom_audience",
@@ -1847,7 +1861,8 @@
             "default": "CUSTOM"
           }
         ]
-      }
+      },
+      "group": "Audiences"
     },
     {
       "key": "facebook_list_audiences",
@@ -1914,7 +1929,8 @@
             "default": 25
           }
         ]
-      }
+      },
+      "group": "Audiences"
     }
   ]
 }

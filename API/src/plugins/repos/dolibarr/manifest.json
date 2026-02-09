@@ -4508,7 +4508,12 @@
           }
         ]
       },
-      "subtitle": "Tiers"
+      "subtitle": "Tiers",
+      "group": "Tiers",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_thirdparty_get",
@@ -4565,7 +4570,12 @@
           }
         ]
       },
-      "subtitle": "Tiers"
+      "subtitle": "Tiers",
+      "group": "Tiers",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_thirdparty_update",
@@ -4721,7 +4731,12 @@
           }
         ]
       },
-      "subtitle": "Tiers"
+      "subtitle": "Tiers",
+      "group": "Tiers",
+      "tags": [
+        "mise-à-jour",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_thirdparty_delete",
@@ -4778,7 +4793,12 @@
           }
         ]
       },
-      "subtitle": "Tiers"
+      "subtitle": "Tiers",
+      "group": "Tiers",
+      "tags": [
+        "suppression",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_thirdparties_list",
@@ -4879,7 +4899,12 @@
           }
         ]
       },
-      "subtitle": "Tiers"
+      "subtitle": "Tiers",
+      "group": "Tiers",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_contact_create",
@@ -5044,7 +5069,12 @@
           }
         ]
       },
-      "subtitle": "Contact"
+      "subtitle": "Contact",
+      "group": "Contact",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_contact_get",
@@ -5101,7 +5131,12 @@
           }
         ]
       },
-      "subtitle": "Contact"
+      "subtitle": "Contact",
+      "group": "Contact",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_contacts_list",
@@ -5193,7 +5228,12 @@
           }
         ]
       },
-      "subtitle": "Contact"
+      "subtitle": "Contact",
+      "group": "Contact",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_product_create",
@@ -5388,7 +5428,12 @@
           }
         ]
       },
-      "subtitle": "Produit"
+      "subtitle": "Produit",
+      "group": "Produit",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_product_get",
@@ -5445,7 +5490,12 @@
           }
         ]
       },
-      "subtitle": "Produit"
+      "subtitle": "Produit",
+      "group": "Produit",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_product_update",
@@ -5574,7 +5624,12 @@
           }
         ]
       },
-      "subtitle": "Produit"
+      "subtitle": "Produit",
+      "group": "Produit",
+      "tags": [
+        "mise-à-jour",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_product_delete",
@@ -5631,7 +5686,12 @@
           }
         ]
       },
-      "subtitle": "Produit"
+      "subtitle": "Produit",
+      "group": "Produit",
+      "tags": [
+        "suppression",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_products_list",
@@ -5746,7 +5806,12 @@
           }
         ]
       },
-      "subtitle": "Produit"
+      "subtitle": "Produit",
+      "group": "Produit",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_proposal_create",
@@ -5866,7 +5931,12 @@
           }
         ]
       },
-      "subtitle": "Devis"
+      "subtitle": "Devis",
+      "group": "Devis",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_proposal_get",
@@ -5923,7 +5993,12 @@
           }
         ]
       },
-      "subtitle": "Devis"
+      "subtitle": "Devis",
+      "group": "Devis",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_proposals_list",
@@ -6015,7 +6090,12 @@
           }
         ]
       },
-      "subtitle": "Devis"
+      "subtitle": "Devis",
+      "group": "Devis",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_order_create",
@@ -6135,7 +6215,12 @@
           }
         ]
       },
-      "subtitle": "Commande"
+      "subtitle": "Commande",
+      "group": "Commande",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_order_get",
@@ -6192,7 +6277,12 @@
           }
         ]
       },
-      "subtitle": "Commande"
+      "subtitle": "Commande",
+      "group": "Commande",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_orders_list",
@@ -6284,7 +6374,12 @@
           }
         ]
       },
-      "subtitle": "Commande"
+      "subtitle": "Commande",
+      "group": "Commande",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_invoice_create",
@@ -6436,7 +6531,12 @@
           }
         ]
       },
-      "subtitle": "Facture"
+      "subtitle": "Facture",
+      "group": "Facture",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_invoice_get",
@@ -6493,7 +6593,12 @@
           }
         ]
       },
-      "subtitle": "Facture"
+      "subtitle": "Facture",
+      "group": "Facture",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_invoice_validate",
@@ -6569,7 +6674,12 @@
           }
         ]
       },
-      "subtitle": "Facture"
+      "subtitle": "Facture",
+      "group": "Facture",
+      "tags": [
+        "mise-à-jour",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_invoices_list",
@@ -6661,7 +6771,12 @@
           }
         ]
       },
-      "subtitle": "Facture"
+      "subtitle": "Facture",
+      "group": "Facture",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_invoice_add_line",
@@ -6789,7 +6904,12 @@
           }
         ]
       },
-      "subtitle": "Facture"
+      "subtitle": "Facture",
+      "group": "Facture",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_project_create",
@@ -6943,7 +7063,12 @@
           }
         ]
       },
-      "subtitle": "Projet"
+      "subtitle": "Projet",
+      "group": "Projet",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_project_get",
@@ -7000,7 +7125,12 @@
           }
         ]
       },
-      "subtitle": "Projet"
+      "subtitle": "Projet",
+      "group": "Projet",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_projects_list",
@@ -7092,7 +7222,12 @@
           }
         ]
       },
-      "subtitle": "Projet"
+      "subtitle": "Projet",
+      "group": "Projet",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_task_create",
@@ -7217,7 +7352,12 @@
           }
         ]
       },
-      "subtitle": "Tâche"
+      "subtitle": "Tâche",
+      "group": "Tâche",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_tasks_list",
@@ -7309,7 +7449,12 @@
           }
         ]
       },
-      "subtitle": "Tâche"
+      "subtitle": "Tâche",
+      "group": "Tâche",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_warehouse_get",
@@ -7366,7 +7511,12 @@
           }
         ]
       },
-      "subtitle": "Entrepôt"
+      "subtitle": "Entrepôt",
+      "group": "Entrepôt",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_warehouses_list",
@@ -7449,7 +7599,12 @@
           }
         ]
       },
-      "subtitle": "Entrepôt"
+      "subtitle": "Entrepôt",
+      "group": "Entrepôt",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_stock_movement_create",
@@ -7576,7 +7731,12 @@
           }
         ]
       },
-      "subtitle": "Stock"
+      "subtitle": "Stock",
+      "group": "Stock",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_stock_movements_list",
@@ -7668,7 +7828,12 @@
           }
         ]
       },
-      "subtitle": "Stock"
+      "subtitle": "Stock",
+      "group": "Stock",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_category_create",
@@ -7801,7 +7966,12 @@
           }
         ]
       },
-      "subtitle": "Catégorie"
+      "subtitle": "Catégorie",
+      "group": "Catégorie",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_category_get",
@@ -7858,7 +8028,12 @@
           }
         ]
       },
-      "subtitle": "Catégorie"
+      "subtitle": "Catégorie",
+      "group": "Catégorie",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_categories_list",
@@ -7959,7 +8134,12 @@
           }
         ]
       },
-      "subtitle": "Catégorie"
+      "subtitle": "Catégorie",
+      "group": "Catégorie",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_user_get",
@@ -8016,7 +8196,12 @@
           }
         ]
       },
-      "subtitle": "Utilisateur"
+      "subtitle": "Utilisateur",
+      "group": "Utilisateur",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_users_list",
@@ -8108,7 +8293,12 @@
           }
         ]
       },
-      "subtitle": "Utilisateur"
+      "subtitle": "Utilisateur",
+      "group": "Utilisateur",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_ticket_create",
@@ -8243,7 +8433,12 @@
           }
         ]
       },
-      "subtitle": "Ticket"
+      "subtitle": "Ticket",
+      "group": "Ticket",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_ticket_get",
@@ -8300,7 +8495,12 @@
           }
         ]
       },
-      "subtitle": "Ticket"
+      "subtitle": "Ticket",
+      "group": "Ticket",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_ticket_close",
@@ -8357,7 +8557,12 @@
           }
         ]
       },
-      "subtitle": "Ticket"
+      "subtitle": "Ticket",
+      "group": "Ticket",
+      "tags": [
+        "mise-à-jour",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_tickets_list",
@@ -8449,7 +8654,12 @@
           }
         ]
       },
-      "subtitle": "Ticket"
+      "subtitle": "Ticket",
+      "group": "Ticket",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_bankaccount_get",
@@ -8506,7 +8716,12 @@
           }
         ]
       },
-      "subtitle": "Banque"
+      "subtitle": "Banque",
+      "group": "Banque",
+      "tags": [
+        "lecture",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_bankaccounts_list",
@@ -8589,7 +8804,12 @@
           }
         ]
       },
-      "subtitle": "Banque"
+      "subtitle": "Banque",
+      "group": "Banque",
+      "tags": [
+        "liste",
+        "dolibarr"
+      ]
     },
     {
       "key": "dolibarr_payment_create",
@@ -8719,7 +8939,12 @@
           }
         ]
       },
-      "subtitle": "Paiement"
+      "subtitle": "Paiement",
+      "group": "Paiement",
+      "tags": [
+        "création",
+        "dolibarr"
+      ]
     }
   ]
 }

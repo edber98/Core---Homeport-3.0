@@ -1097,7 +1097,8 @@
       "tags": [
         "linear",
         "création"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "linear_issue_get",
@@ -1155,7 +1156,8 @@
       "tags": [
         "linear",
         "lecture"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "linear_issue_update",
@@ -1258,7 +1260,8 @@
       "tags": [
         "linear",
         "mise-à-jour"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "linear_issues_list",
@@ -1320,7 +1323,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "linear_issue_search",
@@ -1387,7 +1391,8 @@
       "tags": [
         "linear",
         "recherche"
-      ]
+      ],
+      "group": "Issues"
     },
     {
       "key": "linear_project_create",
@@ -1468,7 +1473,8 @@
       "tags": [
         "linear",
         "création"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "linear_project_get",
@@ -1526,7 +1532,8 @@
       "tags": [
         "linear",
         "lecture"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "linear_projects_list",
@@ -1579,7 +1586,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Projets"
     },
     {
       "key": "linear_cycle_get",
@@ -1637,7 +1645,8 @@
       "tags": [
         "linear",
         "lecture"
-      ]
+      ],
+      "group": "Cycles"
     },
     {
       "key": "linear_cycles_list",
@@ -1699,7 +1708,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Cycles"
     },
     {
       "key": "linear_team_get",
@@ -1757,7 +1767,8 @@
       "tags": [
         "linear",
         "lecture"
-      ]
+      ],
+      "group": "Équipes"
     },
     {
       "key": "linear_teams_list",
@@ -1800,7 +1811,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Équipes"
     },
     {
       "key": "linear_user_get",
@@ -1853,7 +1865,8 @@
       "tags": [
         "linear",
         "lecture"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "linear_users_list",
@@ -1896,7 +1909,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Utilisateurs"
     },
     {
       "key": "linear_label_create",
@@ -1977,7 +1991,8 @@
       "tags": [
         "linear",
         "création"
-      ]
+      ],
+      "group": "Labels"
     },
     {
       "key": "linear_labels_list",
@@ -2030,7 +2045,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Labels"
     },
     {
       "key": "linear_comment_create",
@@ -2102,7 +2118,8 @@
       "tags": [
         "linear",
         "création"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "linear_comments_list",
@@ -2160,7 +2177,8 @@
       "tags": [
         "linear",
         "liste"
-      ]
+      ],
+      "group": "Commentaires"
     },
     {
       "key": "linear_webhook_event",
@@ -2205,7 +2223,8 @@
       "tags": [
         "linear",
         "événement"
-      ]
+      ],
+      "group": "Événements"
     }
   ]
 }
