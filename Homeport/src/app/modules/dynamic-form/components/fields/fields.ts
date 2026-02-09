@@ -12,6 +12,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
 import { NzCronExpressionModule } from 'ng-zorro-antd/cron-expression';
 import { ExpressionEditorComponent } from '../../../expression-editor/expression-editor';
+import { FileFieldComponent } from '../file-field/file-field';
 import {
   FieldConfig,
   InputFieldConfig,
@@ -26,7 +27,7 @@ import {
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule,
-    NzSegmentedModule, NzCronExpressionModule, ExpressionEditorComponent
+    NzSegmentedModule, NzCronExpressionModule, ExpressionEditorComponent, FileFieldComponent
   ],
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']

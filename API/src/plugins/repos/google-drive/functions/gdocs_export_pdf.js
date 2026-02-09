@@ -6,6 +6,17 @@ module.exports = {
     if (!d.documentId) return { ok: false, error: "Missing documentId." };
     const res = await utils.googleRequest(opts, `${utils.DRIVE_API}/files/${d.documentId}/export?mimeType=application/pdf`, { rawResponse: true });
     if (!res.ok) return { ok: false, error: res.error, status: res.status };
-    return { ok: true, documentId: d.documentId, content: res.data, mimeType: "application/pdf" };
+
+    // Store exported PDF via opts.files if available
+    let file = null;
+    if (opts.files && res.data) {
+      file = await opts.files.store(res.data, {
+        name: `${d.documentId}.pdf`,
+        mimeType: "application/pdf",
+        lifecycle: "execution"
+      });
+    }
+
+    return { ok: true, documentId: d.documentId, content: res.data, mimeType: "application/pdf", file };
   }
 };

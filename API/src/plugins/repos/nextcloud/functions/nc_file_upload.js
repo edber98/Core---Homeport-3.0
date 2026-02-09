@@ -4,10 +4,26 @@ module.exports = {
   async nc_file_upload(node, msg, inputs, opts) {
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin requis." };
-    const content = d.content || "";
+
+    let body;
+    const fileVal = d.file || d.content;
+
+    if (fileVal && opts.files && typeof fileVal === 'object' && fileVal._type === 'fileRef') {
+      // fileRef from upload → resolve to buffer
+      const buf = await opts.files.resolveAsBuffer(fileVal);
+      body = buf;
+    } else if (fileVal && opts.files && typeof fileVal === 'string' && /^https?:\/\//i.test(fileVal)) {
+      // URL string from expression → resolve to buffer
+      const buf = await opts.files.resolveAsBuffer(fileVal);
+      body = buf;
+    } else {
+      // Plain text or base64 string (rétrocompat)
+      body = fileVal || "";
+    }
+
     const res = await utils.webdavRequest(opts, d.path, {
       method: "PUT",
-      body: content,
+      body,
       rawBody: true,
       headers: { "Content-Type": "application/octet-stream" }
     });

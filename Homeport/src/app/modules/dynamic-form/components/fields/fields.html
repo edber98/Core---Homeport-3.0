@@ -111,6 +111,10 @@
                   <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
                     <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">{{ opt.label || '' }}</label>
                   </nz-radio-group>
+
+                  <df-file-field *ngIf="field.type==='file'"
+                                 [formControlName]="key"
+                                 [config]="$any(field).file || {}"></df-file-field>
                 </ng-container>
               </ng-container>
               </ng-container>

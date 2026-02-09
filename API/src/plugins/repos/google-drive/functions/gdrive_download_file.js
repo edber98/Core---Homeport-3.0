@@ -9,6 +9,19 @@ module.exports = {
     else url += "?alt=media";
     const res = await utils.googleRequest(opts, url, { rawResponse: true });
     if (!res.ok) return { ok: false, error: res.error, status: res.status };
-    return { ok: true, id: d.fileId, name: d.fileId, content: res.data, mimeType: res.mimeType };
+
+    const mimeType = (res.mimeType || "application/octet-stream").split(";")[0].trim();
+
+    // Store downloaded file via opts.files if available
+    let file = null;
+    if (opts.files && res.data) {
+      file = await opts.files.store(res.data, {
+        name: d.fileId,
+        mimeType,
+        lifecycle: "execution"
+      });
+    }
+
+    return { ok: true, id: d.fileId, name: d.fileId, content: res.data, mimeType, file };
   }
 };

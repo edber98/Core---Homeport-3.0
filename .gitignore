@@ -48,6 +48,8 @@ testem.log
 
 .env
 
+# File storage
+/API/data/
 
 # System files
 .DS_Store

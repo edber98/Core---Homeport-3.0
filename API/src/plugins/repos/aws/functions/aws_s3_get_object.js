@@ -8,10 +8,24 @@ module.exports = {
 
     const res = await utils.s3Request(opts, "GET", `/${d.bucket}/${encodeURIComponent(d.key)}`, { rawResponse: true });
     if (!res.ok) return res;
+
+    const name = d.key.split("/").pop() || "file";
+    const mimeType = res.contentType || "application/octet-stream";
+
+    let file = null;
+    if (opts.files && res.data) {
+      file = await opts.files.store(res.data, {
+        name,
+        mimeType: mimeType.split(";")[0].trim(),
+        lifecycle: "execution"
+      });
+    }
+
     return {
       ok: true, key: d.key, bucket: d.bucket,
-      contentType: res.contentType, content: res.data,
-      size: res.data ? String(Buffer.from(res.data, "base64").length) : "0"
+      contentType: mimeType,
+      size: res.data ? String(Buffer.from(res.data, "base64").length) : "0",
+      file
     };
   }
 };

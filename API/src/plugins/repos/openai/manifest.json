@@ -126,13 +126,19 @@
                 "type": "text",
                 "key": "url",
                 "label": "URL",
-                "description": "URL publique/privée de l’image."
+                "description": "URL publique/privée de l'image."
               },
               {
                 "type": "textarea",
                 "key": "b64",
                 "label": "Base64",
-                "description": "Données de l’image encodées en Base64."
+                "description": "Données de l'image encodées en Base64."
+              },
+              {
+                "type": "file",
+                "key": "file",
+                "label": "Fichier",
+                "description": "Référence au fichier image généré."
               }
             ]
           }

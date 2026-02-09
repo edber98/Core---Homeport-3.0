@@ -23,7 +23,7 @@ async function slackUpload(opts, { channels, content, filename, title }) {
   if (!botToken) return { ok: false, error: "Missing Slack bot token." };
 
   // Step 1: get upload URL
-  const lenBuf = Buffer.from(content || "", "utf-8");
+  const lenBuf = Buffer.isBuffer(content) ? content : Buffer.from(content || "", "utf-8");
   const getUrl = await fetch("https://slack.com/api/files.getUploadURLExternal", {
     method: "POST",
     headers: {

@@ -97,7 +97,8 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
             visitFields(f.fields || []);
           } else if (t && t !== 'textblock') {
             const cur = f.expression && typeof f.expression === 'object' ? f.expression : {};
-            f.expression = { ...cur, allow: true, defaultMode: 'expr' };
+            const mode = t === 'file' ? 'val' : 'expr';
+            f.expression = { ...cur, allow: true, defaultMode: mode };
           }
         }
       };

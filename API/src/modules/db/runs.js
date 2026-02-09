@@ -10,6 +10,7 @@ const RunEvent = require('../../db/models/run-event.model');
 const { runFlow } = require('../../engine');
 const { broadcast } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
+const { createFilesHelper } = require('../../services/file-storage');
 
 function isResultError(result){
   return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
@@ -68,7 +69,8 @@ module.exports = function(){
               return { id: String(cred._id), providerKey: cred.providerKey, values };
             } catch { return null; }
           };
-          await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
+          const filesHelperPublic = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId, runId: run._id });
+          await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelperPublic }, initialMsg, async (ev) => {
             const ts = new Date();
             let seq = 0;
             if (ev.type === 'run.started'){
@@ -207,7 +209,8 @@ module.exports = function(){
             return { id: String(cred._id), providerKey: cred.providerKey, values };
           } catch { return null; }
         };
-        await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
+        const filesHelper = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId, runId: run._id, uploadedBy: req.user?.id || '' });
+        await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelper }, initialMsg, async (ev) => {
           const ts = new Date();
           // Translate engine ev -> LiveEvents and persist
           if (ev.type === 'run.started'){
@@ -459,6 +462,11 @@ module.exports = function(){
             optsForFn = { credentials: values };
           }
         }
+      } catch {}
+      // Attach file storage helper for test-node too
+      try {
+        const testFilesHelper = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId });
+        optsForFn = { ...(optsForFn || {}), files: testFilesHelper };
       } catch {}
       if (!fn) result = { error: `No handler for template '${tmplKey}'` };
       else { try { result = await fn({ id: nodeId, model: node.data?.model || node.model }, msg, inputs, optsForFn); } catch (e) { result = { error: e && e.message ? e.message : String(e) }; } }

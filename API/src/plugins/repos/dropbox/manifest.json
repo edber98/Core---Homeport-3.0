@@ -67,6 +67,15 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "file",
+          "key": "file",
+          "label": "Fichier",
+          "description": "Référence au fichier",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -498,11 +507,20 @@
             "description": "Ex: /dossier/fichier.txt"
           },
           {
-            "type": "textarea",
-            "key": "content",
-            "label": "Contenu du fichier",
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
             "col": {
               "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
             }
           },
           {
