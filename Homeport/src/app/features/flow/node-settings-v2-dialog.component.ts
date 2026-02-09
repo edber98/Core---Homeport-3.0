@@ -965,11 +965,12 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
           this.zone.run(() => {
             this.layoutBusy = false;
             this.isScenarioSwitching = false;
+            try { this.cdr.detectChanges(); } catch {}
+            // Delay center to let the viewer render nodes + output previews fully
             if (!this.centeredOnFirstLayout && this.hadFirstLayout) {
               this.centeredOnFirstLayout = true;
-              this.centerRequestTick++;
+              setTimeout(() => { this.centerRequestTick++; try { this.cdr.detectChanges(); } catch {} }, 120);
             }
-            try { this.cdr.detectChanges(); } catch {}
           });
           try { console.log('[settings-v2] relayoutForScenario complete'); } catch {}
         }

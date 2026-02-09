@@ -539,7 +539,8 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         const prev = Number(changes['centerRequest'].previousValue ?? 0);
         const cur = Number(changes['centerRequest'].currentValue ?? 0);
         if (Number.isFinite(cur) && cur > prev) {
-          this.onCenterFlow();
+          // Wait one frame so the DOM (including output previews) is fully rendered
+          requestAnimationFrame(() => this.onCenterFlow());
         }
       } catch {}
     }
@@ -736,21 +737,25 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       const rect = host.getBoundingClientRect();
       const W = Math.max(1, rect.width); const H = Math.max(1, rect.height);
       // Approx node size aligned with layout service
-      const NODE_W = 223; const NODE_H = 110;
+      const NODE_W = 223; const NODE_H_BASE = 110; const PER_OUTPUT_H = 20;
       let minX = Number.POSITIVE_INFINITY, minY = Number.POSITIVE_INFINITY;
       let maxX = Number.NEGATIVE_INFINITY, maxY = Number.NEGATIVE_INFINITY;
       for (const n of (this.vNodes || [])) {
         const id = String((n as any).id || ''); if (!id || !targets.includes(id)) continue;
         const pt = (n as any).point || { x: 0, y: 0 };
         const x0 = Number(pt.x) || 0; const y0 = Number(pt.y) || 0;
-        const x1 = x0 + NODE_W; const y1 = y0 + NODE_H;
+        // Account for output preview items (parents + children) in node height
+        const items = this.simOutputPreview?.[id] || [];
+        const outputCount = items.reduce((sum: number, it: any) => sum + 1 + (it.children?.length || 0), 0);
+        const nodeH = NODE_H_BASE + outputCount * PER_OUTPUT_H;
+        const x1 = x0 + NODE_W; const y1 = y0 + nodeH;
         if (x0 < minX) minX = x0; if (y0 < minY) minY = y0;
         if (x1 > maxX) maxX = x1; if (y1 > maxY) maxY = y1;
       }
       if (!isFinite(minX) || !isFinite(minY) || !isFinite(maxX) || !isFinite(maxY)) return this.fitAll();
       // Ensure minimal bbox size to avoid extreme zoom when 1 tiny node
       if (maxX - minX < NODE_W * 0.6) maxX = minX + NODE_W * 0.6;
-      if (maxY - minY < NODE_H * 0.6) maxY = minY + NODE_H * 0.6;
+      if (maxY - minY < NODE_H_BASE * 0.6) maxY = minY + NODE_H_BASE * 0.6;
       const pad = Math.max(0, Math.min(0.4, this.fitPadding));
       const worldW = maxX - minX; const worldH = maxY - minY;
       const scaleX = (W * (1 - pad * 2)) / worldW;
@@ -758,7 +763,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       let z = Math.max(0.02, Math.min(scaleX, scaleY));
       if (z > this.maxCenterZoom) z = this.maxCenterZoom;
       const cx = (minX + maxX) / 2; const cy = (minY + maxY) / 2;
-      const centerScreenX = W / 2; const centerScreenY = H / 2;
+      const centerScreenX = W / 2;
+      // Shift center upward (~15% of viewport height) so content sits slightly above middle
+      const centerScreenY = H * 0.42;
       const x = centerScreenX - (cx * z);
       const y = centerScreenY - (cy * z);
       vs.writableViewport.set({ changeType: 'absolute', state: { zoom: z, x, y }, duration: 150 });
