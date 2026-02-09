@@ -88,7 +88,8 @@ import { Router } from '@angular/router';
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .primary i { margin-right: 6px; }
     .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .card { border:1px solid #ececec; border-radius:12px; padding:12px; background:#fff; box-shadow: 0 8px 24px rgba(0,0,0,.04); }
     .card .title { font-weight:600; margin-bottom: 6px; }

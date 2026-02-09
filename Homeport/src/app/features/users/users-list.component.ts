@@ -95,6 +95,7 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
     .row .text { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .row .select { min-width: 160px; }
+    .row .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
     .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     .card { display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fafafa); border:1px solid #ececec; }

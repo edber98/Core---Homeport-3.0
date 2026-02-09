@@ -65,10 +65,11 @@ import { AccessControlService } from '../../services/access-control.service';
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px; outline: none; }
     .actions .search:focus { border-color:#d1d5db; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
       .actions { width:100%; flex-wrap: nowrap; }

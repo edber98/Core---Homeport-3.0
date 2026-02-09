@@ -109,7 +109,7 @@ type FlowItem = { id: string; name: string; description?: string };
             <button class="icon-btn" (click)="openExecutions(it)" title="Exécutions">
               <i class="fa-solid fa-circle-play"></i>
             </button>
-            <button class="icon-btn"
+            <button class="icon-btn danger"
                     nz-popconfirm
                     [nzPopconfirmTitle]="'Supprimer ' + it.name + ' ?'"
                     nzOkText="Supprimer"
@@ -178,10 +178,11 @@ type FlowItem = { id: string; name: string; description?: string };
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .actions .search:focus { border-color:#d1d5db; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
       .actions { width:100%; flex-wrap: nowrap; }
@@ -237,9 +238,10 @@ type FlowItem = { id: string; name: string; description?: string };
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .trailing { flex: 0 0 auto; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
-    .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .icon-btn:active { transform: translateY(0.5px); }
 
     .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }

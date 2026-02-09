@@ -198,7 +198,7 @@ import { auditTime } from 'rxjs/operators';
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .with-text { display:inline-flex; align-items:center; gap:6px; }
     @media (max-width: 640px) { .actions .with-text { display:none; } .actions .icon-only { display:inline-flex; } }

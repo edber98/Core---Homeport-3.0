@@ -60,7 +60,7 @@ import { AccessControlService } from '../../services/access-control.service';
             <button class="icon-btn" (click)="edit(a); $event.stopPropagation()" title="Éditer" [disabled]="!isAdmin">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
-            <button class="icon-btn" (click)="remove(a); $event.stopPropagation()" title="Supprimer" [disabled]="!isAdmin">
+            <button class="icon-btn danger" (click)="remove(a); $event.stopPropagation()" title="Supprimer" [disabled]="!isAdmin">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
@@ -77,11 +77,12 @@ import { AccessControlService } from '../../services/access-control.service';
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .page-header .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
     .page-header .actions .primary[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
     /* Icon-only buttons: hide by default, except explicit search-action */
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .page-header .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .page-header .actions .with-text i { margin-right: 6px; }
     .page-header .actions .icon-only.search-action { display:inline-flex; }
     @media (max-width: 640px) {
       /* Stack header blocks; place actions on the next line as a single row */
@@ -91,7 +92,7 @@ import { AccessControlService } from '../../services/access-control.service';
       .page-header .actions .with-text { display:none; }
       .page-header .actions .primary.icon-only { display:inline-flex; }
     }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
     .grid { display:grid; gap:16px; grid-template-columns: 1fr; }
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
@@ -104,9 +105,10 @@ import { AccessControlService } from '../../services/access-control.service';
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
-    .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .icon-btn:active { transform: translateY(0.5px); }
     .icon-btn[disabled] { opacity: .55; cursor: not-allowed; filter: grayscale(1); background:#f5f5f5; color:#9ca3af; border-color:#e5e7eb; }
   `]

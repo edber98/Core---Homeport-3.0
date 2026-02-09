@@ -32,7 +32,7 @@ import { environment } from '../../../environments/environment';
           <nz-select [(ngModel)]="providerFilter" (ngModelChange)="reload()" nzAllowClear nzPlaceHolder="Filtrer par application">
             <nz-option *ngFor="let p of providers" [nzValue]="p.id" [nzLabel]="p.title || p.name"></nz-option>
           </nz-select>
-          <button nz-button nzType="primary" (click)="openCreate()" [disabled]="!isAdmin">
+          <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()" [disabled]="!isAdmin">
             <i class="fa-solid fa-plus"></i> Nouveau
           </button>
         </div>
@@ -50,7 +50,7 @@ import { environment } from '../../../environments/environment';
           <div class="trailing">
             <button class="icon-btn" (click)="duplicate(c); $event.stopPropagation()" [disabled]="!isAdmin" title="Dupliquer"><i class="fa-regular fa-copy"></i></button>
             <button
-              class="icon-btn"
+              class="icon-btn danger"
               nz-popconfirm
               [nzPopconfirmTitle]="'Supprimer ' + c.name + ' ?'"
               nzOkText="Supprimer"
@@ -107,6 +107,8 @@ import { environment } from '../../../environments/environment';
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .with-text i { margin-right: 6px; }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; background: #fff; border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
     .content { flex:1; min-width:0; }
@@ -115,7 +117,9 @@ import { environment } from '../../../environments/environment';
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .chip.ws { color:#6b7280; }
     .trailing { display:flex; align-items:center; gap:8px; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .create-modal .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; }
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
