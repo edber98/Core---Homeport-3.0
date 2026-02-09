@@ -607,6 +607,7 @@
       "name": "DocuSign",
       "title": "DocuSign",
       "iconClass": "fa-solid fa-file-signature",
+      "iconUrl": "https://cdn.simpleicons.org/docusign",
       "color": "#FFC829",
       "tags": [
         "docusign",
@@ -679,10 +680,15 @@
       "name": "docusignEnvelopeCreate",
       "schemaVersion": 2,
       "title": "Créer une enveloppe",
+      "subtitle": "Enveloppes",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "création",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -779,10 +785,15 @@
       "name": "docusignEnvelopeGet",
       "schemaVersion": 2,
       "title": "Récupérer une enveloppe",
+      "subtitle": "Enveloppes",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "lecture",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -832,10 +843,15 @@
       "name": "docusignEnvelopesList",
       "schemaVersion": 2,
       "title": "Lister les enveloppes",
+      "subtitle": "Enveloppes",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "liste",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -907,10 +923,15 @@
       "name": "docusignEnvelopeSend",
       "schemaVersion": 2,
       "title": "Envoyer une enveloppe",
+      "subtitle": "Enveloppes",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "envoi",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -960,10 +981,15 @@
       "name": "docusignEnvelopeVoid",
       "schemaVersion": 2,
       "title": "Annuler une enveloppe",
+      "subtitle": "Enveloppes",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "suppression",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1027,10 +1053,15 @@
       "name": "docusignEnvelopeDocumentsDownload",
       "schemaVersion": 2,
       "title": "Télécharger les documents",
+      "subtitle": "Documents",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "téléchargement",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1090,10 +1121,15 @@
       "name": "docusignRecipientsList",
       "schemaVersion": 2,
       "title": "Lister les destinataires",
+      "subtitle": "Destinataires",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "liste",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1143,10 +1179,15 @@
       "name": "docusignRecipientsUpdate",
       "schemaVersion": 2,
       "title": "Modifier les destinataires",
+      "subtitle": "Destinataires",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "mise-à-jour",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1228,10 +1269,15 @@
       "name": "docusignTemplateGet",
       "schemaVersion": 2,
       "title": "Récupérer un modèle",
+      "subtitle": "Templates",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "lecture",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1281,10 +1327,15 @@
       "name": "docusignTemplatesList",
       "schemaVersion": 2,
       "title": "Lister les modèles",
+      "subtitle": "Templates",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "liste",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1338,10 +1389,15 @@
       "name": "docusignDocumentsList",
       "schemaVersion": 2,
       "title": "Lister les documents",
+      "subtitle": "Documents",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "liste",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1391,10 +1447,15 @@
       "name": "docusignTabsList",
       "schemaVersion": 2,
       "title": "Lister les onglets",
+      "subtitle": "Onglets",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "liste",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1458,10 +1519,15 @@
       "name": "docusignSigningUrlCreate",
       "schemaVersion": 2,
       "title": "Créer une URL de signature",
+      "subtitle": "Signature",
       "type": "function",
       "nodeKind": "function",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "création",
+        "docusign"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1567,11 +1633,15 @@
       "name": "docusignWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "type": "event",
       "nodeKind": "event",
       "category": "DocuSign",
       "providerKey": "docusign",
+      "tags": [
+        "événement",
+        "docusign"
+      ],
       "outputHandles": [
         {
           "id": "ok",

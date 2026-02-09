@@ -769,6 +769,7 @@
       "name": "Jira",
       "title": "Jira",
       "iconClass": "fa-brands fa-jira",
+      "iconUrl": "https://cdn.simpleicons.org/jira",
       "color": "#0052CC",
       "tags": [
         "jira",
@@ -941,6 +942,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "création"
       ]
     },
     {
@@ -994,6 +1000,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "lecture"
       ]
     },
     {
@@ -1083,6 +1094,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "mise-à-jour"
       ]
     },
     {
@@ -1136,6 +1152,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "suppression"
       ]
     },
     {
@@ -1198,6 +1219,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "liste"
       ]
     },
     {
@@ -1260,6 +1286,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "recherche"
       ]
     },
     {
@@ -1327,6 +1358,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "création"
       ]
     },
     {
@@ -1394,6 +1430,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "mise-à-jour"
       ]
     },
     {
@@ -1447,6 +1488,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "jira",
+        "lecture"
       ]
     },
     {
@@ -1495,6 +1541,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "jira",
+        "liste"
       ]
     },
     {
@@ -1543,6 +1594,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Boards",
+      "tags": [
+        "jira",
+        "liste"
       ]
     },
     {
@@ -1596,6 +1652,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Boards",
+      "tags": [
+        "jira",
+        "lecture"
       ]
     },
     {
@@ -1658,6 +1719,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "liste"
       ]
     },
     {
@@ -1711,6 +1777,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "lecture"
       ]
     },
     {
@@ -1805,6 +1876,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "création"
       ]
     },
     {
@@ -1858,6 +1934,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "jira",
+        "recherche"
       ]
     },
     {
@@ -1896,6 +1977,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "jira",
+        "lecture"
       ]
     },
     {
@@ -1972,6 +2058,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Worklogs",
+      "tags": [
+        "jira",
+        "création"
       ]
     },
     {
@@ -2012,8 +2103,12 @@
           }
         ]
       },
-      "subtitle": "Déclencheur",
-      "inputHandles": []
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "jira",
+        "événement"
+      ]
     }
   ]
 }

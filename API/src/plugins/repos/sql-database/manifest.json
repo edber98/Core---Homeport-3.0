@@ -217,6 +217,7 @@
       "name": "SQL Database",
       "title": "SQL Database",
       "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/postgresql",
       "color": "#336791",
       "tags": [
         "sql",
@@ -357,6 +358,11 @@
       "name": "sqlExecuteQuery",
       "schemaVersion": 2,
       "title": "Exécuter une requête SQL",
+      "subtitle": "Requêtes",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -410,6 +416,11 @@
       "name": "sqlExecuteParameterized",
       "schemaVersion": 2,
       "title": "Exécuter une requête paramétrée",
+      "subtitle": "Requêtes",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -472,6 +483,11 @@
       "name": "sqlListTables",
       "schemaVersion": 2,
       "title": "Lister les tables",
+      "subtitle": "Tables",
+      "tags": [
+        "liste",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -520,6 +536,11 @@
       "name": "sqlDescribeTable",
       "schemaVersion": 2,
       "title": "Décrire une table",
+      "subtitle": "Tables",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -581,6 +602,11 @@
       "name": "sqlSelect",
       "schemaVersion": 2,
       "title": "Sélectionner des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -679,6 +705,11 @@
       "name": "sqlInsert",
       "schemaVersion": 2,
       "title": "Insérer un enregistrement",
+      "subtitle": "Données",
+      "tags": [
+        "création",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -745,6 +776,11 @@
       "name": "sqlUpdate",
       "schemaVersion": 2,
       "title": "Mettre à jour des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "mise-à-jour",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -825,6 +861,11 @@
       "name": "sqlDelete",
       "schemaVersion": 2,
       "title": "Supprimer des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "suppression",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",
@@ -891,6 +932,11 @@
       "name": "sqlCallProcedure",
       "schemaVersion": 2,
       "title": "Appeler une procédure stockée",
+      "subtitle": "Procédures",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "SQL Database",

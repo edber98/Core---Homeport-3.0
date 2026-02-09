@@ -1042,6 +1042,7 @@
       "name": "WordPress",
       "title": "WordPress",
       "iconClass": "fa-brands fa-wordpress",
+      "iconUrl": "https://cdn.simpleicons.org/wordpress",
       "color": "#21759B",
       "tags": [
         "wordpress",
@@ -1204,7 +1205,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_post_get",
@@ -1257,7 +1263,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_post_update",
@@ -1346,7 +1357,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_post_delete",
@@ -1399,7 +1415,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_posts_list",
@@ -1474,7 +1495,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_page_create",
@@ -1554,7 +1580,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pages",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_page_get",
@@ -1607,7 +1638,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Pages",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_page_update",
@@ -1687,7 +1723,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pages",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_page_delete",
@@ -1740,7 +1781,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Pages",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_pages_list",
@@ -1815,7 +1861,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Pages",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_media_upload",
@@ -1886,7 +1937,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Médias",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_media_get",
@@ -1939,7 +1995,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Médias",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_media_list",
@@ -2005,7 +2066,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Médias",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_media_delete",
@@ -2058,7 +2124,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Médias",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_category_create",
@@ -2129,7 +2200,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Catégories",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_category_get",
@@ -2182,7 +2258,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Catégories",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_categories_list",
@@ -2239,7 +2320,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Catégories",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_tag_create",
@@ -2301,7 +2387,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_tags_list",
@@ -2358,7 +2449,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_comment_create",
@@ -2443,7 +2539,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "création",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_comment_get",
@@ -2496,7 +2597,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_comments_list",
@@ -2562,7 +2668,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_comment_update",
@@ -2633,7 +2744,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_user_get",
@@ -2686,7 +2802,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_users_list",
@@ -2743,7 +2864,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_plugins_list",
@@ -2791,7 +2917,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Extensions",
+      "tags": [
+        "liste",
+        "wordpress"
+      ]
     },
     {
       "key": "wp_webhook_event",
@@ -2803,7 +2934,7 @@
       "category": "Événements",
       "providerKey": "wordpress",
       "description": "Déclenchement via webhook WordPress entrant.",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2830,7 +2961,11 @@
             }
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "wordpress"
+      ]
     }
   ]
 }

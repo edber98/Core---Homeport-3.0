@@ -580,6 +580,7 @@
       "name": "Typeform",
       "title": "Typeform",
       "iconClass": "fa-solid fa-square-poll-horizontal",
+      "iconUrl": "https://cdn.simpleicons.org/typeform",
       "color": "#262627",
       "tags": [
         "typeform",
@@ -623,10 +624,15 @@
       "name": "typeformFormCreate",
       "schemaVersion": 2,
       "title": "Créer un formulaire",
+      "subtitle": "Formulaires",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "création",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -695,10 +701,15 @@
       "name": "typeformFormGet",
       "schemaVersion": 2,
       "title": "Récupérer un formulaire",
+      "subtitle": "Formulaires",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -748,10 +759,15 @@
       "name": "typeformFormsList",
       "schemaVersion": 2,
       "title": "Lister les formulaires",
+      "subtitle": "Formulaires",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -823,10 +839,15 @@
       "name": "typeformFormUpdate",
       "schemaVersion": 2,
       "title": "Modifier un formulaire",
+      "subtitle": "Formulaires",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "mise-à-jour",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -894,10 +915,15 @@
       "name": "typeformFormDelete",
       "schemaVersion": 2,
       "title": "Supprimer un formulaire",
+      "subtitle": "Formulaires",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "suppression",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -947,10 +973,15 @@
       "name": "typeformResponsesList",
       "schemaVersion": 2,
       "title": "Lister les réponses",
+      "subtitle": "Réponses",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1036,10 +1067,15 @@
       "name": "typeformResponseGet",
       "schemaVersion": 2,
       "title": "Récupérer une réponse",
+      "subtitle": "Réponses",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1103,10 +1139,15 @@
       "name": "typeformResponseDelete",
       "schemaVersion": 2,
       "title": "Supprimer une réponse",
+      "subtitle": "Réponses",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "suppression",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1170,10 +1211,15 @@
       "name": "typeformWorkspacesList",
       "schemaVersion": 2,
       "title": "Lister les workspaces",
+      "subtitle": "Espaces de travail",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1236,10 +1282,15 @@
       "name": "typeformWorkspaceGet",
       "schemaVersion": 2,
       "title": "Récupérer un workspace",
+      "subtitle": "Espaces de travail",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1289,10 +1340,15 @@
       "name": "typeformThemesList",
       "schemaVersion": 2,
       "title": "Lister les thèmes",
+      "subtitle": "Thèmes",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1346,10 +1402,15 @@
       "name": "typeformImagesList",
       "schemaVersion": 2,
       "title": "Lister les images",
+      "subtitle": "Images",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1384,10 +1445,15 @@
       "name": "typeformImageUpload",
       "schemaVersion": 2,
       "title": "Téléverser une image",
+      "subtitle": "Images",
       "type": "function",
       "nodeKind": "function",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "téléversement",
+        "typeform"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1451,11 +1517,15 @@
       "name": "typeformWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "type": "event",
       "nodeKind": "event",
       "category": "Typeform",
       "providerKey": "typeform",
+      "tags": [
+        "événement",
+        "typeform"
+      ],
       "outputHandles": [
         {
           "id": "ok",

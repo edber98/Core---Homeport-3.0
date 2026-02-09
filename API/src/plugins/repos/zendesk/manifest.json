@@ -810,6 +810,7 @@
       "name": "Zendesk",
       "title": "Zendesk",
       "iconClass": "fa-solid fa-headset",
+      "iconUrl": "https://cdn.simpleicons.org/zendesk",
       "color": "#03363D",
       "tags": [
         "zendesk",
@@ -995,7 +996,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "création",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_ticket_get",
@@ -1048,7 +1054,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "lecture",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_ticket_update",
@@ -1186,7 +1197,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_ticket_delete",
@@ -1239,7 +1255,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "suppression",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_tickets_list",
@@ -1296,7 +1317,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_ticket_search",
@@ -1349,7 +1375,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "recherche",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_user_create",
@@ -1443,7 +1474,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "création",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_user_get",
@@ -1496,7 +1532,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_user_update",
@@ -1576,7 +1617,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "mise-à-jour",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_users_list",
@@ -1633,7 +1679,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_user_search",
@@ -1686,7 +1737,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "recherche",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_organization_create",
@@ -1748,7 +1804,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Organisations",
+      "tags": [
+        "création",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_organization_get",
@@ -1801,7 +1862,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Organisations",
+      "tags": [
+        "lecture",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_organizations_list",
@@ -1858,7 +1924,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Organisations",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_group_get",
@@ -1911,7 +1982,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Groupes",
+      "tags": [
+        "lecture",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_groups_list",
@@ -1949,7 +2025,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Groupes",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_comment_create",
@@ -2035,7 +2116,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "création",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_comments_list",
@@ -2088,7 +2174,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Commentaires",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_tags_add",
@@ -2155,7 +2246,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "création",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_tags_remove",
@@ -2222,7 +2318,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "suppression",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_macros_list",
@@ -2260,7 +2361,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Macros",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_macro_apply",
@@ -2327,7 +2433,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Macros",
+      "tags": [
+        "lecture",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_satisfaction_list",
@@ -2375,7 +2486,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Satisfaction",
+      "tags": [
+        "liste",
+        "zendesk"
+      ]
     },
     {
       "key": "zd_webhook_event",
@@ -2386,7 +2502,7 @@
       "nodeKind": "event",
       "category": "Zendesk",
       "providerKey": "zendesk",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2431,7 +2547,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "zendesk"
+      ]
     }
   ]
 }

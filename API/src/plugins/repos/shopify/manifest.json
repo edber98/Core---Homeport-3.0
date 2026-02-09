@@ -995,6 +995,7 @@
       "name": "Shopify",
       "title": "Shopify",
       "iconClass": "fa-brands fa-shopify",
+      "iconUrl": "https://cdn.simpleicons.org/shopify",
       "color": "#96BF48",
       "tags": [
         "shopify",
@@ -1051,6 +1052,7 @@
       "name": "shopifyOrderGet",
       "schemaVersion": 2,
       "title": "Récupérer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1097,13 +1099,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_orders_list",
       "name": "shopifyOrdersList",
       "schemaVersion": 2,
       "title": "Lister les commandes",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1163,13 +1170,18 @@
             "description": "Retourner les commandes après cet ID."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_order_create",
       "name": "shopifyOrderCreate",
       "schemaVersion": 2,
       "title": "Créer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1234,13 +1246,18 @@
             "description": "Statut du paiement (paid, pending, etc.)."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ]
     },
     {
       "key": "shopify_order_update",
       "name": "shopifyOrderUpdate",
       "schemaVersion": 2,
       "title": "Modifier une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1314,13 +1331,18 @@
             "description": "Tags séparés par des virgules."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_order_cancel",
       "name": "shopifyOrderCancel",
       "schemaVersion": 2,
       "title": "Annuler une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1376,13 +1398,18 @@
             "description": "Raison de l'annulation."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "suppression"
+      ]
     },
     {
       "key": "shopify_order_close",
       "name": "shopifyOrderClose",
       "schemaVersion": 2,
       "title": "Fermer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1429,13 +1456,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_orders_count",
       "name": "shopifyOrdersCount",
       "schemaVersion": 2,
       "title": "Compter les commandes",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1477,13 +1509,18 @@
             "description": "Filtrer par statut (open, closed, any)."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_product_get",
       "name": "shopifyProductGet",
       "schemaVersion": 2,
       "title": "Récupérer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1530,13 +1567,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_products_list",
       "name": "shopifyProductsList",
       "schemaVersion": 2,
       "title": "Lister les produits",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1605,13 +1647,18 @@
             "description": "Retourner les produits après cet ID."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_product_create",
       "name": "shopifyProductCreate",
       "schemaVersion": 2,
       "title": "Créer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1694,13 +1741,18 @@
             "description": "Statut (active, draft, archived)."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ]
     },
     {
       "key": "shopify_product_update",
       "name": "shopifyProductUpdate",
       "schemaVersion": 2,
       "title": "Modifier un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1792,13 +1844,18 @@
             "description": "Nouveau statut (active, draft, archived)."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_product_delete",
       "name": "shopifyProductDelete",
       "schemaVersion": 2,
       "title": "Supprimer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1845,13 +1902,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "suppression"
+      ]
     },
     {
       "key": "shopify_products_count",
       "name": "shopifyProductsCount",
       "schemaVersion": 2,
       "title": "Compter les produits",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1902,13 +1964,18 @@
             "description": "Filtrer par vendeur."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_customer_get",
       "name": "shopifyCustomerGet",
       "schemaVersion": 2,
       "title": "Récupérer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1955,13 +2022,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_customers_list",
       "name": "shopifyCustomersList",
       "schemaVersion": 2,
       "title": "Lister les clients",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -2012,13 +2084,18 @@
             "description": "Retourner les clients après cet ID."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_customer_create",
       "name": "shopifyCustomerCreate",
       "schemaVersion": 2,
       "title": "Créer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -2092,13 +2169,18 @@
             "description": "Numéro de téléphone."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ]
     },
     {
       "key": "shopify_customer_update",
       "name": "shopifyCustomerUpdate",
       "schemaVersion": 2,
       "title": "Modifier un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -2181,13 +2263,18 @@
             "description": "Nouveau numéro de téléphone."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_customers_search",
       "name": "shopifyCustomersSearch",
       "schemaVersion": 2,
       "title": "Rechercher des clients",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -2243,13 +2330,18 @@
             "description": "Nombre maximum de résultats."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "recherche"
+      ]
     },
     {
       "key": "shopify_inventory_levels_list",
       "name": "shopifyInventoryLevelsList",
       "schemaVersion": 2,
       "title": "Lister les niveaux d'inventaire",
+      "subtitle": "Inventaire",
       "type": "function",
       "nodeKind": "function",
       "category": "Inventaire",
@@ -2300,13 +2392,18 @@
             "description": "IDs séparés par des virgules."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_inventory_adjust",
       "name": "shopifyInventoryAdjust",
       "schemaVersion": 2,
       "title": "Ajuster l'inventaire",
+      "subtitle": "Inventaire",
       "type": "function",
       "nodeKind": "function",
       "category": "Inventaire",
@@ -2381,13 +2478,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_inventory_set",
       "name": "shopifyInventorySet",
       "schemaVersion": 2,
       "title": "Définir l'inventaire",
+      "subtitle": "Inventaire",
       "type": "function",
       "nodeKind": "function",
       "category": "Inventaire",
@@ -2462,13 +2564,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "shopify_collection_get",
       "name": "shopifyCollectionGet",
       "schemaVersion": 2,
       "title": "Récupérer une collection",
+      "subtitle": "Collections",
       "type": "function",
       "nodeKind": "function",
       "category": "Collections",
@@ -2515,13 +2622,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_collections_list",
       "name": "shopifyCollectionsList",
       "schemaVersion": 2,
       "title": "Lister les collections",
+      "subtitle": "Collections",
       "type": "function",
       "nodeKind": "function",
       "category": "Collections",
@@ -2572,13 +2684,18 @@
             "description": "Retourner les collections après cet ID."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_fulfillment_create",
       "name": "shopifyFulfillmentCreate",
       "schemaVersion": 2,
       "title": "Créer une expédition",
+      "subtitle": "Expéditions",
       "type": "function",
       "nodeKind": "function",
       "category": "Expéditions",
@@ -2652,13 +2769,18 @@
             "description": "Nom du transporteur."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ]
     },
     {
       "key": "shopify_fulfillments_list",
       "name": "shopifyFulfillmentsList",
       "schemaVersion": 2,
       "title": "Lister les expéditions",
+      "subtitle": "Expéditions",
       "type": "function",
       "nodeKind": "function",
       "category": "Expéditions",
@@ -2714,13 +2836,18 @@
             "description": "Nombre maximum de résultats."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_variants_list",
       "name": "shopifyVariantsList",
       "schemaVersion": 2,
       "title": "Lister les variants",
+      "subtitle": "Variantes",
       "type": "function",
       "nodeKind": "function",
       "category": "Variants",
@@ -2776,13 +2903,18 @@
             "description": "Nombre maximum de résultats."
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ]
     },
     {
       "key": "shopify_variant_get",
       "name": "shopifyVariantGet",
       "schemaVersion": 2,
       "title": "Récupérer un variant",
+      "subtitle": "Variantes",
       "type": "function",
       "nodeKind": "function",
       "category": "Variants",
@@ -2829,7 +2961,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ]
     },
     {
       "key": "shopify_webhook_event",
@@ -2870,7 +3006,11 @@
             "default": "/shopify"
           }
         ]
-      }
+      },
+      "tags": [
+        "Shopify",
+        "événement"
+      ]
     }
   ]
 }

@@ -758,6 +758,7 @@
       "name": "Brevo",
       "title": "Brevo",
       "iconClass": "fa-solid fa-paper-plane",
+      "iconUrl": "https://cdn.simpleicons.org/brevo",
       "color": "#0B996E",
       "tags": [
         "brevo",
@@ -883,7 +884,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "création",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_contact_get",
@@ -936,7 +942,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "lecture",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_contact_update",
@@ -1025,7 +1036,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_contact_delete",
@@ -1078,7 +1094,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "suppression",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_contacts_list",
@@ -1135,7 +1156,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "liste",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_contacts_import",
@@ -1202,7 +1228,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "importation",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_list_create",
@@ -1269,7 +1300,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "tags": [
+        "création",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_list_get",
@@ -1322,7 +1358,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "tags": [
+        "lecture",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_lists_list",
@@ -1379,7 +1420,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "tags": [
+        "liste",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_list_add_contacts",
@@ -1446,7 +1492,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_campaign_create",
@@ -1573,7 +1624,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "création",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_campaign_get",
@@ -1626,7 +1682,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "lecture",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_campaigns_list",
@@ -1710,7 +1771,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "liste",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_campaign_send_test",
@@ -1777,7 +1843,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "envoi",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_campaign_send_now",
@@ -1830,7 +1901,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "envoi",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_transactional_send",
@@ -1947,7 +2023,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Emails transactionnels",
+      "tags": [
+        "envoi",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_smtp_stats",
@@ -2004,7 +2085,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Statistiques",
+      "tags": [
+        "lecture",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_templates_list",
@@ -2061,7 +2147,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Templates",
+      "tags": [
+        "liste",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_template_get",
@@ -2114,7 +2205,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Templates",
+      "tags": [
+        "lecture",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_senders_list",
@@ -2152,7 +2248,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Expéditeurs",
+      "tags": [
+        "liste",
+        "brevo"
+      ]
     },
     {
       "key": "brevo_webhook_event",
@@ -2163,7 +2264,7 @@
       "nodeKind": "event",
       "category": "Brevo",
       "providerKey": "brevo",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2216,7 +2317,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "brevo"
+      ]
     }
   ]
 }

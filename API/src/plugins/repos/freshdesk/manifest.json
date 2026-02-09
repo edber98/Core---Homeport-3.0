@@ -810,6 +810,7 @@
       "name": "Freshdesk",
       "title": "Freshdesk",
       "iconClass": "fa-solid fa-life-ring",
+      "iconUrl": "https://cdn.simpleicons.org/freshdesk",
       "color": "#35C497",
       "tags": [
         "freshdesk",
@@ -1004,7 +1005,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "création",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_ticket_get",
@@ -1057,7 +1063,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_ticket_update",
@@ -1182,7 +1193,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_ticket_delete",
@@ -1235,7 +1251,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "suppression",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_tickets_list",
@@ -1292,7 +1313,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_ticket_search",
@@ -1345,7 +1371,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tickets",
+      "tags": [
+        "recherche",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_contact_create",
@@ -1425,7 +1456,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "création",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_contact_get",
@@ -1478,7 +1514,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_contact_update",
@@ -1558,7 +1599,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_contacts_list",
@@ -1615,7 +1661,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Contacts",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_company_create",
@@ -1686,7 +1737,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "tags": [
+        "création",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_company_get",
@@ -1739,7 +1795,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_companies_list",
@@ -1787,7 +1848,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Entreprises",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_agent_get",
@@ -1840,7 +1906,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Agents",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_agents_list",
@@ -1888,7 +1959,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Agents",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_group_get",
@@ -1941,7 +2017,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Groupes",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_groups_list",
@@ -1979,7 +2060,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Groupes",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_note_create",
@@ -2065,7 +2151,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Notes",
+      "tags": [
+        "création",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_notes_list",
@@ -2118,7 +2209,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Notes",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_time_entry_create",
@@ -2194,7 +2290,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Temps",
+      "tags": [
+        "création",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_time_entries_list",
@@ -2247,7 +2348,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Temps",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_satisfaction_list",
@@ -2295,7 +2401,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Satisfaction",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ]
     },
     {
       "key": "fd_webhook_event",
@@ -2306,7 +2417,7 @@
       "nodeKind": "event",
       "category": "Freshdesk",
       "providerKey": "freshdesk",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2351,7 +2462,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "freshdesk"
+      ]
     }
   ]
 }

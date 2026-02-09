@@ -1159,6 +1159,7 @@
       "name": "Pipedrive",
       "title": "Pipedrive",
       "iconClass": "fa-solid fa-handshake",
+      "iconUrl": "https://cdn.simpleicons.org/pipedrive",
       "color": "#017737",
       "tags": [
         "pipedrive",
@@ -1202,6 +1203,11 @@
       "name": "pipedriveDealCreate",
       "schemaVersion": 2,
       "title": "Créer un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1300,6 +1306,11 @@
       "name": "pipedriveDealGet",
       "schemaVersion": 2,
       "title": "Obtenir un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1353,6 +1364,11 @@
       "name": "pipedriveDealUpdate",
       "schemaVersion": 2,
       "title": "Modifier un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1442,6 +1458,11 @@
       "name": "pipedriveDealDelete",
       "schemaVersion": 2,
       "title": "Supprimer un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1495,6 +1516,11 @@
       "name": "pipedriveDealsList",
       "schemaVersion": 2,
       "title": "Lister les deals",
+      "subtitle": "Deals",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1552,6 +1578,11 @@
       "name": "pipedriveDealSearch",
       "schemaVersion": 2,
       "title": "Rechercher des deals",
+      "subtitle": "Deals",
+      "tags": [
+        "recherche",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1614,6 +1645,11 @@
       "name": "pipedrivePersonCreate",
       "schemaVersion": 2,
       "title": "Créer une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1694,6 +1730,11 @@
       "name": "pipedrivePersonGet",
       "schemaVersion": 2,
       "title": "Obtenir une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1747,6 +1788,11 @@
       "name": "pipedrivePersonUpdate",
       "schemaVersion": 2,
       "title": "Modifier une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1827,6 +1873,11 @@
       "name": "pipedrivePersonDelete",
       "schemaVersion": 2,
       "title": "Supprimer une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1880,6 +1931,11 @@
       "name": "pipedrivePersonsList",
       "schemaVersion": 2,
       "title": "Lister les personnes",
+      "subtitle": "Personnes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1937,6 +1993,11 @@
       "name": "pipedrivePersonSearch",
       "schemaVersion": 2,
       "title": "Rechercher des personnes",
+      "subtitle": "Personnes",
+      "tags": [
+        "recherche",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -1999,6 +2060,11 @@
       "name": "pipedriveOrganizationCreate",
       "schemaVersion": 2,
       "title": "Créer une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2061,6 +2127,11 @@
       "name": "pipedriveOrganizationGet",
       "schemaVersion": 2,
       "title": "Obtenir une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2114,6 +2185,11 @@
       "name": "pipedriveOrganizationUpdate",
       "schemaVersion": 2,
       "title": "Modifier une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2185,6 +2261,11 @@
       "name": "pipedriveOrganizationDelete",
       "schemaVersion": 2,
       "title": "Supprimer une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2238,6 +2319,11 @@
       "name": "pipedriveOrganizationsList",
       "schemaVersion": 2,
       "title": "Lister les organisations",
+      "subtitle": "Organisations",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2295,6 +2381,11 @@
       "name": "pipedriveActivityCreate",
       "schemaVersion": 2,
       "title": "Créer une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2407,6 +2498,11 @@
       "name": "pipedriveActivityGet",
       "schemaVersion": 2,
       "title": "Obtenir une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2460,6 +2556,11 @@
       "name": "pipedriveActivityUpdate",
       "schemaVersion": 2,
       "title": "Modifier une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2549,6 +2650,11 @@
       "name": "pipedriveActivityDelete",
       "schemaVersion": 2,
       "title": "Supprimer une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2602,6 +2708,11 @@
       "name": "pipedriveActivitiesList",
       "schemaVersion": 2,
       "title": "Lister les activités",
+      "subtitle": "Activités",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2659,6 +2770,11 @@
       "name": "pipedrivePipelinesList",
       "schemaVersion": 2,
       "title": "Lister les pipelines",
+      "subtitle": "Pipelines",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2697,6 +2813,11 @@
       "name": "pipedriveStagesList",
       "schemaVersion": 2,
       "title": "Lister les étapes",
+      "subtitle": "Étapes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2745,6 +2866,11 @@
       "name": "pipedriveNoteCreate",
       "schemaVersion": 2,
       "title": "Créer une note",
+      "subtitle": "Notes",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2825,6 +2951,11 @@
       "name": "pipedriveNotesList",
       "schemaVersion": 2,
       "title": "Lister les notes",
+      "subtitle": "Notes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2882,6 +3013,11 @@
       "name": "pipedriveProductsList",
       "schemaVersion": 2,
       "title": "Lister les produits",
+      "subtitle": "Produits",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2939,6 +3075,11 @@
       "name": "pipedriveUsersList",
       "schemaVersion": 2,
       "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Pipedrive",
@@ -2977,7 +3118,11 @@
       "name": "pipedriveWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
+      "tags": [
+        "événement",
+        "pipedrive"
+      ],
       "type": "event",
       "nodeKind": "event",
       "category": "Événements",

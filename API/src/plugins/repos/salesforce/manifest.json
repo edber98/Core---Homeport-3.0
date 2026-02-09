@@ -1098,6 +1098,7 @@
       "name": "Salesforce",
       "title": "Salesforce",
       "iconClass": "fa-brands fa-salesforce",
+      "iconUrl": "https://cdn.simpleicons.org/salesforce",
       "color": "#00A1E0",
       "tags": [
         "salesforce",
@@ -1185,6 +1186,11 @@
       "name": "salesforceAccountCreate",
       "schemaVersion": 2,
       "title": "Créer un compte",
+      "subtitle": "Comptes",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1265,6 +1271,11 @@
       "name": "salesforceAccountGet",
       "schemaVersion": 2,
       "title": "Obtenir un compte",
+      "subtitle": "Comptes",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1318,6 +1329,11 @@
       "name": "salesforceAccountUpdate",
       "schemaVersion": 2,
       "title": "Modifier un compte",
+      "subtitle": "Comptes",
+      "tags": [
+        "mise-à-jour",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1407,6 +1423,11 @@
       "name": "salesforceAccountDelete",
       "schemaVersion": 2,
       "title": "Supprimer un compte",
+      "subtitle": "Comptes",
+      "tags": [
+        "suppression",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1460,6 +1481,11 @@
       "name": "salesforceAccountsList",
       "schemaVersion": 2,
       "title": "Lister les comptes",
+      "subtitle": "Comptes",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1508,6 +1534,11 @@
       "name": "salesforceContactCreate",
       "schemaVersion": 2,
       "title": "Créer un contact",
+      "subtitle": "Contacts",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1597,6 +1628,11 @@
       "name": "salesforceContactGet",
       "schemaVersion": 2,
       "title": "Obtenir un contact",
+      "subtitle": "Contacts",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1650,6 +1686,11 @@
       "name": "salesforceContactUpdate",
       "schemaVersion": 2,
       "title": "Modifier un contact",
+      "subtitle": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1739,6 +1780,11 @@
       "name": "salesforceContactDelete",
       "schemaVersion": 2,
       "title": "Supprimer un contact",
+      "subtitle": "Contacts",
+      "tags": [
+        "suppression",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1792,6 +1838,11 @@
       "name": "salesforceContactsList",
       "schemaVersion": 2,
       "title": "Lister les contacts",
+      "subtitle": "Contacts",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1840,6 +1891,11 @@
       "name": "salesforceContactSearch",
       "schemaVersion": 2,
       "title": "Rechercher des contacts",
+      "subtitle": "Contacts",
+      "tags": [
+        "recherche",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -1902,6 +1958,11 @@
       "name": "salesforceOpportunityCreate",
       "schemaVersion": 2,
       "title": "Créer une opportunité",
+      "subtitle": "Opportunités",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2001,6 +2062,11 @@
       "name": "salesforceOpportunityGet",
       "schemaVersion": 2,
       "title": "Obtenir une opportunité",
+      "subtitle": "Opportunités",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2054,6 +2120,11 @@
       "name": "salesforceOpportunityUpdate",
       "schemaVersion": 2,
       "title": "Modifier une opportunité",
+      "subtitle": "Opportunités",
+      "tags": [
+        "mise-à-jour",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2143,6 +2214,11 @@
       "name": "salesforceOpportunityDelete",
       "schemaVersion": 2,
       "title": "Supprimer une opportunité",
+      "subtitle": "Opportunités",
+      "tags": [
+        "suppression",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2196,6 +2272,11 @@
       "name": "salesforceOpportunitiesList",
       "schemaVersion": 2,
       "title": "Lister les opportunités",
+      "subtitle": "Opportunités",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2244,6 +2325,11 @@
       "name": "salesforceLeadCreate",
       "schemaVersion": 2,
       "title": "Créer un lead",
+      "subtitle": "Leads",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2347,6 +2433,11 @@
       "name": "salesforceLeadGet",
       "schemaVersion": 2,
       "title": "Obtenir un lead",
+      "subtitle": "Leads",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2400,6 +2491,11 @@
       "name": "salesforceLeadUpdate",
       "schemaVersion": 2,
       "title": "Modifier un lead",
+      "subtitle": "Leads",
+      "tags": [
+        "mise-à-jour",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2498,6 +2594,11 @@
       "name": "salesforceLeadDelete",
       "schemaVersion": 2,
       "title": "Supprimer un lead",
+      "subtitle": "Leads",
+      "tags": [
+        "suppression",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2551,6 +2652,11 @@
       "name": "salesforceLeadsList",
       "schemaVersion": 2,
       "title": "Lister les leads",
+      "subtitle": "Leads",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2599,6 +2705,11 @@
       "name": "salesforceLeadConvert",
       "schemaVersion": 2,
       "title": "Convertir un lead",
+      "subtitle": "Leads",
+      "tags": [
+        "conversion",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2679,6 +2790,11 @@
       "name": "salesforceCaseCreate",
       "schemaVersion": 2,
       "title": "Créer un case",
+      "subtitle": "Cases",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2768,6 +2884,11 @@
       "name": "salesforceCaseGet",
       "schemaVersion": 2,
       "title": "Obtenir un case",
+      "subtitle": "Cases",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2821,6 +2942,11 @@
       "name": "salesforceCaseUpdate",
       "schemaVersion": 2,
       "title": "Modifier un case",
+      "subtitle": "Cases",
+      "tags": [
+        "mise-à-jour",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2901,6 +3027,11 @@
       "name": "salesforceCasesList",
       "schemaVersion": 2,
       "title": "Lister les cases",
+      "subtitle": "Cases",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -2949,6 +3080,11 @@
       "name": "salesforceTaskCreate",
       "schemaVersion": 2,
       "title": "Créer une tâche",
+      "subtitle": "Tâches",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -3047,6 +3183,11 @@
       "name": "salesforceTaskGet",
       "schemaVersion": 2,
       "title": "Obtenir une tâche",
+      "subtitle": "Tâches",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -3100,6 +3241,11 @@
       "name": "salesforceTasksList",
       "schemaVersion": 2,
       "title": "Lister les tâches",
+      "subtitle": "Tâches",
+      "tags": [
+        "liste",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -3148,6 +3294,11 @@
       "name": "salesforceSoqlQuery",
       "schemaVersion": 2,
       "title": "Requête SOQL",
+      "subtitle": "SOQL",
+      "tags": [
+        "recherche",
+        "salesforce"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "Salesforce",
@@ -3201,7 +3352,11 @@
       "name": "salesforceWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
+      "tags": [
+        "événement",
+        "salesforce"
+      ],
       "type": "event",
       "nodeKind": "event",
       "category": "Événements",

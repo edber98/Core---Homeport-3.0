@@ -722,6 +722,7 @@
       "name": "ClickUp",
       "title": "ClickUp",
       "iconClass": "fa-solid fa-clipboard-check",
+      "iconUrl": "https://cdn.simpleicons.org/clickup",
       "color": "#7B68EE",
       "tags": [
         "clickup",
@@ -861,6 +862,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "clickup",
+        "création"
       ]
     },
     {
@@ -914,6 +920,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "clickup",
+        "lecture"
       ]
     },
     {
@@ -1012,6 +1023,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "clickup",
+        "mise-à-jour"
       ]
     },
     {
@@ -1065,6 +1081,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "clickup",
+        "suppression"
       ]
     },
     {
@@ -1118,6 +1139,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1194,6 +1220,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Listes",
+      "tags": [
+        "clickup",
+        "création"
       ]
     },
     {
@@ -1247,6 +1278,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Listes",
+      "tags": [
+        "clickup",
+        "lecture"
       ]
     },
     {
@@ -1314,6 +1350,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Dossiers",
+      "tags": [
+        "clickup",
+        "création"
       ]
     },
     {
@@ -1367,6 +1408,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Dossiers",
+      "tags": [
+        "clickup",
+        "lecture"
       ]
     },
     {
@@ -1420,6 +1466,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Dossiers",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1473,6 +1524,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Espaces",
+      "tags": [
+        "clickup",
+        "lecture"
       ]
     },
     {
@@ -1526,6 +1582,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Espaces",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1564,6 +1625,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Équipes",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1631,6 +1697,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "clickup",
+        "création"
       ]
     },
     {
@@ -1684,6 +1755,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1737,6 +1813,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tags",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1822,6 +1903,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Temps",
+      "tags": [
+        "clickup",
+        "création"
       ]
     },
     {
@@ -1875,6 +1961,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Temps",
+      "tags": [
+        "clickup",
+        "liste"
       ]
     },
     {
@@ -1915,8 +2006,12 @@
           }
         ]
       },
-      "subtitle": "Déclencheur",
-      "inputHandles": []
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "clickup",
+        "événement"
+      ]
     }
   ]
 }

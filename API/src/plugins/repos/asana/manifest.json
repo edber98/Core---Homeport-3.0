@@ -826,6 +826,7 @@
       "name": "Asana",
       "title": "Asana",
       "iconClass": "fa-solid fa-list-check",
+      "iconUrl": "https://cdn.simpleicons.org/asana",
       "color": "#F06A6A",
       "tags": [
         "asana",
@@ -955,6 +956,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "création"
       ]
     },
     {
@@ -1008,6 +1014,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "lecture"
       ]
     },
     {
@@ -1106,6 +1117,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "mise-à-jour"
       ]
     },
     {
@@ -1159,6 +1175,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "suppression"
       ]
     },
     {
@@ -1221,6 +1242,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1306,6 +1332,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "création"
       ]
     },
     {
@@ -1359,6 +1390,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "lecture"
       ]
     },
     {
@@ -1421,6 +1457,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1488,6 +1529,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Sections",
+      "tags": [
+        "asana",
+        "création"
       ]
     },
     {
@@ -1541,6 +1587,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Sections",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1617,6 +1668,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tags",
+      "tags": [
+        "asana",
+        "création"
       ]
     },
     {
@@ -1679,6 +1735,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Tags",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1732,6 +1793,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "asana",
+        "lecture"
       ]
     },
     {
@@ -1794,6 +1860,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1832,6 +1903,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Espaces de travail",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1899,6 +1975,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Stories",
+      "tags": [
+        "asana",
+        "création"
       ]
     },
     {
@@ -1952,6 +2033,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Stories",
+      "tags": [
+        "asana",
+        "liste"
       ]
     },
     {
@@ -1992,8 +2078,12 @@
           }
         ]
       },
-      "subtitle": "Déclencheur",
-      "inputHandles": []
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "asana",
+        "événement"
+      ]
     }
   ]
 }

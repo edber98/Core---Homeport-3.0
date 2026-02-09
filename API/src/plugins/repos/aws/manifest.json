@@ -447,6 +447,7 @@
       "name": "AWS S3",
       "title": "AWS S3",
       "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.simpleicons.org/amazons3",
       "color": "#FF9900",
       "tags": [
         "aws",
@@ -514,6 +515,7 @@
       "name": "AWS SES",
       "title": "AWS SES",
       "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.simpleicons.org/amazonsimpleemailservice",
       "color": "#FF9900",
       "tags": [
         "aws",
@@ -532,6 +534,11 @@
       "name": "awsS3PutObject",
       "schemaVersion": 2,
       "title": "Téléverser un objet",
+      "subtitle": "Objets",
+      "tags": [
+        "téléversement",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -614,6 +621,11 @@
       "name": "awsS3GetObject",
       "schemaVersion": 2,
       "title": "Récupérer un objet",
+      "subtitle": "Objets",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -679,6 +691,11 @@
       "name": "awsS3DeleteObject",
       "schemaVersion": 2,
       "title": "Supprimer un objet",
+      "subtitle": "Objets",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -744,6 +761,11 @@
       "name": "awsS3ListObjects",
       "schemaVersion": 2,
       "title": "Lister les objets",
+      "subtitle": "Objets",
+      "tags": [
+        "liste",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -813,6 +835,11 @@
       "name": "awsS3CopyObject",
       "schemaVersion": 2,
       "title": "Copier un objet",
+      "subtitle": "Objets",
+      "tags": [
+        "création",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -904,6 +931,11 @@
       "name": "awsS3HeadObject",
       "schemaVersion": 2,
       "title": "Métadonnées d'un objet",
+      "subtitle": "Objets",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -969,6 +1001,11 @@
       "name": "awsS3ListBuckets",
       "schemaVersion": 2,
       "title": "Lister les buckets",
+      "subtitle": "Buckets",
+      "tags": [
+        "liste",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -1007,6 +1044,11 @@
       "name": "awsS3CreateBucket",
       "schemaVersion": 2,
       "title": "Créer un bucket",
+      "subtitle": "Buckets",
+      "tags": [
+        "création",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -1067,6 +1109,11 @@
       "name": "awsS3DeleteBucket",
       "schemaVersion": 2,
       "title": "Supprimer un bucket",
+      "subtitle": "Buckets",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -1119,6 +1166,11 @@
       "name": "awsS3PresignedUrl",
       "schemaVersion": 2,
       "title": "Générer une URL présignée",
+      "subtitle": "Objets",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS S3",
@@ -1212,6 +1264,11 @@
       "name": "awsSesSendEmail",
       "schemaVersion": 2,
       "title": "Envoyer un email",
+      "subtitle": "Emails",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1323,6 +1380,11 @@
       "name": "awsSesSendTemplated",
       "schemaVersion": 2,
       "title": "Envoyer un email avec template",
+      "subtitle": "Emails",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1409,6 +1471,11 @@
       "name": "awsSesSendRaw",
       "schemaVersion": 2,
       "title": "Envoyer un email brut",
+      "subtitle": "Emails",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1461,6 +1528,11 @@
       "name": "awsSesCreateTemplate",
       "schemaVersion": 2,
       "title": "Créer un template",
+      "subtitle": "Templates",
+      "tags": [
+        "création",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1542,6 +1614,11 @@
       "name": "awsSesGetTemplate",
       "schemaVersion": 2,
       "title": "Récupérer un template",
+      "subtitle": "Templates",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1594,6 +1671,11 @@
       "name": "awsSesListTemplates",
       "schemaVersion": 2,
       "title": "Lister les templates",
+      "subtitle": "Templates",
+      "tags": [
+        "liste",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1642,6 +1724,11 @@
       "name": "awsSesDeleteTemplate",
       "schemaVersion": 2,
       "title": "Supprimer un template",
+      "subtitle": "Templates",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",
@@ -1694,6 +1781,11 @@
       "name": "awsSesListIdentities",
       "schemaVersion": 2,
       "title": "Lister les identités",
+      "subtitle": "Identités",
+      "tags": [
+        "liste",
+        "aws"
+      ],
       "type": "function",
       "nodeKind": "function",
       "category": "AWS SES",

@@ -961,6 +961,7 @@
       "name": "Linear",
       "title": "Linear",
       "iconClass": "fa-solid fa-layer-group",
+      "iconUrl": "https://cdn.simpleicons.org/linear",
       "color": "#5E6AD2",
       "tags": [
         "linear",
@@ -1091,6 +1092,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "création"
       ]
     },
     {
@@ -1144,6 +1150,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "lecture"
       ]
     },
     {
@@ -1242,6 +1253,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "mise-à-jour"
       ]
     },
     {
@@ -1299,6 +1315,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -1361,6 +1382,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "recherche"
       ]
     },
     {
@@ -1437,6 +1463,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "création"
       ]
     },
     {
@@ -1490,6 +1521,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "lecture"
       ]
     },
     {
@@ -1538,6 +1574,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -1591,6 +1632,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Cycles",
+      "tags": [
+        "linear",
+        "lecture"
       ]
     },
     {
@@ -1648,6 +1694,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Cycles",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -1701,6 +1752,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Équipes",
+      "tags": [
+        "linear",
+        "lecture"
       ]
     },
     {
@@ -1739,6 +1795,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Équipes",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -1787,6 +1848,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "linear",
+        "lecture"
       ]
     },
     {
@@ -1825,6 +1891,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -1901,6 +1972,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Labels",
+      "tags": [
+        "linear",
+        "création"
       ]
     },
     {
@@ -1949,6 +2025,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Labels",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -2016,6 +2097,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "linear",
+        "création"
       ]
     },
     {
@@ -2069,6 +2155,11 @@
             "any"
           ]
         }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "linear",
+        "liste"
       ]
     },
     {
@@ -2109,8 +2200,12 @@
           }
         ]
       },
-      "subtitle": "Déclencheur",
-      "inputHandles": []
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "linear",
+        "événement"
+      ]
     }
   ]
 }

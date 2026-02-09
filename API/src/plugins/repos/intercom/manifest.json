@@ -891,6 +891,7 @@
       "name": "Intercom",
       "title": "Intercom",
       "iconClass": "fa-solid fa-comments",
+      "iconUrl": "https://cdn.simpleicons.org/intercom",
       "color": "#286EFA",
       "tags": [
         "intercom",
@@ -934,10 +935,15 @@
       "name": "intercomContactCreate",
       "schemaVersion": 2,
       "title": "Créer un contact",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1029,10 +1035,15 @@
       "name": "intercomContactGet",
       "schemaVersion": 2,
       "title": "Récupérer un contact",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1082,10 +1093,15 @@
       "name": "intercomContactUpdate",
       "schemaVersion": 2,
       "title": "Modifier un contact",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1171,10 +1187,15 @@
       "name": "intercomContactSearch",
       "schemaVersion": 2,
       "title": "Rechercher des contacts",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "recherche",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1254,10 +1275,15 @@
       "name": "intercomContactsList",
       "schemaVersion": 2,
       "title": "Lister les contacts",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1311,10 +1337,15 @@
       "name": "intercomContactArchive",
       "schemaVersion": 2,
       "title": "Archiver un contact",
+      "subtitle": "Contacts",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "archivage",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1364,10 +1395,15 @@
       "name": "intercomConversationCreate",
       "schemaVersion": 2,
       "title": "Créer une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1431,10 +1467,15 @@
       "name": "intercomConversationGet",
       "schemaVersion": 2,
       "title": "Récupérer une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1484,10 +1525,15 @@
       "name": "intercomConversationsList",
       "schemaVersion": 2,
       "title": "Lister les conversations",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1541,10 +1587,15 @@
       "name": "intercomConversationReply",
       "schemaVersion": 2,
       "title": "Répondre à une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "envoi",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1642,10 +1693,15 @@
       "name": "intercomConversationClose",
       "schemaVersion": 2,
       "title": "Fermer une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1718,10 +1774,15 @@
       "name": "intercomConversationOpen",
       "schemaVersion": 2,
       "title": "Rouvrir une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1785,10 +1846,15 @@
       "name": "intercomConversationAssign",
       "schemaVersion": 2,
       "title": "Assigner une conversation",
+      "subtitle": "Conversations",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1875,10 +1941,15 @@
       "name": "intercomConversationTag",
       "schemaVersion": 2,
       "title": "Taguer une conversation",
+      "subtitle": "Tags",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1956,10 +2027,15 @@
       "name": "intercomCompanyCreate",
       "schemaVersion": 2,
       "title": "Créer une entreprise",
+      "subtitle": "Entreprises",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2041,10 +2117,15 @@
       "name": "intercomCompanyGet",
       "schemaVersion": 2,
       "title": "Récupérer une entreprise",
+      "subtitle": "Entreprises",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2094,10 +2175,15 @@
       "name": "intercomCompaniesList",
       "schemaVersion": 2,
       "title": "Lister les entreprises",
+      "subtitle": "Entreprises",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2151,10 +2237,15 @@
       "name": "intercomTagCreate",
       "schemaVersion": 2,
       "title": "Créer un tag",
+      "subtitle": "Tags",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2204,10 +2295,15 @@
       "name": "intercomTagsList",
       "schemaVersion": 2,
       "title": "Lister les tags",
+      "subtitle": "Tags",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2242,10 +2338,15 @@
       "name": "intercomNoteCreate",
       "schemaVersion": 2,
       "title": "Créer une note",
+      "subtitle": "Notes",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2318,10 +2419,15 @@
       "name": "intercomNotesList",
       "schemaVersion": 2,
       "title": "Lister les notes",
+      "subtitle": "Notes",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2389,10 +2495,15 @@
       "name": "intercomDataEventCreate",
       "schemaVersion": 2,
       "title": "Créer un événement",
+      "subtitle": "Événements de données",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2465,10 +2576,15 @@
       "name": "intercomDataEventsList",
       "schemaVersion": 2,
       "title": "Lister les événements",
+      "subtitle": "Événements de données",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2528,10 +2644,15 @@
       "name": "intercomArticlesList",
       "schemaVersion": 2,
       "title": "Lister les articles",
+      "subtitle": "Articles",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2585,10 +2706,15 @@
       "name": "intercomArticleGet",
       "schemaVersion": 2,
       "title": "Récupérer un article",
+      "subtitle": "Articles",
       "type": "function",
       "nodeKind": "function",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -2638,11 +2764,15 @@
       "name": "intercomWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "type": "event",
       "nodeKind": "event",
       "category": "Intercom",
       "providerKey": "intercom",
+      "tags": [
+        "événement",
+        "intercom"
+      ],
       "outputHandles": [
         {
           "id": "ok",

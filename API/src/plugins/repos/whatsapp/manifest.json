@@ -33,20 +33,33 @@
             "key": "accessToken",
             "label": "Token d'accès",
             "description": "Token d'accès permanent de l'API Meta/Facebook.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "secret": true,
-            "validators": [{ "type": "required" }]
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "phoneNumberId",
             "label": "ID du numéro de téléphone",
             "description": "Identifiant du numéro de téléphone WhatsApp Business.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
-      }
+      },
+      "iconUrl": "https://cdn.simpleicons.org/whatsapp"
     }
   ],
   "nodeTemplates": [
@@ -63,41 +76,73 @@
       "icon": "fa-solid fa-paper-plane",
       "description": "Envoyer un message texte via WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer un texte",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire (format international).",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "textarea",
             "key": "text",
             "label": "Texte",
             "description": "Contenu du message.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_send_template",
       "name": "waSendTemplate",
       "schemaVersion": 2,
       "title": "Envoyer un modèle",
-      "subtitle": "Messages",
+      "subtitle": "Templates",
       "type": "function",
       "nodeKind": "function",
       "category": "Messages",
@@ -105,38 +150,68 @@
       "icon": "fa-solid fa-file-lines",
       "description": "Envoyer un message basé sur un modèle approuvé",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer un modèle",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "template_name",
             "label": "Nom du modèle",
             "description": "Nom du modèle de message approuvé.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "language_code",
             "label": "Code de langue",
             "description": "Code de langue du modèle (ex: fr, en_US).",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": "fr"
           },
           {
@@ -144,10 +219,16 @@
             "key": "components_json",
             "label": "Composants (JSON)",
             "description": "Tableau JSON de composants du modèle.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_send_image",
@@ -162,47 +243,79 @@
       "icon": "fa-solid fa-image",
       "description": "Envoyer une image via WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer une image",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "image_url",
             "label": "URL de l'image",
             "description": "URL publique de l'image.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "image_id",
             "label": "ID du média",
             "description": "ID du média téléversé sur WhatsApp.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "caption",
             "label": "Légende",
             "description": "Légende de l'image.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_send_document",
@@ -217,54 +330,88 @@
       "icon": "fa-solid fa-file",
       "description": "Envoyer un document via WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer un document",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "document_url",
             "label": "URL du document",
             "description": "URL publique du document.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "document_id",
             "label": "ID du média",
             "description": "ID du média téléversé sur WhatsApp.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "caption",
             "label": "Légende",
             "description": "Légende du document.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "filename",
             "label": "Nom du fichier",
             "description": "Nom du fichier affiché.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_send_location",
@@ -279,56 +426,98 @@
       "icon": "fa-solid fa-location-dot",
       "description": "Envoyer une localisation via WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer une localisation",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "number",
             "key": "latitude",
             "label": "Latitude",
             "description": "Latitude de la position.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "number",
             "key": "longitude",
             "label": "Longitude",
             "description": "Longitude de la position.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "name",
             "label": "Nom du lieu",
             "description": "Nom du lieu.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "address",
             "label": "Adresse",
             "description": "Adresse du lieu.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_send_contact",
@@ -343,47 +532,79 @@
       "icon": "fa-solid fa-address-card",
       "description": "Envoyer une fiche contact via WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_message" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Envoyer un contact",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "formatted_name",
             "label": "Nom complet",
             "description": "Nom complet du contact.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "phone",
             "label": "Téléphone du contact",
             "description": "Numéro de téléphone du contact.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "contacts_json",
             "label": "Contacts (JSON)",
             "description": "Tableau JSON de contacts (format avancé).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "envoi",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_mark_read",
@@ -398,33 +619,59 @@
       "icon": "fa-solid fa-check-double",
       "description": "Marquer un message comme lu",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_result" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_result"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Marquer comme lu",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "message_id",
             "label": "ID du message",
             "description": "Identifiant du message à marquer comme lu.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
-      }
+      },
+      "tags": [
+        "mise-à-jour",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_list_templates",
       "name": "waListTemplates",
       "schemaVersion": 2,
       "title": "Lister les modèles",
-      "subtitle": "Modèles",
+      "subtitle": "Templates",
       "type": "function",
       "nodeKind": "function",
       "category": "Modèles",
@@ -432,34 +679,62 @@
       "icon": "fa-solid fa-list",
       "description": "Lister les modèles de messages approuvés",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_templates" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_templates"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Lister les modèles",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "business_id",
             "label": "ID du compte business",
             "description": "Identifiant du compte WhatsApp Business.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "number",
             "key": "limit",
             "label": "Limite",
             "description": "Nombre maximum de modèles à retourner.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": 20
           }
         ]
-      }
+      },
+      "tags": [
+        "liste",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_upload_media",
@@ -474,41 +749,75 @@
       "icon": "fa-solid fa-upload",
       "description": "Téléverser un fichier média sur WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_media" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_media"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Téléverser un média",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "media_url",
             "label": "URL du média",
             "description": "URL publique du fichier à téléverser.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "mime_type",
             "label": "Type MIME",
             "description": "Type MIME du fichier (ex: image/jpeg, application/pdf).",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "filename",
             "label": "Nom du fichier",
             "description": "Nom du fichier.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "création",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_get_media",
@@ -523,26 +832,52 @@
       "icon": "fa-solid fa-download",
       "description": "Récupérer les informations d'un média téléversé",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_media" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_media"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Récupérer un média",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "media_id",
             "label": "ID du média",
             "description": "Identifiant du média.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
-      }
+      },
+      "tags": [
+        "lecture",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_list_phone_numbers",
@@ -557,26 +892,52 @@
       "icon": "fa-solid fa-phone",
       "description": "Lister les numéros de téléphone du compte business",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_phones" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_phones"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Lister les numéros",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "business_id",
             "label": "ID du compte business",
             "description": "Identifiant du compte WhatsApp Business.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
-      }
+      },
+      "tags": [
+        "liste",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_get_business_profile",
@@ -591,17 +952,37 @@
       "icon": "fa-solid fa-building",
       "description": "Obtenir le profil de l'entreprise WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_profile" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_profile"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Obtenir le profil business",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": []
-      }
+      },
+      "tags": [
+        "lecture",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_update_business_profile",
@@ -616,60 +997,90 @@
       "icon": "fa-solid fa-pen-to-square",
       "description": "Mettre à jour le profil de l'entreprise WhatsApp",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_result" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_result"
+        }
       ],
       "authorize_catch_error": true,
       "args": {
         "title": "Mettre à jour le profil business",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "about",
             "label": "À propos",
             "description": "Description courte de l'entreprise.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "address",
             "label": "Adresse",
             "description": "Adresse de l'entreprise.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "description",
             "label": "Description",
             "description": "Description détaillée.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "email",
             "label": "Courriel",
             "description": "Adresse courriel de l'entreprise.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "websites_json",
             "label": "Sites web (JSON)",
             "description": "Tableau JSON d'URLs (ex: [\"https://example.com\"]).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ]
-      }
+      },
+      "tags": [
+        "mise-à-jour",
+        "whatsapp"
+      ]
     },
     {
       "key": "wa_webhook_event",
       "name": "waWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "type": "event",
       "nodeKind": "event",
       "category": "Événements",
@@ -677,122 +1088,478 @@
       "icon": "fa-solid fa-bolt",
       "description": "Déclenchement via webhook WhatsApp entrant",
       "outputHandles": [
-        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:wa_event" }
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_event"
+        }
       ],
       "args": {
         "title": "Événement webhook",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "path",
             "label": "Chemin d'endpoint",
             "description": "Chemin d'URL pour recevoir les webhooks.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": "/whatsapp"
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "whatsapp"
+      ]
     }
   ],
   "variables": {
     "wa_message": {
       "title": "Message WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "message_id", "label": "ID du message", "description": "Identifiant du message envoyé.", "col": { "xs": 24 } },
-        { "type": "text", "key": "to", "label": "Destinataire", "description": "Numéro du destinataire.", "col": { "xs": 24 } },
-        { "type": "text", "key": "type", "label": "Type", "description": "Type de message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de l'envoi.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "message_id",
+          "label": "ID du message",
+          "description": "Identifiant du message envoyé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Numéro du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'envoi.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_messages": {
       "title": "Messages WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de messages.", "col": { "xs": 24 } }
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de messages.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_template": {
       "title": "Modèle WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du modèle.", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du modèle.", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut d'approbation.", "col": { "xs": 24 } },
-        { "type": "text", "key": "language", "label": "Langue", "description": "Langue du modèle.", "col": { "xs": 24 } },
-        { "type": "text", "key": "category", "label": "Catégorie", "description": "Catégorie du modèle.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut d'approbation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "language",
+          "label": "Langue",
+          "description": "Langue du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "category",
+          "label": "Catégorie",
+          "description": "Catégorie du modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_templates": {
       "title": "Modèles WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de modèles.", "col": { "xs": 24 } }
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de modèles.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_media": {
       "title": "Média WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du média.", "col": { "xs": 24 } },
-        { "type": "text", "key": "url", "label": "URL", "description": "URL de téléchargement du média.", "col": { "xs": 24 } },
-        { "type": "text", "key": "mime_type", "label": "Type MIME", "description": "Type MIME du fichier.", "col": { "xs": 24 } },
-        { "type": "number", "key": "file_size", "label": "Taille", "description": "Taille du fichier en octets.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de téléchargement du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mime_type",
+          "label": "Type MIME",
+          "description": "Type MIME du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "file_size",
+          "label": "Taille",
+          "description": "Taille du fichier en octets.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_phone": {
       "title": "Numéro WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du numéro.", "col": { "xs": 24 } },
-        { "type": "text", "key": "display_phone_number", "label": "Numéro affiché", "description": "Numéro de téléphone affiché.", "col": { "xs": 24 } },
-        { "type": "text", "key": "verified_name", "label": "Nom vérifié", "description": "Nom vérifié de l'entreprise.", "col": { "xs": 24 } },
-        { "type": "text", "key": "quality_rating", "label": "Qualité", "description": "Note de qualité du numéro.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du numéro.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "display_phone_number",
+          "label": "Numéro affiché",
+          "description": "Numéro de téléphone affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "verified_name",
+          "label": "Nom vérifié",
+          "description": "Nom vérifié de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "quality_rating",
+          "label": "Qualité",
+          "description": "Note de qualité du numéro.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_phones": {
       "title": "Numéros WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données (tableau)", "description": "Tableau de numéros.", "col": { "xs": 24 } }
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de numéros.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_profile": {
       "title": "Profil business WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "about", "label": "À propos", "description": "Description courte.", "col": { "xs": 24 } },
-        { "type": "text", "key": "address", "label": "Adresse", "description": "Adresse de l'entreprise.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "description", "label": "Description", "description": "Description détaillée.", "col": { "xs": 24 } },
-        { "type": "text", "key": "email", "label": "Courriel", "description": "Adresse courriel.", "col": { "xs": 24 } },
-        { "type": "text", "key": "profile_picture_url", "label": "URL de la photo", "description": "URL de la photo de profil.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "websites", "label": "Sites web", "description": "Sites web de l'entreprise.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "about",
+          "label": "À propos",
+          "description": "Description courte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "address",
+          "label": "Adresse",
+          "description": "Adresse de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description détaillée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Courriel",
+          "description": "Adresse courriel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "profile_picture_url",
+          "label": "URL de la photo",
+          "description": "URL de la photo de profil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "websites",
+          "label": "Sites web",
+          "description": "Sites web de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_result": {
       "title": "Résultat WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de l'opération.", "col": { "xs": 24 } },
-        { "type": "text", "key": "message", "label": "Message", "description": "Message de résultat.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de résultat.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "wa_event": {
       "title": "Événement WhatsApp",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "from", "label": "Expéditeur", "description": "Numéro de l'expéditeur.", "col": { "xs": 24 } },
-        { "type": "text", "key": "contact_name", "label": "Nom du contact", "description": "Nom du profil de l'expéditeur.", "col": { "xs": 24 } },
-        { "type": "text", "key": "message_id", "label": "ID du message", "description": "Identifiant du message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "message_type", "label": "Type de message", "description": "Type de message (text, image, etc.).", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "text", "label": "Texte", "description": "Contenu textuel du message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "timestamp", "label": "Horodatage", "description": "Horodatage du message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "description": "Statut du message.", "col": { "xs": 24 } },
-        { "type": "text", "key": "phone_number_id", "label": "ID du numéro", "description": "ID du numéro de téléphone récepteur.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Numéro de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contact_name",
+          "label": "Nom du contact",
+          "description": "Nom du profil de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_id",
+          "label": "ID du message",
+          "description": "Identifiant du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message_type",
+          "label": "Type de message",
+          "description": "Type de message (text, image, etc.).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu textuel du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone_number_id",
+          "label": "ID du numéro",
+          "description": "ID du numéro de téléphone récepteur.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   }

@@ -627,6 +627,7 @@
       "name": "Calendly",
       "title": "Calendly",
       "iconClass": "fa-solid fa-calendar-check",
+      "iconUrl": "https://cdn.simpleicons.org/calendly",
       "color": "#006BFF",
       "tags": [
         "calendly",
@@ -670,10 +671,15 @@
       "name": "calendlyEventsList",
       "schemaVersion": 2,
       "title": "Lister les événements",
+      "subtitle": "Événements",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -745,10 +751,15 @@
       "name": "calendlyEventGet",
       "schemaVersion": 2,
       "title": "Récupérer un événement",
+      "subtitle": "Événements",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -798,10 +809,15 @@
       "name": "calendlyEventCancel",
       "schemaVersion": 2,
       "title": "Annuler un événement",
+      "subtitle": "Événements",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "suppression",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -860,10 +876,15 @@
       "name": "calendlyEventTypesList",
       "schemaVersion": 2,
       "title": "Lister les types d'événements",
+      "subtitle": "Types d'événements",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -935,10 +956,15 @@
       "name": "calendlyEventTypeGet",
       "schemaVersion": 2,
       "title": "Récupérer un type d'événement",
+      "subtitle": "Types d'événements",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -988,10 +1014,15 @@
       "name": "calendlyInviteesList",
       "schemaVersion": 2,
       "title": "Lister les invités",
+      "subtitle": "Invités",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1059,10 +1090,15 @@
       "name": "calendlyInviteeGet",
       "schemaVersion": 2,
       "title": "Récupérer un invité",
+      "subtitle": "Invités",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1112,10 +1148,15 @@
       "name": "calendlyUserGetMe",
       "schemaVersion": 2,
       "title": "Récupérer mon profil",
+      "subtitle": "Utilisateurs",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1150,10 +1191,15 @@
       "name": "calendlySchedulingLinkCreate",
       "schemaVersion": 2,
       "title": "Créer un lien de planification",
+      "subtitle": "Liens de planification",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "création",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1223,10 +1269,15 @@
       "name": "calendlyOrganizationGet",
       "schemaVersion": 2,
       "title": "Récupérer l'organisation",
+      "subtitle": "Organisation",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1261,10 +1312,15 @@
       "name": "calendlyOrganizationMembersList",
       "schemaVersion": 2,
       "title": "Lister les membres",
+      "subtitle": "Organisation",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1318,10 +1374,15 @@
       "name": "calendlyWebhookCreate",
       "schemaVersion": 2,
       "title": "Créer un webhook",
+      "subtitle": "Webhooks",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "création",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1395,10 +1456,15 @@
       "name": "calendlyWebhooksList",
       "schemaVersion": 2,
       "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1444,10 +1510,15 @@
       "name": "calendlyWebhookDelete",
       "schemaVersion": 2,
       "title": "Supprimer un webhook",
+      "subtitle": "Webhooks",
       "type": "function",
       "nodeKind": "function",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "suppression",
+        "calendly"
+      ],
       "inputHandles": [
         {
           "id": "in",
@@ -1497,11 +1568,15 @@
       "name": "calendlyWebhookEvent",
       "schemaVersion": 2,
       "title": "Événement webhook",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "type": "event",
       "nodeKind": "event",
       "category": "Calendly",
       "providerKey": "calendly",
+      "tags": [
+        "événement",
+        "calendly"
+      ],
       "outputHandles": [
         {
           "id": "ok",

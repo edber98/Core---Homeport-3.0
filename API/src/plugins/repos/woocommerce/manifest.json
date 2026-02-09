@@ -808,6 +808,7 @@
       "name": "WooCommerce",
       "title": "WooCommerce",
       "iconClass": "fa-brands fa-wordpress",
+      "iconUrl": "https://cdn.simpleicons.org/woocommerce",
       "color": "#96588A",
       "tags": [
         "woocommerce",
@@ -879,6 +880,7 @@
       "name": "wcOrderGet",
       "schemaVersion": 2,
       "title": "Récupérer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -925,13 +927,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_orders_list",
       "name": "wcOrdersList",
       "schemaVersion": 2,
       "title": "Lister les commandes",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -991,13 +998,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_order_create",
       "name": "wcOrderCreate",
       "schemaVersion": 2,
       "title": "Créer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1071,13 +1083,18 @@
             "description": "Articles de la commande au format JSON."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "création"
+      ]
     },
     {
       "key": "wc_order_update",
       "name": "wcOrderUpdate",
       "schemaVersion": 2,
       "title": "Modifier une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1142,13 +1159,18 @@
             "description": "Metadata au format JSON."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "wc_order_delete",
       "name": "wcOrderDelete",
       "schemaVersion": 2,
       "title": "Supprimer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1195,13 +1217,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "suppression"
+      ]
     },
     {
       "key": "wc_product_get",
       "name": "wcProductGet",
       "schemaVersion": 2,
       "title": "Récupérer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1248,13 +1275,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_products_list",
       "name": "wcProductsList",
       "schemaVersion": 2,
       "title": "Lister les produits",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1323,13 +1355,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_product_create",
       "name": "wcProductCreate",
       "schemaVersion": 2,
       "title": "Créer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1421,13 +1458,18 @@
             "description": "Statut (publish, draft, pending, private)."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "création"
+      ]
     },
     {
       "key": "wc_product_update",
       "name": "wcProductUpdate",
       "schemaVersion": 2,
       "title": "Modifier un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1519,13 +1561,18 @@
             "description": "Nouveau statut."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "wc_product_delete",
       "name": "wcProductDelete",
       "schemaVersion": 2,
       "title": "Supprimer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1572,13 +1619,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "suppression"
+      ]
     },
     {
       "key": "wc_customer_get",
       "name": "wcCustomerGet",
       "schemaVersion": 2,
       "title": "Récupérer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1625,13 +1677,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_customers_list",
       "name": "wcCustomersList",
       "schemaVersion": 2,
       "title": "Lister les clients",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1691,13 +1748,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_customer_create",
       "name": "wcCustomerCreate",
       "schemaVersion": 2,
       "title": "Créer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1771,13 +1833,18 @@
             "description": "Nom d'utilisateur."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "création"
+      ]
     },
     {
       "key": "wc_customer_update",
       "name": "wcCustomerUpdate",
       "schemaVersion": 2,
       "title": "Modifier un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1851,13 +1918,18 @@
             "description": "Nouveau nom."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "wc_category_get",
       "name": "wcCategoryGet",
       "schemaVersion": 2,
       "title": "Récupérer une catégorie",
+      "subtitle": "Catégories",
       "type": "function",
       "nodeKind": "function",
       "category": "Catégories",
@@ -1904,13 +1976,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_categories_list",
       "name": "wcCategoriesList",
       "schemaVersion": 2,
       "title": "Lister les catégories",
+      "subtitle": "Catégories",
       "type": "function",
       "nodeKind": "function",
       "category": "Catégories",
@@ -1961,13 +2038,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_category_create",
       "name": "wcCategoryCreate",
       "schemaVersion": 2,
       "title": "Créer une catégorie",
+      "subtitle": "Catégories",
       "type": "function",
       "nodeKind": "function",
       "category": "Catégories",
@@ -2032,13 +2114,18 @@
             "description": "Description de la catégorie."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "création"
+      ]
     },
     {
       "key": "wc_coupon_get",
       "name": "wcCouponGet",
       "schemaVersion": 2,
       "title": "Récupérer un coupon",
+      "subtitle": "Coupons",
       "type": "function",
       "nodeKind": "function",
       "category": "Coupons",
@@ -2085,13 +2172,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_coupons_list",
       "name": "wcCouponsList",
       "schemaVersion": 2,
       "title": "Lister les coupons",
+      "subtitle": "Coupons",
       "type": "function",
       "nodeKind": "function",
       "category": "Coupons",
@@ -2142,13 +2234,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_coupon_create",
       "name": "wcCouponCreate",
       "schemaVersion": 2,
       "title": "Créer un coupon",
+      "subtitle": "Coupons",
       "type": "function",
       "nodeKind": "function",
       "category": "Coupons",
@@ -2227,13 +2324,18 @@
             "description": "Date d'expiration (YYYY-MM-DD)."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "création"
+      ]
     },
     {
       "key": "wc_coupon_delete",
       "name": "wcCouponDelete",
       "schemaVersion": 2,
       "title": "Supprimer un coupon",
+      "subtitle": "Coupons",
       "type": "function",
       "nodeKind": "function",
       "category": "Coupons",
@@ -2280,13 +2382,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "suppression"
+      ]
     },
     {
       "key": "wc_report_sales",
       "name": "wcReportSales",
       "schemaVersion": 2,
       "title": "Rapport de ventes",
+      "subtitle": "Rapports",
       "type": "function",
       "nodeKind": "function",
       "category": "Rapports",
@@ -2337,13 +2444,18 @@
             "description": "Date de fin (YYYY-MM-DD)."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_report_top_sellers",
       "name": "wcReportTopSellers",
       "schemaVersion": 2,
       "title": "Meilleurs vendeurs",
+      "subtitle": "Rapports",
       "type": "function",
       "nodeKind": "function",
       "category": "Rapports",
@@ -2394,13 +2506,18 @@
             "description": "Date de fin (YYYY-MM-DD)."
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "lecture"
+      ]
     },
     {
       "key": "wc_shipping_zones_list",
       "name": "wcShippingZonesList",
       "schemaVersion": 2,
       "title": "Lister les zones d'expédition",
+      "subtitle": "Expéditions",
       "type": "function",
       "nodeKind": "function",
       "category": "Expédition",
@@ -2432,7 +2549,11 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "liste"
+      ]
     },
     {
       "key": "wc_webhook_event",
@@ -2473,7 +2594,11 @@
             "default": "/woocommerce"
           }
         ]
-      }
+      },
+      "tags": [
+        "WooCommerce",
+        "événement"
+      ]
     }
   ]
 }

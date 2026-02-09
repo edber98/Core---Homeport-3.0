@@ -810,6 +810,7 @@
       "name": "Mailchimp",
       "title": "Mailchimp",
       "iconClass": "fa-brands fa-mailchimp",
+      "iconUrl": "https://cdn.simpleicons.org/mailchimp",
       "color": "#FFE01B",
       "tags": [
         "mailchimp",
@@ -899,7 +900,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Audiences",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_lists_list",
@@ -956,7 +962,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Audiences",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_list_create",
@@ -1079,7 +1090,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Audiences",
+      "tags": [
+        "création",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_member_add",
@@ -1187,7 +1203,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "création",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_member_get",
@@ -1254,7 +1275,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_member_update",
@@ -1362,7 +1388,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "mise-à-jour",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_member_delete",
@@ -1429,7 +1460,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "suppression",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_members_list",
@@ -1500,7 +1536,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_member_search",
@@ -1553,7 +1594,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Membres",
+      "tags": [
+        "recherche",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaign_create",
@@ -1666,7 +1712,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "création",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaign_get",
@@ -1719,7 +1770,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaigns_list",
@@ -1803,7 +1859,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaign_send",
@@ -1856,7 +1917,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "envoi",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaign_schedule",
@@ -1923,7 +1989,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "envoi",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_campaign_unschedule",
@@ -1976,7 +2047,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Campagnes",
+      "tags": [
+        "suppression",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_templates_list",
@@ -2033,7 +2109,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Templates",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_template_get",
@@ -2086,7 +2167,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Templates",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_tags_list",
@@ -2139,7 +2225,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_tag_add",
@@ -2220,7 +2311,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "création",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_tag_remove",
@@ -2301,7 +2397,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Tags",
+      "tags": [
+        "suppression",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_segments_list",
@@ -2354,7 +2455,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Segments",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_segment_get",
@@ -2421,7 +2527,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Segments",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_reports_list",
@@ -2478,7 +2589,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Rapports",
+      "tags": [
+        "liste",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_report_get",
@@ -2531,7 +2647,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Rapports",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ]
     },
     {
       "key": "mc_webhook_event",
@@ -2542,7 +2663,7 @@
       "nodeKind": "event",
       "category": "Mailchimp",
       "providerKey": "mailchimp",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2591,7 +2712,11 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "mailchimp"
+      ]
     }
   ]
 }

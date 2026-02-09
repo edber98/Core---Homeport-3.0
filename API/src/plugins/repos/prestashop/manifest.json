@@ -774,6 +774,7 @@
       "name": "PrestaShop",
       "title": "PrestaShop",
       "iconClass": "fa-solid fa-store",
+      "iconUrl": "https://cdn.simpleicons.org/prestashop",
       "color": "#DF0067",
       "tags": [
         "prestashop",
@@ -830,6 +831,7 @@
       "name": "psOrderGet",
       "schemaVersion": 2,
       "title": "Récupérer une commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -876,13 +878,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ]
     },
     {
       "key": "ps_orders_list",
       "name": "psOrdersList",
       "schemaVersion": 2,
       "title": "Lister les commandes",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -933,13 +940,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_product_get",
       "name": "psProductGet",
       "schemaVersion": 2,
       "title": "Récupérer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -986,13 +998,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ]
     },
     {
       "key": "ps_products_list",
       "name": "psProductsList",
       "schemaVersion": 2,
       "title": "Lister les produits",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1043,13 +1060,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_product_create",
       "name": "psProductCreate",
       "schemaVersion": 2,
       "title": "Créer un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1128,13 +1150,18 @@
             "description": "Produit actif (0 ou 1)."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ]
     },
     {
       "key": "ps_product_update",
       "name": "psProductUpdate",
       "schemaVersion": 2,
       "title": "Modifier un produit",
+      "subtitle": "Produits",
       "type": "function",
       "nodeKind": "function",
       "category": "Produits",
@@ -1217,13 +1244,18 @@
             "description": "Nouveau statut (0 ou 1)."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "mise-à-jour"
+      ]
     },
     {
       "key": "ps_customer_get",
       "name": "psCustomerGet",
       "schemaVersion": 2,
       "title": "Récupérer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1270,13 +1302,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ]
     },
     {
       "key": "ps_customers_list",
       "name": "psCustomersList",
       "schemaVersion": 2,
       "title": "Lister les clients",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1327,13 +1364,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_customer_create",
       "name": "psCustomerCreate",
       "schemaVersion": 2,
       "title": "Créer un client",
+      "subtitle": "Clients",
       "type": "function",
       "nodeKind": "function",
       "category": "Clients",
@@ -1422,13 +1464,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ]
     },
     {
       "key": "ps_category_get",
       "name": "psCategoryGet",
       "schemaVersion": 2,
       "title": "Récupérer une catégorie",
+      "subtitle": "Catégories",
       "type": "function",
       "nodeKind": "function",
       "category": "Catégories",
@@ -1475,13 +1522,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ]
     },
     {
       "key": "ps_categories_list",
       "name": "psCategoriesList",
       "schemaVersion": 2,
       "title": "Lister les catégories",
+      "subtitle": "Catégories",
       "type": "function",
       "nodeKind": "function",
       "category": "Catégories",
@@ -1532,13 +1584,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_cart_rule_get",
       "name": "psCartRuleGet",
       "schemaVersion": 2,
       "title": "Récupérer une règle panier",
+      "subtitle": "Règles panier",
       "type": "function",
       "nodeKind": "function",
       "category": "Règles panier",
@@ -1585,13 +1642,18 @@
             ]
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ]
     },
     {
       "key": "ps_cart_rules_list",
       "name": "psCartRulesList",
       "schemaVersion": 2,
       "title": "Lister les règles panier",
+      "subtitle": "Règles panier",
       "type": "function",
       "nodeKind": "function",
       "category": "Règles panier",
@@ -1642,13 +1704,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_cart_rule_create",
       "name": "psCartRuleCreate",
       "schemaVersion": 2,
       "title": "Créer une règle panier",
+      "subtitle": "Règles panier",
       "type": "function",
       "nodeKind": "function",
       "category": "Règles panier",
@@ -1736,13 +1803,18 @@
             "description": "Règle active (0 ou 1)."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ]
     },
     {
       "key": "ps_stock_list",
       "name": "psStockList",
       "schemaVersion": 2,
       "title": "Lister le stock",
+      "subtitle": "Stock",
       "type": "function",
       "nodeKind": "function",
       "category": "Stock",
@@ -1793,13 +1865,18 @@
             "description": "Numéro de page."
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_carriers_list",
       "name": "psCarriersList",
       "schemaVersion": 2,
       "title": "Lister les transporteurs",
+      "subtitle": "Transporteurs",
       "type": "function",
       "nodeKind": "function",
       "category": "Transporteurs",
@@ -1831,13 +1908,18 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_manufacturers_list",
       "name": "psManufacturersList",
       "schemaVersion": 2,
       "title": "Lister les fabricants",
+      "subtitle": "Fabricants",
       "type": "function",
       "nodeKind": "function",
       "category": "Fabricants",
@@ -1869,13 +1951,18 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_order_states_list",
       "name": "psOrderStatesList",
       "schemaVersion": 2,
       "title": "Lister les états de commande",
+      "subtitle": "Commandes",
       "type": "function",
       "nodeKind": "function",
       "category": "Commandes",
@@ -1907,13 +1994,18 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_suppliers_list",
       "name": "psSuppliersList",
       "schemaVersion": 2,
       "title": "Lister les fournisseurs",
+      "subtitle": "Fournisseurs",
       "type": "function",
       "nodeKind": "function",
       "category": "Fournisseurs",
@@ -1945,13 +2037,18 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_languages_list",
       "name": "psLanguagesList",
       "schemaVersion": 2,
       "title": "Lister les langues",
+      "subtitle": "Langues",
       "type": "function",
       "nodeKind": "function",
       "category": "Langues",
@@ -1983,13 +2080,18 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_countries_list",
       "name": "psCountriesList",
       "schemaVersion": 2,
       "title": "Lister les pays",
+      "subtitle": "Pays",
       "type": "function",
       "nodeKind": "function",
       "category": "Pays",
@@ -2021,7 +2123,11 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ]
     },
     {
       "key": "ps_webhook_event",
@@ -2062,7 +2168,11 @@
             "default": "/prestashop"
           }
         ]
-      }
+      },
+      "tags": [
+        "PrestaShop",
+        "événement"
+      ]
     }
   ]
 }

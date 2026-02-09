@@ -927,6 +927,7 @@
       "name": "Pennylane",
       "title": "Pennylane",
       "iconClass": "fa-solid fa-coins",
+      "iconUrl": "https://cdn.simpleicons.org/pennylane",
       "color": "#1B2559",
       "tags": [
         "pennylane",
@@ -1070,7 +1071,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_customer_get",
@@ -1123,7 +1129,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "lecture",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_customer_update",
@@ -1212,7 +1223,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_customers_list",
@@ -1278,7 +1294,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_supplier_create",
@@ -1367,7 +1388,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_supplier_get",
@@ -1420,7 +1446,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "lecture",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_supplier_update",
@@ -1500,7 +1531,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "mise-à-jour",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_suppliers_list",
@@ -1557,7 +1593,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_invoice_create",
@@ -1651,7 +1692,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_invoice_get",
@@ -1704,7 +1750,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "lecture",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_invoices_list",
@@ -1770,7 +1821,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_invoice_finalize",
@@ -1823,7 +1879,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "finalisation",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_customer_invoice_create",
@@ -1917,7 +1978,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures clients",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_customer_invoices_list",
@@ -1983,7 +2049,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures clients",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_supplier_invoice_create",
@@ -2077,7 +2148,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures fournisseurs",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_supplier_invoices_list",
@@ -2143,7 +2219,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Factures fournisseurs",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_estimate_create",
@@ -2228,7 +2309,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_estimate_get",
@@ -2281,7 +2367,12 @@
             ]
           }
         ]
-      }
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "lecture",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_estimates_list",
@@ -2338,7 +2429,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_product_create",
@@ -2436,7 +2532,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "tags": [
+        "création",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_products_list",
@@ -2493,7 +2594,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Produits",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_categories_list",
@@ -2550,7 +2656,12 @@
             }
           }
         ]
-      }
+      },
+      "subtitle": "Catégories",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_payment_methods_list",
@@ -2588,7 +2699,12 @@
           "labelsOnTop": true
         },
         "fields": []
-      }
+      },
+      "subtitle": "Moyens de paiement",
+      "tags": [
+        "liste",
+        "pennylane"
+      ]
     },
     {
       "key": "pl_webhook_event",
@@ -2600,7 +2716,7 @@
       "category": "Événements",
       "providerKey": "pennylane",
       "description": "Déclenchement via webhook Pennylane entrant.",
-      "subtitle": "Déclencheur",
+      "subtitle": "Événements",
       "outputHandles": [
         {
           "id": "ok",
@@ -2627,7 +2743,11 @@
             }
           }
         ]
-      }
+      },
+      "tags": [
+        "événement",
+        "pennylane"
+      ]
     }
   ]
 }
