@@ -4254,6 +4254,7 @@
       "name": "Dolibarr",
       "title": "Dolibarr ERP/CRM",
       "iconClass": "fa-solid fa-building",
+      "iconUrl": "https://wiki.dolibarr.org/images/thumb/5/51/Dolibarr_124x124_white.svg/2048px-Dolibarr_124x124_white.svg.png",
       "color": "#4A90D9",
       "tags": [
         "erp",

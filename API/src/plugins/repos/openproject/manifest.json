@@ -96,6 +96,7 @@
       "title": "OpenProject",
       "iconClass": "fa-solid fa-diagram-project",
       "color": "#1f6feb",
+      "iconUrl": "https://www.openproject.org/assets/images/press/openproject-logo-centered-white-transparent-1-7f8083b8.png",
       "tags": ["openproject", "project", "tasks"],
       "categories": ["Project Management"],
       "hasCredentials": true,

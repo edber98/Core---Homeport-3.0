@@ -349,7 +349,7 @@
       "title": "Supabase",
       "iconClass": "fa-solid fa-bolt",
       "iconUrl": "https://cdn.simpleicons.org/supabase",
-      "color": "#3ECF8E",
+      "color": "#baffe0",
       "tags": [
         "supabase",
         "database",

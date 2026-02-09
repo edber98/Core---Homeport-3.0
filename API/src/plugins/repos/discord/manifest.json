@@ -10,7 +10,8 @@
       "name": "Discord Bot",
       "title": "Discord Bot",
       "iconClass": "fa-brands fa-discord",
-      "color": "#5865F2",
+      
+      "color": "#8d8d92",
       "tags": [
         "discord",
         "bot",
@@ -45,7 +46,7 @@
           }
         ]
       },
-      "iconUrl": "https://cdn.simpleicons.org/discord"
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Discord_Logo_sans_texte.svg/1920px-Discord_Logo_sans_texte.svg.png"
     }
   ],
   "nodeTemplates": [

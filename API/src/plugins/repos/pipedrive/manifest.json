@@ -1159,8 +1159,8 @@
       "name": "Pipedrive",
       "title": "Pipedrive",
       "iconClass": "fa-solid fa-handshake",
-      "iconUrl": "https://cdn.simpleicons.org/pipedrive",
-      "color": "#017737",
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Pipedrive_Logo.svg/960px-Pipedrive_Logo.svg.png",
+      "color": "#00ca5d",
       "tags": [
         "pipedrive",
         "crm",

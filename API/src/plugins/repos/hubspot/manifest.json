@@ -979,6 +979,7 @@
       "name": "HubSpot",
       "title": "HubSpot",
       "iconClass": "fa-solid fa-handshake",
+      "iconUrl": "https://www.svgrepo.com/show/306208/hubspot.svg",
       "color": "#FF7A59",
       "tags": [
         "hubspot",

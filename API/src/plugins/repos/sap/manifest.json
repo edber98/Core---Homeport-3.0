@@ -1284,6 +1284,7 @@
       "name": "SAP",
       "title": "SAP",
       "iconClass": "fa-solid fa-building",
+       "iconUrl": "https://www.mac-group.com/wp-content/uploads/2018/02/SAP-Logo.svg.png",
       "color": "#0FAAFF",
       "tags": [
         "sap",

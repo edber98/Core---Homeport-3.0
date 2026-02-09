@@ -1796,8 +1796,9 @@
       "key": "atera",
       "name": "Atera",
       "title": "Atera RMM",
+      "iconUrl": "https://techbagfrontend.s3-ap-south-1.amazonaws.com/logos/7ZfnqQvGCcYnFxVLfw3aZP.png",
       "iconClass": "fa-solid fa-shield-halved",
-      "color": "#0070D2",
+      "color": "#c9c9c9",
       "tags": [
         "rmm",
         "monitoring",

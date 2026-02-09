@@ -10,7 +10,8 @@
       "name": "Odoo",
       "title": "Odoo",
       "iconClass": "fa-solid fa-industry",
-      "color": "#714B67",
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Odoo_Official_Logo.png",
+      "color": "#ffd0f3",
       "tags": [
         "odoo",
         "erp",

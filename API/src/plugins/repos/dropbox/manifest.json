@@ -405,7 +405,7 @@
       "title": "Dropbox",
       "iconClass": "fa-brands fa-dropbox",
       "iconUrl": "https://cdn.simpleicons.org/dropbox",
-      "color": "#0061FF",
+      "color": "#cacaca",
       "tags": [
         "dropbox",
         "cloud",

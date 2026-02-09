@@ -218,7 +218,7 @@
       "title": "SQL Database",
       "iconClass": "fa-solid fa-database",
       "iconUrl": "https://cdn.simpleicons.org/postgresql",
-      "color": "#336791",
+      "color": "#b9e0ff",
       "tags": [
         "sql",
         "database",
