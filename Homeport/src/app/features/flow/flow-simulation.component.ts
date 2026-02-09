@@ -102,7 +102,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
   simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> }; trace?: Array<{ nodeId: string; kind?: string; startedAt?: string; finishedAt?: string; handlesUsed?: string[]; resultPreview?: Array<{ key: string; type: string }> }> }> = [];
   simIndex = 0;
   // Simulation output preview map for settings viewer (1-level schema per node)
-  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string; children?: Array<{ id: string; name: string; type: string }> }> } = {};
   // Focused node ids used by viewer to center only on selected scenario path
   focusNodeIds: string[] = [];
 
@@ -236,13 +236,21 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     try { this.relayoutForScenario(sc); } catch {}
   }
 
-  private buildOutputPreviewFromTrace(trace: Array<any>): { [nodeId: string]: Array<{ id: string; name: string; type: string }> } {
-    const map: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+  private buildOutputPreviewFromTrace(trace: Array<any>): { [nodeId: string]: Array<any> } {
+    const map: { [nodeId: string]: Array<any> } = {};
     try {
       for (const t of trace || []){
         const nodeId = String(t.nodeId||''); if (!nodeId) continue;
         const arr = Array.isArray(t.resultPreview) ? t.resultPreview : [];
-        map[nodeId] = arr.map((it:any, idx:number) => ({ id: `sim_${nodeId}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') }));
+        map[nodeId] = arr.map((it:any, idx:number) => {
+          const item: any = { id: `sim_${nodeId}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') };
+          if (Array.isArray(it?.children) && it.children.length) {
+            item.children = it.children.map((ch: any, ci: number) => ({
+              id: `sim_${nodeId}_${idx}_${ci}`, name: String(ch?.key ?? ch?.name ?? `child_${ci}`), type: String(ch?.type ?? '')
+            }));
+          }
+          return item;
+        });
       }
     } catch {}
     return map;

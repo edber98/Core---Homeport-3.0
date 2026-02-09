@@ -33,7 +33,7 @@ export class FlowViewerSettingsNodeComponent {
   // Dim nodes/edges not highlighted (default true for settings viewer)
   @Input() dimInactive: boolean = true;
   // For settings mode: preview map of outputs per node (1-level only)
-  @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
+  @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string; children?: Array<{ id: string; name: string; type: string }> }> } | null = null;
   // When provided, the viewer center action will focus only these node ids
   @Input() focusNodeIds: string[] | null = null;
   // Control initial auto-fit (disable in settings to avoid recenter on mount)

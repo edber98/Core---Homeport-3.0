@@ -53,36 +53,71 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   {{ d }}
                 </div>
               </div>
-              <!-- Simulation output preview rendered like linked handles (1-level only) -->
+              <!-- Simulation output preview rendered like linked handles -->
               <div class="links" *ngIf="simOutputPreview && simOutputPreview[ctx.node.id] as simLinks">
-                <div class="link" *ngFor="let lh of simLinks" draggable="true"
-                     (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name)"
-                     (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name)"
-                     (click)="onSimLinkClick($event, ctx.node.id, lh.name)"
-                     (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name)">
-                  <div class="link-label" draggable="true"
+                <ng-container *ngFor="let lh of simLinks">
+                  <!-- Parent link -->
+                  <div class="link" draggable="true"
                        (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name)"
                        (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name)"
                        (click)="onSimLinkClick($event, ctx.node.id, lh.name)"
                        (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name)">
-                    <span class="txt">{{ lh.name }}</span>
-                    <span class="type" style="color:#94a3b8">({{ lh.type }})</span>
+                    <div class="link-label" draggable="true"
+                         (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name)"
+                         (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name)"
+                         (click)="onSimLinkClick($event, ctx.node.id, lh.name)"
+                         (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name)">
+                      <span class="link-chevron" *ngIf="lh.children?.length">&#9662;</span>
+                      <span class="txt">{{ lh.name }}</span>
+                      <span class="type" style="color:#94a3b8">({{ lh.type }})</span>
+                    </div>
+                    <ng-template #simLinkTpl let-hctx>
+                      <svg:g>
+                        <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                          [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                          [attr.fill]="handleFillColor(ctx.node.id, 'sim')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                          [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
+                      </svg:g>
+                    </ng-template>
+                    <ng-container *ngIf="portOrientation === 'vertical'; else simHorizLink">
+                      <handle position="right" type="source" [id]="lh.id" [template]="simLinkTpl" />
+                    </ng-container>
+                    <ng-template #simHorizLink>
+                      <handle position="bottom" type="source" [id]="lh.id" [template]="simLinkTpl" />
+                    </ng-template>
                   </div>
-                  <ng-template #simLinkTpl let-hctx>
-                    <svg:g>
-                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                        [attr.fill]="handleFillColor(ctx.node.id, 'sim')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
-                        [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
-                    </svg:g>
-                  </ng-template>
-                  <ng-container *ngIf="portOrientation === 'vertical'; else simHorizLink">
-                    <handle position="right" type="source" [id]="lh.id" [template]="simLinkTpl" />
+                  <!-- Child links (each with own handle) -->
+                  <ng-container *ngIf="lh.children?.length">
+                    <div class="link link-child-row" *ngFor="let ch of lh.children" draggable="true"
+                         (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name + '.' + ch.name)"
+                         (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name + '.' + ch.name)"
+                         (click)="onSimLinkClick($event, ctx.node.id, lh.name + '.' + ch.name)"
+                         (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name + '.' + ch.name)">
+                      <div class="link-label link-child-label" draggable="true"
+                           (dragstart)="onSimLinkDragStart($event, ctx.node.id, lh.name + '.' + ch.name)"
+                           (mousedown)="onSimLinkMouseDown($event, ctx.node.id, lh.name + '.' + ch.name)"
+                           (click)="onSimLinkClick($event, ctx.node.id, lh.name + '.' + ch.name)"
+                           (pointerdown)="onSimLinkPointerDown($event, ctx.node.id, lh.name + '.' + ch.name)">
+                        <span class="txt">{{ ch.name }}</span>
+                        <span class="type">({{ ch.type }})</span>
+                      </div>
+                      <ng-template #simChildTpl let-hctx>
+                        <svg:g>
+                          <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                            [attr.r]="hctx.state() === 'valid' ? 5 : 3"
+                            [attr.fill]="handleFillColor(ctx.node.id, 'sim')" [attr.fill-opacity]="handleOpacity(ctx.node.id)"
+                            [attr.stroke]="handleStrokeColor(ctx.node.id)" [attr.stroke-opacity]="handleOpacity(ctx.node.id)" stroke-width="1"></svg:circle>
+                        </svg:g>
+                      </ng-template>
+                      <ng-container *ngIf="portOrientation === 'vertical'; else simChildHoriz">
+                        <handle position="right" type="source" [id]="ch.id" [template]="simChildTpl" />
+                      </ng-container>
+                      <ng-template #simChildHoriz>
+                        <handle position="bottom" type="source" [id]="ch.id" [template]="simChildTpl" />
+                      </ng-template>
+                    </div>
                   </ng-container>
-                  <ng-template #simHorizLink>
-                    <handle position="bottom" type="source" [id]="lh.id" [template]="simLinkTpl" />
-                  </ng-template>
-                </div>
+                </ng-container>
               </div>
               <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
                 <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
@@ -280,7 +315,11 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card.horizontal .links { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; }
     .node-card:not(.horizontal) .links { flex-direction: column; align-items: flex-end; }
     .node-card .link { display: inline-flex; align-items: center; gap: 6px; }
-    .node-card .link-label { font-size: 12px; color: #6b7280; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+    .node-card .link-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #6b7280; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+    .node-card .link-chevron { font-size: 9px; color: #94a3b8; line-height: 1; }
+    .node-card .link-child-row { padding-right: 4px; }
+    .node-card .link-child-label { font-size: 11px; color: #a1a8b8; padding-left: 10px; }
+    .node-card .link-child-label .type { font-size: 10px; color: #bcc3d0; }
     .node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
     .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
     .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
@@ -348,7 +387,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() showExecBadges = false; // render execution badges only when explicitly enabled
   @Input() dimInactive = false;
   // Aperçu (simulation) des sorties (1 niveau) par nœud, rendu comme des linked handles
-  @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } | null = null;
+  @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string; children?: Array<{ id: string; name: string; type: string }> }> } | null = null;
   // Show node descriptions (hidden in node-settings/simulation)
   @Input() showDescriptions: boolean = true;
   // Optional: list of node ids to focus when centering (fit only these)

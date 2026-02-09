@@ -272,15 +272,40 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
   return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges }, trace: orderedTrace } ] };
 }
 
-// Produce a 1-level preview of a node result for settings UI and count first-level outputs
+// Produce a preview of a node result for settings UI and count visible outputs
 function buildOneLevelPreview(result){
   try {
-    const t = (v) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v);
+    const t = (v) => {
+      if (v === null) return 'null';
+      if (Array.isArray(v)) return 'array';
+      if (typeof v === 'object' && v._type === 'fileRef') return 'fileRef';
+      return typeof v;
+    };
+    const childrenOf = (val) => {
+      if (val == null || typeof val !== 'object') return undefined;
+      if (Array.isArray(val)) {
+        // Show structure of first item if it's an object
+        if (val.length > 0 && typeof val[0] === 'object' && val[0] !== null && !Array.isArray(val[0])) {
+          return Object.entries(val[0]).map(([k, v]) => ({ key: String(k), type: t(v) }));
+        }
+        return undefined;
+      }
+      const entries = Object.entries(val);
+      if (entries.length === 0) return undefined;
+      return entries.map(([k, v]) => ({ key: String(k), type: t(v) }));
+    };
     const out = [];
+    let totalCount = 0;
     if (result == null) return { preview: out, count: 0 };
     if (typeof result === 'object' && !Array.isArray(result)) {
-      for (const [k,v] of Object.entries(result)) out.push({ key: String(k), type: t(v) });
-      return { preview: out, count: Object.keys(result).length };
+      for (const [k,v] of Object.entries(result)) {
+        const item = { key: String(k), type: t(v) };
+        const ch = childrenOf(v);
+        if (ch && ch.length) item.children = ch;
+        out.push(item);
+        totalCount += 1 + (ch ? ch.length : 0);
+      }
+      return { preview: out, count: totalCount };
     }
     if (Array.isArray(result)) { out.push({ key: '(array)', type: 'array' }); return { preview: out, count: result.length }; }
     out.push({ key: '(value)', type: t(result) }); return { preview: out, count: 1 };
