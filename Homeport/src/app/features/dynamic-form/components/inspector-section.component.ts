@@ -290,9 +290,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                   Condition de visibilite
                   <span *ngIf="hasCondition('visibleIf')" class="cond-pill">Active</span>
                 </div>
-                <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
+                <button type="button" nz-button nzSize="small" class="apple-btn cond-builder-btn" aria-label="Ouvrir le constructeur" (click)="openCondition.emit(); $event.preventDefault(); $event.stopPropagation()">
                   <i nz-icon nzType="build"></i>
-                  <span style="margin-left:6px">Constructeur</span>
                 </button>
               </div>
             </div>

@@ -425,6 +425,30 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
   border-color: #1677ff !important;
   color: #1677ff !important;
 }
+
+/* Unsaved leave modal: outline buttons with colored hover fill */
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary {
+  background: transparent !important;
+  color: #1677ff !important;
+  border-color: #1677ff !important;
+}
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary:hover,
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary:focus-visible {
+  background: #1677ff !important;
+  color: #fff !important;
+  border-color: #1677ff !important;
+}
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary.ant-btn-dangerous {
+  background: transparent !important;
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary.ant-btn-dangerous:hover,
+.unsaved-leave-modal .ant-modal-footer .ant-btn-primary.ant-btn-dangerous:focus-visible {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border-color: #ef4444 !important;
+}
 @font-face {
     font-family: 'Sarine';
     src: url('../public/fronts/sarine-medium.ttf') format('truetype');

@@ -165,6 +165,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   // Modals
   optionsModalVisible = false;
   conditionModalVisible = false;
+  conditionJsonVisible = false;
   optionsForm!: FormGroup; // { items: FormArray<FormGroup<{label,value}>> }
   conditionTarget: 'visibleIf'|'requiredIf'|'disabledIf' = 'visibleIf';
   conditionForm!: FormGroup; // { logic: 'single'|'any'|'all', items: FormArray<{field,operator,value}> }

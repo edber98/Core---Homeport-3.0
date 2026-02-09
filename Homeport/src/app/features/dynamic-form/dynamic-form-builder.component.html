@@ -521,23 +521,31 @@
 
 <nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="1120" [nzWrapClassName]="'condition-builder-modal'" [nzOkType]="'primary'" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
   <ng-container *nzModalContent>
-    <div class="condition-modal">
-      <div class="condition-modal__builder">
-        <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
-                          (addConditionRow)="addConditionRow()"
-                          (addConditionGroup)="addConditionGroup()"
-                          (removeConditionRow)="removeConditionRow($event)"
-                          (changeCondKind)="changeCondKind($event.index, $event.kind)"
-                          (addSubRule)="addSubRule($event)"
-                          (addSubGroup)="addSubGroup($event)"
-                          (addNestedRule)="addNestedRule($event.index, $event.subIndex)"
-                          (addNestedGroup)="addNestedGroup($event.index, $event.subIndex)"
-                          (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+    <div class="condition-modal" [class.no-json]="!conditionJsonVisible">
+      <div class="condition-modal__toolbar">
+        <button type="button" nz-button nzSize="small" class="apple-btn" [attr.aria-pressed]="conditionJsonVisible" (click)="conditionJsonVisible = !conditionJsonVisible">
+          <i class="fa-solid fa-code"></i>
+          <span class="label">{{ conditionJsonVisible ? 'Masquer JSON' : 'Afficher JSON' }}</span>
+        </button>
       </div>
-      <aside class="condition-modal__preview" aria-label="JSON preview">
-        <div class="condition-modal__title">JSON</div>
-        <pre class="condition-modal__json">{{ conditionJsonPreview }}</pre>
-      </aside>
+      <div class="condition-modal__content">
+        <div class="condition-modal__builder">
+          <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
+                            (addConditionRow)="addConditionRow()"
+                            (addConditionGroup)="addConditionGroup()"
+                            (removeConditionRow)="removeConditionRow($event)"
+                            (changeCondKind)="changeCondKind($event.index, $event.kind)"
+                            (addSubRule)="addSubRule($event)"
+                            (addSubGroup)="addSubGroup($event)"
+                            (addNestedRule)="addNestedRule($event.index, $event.subIndex)"
+                            (addNestedGroup)="addNestedGroup($event.index, $event.subIndex)"
+                            (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+        </div>
+        <aside class="condition-modal__preview" aria-label="JSON preview">
+          <div class="condition-modal__title">JSON</div>
+          <pre class="condition-modal__json">{{ conditionJsonPreview }}</pre>
+        </aside>
+      </div>
     </div>
   </ng-container>
 </nz-modal>
@@ -553,7 +561,7 @@
   </nz-modal>
 
 <!-- Responsive drawers (mobile) -->
-<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="286" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
   <ng-container *nzDrawerContent>
     <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
   </ng-container>

@@ -186,6 +186,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .palette { border: none; border-radius: 0; padding: 12px; padding-right: 9px; background: #ffffff; padding-top: 0 !important; height: 100%; overflow: auto; position: relative; }
     .palette { display:flex; flex-direction:column; }
     .palette.drawer-mode { height: 100%; overflow: auto; }
+    @media (max-width: 768px) {
+      .palette { padding: 0; padding-right: 0; }
+    }
     .palette .palette-topbar { width: calc(100% + 21px); margin: 0 -9px 0 -12px; background:#fff; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:0; border-bottom: 0; flex-direction:column; }
     .palette .palette-topbar.centered { justify-content:center; }
     .palette .palette-topbar .t { font-weight:700; font-size:14px; color:#111; line-height:1.1; }

@@ -51,10 +51,9 @@
 }
 .qb-items, .qb-subitems {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  align-items: flex-start;
+  align-items: stretch;
 }
 .qb-joiner {
   align-self: center;
@@ -63,7 +62,7 @@
   margin-right: 4px;
 }
 .qb-item {
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
   gap: 8px;
   align-items: center;
@@ -72,18 +71,41 @@
   border-radius: 6px;
   background: #fff;
   position: relative;
+  width: 100%;
 }
 .qb-item .qb-kind { display: inline-flex; gap: 8px; align-items: center; }
-.qb-rule { display: inline-flex; gap: 8px; align-items: center; }
-.qb-rule nz-select[ng-reflect-nz-mode], .qb-rule nz-select { min-width: 140px; }
-.qb-rule .op { width: 80px; }
-.qb-rule .val { min-width: 140px; }
+.qb-rule { display: inline-flex; gap: 8px; align-items: center; flex: 1 1 auto; min-width: 0; width: 100%; }
+.qb-rule nz-select[ng-reflect-nz-mode], .qb-rule nz-select { flex: 1 1 0; min-width: 0; }
+.qb-rule .op { width: 80px; flex: 0 0 80px; }
+.qb-rule .val { flex: 1 1 0; min-width: 0; }
 :host ::ng-deep .condition-builder-modal .qb-rule .ant-input,
 :host ::ng-deep .condition-builder-modal .qb-rule .ant-select-selector {
   background: #f3f7ff;
   border-color: #d9e4ff;
 }
+.qb-group { flex: 1 1 auto; width: 100%; }
 .qb-group-head { display: inline-flex; gap: 8px; align-items: center; width: 100%; justify-content: space-between; }
+.qb-group-body { width: 100%; }
+
+/* Group-in-group: shrink left column (logic/actions) so rules have room */
+.qb-item.qb-item-group { align-items: flex-start; }
+.qb-item.qb-item-group .qb-group-head {
+  flex: 0 0 200px;
+  max-width: 200px;
+  width: 200px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.qb-item.qb-item-group .qb-group-head .qb-toolbar-actions {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.qb-item.qb-item-group .qb-group-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
 .qb-group .qb-logic { margin-bottom: 4px; }
 .qb-remove {
   width: 38px;

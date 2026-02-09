@@ -29,6 +29,7 @@
   transition: width 180ms ease, opacity 180ms ease;
   will-change: width, opacity;
 }
+.flow-builder > .left-panel:not(.closed) { border-right: 1px solid #e5e7eb; }
 .flow-builder > .left-panel.closed { width: 0; opacity: 0; transform: none; pointer-events: none; }
 .flow-builder > .canvas { min-height: 0; }
 .flow-builder > .inspector { min-height: 0; }
