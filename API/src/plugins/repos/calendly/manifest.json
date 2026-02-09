@@ -1,0 +1,1600 @@
+{
+  "repo": {
+    "name": "calendly",
+    "type": "local",
+    "label": "Calendly"
+  },
+  "variables": {
+    "cal_event": {
+      "title": "Événement Calendly",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "uri",
+          "label": "URI",
+          "description": "URI de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut (active, canceled).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startTime",
+          "label": "Début",
+          "description": "Date et heure de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "endTime",
+          "label": "Fin",
+          "description": "Date et heure de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "eventType",
+          "label": "Type",
+          "description": "URI du type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_events": {
+      "title": "Événements",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Événements",
+          "description": "Liste des événements",
+          "mode": "array",
+          "key": "events",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "uri",
+              "label": "URI",
+              "description": "URI.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "startTime",
+              "label": "Début",
+              "description": "Début.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "endTime",
+              "label": "Fin",
+              "description": "Fin.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "eventType",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_event_type": {
+      "title": "Type d'événement Calendly",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "uri",
+          "label": "URI",
+          "description": "URI du type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du type.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "duration",
+          "label": "Durée",
+          "description": "Durée en minutes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Actif (true/false).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du type.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_event_types": {
+      "title": "Types d'événements",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Types",
+          "description": "Liste des types",
+          "mode": "array",
+          "key": "event_types",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "uri",
+              "label": "URI",
+              "description": "URI.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "description": "Slug.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "duration",
+              "label": "Durée",
+              "description": "Durée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_invitee": {
+      "title": "Invité Calendly",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "uri",
+          "label": "URI",
+          "description": "URI de l'invité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'invité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut (active, canceled).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_invitees": {
+      "title": "Invités",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Invités",
+          "description": "Liste des invités",
+          "mode": "array",
+          "key": "invitees",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "uri",
+              "label": "URI",
+              "description": "URI.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_user": {
+      "title": "Utilisateur Calendly",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "uri",
+          "label": "URI",
+          "description": "URI de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom complet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug de planification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timezone",
+          "label": "Fuseau horaire",
+          "description": "Fuseau horaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "schedulingUrl",
+          "label": "URL planification",
+          "description": "URL de planification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_scheduling_link": {
+      "title": "Lien de planification",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "bookingUrl",
+          "label": "URL",
+          "description": "URL de réservation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "owner",
+          "label": "Propriétaire",
+          "description": "URI du propriétaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ownerType",
+          "label": "Type propriétaire",
+          "description": "Type de propriétaire.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cal_event_hook": {
+      "title": "Événement webhook Calendly",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d'événement webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "uri",
+          "label": "URI",
+          "description": "URI de la ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "inviteeUri",
+          "label": "URI invité",
+          "description": "URI de l'invité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "inviteeName",
+          "label": "Nom invité",
+          "description": "Nom de l'invité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "inviteeEmail",
+          "label": "Email invité",
+          "description": "Email de l'invité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "eventType",
+          "label": "Type événement",
+          "description": "URI du type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "calendly",
+      "name": "Calendly",
+      "title": "Calendly",
+      "iconClass": "fa-solid fa-calendar-check",
+      "iconUrl": "https://cdn.simpleicons.org/calendly",
+      "color": "#006BFF",
+      "tags": [
+        "calendly",
+        "calendar",
+        "scheduling",
+        "planification"
+      ],
+      "categories": [
+        "Planification"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Calendly",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personalAccessToken",
+            "label": "Personal access token",
+            "description": "Token d'accès personnel Calendly.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "calendly_events_list",
+      "name": "calendlyEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "subtitle": "Événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements planifiés Calendly.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userUri",
+            "label": "URI utilisateur",
+            "description": "URI de l'utilisateur (auto si vide).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut (active, canceled).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pageToken",
+            "label": "Jeton page",
+            "description": "Jeton de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_event_get",
+      "name": "calendlyEventGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un événement",
+      "subtitle": "Événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un événement Calendly par son UUID.",
+      "args": {
+        "title": "Récupérer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventUuid",
+            "label": "UUID événement",
+            "description": "UUID de l'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_event_cancel",
+      "name": "calendlyEventCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un événement",
+      "subtitle": "Événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "suppression",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule un événement Calendly.",
+      "args": {
+        "title": "Annuler un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventUuid",
+            "label": "UUID événement",
+            "description": "UUID de l'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reason",
+            "label": "Raison",
+            "description": "Raison de l'annulation.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_event_types_list",
+      "name": "calendlyEventTypesList",
+      "schemaVersion": 2,
+      "title": "Lister les types d'événements",
+      "subtitle": "Types d'événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_event_types"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les types d'événements Calendly.",
+      "args": {
+        "title": "Lister les types d'événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userUri",
+            "label": "URI utilisateur",
+            "description": "URI de l'utilisateur (auto si vide).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Actif",
+            "description": "Filtrer par actif (true/false).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pageToken",
+            "label": "Jeton page",
+            "description": "Jeton de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_event_type_get",
+      "name": "calendlyEventTypeGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un type d'événement",
+      "subtitle": "Types d'événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_event_type"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un type d'événement par UUID.",
+      "args": {
+        "title": "Récupérer un type d'événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventTypeUuid",
+            "label": "UUID type",
+            "description": "UUID du type d'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_invitees_list",
+      "name": "calendlyInviteesList",
+      "schemaVersion": 2,
+      "title": "Lister les invités",
+      "subtitle": "Invités",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_invitees"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les invités d'un événement.",
+      "args": {
+        "title": "Lister les invités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventUuid",
+            "label": "UUID événement",
+            "description": "UUID de l'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pageToken",
+            "label": "Jeton page",
+            "description": "Jeton de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_invitee_get",
+      "name": "calendlyInviteeGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un invité",
+      "subtitle": "Invités",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_invitee"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un invité par UUID.",
+      "args": {
+        "title": "Récupérer un invité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inviteeUuid",
+            "label": "UUID invité",
+            "description": "UUID de l'invité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_user_get_me",
+      "name": "calendlyUserGetMe",
+      "schemaVersion": 2,
+      "title": "Récupérer mon profil",
+      "subtitle": "Utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère le profil de l'utilisateur connecté.",
+      "args": {
+        "title": "Récupérer mon profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "calendly_scheduling_link_create",
+      "name": "calendlySchedulingLinkCreate",
+      "schemaVersion": 2,
+      "title": "Créer un lien de planification",
+      "subtitle": "Liens de planification",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "création",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_scheduling_link"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un lien de planification unique.",
+      "args": {
+        "title": "Créer un lien de planification",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "URI propriétaire",
+            "description": "URI du type d'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ownerType",
+            "label": "Type propriétaire",
+            "description": "Type (EventType).",
+            "col": {
+              "xs": 24
+            },
+            "default": "EventType"
+          },
+          {
+            "type": "text",
+            "key": "maxEventCount",
+            "label": "Nombre max",
+            "description": "Nombre max d'événements (1 pour usage unique).",
+            "col": {
+              "xs": 24
+            },
+            "default": "1"
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_organization_get",
+      "name": "calendlyOrganizationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer l'organisation",
+      "subtitle": "Organisation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "lecture",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails de l'organisation.",
+      "args": {
+        "title": "Récupérer l'organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "calendly_organization_members_list",
+      "name": "calendlyOrganizationMembersList",
+      "schemaVersion": 2,
+      "title": "Lister les membres",
+      "subtitle": "Organisation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les membres de l'organisation.",
+      "args": {
+        "title": "Lister les membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pageToken",
+            "label": "Jeton page",
+            "description": "Jeton de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_webhook_create",
+      "name": "calendlyWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhooks",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "création",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un abonnement webhook Calendly.",
+      "args": {
+        "title": "Créer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de callback.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "events",
+            "label": "Événements",
+            "description": "Événements à surveiller (séparés par virgule).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "scope",
+            "label": "Portée",
+            "description": "Portée (user ou organization).",
+            "col": {
+              "xs": 24
+            },
+            "default": "user"
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_webhooks_list",
+      "name": "calendlyWebhooksList",
+      "schemaVersion": 2,
+      "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "liste",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les abonnements webhook.",
+      "args": {
+        "title": "Lister les webhooks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "scope",
+            "label": "Portée",
+            "description": "Portée (user ou organization).",
+            "col": {
+              "xs": 24
+            },
+            "default": "user"
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_webhook_delete",
+      "name": "calendlyWebhookDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webhook",
+      "subtitle": "Webhooks",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "suppression",
+        "calendly"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un abonnement webhook.",
+      "args": {
+        "title": "Supprimer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webhookUuid",
+            "label": "UUID webhook",
+            "description": "UUID du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "calendly_webhook_event",
+      "name": "calendlyWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Événements",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Calendly",
+      "providerKey": "calendly",
+      "tags": [
+        "événement",
+        "calendly"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_event_hook"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenché lors d'un événement Calendly via webhook.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    }
+  ]
+}

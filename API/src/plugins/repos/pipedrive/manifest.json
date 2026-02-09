@@ -1,0 +1,3160 @@
+{
+  "repo": {
+    "name": "pipedrive",
+    "type": "local",
+    "label": "Pipedrive"
+  },
+  "variables": {
+    "pd_deal": {
+      "title": "Deal Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "value",
+          "label": "Valeur",
+          "description": "Valeur du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "stage_id",
+          "label": "ID étape",
+          "description": "Identifiant de l'étape.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pipeline_id",
+          "label": "ID pipeline",
+          "description": "Identifiant du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du deal (open, won, lost).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "person_id",
+          "label": "ID personne",
+          "description": "Personne associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "org_id",
+          "label": "ID organisation",
+          "description": "Organisation associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création du deal.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_deals": {
+      "title": "Deals",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Deals",
+          "description": "Liste des deals",
+          "mode": "array",
+          "key": "deals",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "value",
+              "label": "Valeur",
+              "description": "Valeur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "description": "Devise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "stage_id",
+              "label": "ID étape",
+              "description": "Étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "pipeline_id",
+              "label": "ID pipeline",
+              "description": "Pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "person_id",
+              "label": "ID personne",
+              "description": "Personne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "org_id",
+              "label": "ID organisation",
+              "description": "Organisation.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_person": {
+      "title": "Personne Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la personne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la personne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "org_id",
+          "label": "ID organisation",
+          "description": "Organisation associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_persons": {
+      "title": "Personnes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Personnes",
+          "description": "Liste des personnes",
+          "mode": "array",
+          "key": "persons",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "org_id",
+              "label": "ID organisation",
+              "description": "Organisation.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_org": {
+      "title": "Organisation Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "address",
+          "label": "Adresse",
+          "description": "Adresse de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "people_count",
+          "label": "Nb personnes",
+          "description": "Nombre de personnes associées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_orgs": {
+      "title": "Organisations",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Organisations",
+          "description": "Liste des organisations",
+          "mode": "array",
+          "key": "organizations",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "address",
+              "label": "Adresse",
+              "description": "Adresse.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "people_count",
+              "label": "Nb personnes",
+              "description": "Nombre de personnes.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_activity": {
+      "title": "Activité Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet de l'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "due_date",
+          "label": "Date prévue",
+          "description": "Date prévue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "due_time",
+          "label": "Heure prévue",
+          "description": "Heure prévue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "done",
+          "label": "Terminé",
+          "description": "Statut (0 ou 1).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "deal_id",
+          "label": "ID deal",
+          "description": "Deal associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "person_id",
+          "label": "ID personne",
+          "description": "Personne associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "org_id",
+          "label": "ID organisation",
+          "description": "Organisation associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_activities": {
+      "title": "Activités",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Activités",
+          "description": "Liste des activités",
+          "mode": "array",
+          "key": "activities",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "due_date",
+              "label": "Date prévue",
+              "description": "Date prévue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "done",
+              "label": "Terminé",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "deal_id",
+              "label": "ID deal",
+              "description": "Deal.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "person_id",
+              "label": "ID personne",
+              "description": "Personne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_pipeline": {
+      "title": "Pipeline Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Pipeline actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "order_nr",
+          "label": "Ordre",
+          "description": "Ordre d'affichage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_pipelines": {
+      "title": "Pipelines",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Pipelines",
+          "description": "Liste des pipelines",
+          "mode": "array",
+          "key": "pipelines",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "order_nr",
+              "label": "Ordre",
+              "description": "Ordre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_stage": {
+      "title": "Étape Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'étape.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'étape.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pipeline_id",
+          "label": "ID pipeline",
+          "description": "Pipeline associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "order_nr",
+          "label": "Ordre",
+          "description": "Ordre d'affichage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active_flag",
+          "label": "Actif",
+          "description": "Étape active.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_stages": {
+      "title": "Étapes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Étapes",
+          "description": "Liste des étapes",
+          "mode": "array",
+          "key": "stages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "pipeline_id",
+              "label": "ID pipeline",
+              "description": "Pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "order_nr",
+              "label": "Ordre",
+              "description": "Ordre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active_flag",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_note": {
+      "title": "Note Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "deal_id",
+          "label": "ID deal",
+          "description": "Deal associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "person_id",
+          "label": "ID personne",
+          "description": "Personne associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "org_id",
+          "label": "ID organisation",
+          "description": "Organisation associée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "add_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_notes": {
+      "title": "Notes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Notes",
+          "description": "Liste des notes",
+          "mode": "array",
+          "key": "notes",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "deal_id",
+              "label": "ID deal",
+              "description": "Deal.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "person_id",
+              "label": "ID personne",
+              "description": "Personne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "org_id",
+              "label": "ID organisation",
+              "description": "Organisation.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "add_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pd_event": {
+      "title": "Événement Pipedrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "object",
+          "label": "Objet",
+          "description": "Type d'objet concerné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "objectId",
+          "label": "ID objet",
+          "description": "Identifiant de l'objet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "pipedrive",
+      "name": "Pipedrive",
+      "title": "Pipedrive",
+      "iconClass": "fa-solid fa-handshake",
+      "iconUrl": "https://cdn.simpleicons.org/pipedrive",
+      "color": "#017737",
+      "tags": [
+        "pipedrive",
+        "crm",
+        "sales",
+        "deals"
+      ],
+      "categories": [
+        "CRM"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Pipedrive",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API token",
+            "description": "Token d'API Pipedrive.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "pipedrive_deal_create",
+      "name": "pipedriveDealCreate",
+      "schemaVersion": 2,
+      "title": "Créer un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau deal dans Pipedrive.",
+      "args": {
+        "title": "Créer un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Valeur du deal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise (ex: EUR, USD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "stage_id",
+            "label": "ID étape",
+            "description": "Identifiant de l'étape.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_id",
+            "label": "ID personne",
+            "description": "Personne associée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "ID organisation",
+            "description": "Organisation associée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_deal_get",
+      "name": "pipedriveDealGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un deal Pipedrive par son ID.",
+      "args": {
+        "title": "Obtenir un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "ID deal",
+            "description": "Identifiant du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_deal_update",
+      "name": "pipedriveDealUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un deal existant dans Pipedrive.",
+      "args": {
+        "title": "Modifier un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "ID deal",
+            "description": "Identifiant du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Nouvelle valeur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "stage_id",
+            "label": "ID étape",
+            "description": "Nouvelle étape.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut (open, won, lost).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_deal_delete",
+      "name": "pipedriveDealDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un deal",
+      "subtitle": "Deals",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un deal Pipedrive.",
+      "args": {
+        "title": "Supprimer un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "ID deal",
+            "description": "Identifiant du deal à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_deals_list",
+      "name": "pipedriveDealsList",
+      "schemaVersion": 2,
+      "title": "Lister les deals",
+      "subtitle": "Deals",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_deals"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les deals Pipedrive.",
+      "args": {
+        "title": "Lister les deals",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_deal_search",
+      "name": "pipedriveDealSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des deals",
+      "subtitle": "Deals",
+      "tags": [
+        "recherche",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_deals"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des deals Pipedrive par mot-clé.",
+      "args": {
+        "title": "Rechercher des deals",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "term",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_person_create",
+      "name": "pipedrivePersonCreate",
+      "schemaVersion": 2,
+      "title": "Créer une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_person"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle personne dans Pipedrive.",
+      "args": {
+        "title": "Créer une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la personne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "ID organisation",
+            "description": "Organisation associée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_person_get",
+      "name": "pipedrivePersonGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_person"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une personne Pipedrive par son ID.",
+      "args": {
+        "title": "Obtenir une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personId",
+            "label": "ID personne",
+            "description": "Identifiant de la personne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_person_update",
+      "name": "pipedrivePersonUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_person"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une personne existante dans Pipedrive.",
+      "args": {
+        "title": "Modifier une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personId",
+            "label": "ID personne",
+            "description": "Identifiant de la personne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvelle adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_person_delete",
+      "name": "pipedrivePersonDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une personne",
+      "subtitle": "Personnes",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une personne Pipedrive.",
+      "args": {
+        "title": "Supprimer une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personId",
+            "label": "ID personne",
+            "description": "Identifiant de la personne à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_persons_list",
+      "name": "pipedrivePersonsList",
+      "schemaVersion": 2,
+      "title": "Lister les personnes",
+      "subtitle": "Personnes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_persons"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les personnes Pipedrive.",
+      "args": {
+        "title": "Lister les personnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_person_search",
+      "name": "pipedrivePersonSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des personnes",
+      "subtitle": "Personnes",
+      "tags": [
+        "recherche",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_persons"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des personnes Pipedrive par mot-clé.",
+      "args": {
+        "title": "Rechercher des personnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "term",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_organization_create",
+      "name": "pipedriveOrganizationCreate",
+      "schemaVersion": 2,
+      "title": "Créer une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle organisation dans Pipedrive.",
+      "args": {
+        "title": "Créer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Adresse de l'organisation.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_organization_get",
+      "name": "pipedriveOrganizationGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une organisation Pipedrive par son ID.",
+      "args": {
+        "title": "Obtenir une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orgId",
+            "label": "ID organisation",
+            "description": "Identifiant de l'organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_organization_update",
+      "name": "pipedriveOrganizationUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une organisation existante dans Pipedrive.",
+      "args": {
+        "title": "Modifier une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orgId",
+            "label": "ID organisation",
+            "description": "Identifiant de l'organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Nouvelle adresse.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_organization_delete",
+      "name": "pipedriveOrganizationDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une organisation",
+      "subtitle": "Organisations",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une organisation Pipedrive.",
+      "args": {
+        "title": "Supprimer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orgId",
+            "label": "ID organisation",
+            "description": "Identifiant de l'organisation à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_organizations_list",
+      "name": "pipedriveOrganizationsList",
+      "schemaVersion": 2,
+      "title": "Lister les organisations",
+      "subtitle": "Organisations",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_orgs"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les organisations Pipedrive.",
+      "args": {
+        "title": "Lister les organisations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_activity_create",
+      "name": "pipedriveActivityCreate",
+      "schemaVersion": 2,
+      "title": "Créer une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_activity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle activité dans Pipedrive.",
+      "args": {
+        "title": "Créer une activité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet de l'activité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type d'activité (call, meeting, task, etc.).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "due_date",
+            "label": "Date prévue",
+            "description": "Date prévue (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "due_time",
+            "label": "Heure prévue",
+            "description": "Heure prévue (HH:MM).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "deal_id",
+            "label": "ID deal",
+            "description": "Deal associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_id",
+            "label": "ID personne",
+            "description": "Personne associée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "ID organisation",
+            "description": "Organisation associée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_activity_get",
+      "name": "pipedriveActivityGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "lecture",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_activity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une activité Pipedrive par son ID.",
+      "args": {
+        "title": "Obtenir une activité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "activityId",
+            "label": "ID activité",
+            "description": "Identifiant de l'activité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_activity_update",
+      "name": "pipedriveActivityUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "mise-à-jour",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_activity"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une activité existante dans Pipedrive.",
+      "args": {
+        "title": "Modifier une activité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "activityId",
+            "label": "ID activité",
+            "description": "Identifiant de l'activité.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Nouveau sujet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Nouveau type.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "due_date",
+            "label": "Date prévue",
+            "description": "Nouvelle date prévue.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "done",
+            "label": "Terminé",
+            "description": "Marquer terminé (0 ou 1).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_activity_delete",
+      "name": "pipedriveActivityDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une activité",
+      "subtitle": "Activités",
+      "tags": [
+        "suppression",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une activité Pipedrive.",
+      "args": {
+        "title": "Supprimer une activité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "activityId",
+            "label": "ID activité",
+            "description": "Identifiant de l'activité à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_activities_list",
+      "name": "pipedriveActivitiesList",
+      "schemaVersion": 2,
+      "title": "Lister les activités",
+      "subtitle": "Activités",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_activities"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les activités Pipedrive.",
+      "args": {
+        "title": "Lister les activités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_pipelines_list",
+      "name": "pipedrivePipelinesList",
+      "schemaVersion": 2,
+      "title": "Lister les pipelines",
+      "subtitle": "Pipelines",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_pipelines"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les pipelines Pipedrive.",
+      "args": {
+        "title": "Lister les pipelines",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "pipedrive_stages_list",
+      "name": "pipedriveStagesList",
+      "schemaVersion": 2,
+      "title": "Lister les étapes",
+      "subtitle": "Étapes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_stages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les étapes d'un pipeline Pipedrive.",
+      "args": {
+        "title": "Lister les étapes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "ID pipeline",
+            "description": "Identifiant du pipeline (optionnel, tous si vide).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_note_create",
+      "name": "pipedriveNoteCreate",
+      "schemaVersion": 2,
+      "title": "Créer une note",
+      "subtitle": "Notes",
+      "tags": [
+        "création",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_note"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle note dans Pipedrive.",
+      "args": {
+        "title": "Créer une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu de la note.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "deal_id",
+            "label": "ID deal",
+            "description": "Deal associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_id",
+            "label": "ID personne",
+            "description": "Personne associée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "ID organisation",
+            "description": "Organisation associée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_notes_list",
+      "name": "pipedriveNotesList",
+      "schemaVersion": 2,
+      "title": "Lister les notes",
+      "subtitle": "Notes",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_notes"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les notes Pipedrive.",
+      "args": {
+        "title": "Lister les notes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_products_list",
+      "name": "pipedriveProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "subtitle": "Produits",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les produits Pipedrive.",
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Décalage",
+            "description": "Décalage de pagination (défaut 0).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "pipedrive_users_list",
+      "name": "pipedriveUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "liste",
+        "pipedrive"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs Pipedrive.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "pipedrive_webhook_event",
+      "name": "pipedriveWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Événements",
+      "tags": [
+        "événement",
+        "pipedrive"
+      ],
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "pipedrive",
+      "icon": "fa-solid fa-bolt",
+      "description": "Déclenchement via webhook Pipedrive entrant",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_event"
+        }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir les webhooks.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

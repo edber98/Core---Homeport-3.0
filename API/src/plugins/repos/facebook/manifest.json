@@ -1,0 +1,1920 @@
+{
+  "repo": {
+    "name": "facebook",
+    "type": "local",
+    "label": "Facebook / Meta"
+  },
+  "variables": {
+    "fb_page": {
+      "title": "Page Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "category",
+          "label": "Catégorie",
+          "description": "Catégorie de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "fanCount",
+          "label": "Fans",
+          "description": "Nombre de fans.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "link",
+          "label": "Lien",
+          "description": "URL de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "picture",
+          "label": "Photo",
+          "description": "URL de la photo.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "about",
+          "label": "À propos",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "website",
+          "label": "Site web",
+          "description": "URL du site.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_post": {
+      "title": "Publication Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "description": "Contenu du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdTime",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "permalinkUrl",
+          "label": "Lien permanent",
+          "description": "URL permanente.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "shares",
+          "label": "Partages",
+          "description": "Nombre de partages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "likes",
+          "label": "Likes",
+          "description": "Nombre de likes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "comments",
+          "label": "Commentaires",
+          "description": "Nombre de commentaires.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_posts": {
+      "title": "Publications Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Publications",
+          "description": "Liste des publications",
+          "mode": "array",
+          "key": "posts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "message",
+              "label": "Message",
+              "description": "Message.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdTime",
+              "label": "Date création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "permalinkUrl",
+              "label": "Lien",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_comment": {
+      "title": "Commentaire Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "postId",
+          "label": "Post ID",
+          "description": "ID de la publication.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_comments": {
+      "title": "Commentaires Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "message",
+              "label": "Message",
+              "description": "Message.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "from",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdTime",
+              "label": "Date création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_photo": {
+      "title": "Photo Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la photo.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "postId",
+          "label": "Post ID",
+          "description": "ID du post associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageId",
+          "label": "Page ID",
+          "description": "ID de la page.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_photos": {
+      "title": "Photos Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Photos",
+          "description": "Liste des photos",
+          "mode": "array",
+          "key": "photos",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "picture",
+              "label": "Miniature",
+              "description": "URL miniature.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "source",
+              "label": "Source",
+              "description": "URL source.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdTime",
+              "label": "Date création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_message": {
+      "title": "Message Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "recipientId",
+          "label": "Destinataire",
+          "description": "ID du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "ID du message.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_lead": {
+      "title": "Lead Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du lead.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdTime",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "fields",
+          "label": "Champs",
+          "description": "Données du formulaire (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_leads": {
+      "title": "Leads Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Leads",
+          "description": "Liste des leads",
+          "mode": "array",
+          "key": "leads",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdTime",
+              "label": "Date création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "fields",
+              "label": "Champs",
+              "description": "Données.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_insight": {
+      "title": "Insights Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Insights",
+          "description": "Métriques",
+          "mode": "array",
+          "key": "insights",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la métrique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "period",
+              "label": "Période",
+              "description": "Période.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "values",
+              "label": "Valeurs",
+              "description": "Valeurs (JSON).",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_audience": {
+      "title": "Audience Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'audience.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'audience.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_result": {
+      "title": "Résultat Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "description": "Message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "postId",
+          "label": "Post ID",
+          "description": "ID du post.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fb_event": {
+      "title": "Événement Facebook",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageId",
+          "label": "Page ID",
+          "description": "ID de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Données",
+          "description": "Données de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "facebook",
+      "name": "Facebook",
+      "title": "Facebook / Meta",
+      "iconClass": "fa-brands fa-facebook",
+      "iconUrl": "https://cdn.simpleicons.org/facebook",
+      "color": "#1877F2",
+      "tags": [
+        "social",
+        "marketing",
+        "ads"
+      ],
+      "categories": [
+        "Social Media"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Facebook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token",
+            "description": "Token d'accès de la page Facebook.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL (optionnel)",
+            "description": "Version de l'API Graph (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "facebook_get_page",
+      "name": "facebookGetPage",
+      "schemaVersion": 2,
+      "title": "Récupérer une page",
+      "subtitle": "Pages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "lecture",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_page"
+        }
+      ],
+      "description": "Récupérer les informations d'une page Facebook.",
+      "args": {
+        "title": "Récupérer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_page_posts",
+      "name": "facebookListPagePosts",
+      "schemaVersion": 2,
+      "title": "Lister les publications d'une page",
+      "subtitle": "Publications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_posts"
+        }
+      ],
+      "description": "Récupérer les publications d'une page.",
+      "args": {
+        "title": "Lister les publications",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_feed",
+      "name": "facebookListFeed",
+      "schemaVersion": 2,
+      "title": "Lister le fil d'actualité",
+      "subtitle": "Publications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_posts"
+        }
+      ],
+      "description": "Récupérer le fil d'actualité d'une page.",
+      "args": {
+        "title": "Lister le fil d'actualité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_create_post",
+      "name": "facebookCreatePost",
+      "schemaVersion": 2,
+      "title": "Créer une publication",
+      "subtitle": "Publications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "création",
+        "envoi",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_post"
+        }
+      ],
+      "description": "Publier un message sur une page Facebook.",
+      "args": {
+        "title": "Créer une publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "description": "Contenu de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "link",
+            "label": "Lien (optionnel)",
+            "description": "URL à joindre.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_get_post",
+      "name": "facebookGetPost",
+      "schemaVersion": 2,
+      "title": "Récupérer une publication",
+      "subtitle": "Publications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "lecture",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_post"
+        }
+      ],
+      "description": "Récupérer les détails d'une publication.",
+      "args": {
+        "title": "Récupérer une publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "Post ID",
+            "description": "Identifiant de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_delete_post",
+      "name": "facebookDeletePost",
+      "schemaVersion": 2,
+      "title": "Supprimer une publication",
+      "subtitle": "Publications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "suppression",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_result"
+        }
+      ],
+      "description": "Supprimer une publication Facebook.",
+      "args": {
+        "title": "Supprimer une publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "Post ID",
+            "description": "Identifiant de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_create_comment",
+      "name": "facebookCreateComment",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "création",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_comment"
+        }
+      ],
+      "description": "Créer un commentaire sur une publication.",
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "Post ID",
+            "description": "Identifiant de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "description": "Contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_comments",
+      "name": "facebookListComments",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_comments"
+        }
+      ],
+      "description": "Récupérer les commentaires d'une publication.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "Post ID",
+            "description": "Identifiant de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_delete_comment",
+      "name": "facebookDeleteComment",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "suppression",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_result"
+        }
+      ],
+      "description": "Supprimer un commentaire Facebook.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_upload_photo",
+      "name": "facebookUploadPhoto",
+      "schemaVersion": 2,
+      "title": "Publier une photo",
+      "subtitle": "Photos",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "création",
+        "envoi",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_photo"
+        }
+      ],
+      "description": "Publier une photo sur une page Facebook.",
+      "args": {
+        "title": "Publier une photo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL de la photo",
+            "description": "URL publique de la photo.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende de la photo.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_photos",
+      "name": "facebookListPhotos",
+      "schemaVersion": 2,
+      "title": "Lister les photos",
+      "subtitle": "Photos",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_photos"
+        }
+      ],
+      "description": "Récupérer les photos d'une page.",
+      "args": {
+        "title": "Lister les photos",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_send_message",
+      "name": "facebookSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "subtitle": "Messenger",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "envoi",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_message"
+        }
+      ],
+      "description": "Envoyer un message via Messenger.",
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "Destinataire ID",
+            "description": "PSID du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_leads",
+      "name": "facebookListLeads",
+      "schemaVersion": 2,
+      "title": "Lister les leads",
+      "subtitle": "Leads",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_leads"
+        }
+      ],
+      "description": "Récupérer les leads d'un formulaire Lead Ads.",
+      "args": {
+        "title": "Lister les leads",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire Lead Ads.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_page_insights",
+      "name": "facebookPageInsights",
+      "schemaVersion": 2,
+      "title": "Récupérer les insights",
+      "subtitle": "Insights",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "lecture",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_insight"
+        }
+      ],
+      "description": "Récupérer les insights (statistiques) d'une page.",
+      "args": {
+        "title": "Récupérer les insights",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "metric",
+            "label": "Métriques",
+            "description": "Métriques séparées par virgule.",
+            "col": {
+              "xs": 24
+            },
+            "default": "page_impressions,page_engaged_users,page_fans"
+          },
+          {
+            "type": "select",
+            "key": "period",
+            "label": "Période",
+            "description": "Période d'agrégation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Jour",
+                "value": "day"
+              },
+              {
+                "label": "Semaine",
+                "value": "week"
+              },
+              {
+                "label": "28 jours",
+                "value": "days_28"
+              }
+            ],
+            "default": "day"
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_create_custom_audience",
+      "name": "facebookCreateCustomAudience",
+      "schemaVersion": 2,
+      "title": "Créer une audience",
+      "subtitle": "Audiences",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "création",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_audience"
+        }
+      ],
+      "description": "Créer une audience personnalisée.",
+      "args": {
+        "title": "Créer une audience",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "adAccountId",
+            "label": "Ad Account ID",
+            "description": "Identifiant du compte publicitaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l'audience.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "subtype",
+            "label": "Sous-type",
+            "description": "Type d'audience.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Custom",
+                "value": "CUSTOM"
+              },
+              {
+                "label": "Website",
+                "value": "WEBSITE"
+              },
+              {
+                "label": "App",
+                "value": "APP"
+              },
+              {
+                "label": "Offline",
+                "value": "OFFLINE_CONVERSION"
+              }
+            ],
+            "default": "CUSTOM"
+          }
+        ]
+      }
+    },
+    {
+      "key": "facebook_list_audiences",
+      "name": "facebookListAudiences",
+      "schemaVersion": 2,
+      "title": "Lister les audiences",
+      "subtitle": "Audiences",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Facebook",
+      "providerKey": "facebook",
+      "tags": [
+        "liste",
+        "facebook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fb_result"
+        }
+      ],
+      "description": "Récupérer les audiences personnalisées.",
+      "args": {
+        "title": "Lister les audiences",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "adAccountId",
+            "label": "Ad Account ID",
+            "description": "Identifiant du compte publicitaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          }
+        ]
+      }
+    }
+  ]
+}

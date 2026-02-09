@@ -1,0 +1,25 @@
+const { utils } = require("./utils");
+
+function toStr(value) {
+  const str = String(value || "").trim();
+  return str || null;
+}
+
+function toInt(value) {
+  if (value === undefined || value === null || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+module.exports = {
+  async odoo_stock_picking_get(node, msg, inputs, opts) {
+    const data = inputs || {};
+    const id = toInt(data.pickingId);
+    if (!id) return { ok: false, error: "Champ pickingId requis." };
+
+    const res = await utils.odooCall(opts, "stock.picking", "read", [[id]], { fields: ["id", "name", "partner_id", "picking_type_id", "state", "origin"] });
+    if (!res.ok) return res;
+    const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
+    return { ok: true, picking: record };
+  }
+};

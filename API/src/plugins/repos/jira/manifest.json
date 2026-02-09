@@ -1,0 +1,2114 @@
+{
+  "repo": {
+    "name": "jira",
+    "type": "local",
+    "label": "Jira"
+  },
+  "variables": {
+    "jira_issue": {
+      "title": "Issue Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "description": "Clé de l'issue (ex: PROJ-123).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Résumé",
+          "description": "Résumé de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut actuel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Priorité de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assignee",
+          "label": "Assigné",
+          "description": "Personne assignée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reporter",
+          "label": "Rapporteur",
+          "description": "Personne ayant créé l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "issueType",
+          "label": "Type",
+          "description": "Type d'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "projectKey",
+          "label": "Projet",
+          "description": "Clé du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "updated",
+          "label": "Date modification",
+          "description": "Date de dernière modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_issues": {
+      "title": "Issues Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Issues",
+          "description": "Liste des issues",
+          "mode": "array",
+          "key": "issues",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "description": "Clé de l'issue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Résumé",
+              "description": "Résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignee",
+              "label": "Assigné",
+              "description": "Assigné.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "issueType",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "projectKey",
+              "label": "Projet",
+              "description": "Projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_project": {
+      "title": "Projet Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "description": "Clé du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "projectTypeKey",
+          "label": "Type",
+          "description": "Type de projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lead",
+          "label": "Responsable",
+          "description": "Responsable du projet.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_projects": {
+      "title": "Projets Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Projets",
+          "description": "Liste des projets",
+          "mode": "array",
+          "key": "projects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "description": "Clé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "projectTypeKey",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lead",
+              "label": "Responsable",
+              "description": "Responsable.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_board": {
+      "title": "Board Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du board.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du board.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de board (scrum, kanban).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "projectKey",
+          "label": "Projet",
+          "description": "Clé du projet associé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_boards": {
+      "title": "Boards Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Boards",
+          "description": "Liste des boards",
+          "mode": "array",
+          "key": "boards",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "projectKey",
+              "label": "Projet",
+              "description": "Projet.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_sprint": {
+      "title": "Sprint Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du sprint.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du sprint.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État du sprint.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startDate",
+          "label": "Date début",
+          "description": "Date de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "endDate",
+          "label": "Date fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "goal",
+          "label": "Objectif",
+          "description": "Objectif du sprint.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_sprints": {
+      "title": "Sprints Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Sprints",
+          "description": "Liste des sprints",
+          "mode": "array",
+          "key": "sprints",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "startDate",
+              "label": "Date début",
+              "description": "Date de début.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "endDate",
+              "label": "Date fin",
+              "description": "Date de fin.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_user": {
+      "title": "Utilisateur Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "accountId",
+          "label": "Account ID",
+          "description": "Identifiant du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom affiché",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "emailAddress",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Compte actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_comment": {
+      "title": "Commentaire Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "authorName",
+          "label": "Auteur",
+          "description": "Nom de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jira_event": {
+      "title": "Événement Jira",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "webhookEvent",
+          "label": "Événement",
+          "description": "Type d'événement reçu.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "issueKey",
+          "label": "Clé issue",
+          "description": "Clé de l'issue concernée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "userAccountId",
+          "label": "Account ID",
+          "description": "Identifiant de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Données brutes de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "jira",
+      "name": "Jira",
+      "title": "Jira",
+      "iconClass": "fa-brands fa-jira",
+      "iconUrl": "https://cdn.simpleicons.org/jira",
+      "color": "#0052CC",
+      "tags": [
+        "jira",
+        "atlassian",
+        "project",
+        "agile"
+      ],
+      "categories": [
+        "Gestion de projet"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Jira",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du compte Atlassian.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API Token",
+            "description": "Token d'API Atlassian.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de votre instance Jira (ex: https://votre-domaine.atlassian.net).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "jira_issue_create",
+      "name": "jiraIssueCreate",
+      "schemaVersion": 2,
+      "title": "Créer une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle issue dans Jira.",
+      "args": {
+        "title": "Créer une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectKey",
+            "label": "Clé du projet",
+            "description": "Clé du projet Jira (ex: PROJ).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Résumé",
+            "description": "Résumé de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "issueType",
+            "label": "Type d'issue",
+            "description": "Type d'issue (Task, Bug, Story, Epic).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description détaillée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Priorité (Highest, High, Medium, Low, Lowest).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeAccountId",
+            "label": "Assigné (Account ID)",
+            "description": "Account ID de la personne assignée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "création"
+      ]
+    },
+    {
+      "key": "jira_issue_get",
+      "name": "jiraIssueGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une issue Jira par sa clé.",
+      "args": {
+        "title": "Obtenir une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue (ex: PROJ-123).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "lecture"
+      ]
+    },
+    {
+      "key": "jira_issue_update",
+      "name": "jiraIssueUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une issue existante dans Jira.",
+      "args": {
+        "title": "Modifier une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue (ex: PROJ-123).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Résumé",
+            "description": "Nouveau résumé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeAccountId",
+            "label": "Assigné (Account ID)",
+            "description": "Nouvel assigné (Account ID).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "mise-à-jour"
+      ]
+    },
+    {
+      "key": "jira_issue_delete",
+      "name": "jiraIssueDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une issue Jira.",
+      "args": {
+        "title": "Supprimer une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "suppression"
+      ]
+    },
+    {
+      "key": "jira_issues_list",
+      "name": "jiraIssuesList",
+      "schemaVersion": 2,
+      "title": "Lister les issues",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issues"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les issues d'un projet Jira.",
+      "args": {
+        "title": "Lister les issues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectKey",
+            "label": "Clé du projet",
+            "description": "Clé du projet Jira.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "liste"
+      ]
+    },
+    {
+      "key": "jira_issue_search_jql",
+      "name": "jiraIssueSearchJql",
+      "schemaVersion": 2,
+      "title": "Rechercher avec JQL",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issues"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des issues Jira avec une requête JQL.",
+      "args": {
+        "title": "Rechercher avec JQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jql",
+            "label": "Requête JQL",
+            "description": "Requête JQL (ex: status = 'In Progress').",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "recherche"
+      ]
+    },
+    {
+      "key": "jira_issue_add_comment",
+      "name": "jiraIssueAddComment",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à une issue Jira.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Commentaire",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "création"
+      ]
+    },
+    {
+      "key": "jira_issue_transition",
+      "name": "jiraIssueTransition",
+      "schemaVersion": 2,
+      "title": "Transitionner une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Change le statut d'une issue Jira.",
+      "args": {
+        "title": "Transitionner une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "transitionId",
+            "label": "ID de transition",
+            "description": "Identifiant de la transition à appliquer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "jira",
+        "mise-à-jour"
+      ]
+    },
+    {
+      "key": "jira_project_get",
+      "name": "jiraProjectGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un projet Jira.",
+      "args": {
+        "title": "Obtenir un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectKeyOrId",
+            "label": "Clé ou ID du projet",
+            "description": "Clé ou identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "jira",
+        "lecture"
+      ]
+    },
+    {
+      "key": "jira_projects_list",
+      "name": "jiraProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_projects"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les projets Jira accessibles.",
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "jira",
+        "liste"
+      ]
+    },
+    {
+      "key": "jira_boards_list",
+      "name": "jiraBoardsList",
+      "schemaVersion": 2,
+      "title": "Lister les boards",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_boards"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les boards Jira (Agile).",
+      "args": {
+        "title": "Lister les boards",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Boards",
+      "tags": [
+        "jira",
+        "liste"
+      ]
+    },
+    {
+      "key": "jira_board_get",
+      "name": "jiraBoardGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_board"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un board Jira.",
+      "args": {
+        "title": "Obtenir un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du board.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Boards",
+      "tags": [
+        "jira",
+        "lecture"
+      ]
+    },
+    {
+      "key": "jira_sprints_list",
+      "name": "jiraSprintsList",
+      "schemaVersion": 2,
+      "title": "Lister les sprints",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_sprints"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les sprints d'un board Jira.",
+      "args": {
+        "title": "Lister les sprints",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du board.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "liste"
+      ]
+    },
+    {
+      "key": "jira_sprint_get",
+      "name": "jiraSprintGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un sprint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_sprint"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un sprint Jira.",
+      "args": {
+        "title": "Obtenir un sprint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sprintId",
+            "label": "Sprint ID",
+            "description": "Identifiant du sprint.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "lecture"
+      ]
+    },
+    {
+      "key": "jira_sprint_create",
+      "name": "jiraSprintCreate",
+      "schemaVersion": 2,
+      "title": "Créer un sprint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_sprint"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau sprint dans un board Jira.",
+      "args": {
+        "title": "Créer un sprint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du board.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du sprint.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "startDate",
+            "label": "Date début",
+            "description": "Date de début (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endDate",
+            "label": "Date fin",
+            "description": "Date de fin (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "goal",
+            "label": "Objectif",
+            "description": "Objectif du sprint.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Sprints",
+      "tags": [
+        "jira",
+        "création"
+      ]
+    },
+    {
+      "key": "jira_user_search",
+      "name": "jiraUserSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des utilisateurs Jira par nom ou email.",
+      "args": {
+        "title": "Rechercher des utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche (nom ou email).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "jira",
+        "recherche"
+      ]
+    },
+    {
+      "key": "jira_user_get_myself",
+      "name": "jiraUserGetMyself",
+      "schemaVersion": 2,
+      "title": "Obtenir mon profil",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère le profil de l'utilisateur authentifié.",
+      "args": {
+        "title": "Obtenir mon profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "jira",
+        "lecture"
+      ]
+    },
+    {
+      "key": "jira_worklog_add",
+      "name": "jiraWorklogAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter un worklog",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un journal de travail à une issue Jira.",
+      "args": {
+        "title": "Ajouter un worklog",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Clé de l'issue",
+            "description": "Clé de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timeSpent",
+            "label": "Temps passé",
+            "description": "Temps passé (ex: 2h, 30m, 1d).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Commentaire",
+            "description": "Commentaire sur le travail effectué.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Worklogs",
+      "tags": [
+        "jira",
+        "création"
+      ]
+    },
+    {
+      "key": "jira_webhook_event",
+      "name": "jiraWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant depuis Jira.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/jira"
+          }
+        ]
+      },
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "jira",
+        "événement"
+      ]
+    }
+  ]
+}

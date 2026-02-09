@@ -1,0 +1,2211 @@
+{
+  "repo": {
+    "name": "linear",
+    "type": "local",
+    "label": "Linear"
+  },
+  "variables": {
+    "linear_issue": {
+      "title": "Issue Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "identifier",
+          "label": "Identifiant",
+          "description": "Identifiant lisible (ex: ENG-123).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État actuel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Niveau de priorité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assignee",
+          "label": "Assigné",
+          "description": "Personne assignée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "teamName",
+          "label": "Équipe",
+          "description": "Nom de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de l'issue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "updatedAt",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_issues": {
+      "title": "Issues Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Issues",
+          "description": "Liste des issues",
+          "mode": "array",
+          "key": "issues",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "identifier",
+              "label": "Identifiant",
+              "description": "Identifiant lisible.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignee",
+              "label": "Assigné",
+              "description": "Assigné.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_project": {
+      "title": "Projet Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "progress",
+          "label": "Progression",
+          "description": "Progression du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_projects": {
+      "title": "Projets Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Projets",
+          "description": "Liste des projets",
+          "mode": "array",
+          "key": "projects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "progress",
+              "label": "Progression",
+              "description": "Progression.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_cycle": {
+      "title": "Cycle Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du cycle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "number",
+          "label": "Numéro",
+          "description": "Numéro du cycle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du cycle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startsAt",
+          "label": "Date début",
+          "description": "Date de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "endsAt",
+          "label": "Date fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "progress",
+          "label": "Progression",
+          "description": "Progression.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_cycles": {
+      "title": "Cycles Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Cycles",
+          "description": "Liste des cycles",
+          "mode": "array",
+          "key": "cycles",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "number",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "startsAt",
+              "label": "Début",
+              "description": "Début.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "endsAt",
+              "label": "Fin",
+              "description": "Fin.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_team": {
+      "title": "Équipe Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "description": "Clé de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_teams": {
+      "title": "Équipes Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Équipes",
+          "description": "Liste des équipes",
+          "mode": "array",
+          "key": "teams",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "description": "Clé.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_user": {
+      "title": "Utilisateur Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom affiché",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Utilisateur actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_users": {
+      "title": "Utilisateurs Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_label": {
+      "title": "Label Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du label.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du label.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur du label.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_labels": {
+      "title": "Labels Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Labels",
+          "description": "Liste des labels",
+          "mode": "array",
+          "key": "labels",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "description": "Couleur.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_comment": {
+      "title": "Commentaire Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "userName",
+          "label": "Auteur",
+          "description": "Nom de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_comments": {
+      "title": "Commentaires Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "userName",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "linear_event": {
+      "title": "Événement Linear",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "action",
+          "label": "Action",
+          "description": "Type d'action (create, update, remove).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resourceId",
+          "label": "ID ressource",
+          "description": "Identifiant de la ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Données brutes (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "linear",
+      "name": "Linear",
+      "title": "Linear",
+      "iconClass": "fa-solid fa-layer-group",
+      "iconUrl": "https://cdn.simpleicons.org/linear",
+      "color": "#5E6AD2",
+      "tags": [
+        "linear",
+        "project",
+        "issues",
+        "agile"
+      ],
+      "categories": [
+        "Gestion de projet"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Linear",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé d'API Linear (Personal API Key).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "linear_issue_create",
+      "name": "linearIssueCreate",
+      "schemaVersion": 2,
+      "title": "Créer une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle issue dans Linear.",
+      "args": {
+        "title": "Créer une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de l'équipe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l'issue.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Priorité (0=No priority, 1=Urgent, 2=High, 3=Medium, 4=Low).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné (ID)",
+            "description": "Identifiant de la personne assignée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "création"
+      ]
+    },
+    {
+      "key": "linear_issue_get",
+      "name": "linearIssueGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une issue Linear par son ID.",
+      "args": {
+        "title": "Obtenir une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "description": "Identifiant de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "lecture"
+      ]
+    },
+    {
+      "key": "linear_issue_update",
+      "name": "linearIssueUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une issue existante dans Linear.",
+      "args": {
+        "title": "Modifier une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "description": "Identifiant de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité (0-4).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné (ID)",
+            "description": "Nouvel assigné.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "stateId",
+            "label": "State ID",
+            "description": "Nouvel état (ID).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "mise-à-jour"
+      ]
+    },
+    {
+      "key": "linear_issues_list",
+      "name": "linearIssuesList",
+      "schemaVersion": 2,
+      "title": "Lister les issues",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issues"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les issues Linear d'une équipe.",
+      "args": {
+        "title": "Lister les issues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de l'équipe (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "first",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_issue_search",
+      "name": "linearIssueSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des issues",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issues"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des issues Linear par terme.",
+      "args": {
+        "title": "Rechercher des issues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "first",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "tags": [
+        "linear",
+        "recherche"
+      ]
+    },
+    {
+      "key": "linear_project_create",
+      "name": "linearProjectCreate",
+      "schemaVersion": 2,
+      "title": "Créer un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau projet dans Linear.",
+      "args": {
+        "title": "Créer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamIds",
+            "label": "Team IDs",
+            "description": "Identifiants des équipes (séparés par des virgules).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du projet.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "création"
+      ]
+    },
+    {
+      "key": "linear_project_get",
+      "name": "linearProjectGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un projet Linear par son ID.",
+      "args": {
+        "title": "Obtenir un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "lecture"
+      ]
+    },
+    {
+      "key": "linear_projects_list",
+      "name": "linearProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_projects"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les projets Linear.",
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "first",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_cycle_get",
+      "name": "linearCycleGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un cycle",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_cycle"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un cycle Linear par son ID.",
+      "args": {
+        "title": "Obtenir un cycle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cycleId",
+            "label": "Cycle ID",
+            "description": "Identifiant du cycle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Cycles",
+      "tags": [
+        "linear",
+        "lecture"
+      ]
+    },
+    {
+      "key": "linear_cycles_list",
+      "name": "linearCyclesList",
+      "schemaVersion": 2,
+      "title": "Lister les cycles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_cycles"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les cycles Linear d'une équipe.",
+      "args": {
+        "title": "Lister les cycles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de l'équipe (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "first",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Cycles",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_team_get",
+      "name": "linearTeamGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une équipe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_team"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une équipe Linear par son ID.",
+      "args": {
+        "title": "Obtenir une équipe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de l'équipe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Équipes",
+      "tags": [
+        "linear",
+        "lecture"
+      ]
+    },
+    {
+      "key": "linear_teams_list",
+      "name": "linearTeamsList",
+      "schemaVersion": 2,
+      "title": "Lister les équipes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_teams"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste toutes les équipes Linear.",
+      "args": {
+        "title": "Lister les équipes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Équipes",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_user_get",
+      "name": "linearUserGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un utilisateur Linear (ou soi-même avec 'me').",
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "description": "Identifiant de l'utilisateur (ou laisser vide pour soi-même).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "linear",
+        "lecture"
+      ]
+    },
+    {
+      "key": "linear_users_list",
+      "name": "linearUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les utilisateurs Linear.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_label_create",
+      "name": "linearLabelCreate",
+      "schemaVersion": 2,
+      "title": "Créer un label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_label"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau label dans Linear.",
+      "args": {
+        "title": "Créer un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de l'équipe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du label.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "description": "Couleur du label (hex, ex: #FF0000).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Labels",
+      "tags": [
+        "linear",
+        "création"
+      ]
+    },
+    {
+      "key": "linear_labels_list",
+      "name": "linearLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_labels"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les labels Linear.",
+      "args": {
+        "title": "Lister les labels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "first",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Labels",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_comment_create",
+      "name": "linearCommentCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à une issue Linear.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "description": "Identifiant de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Commentaire",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "linear",
+        "création"
+      ]
+    },
+    {
+      "key": "linear_comments_list",
+      "name": "linearCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_comments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commentaires d'une issue Linear.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "description": "Identifiant de l'issue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "tags": [
+        "linear",
+        "liste"
+      ]
+    },
+    {
+      "key": "linear_webhook_event",
+      "name": "linearWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant depuis Linear.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/linear"
+          }
+        ]
+      },
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "linear",
+        "événement"
+      ]
+    }
+  ]
+}

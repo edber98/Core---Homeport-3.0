@@ -1,0 +1,997 @@
+{
+  "repo": {
+    "name": "sql-database",
+    "type": "local",
+    "label": "SQL Database (MySQL / PostgreSQL)"
+  },
+  "variables": {
+    "sql_rows": {
+      "title": "Lignes SQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Lignes SQL",
+          "description": "Liste",
+          "mode": "array",
+          "key": "rows",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "textarea",
+              "key": "data",
+              "label": "Données (JSON)",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sql_row": {
+      "title": "Ligne SQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (JSON)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sql_tables": {
+      "title": "Tables SQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tables SQL",
+          "description": "Liste",
+          "mode": "array",
+          "key": "tables",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom de la table",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "schema",
+              "label": "Schéma",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sql_columns": {
+      "title": "Colonnes SQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Colonnes SQL",
+          "description": "Liste",
+          "mode": "array",
+          "key": "columns",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom de la colonne",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type de données",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nullable",
+              "label": "Nullable",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "defaultValue",
+              "label": "Valeur par défaut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sql_result": {
+      "title": "Résultat SQL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "affectedRows",
+          "label": "Lignes affectées",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "insertId",
+          "label": "ID inséré",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "sqlDatabase",
+      "name": "SQL Database",
+      "title": "SQL Database",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/postgresql",
+      "color": "#336791",
+      "tags": [
+        "sql",
+        "database",
+        "mysql",
+        "postgresql",
+        "postgres"
+      ],
+      "categories": [
+        "Database"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Connexion SQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "dbType",
+            "label": "Type de base de données",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "MySQL",
+                "value": "mysql"
+              },
+              {
+                "label": "PostgreSQL",
+                "value": "postgresql"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "mysql"
+          },
+          {
+            "type": "text",
+            "key": "host",
+            "label": "Hôte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "localhost"
+          },
+          {
+            "type": "number",
+            "key": "port",
+            "label": "Port",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": 3306
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base de données",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "ssl",
+            "label": "SSL",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Non",
+                "value": "false"
+              },
+              {
+                "label": "Oui",
+                "value": "true"
+              }
+            ],
+            "default": "false"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "sql_execute_query",
+      "name": "sqlExecuteQuery",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête SQL",
+      "subtitle": "Requêtes",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_rows"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Exécute une requête SQL brute.",
+      "args": {
+        "title": "Exécuter une requête SQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête SQL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Requête SQL à exécuter."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_execute_parameterized",
+      "name": "sqlExecuteParameterized",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête paramétrée",
+      "subtitle": "Requêtes",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_rows"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Exécute une requête SQL avec des paramètres.",
+      "args": {
+        "title": "Exécuter une requête paramétrée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête SQL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Utiliser ? pour MySQL ou $1,$2 pour PostgreSQL."
+          },
+          {
+            "type": "textarea",
+            "key": "params",
+            "label": "Paramètres (JSON array)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Tableau de valeurs pour les paramètres."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_list_tables",
+      "name": "sqlListTables",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "Tables",
+      "tags": [
+        "liste",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_tables"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste toutes les tables de la base de données.",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "col": {
+              "xs": 24
+            },
+            "description": "Schéma à lister (PostgreSQL). Défaut: public."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_describe_table",
+      "name": "sqlDescribeTable",
+      "schemaVersion": 2,
+      "title": "Décrire une table",
+      "subtitle": "Tables",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_columns"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la structure d'une table.",
+      "args": {
+        "title": "Décrire une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Nom de la table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "col": {
+              "xs": 24
+            },
+            "description": "Schéma (PostgreSQL). Défaut: public."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_select",
+      "name": "sqlSelect",
+      "schemaVersion": 2,
+      "title": "Sélectionner des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_rows"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère des enregistrements d'une table.",
+      "args": {
+        "title": "Sélectionner des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columns",
+            "label": "Colonnes",
+            "col": {
+              "xs": 24
+            },
+            "default": "*",
+            "description": "Colonnes à retourner (séparées par des virgules)."
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Condition WHERE",
+            "col": {
+              "xs": 24
+            },
+            "description": "Condition de filtrage (ex: age > 18)."
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri",
+            "col": {
+              "xs": 24
+            },
+            "description": "Colonne de tri (ex: name ASC)."
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            },
+            "default": 0
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_insert",
+      "name": "sqlInsert",
+      "schemaVersion": 2,
+      "title": "Insérer un enregistrement",
+      "subtitle": "Données",
+      "tags": [
+        "création",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Insère un enregistrement dans une table.",
+      "args": {
+        "title": "Insérer un enregistrement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données (JSON objet)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Objet clé-valeur des données."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_update",
+      "name": "sqlUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "mise-à-jour",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour des enregistrements dans une table.",
+      "args": {
+        "title": "Mettre à jour des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données (JSON objet)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Objet clé-valeur des nouvelles données."
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Condition WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Condition de filtrage."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_delete",
+      "name": "sqlDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des enregistrements",
+      "subtitle": "Données",
+      "tags": [
+        "suppression",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime des enregistrements d'une table.",
+      "args": {
+        "title": "Supprimer des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Condition WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Condition de filtrage."
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql_call_procedure",
+      "name": "sqlCallProcedure",
+      "schemaVersion": 2,
+      "title": "Appeler une procédure stockée",
+      "subtitle": "Procédures",
+      "tags": [
+        "lecture",
+        "sql-database"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sqlDatabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_rows"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Appelle une procédure stockée ou une fonction.",
+      "args": {
+        "title": "Appeler une procédure stockée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom de la procédure",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "params",
+            "label": "Paramètres (JSON array)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Tableau de paramètres."
+          }
+        ]
+      }
+    }
+  ]
+}

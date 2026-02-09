@@ -1,0 +1,3550 @@
+{
+  "repo": {
+    "name": "quickbooks",
+    "type": "local",
+    "label": "QuickBooks"
+  },
+  "variables": {
+    "qb_customer": {
+      "title": "Client QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "companyName",
+          "label": "Entreprise",
+          "description": "Nom de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "primaryEmailAddr",
+          "label": "Email",
+          "description": "Email principal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "primaryPhone",
+          "label": "Téléphone",
+          "description": "Téléphone principal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "balance",
+          "label": "Solde",
+          "description": "Solde du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Statut actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createTime",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_customers": {
+      "title": "Clients",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "primaryEmailAddr",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "balance",
+              "label": "Solde",
+              "description": "Solde.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_invoice": {
+      "title": "Facture QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "docNumber",
+          "label": "Numéro",
+          "description": "Numéro de document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "txnDate",
+          "label": "Date",
+          "description": "Date de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dueDate",
+          "label": "Échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalAmt",
+          "label": "Montant total",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "balance",
+          "label": "Solde",
+          "description": "Solde restant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currencyRef",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customerRef",
+          "label": "Client",
+          "description": "Référence client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "emailStatus",
+          "label": "Statut email",
+          "description": "Statut d'envoi email.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_invoices": {
+      "title": "Factures",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Factures",
+          "description": "Liste des factures",
+          "mode": "array",
+          "key": "invoices",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "docNumber",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "txnDate",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "totalAmt",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "balance",
+              "label": "Solde",
+              "description": "Solde.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_payment": {
+      "title": "Paiement QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "txnDate",
+          "label": "Date",
+          "description": "Date du paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalAmt",
+          "label": "Montant",
+          "description": "Montant du paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customerRef",
+          "label": "Client",
+          "description": "Référence client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currencyRef",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "paymentMethodRef",
+          "label": "Méthode",
+          "description": "Méthode de paiement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_payments": {
+      "title": "Paiements",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Paiements",
+          "description": "Liste des paiements",
+          "mode": "array",
+          "key": "payments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "txnDate",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "totalAmt",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customerRef",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_item": {
+      "title": "Article QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "unitPrice",
+          "label": "Prix unitaire",
+          "description": "Prix unitaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type (Service, Inventory, etc.).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Statut actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "qtyOnHand",
+          "label": "Stock",
+          "description": "Quantité en stock.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_items": {
+      "title": "Articles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Articles",
+          "description": "Liste des articles",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "unitPrice",
+              "label": "Prix",
+              "description": "Prix.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_vendor": {
+      "title": "Fournisseur QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "companyName",
+          "label": "Entreprise",
+          "description": "Nom de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "primaryEmailAddr",
+          "label": "Email",
+          "description": "Email.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "primaryPhone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "balance",
+          "label": "Solde",
+          "description": "Solde.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Statut actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_vendors": {
+      "title": "Fournisseurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fournisseurs",
+          "description": "Liste des fournisseurs",
+          "mode": "array",
+          "key": "vendors",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "primaryEmailAddr",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "balance",
+              "label": "Solde",
+              "description": "Solde.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_bill": {
+      "title": "Facture fournisseur QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "docNumber",
+          "label": "Numéro",
+          "description": "Numéro de document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "txnDate",
+          "label": "Date",
+          "description": "Date de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dueDate",
+          "label": "Échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalAmt",
+          "label": "Montant total",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "balance",
+          "label": "Solde",
+          "description": "Solde restant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vendorRef",
+          "label": "Fournisseur",
+          "description": "Référence fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_bills": {
+      "title": "Factures fournisseur",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Factures fournisseur",
+          "description": "Liste des factures fournisseur",
+          "mode": "array",
+          "key": "bills",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "docNumber",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "txnDate",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "totalAmt",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "balance",
+              "label": "Solde",
+              "description": "Solde.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_account": {
+      "title": "Compte QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "accountType",
+          "label": "Type",
+          "description": "Type de compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "accountSubType",
+          "label": "Sous-type",
+          "description": "Sous-type.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currentBalance",
+          "label": "Solde",
+          "description": "Solde actuel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Statut actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_accounts": {
+      "title": "Comptes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Comptes",
+          "description": "Liste des comptes",
+          "mode": "array",
+          "key": "accounts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "accountType",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currentBalance",
+              "label": "Solde",
+              "description": "Solde.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_report": {
+      "title": "Rapport QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "reportName",
+          "label": "Nom",
+          "description": "Nom du rapport.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startPeriod",
+          "label": "Début",
+          "description": "Période de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "endPeriod",
+          "label": "Fin",
+          "description": "Période de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données",
+          "description": "Données du rapport (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_estimate": {
+      "title": "Devis QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "docNumber",
+          "label": "Numéro",
+          "description": "Numéro de document.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "txnDate",
+          "label": "Date",
+          "description": "Date du devis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "expirationDate",
+          "label": "Expiration",
+          "description": "Date d'expiration.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalAmt",
+          "label": "Montant total",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customerRef",
+          "label": "Client",
+          "description": "Référence client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "txnStatus",
+          "label": "Statut",
+          "description": "Statut du devis.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_estimates": {
+      "title": "Devis",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Devis",
+          "description": "Liste des devis",
+          "mode": "array",
+          "key": "estimates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "docNumber",
+              "label": "Numéro",
+              "description": "Numéro.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "txnDate",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "totalAmt",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "txnStatus",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qb_event": {
+      "title": "Événement QuickBooks",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "quickbooks",
+      "name": "QuickBooks",
+      "title": "QuickBooks",
+      "iconClass": "fa-solid fa-calculator",
+      "iconUrl": "https://cdn.simpleicons.org/quickbooks",
+      "color": "#2CA01C",
+      "tags": [
+        "quickbooks",
+        "comptabilité",
+        "facturation",
+        "finance"
+      ],
+      "categories": [
+        "Comptabilité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants QuickBooks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "description": "Client ID de l'application QuickBooks.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client secret",
+            "description": "Client secret de l'application.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh token",
+            "description": "Token de rafraîchissement OAuth2.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "realmId",
+            "label": "Realm ID",
+            "description": "Identifiant de l'entreprise QuickBooks (Company ID).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "qb_customer_create",
+      "name": "qbCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "quickbooks",
+      "description": "Crée un nouveau client QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom affiché",
+            "description": "Nom affiché du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "companyName",
+            "label": "Entreprise",
+            "description": "Nom de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryEmailAddr",
+            "label": "Email",
+            "description": "Email principal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryPhone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_customer_get",
+      "name": "qbCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "quickbooks",
+      "description": "Récupère un client par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_customer_update",
+      "name": "qbCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "quickbooks",
+      "description": "Modifie un client existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companyName",
+            "label": "Entreprise",
+            "description": "Nouvelle entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryEmailAddr",
+            "label": "Email",
+            "description": "Nouvel email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryPhone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_customers_list",
+      "name": "qbCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "quickbooks",
+      "description": "Liste les clients QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_customer_query",
+      "name": "qbCustomerQuery",
+      "schemaVersion": 2,
+      "title": "Rechercher des clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "quickbooks",
+      "description": "Recherche des clients par requête.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Rechercher des clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête SQL",
+            "description": "Requête SELECT (ex: SELECT * FROM Customer WHERE DisplayName LIKE '%test%').",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Clients",
+      "tags": [
+        "recherche",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoice_create",
+      "name": "qbInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Crée une nouvelle facture.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "txnDate",
+            "label": "Date",
+            "description": "Date de la facture (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dueDate",
+            "label": "Échéance",
+            "description": "Date d'échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes",
+            "description": "Lignes de facture (JSON array).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoice_get",
+      "name": "qbInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Récupère une facture par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoice_update",
+      "name": "qbInvoiceUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Modifie une facture existante.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "syncToken",
+            "label": "SyncToken",
+            "description": "Token de synchronisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID du client",
+            "description": "Nouveau client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes",
+            "description": "Nouvelles lignes (JSON array).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "mise-à-jour",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoice_delete",
+      "name": "qbInvoiceDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Supprime une facture.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "syncToken",
+            "label": "SyncToken",
+            "description": "Token de synchronisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "suppression",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoices_list",
+      "name": "qbInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Liste les factures QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les factures",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_invoice_send_email",
+      "name": "qbInvoiceSendEmail",
+      "schemaVersion": 2,
+      "title": "Envoyer une facture par email",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "quickbooks",
+      "description": "Envoie une facture par email.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Envoyer une facture par email",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse email du destinataire.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures",
+      "tags": [
+        "envoi",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_payment_create",
+      "name": "qbPaymentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un paiement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Paiements",
+      "providerKey": "quickbooks",
+      "description": "Crée un nouveau paiement.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_payment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "totalAmt",
+            "label": "Montant",
+            "description": "Montant du paiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "txnDate",
+            "label": "Date",
+            "description": "Date du paiement (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "paymentMethodRef",
+            "label": "Méthode",
+            "description": "ID de la méthode de paiement.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Paiements",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_payment_get",
+      "name": "qbPaymentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un paiement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Paiements",
+      "providerKey": "quickbooks",
+      "description": "Récupère un paiement par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_payment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID du paiement",
+            "description": "Identifiant du paiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Paiements",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_payments_list",
+      "name": "qbPaymentsList",
+      "schemaVersion": 2,
+      "title": "Lister les paiements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Paiements",
+      "providerKey": "quickbooks",
+      "description": "Liste les paiements QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_payments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les paiements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Paiements",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_item_create",
+      "name": "qbItemCreate",
+      "schemaVersion": 2,
+      "title": "Créer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "quickbooks",
+      "description": "Crée un nouvel article/produit.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "unitPrice",
+            "label": "Prix unitaire",
+            "description": "Prix unitaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type (Service, Inventory, NonInventory).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "incomeAccountRef",
+            "label": "Compte revenu",
+            "description": "ID du compte de revenu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "expenseAccountRef",
+            "label": "Compte charge",
+            "description": "ID du compte de charge.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_item_get",
+      "name": "qbItemGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "quickbooks",
+      "description": "Récupère un article par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_item_update",
+      "name": "qbItemUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "quickbooks",
+      "description": "Modifie un article existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "syncToken",
+            "label": "SyncToken",
+            "description": "Token de synchronisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "unitPrice",
+            "label": "Prix",
+            "description": "Nouveau prix.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "mise-à-jour",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_items_list",
+      "name": "qbItemsList",
+      "schemaVersion": 2,
+      "title": "Lister les articles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "quickbooks",
+      "description": "Liste les articles QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les articles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Articles",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_vendor_create",
+      "name": "qbVendorCreate",
+      "schemaVersion": 2,
+      "title": "Créer un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "quickbooks",
+      "description": "Crée un nouveau fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_vendor"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom affiché",
+            "description": "Nom affiché du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "companyName",
+            "label": "Entreprise",
+            "description": "Nom de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryEmailAddr",
+            "label": "Email",
+            "description": "Email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryPhone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_vendor_get",
+      "name": "qbVendorGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "quickbooks",
+      "description": "Récupère un fournisseur par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_vendor"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID du fournisseur",
+            "description": "Identifiant du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_vendors_list",
+      "name": "qbVendorsList",
+      "schemaVersion": 2,
+      "title": "Lister les fournisseurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "quickbooks",
+      "description": "Liste les fournisseurs QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_vendors"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les fournisseurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Fournisseurs",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_bill_create",
+      "name": "qbBillCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "quickbooks",
+      "description": "Crée une facture fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_bill"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une facture fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorRef",
+            "label": "ID du fournisseur",
+            "description": "Identifiant du fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "txnDate",
+            "label": "Date",
+            "description": "Date (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dueDate",
+            "label": "Échéance",
+            "description": "Échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes",
+            "description": "Lignes de facture (JSON array).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures fournisseurs",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_bill_get",
+      "name": "qbBillGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une facture fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "quickbooks",
+      "description": "Récupère une facture fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_bill"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer une facture fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID de la facture",
+            "description": "Identifiant de la facture fournisseur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Factures fournisseurs",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_bills_list",
+      "name": "qbBillsList",
+      "schemaVersion": 2,
+      "title": "Lister les factures fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "quickbooks",
+      "description": "Liste les factures fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_bills"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les factures fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Factures fournisseurs",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_account_get",
+      "name": "qbAccountGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Comptes",
+      "providerKey": "quickbooks",
+      "description": "Récupère un compte par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID du compte",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Comptes",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_accounts_list",
+      "name": "qbAccountsList",
+      "schemaVersion": 2,
+      "title": "Lister les comptes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Comptes",
+      "providerKey": "quickbooks",
+      "description": "Liste les comptes QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_accounts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les comptes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Comptes",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_report_profit_loss",
+      "name": "qbReportProfitLoss",
+      "schemaVersion": 2,
+      "title": "Rapport pertes et profits",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "quickbooks",
+      "description": "Génère un rapport de pertes et profits.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_report"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Rapport pertes et profits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "startDate",
+            "label": "Date de début",
+            "description": "Date de début (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endDate",
+            "label": "Date de fin",
+            "description": "Date de fin (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Rapports",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_report_balance_sheet",
+      "name": "qbReportBalanceSheet",
+      "schemaVersion": 2,
+      "title": "Rapport bilan",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Rapports",
+      "providerKey": "quickbooks",
+      "description": "Génère un rapport de bilan.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_report"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Rapport bilan",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "startDate",
+            "label": "Date de début",
+            "description": "Date de début (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endDate",
+            "label": "Date de fin",
+            "description": "Date de fin (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Rapports",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_estimate_create",
+      "name": "qbEstimateCreate",
+      "schemaVersion": 2,
+      "title": "Créer un devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "quickbooks",
+      "description": "Crée un nouveau devis.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_estimate"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID du client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "txnDate",
+            "label": "Date",
+            "description": "Date du devis (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "expirationDate",
+            "label": "Expiration",
+            "description": "Date d'expiration (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes",
+            "description": "Lignes du devis (JSON array).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "création",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_estimate_get",
+      "name": "qbEstimateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "quickbooks",
+      "description": "Récupère un devis par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_estimate"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "estimateId",
+            "label": "ID du devis",
+            "description": "Identifiant du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "lecture",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_estimates_list",
+      "name": "qbEstimatesList",
+      "schemaVersion": 2,
+      "title": "Lister les devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "quickbooks",
+      "description": "Liste les devis QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_estimates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête SQL personnalisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Devis",
+      "tags": [
+        "liste",
+        "quickbooks"
+      ]
+    },
+    {
+      "key": "qb_webhook_event",
+      "name": "qbWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "quickbooks",
+      "description": "Déclenchement via webhook QuickBooks entrant.",
+      "subtitle": "Événements",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "tags": [
+        "événement",
+        "quickbooks"
+      ]
+    }
+  ]
+}

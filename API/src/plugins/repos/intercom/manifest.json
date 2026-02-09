@@ -1,0 +1,2796 @@
+{
+  "repo": {
+    "name": "intercom",
+    "type": "local",
+    "label": "Intercom"
+  },
+  "variables": {
+    "ic_contact": {
+      "title": "Contact Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type (user, lead).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom complet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "role",
+          "label": "Rôle",
+          "description": "Rôle du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "updatedAt",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "contacts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "role",
+              "label": "Rôle",
+              "description": "Rôle.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_conversation": {
+      "title": "Conversation Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la conversation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de conversation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la conversation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État (open, closed, snoozed).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Priorité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "adminAssigneeId",
+          "label": "Admin",
+          "description": "ID de l'admin assigné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "updatedAt",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_conversations": {
+      "title": "Conversations",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Conversations",
+          "description": "Liste des conversations",
+          "mode": "array",
+          "key": "conversations",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "adminAssigneeId",
+              "label": "Admin",
+              "description": "Admin.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_company": {
+      "title": "Entreprise Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "companyId",
+          "label": "Company ID",
+          "description": "ID externe de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "plan",
+          "label": "Plan",
+          "description": "Plan de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "industry",
+          "label": "Industrie",
+          "description": "Secteur d'activité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "userCount",
+          "label": "Utilisateurs",
+          "description": "Nombre d'utilisateurs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_companies": {
+      "title": "Entreprises",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Entreprises",
+          "description": "Liste des entreprises",
+          "mode": "array",
+          "key": "companies",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "companyId",
+              "label": "Company ID",
+              "description": "ID externe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "plan",
+              "label": "Plan",
+              "description": "Plan.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "industry",
+              "label": "Industrie",
+              "description": "Industrie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_tag": {
+      "title": "Tag Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du tag.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_tags": {
+      "title": "Tags",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tags",
+          "description": "Liste des tags",
+          "mode": "array",
+          "key": "tags",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_note": {
+      "title": "Note Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "author",
+          "label": "Auteur",
+          "description": "Auteur de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_notes": {
+      "title": "Notes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Notes",
+          "description": "Liste des notes",
+          "mode": "array",
+          "key": "notes",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_article": {
+      "title": "Article Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État (published, draft).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_articles": {
+      "title": "Articles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Articles",
+          "description": "Liste des articles",
+          "mode": "array",
+          "key": "articles",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ic_event": {
+      "title": "Événement Intercom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "description": "Type d'événement webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "appId",
+          "label": "App ID",
+          "description": "Identifiant de l'application.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "intercom",
+      "name": "Intercom",
+      "title": "Intercom",
+      "iconClass": "fa-solid fa-comments",
+      "iconUrl": "https://cdn.simpleicons.org/intercom",
+      "color": "#286EFA",
+      "tags": [
+        "intercom",
+        "messaging",
+        "support",
+        "crm"
+      ],
+      "categories": [
+        "Messagerie"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Intercom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access token",
+            "description": "Token d'accès Intercom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "intercom_contact_create",
+      "name": "intercomContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact Intercom.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "role",
+            "label": "Rôle",
+            "description": "Rôle (user ou lead).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "user"
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom complet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "externalId",
+            "label": "External ID",
+            "description": "Identifiant externe.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_contact_get",
+      "name": "intercomContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact Intercom par son ID.",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_contact_update",
+      "name": "intercomContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un contact Intercom.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvelle adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "role",
+            "label": "Rôle",
+            "description": "Nouveau rôle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_contact_search",
+      "name": "intercomContactSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des contacts",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "recherche",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des contacts Intercom.",
+      "args": {
+        "title": "Rechercher des contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "field",
+            "label": "Champ",
+            "description": "Champ de recherche (email, name, etc.).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "email"
+          },
+          {
+            "type": "text",
+            "key": "operator",
+            "label": "Opérateur",
+            "description": "Opérateur (=, !=, ~, etc.).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "="
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Valeur de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_contacts_list",
+      "name": "intercomContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les contacts Intercom avec pagination.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startingAfter",
+            "label": "Après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_contact_archive",
+      "name": "intercomContactArchive",
+      "schemaVersion": 2,
+      "title": "Archiver un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "archivage",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Archive un contact Intercom.",
+      "args": {
+        "title": "Archiver un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_create",
+      "name": "intercomConversationCreate",
+      "schemaVersion": 2,
+      "title": "Créer une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_conversation"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle conversation Intercom.",
+      "args": {
+        "title": "Créer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "from",
+            "label": "De",
+            "description": "ID du contact initiateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Message",
+            "description": "Corps du message initial.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_get",
+      "name": "intercomConversationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_conversation"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une conversation Intercom.",
+      "args": {
+        "title": "Récupérer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversations_list",
+      "name": "intercomConversationsList",
+      "schemaVersion": 2,
+      "title": "Lister les conversations",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_conversations"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les conversations Intercom.",
+      "args": {
+        "title": "Lister les conversations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startingAfter",
+            "label": "Après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_reply",
+      "name": "intercomConversationReply",
+      "schemaVersion": 2,
+      "title": "Répondre à une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "envoi",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute une réponse à une conversation.",
+      "args": {
+        "title": "Répondre à une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Message",
+            "description": "Corps de la réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "messageType",
+            "label": "Type",
+            "description": "Type de message (comment, note).",
+            "col": {
+              "xs": 24
+            },
+            "default": "comment"
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin répondant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type expéditeur",
+            "description": "Type (admin).",
+            "col": {
+              "xs": 24
+            },
+            "default": "admin"
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_close",
+      "name": "intercomConversationClose",
+      "schemaVersion": 2,
+      "title": "Fermer une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ferme une conversation Intercom.",
+      "args": {
+        "title": "Fermer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Message",
+            "description": "Message de fermeture (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_open",
+      "name": "intercomConversationOpen",
+      "schemaVersion": 2,
+      "title": "Rouvrir une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Rouvre une conversation Intercom.",
+      "args": {
+        "title": "Rouvrir une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_assign",
+      "name": "intercomConversationAssign",
+      "schemaVersion": 2,
+      "title": "Assigner une conversation",
+      "subtitle": "Conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Assigne une conversation à un admin ou une équipe.",
+      "args": {
+        "title": "Assigner une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin qui assigne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné ID",
+            "description": "ID de l'admin ou équipe assigné.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Message",
+            "description": "Message d'assignation (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_conversation_tag",
+      "name": "intercomConversationTag",
+      "schemaVersion": 2,
+      "title": "Taguer une conversation",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "mise-à-jour",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un tag à une conversation.",
+      "args": {
+        "title": "Taguer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation ID",
+            "description": "Identifiant de la conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tagId",
+            "label": "Tag ID",
+            "description": "Identifiant du tag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_company_create",
+      "name": "intercomCompanyCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entreprise",
+      "subtitle": "Entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée ou met à jour une entreprise Intercom.",
+      "args": {
+        "title": "Créer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "Company ID",
+            "description": "ID externe de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "plan",
+            "label": "Plan",
+            "description": "Plan de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "industry",
+            "label": "Industrie",
+            "description": "Secteur d'activité.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_company_get",
+      "name": "intercomCompanyGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une entreprise",
+      "subtitle": "Entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une entreprise Intercom.",
+      "args": {
+        "title": "Récupérer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "Company ID",
+            "description": "Identifiant de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_companies_list",
+      "name": "intercomCompaniesList",
+      "schemaVersion": 2,
+      "title": "Lister les entreprises",
+      "subtitle": "Entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_companies"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les entreprises Intercom.",
+      "args": {
+        "title": "Lister les entreprises",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_tag_create",
+      "name": "intercomTagCreate",
+      "schemaVersion": 2,
+      "title": "Créer un tag",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_tag"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau tag Intercom.",
+      "args": {
+        "title": "Créer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du tag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_tags_list",
+      "name": "intercomTagsList",
+      "schemaVersion": 2,
+      "title": "Lister les tags",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_tags"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tags Intercom.",
+      "args": {
+        "title": "Lister les tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    },
+    {
+      "key": "intercom_note_create",
+      "name": "intercomNoteCreate",
+      "schemaVersion": 2,
+      "title": "Créer une note",
+      "subtitle": "Notes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_note"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une note sur un contact.",
+      "args": {
+        "title": "Créer une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Contenu",
+            "description": "Contenu de la note.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "adminId",
+            "label": "Admin ID",
+            "description": "ID de l'admin auteur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_notes_list",
+      "name": "intercomNotesList",
+      "schemaVersion": 2,
+      "title": "Lister les notes",
+      "subtitle": "Notes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_notes"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les notes d'un contact.",
+      "args": {
+        "title": "Lister les notes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startingAfter",
+            "label": "Après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_data_event_create",
+      "name": "intercomDataEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "subtitle": "Événements de données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "création",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un événement de données sur un contact.",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventName",
+            "label": "Nom",
+            "description": "Nom de l'événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du contact (ou userId).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Métadonnées",
+            "description": "Métadonnées JSON (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_data_events_list",
+      "name": "intercomDataEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "subtitle": "Événements de données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements de données d'un contact.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type d'identifiant (user).",
+            "col": {
+              "xs": 24
+            },
+            "default": "user"
+          },
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "description": "Identifiant intercom du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_articles_list",
+      "name": "intercomArticlesList",
+      "schemaVersion": 2,
+      "title": "Lister les articles",
+      "subtitle": "Articles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "liste",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_articles"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les articles du centre d'aide.",
+      "args": {
+        "title": "Lister les articles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_article_get",
+      "name": "intercomArticleGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un article",
+      "subtitle": "Articles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "lecture",
+        "intercom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_article"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un article par son ID.",
+      "args": {
+        "title": "Récupérer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "articleId",
+            "label": "Article ID",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "intercom_webhook_event",
+      "name": "intercomWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Événements",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "événement",
+        "intercom"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenché lors d'un événement Intercom via webhook.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      }
+    }
+  ]
+}

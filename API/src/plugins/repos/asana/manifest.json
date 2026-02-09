@@ -1,0 +1,2089 @@
+{
+  "repo": {
+    "name": "asana",
+    "type": "local",
+    "label": "Asana"
+  },
+  "variables": {
+    "asana_task": {
+      "title": "Tâche Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant global de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "notes",
+          "label": "Notes",
+          "description": "Description de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assignee",
+          "label": "Assigné",
+          "description": "Personne assignée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "completed",
+          "label": "Complété",
+          "description": "Tâche complétée (true/false).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "due_on",
+          "label": "Date d'échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project",
+          "label": "Projet",
+          "description": "Nom du projet associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "modified_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_tasks": {
+      "title": "Tâches Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tâches",
+          "description": "Liste des tâches",
+          "mode": "array",
+          "key": "tasks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignee",
+              "label": "Assigné",
+              "description": "Assigné.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "completed",
+              "label": "Complété",
+              "description": "Complété.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "due_on",
+              "label": "Date d'échéance",
+              "description": "Échéance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_project": {
+      "title": "Projet Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "notes",
+          "label": "Notes",
+          "description": "Description du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur du projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "workspace",
+          "label": "Workspace",
+          "description": "Workspace associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_projects": {
+      "title": "Projets Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Projets",
+          "description": "Liste des projets",
+          "mode": "array",
+          "key": "projects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "description": "Couleur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "workspace",
+              "label": "Workspace",
+              "description": "Workspace.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_section": {
+      "title": "Section Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant de la section.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la section.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project",
+          "label": "Projet",
+          "description": "Projet associé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_sections": {
+      "title": "Sections Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Sections",
+          "description": "Liste des sections",
+          "mode": "array",
+          "key": "sections",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_tag": {
+      "title": "Tag Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur du tag.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_tags": {
+      "title": "Tags Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tags",
+          "description": "Liste des tags",
+          "mode": "array",
+          "key": "tags",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "description": "Couleur.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_user": {
+      "title": "Utilisateur Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_users": {
+      "title": "Utilisateurs Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_workspace": {
+      "title": "Workspace Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du workspace.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_workspaces": {
+      "title": "Workspaces Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Workspaces",
+          "description": "Liste des workspaces",
+          "mode": "array",
+          "key": "workspaces",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_story": {
+      "title": "Story/Commentaire Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "gid",
+          "label": "GID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de story.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created_by",
+          "label": "Créé par",
+          "description": "Auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_stories": {
+      "title": "Stories Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Stories",
+          "description": "Liste des stories/commentaires",
+          "mode": "array",
+          "key": "stories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "gid",
+              "label": "GID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "text",
+              "label": "Texte",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "asana_event": {
+      "title": "Événement Asana",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "action",
+          "label": "Action",
+          "description": "Type d'action.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resourceType",
+          "label": "Type de ressource",
+          "description": "Type de ressource concernée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resourceGid",
+          "label": "GID ressource",
+          "description": "Identifiant de la ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Données brutes (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "asana",
+      "name": "Asana",
+      "title": "Asana",
+      "iconClass": "fa-solid fa-list-check",
+      "iconUrl": "https://cdn.simpleicons.org/asana",
+      "color": "#F06A6A",
+      "tags": [
+        "asana",
+        "project",
+        "tasks"
+      ],
+      "categories": [
+        "Gestion de projet"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Asana",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personalAccessToken",
+            "label": "Personal Access Token",
+            "description": "Token d'accès personnel Asana.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "asana_task_create",
+      "name": "asanaTaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle tâche dans Asana.",
+      "args": {
+        "title": "Créer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Description de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "Assigné (GID ou email)",
+            "description": "Identifiant ou email de l'assigné.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "due_on",
+            "label": "Date d'échéance",
+            "description": "Date d'échéance (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "création"
+      ]
+    },
+    {
+      "key": "asana_task_get",
+      "name": "asanaTaskGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une tâche Asana par son GID.",
+      "args": {
+        "title": "Obtenir une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "lecture"
+      ]
+    },
+    {
+      "key": "asana_task_update",
+      "name": "asanaTaskUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une tâche existante dans Asana.",
+      "args": {
+        "title": "Modifier une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Nouvelles notes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "Assigné",
+            "description": "Nouvel assigné (GID ou email).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "due_on",
+            "label": "Date d'échéance",
+            "description": "Nouvelle date (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "completed",
+            "label": "Complété",
+            "description": "true ou false.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "mise-à-jour"
+      ]
+    },
+    {
+      "key": "asana_task_delete",
+      "name": "asanaTaskDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une tâche Asana.",
+      "args": {
+        "title": "Supprimer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Identifiant de la tâche à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "suppression"
+      ]
+    },
+    {
+      "key": "asana_tasks_list",
+      "name": "asanaTasksList",
+      "schemaVersion": 2,
+      "title": "Lister les tâches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_tasks"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tâches d'un projet Asana.",
+      "args": {
+        "title": "Lister les tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_project_create",
+      "name": "asanaProjectCreate",
+      "schemaVersion": 2,
+      "title": "Créer un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau projet dans Asana.",
+      "args": {
+        "title": "Créer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Description du projet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "description": "Couleur du projet (ex: dark-green).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "création"
+      ]
+    },
+    {
+      "key": "asana_project_get",
+      "name": "asanaProjectGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un projet Asana par son GID.",
+      "args": {
+        "title": "Obtenir un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "lecture"
+      ]
+    },
+    {
+      "key": "asana_projects_list",
+      "name": "asanaProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_projects"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les projets d'un workspace Asana.",
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_section_create",
+      "name": "asanaSectionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une section",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_section"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle section dans un projet Asana.",
+      "args": {
+        "title": "Créer une section",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la section.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Sections",
+      "tags": [
+        "asana",
+        "création"
+      ]
+    },
+    {
+      "key": "asana_sections_list",
+      "name": "asanaSectionsList",
+      "schemaVersion": 2,
+      "title": "Lister les sections",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_sections"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les sections d'un projet Asana.",
+      "args": {
+        "title": "Lister les sections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Sections",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_tag_create",
+      "name": "asanaTagCreate",
+      "schemaVersion": 2,
+      "title": "Créer un tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_tag"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau tag dans Asana.",
+      "args": {
+        "title": "Créer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du tag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "description": "Couleur du tag.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tags",
+      "tags": [
+        "asana",
+        "création"
+      ]
+    },
+    {
+      "key": "asana_tags_list",
+      "name": "asanaTagsList",
+      "schemaVersion": 2,
+      "title": "Lister les tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_tags"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tags d'un workspace Asana.",
+      "args": {
+        "title": "Lister les tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tags",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_user_get",
+      "name": "asanaUserGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un utilisateur Asana par son GID.",
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userGid",
+            "label": "GID utilisateur",
+            "description": "Identifiant de l'utilisateur (ou 'me').",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "asana",
+        "lecture"
+      ]
+    },
+    {
+      "key": "asana_users_list_workspace",
+      "name": "asanaUsersListWorkspace",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs d'un workspace Asana.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Utilisateurs",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_workspaces_list",
+      "name": "asanaWorkspacesList",
+      "schemaVersion": 2,
+      "title": "Lister les workspaces",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_workspaces"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les workspaces Asana accessibles.",
+      "args": {
+        "title": "Lister les workspaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": []
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Espaces de travail",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_story_create",
+      "name": "asanaStoryCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_story"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à une tâche Asana.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Commentaire",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Stories",
+      "tags": [
+        "asana",
+        "création"
+      ]
+    },
+    {
+      "key": "asana_stories_list",
+      "name": "asanaStoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_stories"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les stories/commentaires d'une tâche Asana.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Stories",
+      "tags": [
+        "asana",
+        "liste"
+      ]
+    },
+    {
+      "key": "asana_webhook_event",
+      "name": "asanaWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Asana",
+      "providerKey": "asana",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant depuis Asana.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/asana"
+          }
+        ]
+      },
+      "subtitle": "Événements",
+      "inputHandles": [],
+      "tags": [
+        "asana",
+        "événement"
+      ]
+    }
+  ]
+}

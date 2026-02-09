@@ -1,0 +1,1524 @@
+{
+  "repo": {
+    "name": "supabase",
+    "type": "local",
+    "label": "Supabase"
+  },
+  "variables": {
+    "supa_records": {
+      "title": "Enregistrements Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Enregistrements Supabase",
+          "description": "Liste",
+          "mode": "array",
+          "key": "records",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "textarea",
+              "key": "data",
+              "label": "Données (JSON)",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_record": {
+      "title": "Enregistrement Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (JSON)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_user": {
+      "title": "Utilisateur Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "role",
+          "label": "Rôle",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastSignInAt",
+          "label": "Dernière connexion",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_users": {
+      "title": "Utilisateurs Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs Supabase",
+          "description": "Liste",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "role",
+              "label": "Rôle",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "createdAt",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_file": {
+      "title": "Fichier Supabase Storage",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "bucket",
+          "label": "Bucket",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mimeType",
+          "label": "Type MIME",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "createdAt",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_files": {
+      "title": "Fichiers Supabase Storage",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fichiers Supabase Storage",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "bucket",
+              "label": "Bucket",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_rpc": {
+      "title": "Résultat RPC Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (JSON)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "supa_result": {
+      "title": "Résultat Supabase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "count",
+          "label": "Nombre affecté",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "supabase",
+      "name": "Supabase",
+      "title": "Supabase",
+      "iconClass": "fa-solid fa-bolt",
+      "iconUrl": "https://cdn.simpleicons.org/supabase",
+      "color": "#3ECF8E",
+      "tags": [
+        "supabase",
+        "database",
+        "storage",
+        "auth"
+      ],
+      "categories": [
+        "Database",
+        "Backend"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Supabase",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectUrl",
+            "label": "URL du projet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Ex: https://xxx.supabase.co"
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key (anon ou service)",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "serviceRoleKey",
+            "label": "Service Role Key",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "description": "Requis pour les opérations admin (auth, storage)."
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "supa_select",
+      "name": "supaSelect",
+      "schemaVersion": 2,
+      "title": "Récupérer des enregistrements",
+      "subtitle": "Base de données",
+      "tags": [
+        "lecture",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère des enregistrements depuis une table Supabase.",
+      "args": {
+        "title": "Récupérer des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "select",
+            "label": "Colonnes",
+            "col": {
+              "xs": 24
+            },
+            "default": "*",
+            "description": "Colonnes à retourner (ex: id,name)."
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtre PostgREST (ex: age=gt.18)."
+          },
+          {
+            "type": "text",
+            "key": "order",
+            "label": "Tri",
+            "col": {
+              "xs": 24
+            },
+            "description": "Colonne de tri (ex: created_at.desc)."
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            },
+            "default": 0
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_insert",
+      "name": "supaInsert",
+      "schemaVersion": 2,
+      "title": "Insérer des enregistrements",
+      "subtitle": "Base de données",
+      "tags": [
+        "création",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Insère un ou plusieurs enregistrements dans une table.",
+      "args": {
+        "title": "Insérer des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Objet ou tableau d'objets."
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_update",
+      "name": "supaUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des enregistrements",
+      "subtitle": "Base de données",
+      "tags": [
+        "mise-à-jour",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour des enregistrements dans une table.",
+      "args": {
+        "title": "Mettre à jour des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Filtre PostgREST (ex: id=eq.123)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_upsert",
+      "name": "supaUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert des enregistrements",
+      "subtitle": "Base de données",
+      "tags": [
+        "mise-à-jour",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Insère ou met à jour des enregistrements.",
+      "args": {
+        "title": "Upsert des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "onConflict",
+            "label": "Colonnes de conflit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Colonnes pour la détection de conflit (ex: id)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_delete",
+      "name": "supaDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des enregistrements",
+      "subtitle": "Base de données",
+      "tags": [
+        "suppression",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime des enregistrements d'une table.",
+      "args": {
+        "title": "Supprimer des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Filtre PostgREST (ex: id=eq.123)."
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_rpc_call",
+      "name": "supaRpcCall",
+      "schemaVersion": 2,
+      "title": "Appeler une fonction RPC",
+      "subtitle": "Base de données",
+      "tags": [
+        "lecture",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_rpc"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Appelle une fonction PostgreSQL via RPC.",
+      "args": {
+        "title": "Appeler une fonction RPC",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "functionName",
+            "label": "Nom de la fonction",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "params",
+            "label": "Paramètres (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet de paramètres."
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_auth_sign_up",
+      "name": "supaAuthSignUp",
+      "schemaVersion": 2,
+      "title": "Inscrire un utilisateur",
+      "subtitle": "Authentification",
+      "tags": [
+        "création",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel utilisateur via Supabase Auth.",
+      "args": {
+        "title": "Inscrire un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées (JSON)",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_auth_sign_in",
+      "name": "supaAuthSignIn",
+      "schemaVersion": 2,
+      "title": "Connecter un utilisateur",
+      "subtitle": "Authentification",
+      "tags": [
+        "lecture",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Connecte un utilisateur avec email/mot de passe.",
+      "args": {
+        "title": "Connecter un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_auth_get_user",
+      "name": "supaAuthGetUser",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "subtitle": "Authentification",
+      "tags": [
+        "lecture",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'un utilisateur par ID.",
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_auth_list_users",
+      "name": "supaAuthListUsers",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Authentification",
+      "tags": [
+        "liste",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs de Supabase Auth.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_auth_delete_user",
+      "name": "supaAuthDeleteUser",
+      "schemaVersion": 2,
+      "title": "Supprimer un utilisateur",
+      "subtitle": "Authentification",
+      "tags": [
+        "suppression",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un utilisateur par ID.",
+      "args": {
+        "title": "Supprimer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_storage_upload",
+      "name": "supaStorageUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "subtitle": "Stockage",
+      "tags": [
+        "téléversement",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Téléverse un fichier dans Supabase Storage.",
+      "args": {
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu du fichier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Type MIME",
+            "col": {
+              "xs": 24
+            },
+            "default": "application/octet-stream"
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_storage_download",
+      "name": "supaStorageDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "subtitle": "Stockage",
+      "tags": [
+        "téléchargement",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Télécharge un fichier depuis Supabase Storage.",
+      "args": {
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_storage_list",
+      "name": "supaStorageList",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "subtitle": "Stockage",
+      "tags": [
+        "liste",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fichiers dans un bucket de Supabase Storage.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "prefix",
+            "label": "Préfixe (dossier)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ]
+      }
+    },
+    {
+      "key": "supa_storage_delete",
+      "name": "supaStorageDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Stockage",
+      "tags": [
+        "suppression",
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un fichier de Supabase Storage.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
