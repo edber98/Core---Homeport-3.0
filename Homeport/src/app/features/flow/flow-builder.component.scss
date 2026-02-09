@@ -329,64 +329,12 @@ nz-drawer { display: contents; }
 .bottom-bar .icon-btn.active { border-color: #1677ff; color: #1677ff; }
 
 
-.node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; }
-.node-card .exec-badge .exec-badge-inner { display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
 .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
 .node-card .exec-badge .fa-stop.stop { color:#111827; }
 .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
 .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
-:host ::ng-deep .exec-err-tooltip .ant-popover-inner {
-  max-width: 260px;
-  padding: 10px 12px;
-  font-size: 12px;
-  line-height: 1.35;
-  background: #ffffff;
-  border: 1px solid #ef4444;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.12);
-  box-sizing: border-box;
-}
-:host ::ng-deep .exec-err-tooltip .ant-popover-inner-content {
-  padding: 0;
-  max-width: 260px;
-  width: 260px;
-  box-sizing: border-box;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop {
-  max-width: 100%;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop .msg {
-  color: #111827;
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop .details-btn {
-  margin-top: 6px;
-  padding: 4px 8px;
-  border: 1px solid #fecaca;
-  background: #fff5f5;
-  border-radius: 6px;
-  color: #b91c1c;
-  font-size: 12px;
-  cursor: pointer;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop .details-btn:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop .details {
-  margin-top: 6px;
-  color: #6b7280;
-}
-:host ::ng-deep .exec-err-tooltip .exec-err-pop .details .text {
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
 
 /* Spawn ripple animation without absolute/relative: animate outer box-shadows */
 /* Ripple sans absolute/relative, sans transform/box-shadow: outline + radial-gradient animé */

@@ -121,8 +121,6 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // Control whether exec badges are shown on nodes
   private showExecBadges = false;
-  execTooltipNodeId: string | null = null;
-  execTooltipExpanded = false;
   // Snapshot of selected run (from backend) for right panel
   currentRunMeta: { id?: string; status?: string; startedAt?: string; finishedAt?: string } | null = null;
   // Recent local runs (fallback list)
@@ -1527,57 +1525,6 @@ export class FlowBuilderComponent {
       if (!map) return null;
       const v = map.get(String(id));
       return v || null;
-    } catch { return null; }
-  }
-
-  setExecErrorTooltipNode(nodeId: string) {
-    try {
-      this.execTooltipNodeId = String(nodeId);
-      this.execTooltipExpanded = false;
-    } catch {
-      this.execTooltipNodeId = null;
-      this.execTooltipExpanded = false;
-    }
-  }
-
-  toggleExecErrorDetails(ev?: MouseEvent) {
-    try {
-      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
-      this.execTooltipExpanded = !this.execTooltipExpanded;
-    } catch {}
-  }
-
-  private getExecErrorInfo(nodeId: string | null | undefined): { display?: string; error?: string; code?: string; status?: number } | null {
-    try {
-      if (!nodeId) return null;
-      const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
-      const last = [...arr].reverse().find(a => String(a?.status || '') === 'error' && a?.result);
-      if (!last || !last.result || typeof last.result !== 'object') return null;
-      const res: any = last.result;
-      const display = res.displayMessage || res.display_message || res.userMessage || res.user_message;
-      const error = res.error || res.message;
-      const code = res.code ? String(res.code) : undefined;
-      const status = Number(res.status || res.statusCode);
-      return { display, error, code, status: Number.isFinite(status) ? status : undefined };
-    } catch { return null; }
-  }
-
-  execErrorDisplay(nodeId: string | null | undefined): string {
-    try {
-      const info = this.getExecErrorInfo(nodeId);
-      return (info?.display || info?.error || 'Erreur d’exécution') as string;
-    } catch { return 'Erreur d’exécution'; }
-  }
-
-  execErrorDetails(nodeId: string | null | undefined): string | null {
-    try {
-      const info = this.getExecErrorInfo(nodeId);
-      if (!info) return null;
-      const parts: string[] = [];
-      if (info.code) parts.push(`Code: ${info.code}`);
-      if (typeof info.status === 'number') parts.push(`Status: ${info.status}`);
-      if (info.error && info.display !== info.error) parts.push(`Erreur: ${info.error}`);
-      return parts.length ? parts.join(' • ') : null;
     } catch { return null; }
   }
 
