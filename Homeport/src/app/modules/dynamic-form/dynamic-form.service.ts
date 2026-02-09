@@ -223,7 +223,8 @@ export class DynamicFormService {
 
     buildForm(schema: FormSchema, initialValue?: Record<string, any>): FormGroup {
         const controls: Record<string, FormControl> = {};
-        for (const f of this.collectFields(schema)) {
+        const collected = this.collectFields(schema);
+        for (const f of collected) {
             if (!isInputField(f)) continue;
             const v = this.initialValueForField(f, initialValue);
             controls[f.key] = this.fb.control(v, this.mapValidators(f.validators || []));
