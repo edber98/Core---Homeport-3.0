@@ -357,7 +357,7 @@ import { backAwareCurve } from './edge-curves';
       text-align:center;
     }
     .side.executions .panel-heading .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
-    .side.executions .panel-heading .card-title .t { font-weight:700; font-size:18px; margin: 0; color:#111; line-height:1.1; }
+    .side.executions .panel-heading .card-title .t { font-weight:700; font-size:14px; margin: 0; color:#111; line-height:1.1; }
     .side.executions .panel-heading .card-title .s { font-size:13px; color:#64748b; margin: 0; line-height:1.2; }
     .side.executions .section-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 0; border-bottom:0; margin:0; }
     .side.executions .section-heading .card-title { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
@@ -561,7 +561,7 @@ import { backAwareCurve } from './edge-curves';
       text-align:center;
       line-height:1.2;
     }
-    .details-panel .panel-heading.details-heading .card-title .t { font-weight:700; font-size:18px; margin: 0; color:#111; line-height:1.1; }
+    .details-panel .panel-heading.details-heading .card-title .t { font-weight:700; font-size:14px; margin: 0; color:#111; line-height:1.1; }
     .details-panel .panel-heading.details-heading .card-title .s { font-size:13px; color:#64748b; margin: 0; line-height:1.2; }
     .details-panel .panel-heading.details-heading .panel-subtitle { margin: 0; }
     .details-panel .details-meta {

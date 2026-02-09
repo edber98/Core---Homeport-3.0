@@ -380,7 +380,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .panel-heading .card-title .s { font-size:12px; color:#64748b; }
     .panel-heading.main-title { justify-content:center; padding:10px 0; }
     .panel-heading.main-title .card-title { align-items:center; text-align:center; margin:0; width:100%; line-height:1.1; }
-    .panel-heading.main-title .card-title .t { font-weight:700; font-size:18px; color:#000; }
+    .panel-heading.main-title .card-title .t { font-weight:700; font-size:14px; color:#000; }
     .panel-heading.main-title .card-title .s { font-size:13px; color:#64748b; }
     .node-panel { margin: 8px 6px 12px; padding: 0; border-radius: 0; background: transparent; border: 0; }
     .node-panel .panel-heading { display:flex; align-items:flex-end; font-weight:600; font-size:13px; color:#111; padding:6px 0 8px; border-bottom:0; margin:12px 0 8px; }

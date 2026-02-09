@@ -188,7 +188,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .palette.drawer-mode { height: 100%; overflow: auto; }
     .palette .palette-topbar { width: calc(100% + 21px); margin: 0 -9px 0 -12px; background:#fff; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:0; border-bottom: 0; flex-direction:column; }
     .palette .palette-topbar.centered { justify-content:center; }
-    .palette .palette-topbar .t { font-weight:700; font-size:18px; color:#111; line-height:1.1; }
+    .palette .palette-topbar .t { font-weight:700; font-size:14px; color:#111; line-height:1.1; }
     .palette .palette-topbar .s { font-size:13px; color:#64748b; line-height:1.2; }
     .palette .palette-search { margin: 6px 0 14px; }
     :host ::ng-deep .palette .palette-search .ant-input:focus,
@@ -210,7 +210,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     .palette .group-topbar .group-mini { width: 22px; height: 22px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; }
     .palette .group-topbar .group-mini i { font-size: 13px; line-height: 1; color: #fff; }
     .palette .group-topbar .group-mini img { width: 13px; height: 13px; object-fit: contain; display:block; }
-    .palette .group-topbar .group-name { font-weight:700; font-size: 18px; color:#111; }
+    .palette .group-topbar .group-name { font-weight:700; font-size: 14px; color:#111; }
     .palette .group-row {
       width: 100%;
       display:flex;
