@@ -33,8 +33,25 @@
 .flow-builder > .left-panel.closed { width: 0; opacity: 0; transform: none; pointer-events: none; }
 .flow-builder > .canvas { min-height: 0; }
 .flow-builder > .inspector { min-height: 0; }
-.flow-builder > .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: hidden; width: 320px; transition: width 180ms ease, opacity 180ms ease; will-change: width, opacity; }
+.flow-builder > .right-panel { position: relative; min-height: 0; height: 100%; display:flex; flex-direction:column; overflow: hidden; width: 320px; transition: width 180ms ease, opacity 180ms ease; will-change: width, opacity; }
 .flow-builder > .right-panel.closed { width: 0; opacity: 0; transform: none; pointer-events: none; }
+.flow-builder > .right-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: #e5e7eb;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0ms linear 0ms;
+}
+.flow-builder.right-panel-open > .right-panel::before {
+  opacity: 1;
+  transition-delay: 180ms;
+}
 .panel-toggle-fab { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; border-radius: 12px; padding: 0; display:inline-flex; align-items:center; justify-content:center; background:#fff; border:1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.12); z-index: 25; transition: right 180ms ease; }
 .panel-toggle-fab i { font-size: 16px; color:#111; }
 .flow-builder.right-panel-open .panel-toggle-fab { right: 332px; }
@@ -128,7 +145,9 @@
 .canvas {  border-style: solid; border-color: #e5e7eb; border-width: 0 1px 1px 1px; border-radius: 0; overflow: hidden; transition: border-color 180ms ease; }
 /* Borders sync with side panels: hide side border when panel is closed */
 .flow-builder:not(.left-panel-open) .canvas { border-left: 0; }
+.flow-builder.left-panel-open .canvas { border-left: 0; }
 .flow-builder:not(.right-panel-open) .canvas { border-right: 0; }
+.flow-builder.right-panel-open .canvas { border-right: 0; }
 .canvas { position: relative; height: 100%; }
 .canvas-host { height: 100%; width: 100%; position: relative; }
 .canvas-host { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
