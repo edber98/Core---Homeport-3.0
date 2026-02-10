@@ -426,6 +426,63 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
   color: #1677ff !important;
 }
 
+/* Create flow/form modals: blue focus + blue hover */
+.ant-modal-wrap.create-flow-modal .ant-input:focus,
+.ant-modal-wrap.create-flow-modal .ant-input-focused,
+.ant-modal-wrap.create-form-modal .ant-input:focus,
+.ant-modal-wrap.create-form-modal .ant-input-focused,
+.ant-modal.create-flow-modal .ant-input:focus,
+.ant-modal.create-flow-modal .ant-input-focused,
+.ant-modal.create-form-modal .ant-input:focus,
+.ant-modal.create-form-modal .ant-input-focused {
+  border-color:#1677ff !important;
+  box-shadow:none;
+}
+.ant-modal-wrap.create-flow-modal .ant-select-focused .ant-select-selector,
+.ant-modal-wrap.create-form-modal .ant-select-focused .ant-select-selector,
+.ant-modal.create-flow-modal .ant-select-focused .ant-select-selector,
+.ant-modal.create-form-modal .ant-select-focused .ant-select-selector {
+  border-color:#1677ff !important;
+  box-shadow:none !important;
+}
+.ant-modal-wrap.create-flow-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-modal-wrap.create-form-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-modal.create-flow-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-modal.create-form-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color:#1677ff !important;
+}
+.ant-modal-wrap.create-flow-modal .ant-input:hover,
+.ant-modal-wrap.create-form-modal .ant-input:hover,
+.ant-modal.create-flow-modal .ant-input:hover,
+.ant-modal.create-form-modal .ant-input:hover,
+.ant-modal-wrap.create-flow-modal .ant-input-affix-wrapper:hover,
+.ant-modal-wrap.create-form-modal .ant-input-affix-wrapper:hover,
+.ant-modal.create-flow-modal .ant-input-affix-wrapper:hover,
+.ant-modal.create-form-modal .ant-input-affix-wrapper:hover {
+  border-color:#1677ff !important;
+}
+.ant-modal-wrap.create-flow-modal .ant-btn:hover:not([disabled]),
+.ant-modal-wrap.create-form-modal .ant-btn:hover:not([disabled]),
+.ant-modal.create-flow-modal .ant-btn:hover:not([disabled]),
+.ant-modal.create-form-modal .ant-btn:hover:not([disabled]) {
+  border-color:#1677ff !important;
+  color:#1677ff !important;
+}
+.ant-modal-wrap.create-flow-modal .ant-btn-primary,
+.ant-modal-wrap.create-form-modal .ant-btn-primary,
+.ant-modal.create-flow-modal .ant-btn-primary,
+.ant-modal.create-form-modal .ant-btn-primary {
+  background:#1677ff !important;
+  border-color:#1677ff !important;
+  color:#fff !important;
+}
+.ant-modal-wrap.create-flow-modal .ant-switch-checked,
+.ant-modal-wrap.create-form-modal .ant-switch-checked,
+.ant-modal.create-flow-modal .ant-switch-checked,
+.ant-modal.create-form-modal .ant-switch-checked {
+  background-color:#1677ff !important;
+}
+
 /* Unsaved leave modal: outline buttons with colored hover fill */
 .unsaved-leave-modal .ant-modal-footer .ant-btn-primary {
   background: transparent !important;

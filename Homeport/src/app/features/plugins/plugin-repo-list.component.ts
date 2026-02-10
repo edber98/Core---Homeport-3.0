@@ -59,6 +59,7 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
     .search { width: 220px; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; }
     .page-header .actions{ display:flex; align-items:center; gap:8px; }
     .page-header .actions .create-btn { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .primary:hover { border-color:#1677ff; color:#1677ff; }
     .page-header .actions .with-text i { margin-right: 6px; }
     .grid { display:grid; grid-template-columns: 1fr; gap:10px; }
     .card { display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:#fff; border:1px solid #ececec; cursor:pointer; }

@@ -63,44 +63,46 @@ type FlowItem = { id: string; name: string; description?: string };
           <div class="content">
             <div class="title-row">
               <div class="name">{{ it.name }}</div>
-              <div class="mobile-dots" [attr.title]="statusLabel(it.status) + (it.enabled ? ' • activé' : ' • désactivé')">
-                <span class="dot" [ngClass]="statusClass(it.status)"></span>
-                <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
-              </div>
-              <span class="chip" *ngIf="it.status"
-                    [ngClass]="statusClass(it.status)"
-                    nz-dropdown
-                    [nzDropdownMenu]="statusMenu"
-                    nzTrigger="click"
-                    [nzDisabled]="updatingIds.has(it.id)"
-                    (click)="$event.stopPropagation()">
-                {{ statusLabel(it.status) }}
-              </span>
-              <nz-dropdown-menu #statusMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="setStatus(it, 'draft'); $event.stopPropagation()">Brouillon</li>
-                  <li nz-menu-item (click)="setStatus(it, 'test'); $event.stopPropagation()">Test</li>
-                  <li nz-menu-item (click)="setStatus(it, 'production'); $event.stopPropagation()">Production</li>
-                </ul>
-              </nz-dropdown-menu>
-              <span class="chip" [ngClass]="it.enabled ? 'on' : 'off'"
-                    nz-dropdown
-                    [nzDropdownMenu]="enabledMenu"
-                    nzTrigger="click"
-                    [nzDisabled]="updatingIds.has(it.id)"
-                    (click)="$event.stopPropagation()">
-                {{ it.enabled ? 'Activé' : 'Désactivé' }}
-              </span>
-              <nz-dropdown-menu #enabledMenu="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="setEnabled(it, true); $event.stopPropagation()">Activé</li>
-                  <li nz-menu-item (click)="setEnabled(it, false); $event.stopPropagation()">Désactivé</li>
-                </ul>
-              </nz-dropdown-menu>
               <i *ngIf="it.invalid" class="fa-solid fa-triangle-exclamation warn"
                  nz-tooltip [nzTooltipTitle]="errorTooltip(it)" aria-label="Flow invalide"></i>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
+          </div>
+          <div class="status-col">
+            <div class="mobile-dots" [attr.title]="statusLabel(it.status) + (it.enabled ? ' • activé' : ' • désactivé')">
+              <span class="dot" [ngClass]="statusClass(it.status)"></span>
+              <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
+            </div>
+            <span class="chip" *ngIf="it.status"
+                  [ngClass]="statusClass(it.status)"
+                  nz-dropdown
+                  [nzDropdownMenu]="statusMenu"
+                  nzTrigger="click"
+                  [nzDisabled]="updatingIds.has(it.id)"
+                  (click)="$event.stopPropagation()">
+              {{ statusLabel(it.status) }}
+            </span>
+            <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="setStatus(it, 'draft'); $event.stopPropagation()">Brouillon</li>
+                <li nz-menu-item (click)="setStatus(it, 'test'); $event.stopPropagation()">Test</li>
+                <li nz-menu-item (click)="setStatus(it, 'production'); $event.stopPropagation()">Production</li>
+              </ul>
+            </nz-dropdown-menu>
+            <span class="chip" [ngClass]="it.enabled ? 'on' : 'off'"
+                  nz-dropdown
+                  [nzDropdownMenu]="enabledMenu"
+                  nzTrigger="click"
+                  [nzDisabled]="updatingIds.has(it.id)"
+                  (click)="$event.stopPropagation()">
+              {{ it.enabled ? 'Activé' : 'Désactivé' }}
+            </span>
+            <nz-dropdown-menu #enabledMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="setEnabled(it, true); $event.stopPropagation()">Activé</li>
+                <li nz-menu-item (click)="setEnabled(it, false); $event.stopPropagation()">Désactivé</li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
           <div class="trailing">
             <button class="icon-btn" (click)="openEditor(it)" title="Éditeur">
@@ -126,7 +128,7 @@ type FlowItem = { id: string; name: string; description?: string };
     </div>
 
     <!-- Create modal -->
-    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
+    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" nzWrapClassName="create-flow-modal" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
         <form nz-form nzLayout="vertical" (ngSubmit)="createFlow()">
           <nz-form-item>
@@ -182,6 +184,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
@@ -199,7 +202,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
 
     .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
-    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; min-width: 0;
+    .card { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; min-width: 0;
             background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
             border: 1px solid #ececec;
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
@@ -212,11 +215,11 @@ type FlowItem = { id: string; name: string; description?: string };
                            background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
                            border: 1px solid #e5e7eb; color:#111; }
     .leading .icon-badge i { font-size: 18px; }
-    .content { flex:1 1 auto; min-width:0; }
+    .content { flex:1 1 auto; min-width:0; align-self: stretch; display:flex; flex-direction:column; justify-content:center; }
     .title-row { display:flex; align-items:center; gap:8px; min-width: 0; overflow: hidden; }
     .title-row .warn { color:#b42318; }
     .title-row .name { flex: 1 1 auto; min-width: 0; max-width: 100%; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .title-row .chip { flex: 0 0 auto; }
+    .status-col { display:flex; align-items:center; gap:8px; flex: 0 0 auto; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .chip.on { background:#eefcef; border-color:#dcfce7; color:#166534; }
     .chip.off { background:#fef2f2; border-color:#fee2e2; color:#991b1b; }
@@ -232,7 +235,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .mobile-dots .dot.on { background:#166534; }
     .mobile-dots .dot.off { background:#991b1b; }
     @media (max-width: 640px) {
-      .title-row .chip { display: none; }
+      .status-col .chip { display: none; }
       .mobile-dots { display: inline-flex; }
     }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
@@ -246,6 +249,15 @@ type FlowItem = { id: string; name: string; description?: string };
 
     .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    :host ::ng-deep .ant-modal .ant-input:focus,
+    :host ::ng-deep .ant-modal .ant-input-focused {
+      border-color:#1677ff !important;
+      box-shadow:none;
+    }
+    :host ::ng-deep .ant-modal .ant-btn:hover:not([disabled]) {
+      border-color:#1677ff !important;
+      color:#1677ff !important;
+    }
   `]
 })
 export class FlowListComponent implements OnInit, OnDestroy {

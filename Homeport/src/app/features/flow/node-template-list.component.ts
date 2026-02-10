@@ -90,6 +90,7 @@ import { auditTime } from 'rxjs/operators';
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }

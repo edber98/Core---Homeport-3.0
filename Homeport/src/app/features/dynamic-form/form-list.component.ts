@@ -77,7 +77,7 @@ type FormItem = { id: string; name: string; description?: string };
       </div>
     </div>
     <!-- Create modal -->
-    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" (nzOnCancel)="closeCreate()" [nzFooter]="null">
+    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" nzWrapClassName="create-form-modal" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
         <form nz-form nzLayout="vertical" (ngSubmit)="createForm()">
           <nz-form-item>
@@ -115,6 +115,7 @@ type FormItem = { id: string; name: string; description?: string };
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding:6px 10px; }
     .page-header .actions .icon-only.search-action { display:inline-flex; }
     .page-header .actions .icon-only i { font-size:14px; line-height:1; }
+    .page-header .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .page-header .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
@@ -128,8 +129,8 @@ type FormItem = { id: string; name: string; description?: string };
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
-    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+    .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
+    .card { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
     .leading .icon-badge { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; color:#111; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; }
     .leading .icon-badge i { font-size:18px; }
@@ -146,6 +147,15 @@ type FormItem = { id: string; name: string; description?: string };
     nz-modal .form { display:flex; flex-direction:column; gap:10px; }
     nz-modal .form label { font-size:12px; color:#6b7280; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    :host ::ng-deep .ant-modal .ant-input:focus,
+    :host ::ng-deep .ant-modal .ant-input-focused {
+      border-color:#1677ff !important;
+      box-shadow:none;
+    }
+    :host ::ng-deep .ant-modal .ant-btn:hover:not([disabled]) {
+      border-color:#1677ff !important;
+      color:#1677ff !important;
+    }
   `]
 })
 export class FormListComponent implements OnInit, OnDestroy {

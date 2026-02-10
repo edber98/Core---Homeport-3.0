@@ -82,6 +82,7 @@ import { AccessControlService } from '../../services/access-control.service';
     /* Icon-only buttons: hide by default, except explicit search-action */
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .page-header .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .page-header .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .page-header .actions .with-text i { margin-right: 6px; }
     .page-header .actions .icon-only.search-action { display:inline-flex; }
     @media (max-width: 640px) {
