@@ -1187,6 +1187,7 @@
       "schemaVersion": 2,
       "title": "Créer un compte",
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -1273,6 +1274,7 @@
       "schemaVersion": 2,
       "title": "Obtenir un compte",
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -1332,6 +1334,7 @@
       "schemaVersion": 2,
       "title": "Modifier un compte",
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "salesforce"
@@ -1427,6 +1430,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un compte",
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "salesforce"
@@ -1486,6 +1490,7 @@
       "schemaVersion": 2,
       "title": "Lister les comptes",
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -1540,6 +1545,7 @@
       "schemaVersion": 2,
       "title": "Créer un contact",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -1635,6 +1641,7 @@
       "schemaVersion": 2,
       "title": "Obtenir un contact",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -1694,6 +1701,7 @@
       "schemaVersion": 2,
       "title": "Modifier un contact",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "salesforce"
@@ -1789,6 +1797,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un contact",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "salesforce"
@@ -1848,6 +1857,7 @@
       "schemaVersion": 2,
       "title": "Lister les contacts",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -1902,6 +1912,7 @@
       "schemaVersion": 2,
       "title": "Rechercher des contacts",
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "salesforce"
@@ -1970,6 +1981,7 @@
       "schemaVersion": 2,
       "title": "Créer une opportunité",
       "subtitle": "Opportunités",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -2075,6 +2087,7 @@
       "schemaVersion": 2,
       "title": "Obtenir une opportunité",
       "subtitle": "Opportunités",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -2134,6 +2147,7 @@
       "schemaVersion": 2,
       "title": "Modifier une opportunité",
       "subtitle": "Opportunités",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "salesforce"
@@ -2229,6 +2243,7 @@
       "schemaVersion": 2,
       "title": "Supprimer une opportunité",
       "subtitle": "Opportunités",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "salesforce"
@@ -2288,6 +2303,7 @@
       "schemaVersion": 2,
       "title": "Lister les opportunités",
       "subtitle": "Opportunités",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -2342,6 +2358,7 @@
       "schemaVersion": 2,
       "title": "Créer un lead",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -2451,6 +2468,7 @@
       "schemaVersion": 2,
       "title": "Obtenir un lead",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -2510,6 +2528,7 @@
       "schemaVersion": 2,
       "title": "Modifier un lead",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "salesforce"
@@ -2614,6 +2633,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un lead",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "salesforce"
@@ -2673,6 +2693,7 @@
       "schemaVersion": 2,
       "title": "Lister les leads",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -2727,6 +2748,7 @@
       "schemaVersion": 2,
       "title": "Convertir un lead",
       "subtitle": "Leads",
+      "icon": "fa-solid fa-right-left",
       "tags": [
         "conversion",
         "salesforce"
@@ -2813,6 +2835,7 @@
       "schemaVersion": 2,
       "title": "Créer un case",
       "subtitle": "Cases",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -2908,6 +2931,7 @@
       "schemaVersion": 2,
       "title": "Obtenir un case",
       "subtitle": "Cases",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -2967,6 +2991,7 @@
       "schemaVersion": 2,
       "title": "Modifier un case",
       "subtitle": "Cases",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "salesforce"
@@ -3053,6 +3078,7 @@
       "schemaVersion": 2,
       "title": "Lister les cases",
       "subtitle": "Cases",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -3107,6 +3133,7 @@
       "schemaVersion": 2,
       "title": "Créer une tâche",
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "salesforce"
@@ -3211,6 +3238,7 @@
       "schemaVersion": 2,
       "title": "Obtenir une tâche",
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "salesforce"
@@ -3270,6 +3298,7 @@
       "schemaVersion": 2,
       "title": "Lister les tâches",
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "salesforce"
@@ -3324,6 +3353,7 @@
       "schemaVersion": 2,
       "title": "Requête SOQL",
       "subtitle": "SOQL",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "salesforce"
@@ -3383,6 +3413,7 @@
       "schemaVersion": 2,
       "title": "Événement webhook",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "tags": [
         "événement",
         "salesforce"
@@ -3391,7 +3422,6 @@
       "nodeKind": "event",
       "category": "Événements",
       "providerKey": "salesforce",
-      "icon": "fa-solid fa-bolt",
       "description": "Déclenchement via webhook Salesforce entrant",
       "outputHandles": [
         {

@@ -1107,6 +1107,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
       "group": "Contacts",
       "tags": [
         "création",
@@ -1166,6 +1167,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
       "group": "Contacts",
       "tags": [
         "lecture",
@@ -1261,6 +1263,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Contacts",
       "tags": [
         "mise-à-jour",
@@ -1320,6 +1323,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
       "group": "Contacts",
       "tags": [
         "suppression",
@@ -1388,6 +1392,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Contacts",
       "tags": [
         "recherche",
@@ -1451,6 +1456,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
       "group": "Contacts",
       "tags": [
         "liste",
@@ -1537,6 +1543,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-square-plus",
       "group": "Entreprises",
       "tags": [
         "création",
@@ -1596,6 +1603,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-eye",
       "group": "Entreprises",
       "tags": [
         "lecture",
@@ -1682,6 +1690,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Entreprises",
       "tags": [
         "mise-à-jour",
@@ -1741,6 +1750,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-trash",
       "group": "Entreprises",
       "tags": [
         "suppression",
@@ -1809,6 +1819,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Entreprises",
       "tags": [
         "recherche",
@@ -1872,6 +1883,7 @@
         ]
       },
       "subtitle": "Entreprises",
+      "icon": "fa-solid fa-list",
       "group": "Entreprises",
       "tags": [
         "liste",
@@ -1958,6 +1970,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-handshake",
       "group": "Deals",
       "tags": [
         "création",
@@ -2017,6 +2030,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-eye",
       "group": "Deals",
       "tags": [
         "lecture",
@@ -2103,6 +2117,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Deals",
       "tags": [
         "mise-à-jour",
@@ -2162,6 +2177,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-trash",
       "group": "Deals",
       "tags": [
         "suppression",
@@ -2230,6 +2246,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Deals",
       "tags": [
         "recherche",
@@ -2293,6 +2310,7 @@
         ]
       },
       "subtitle": "Deals",
+      "icon": "fa-solid fa-list",
       "group": "Deals",
       "tags": [
         "liste",
@@ -2388,6 +2406,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
       "group": "Tickets",
       "tags": [
         "création",
@@ -2447,6 +2466,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
       "group": "Tickets",
       "tags": [
         "lecture",
@@ -2533,6 +2553,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Tickets",
       "tags": [
         "mise-à-jour",
@@ -2592,6 +2613,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
       "group": "Tickets",
       "tags": [
         "suppression",
@@ -2655,6 +2677,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
       "group": "Tickets",
       "tags": [
         "liste",
@@ -2741,6 +2764,7 @@
         ]
       },
       "subtitle": "Notes",
+      "icon": "fa-solid fa-note-sticky",
       "group": "Notes",
       "tags": [
         "création",
@@ -2827,6 +2851,7 @@
         ]
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-check",
       "group": "Tâches",
       "tags": [
         "création",
@@ -2913,6 +2938,7 @@
         ]
       },
       "subtitle": "Réunions",
+      "icon": "fa-solid fa-calendar-check",
       "group": "Réunions",
       "tags": [
         "création",
@@ -2999,6 +3025,7 @@
         ]
       },
       "subtitle": "Appels",
+      "icon": "fa-solid fa-phone",
       "group": "Appels",
       "tags": [
         "création",
@@ -3068,6 +3095,7 @@
         ]
       },
       "subtitle": "Pipelines",
+      "icon": "fa-solid fa-list",
       "group": "Pipelines",
       "tags": [
         "liste",
@@ -3151,6 +3179,7 @@
         ]
       },
       "subtitle": "Pipelines",
+      "icon": "fa-solid fa-list-ol",
       "group": "Pipelines",
       "tags": [
         "liste",
@@ -3223,6 +3252,7 @@
         ]
       },
       "subtitle": "Propriétaires",
+      "icon": "fa-solid fa-users",
       "group": "Propriétaires",
       "tags": [
         "liste",

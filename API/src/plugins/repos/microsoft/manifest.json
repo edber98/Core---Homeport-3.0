@@ -1322,6 +1322,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1419,6 +1420,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-reply",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1490,6 +1492,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1570,6 +1573,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
       "group": "Messages",
       "tags": [
         "liste",
@@ -1654,6 +1658,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-eye",
       "group": "Messages",
       "tags": [
         "lecture",
@@ -1755,6 +1760,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-square-plus",
       "group": "Canaux",
       "tags": [
         "création",
@@ -1813,6 +1819,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-list",
       "group": "Canaux",
       "tags": [
         "liste",
@@ -1884,6 +1891,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-eye",
       "group": "Canaux",
       "tags": [
         "lecture",
@@ -1955,6 +1963,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-trash",
       "group": "Canaux",
       "tags": [
         "suppression",
@@ -1999,6 +2008,7 @@
         "fields": []
       },
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-users",
       "group": "Équipes",
       "tags": [
         "liste",
@@ -2057,6 +2067,7 @@
         ]
       },
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-eye",
       "group": "Équipes",
       "tags": [
         "lecture",
@@ -2115,6 +2126,7 @@
         ]
       },
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-users",
       "group": "Équipes",
       "tags": [
         "liste",
@@ -2204,6 +2216,7 @@
         ]
       },
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-user-plus",
       "group": "Équipes",
       "tags": [
         "création",
@@ -2299,6 +2312,7 @@
         ]
       },
       "subtitle": "Réunions",
+      "icon": "fa-solid fa-calendar-check",
       "group": "Réunions",
       "tags": [
         "création",
@@ -2357,6 +2371,7 @@
         ]
       },
       "subtitle": "Réunions",
+      "icon": "fa-solid fa-eye",
       "group": "Réunions",
       "tags": [
         "lecture",
@@ -2410,6 +2425,7 @@
         ]
       },
       "subtitle": "Réunions",
+      "icon": "fa-solid fa-list",
       "group": "Réunions",
       "tags": [
         "liste",
@@ -2490,6 +2506,7 @@
         ]
       },
       "subtitle": "Chats",
+      "icon": "fa-solid fa-comments",
       "group": "Chats",
       "tags": [
         "création",
@@ -2543,6 +2560,7 @@
         ]
       },
       "subtitle": "Chats",
+      "icon": "fa-solid fa-comments",
       "group": "Chats",
       "tags": [
         "liste",
@@ -2601,6 +2619,7 @@
         ]
       },
       "subtitle": "Chats",
+      "icon": "fa-solid fa-eye",
       "group": "Chats",
       "tags": [
         "lecture",
@@ -2659,6 +2678,7 @@
         ]
       },
       "subtitle": "Sites",
+      "icon": "fa-solid fa-eye",
       "group": "Sites",
       "tags": [
         "lecture",
@@ -2717,6 +2737,7 @@
         ]
       },
       "subtitle": "Sites",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Sites",
       "tags": [
         "recherche",
@@ -2775,6 +2796,7 @@
         ]
       },
       "subtitle": "Sites",
+      "icon": "fa-solid fa-list",
       "group": "Sites",
       "tags": [
         "liste",
@@ -2864,6 +2886,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
       "group": "Listes",
       "tags": [
         "création",
@@ -2935,6 +2958,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
       "group": "Listes",
       "tags": [
         "lecture",
@@ -3014,6 +3038,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-list",
       "group": "Listes",
       "tags": [
         "liste",
@@ -3094,6 +3119,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
       "group": "Listes",
       "tags": [
         "création",
@@ -3187,6 +3213,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Listes",
       "tags": [
         "mise-à-jour",
@@ -3254,6 +3281,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
       "group": "Fichiers",
       "tags": [
         "liste",
@@ -3325,6 +3353,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
       "group": "Fichiers",
       "tags": [
         "lecture",
@@ -3406,6 +3435,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "téléversement",
@@ -3477,6 +3507,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
       "group": "Fichiers",
       "tags": [
         "téléchargement",
@@ -3548,6 +3579,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
       "group": "Fichiers",
       "tags": [
         "suppression",
@@ -3610,6 +3642,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "group": "Utilisateurs",
       "tags": [
         "liste",
@@ -3668,6 +3701,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "group": "Utilisateurs",
       "tags": [
         "lecture",
@@ -3712,6 +3746,7 @@
         "fields": []
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "group": "Utilisateurs",
       "tags": [
         "lecture",

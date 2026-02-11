@@ -244,6 +244,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "téléversement",
@@ -333,6 +334,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "téléversement",
@@ -412,6 +414,7 @@
         ]
       },
       "subtitle": "Permissions",
+      "icon": "fa-solid fa-link",
       "group": "Permissions",
       "tags": [
         "création",

@@ -1109,6 +1109,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
       "group": "Fichiers",
       "tags": [
         "liste",
@@ -1168,6 +1169,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
       "group": "Fichiers",
       "tags": [
         "lecture",
@@ -1262,6 +1264,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "téléversement",
@@ -1330,6 +1333,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
       "group": "Fichiers",
       "tags": [
         "téléchargement",
@@ -1389,6 +1393,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
       "group": "Fichiers",
       "tags": [
         "suppression",
@@ -1457,6 +1462,7 @@
         ]
       },
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
       "group": "Dossiers",
       "tags": [
         "création",
@@ -1539,6 +1545,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-arrow-right",
       "group": "Fichiers",
       "tags": [
         "mise-à-jour",
@@ -1616,6 +1623,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-copy",
       "group": "Fichiers",
       "tags": [
         "création",
@@ -1730,6 +1738,7 @@
         ]
       },
       "subtitle": "Permissions",
+      "icon": "fa-solid fa-link",
       "group": "Permissions",
       "tags": [
         "mise-à-jour",
@@ -1799,6 +1808,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Fichiers",
       "tags": [
         "recherche",
@@ -1867,6 +1877,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-square-plus",
       "group": "Documents",
       "tags": [
         "création",
@@ -1926,6 +1937,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-eye",
       "group": "Documents",
       "tags": [
         "lecture",
@@ -1994,6 +2006,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Documents",
       "tags": [
         "mise-à-jour",
@@ -2081,6 +2094,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Documents",
       "tags": [
         "mise-à-jour",
@@ -2140,6 +2154,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-file-lines",
       "group": "Documents",
       "tags": [
         "lecture",
@@ -2199,6 +2214,7 @@
         ]
       },
       "subtitle": "Documents",
+      "icon": "fa-solid fa-file-pdf",
       "group": "Documents",
       "tags": [
         "téléchargement",
@@ -2258,6 +2274,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-square-plus",
       "group": "Feuilles de calcul",
       "tags": [
         "création",
@@ -2317,6 +2334,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-eye",
       "group": "Feuilles de calcul",
       "tags": [
         "lecture",
@@ -2390,6 +2408,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-eye",
       "group": "Feuilles de calcul",
       "tags": [
         "lecture",
@@ -2472,6 +2491,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Feuilles de calcul",
       "tags": [
         "mise-à-jour",
@@ -2554,6 +2574,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-square-plus",
       "group": "Feuilles de calcul",
       "tags": [
         "création",
@@ -2627,6 +2648,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-eraser",
       "group": "Feuilles de calcul",
       "tags": [
         "suppression",
@@ -2700,6 +2722,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-square-plus",
       "group": "Feuilles de calcul",
       "tags": [
         "création",
@@ -2773,6 +2796,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-trash",
       "group": "Feuilles de calcul",
       "tags": [
         "suppression",
@@ -2860,6 +2884,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-copy",
       "group": "Feuilles de calcul",
       "tags": [
         "création",
@@ -2919,6 +2944,7 @@
         ]
       },
       "subtitle": "Feuilles de calcul",
+      "icon": "fa-solid fa-list",
       "group": "Feuilles de calcul",
       "tags": [
         "liste",
@@ -2963,6 +2989,7 @@
         "fields": []
       },
       "subtitle": "Calendrier",
+      "icon": "fa-solid fa-list",
       "group": "Calendrier",
       "tags": [
         "liste",
@@ -3021,6 +3048,7 @@
         ]
       },
       "subtitle": "Calendrier",
+      "icon": "fa-solid fa-eye",
       "group": "Calendrier",
       "tags": [
         "lecture",
@@ -3096,6 +3124,7 @@
         ]
       },
       "subtitle": "Calendrier",
+      "icon": "fa-solid fa-square-plus",
       "group": "Calendrier",
       "tags": [
         "création",
@@ -3154,6 +3183,7 @@
         ]
       },
       "subtitle": "Calendrier",
+      "icon": "fa-solid fa-trash",
       "group": "Calendrier",
       "tags": [
         "suppression",
@@ -3278,6 +3308,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
       "group": "Événements",
       "tags": [
         "liste",
@@ -3349,6 +3380,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-eye",
       "group": "Événements",
       "tags": [
         "lecture",
@@ -3510,6 +3542,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-square-plus",
       "group": "Événements",
       "tags": [
         "création",
@@ -3630,6 +3663,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Événements",
       "tags": [
         "mise-à-jour",
@@ -3701,6 +3735,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-trash",
       "group": "Événements",
       "tags": [
         "suppression",
@@ -3770,6 +3805,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-wand-magic-sparkles",
       "group": "Événements",
       "tags": [
         "création",
@@ -3854,6 +3890,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-arrow-right",
       "group": "Événements",
       "tags": [
         "mise-à-jour",
@@ -3943,6 +3980,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
       "group": "Événements",
       "tags": [
         "liste",

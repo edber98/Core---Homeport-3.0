@@ -1207,6 +1207,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "wordpress"
@@ -1266,6 +1267,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "wordpress"
@@ -1361,6 +1363,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "wordpress"
@@ -1420,6 +1423,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "wordpress"
@@ -1501,6 +1505,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -1587,6 +1592,7 @@
         ]
       },
       "subtitle": "Pages",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "wordpress"
@@ -1646,6 +1652,7 @@
         ]
       },
       "subtitle": "Pages",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "wordpress"
@@ -1732,6 +1739,7 @@
         ]
       },
       "subtitle": "Pages",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "wordpress"
@@ -1791,6 +1799,7 @@
         ]
       },
       "subtitle": "Pages",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "wordpress"
@@ -1872,6 +1881,7 @@
         ]
       },
       "subtitle": "Pages",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -1949,6 +1959,7 @@
         ]
       },
       "subtitle": "Médias",
+      "icon": "fa-solid fa-file-arrow-up",
       "tags": [
         "création",
         "wordpress"
@@ -2008,6 +2019,7 @@
         ]
       },
       "subtitle": "Médias",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "wordpress"
@@ -2080,6 +2092,7 @@
         ]
       },
       "subtitle": "Médias",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -2139,6 +2152,7 @@
         ]
       },
       "subtitle": "Médias",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "wordpress"
@@ -2216,6 +2230,7 @@
         ]
       },
       "subtitle": "Catégories",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "wordpress"
@@ -2275,6 +2290,7 @@
         ]
       },
       "subtitle": "Catégories",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "wordpress"
@@ -2338,6 +2354,7 @@
         ]
       },
       "subtitle": "Catégories",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -2406,6 +2423,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tag",
       "tags": [
         "création",
         "wordpress"
@@ -2469,6 +2487,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
       "tags": [
         "liste",
         "wordpress"
@@ -2560,6 +2579,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "création",
         "wordpress"
@@ -2619,6 +2639,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "lecture",
         "wordpress"
@@ -2691,6 +2712,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "liste",
         "wordpress"
@@ -2768,6 +2790,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "wordpress"
@@ -2827,6 +2850,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "wordpress"
@@ -2890,6 +2914,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -2944,6 +2969,7 @@
         ]
       },
       "subtitle": "Extensions",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "wordpress"
@@ -2961,6 +2987,7 @@
       "providerKey": "wordpress",
       "description": "Déclenchement via webhook WordPress entrant.",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "outputHandles": [
         {
           "id": "ok",

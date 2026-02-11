@@ -864,6 +864,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "clickup",
         "création"
@@ -923,6 +924,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "clickup",
         "lecture"
@@ -1027,6 +1029,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "clickup",
         "mise-à-jour"
@@ -1086,6 +1089,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "clickup",
         "suppression"
@@ -1145,6 +1149,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "tags": [
         "clickup",
         "liste"
@@ -1227,6 +1232,7 @@
         }
       ],
       "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "clickup",
         "création"
@@ -1286,6 +1292,7 @@
         }
       ],
       "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "clickup",
         "lecture"
@@ -1359,6 +1366,7 @@
         }
       ],
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
       "tags": [
         "clickup",
         "création"
@@ -1418,6 +1426,7 @@
         }
       ],
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
       "tags": [
         "clickup",
         "lecture"
@@ -1477,6 +1486,7 @@
         }
       ],
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
       "tags": [
         "clickup",
         "liste"
@@ -1536,6 +1546,7 @@
         }
       ],
       "subtitle": "Espaces",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "clickup",
         "lecture"
@@ -1595,6 +1606,7 @@
         }
       ],
       "subtitle": "Espaces",
+      "icon": "fa-solid fa-list",
       "tags": [
         "clickup",
         "liste"
@@ -1639,6 +1651,7 @@
         }
       ],
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "clickup",
         "liste"
@@ -1712,6 +1725,7 @@
         }
       ],
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "clickup",
         "création"
@@ -1771,6 +1785,7 @@
         }
       ],
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "clickup",
         "liste"
@@ -1830,6 +1845,7 @@
         }
       ],
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
       "tags": [
         "clickup",
         "liste"
@@ -1921,6 +1937,7 @@
         }
       ],
       "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
       "tags": [
         "clickup",
         "création"
@@ -1980,6 +1997,7 @@
         }
       ],
       "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
       "tags": [
         "clickup",
         "liste"
@@ -2025,6 +2043,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "inputHandles": [],
       "tags": [
         "clickup",

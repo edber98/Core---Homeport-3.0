@@ -1401,6 +1401,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -1460,6 +1461,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -1555,6 +1557,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "quickbooks"
@@ -1618,6 +1621,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -1677,6 +1681,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "quickbooks"
@@ -1763,6 +1768,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -1822,6 +1828,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -1913,6 +1920,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "quickbooks"
@@ -1986,6 +1994,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "quickbooks"
@@ -2049,6 +2058,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -2117,6 +2127,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-paper-plane",
       "tags": [
         "envoi",
         "quickbooks"
@@ -2208,6 +2219,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -2267,6 +2279,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -2330,6 +2343,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -2434,6 +2448,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -2493,6 +2508,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -2593,6 +2609,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "quickbooks"
@@ -2656,6 +2673,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -2742,6 +2760,7 @@
         ]
       },
       "subtitle": "Fournisseurs",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -2801,6 +2820,7 @@
         ]
       },
       "subtitle": "Fournisseurs",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -2864,6 +2884,7 @@
         ]
       },
       "subtitle": "Fournisseurs",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -2950,6 +2971,7 @@
         ]
       },
       "subtitle": "Factures fournisseurs",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -3009,6 +3031,7 @@
         ]
       },
       "subtitle": "Factures fournisseurs",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -3072,6 +3095,7 @@
         ]
       },
       "subtitle": "Factures fournisseurs",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -3131,6 +3155,7 @@
         ]
       },
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -3194,6 +3219,7 @@
         ]
       },
       "subtitle": "Comptes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -3257,6 +3283,7 @@
         ]
       },
       "subtitle": "Rapports",
+      "icon": "fa-solid fa-chart-line",
       "tags": [
         "lecture",
         "quickbooks"
@@ -3320,6 +3347,7 @@
         ]
       },
       "subtitle": "Rapports",
+      "icon": "fa-solid fa-chart-line",
       "tags": [
         "lecture",
         "quickbooks"
@@ -3406,6 +3434,7 @@
         ]
       },
       "subtitle": "Devis",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "quickbooks"
@@ -3465,6 +3494,7 @@
         ]
       },
       "subtitle": "Devis",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "quickbooks"
@@ -3528,6 +3558,7 @@
         ]
       },
       "subtitle": "Devis",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "quickbooks"
@@ -3545,6 +3576,7 @@
       "providerKey": "quickbooks",
       "description": "Déclenchement via webhook QuickBooks entrant.",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "outputHandles": [
         {
           "id": "ok",

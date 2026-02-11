@@ -1860,6 +1860,7 @@
         ]
       },
       "subtitle": "Dépôts",
+      "icon": "fa-solid fa-eye",
       "group": "Dépôts",
       "tags": [
         "lecture",
@@ -1985,6 +1986,7 @@
         ]
       },
       "subtitle": "Dépôts",
+      "icon": "fa-solid fa-list",
       "group": "Dépôts",
       "tags": [
         "liste",
@@ -2083,6 +2085,7 @@
         ]
       },
       "subtitle": "Dépôts",
+      "icon": "fa-solid fa-square-plus",
       "group": "Dépôts",
       "tags": [
         "création",
@@ -2174,6 +2177,7 @@
         ]
       },
       "subtitle": "Dépôts",
+      "icon": "fa-solid fa-code-branch",
       "group": "Dépôts",
       "tags": [
         "liste",
@@ -2265,6 +2269,7 @@
         ]
       },
       "subtitle": "Dépôts",
+      "icon": "fa-solid fa-code-branch",
       "group": "Dépôts",
       "tags": [
         "création",
@@ -2409,6 +2414,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-square-plus",
       "group": "Issues",
       "tags": [
         "création",
@@ -2505,6 +2511,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-eye",
       "group": "Issues",
       "tags": [
         "lecture",
@@ -2671,6 +2678,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Issues",
       "tags": [
         "mise-à-jour",
@@ -2838,6 +2846,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-list",
       "group": "Issues",
       "tags": [
         "liste",
@@ -2951,6 +2960,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-comment",
       "group": "Issues",
       "tags": [
         "création",
@@ -3059,6 +3069,7 @@
         ]
       },
       "subtitle": "Issues",
+      "icon": "fa-solid fa-comments",
       "group": "Issues",
       "tags": [
         "liste",
@@ -3213,6 +3224,7 @@
         ]
       },
       "subtitle": "Pull requests",
+      "icon": "fa-solid fa-square-plus",
       "group": "Pull requests",
       "tags": [
         "création",
@@ -3309,6 +3321,7 @@
         ]
       },
       "subtitle": "Pull requests",
+      "icon": "fa-solid fa-eye",
       "group": "Pull requests",
       "tags": [
         "lecture",
@@ -3463,6 +3476,7 @@
         ]
       },
       "subtitle": "Pull requests",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Pull requests",
       "tags": [
         "mise-à-jour",
@@ -3634,6 +3648,7 @@
         ]
       },
       "subtitle": "Pull requests",
+      "icon": "fa-solid fa-list",
       "group": "Pull requests",
       "tags": [
         "liste",
@@ -3780,6 +3795,7 @@
         ]
       },
       "subtitle": "Pull requests",
+      "icon": "fa-solid fa-code-merge",
       "group": "Pull requests",
       "tags": [
         "mise-à-jour",
@@ -3871,6 +3887,7 @@
         ]
       },
       "subtitle": "Branches",
+      "icon": "fa-solid fa-code-branch",
       "group": "Branches",
       "tags": [
         "liste",
@@ -3967,6 +3984,7 @@
         ]
       },
       "subtitle": "Branches",
+      "icon": "fa-solid fa-eye",
       "group": "Branches",
       "tags": [
         "lecture",
@@ -4080,6 +4098,7 @@
         ]
       },
       "subtitle": "Branches",
+      "icon": "fa-solid fa-code-branch",
       "group": "Branches",
       "tags": [
         "création",
@@ -4219,6 +4238,7 @@
         ]
       },
       "subtitle": "Commits",
+      "icon": "fa-solid fa-list",
       "group": "Commits",
       "tags": [
         "liste",
@@ -4315,6 +4335,7 @@
         ]
       },
       "subtitle": "Commits",
+      "icon": "fa-solid fa-eye",
       "group": "Commits",
       "tags": [
         "lecture",
@@ -4471,6 +4492,7 @@
         ]
       },
       "subtitle": "Releases",
+      "icon": "fa-solid fa-square-plus",
       "group": "Releases",
       "tags": [
         "création",
@@ -4562,6 +4584,7 @@
         ]
       },
       "subtitle": "Releases",
+      "icon": "fa-solid fa-list",
       "group": "Releases",
       "tags": [
         "liste",
@@ -4658,6 +4681,7 @@
         ]
       },
       "subtitle": "Releases",
+      "icon": "fa-solid fa-eye",
       "group": "Releases",
       "tags": [
         "lecture",
@@ -4715,6 +4739,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "group": "Utilisateurs",
       "tags": [
         "lecture",
@@ -4845,6 +4870,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-list",
       "group": "Utilisateurs",
       "tags": [
         "liste",
@@ -4924,6 +4950,7 @@
         ]
       },
       "subtitle": "Workflows",
+      "icon": "fa-solid fa-list",
       "group": "Workflows",
       "tags": [
         "liste",
@@ -5049,6 +5076,7 @@
         ]
       },
       "subtitle": "Workflows",
+      "icon": "fa-solid fa-bolt",
       "group": "Workflows",
       "tags": [
         "envoi",
@@ -5128,6 +5156,7 @@
         ]
       },
       "subtitle": "Labels",
+      "icon": "fa-solid fa-tags",
       "group": "Labels",
       "tags": [
         "liste",
@@ -5248,6 +5277,7 @@
         ]
       },
       "subtitle": "Labels",
+      "icon": "fa-solid fa-tag",
       "group": "Labels",
       "tags": [
         "création",

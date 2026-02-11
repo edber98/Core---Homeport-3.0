@@ -1950,6 +1950,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
       "group": "Clients",
       "tags": [
         "création",
@@ -2009,6 +2010,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
       "group": "Clients",
       "tags": [
         "lecture",
@@ -2140,6 +2142,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Clients",
       "tags": [
         "mise-à-jour",
@@ -2199,6 +2202,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-trash",
       "group": "Clients",
       "tags": [
         "suppression",
@@ -2262,6 +2266,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
       "group": "Clients",
       "tags": [
         "liste",
@@ -2375,6 +2380,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
       "group": "Contacts",
       "tags": [
         "création",
@@ -2434,6 +2440,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
       "group": "Contacts",
       "tags": [
         "lecture",
@@ -2529,6 +2536,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Contacts",
       "tags": [
         "mise-à-jour",
@@ -2588,6 +2596,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
       "group": "Contacts",
       "tags": [
         "suppression",
@@ -2651,6 +2660,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
       "group": "Contacts",
       "tags": [
         "liste",
@@ -2787,6 +2797,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
       "group": "Tickets",
       "tags": [
         "création",
@@ -2846,6 +2857,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
       "group": "Tickets",
       "tags": [
         "lecture",
@@ -2959,6 +2971,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Tickets",
       "tags": [
         "mise-à-jour",
@@ -3018,6 +3031,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
       "group": "Tickets",
       "tags": [
         "suppression",
@@ -3099,6 +3113,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
       "group": "Tickets",
       "tags": [
         "liste",
@@ -3199,6 +3214,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-comment",
       "group": "Tickets",
       "tags": [
         "création",
@@ -3258,6 +3274,7 @@
         ]
       },
       "subtitle": "Agents",
+      "icon": "fa-solid fa-eye",
       "group": "Agents",
       "tags": [
         "lecture",
@@ -3321,6 +3338,7 @@
         ]
       },
       "subtitle": "Agents",
+      "icon": "fa-solid fa-list",
       "group": "Agents",
       "tags": [
         "liste",
@@ -3380,6 +3398,7 @@
         ]
       },
       "subtitle": "Agents",
+      "icon": "fa-solid fa-trash",
       "group": "Agents",
       "tags": [
         "suppression",
@@ -3439,6 +3458,7 @@
         ]
       },
       "subtitle": "Alertes",
+      "icon": "fa-solid fa-eye",
       "group": "Alertes",
       "tags": [
         "lecture",
@@ -3511,6 +3531,7 @@
         ]
       },
       "subtitle": "Alertes",
+      "icon": "fa-solid fa-list",
       "group": "Alertes",
       "tags": [
         "liste",
@@ -3570,6 +3591,7 @@
         ]
       },
       "subtitle": "Alertes",
+      "icon": "fa-solid fa-circle-check",
       "group": "Alertes",
       "tags": [
         "lecture",
@@ -3614,6 +3636,7 @@
         "fields": []
       },
       "subtitle": "Alertes",
+      "icon": "fa-solid fa-hashtag",
       "group": "Alertes",
       "tags": [
         "lecture",
@@ -3673,6 +3696,7 @@
         ]
       },
       "subtitle": "Appareils",
+      "icon": "fa-solid fa-eye",
       "group": "Appareils",
       "tags": [
         "lecture",
@@ -3745,6 +3769,7 @@
         ]
       },
       "subtitle": "Appareils",
+      "icon": "fa-solid fa-list",
       "group": "Appareils",
       "tags": [
         "liste",
@@ -3822,6 +3847,7 @@
         ]
       },
       "subtitle": "Appareils",
+      "icon": "fa-solid fa-desktop",
       "group": "Appareils",
       "tags": [
         "lecture",
@@ -3931,6 +3957,7 @@
         ]
       },
       "subtitle": "Contrats",
+      "icon": "fa-solid fa-square-plus",
       "group": "Contrats",
       "tags": [
         "création",
@@ -3990,6 +4017,7 @@
         ]
       },
       "subtitle": "Contrats",
+      "icon": "fa-solid fa-eye",
       "group": "Contrats",
       "tags": [
         "lecture",
@@ -4053,6 +4081,7 @@
         ]
       },
       "subtitle": "Contrats",
+      "icon": "fa-solid fa-list",
       "group": "Contrats",
       "tags": [
         "liste",
@@ -4112,6 +4141,7 @@
         ]
       },
       "subtitle": "Contrats",
+      "icon": "fa-solid fa-trash",
       "group": "Contrats",
       "tags": [
         "suppression",
@@ -4193,6 +4223,7 @@
         ]
       },
       "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
       "group": "Base de connaissances",
       "tags": [
         "création",
@@ -4252,6 +4283,7 @@
         ]
       },
       "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
       "group": "Base de connaissances",
       "tags": [
         "lecture",
@@ -4315,6 +4347,7 @@
         ]
       },
       "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
       "group": "Base de connaissances",
       "tags": [
         "liste",
@@ -4374,6 +4407,7 @@
         ]
       },
       "subtitle": "Départements",
+      "icon": "fa-solid fa-eye",
       "group": "Départements",
       "tags": [
         "lecture",
@@ -4437,6 +4471,7 @@
         ]
       },
       "subtitle": "Départements",
+      "icon": "fa-solid fa-list",
       "group": "Départements",
       "tags": [
         "liste",
@@ -4500,6 +4535,7 @@
         ]
       },
       "subtitle": "Tarifs",
+      "icon": "fa-solid fa-list",
       "group": "Tarifs",
       "tags": [
         "lecture",
@@ -4560,6 +4596,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-eye",
       "group": "Factures",
       "tags": [
         "lecture",
@@ -4623,6 +4660,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-list",
       "group": "Factures",
       "tags": [
         "lecture",
@@ -4683,6 +4721,7 @@
         ]
       },
       "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-eye",
       "group": "Champs personnalisés",
       "tags": [
         "lecture",
@@ -4727,6 +4766,7 @@
         "fields": []
       },
       "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-list",
       "group": "Champs personnalisés",
       "tags": [
         "liste",
@@ -4814,6 +4854,7 @@
         ]
       },
       "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Champs personnalisés",
       "tags": [
         "mise-à-jour",

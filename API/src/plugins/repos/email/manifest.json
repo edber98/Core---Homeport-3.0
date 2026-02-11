@@ -607,6 +607,7 @@
         ]
       },
       "subtitle": "Envoi",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Envoi",
       "tags": [
         "envoi",
@@ -682,6 +683,7 @@
         ]
       },
       "subtitle": "Lecture",
+      "icon": "fa-solid fa-envelope-open-text",
       "group": "Lecture",
       "tags": [
         "téléchargement",
@@ -694,6 +696,7 @@
       "schemaVersion": 2,
       "title": "Nouvel e-mail",
       "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
       "type": "event",
       "nodeKind": "event",
       "category": "E-mail",
@@ -770,6 +773,7 @@
         "fields": []
       },
       "subtitle": "Libellés",
+      "icon": "fa-solid fa-tags",
       "group": "Libellés",
       "tags": [
         "liste",
@@ -843,6 +847,7 @@
         ]
       },
       "subtitle": "Libellés",
+      "icon": "fa-solid fa-tag",
       "group": "Libellés",
       "tags": [
         "création",
@@ -916,6 +921,7 @@
         ]
       },
       "subtitle": "Libellés",
+      "icon": "fa-solid fa-trash",
       "group": "Libellés",
       "tags": [
         "suppression",

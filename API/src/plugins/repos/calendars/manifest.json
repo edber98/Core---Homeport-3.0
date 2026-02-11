@@ -197,6 +197,7 @@
         ]
       },
       "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-square-plus",
       "group": "Google Agenda",
       "tags": [
         "création",
@@ -276,6 +277,7 @@
         ]
       },
       "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Google Agenda",
       "tags": [
         "mise-à-jour",
@@ -368,6 +370,7 @@
         ]
       },
       "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-circle-check",
       "group": "Google Agenda",
       "tags": [
         "mise-à-jour",
@@ -380,6 +383,7 @@
       "schemaVersion": 2,
       "title": "Webhook",
       "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
       "type": "event",
       "category": "Google Agenda",
       "providerKey": "googleCalendar",
@@ -494,6 +498,7 @@
         ]
       },
       "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-square-plus",
       "group": "Outlook Agenda",
       "tags": [
         "création",
@@ -573,6 +578,7 @@
         ]
       },
       "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Outlook Agenda",
       "tags": [
         "mise-à-jour",
@@ -665,6 +671,7 @@
         ]
       },
       "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-circle-check",
       "group": "Outlook Agenda",
       "tags": [
         "mise-à-jour",
@@ -677,6 +684,7 @@
       "schemaVersion": 2,
       "title": "Webhook",
       "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
       "type": "event",
       "category": "Outlook Agenda",
       "providerKey": "outlookCalendar",

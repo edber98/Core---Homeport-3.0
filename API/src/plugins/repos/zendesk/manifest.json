@@ -998,6 +998,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "zendesk"
@@ -1057,6 +1058,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "zendesk"
@@ -1201,6 +1203,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "zendesk"
@@ -1260,6 +1263,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "zendesk"
@@ -1323,6 +1327,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "zendesk"
@@ -1382,6 +1387,7 @@
         ]
       },
       "subtitle": "Tickets",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "zendesk"
@@ -1482,6 +1488,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "zendesk"
@@ -1541,6 +1548,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "zendesk"
@@ -1627,6 +1635,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "zendesk"
@@ -1690,6 +1699,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "zendesk"
@@ -1749,6 +1759,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "zendesk"
@@ -1817,6 +1828,7 @@
         ]
       },
       "subtitle": "Organisations",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "zendesk"
@@ -1876,6 +1888,7 @@
         ]
       },
       "subtitle": "Organisations",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "zendesk"
@@ -1939,6 +1952,7 @@
         ]
       },
       "subtitle": "Organisations",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "zendesk"
@@ -1998,6 +2012,7 @@
         ]
       },
       "subtitle": "Groupes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "zendesk"
@@ -2042,6 +2057,7 @@
         "fields": []
       },
       "subtitle": "Groupes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "zendesk"
@@ -2134,6 +2150,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "création",
         "zendesk"
@@ -2193,6 +2210,7 @@
         ]
       },
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "liste",
         "zendesk"
@@ -2266,6 +2284,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tag",
       "tags": [
         "création",
         "zendesk"
@@ -2339,6 +2358,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "zendesk"
@@ -2383,6 +2403,7 @@
         "fields": []
       },
       "subtitle": "Macros",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "zendesk"
@@ -2456,6 +2477,7 @@
         ]
       },
       "subtitle": "Macros",
+      "icon": "fa-solid fa-wand-magic-sparkles",
       "tags": [
         "lecture",
         "zendesk"
@@ -2510,6 +2532,7 @@
         ]
       },
       "subtitle": "Satisfaction",
+      "icon": "fa-solid fa-star",
       "tags": [
         "liste",
         "zendesk"
@@ -2526,6 +2549,7 @@
       "category": "Zendesk",
       "providerKey": "zendesk",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "outputHandles": [
         {
           "id": "ok",

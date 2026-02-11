@@ -343,6 +343,7 @@
         ]
       },
       "subtitle": "Complétions",
+      "icon": "fa-solid fa-message",
       "group": "Complétions",
       "tags": [
         "openai"
@@ -390,6 +391,7 @@
         ]
       },
       "subtitle": "Mémoire",
+      "icon": "fa-solid fa-box-archive",
       "group": "Mémoire",
       "tags": [
         "openai"
@@ -443,6 +445,7 @@
         ]
       },
       "subtitle": "Mémoire",
+      "icon": "fa-solid fa-boxes-stacked",
       "group": "Mémoire",
       "tags": [
         "openai"
@@ -509,6 +512,7 @@
         ]
       },
       "subtitle": "Outils",
+      "icon": "fa-solid fa-screwdriver-wrench",
       "group": "Outils",
       "tags": [
         "openai"
@@ -576,6 +580,7 @@
         ]
       },
       "subtitle": "Embeddings",
+      "icon": "fa-solid fa-vector-square",
       "group": "Embeddings",
       "tags": [
         "openai"
@@ -667,6 +672,7 @@
         ]
       },
       "subtitle": "Images",
+      "icon": "fa-solid fa-image",
       "group": "Images",
       "tags": [
         "création",
@@ -730,6 +736,7 @@
         ]
       },
       "subtitle": "Mémoire",
+      "icon": "fa-solid fa-vector-square",
       "group": "Mémoire",
       "tags": [
         "openai"
@@ -837,6 +844,7 @@
         ]
       },
       "subtitle": "Agent",
+      "icon": "fa-solid fa-robot",
       "group": "Agent",
       "tags": [
         "openai"

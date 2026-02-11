@@ -902,6 +902,7 @@
         ]
       },
       "subtitle": "Audiences",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "mailchimp"
@@ -965,6 +966,7 @@
         ]
       },
       "subtitle": "Audiences",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "mailchimp"
@@ -1094,6 +1096,7 @@
         ]
       },
       "subtitle": "Audiences",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "mailchimp"
@@ -1208,6 +1211,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-user-plus",
       "tags": [
         "création",
         "mailchimp"
@@ -1281,6 +1285,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "mailchimp"
@@ -1395,6 +1400,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "mailchimp"
@@ -1468,6 +1474,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "mailchimp"
@@ -1545,6 +1552,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "mailchimp"
@@ -1604,6 +1612,7 @@
         ]
       },
       "subtitle": "Membres",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "mailchimp"
@@ -1723,6 +1732,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "mailchimp"
@@ -1782,6 +1792,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "mailchimp"
@@ -1872,6 +1883,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "mailchimp"
@@ -1931,6 +1943,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-paper-plane",
       "tags": [
         "envoi",
         "mailchimp"
@@ -2004,6 +2017,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-calendar-check",
       "tags": [
         "envoi",
         "mailchimp"
@@ -2063,6 +2077,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-ban",
       "tags": [
         "suppression",
         "mailchimp"
@@ -2126,6 +2141,7 @@
         ]
       },
       "subtitle": "Templates",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "mailchimp"
@@ -2185,6 +2201,7 @@
         ]
       },
       "subtitle": "Templates",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "mailchimp"
@@ -2244,6 +2261,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
       "tags": [
         "liste",
         "mailchimp"
@@ -2331,6 +2349,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tag",
       "tags": [
         "création",
         "mailchimp"
@@ -2418,6 +2437,7 @@
         ]
       },
       "subtitle": "Tags",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "mailchimp"
@@ -2477,6 +2497,7 @@
         ]
       },
       "subtitle": "Segments",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "mailchimp"
@@ -2550,6 +2571,7 @@
         ]
       },
       "subtitle": "Segments",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "mailchimp"
@@ -2613,6 +2635,7 @@
         ]
       },
       "subtitle": "Rapports",
+      "icon": "fa-solid fa-chart-line",
       "tags": [
         "liste",
         "mailchimp"
@@ -2672,6 +2695,7 @@
         ]
       },
       "subtitle": "Rapports",
+      "icon": "fa-solid fa-chart-line",
       "tags": [
         "lecture",
         "mailchimp"
@@ -2688,6 +2712,7 @@
       "category": "Mailchimp",
       "providerKey": "mailchimp",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "outputHandles": [
         {
           "id": "ok",

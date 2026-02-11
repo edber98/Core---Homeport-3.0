@@ -553,6 +553,7 @@
         ]
       },
       "subtitle": "Projets",
+      "icon": "fa-solid fa-square-plus",
       "group": "Projets",
       "tags": [
         "création",
@@ -597,6 +598,7 @@
         "fields": []
       },
       "subtitle": "Projets",
+      "icon": "fa-solid fa-list",
       "group": "Projets",
       "tags": [
         "liste",
@@ -741,6 +743,7 @@
         ]
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
       "group": "Tâches",
       "tags": [
         "création",
@@ -785,6 +788,7 @@
         "fields": []
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "group": "Utilisateurs",
       "tags": [
         "liste",
@@ -847,6 +851,7 @@
         ]
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "group": "Tâches",
       "tags": [
         "liste",
@@ -891,6 +896,7 @@
         "fields": []
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "group": "Tâches",
       "tags": [
         "liste",
@@ -935,6 +941,7 @@
         "fields": []
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "group": "Tâches",
       "tags": [
         "liste",
@@ -1065,6 +1072,7 @@
         ]
       },
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Tâches",
       "tags": [
         "mise-à-jour",

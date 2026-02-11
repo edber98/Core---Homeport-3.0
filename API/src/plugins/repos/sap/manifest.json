@@ -1458,6 +1458,7 @@
         ]
       },
       "subtitle": "Business Partners",
+      "icon": "fa-solid fa-square-plus",
       "group": "Business Partners",
       "tags": [
         "création",
@@ -1517,6 +1518,7 @@
         ]
       },
       "subtitle": "Business Partners",
+      "icon": "fa-solid fa-eye",
       "group": "Business Partners",
       "tags": [
         "lecture",
@@ -1594,6 +1596,7 @@
         ]
       },
       "subtitle": "Business Partners",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Business Partners",
       "tags": [
         "mise-à-jour",
@@ -1653,6 +1656,7 @@
         ]
       },
       "subtitle": "Business Partners",
+      "icon": "fa-solid fa-trash",
       "group": "Business Partners",
       "tags": [
         "suppression",
@@ -1727,6 +1731,7 @@
         ]
       },
       "subtitle": "Business Partners",
+      "icon": "fa-solid fa-list",
       "group": "Business Partners",
       "tags": [
         "liste",
@@ -1837,6 +1842,7 @@
         ]
       },
       "subtitle": "Commandes de vente",
+      "icon": "fa-solid fa-square-plus",
       "group": "Commandes de vente",
       "tags": [
         "création",
@@ -1896,6 +1902,7 @@
         ]
       },
       "subtitle": "Commandes de vente",
+      "icon": "fa-solid fa-eye",
       "group": "Commandes de vente",
       "tags": [
         "lecture",
@@ -1964,6 +1971,7 @@
         ]
       },
       "subtitle": "Commandes de vente",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Commandes de vente",
       "tags": [
         "mise-à-jour",
@@ -2055,6 +2063,7 @@
         ]
       },
       "subtitle": "Commandes de vente",
+      "icon": "fa-solid fa-square-plus",
       "group": "Commandes de vente",
       "tags": [
         "création",
@@ -2129,6 +2138,7 @@
         ]
       },
       "subtitle": "Commandes de vente",
+      "icon": "fa-solid fa-list",
       "group": "Commandes de vente",
       "tags": [
         "liste",
@@ -2230,6 +2240,7 @@
         ]
       },
       "subtitle": "Commandes d'achat",
+      "icon": "fa-solid fa-square-plus",
       "group": "Commandes d'achat",
       "tags": [
         "création",
@@ -2289,6 +2300,7 @@
         ]
       },
       "subtitle": "Commandes d'achat",
+      "icon": "fa-solid fa-eye",
       "group": "Commandes d'achat",
       "tags": [
         "lecture",
@@ -2357,6 +2369,7 @@
         ]
       },
       "subtitle": "Commandes d'achat",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Commandes d'achat",
       "tags": [
         "mise-à-jour",
@@ -2431,6 +2444,7 @@
         ]
       },
       "subtitle": "Commandes d'achat",
+      "icon": "fa-solid fa-list",
       "group": "Commandes d'achat",
       "tags": [
         "liste",
@@ -2522,6 +2536,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-square-plus",
       "group": "Articles",
       "tags": [
         "création",
@@ -2581,6 +2596,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-eye",
       "group": "Articles",
       "tags": [
         "lecture",
@@ -2658,6 +2674,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Articles",
       "tags": [
         "mise-à-jour",
@@ -2732,6 +2749,7 @@
         ]
       },
       "subtitle": "Articles",
+      "icon": "fa-solid fa-list",
       "group": "Articles",
       "tags": [
         "liste",
@@ -2791,6 +2809,7 @@
         ]
       },
       "subtitle": "Facturation",
+      "icon": "fa-solid fa-eye",
       "group": "Facturation",
       "tags": [
         "lecture",
@@ -2865,6 +2884,7 @@
         ]
       },
       "subtitle": "Facturation",
+      "icon": "fa-solid fa-list",
       "group": "Facturation",
       "tags": [
         "liste",
@@ -2944,6 +2964,7 @@
         ]
       },
       "subtitle": "Facturation",
+      "icon": "fa-solid fa-list",
       "group": "Facturation",
       "tags": [
         "liste",
@@ -3017,6 +3038,7 @@
         ]
       },
       "subtitle": "Comptabilité",
+      "icon": "fa-solid fa-eye",
       "group": "Comptabilité",
       "tags": [
         "lecture",
@@ -3100,6 +3122,7 @@
         ]
       },
       "subtitle": "Comptabilité",
+      "icon": "fa-solid fa-list",
       "group": "Comptabilité",
       "tags": [
         "liste",
@@ -3173,6 +3196,7 @@
         ]
       },
       "subtitle": "Comptabilité",
+      "icon": "fa-solid fa-eye",
       "group": "Comptabilité",
       "tags": [
         "lecture",
@@ -3247,6 +3271,7 @@
         ]
       },
       "subtitle": "Comptabilité",
+      "icon": "fa-solid fa-list",
       "group": "Comptabilité",
       "tags": [
         "liste",
@@ -3306,6 +3331,7 @@
         ]
       },
       "subtitle": "Production",
+      "icon": "fa-solid fa-eye",
       "group": "Production",
       "tags": [
         "lecture",
@@ -3392,6 +3418,7 @@
         ]
       },
       "subtitle": "Production",
+      "icon": "fa-solid fa-circle-check",
       "group": "Production",
       "tags": [
         "mise-à-jour",
@@ -3466,6 +3493,7 @@
         ]
       },
       "subtitle": "Production",
+      "icon": "fa-solid fa-list",
       "group": "Production",
       "tags": [
         "liste",
@@ -3525,6 +3553,7 @@
         ]
       },
       "subtitle": "OData",
+      "icon": "fa-solid fa-eye",
       "group": "OData",
       "tags": [
         "lecture",
@@ -3593,6 +3622,7 @@
         ]
       },
       "subtitle": "OData",
+      "icon": "fa-solid fa-paper-plane",
       "group": "OData",
       "tags": [
         "envoi",

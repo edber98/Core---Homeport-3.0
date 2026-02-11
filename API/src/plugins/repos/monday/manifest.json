@@ -933,6 +933,7 @@
         ]
       },
       "subtitle": "Items",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "monday",
         "création"
@@ -992,6 +993,7 @@
         ]
       },
       "subtitle": "Items",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "monday",
         "lecture"
@@ -1079,6 +1081,7 @@
         ]
       },
       "subtitle": "Items",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "monday",
         "mise-à-jour"
@@ -1138,6 +1141,7 @@
         ]
       },
       "subtitle": "Items",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "monday",
         "suppression"
@@ -1206,6 +1210,7 @@
         ]
       },
       "subtitle": "Items",
+      "icon": "fa-solid fa-list",
       "tags": [
         "monday",
         "liste"
@@ -1265,6 +1270,7 @@
         ]
       },
       "subtitle": "Boards",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "monday",
         "lecture"
@@ -1319,6 +1325,7 @@
         ]
       },
       "subtitle": "Boards",
+      "icon": "fa-solid fa-list",
       "tags": [
         "monday",
         "liste"
@@ -1401,6 +1408,7 @@
         ]
       },
       "subtitle": "Groupes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "monday",
         "création"
@@ -1460,6 +1468,7 @@
         ]
       },
       "subtitle": "Groupes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "monday",
         "liste"
@@ -1519,6 +1528,7 @@
         ]
       },
       "subtitle": "Colonnes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "monday",
         "liste"
@@ -1620,6 +1630,7 @@
         ]
       },
       "subtitle": "Colonnes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "monday",
         "création"
@@ -1721,6 +1732,7 @@
         ]
       },
       "subtitle": "Colonnes",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "monday",
         "mise-à-jour"
@@ -1803,6 +1815,7 @@
         ]
       },
       "subtitle": "Sous-items",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "monday",
         "création"
@@ -1862,6 +1875,7 @@
         ]
       },
       "subtitle": "Sous-items",
+      "icon": "fa-solid fa-list",
       "tags": [
         "monday",
         "liste"
@@ -1916,6 +1930,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "tags": [
         "monday",
         "liste"
@@ -1989,6 +2004,7 @@
         ]
       },
       "subtitle": "Mises à jour",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "monday",
         "création"
@@ -2057,6 +2073,7 @@
         ]
       },
       "subtitle": "Mises à jour",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "monday",
         "liste"
@@ -2111,6 +2128,7 @@
         ]
       },
       "subtitle": "Espaces de travail",
+      "icon": "fa-solid fa-building",
       "tags": [
         "monday",
         "liste"
@@ -2123,6 +2141,7 @@
       "schemaVersion": 2,
       "title": "Événement entrant",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "type": "event",
       "nodeKind": "event",
       "category": "Monday.com",

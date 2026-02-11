@@ -886,6 +886,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "brevo"
@@ -945,6 +946,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "brevo"
@@ -1040,6 +1042,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "brevo"
@@ -1099,6 +1102,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "brevo"
@@ -1162,6 +1166,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "brevo"
@@ -1235,6 +1240,7 @@
         ]
       },
       "subtitle": "Contacts",
+      "icon": "fa-solid fa-file-arrow-up",
       "tags": [
         "importation",
         "brevo"
@@ -1308,6 +1314,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "brevo"
@@ -1367,6 +1374,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "brevo"
@@ -1430,6 +1438,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "brevo"
@@ -1503,6 +1512,7 @@
         ]
       },
       "subtitle": "Listes",
+      "icon": "fa-solid fa-user-plus",
       "tags": [
         "mise-à-jour",
         "brevo"
@@ -1636,6 +1646,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "brevo"
@@ -1695,6 +1706,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "brevo"
@@ -1785,6 +1797,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "brevo"
@@ -1858,6 +1871,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-paper-plane",
       "tags": [
         "envoi",
         "brevo"
@@ -1917,6 +1931,7 @@
         ]
       },
       "subtitle": "Campagnes",
+      "icon": "fa-solid fa-paper-plane",
       "tags": [
         "envoi",
         "brevo"
@@ -2040,6 +2055,7 @@
         ]
       },
       "subtitle": "Emails transactionnels",
+      "icon": "fa-solid fa-envelope",
       "tags": [
         "envoi",
         "brevo"
@@ -2103,6 +2119,7 @@
         ]
       },
       "subtitle": "Statistiques",
+      "icon": "fa-solid fa-chart-line",
       "tags": [
         "lecture",
         "brevo"
@@ -2166,6 +2183,7 @@
         ]
       },
       "subtitle": "Templates",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "brevo"
@@ -2225,6 +2243,7 @@
         ]
       },
       "subtitle": "Templates",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "brevo"
@@ -2269,6 +2288,7 @@
         "fields": []
       },
       "subtitle": "Expéditeurs",
+      "icon": "fa-solid fa-users",
       "tags": [
         "liste",
         "brevo"
@@ -2285,6 +2305,7 @@
       "category": "Brevo",
       "providerKey": "brevo",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "outputHandles": [
         {
           "id": "ok",

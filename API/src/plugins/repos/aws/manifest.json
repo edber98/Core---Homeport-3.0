@@ -543,6 +543,7 @@
       "schemaVersion": 2,
       "title": "Téléverser un objet",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-file-arrow-up",
       "tags": [
         "téléversement",
         "aws"
@@ -640,6 +641,7 @@
       "schemaVersion": 2,
       "title": "Récupérer un objet",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-download",
       "tags": [
         "lecture",
         "aws"
@@ -711,6 +713,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un objet",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "aws"
@@ -782,6 +785,7 @@
       "schemaVersion": 2,
       "title": "Lister les objets",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "aws"
@@ -857,6 +861,7 @@
       "schemaVersion": 2,
       "title": "Copier un objet",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-copy",
       "tags": [
         "création",
         "aws"
@@ -954,6 +959,7 @@
       "schemaVersion": 2,
       "title": "Métadonnées d'un objet",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-circle-info",
       "tags": [
         "lecture",
         "aws"
@@ -1025,6 +1031,7 @@
       "schemaVersion": 2,
       "title": "Lister les buckets",
       "subtitle": "Buckets",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "aws"
@@ -1069,6 +1076,7 @@
       "schemaVersion": 2,
       "title": "Créer un bucket",
       "subtitle": "Buckets",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "aws"
@@ -1135,6 +1143,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un bucket",
       "subtitle": "Buckets",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "aws"
@@ -1193,6 +1202,7 @@
       "schemaVersion": 2,
       "title": "Générer une URL présignée",
       "subtitle": "Objets",
+      "icon": "fa-solid fa-link",
       "tags": [
         "lecture",
         "aws"
@@ -1292,6 +1302,7 @@
       "schemaVersion": 2,
       "title": "Envoyer un email",
       "subtitle": "Emails",
+      "icon": "fa-solid fa-envelope",
       "tags": [
         "envoi",
         "aws"
@@ -1409,6 +1420,7 @@
       "schemaVersion": 2,
       "title": "Envoyer un email avec template",
       "subtitle": "Emails",
+      "icon": "fa-solid fa-envelope-open-text",
       "tags": [
         "envoi",
         "aws"
@@ -1501,6 +1513,7 @@
       "schemaVersion": 2,
       "title": "Envoyer un email brut",
       "subtitle": "Emails",
+      "icon": "fa-solid fa-paper-plane",
       "tags": [
         "envoi",
         "aws"
@@ -1559,6 +1572,7 @@
       "schemaVersion": 2,
       "title": "Créer un template",
       "subtitle": "Templates",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "aws"
@@ -1646,6 +1660,7 @@
       "schemaVersion": 2,
       "title": "Récupérer un template",
       "subtitle": "Templates",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "aws"
@@ -1704,6 +1719,7 @@
       "schemaVersion": 2,
       "title": "Lister les templates",
       "subtitle": "Templates",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "aws"
@@ -1758,6 +1774,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un template",
       "subtitle": "Templates",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "aws"
@@ -1816,6 +1833,7 @@
       "schemaVersion": 2,
       "title": "Lister les identités",
       "subtitle": "Identités",
+      "icon": "fa-solid fa-id-badge",
       "tags": [
         "liste",
         "aws"

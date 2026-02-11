@@ -958,6 +958,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "asana",
         "création"
@@ -1017,6 +1018,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "asana",
         "lecture"
@@ -1121,6 +1123,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "asana",
         "mise-à-jour"
@@ -1180,6 +1183,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "asana",
         "suppression"
@@ -1248,6 +1252,7 @@
         }
       ],
       "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
       "tags": [
         "asana",
         "liste"
@@ -1339,6 +1344,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "asana",
         "création"
@@ -1398,6 +1404,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "asana",
         "lecture"
@@ -1466,6 +1473,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-list",
       "tags": [
         "asana",
         "liste"
@@ -1539,6 +1547,7 @@
         }
       ],
       "subtitle": "Sections",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "asana",
         "création"
@@ -1598,6 +1607,7 @@
         }
       ],
       "subtitle": "Sections",
+      "icon": "fa-solid fa-list-ul",
       "tags": [
         "asana",
         "liste"
@@ -1680,6 +1690,7 @@
         }
       ],
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tag",
       "tags": [
         "asana",
         "création"
@@ -1748,6 +1759,7 @@
         }
       ],
       "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
       "tags": [
         "asana",
         "liste"
@@ -1807,6 +1819,7 @@
         }
       ],
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "tags": [
         "asana",
         "lecture"
@@ -1875,6 +1888,7 @@
         }
       ],
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "tags": [
         "asana",
         "liste"
@@ -1919,6 +1933,7 @@
         }
       ],
       "subtitle": "Espaces de travail",
+      "icon": "fa-solid fa-building",
       "tags": [
         "asana",
         "liste"
@@ -1992,6 +2007,7 @@
         }
       ],
       "subtitle": "Stories",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "asana",
         "création"
@@ -2051,6 +2067,7 @@
         }
       ],
       "subtitle": "Stories",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "asana",
         "liste"
@@ -2096,6 +2113,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "inputHandles": [],
       "tags": [
         "asana",

@@ -1185,6 +1185,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1272,6 +1273,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Messages",
       "tags": [
         "mise-à-jour",
@@ -1345,6 +1347,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-trash",
       "group": "Messages",
       "tags": [
         "suppression",
@@ -1432,6 +1435,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-reply",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1505,6 +1509,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-link",
       "group": "Messages",
       "tags": [
         "lecture",
@@ -1592,6 +1597,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-clock",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1679,6 +1685,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-message",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -1748,6 +1755,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-square-plus",
       "group": "Canaux",
       "tags": [
         "création",
@@ -1830,6 +1838,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-list",
       "group": "Canaux",
       "tags": [
         "liste",
@@ -1889,6 +1898,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-eye",
       "group": "Canaux",
       "tags": [
         "lecture",
@@ -1948,6 +1958,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-archive",
       "group": "Canaux",
       "tags": [
         "mise-à-jour",
@@ -2021,6 +2032,7 @@
         ]
       },
       "subtitle": "Canaux",
+      "icon": "fa-solid fa-user-plus",
       "group": "Canaux",
       "tags": [
         "envoi",
@@ -2076,6 +2088,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "group": "Utilisateurs",
       "tags": [
         "liste",
@@ -2135,6 +2148,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "group": "Utilisateurs",
       "tags": [
         "lecture",
@@ -2194,6 +2208,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-id-badge",
       "group": "Utilisateurs",
       "tags": [
         "lecture",
@@ -2253,6 +2268,7 @@
         ]
       },
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Utilisateurs",
       "tags": [
         "recherche",
@@ -2341,6 +2357,7 @@
         ]
       },
       "subtitle": "Réactions",
+      "icon": "fa-solid fa-face-smile",
       "group": "Réactions",
       "tags": [
         "création",
@@ -2428,6 +2445,7 @@
         ]
       },
       "subtitle": "Réactions",
+      "icon": "fa-solid fa-face-frown",
       "group": "Réactions",
       "tags": [
         "suppression",
@@ -2501,6 +2519,7 @@
         ]
       },
       "subtitle": "Réactions",
+      "icon": "fa-solid fa-list",
       "group": "Réactions",
       "tags": [
         "lecture",
@@ -2590,6 +2609,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "envoi",
@@ -2681,6 +2701,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
       "group": "Fichiers",
       "tags": [
         "liste",
@@ -2740,6 +2761,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
       "group": "Fichiers",
       "tags": [
         "lecture",
@@ -2799,6 +2821,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
       "group": "Fichiers",
       "tags": [
         "suppression",
@@ -2872,6 +2895,7 @@
         ]
       },
       "subtitle": "Épingles",
+      "icon": "fa-solid fa-thumbtack",
       "group": "Épingles",
       "tags": [
         "mise-à-jour",
@@ -2931,6 +2955,7 @@
         ]
       },
       "subtitle": "Épingles",
+      "icon": "fa-solid fa-list",
       "group": "Épingles",
       "tags": [
         "liste",
@@ -3014,6 +3039,7 @@
         ]
       },
       "subtitle": "Rappels",
+      "icon": "fa-solid fa-bell",
       "group": "Rappels",
       "tags": [
         "création",
@@ -3058,6 +3084,7 @@
         "fields": []
       },
       "subtitle": "Rappels",
+      "icon": "fa-solid fa-list",
       "group": "Rappels",
       "tags": [
         "liste",
@@ -3117,6 +3144,7 @@
         ]
       },
       "subtitle": "Rappels",
+      "icon": "fa-solid fa-trash",
       "group": "Rappels",
       "tags": [
         "suppression",
@@ -3214,6 +3242,7 @@
         ]
       },
       "subtitle": "Signets",
+      "icon": "fa-solid fa-bookmark",
       "group": "Signets",
       "tags": [
         "création",
@@ -3273,6 +3302,7 @@
         ]
       },
       "subtitle": "Signets",
+      "icon": "fa-solid fa-list",
       "group": "Signets",
       "tags": [
         "liste",

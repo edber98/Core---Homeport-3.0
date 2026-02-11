@@ -426,6 +426,7 @@
       "schemaVersion": 2,
       "title": "Récupérer des enregistrements",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "supabase"
@@ -530,6 +531,7 @@
       "schemaVersion": 2,
       "title": "Insérer des enregistrements",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "supabase"
@@ -602,6 +604,7 @@
       "schemaVersion": 2,
       "title": "Mettre à jour des enregistrements",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "supabase"
@@ -687,6 +690,7 @@
       "schemaVersion": 2,
       "title": "Upsert des enregistrements",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-arrows-rotate",
       "tags": [
         "mise-à-jour",
         "supabase"
@@ -767,6 +771,7 @@
       "schemaVersion": 2,
       "title": "Supprimer des enregistrements",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "supabase"
@@ -839,6 +844,7 @@
       "schemaVersion": 2,
       "title": "Appeler une fonction RPC",
       "subtitle": "Base de données",
+      "icon": "fa-solid fa-gears",
       "tags": [
         "lecture",
         "supabase"
@@ -906,6 +912,7 @@
       "schemaVersion": 2,
       "title": "Inscrire un utilisateur",
       "subtitle": "Authentification",
+      "icon": "fa-solid fa-user-plus",
       "tags": [
         "création",
         "supabase"
@@ -994,6 +1001,7 @@
       "schemaVersion": 2,
       "title": "Connecter un utilisateur",
       "subtitle": "Authentification",
+      "icon": "fa-solid fa-user-check",
       "tags": [
         "lecture",
         "supabase"
@@ -1066,6 +1074,7 @@
       "schemaVersion": 2,
       "title": "Récupérer un utilisateur",
       "subtitle": "Authentification",
+      "icon": "fa-solid fa-user",
       "tags": [
         "lecture",
         "supabase"
@@ -1124,6 +1133,7 @@
       "schemaVersion": 2,
       "title": "Lister les utilisateurs",
       "subtitle": "Authentification",
+      "icon": "fa-solid fa-users",
       "tags": [
         "liste",
         "supabase"
@@ -1187,6 +1197,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un utilisateur",
       "subtitle": "Authentification",
+      "icon": "fa-solid fa-user-minus",
       "tags": [
         "suppression",
         "supabase"
@@ -1245,6 +1256,7 @@
       "schemaVersion": 2,
       "title": "Téléverser un fichier",
       "subtitle": "Stockage",
+      "icon": "fa-solid fa-file-arrow-up",
       "tags": [
         "téléversement",
         "supabase"
@@ -1342,6 +1354,7 @@
       "schemaVersion": 2,
       "title": "Télécharger un fichier",
       "subtitle": "Stockage",
+      "icon": "fa-solid fa-download",
       "tags": [
         "téléchargement",
         "supabase"
@@ -1413,6 +1426,7 @@
       "schemaVersion": 2,
       "title": "Lister les fichiers",
       "subtitle": "Stockage",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "supabase"
@@ -1488,6 +1502,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un fichier",
       "subtitle": "Stockage",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "supabase"

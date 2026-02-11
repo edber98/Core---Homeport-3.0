@@ -1282,6 +1282,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
       "group": "Fichiers",
       "tags": [
         "liste",
@@ -1340,6 +1341,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
       "group": "Fichiers",
       "tags": [
         "lecture",
@@ -1415,6 +1417,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "group": "Fichiers",
       "tags": [
         "création",
@@ -1473,6 +1476,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
       "group": "Fichiers",
       "tags": [
         "suppression",
@@ -1545,6 +1549,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-arrow-right",
       "group": "Fichiers",
       "tags": [
         "mise-à-jour",
@@ -1617,6 +1622,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-copy",
       "group": "Fichiers",
       "tags": [
         "création",
@@ -1675,6 +1681,7 @@
         ]
       },
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
       "group": "Dossiers",
       "tags": [
         "création",
@@ -1793,6 +1800,7 @@
         ]
       },
       "subtitle": "Partage",
+      "icon": "fa-solid fa-share",
       "group": "Partage",
       "tags": [
         "création",
@@ -1855,6 +1863,7 @@
         ]
       },
       "subtitle": "Partage",
+      "icon": "fa-solid fa-list",
       "group": "Partage",
       "tags": [
         "liste",
@@ -1913,6 +1922,7 @@
         ]
       },
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Fichiers",
       "tags": [
         "recherche",
@@ -2003,6 +2013,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-comments",
       "group": "Conversations",
       "tags": [
         "création",
@@ -2046,6 +2057,7 @@
         "fields": []
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-list",
       "group": "Conversations",
       "tags": [
         "liste",
@@ -2104,6 +2116,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-eye",
       "group": "Conversations",
       "tags": [
         "lecture",
@@ -2162,6 +2175,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-trash",
       "group": "Conversations",
       "tags": [
         "suppression",
@@ -2243,6 +2257,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -2331,6 +2346,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
       "group": "Messages",
       "tags": [
         "liste",
@@ -2427,6 +2443,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-user-plus",
       "group": "Conversations",
       "tags": [
         "mise-à-jour",
@@ -2499,6 +2516,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-user-minus",
       "group": "Conversations",
       "tags": [
         "suppression",
@@ -2566,6 +2584,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-circle-check",
       "group": "Messages",
       "tags": [
         "mise-à-jour",
@@ -2638,6 +2657,7 @@
         ]
       },
       "subtitle": "Conversations",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Conversations",
       "tags": [
         "mise-à-jour",
@@ -2681,6 +2701,7 @@
         "fields": []
       },
       "subtitle": "Calendriers",
+      "icon": "fa-solid fa-list",
       "group": "Calendriers",
       "tags": [
         "liste",
@@ -2762,6 +2783,7 @@
         ]
       },
       "subtitle": "Calendriers",
+      "icon": "fa-solid fa-square-plus",
       "group": "Calendriers",
       "tags": [
         "création",
@@ -2820,6 +2842,7 @@
         ]
       },
       "subtitle": "Calendriers",
+      "icon": "fa-solid fa-trash",
       "group": "Calendriers",
       "tags": [
         "suppression",
@@ -2938,6 +2961,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-square-plus",
       "group": "Événements",
       "tags": [
         "création",
@@ -3010,6 +3034,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-eye",
       "group": "Événements",
       "tags": [
         "lecture",
@@ -3086,6 +3111,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
       "group": "Événements",
       "tags": [
         "liste",
@@ -3203,6 +3229,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Événements",
       "tags": [
         "mise-à-jour",
@@ -3275,6 +3302,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-trash",
       "group": "Événements",
       "tags": [
         "suppression",

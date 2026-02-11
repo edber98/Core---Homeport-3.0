@@ -359,6 +359,7 @@
       "schemaVersion": 2,
       "title": "Exécuter une requête SQL",
       "subtitle": "Requêtes",
+      "icon": "fa-solid fa-terminal",
       "tags": [
         "lecture",
         "sql-database"
@@ -418,6 +419,7 @@
       "schemaVersion": 2,
       "title": "Exécuter une requête paramétrée",
       "subtitle": "Requêtes",
+      "icon": "fa-solid fa-code",
       "tags": [
         "lecture",
         "sql-database"
@@ -486,6 +488,7 @@
       "schemaVersion": 2,
       "title": "Lister les tables",
       "subtitle": "Tables",
+      "icon": "fa-solid fa-table",
       "tags": [
         "liste",
         "sql-database"
@@ -540,6 +543,7 @@
       "schemaVersion": 2,
       "title": "Décrire une table",
       "subtitle": "Tables",
+      "icon": "fa-solid fa-table-cells",
       "tags": [
         "lecture",
         "sql-database"
@@ -607,6 +611,7 @@
       "schemaVersion": 2,
       "title": "Sélectionner des enregistrements",
       "subtitle": "Données",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "lecture",
         "sql-database"
@@ -711,6 +716,7 @@
       "schemaVersion": 2,
       "title": "Insérer un enregistrement",
       "subtitle": "Données",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "création",
         "sql-database"
@@ -783,6 +789,7 @@
       "schemaVersion": 2,
       "title": "Mettre à jour des enregistrements",
       "subtitle": "Données",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "mise-à-jour",
         "sql-database"
@@ -869,6 +876,7 @@
       "schemaVersion": 2,
       "title": "Supprimer des enregistrements",
       "subtitle": "Données",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "sql-database"
@@ -941,6 +949,7 @@
       "schemaVersion": 2,
       "title": "Appeler une procédure stockée",
       "subtitle": "Procédures",
+      "icon": "fa-solid fa-gears",
       "tags": [
         "lecture",
         "sql-database"

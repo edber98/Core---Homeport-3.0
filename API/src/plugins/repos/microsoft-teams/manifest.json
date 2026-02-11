@@ -134,6 +134,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -206,6 +207,7 @@
         ]
       },
       "subtitle": "Messages",
+      "icon": "fa-solid fa-message",
       "group": "Messages",
       "tags": [
         "envoi",
@@ -218,6 +220,7 @@
       "schemaVersion": 2,
       "title": "Webhook entrant",
       "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
       "type": "event",
       "category": "Teams",
       "providerKey": "msteams",

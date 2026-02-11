@@ -1724,6 +1724,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
       "group": "Clients",
       "tags": [
         "création",
@@ -1783,6 +1784,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
       "group": "Clients",
       "tags": [
         "lecture",
@@ -1878,6 +1880,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Clients",
       "tags": [
         "mise-à-jour",
@@ -1937,6 +1940,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-trash",
       "group": "Clients",
       "tags": [
         "suppression",
@@ -2009,6 +2013,7 @@
         ]
       },
       "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
       "group": "Clients",
       "tags": [
         "liste",
@@ -2086,6 +2091,7 @@
         ]
       },
       "subtitle": "Produits",
+      "icon": "fa-solid fa-square-plus",
       "group": "Produits",
       "tags": [
         "création",
@@ -2145,6 +2151,7 @@
         ]
       },
       "subtitle": "Produits",
+      "icon": "fa-solid fa-eye",
       "group": "Produits",
       "tags": [
         "lecture",
@@ -2231,6 +2238,7 @@
         ]
       },
       "subtitle": "Produits",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Produits",
       "tags": [
         "mise-à-jour",
@@ -2303,6 +2311,7 @@
         ]
       },
       "subtitle": "Produits",
+      "icon": "fa-solid fa-list",
       "group": "Produits",
       "tags": [
         "liste",
@@ -2399,6 +2408,7 @@
         ]
       },
       "subtitle": "Prix",
+      "icon": "fa-solid fa-square-plus",
       "group": "Prix",
       "tags": [
         "création",
@@ -2458,6 +2468,7 @@
         ]
       },
       "subtitle": "Prix",
+      "icon": "fa-solid fa-eye",
       "group": "Prix",
       "tags": [
         "lecture",
@@ -2539,6 +2550,7 @@
         ]
       },
       "subtitle": "Prix",
+      "icon": "fa-solid fa-list",
       "group": "Prix",
       "tags": [
         "liste",
@@ -2639,6 +2651,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-square-plus",
       "group": "Paiements",
       "tags": [
         "création",
@@ -2698,6 +2711,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-eye",
       "group": "Paiements",
       "tags": [
         "lecture",
@@ -2766,6 +2780,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-circle-check",
       "group": "Paiements",
       "tags": [
         "mise-à-jour",
@@ -2825,6 +2840,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-ban",
       "group": "Paiements",
       "tags": [
         "mise-à-jour",
@@ -2897,6 +2913,7 @@
         ]
       },
       "subtitle": "Paiements",
+      "icon": "fa-solid fa-list",
       "group": "Paiements",
       "tags": [
         "liste",
@@ -2979,6 +2996,7 @@
         ]
       },
       "subtitle": "Abonnements",
+      "icon": "fa-solid fa-square-plus",
       "group": "Abonnements",
       "tags": [
         "création",
@@ -3038,6 +3056,7 @@
         ]
       },
       "subtitle": "Abonnements",
+      "icon": "fa-solid fa-eye",
       "group": "Abonnements",
       "tags": [
         "lecture",
@@ -3115,6 +3134,7 @@
         ]
       },
       "subtitle": "Abonnements",
+      "icon": "fa-solid fa-pen-to-square",
       "group": "Abonnements",
       "tags": [
         "mise-à-jour",
@@ -3174,6 +3194,7 @@
         ]
       },
       "subtitle": "Abonnements",
+      "icon": "fa-solid fa-ban",
       "group": "Abonnements",
       "tags": [
         "mise-à-jour",
@@ -3255,6 +3276,7 @@
         ]
       },
       "subtitle": "Abonnements",
+      "icon": "fa-solid fa-list",
       "group": "Abonnements",
       "tags": [
         "liste",
@@ -3332,6 +3354,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-square-plus",
       "group": "Factures",
       "tags": [
         "création",
@@ -3391,6 +3414,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-eye",
       "group": "Factures",
       "tags": [
         "lecture",
@@ -3450,6 +3474,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-circle-check",
       "group": "Factures",
       "tags": [
         "lecture",
@@ -3509,6 +3534,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-money-bill-wave",
       "group": "Factures",
       "tags": [
         "lecture",
@@ -3590,6 +3616,7 @@
         ]
       },
       "subtitle": "Factures",
+      "icon": "fa-solid fa-list",
       "group": "Factures",
       "tags": [
         "liste",
@@ -3649,6 +3676,7 @@
         ]
       },
       "subtitle": "Charges",
+      "icon": "fa-solid fa-eye",
       "group": "Charges",
       "tags": [
         "lecture",
@@ -3721,6 +3749,7 @@
         ]
       },
       "subtitle": "Charges",
+      "icon": "fa-solid fa-list",
       "group": "Charges",
       "tags": [
         "liste",
@@ -3802,6 +3831,7 @@
         ]
       },
       "subtitle": "Remboursements",
+      "icon": "fa-solid fa-rotate-left",
       "group": "Remboursements",
       "tags": [
         "création",
@@ -3861,6 +3891,7 @@
         ]
       },
       "subtitle": "Remboursements",
+      "icon": "fa-solid fa-eye",
       "group": "Remboursements",
       "tags": [
         "lecture",
@@ -3933,6 +3964,7 @@
         ]
       },
       "subtitle": "Remboursements",
+      "icon": "fa-solid fa-list",
       "group": "Remboursements",
       "tags": [
         "liste",
@@ -4048,6 +4080,7 @@
         ]
       },
       "subtitle": "Checkout",
+      "icon": "fa-solid fa-cart-shopping",
       "group": "Checkout",
       "tags": [
         "création",
@@ -4107,6 +4140,7 @@
         ]
       },
       "subtitle": "Checkout",
+      "icon": "fa-solid fa-eye",
       "group": "Checkout",
       "tags": [
         "lecture",
@@ -4170,6 +4204,7 @@
         ]
       },
       "subtitle": "Checkout",
+      "icon": "fa-solid fa-list",
       "group": "Checkout",
       "tags": [
         "liste",
@@ -4214,6 +4249,7 @@
         "fields": []
       },
       "subtitle": "Solde",
+      "icon": "fa-solid fa-coins",
       "group": "Solde",
       "tags": [
         "lecture",
@@ -4286,6 +4322,7 @@
         ]
       },
       "subtitle": "Solde",
+      "icon": "fa-solid fa-list",
       "group": "Solde",
       "tags": [
         "liste",

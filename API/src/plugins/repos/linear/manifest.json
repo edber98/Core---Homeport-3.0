@@ -1094,6 +1094,7 @@
         }
       ],
       "subtitle": "Issues",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "linear",
         "création"
@@ -1153,6 +1154,7 @@
         }
       ],
       "subtitle": "Issues",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "linear",
         "lecture"
@@ -1257,6 +1259,7 @@
         }
       ],
       "subtitle": "Issues",
+      "icon": "fa-solid fa-pen-to-square",
       "tags": [
         "linear",
         "mise-à-jour"
@@ -1320,6 +1323,7 @@
         }
       ],
       "subtitle": "Issues",
+      "icon": "fa-solid fa-list",
       "tags": [
         "linear",
         "liste"
@@ -1388,6 +1392,7 @@
         }
       ],
       "subtitle": "Issues",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "linear",
         "recherche"
@@ -1470,6 +1475,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-square-plus",
       "tags": [
         "linear",
         "création"
@@ -1529,6 +1535,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "linear",
         "lecture"
@@ -1583,6 +1590,7 @@
         }
       ],
       "subtitle": "Projets",
+      "icon": "fa-solid fa-list",
       "tags": [
         "linear",
         "liste"
@@ -1642,6 +1650,7 @@
         }
       ],
       "subtitle": "Cycles",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "linear",
         "lecture"
@@ -1705,6 +1714,7 @@
         }
       ],
       "subtitle": "Cycles",
+      "icon": "fa-solid fa-list",
       "tags": [
         "linear",
         "liste"
@@ -1764,6 +1774,7 @@
         }
       ],
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-eye",
       "tags": [
         "linear",
         "lecture"
@@ -1808,6 +1819,7 @@
         }
       ],
       "subtitle": "Équipes",
+      "icon": "fa-solid fa-list",
       "tags": [
         "linear",
         "liste"
@@ -1862,6 +1874,7 @@
         }
       ],
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
       "tags": [
         "linear",
         "lecture"
@@ -1906,6 +1919,7 @@
         }
       ],
       "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
       "tags": [
         "linear",
         "liste"
@@ -1988,6 +2002,7 @@
         }
       ],
       "subtitle": "Labels",
+      "icon": "fa-solid fa-tag",
       "tags": [
         "linear",
         "création"
@@ -2042,6 +2057,7 @@
         }
       ],
       "subtitle": "Labels",
+      "icon": "fa-solid fa-tags",
       "tags": [
         "linear",
         "liste"
@@ -2115,6 +2131,7 @@
         }
       ],
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
       "tags": [
         "linear",
         "création"
@@ -2174,6 +2191,7 @@
         }
       ],
       "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
       "tags": [
         "linear",
         "liste"
@@ -2219,6 +2237,7 @@
         ]
       },
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
       "inputHandles": [],
       "tags": [
         "linear",

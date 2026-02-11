@@ -457,6 +457,7 @@
       "schemaVersion": 2,
       "title": "Téléverser un fichier",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
       "tags": [
         "téléversement",
         "dropbox"
@@ -552,6 +553,7 @@
       "schemaVersion": 2,
       "title": "Télécharger un fichier",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
       "tags": [
         "téléchargement",
         "dropbox"
@@ -610,6 +612,7 @@
       "schemaVersion": 2,
       "title": "Supprimer un fichier",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
       "tags": [
         "suppression",
         "dropbox"
@@ -668,6 +671,7 @@
       "schemaVersion": 2,
       "title": "Déplacer un fichier",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-arrow-right",
       "tags": [
         "mise-à-jour",
         "dropbox"
@@ -739,6 +743,7 @@
       "schemaVersion": 2,
       "title": "Copier un fichier",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-copy",
       "tags": [
         "création",
         "dropbox"
@@ -810,6 +815,7 @@
       "schemaVersion": 2,
       "title": "Récupérer les métadonnées",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-circle-info",
       "tags": [
         "lecture",
         "dropbox"
@@ -868,6 +874,7 @@
       "schemaVersion": 2,
       "title": "Lister un dossier",
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
       "tags": [
         "liste",
         "dropbox"
@@ -955,6 +962,7 @@
       "schemaVersion": 2,
       "title": "Rechercher des fichiers",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-magnifying-glass",
       "tags": [
         "recherche",
         "dropbox"
@@ -1030,6 +1038,7 @@
       "schemaVersion": 2,
       "title": "Créer un dossier",
       "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
       "tags": [
         "création",
         "dropbox"
@@ -1088,6 +1097,7 @@
       "schemaVersion": 2,
       "title": "Récupérer une miniature",
       "subtitle": "Fichiers",
+      "icon": "fa-solid fa-image",
       "tags": [
         "téléchargement",
         "dropbox"
@@ -1173,6 +1183,7 @@
       "schemaVersion": 2,
       "title": "Créer un lien partagé",
       "subtitle": "Partage",
+      "icon": "fa-solid fa-link",
       "tags": [
         "création",
         "dropbox"
@@ -1231,6 +1242,7 @@
       "schemaVersion": 2,
       "title": "Lister les liens partagés",
       "subtitle": "Partage",
+      "icon": "fa-solid fa-list",
       "tags": [
         "liste",
         "dropbox"
@@ -1284,6 +1296,7 @@
       "schemaVersion": 2,
       "title": "Partager un dossier",
       "subtitle": "Partage",
+      "icon": "fa-solid fa-share",
       "tags": [
         "création",
         "dropbox"
@@ -1370,6 +1383,7 @@
       "schemaVersion": 2,
       "title": "Récupérer le compte",
       "subtitle": "Compte",
+      "icon": "fa-solid fa-user",
       "tags": [
         "lecture",
         "dropbox"
@@ -1414,6 +1428,7 @@
       "schemaVersion": 2,
       "title": "Lister les documents Paper",
       "subtitle": "Paper",
+      "icon": "fa-solid fa-file-lines",
       "tags": [
         "liste",
         "dropbox"
@@ -1468,6 +1483,7 @@
       "schemaVersion": 2,
       "title": "Surveiller un dossier",
       "subtitle": "Événements",
+      "icon": "fa-solid fa-bell",
       "tags": [
         "événement",
         "dropbox"
