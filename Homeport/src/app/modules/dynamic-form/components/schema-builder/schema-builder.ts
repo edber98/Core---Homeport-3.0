@@ -116,7 +116,22 @@ export class SchemaBuilderComponent implements ControlValueAccessor, OnInit, Aft
       };
       // Store schema in localStorage (not in URL to avoid length issues)
       localStorage.setItem('formbuilder.session.' + session, JSON.stringify(schema));
-      const returnTo = this.router.url;
+      // Build return URL that includes flow/node context so the flow builder can reopen the dialog
+      const currentUrl = this.router.url || '';
+      const flowMatch = currentUrl.match(/[?&]flow=([^&]+)/);
+      const flowId = flowMatch ? flowMatch[1] : '';
+      const nodeId = (() => { try { return localStorage.getItem('flow_builder.editing_node') || ''; } catch { return ''; } })();
+      let returnTo: string;
+      if (flowId) {
+        // Build a return URL with sbSession so the flow builder reopens the node dialog
+        const params: any = { flow: flowId, sbSession: session };
+        if (nodeId) params.node = nodeId;
+        returnTo = this.router.createUrlTree(['/flow-builder', 'editor'], { queryParams: params }).toString();
+      } else {
+        returnTo = currentUrl;
+      }
+      // Also store return context in localStorage as fallback (in case URL params get lost)
+      localStorage.setItem('formbuilder.return.' + session, returnTo);
       this.router.navigate(['/dynamic-form'], {
         queryParams: {
           session,

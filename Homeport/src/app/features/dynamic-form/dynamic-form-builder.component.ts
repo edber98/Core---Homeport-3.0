@@ -2458,6 +2458,23 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
           this.showRouteSave = !!this.returnTo;
         } catch {}
       }
+      // Ultimate fallback: recover session key from schema_builder.active_session if URL params were lost
+      if (!this.sessionKey) {
+        try {
+          const sbActive = localStorage.getItem('schema_builder.active_session');
+          if (sbActive && localStorage.getItem('formbuilder.session.' + sbActive)) {
+            this.sessionKey = sbActive;
+            try { console.log('[form-builder] recovered sessionKey from schema_builder.active_session', sbActive); } catch {}
+          }
+        } catch {}
+      }
+      // Fallback: read returnTo from localStorage (stored by schema_builder for robustness)
+      if (!this.returnTo && this.sessionKey) {
+        try {
+          const stored = localStorage.getItem('formbuilder.return.' + this.sessionKey);
+          if (stored) { this.returnTo = stored; this.showRouteSave = true; }
+        } catch {}
+      }
       // Load schema and locks from either router or location
       const schemaParam = qp.get('schema') || (search ? new URLSearchParams(search).get('schema') : null);
       const tplPresetParam = qp.get('tplPreset') || (search ? new URLSearchParams(search).get('tplPreset') : null);
@@ -2512,6 +2529,14 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
         const sp = new URLSearchParams(search);
         const q: any = {};
         ['session','return','schema','locks','lockTitle','tplPreset','form','id'].forEach(k => { const v = sp.get(k); if (v != null) q[k] = v; });
+        try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
+      }
+      // If URL has no session but we recovered from localStorage, push session into URL for layout-main detection
+      if (!this.bootstrappedFromLocation && this.sessionKey && (this.router.url || '').indexOf('session=') < 0) {
+        this.bootstrappedFromLocation = true;
+        const q: any = { session: this.sessionKey };
+        if (this.returnTo) q['return'] = this.returnTo;
+        if (tplPresetParam) q['tplPreset'] = tplPresetParam;
         try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
       }
       // Initial emit/persist

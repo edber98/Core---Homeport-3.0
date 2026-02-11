@@ -651,6 +651,9 @@ export class FlowBuilderComponent {
   // Pending Dynamic Form return session (apply after flow graph is loaded)
   private pendingFbSession: string | null = null;
   private pendingFbNodeId: string | null = null;
+  // Pending Schema Builder return session (select node + open dialog so schema_builder recovers)
+  private pendingSbSession: string | null = null;
+  private pendingSbNodeId: string | null = null;
 
   // Removed event interceptors to align with working dev playground
 
@@ -707,6 +710,12 @@ export class FlowBuilderComponent {
         }
         // Defer Dynamic Form session application until after the flow is loaded
         if (fbSession) { this.pendingFbSession = fbSession; this.pendingFbNodeId = qp.get('node'); }
+        const sbSession = qp.get('sbSession');
+        if (sbSession) { this.pendingSbSession = sbSession; this.pendingSbNodeId = qp.get('node'); }
+        // If flow already loaded (same ID, component reused), apply sbSession immediately
+        if (sbSession && flowId && this.currentFlowId && String(this.currentFlowId) === String(flowId) && this.nodes?.length) {
+          this.applySchemaBuilderFromSession(sbSession);
+        }
       });
     } catch {}
     try {
@@ -834,6 +843,11 @@ export class FlowBuilderComponent {
                 } catch {}
               }
             } catch {}
+            // Apply pending Schema Builder session (select node + open dialog)
+            try {
+              const sbSess = this.pendingSbSession || this.route.snapshot.queryParamMap.get('sbSession');
+              if (sbSess) this.applySchemaBuilderFromSession(sbSess);
+            } catch {}
             // If we are opening a specific run, re-apply backend highlights after any flow swap
             try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
             // Deep-link: focus a specific node if requested (unless center view param is active)
@@ -949,6 +963,11 @@ export class FlowBuilderComponent {
               this.applyStartFormSchemaFromSession(fbSession);
               try { const q: any = { ...Object.fromEntries(pm.keys.map(k => [k, pm.get(k)]) as any) }; delete q.fbSession; this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
             }
+            // Apply pending Schema Builder session (select node + open dialog)
+            try {
+              const sbSess2 = this.pendingSbSession || pm.get('sbSession');
+              if (sbSess2) this.applySchemaBuilderFromSession(sbSess2);
+            } catch {}
           }
         }));
       });
@@ -3133,6 +3152,70 @@ export class FlowBuilderComponent {
       try { this.message.success('Formulaire importé dans le nœud'); } catch { this.showToast('Formulaire importé'); }
     } catch {}
   }
+  /** Apply Schema Builder session: same pattern as applyStartFormSchemaFromSession — apply schema to model context, commit, and reopen dialog */
+  private applySchemaBuilderFromSession(session: string | null): void {
+    if (!session) return;
+    try {
+      const raw = localStorage.getItem('formbuilder.session.' + session);
+      if (!raw) { try { console.warn('[flow-builder] sbSession: no payload in localStorage for', session); } catch {} return; }
+      const schema = JSON.parse(raw);
+      if (!schema || typeof schema !== 'object') return;
+      // Find or select the target node
+      let m = this.selectedModel;
+      if (!m) {
+        const nodeId = this.pendingSbNodeId || this.route.snapshot.queryParamMap.get('node');
+        if (nodeId) {
+          const node = this.nodes.find(n => String(n.id) === String(nodeId));
+          if (node) { this.selectItem(node); m = node.data?.model || null; }
+        }
+      }
+      if (!m) { try { console.warn('[flow-builder] sbSession: no model to apply to'); } catch {} return; }
+      // Find the schema_builder field key in the template args
+      const args = m.templateObj?.args;
+      const fields = args?.fields || [];
+      const findSbField = (arr: any[]): any => {
+        for (const f of arr) {
+          if (f.type === 'schema_builder') return f;
+          if ((f.type === 'section' || f.type === 'section_array') && Array.isArray(f.children)) {
+            const found = findSbField(f.children);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      const sbField = findSbField(fields);
+      const fieldKey = sbField?.key || 'extraction_schema'; // fallback key
+      // Apply schema to model context (same approach as startFormSchema)
+      const newContext = { ...(m.context || {}) };
+      newContext[fieldKey] = schema;
+      const newModel: any = { ...m, context: newContext };
+      this.onAdvancedModelChange(newModel);
+      this.onAdvancedModelCommitted(newModel);
+      // Re-select node and reopen dialog (same as start_form)
+      try {
+        const id = String(newModel.id || '');
+        const node = this.nodes.find(n => String(n.id) === id);
+        if (node) {
+          this.selectItem(node);
+          setTimeout(() => this.openAdvancedEditorV2(), 0);
+        }
+      } catch {}
+      // Cleanup localStorage
+      try { localStorage.removeItem('formbuilder.session.' + session); } catch {}
+      try { localStorage.removeItem('schema_builder.active_session'); } catch {}
+      try { localStorage.removeItem('formbuilder.return.' + session); } catch {}
+      this.pendingSbSession = null;
+      this.pendingSbNodeId = null;
+      // Clean sbSession from URL
+      try {
+        const qp = this.route.snapshot.queryParamMap;
+        const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+        delete q.sbSession;
+        this.router.navigate([], { queryParams: q, replaceUrl: true });
+      } catch {}
+      try { this.message.success('Schéma importé dans le nœud'); } catch { this.showToast('Schéma importé'); }
+    } catch {}
+  }
   private resolveAttemptForSelection(nodeId?: string): any | null {
     const id = String(nodeId || this.selectedModel?.id || ''); if (!id) return null;
     const atts = this.nodeAttempts(id);
@@ -4355,6 +4438,8 @@ export class FlowBuilderComponent {
       }
     } catch { this.advancedInjectedInput = {}; this.advancedCtx = {}; }
     this.advancedV2Open = true;
+    // Store editing node ID so schema_builder can build a proper return URL
+    try { localStorage.setItem('flow_builder.editing_node', String(this.selectedModel?.id || '')); } catch {}
     try { this.cdr.detectChanges(); } catch {}
   }
   closeAdvancedEditorV2() {
