@@ -272,13 +272,35 @@ function simulateMsgForScenario(targetId, choice, graph) {
         }
         try { msg._nodes[from] = { simulated: true, kind: 'loop', outputHandle: h, schema: schema || {}, result: { count: 1, collected: (h === 'after') ? 1 : undefined }, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
       } else {
-        schema = getHandleSchema(node.model, edge.sourceHandle || '');
-        sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
-        msg[from] = sample && typeof sample === 'object' ? sample : {};
-        try { msg._nodes[from] = { simulated: true, kind: kind || 'function', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
-        // Préférer payload issue des fonctions
-        if (kind === 'function') { msg.payload = msg[from]; payloadSet = true; }
-        else if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+        const tmpl = node.model?.templateObj || {};
+        const dynField = tmpl.output_array_field;
+        if (dynField && kind !== 'condition') {
+          // Function with dynamic outputs (like classifier): use outputSchema for sample, chosen for handle
+          const chosenHandle = String(edge.sourceHandle || chosen || '') || null;
+          const outputSchema = Array.isArray(tmpl.outputSchema) ? tmpl.outputSchema : [];
+          const resultObj = {};
+          for (const field of outputSchema) {
+            const k = String(field.key || field.name || ''); if (!k) continue;
+            const ft = String(field.type || 'string').toLowerCase();
+            if (ft === 'number') resultObj[k] = 0;
+            else if (ft === 'boolean') resultObj[k] = true;
+            else if (ft === 'array') resultObj[k] = [];
+            else if (ft === 'object') resultObj[k] = {};
+            else resultObj[k] = `sample_${k}`;
+          }
+          resultObj._output = chosenHandle;
+          msg[from] = resultObj;
+          try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+          msg.payload = resultObj; payloadSet = true;
+        } else {
+          schema = getHandleSchema(node.model, edge.sourceHandle || '');
+          sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
+          msg[from] = sample && typeof sample === 'object' ? sample : {};
+          try { msg._nodes[from] = { simulated: true, kind: kind || 'function', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+          // Préférer payload issue des fonctions
+          if (kind === 'function') { msg.payload = msg[from]; payloadSet = true; }
+          else if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+        }
       }
     }
     if (!visited.has(from)) {

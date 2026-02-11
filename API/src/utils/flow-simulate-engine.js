@@ -73,14 +73,16 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
   // Build edge index for logging
   const edgeBySrcTgt = new Map(edges.map(e => [`${e.source}|${e.target}`, e]));
 
-  // Force branches toward the target for condition nodes
+  // Force branches toward the target for condition nodes AND functions with dynamic outputs (output_array_field)
   // Build default forced choices to ensure a deterministic path; allow overrides via opts.forceBranches
   const forceBranches = {};
   for (const nid of ancestors){
     try {
       const n = nodeById.get(String(nid));
-      const kind = String(n?.data?.model?.templateObj?.type || n?.data?.model?.nodeKind || '').toLowerCase();
-      if (kind !== 'condition') continue;
+      const tmpl = n?.data?.model?.templateObj || {};
+      const kind = String(tmpl.type || n?.data?.model?.nodeKind || '').toLowerCase();
+      const hasDynamicOutputs = !!tmpl.output_array_field;
+      if (kind !== 'condition' && !hasDynamicOutputs) continue;
       const outs = outEdges.get(String(nid)) || [];
       const viable = outs.filter(e => ancestors.has(String(e.target)) || String(e.target) === String(targetNodeId));
       if (viable.length){ const h = String(viable[0].sourceHandle || ''); forceBranches[String(nid)] = h; }
@@ -131,7 +133,9 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           const te = traceMap.get(idStr);
           if (te) {
             te.finishedAt = ev.finishedAt || new Date().toISOString();
-            const { preview, count } = buildOneLevelPreview(ev.result);
+            const evNode = nodeById.get(idStr);
+            const evTmpl = evNode?.data?.model?.templateObj || null;
+            const { preview, count } = buildOneLevelPreview(ev.result, evTmpl);
             te.resultPreview = preview;
             te.outputsCount = count;
           }
@@ -141,18 +145,20 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         // Capturer le msgIn fourni par le moteur
         let msgIn = ev.msgIn || null;
         try {
-          // Si la dernière arête vers la cible provient d'une condition, refléter le 'chosen' dans payload (sans écraser)
+          // Si la dernière arête vers la cible provient d'une condition ou d'une fonction multi-output, refléter le 'chosen' dans payload
           const incoming = takenEdges.filter(e => String(e.targetId) === String(targetNodeId));
           const last = incoming[incoming.length - 1] || null;
           if (last) {
             const src = nodeById.get(String(last.sourceId));
-            const kind = String(src?.data?.model?.templateObj?.type || src?.data?.model?.nodeKind || '').toLowerCase();
-            if (kind === 'condition') {
+            const srcTmpl = src?.data?.model?.templateObj || {};
+            const kind = String(srcTmpl.type || src?.data?.model?.nodeKind || '').toLowerCase();
+            const isBranching = kind === 'condition' || !!srcTmpl.output_array_field;
+            if (isBranching) {
               const chosen = String(last.sourceHandle || '');
               try {
                 if (!msgIn || typeof msgIn !== 'object') msgIn = {};
                 msgIn.payload = { chosen };
-                console.info('[simulate:engine] payload.replaced_from_condition', { sourceId: last.sourceId, chosen });
+                console.info('[simulate:engine] payload.replaced_from_branching', { sourceId: last.sourceId, chosen, kind });
               } catch {}
             }
           }
@@ -273,7 +279,8 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
 }
 
 // Produce a preview of a node result for settings UI and count visible outputs
-function buildOneLevelPreview(result){
+// templateObj is optional — used to fallback on outputSchema when result is empty/error
+function buildOneLevelPreview(result, templateObj){
   try {
     const t = (v) => {
       if (v === null) return 'null';
@@ -296,6 +303,18 @@ function buildOneLevelPreview(result){
     };
     const out = [];
     let totalCount = 0;
+    // If result is empty/error but template has outputSchema, use it as fallback
+    const isEmpty = result == null || (typeof result === 'object' && !Array.isArray(result) && (result.error || result.ok === false) && Object.keys(result).length <= 2);
+    const schema = Array.isArray(templateObj?.outputSchema) ? templateObj.outputSchema : null;
+    if (isEmpty && schema && schema.length) {
+      for (const field of schema) {
+        const k = String(field.key || field.name || '');
+        if (!k) continue;
+        out.push({ key: k, type: String(field.type || 'string') });
+        totalCount++;
+      }
+      return { preview: out, count: totalCount };
+    }
     if (result == null) return { preview: out, count: 0 };
     if (typeof result === 'object' && !Array.isArray(result)) {
       for (const [k,v] of Object.entries(result)) {

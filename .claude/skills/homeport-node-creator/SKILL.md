@@ -10,7 +10,7 @@ metadata:
 Use this skill whenever you need to create a new node, plugin, or provider in the Homeport platform. This covers:
 - Creating a new plugin with manifest.json
 - Defining providers (with or without credentials)
-- Defining node templates (function, event, condition, loop, agent, memory, tool_ai)
+- Defining node templates (function, function multi-output, event, condition, loop, agent, memory, tool_ai)
 - Writing handler functions (the JS code that executes)
 - Understanding the form system (args) for node configuration
 - Understanding handles (input, output, linked) and data flow
@@ -30,6 +30,7 @@ Read individual rule files for detailed explanations and code examples:
 - [rules/variables.md](rules/variables.md) - Systeme de variables reutilisables pour les schemas de sortie
 - [rules/engine.md](rules/engine.md) - Comment le moteur execute les nodes et transmet les donnees
 - [rules/checklist.md](rules/checklist.md) - Checklist complete pour creer un nouveau node de A a Z
+- [rules/multi-output.md](rules/multi-output.md) - Fonctions multi-output (sorties dynamiques, routage _output, outputSchema)
 - [rules/examples.md](rules/examples.md) - Exemples complets reels (HTTP, OpenAI, Email, Core)
 
 ## Key paths in the project

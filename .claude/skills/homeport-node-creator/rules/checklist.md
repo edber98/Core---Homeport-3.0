@@ -156,3 +156,77 @@ module.exports = {
   }
 };
 ```
+
+## Template rapide - Function multi-output (classificateur)
+
+Voir **multi-output.md** pour les details complets.
+
+**manifest.json:**
+```json
+{
+  "repo": { "name": "mon-plugin", "type": "local" },
+  "providers": [
+    { "key": "mon_prov", "name": "Mon Service", "iconClass": "fa-solid fa-tags", "color": "#6366f1", "hasCredentials": true }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "mon_prov_classify",
+      "name": "monProvClassify",
+      "schemaVersion": 2,
+      "title": "Classifier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mon_prov",
+      "icon": "fa-solid fa-tags",
+      "description": "Classifier un texte selon des categories.",
+      "output_array_field": "categories",
+      "outputSchema": [
+        { "key": "category", "type": "string", "label": "Categorie" },
+        { "key": "confidence", "type": "number", "label": "Confiance" }
+      ],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any","payload"] }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Classification",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "text", "label": "Texte", "expression": { "allow": true }, "col": { "xs": 24 } },
+          {
+            "type": "section", "key": "categories", "title": "Catégories", "mode": "array",
+            "array": { "initialItems": 2, "minItems": 1, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } },
+            "fields": [
+              { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 12 } },
+              { "type": "text", "key": "description", "label": "Description", "col": { "xs": 12 } }
+            ],
+            "col": { "xs": 24 }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+**functions/handler.js:**
+```javascript
+module.exports = {
+  async mon_prov_classify(node, msg, inputs, opts) {
+    const categories = node.model.context.categories || [];
+    const text = String(inputs.text || '').trim();
+    if (!text) return { ok: false, error: 'Texte requis' };
+
+    // ... logique de classification (API, ML, regles) ...
+    const chosenIndex = 0; // resultat de la classification
+    const chosen = categories[chosenIndex];
+    if (!chosen) return { ok: false, error: 'Aucune categorie trouvee' };
+
+    return {
+      ok: true,
+      _output: chosen._id,          // Route vers le handle de la categorie choisie
+      category: chosen.name,
+      confidence: 0.92
+    };
+  }
+};
+```

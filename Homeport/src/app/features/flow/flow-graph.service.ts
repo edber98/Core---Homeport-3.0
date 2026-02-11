@@ -48,6 +48,25 @@ export class FlowGraphService {
         }
       }
       default: {
+        // Dynamic outputs: function with output_array_field (like condition but for functions)
+        const dynField = tmpl.output_array_field;
+        if (dynField) {
+          const arr = (model?.context && Array.isArray(model.context[dynField])) ? model.context[dynField] : [];
+          const ids = arr.map((it: any, i: number) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
+          try {
+            const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+            if (elseId && !ids.includes(elseId)) ids.push(elseId);
+          } catch {}
+          const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
+          const base = enableCatch ? ['err', ...ids] : ids;
+          try {
+            const connected = (edges || [])
+              .filter(e => String(e.source) === String(model.id))
+              .map(e => String(e.sourceHandle ?? ''))
+              .filter(h => !!h);
+            return Array.from(new Set([...base, ...connected]));
+          } catch { return base; }
+        }
         if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
           const ids = (tmpl.outputHandles as any[])
             .filter((h:any) => !Array.isArray(h?.accepts) && !h?.arrayField)
@@ -85,6 +104,25 @@ export class FlowGraphService {
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
         if (it) return (typeof it === 'object') ? (it.name ?? '') : String(it);
         // Else branch label
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && String(idxOrId) === elseId) return 'Else';
+        } catch {}
+        return '';
+      }
+      // Dynamic outputs for functions with output_array_field
+      const dynField = tmpl.output_array_field;
+      if (dynField && tmpl.type !== 'condition') {
+        const arr = (model.context && Array.isArray(model.context[dynField])) ? model.context[dynField] : [];
+        if (Number.isFinite(idx)) {
+          const it = arr[idx as number];
+          if (it == null) return '';
+          if (typeof it === 'string') return it;
+          if (typeof it === 'object') return (it.name ?? String(idx));
+          return String(idx);
+        }
+        const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(idxOrId));
+        if (it) return (typeof it === 'object') ? (it.name ?? '') : String(it);
         try {
           const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
           if (elseId && String(idxOrId) === elseId) return 'Else';
@@ -146,6 +184,25 @@ export class FlowGraphService {
         const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
         if (it) return (typeof it === 'object') ? (it.name ?? '') : '';
         // Else branch label
+        try {
+          const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
+          if (elseId && String(sourceHandle) === elseId) return 'Else';
+        } catch {}
+        return '';
+      }
+      // Dynamic outputs for functions with output_array_field
+      const dynField = tmpl.output_array_field;
+      if (dynField && tmpl.type !== 'condition') {
+        const arr = (model?.context && Array.isArray(model.context[dynField])) ? model.context[dynField] : [];
+        if (Number.isFinite(idx)) {
+          const it = arr[idx];
+          if (it == null) return '';
+          if (typeof it === 'string') return it;
+          if (typeof it === 'object') return (it.name ?? '');
+          return '';
+        }
+        const it = arr.find((x: any) => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
+        if (it) return (typeof it === 'object') ? (it.name ?? '') : '';
         try {
           const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : null);
           if (elseId && String(sourceHandle) === elseId) return 'Else';

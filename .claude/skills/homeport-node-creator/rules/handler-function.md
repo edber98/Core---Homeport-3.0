@@ -141,6 +141,17 @@ Le handler DOIT retourner un objet. Cet objet devient:
 return { ok: true, text: "Hello", count: 42 };
 ```
 
+### Retour succes avec routage explicite (multi-output)
+
+Pour les fonctions avec `output_array_field`, le handler choisit la branche de sortie via `_output` :
+
+```javascript
+// _output = _id de l'element du array field qui correspond au handle de sortie
+return { ok: true, _output: chosen._id, category: chosen.name, confidence: 0.92 };
+```
+
+Le moteur route vers le `sourceHandle` correspondant au `_output`. Si `_output` n'est pas defini, le comportement est standard (toutes les sorties non-error). Voir **multi-output.md** pour les details complets.
+
 ### Retour erreur
 
 ```javascript

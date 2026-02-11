@@ -21,7 +21,8 @@ Un node template definit un type de node utilisable dans les flows. Il est lie a
   "outputHandles": [ ... ],              // Sorties (voir handles.md)
   "linkedHandles": [ ... ],              // Liens speciaux (voir handles.md)
   "args": { ... },                        // Formulaire de config (voir form-args.md)
-  "output_array_field": "items",          // Pour condition: champ qui genere les branches
+  "output_array_field": "items",          // Champ array qui genere les branches (condition ET function multi-output)
+  "outputSchema": [ ... ],               // Schema du resultat (pour function multi-output, voir multi-output.md)
   "authorize_catch_error": true,          // Peut attraper les erreurs (ajoute handle "err")
   "authorize_skip_error": false,          // Peut ignorer les erreurs
   "allowWithoutCredentials": false         // Peut fonctionner sans credentials
@@ -43,6 +44,31 @@ Le type le plus courant. Recoit des donnees, execute une logique, retourne un re
 ```
 
 Si `authorize_catch_error: true`, le moteur route vers le handle `err`/`error` en cas d'erreur.
+
+### `function` avec multi-output (sorties dynamiques)
+Variante de function ou les sorties sont generees depuis un champ array des args.
+Le handler retourne `_output` pour choisir la branche. Voir **multi-output.md** pour les details complets.
+
+```json
+{
+  "type": "function",
+  "nodeKind": "function",
+  "output_array_field": "categories",
+  "outputSchema": [
+    { "key": "category", "type": "string" },
+    { "key": "confidence", "type": "number" }
+  ],
+  "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+  "args": {
+    "fields": [
+      { "type": "section", "key": "categories", "mode": "array", "fields": [
+        { "type": "text", "key": "name", "label": "Nom" },
+        { "type": "text", "key": "description", "label": "Description" }
+      ]}
+    ]
+  }
+}
+```
 
 ### `event` - Node declencheur / webhook
 Pas d'input handle. Declenche le flow quand un evenement externe arrive.

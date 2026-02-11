@@ -129,10 +129,11 @@ Pour les nodes de type `agent` qui consomment des outils et de la memoire via de
 ## Routage par le moteur
 
 Le moteur utilise les `sourceHandle` des edges pour router:
-- Handle `ok` / `success` → flux normal
+- Handle `ok` / `success` → flux normal (toutes les sorties non-error)
 - Handle `err` / `error` → flux d'erreur (si `authorize_catch_error: true`)
 - Handle `after` / `each` → sorties de boucle
-- Handle correspondant au nom de branche → sortie de condition (via `output_array_field`)
+- Handle correspondant au `_id` de branche → sortie de condition (via `output_array_field`)
+- Handle choisi par `result._output` → routage explicite pour fonctions multi-output (via `output_array_field` + handler)
 
 ### Comment le moteur accede aux donnees entrantes dans un handler
 
