@@ -6,6 +6,29 @@ module.exports = {
     if (!d.path) return { ok: false, error: "Chemin requis." };
     const res = await utils.webdavRequest(opts, d.path, { method: "GET", rawResponse: true });
     if (!res.ok) return { ok: false, error: res.error, status: res.status };
-    return { ok: true, name: d.path.split("/").pop(), path: d.path, contentType: res.contentType || "", size: "", lastModified: "", etag: "" };
+
+    const name = d.path.split("/").pop() || "file";
+    const mimeType = res.contentType || "application/octet-stream";
+
+    // Store downloaded file via opts.files if available
+    let file = null;
+    if (opts.files && res.data) {
+      file = await opts.files.store(res.data, {
+        name,
+        mimeType: mimeType.split(";")[0].trim(),
+        lifecycle: "execution"
+      });
+    }
+
+    return {
+      ok: true,
+      name,
+      path: d.path,
+      contentType: mimeType,
+      size: res.data ? Buffer.from(res.data, "base64").length : 0,
+      lastModified: "",
+      etag: "",
+      file
+    };
   }
 };

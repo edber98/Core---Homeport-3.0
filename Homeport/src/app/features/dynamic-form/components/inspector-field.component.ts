@@ -44,6 +44,7 @@ import { Subscription } from 'rxjs';
                     <nz-option nzValue="select" nzLabel="select"></nz-option>
                     <nz-option nzValue="radio" nzLabel="radio"></nz-option>
                     <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
+                    <nz-option nzValue="file" nzLabel="file"></nz-option>
                     <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
                   </nz-select>
                 </nz-form-control>
@@ -94,6 +95,65 @@ import { Subscription } from 'rxjs';
                   </nz-form-control>
                 </nz-form-item>
                 
+              </ng-container>
+              <ng-container *ngIf="group.get('type')?.value==='file'">
+                <div class="ins-section-header" style="margin-top:8px;">
+                  <div class="card-title"><span class="t">Fichier — Configuration</span><span class="s">Types, taille et comportement</span></div>
+                </div>
+                <nz-form-item>
+                  <nz-form-label nzTooltipTitle="Types MIME ou extensions acceptés (ex: .pdf,.docx,image/*)"><span>Types acceptés</span></nz-form-label>
+                  <nz-form-control><input nz-input formControlName="file_accept" placeholder=".pdf,.docx,image/*" /></nz-form-control>
+                </nz-form-item>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Taille maximale en octets (ex: 10485760 = 10 MB, 0 = illimité)"><span>Taille max (octets)</span></nz-form-label>
+                    <nz-form-control><nz-input-number style="width:100%" formControlName="file_maxSize" [nzMin]="0" [nzStep]="1048576"></nz-input-number></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Nombre maximal de fichiers (si multiple)"><span>Nombre max</span></nz-form-label>
+                    <nz-form-control><nz-input-number style="width:100%" formControlName="file_maxCount" [nzMin]="1" [nzMax]="100"></nz-input-number></nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Autoriser plusieurs fichiers"><span>Multiple</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="file_multiple"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Afficher un aperçu des images"><span>Aperçu</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="file_preview"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Cycle de vie du fichier"><span>Cycle de vie</span></nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="file_lifecycle">
+                        <nz-option nzValue="temp" nzLabel="Temporaire"></nz-option>
+                        <nz-option nzValue="execution" nzLabel="Exécution"></nz-option>
+                        <nz-option nzValue="permanent" nzLabel="Permanent"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzTooltipTitle="Style d'affichage de la liste"><span>Style liste</span></nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="file_listType">
+                        <nz-option nzValue="text" nzLabel="Texte"></nz-option>
+                        <nz-option nzValue="picture" nzLabel="Image"></nz-option>
+                        <nz-option nzValue="picture-card" nzLabel="Carte image"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <nz-form-item>
+                  <nz-form-label nzTooltipTitle="Texte personnalisé du bouton d'upload"><span>Texte du bouton</span></nz-form-label>
+                  <nz-form-control><input nz-input formControlName="file_buttonText" placeholder="Choisir un fichier" /></nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label nzTooltipTitle="Texte d'aide affiché sous le champ"><span>Texte d'aide</span></nz-form-label>
+                  <nz-form-control><input nz-input formControlName="file_hint" placeholder="PDF uniquement, max 10 MB" /></nz-form-control>
+                </nz-form-item>
               </ng-container>
               <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                 <nz-form-label>

@@ -2562,13 +2562,21 @@
             "description": "Titre du fichier."
           },
           {
-            "type": "textarea",
-            "key": "content",
-            "label": "Contenu",
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
             "col": {
               "xs": 24
             },
-            "description": "Contenu textuel du fichier."
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
           },
           {
             "type": "text",

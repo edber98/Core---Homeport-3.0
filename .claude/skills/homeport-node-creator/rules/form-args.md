@@ -164,6 +164,40 @@ Permet de grouper des champs. En mode `array`, permet de definir des listes dyna
 }
 ```
 
+### file - Upload de fichier
+
+```json
+{
+  "type": "file",
+  "key": "file",
+  "label": "Fichier",
+  "col": { "xs": 24 },
+  "description": "Fichier a televerser.",
+  "file": {
+    "accept": "",                    // Types MIME / extensions (ex: ".pdf,.docx,image/*")
+    "maxSize": 104857600,            // Taille max en bytes (100 MB)
+    "multiple": false,               // Plusieurs fichiers
+    "maxCount": 10,                  // Max fichiers si multiple
+    "lifecycle": "execution",        // "temp" | "execution" | "permanent"
+    "listType": "text",              // "text" | "picture" | "picture-card"
+    "buttonText": "Choisir un fichier",
+    "hint": "Televerser un fichier ou utiliser une expression"
+  }
+}
+```
+
+**Mode valeur (Val)**: Affiche un bouton upload. Produit un objet `fileRef`:
+```json
+{ "_type": "fileRef", "fileId": "file_xxx", "name": "doc.pdf", "mimeType": "application/pdf", "size": 12345 }
+```
+
+**Mode expression (Expr)**: L'utilisateur tape une URL (`https://...`) ou une injection (`{{ msg.nodeId.file }}`).
+Le moteur evalue l'expression et passe le resultat au handler.
+
+**Dans le handler**: Utiliser `opts.files.resolve(inputs.file)` pour obtenir un stream, ou `opts.files.resolveAsBuffer(inputs.file)` pour un Buffer. Ces methodes gerent a la fois les fileRef (upload) et les URL (expression).
+
+**Note**: L'importer active automatiquement les expressions sur les champs file avec `defaultMode: "val"` (le mode upload est le defaut, l'utilisateur peut basculer en mode expression).
+
 ### textblock - Texte statique informatif
 
 ```json

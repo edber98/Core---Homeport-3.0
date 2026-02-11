@@ -75,6 +75,14 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -343,6 +351,14 @@
           "type": "text",
           "key": "mimeType",
           "label": "Type MIME",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
           "col": {
             "xs": 24
           }
@@ -1227,12 +1243,20 @@
             "description": "Type MIME du fichier."
           },
           {
-            "type": "textarea",
-            "key": "content",
-            "label": "Contenu",
-            "description": "Contenu du fichier (texte ou base64).",
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
             "col": {
               "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
         ]

@@ -337,7 +337,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   // Center once after first layout completes
   centerRequestTick = 0;
   private centeredOnFirstLayout = false;
-  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string }> } = {};
+  simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string; children?: Array<{ id: string; name: string; type: string }> }> } = {};
   simMeta: any = { ui: { portOrientation: 'vertical' } };
   focusNodeIds: string[] = [];
   realScenarioIndex: number | null = null;
@@ -857,11 +857,23 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
           console.log('[settings-v2] refreshScenarioView no msgIn to emit');
         }
       } catch {}
-      // Build preview map from trace
+      // Build preview map from trace (with children for objects/arrays)
       try {
         const trace: any[] = Array.isArray((this.simScenarios && (this.simScenarios as any)[this.simSelectedIndex]?.trace)) ? (this.simScenarios as any)[this.simSelectedIndex].trace : [];
         const map: any = {};
-        for (const t of trace) { const id = String(t?.nodeId || ''); if (!id) continue; const arr = Array.isArray(t.resultPreview) ? t.resultPreview : []; map[id] = arr.map((it:any, idx:number) => ({ id: `sim_${id}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') })); }
+        for (const t of trace) {
+          const id = String(t?.nodeId || ''); if (!id) continue;
+          const arr = Array.isArray(t.resultPreview) ? t.resultPreview : [];
+          map[id] = arr.map((it: any, idx: number) => {
+            const item: any = { id: `sim_${id}_${idx}`, name: String(it?.key ?? it?.name ?? `item_${idx}`), type: String(it?.type ?? '') };
+            if (Array.isArray(it?.children) && it.children.length) {
+              item.children = it.children.map((ch: any, ci: number) => ({
+                id: `sim_${id}_${idx}_${ci}`, name: String(ch?.key ?? ch?.name ?? `child_${ci}`), type: String(ch?.type ?? '')
+              }));
+            }
+            return item;
+          });
+        }
         this.simOutputPreview = map;
       } catch { this.simOutputPreview = {}; }
       // Build merged JSON for JSON mode (schema preview + execution values + extras)
@@ -953,11 +965,12 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
           this.zone.run(() => {
             this.layoutBusy = false;
             this.isScenarioSwitching = false;
+            try { this.cdr.detectChanges(); } catch {}
+            // Delay center to let the viewer render nodes + output previews fully
             if (!this.centeredOnFirstLayout && this.hadFirstLayout) {
               this.centeredOnFirstLayout = true;
-              this.centerRequestTick++;
+              setTimeout(() => { this.centerRequestTick++; try { this.cdr.detectChanges(); } catch {} }, 120);
             }
-            try { this.cdr.detectChanges(); } catch {}
           });
           try { console.log('[settings-v2] relayoutForScenario complete'); } catch {}
         }

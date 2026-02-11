@@ -468,6 +468,12 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
           }
           metaForFn = { ...(metaForFn || {}), incoming };
         } catch {}
+        // Inject file storage helper if available via initialContext
+        try {
+          if (initialContext && initialContext.files) {
+            metaForFn = { ...(metaForFn || {}), files: initialContext.files };
+          }
+        } catch {}
         try {
           try { console.log('[engine] fn opts', { node: node.id, hasCredentials: !!metaForFn }); } catch {}
           result = await fn({ id: node.id, model: node.model }, msg, inputsForFn, metaForFn);

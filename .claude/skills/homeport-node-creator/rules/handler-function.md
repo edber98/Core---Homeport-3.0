@@ -117,6 +117,14 @@ inputs = {
     flat: [                           // Liste plate de toutes les connexions
       { sourceId: "...", sourceHandle: "ok", targetHandle: "in", result: { ... } }
     ]
+  },
+  files: {                         // Helper fichiers (scope workspace/run)
+    store(source, metadata),       // Stocker un fichier (stream/buffer/base64) → fileRef
+    resolve(fileRef),              // Resoudre fileRef/URL → { stream, record }
+    resolveAsBuffer(fileRef),      // Resoudre → Buffer
+    resolveAsBase64(fileRef),      // Resoudre → string base64
+    storeFromUrl(url, metadata),   // Telecharger une URL et stocker → fileRef
+    remove(fileIdOrRef)            // Supprimer un fichier
   }
 }
 ```
@@ -252,6 +260,58 @@ module.exports = {
     });
 
     return { ok: true, sent: true, messageId: info.messageId };
+  }
+};
+```
+
+### Handler avec fichiers (Upload vers API externe)
+
+```javascript
+module.exports = {
+  async my_service_upload(node, msg, inputs, opts) {
+    const d = inputs || {};
+    if (!d.path) return { ok: false, error: "Chemin requis." };
+
+    // d.file peut etre: fileRef (upload), URL string (expression), ou texte
+    let body;
+    const fileVal = d.file || d.content;
+
+    if (fileVal && opts.files && typeof fileVal === 'object' && fileVal._type === 'fileRef') {
+      body = await opts.files.resolveAsBuffer(fileVal);
+    } else if (fileVal && opts.files && typeof fileVal === 'string' && /^https?:\/\//i.test(fileVal)) {
+      body = await opts.files.resolveAsBuffer(fileVal);
+    } else {
+      body = fileVal || "";
+    }
+
+    // Utiliser body pour l'upload vers l'API externe...
+    return { ok: true, status: "uploaded", message: `Fichier televerser: ${d.path}` };
+  }
+};
+```
+
+### Handler avec fichiers (Download depuis API externe)
+
+```javascript
+module.exports = {
+  async my_service_download(node, msg, inputs, opts) {
+    const d = inputs || {};
+    // ... telecharger le fichier depuis l'API externe ...
+    const data = "base64encodeddata..."; // base64 string du fichier telecharge
+    const name = "document.pdf";
+    const mimeType = "application/pdf";
+
+    // Stocker via opts.files pour retourner un fileRef
+    let file = null;
+    if (opts.files && data) {
+      file = await opts.files.store(data, {
+        name,
+        mimeType,
+        lifecycle: "execution"
+      });
+    }
+
+    return { ok: true, name, contentType: mimeType, file };
   }
 };
 ```

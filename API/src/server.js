@@ -24,6 +24,8 @@ try { require('./realtime/socketio').attach(server); } catch {}
       try { const { ensureReposFromEnv } = require('./plugins/bootstrap'); await ensureReposFromEnv(); } catch (e) { try { console.error('[backend] plugin bootstrap failed:', e.message); } catch {} }
       // Ensure Tool metadata exists for frontend rendering
       try { const { seedToolsIfMissing } = require('./bootstrap/seed-tools'); await seedToolsIfMissing(); } catch (e) { try { console.error('[backend] seed tools failed:', e.message); } catch {} }
+      // Start file cleanup cron
+      try { const { startCleanupCron } = require('./services/file-cleanup'); startCleanupCron(); } catch (e) { try { console.error('[backend] file cleanup cron failed:', e.message); } catch {} }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);
     }

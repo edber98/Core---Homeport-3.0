@@ -51,8 +51,15 @@ function buildSampleFromSchema(schema, opts = {}) {
 
   const valFor = (f) => {
     if (f == null || typeof f !== 'object') return null;
-    if (f.default !== undefined) return f.default;
     const t = String(f.type || '').toLowerCase();
+    // For file type, always generate a sample fileRef (ignore empty default)
+    if (t === 'file') {
+      if (f.default && typeof f.default === 'object' && f.default._type === 'fileRef') return f.default;
+      const multi = !!(f.file?.multiple || f.multiple);
+      const ref = { _type: 'fileRef', fileId: 'file_sim_00000001', name: 'sample_document.pdf', mimeType: 'application/pdf', size: 102400 };
+      return multi ? [ref] : ref;
+    }
+    if (f.default !== undefined) return f.default;
     if (t === 'text' || t === 'textarea' || t === 'json' || t === 'code') return 'sample';
     if (t === 'select' || t === 'combobox' || t === 'radio') return optionFirstValue(f) ?? '';
     if (t === 'number' || t === 'slider') return 1;

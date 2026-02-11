@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -24,6 +24,18 @@ export interface FieldConfigCommon {
         size?: 'large' | 'small' | 'default';
         borderless?: boolean;
         collapseDisable?: boolean;
+    };
+    file?: {
+        accept?: string;
+        maxSize?: number;
+        multiple?: boolean;
+        maxCount?: number;
+        lifecycle?: 'temp' | 'execution' | 'permanent';
+        preview?: boolean;
+        dragDrop?: boolean;
+        listType?: 'text' | 'picture' | 'picture-card';
+        buttonText?: string;
+        hint?: string;
     };
     default?: any;
     validators?: FieldValidator[];
@@ -211,7 +223,8 @@ export class DynamicFormService {
 
     buildForm(schema: FormSchema, initialValue?: Record<string, any>): FormGroup {
         const controls: Record<string, FormControl> = {};
-        for (const f of this.collectFields(schema)) {
+        const collected = this.collectFields(schema);
+        for (const f of collected) {
             if (!isInputField(f)) continue;
             const v = this.initialValueForField(f, initialValue);
             controls[f.key] = this.fb.control(v, this.mapValidators(f.validators || []));
@@ -261,6 +274,7 @@ export class DynamicFormService {
                 case 'select':
                 case 'radio':
                 case 'date': return null;
+                case 'file': return null;
                 default: return ''; // text / textarea
             }
         }
@@ -361,7 +375,8 @@ export class DynamicFormService {
             select: '—',
             radio: '—',
             checkbox: 'Non',
-            date: '—'
+            date: '—',
+            file: '—'
         };
         if (raw === undefined || raw === null || raw === '') {
             return emptyByType[field.type] ?? '—';
@@ -384,6 +399,16 @@ export class DynamicFormService {
             } catch {
                 return String(raw);
             }
+        }
+
+        // file
+        if (field.type === 'file') {
+            if (Array.isArray(raw)) return `${raw.length} fichier${raw.length > 1 ? 's' : ''}`;
+            if (raw && typeof raw === 'object' && raw._type === 'fileRef') {
+                const size = raw.size ? this.formatFileSize(raw.size) : '';
+                return size ? `${raw.name} (${size})` : raw.name;
+            }
+            return String(raw);
         }
 
         // number/text/textarea
@@ -503,6 +528,13 @@ export class DynamicFormService {
             case '<=': return val(args[0]) <= val(args[1]);
             default: return true;
         }
+    }
+
+    private formatFileSize(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+        return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
     }
 
     // Exposé publiquement pour que les composants avancés (p.ex. array) puissent créer des contrôles

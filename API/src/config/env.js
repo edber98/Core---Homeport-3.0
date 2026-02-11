@@ -28,4 +28,17 @@ module.exports = {
   DEFAULT_ADMIN_PASSWORD,
   DEFAULT_WORKSPACE_NAME,
   HOSTNAME: os.hostname(),
+
+  // File storage
+  FILE_STORAGE_TYPE: process.env.FILE_STORAGE_TYPE || 'local',
+  FILE_STORAGE_PATH: process.env.FILE_STORAGE_PATH || './data/files',
+  FILE_S3_BUCKET: process.env.FILE_S3_BUCKET || '',
+  FILE_S3_REGION: process.env.FILE_S3_REGION || 'us-east-1',
+  FILE_S3_ACCESS_KEY: process.env.FILE_S3_ACCESS_KEY || '',
+  FILE_S3_SECRET_KEY: process.env.FILE_S3_SECRET_KEY || '',
+  FILE_S3_ENDPOINT: process.env.FILE_S3_ENDPOINT || '',
+  FILE_MAX_SIZE: process.env.FILE_MAX_SIZE || '200mb',
+  FILE_TTL_DEFAULT: process.env.FILE_TTL_DEFAULT || '24h',
+  FILE_CLEANUP_INTERVAL: process.env.FILE_CLEANUP_INTERVAL || '1h',
+  FILE_EXECUTION_CLEANUP_DELAY: process.env.FILE_EXECUTION_CLEANUP_DELAY || '30m',
 };

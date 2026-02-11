@@ -82,6 +82,11 @@
             <span class="quick-label">Case</span>
           </button>
           <button nz-button nzSize="small"
+                  (click)="quickAdd('file')" [disabled]="!canQuickAddField" aria-label="Ajouter fichier">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span class="quick-label">Fichier</span>
+          </button>
+          <button nz-button nzSize="small"
                   (click)="quickAdd('textblock')" [disabled]="!canQuickAddField" aria-label="Ajouter bloc de texte">
             <i class="fa-solid fa-paragraph"></i>
             <span class="quick-label">Bloc</span>

@@ -152,6 +152,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/plugins')());
     app.use('/api', require('./modules/db/plugin-repos')());
     app.use('/api', require('./modules/db/notifications')());
+    app.use('/api', require('./modules/db/files')());
     app.use('/api', require('./modules/db/users')());
     // AI Form (SSE) module
     app.use('/api', require('./modules/db/ai-form')());

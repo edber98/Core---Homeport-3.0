@@ -78,7 +78,21 @@ module.exports = {
       throw new Error(`OpenAI images API failed: ${res.status} ${text}`);
     }
     const out = await res.json();
-    const images = (out.data || []).map((d) => ({ url: d.url || null, b64: d.b64_json || null }));
+    const images = [];
+    for (let i = 0; i < (out.data || []).length; i++) {
+      const d = out.data[i];
+      const url = d.url || null;
+      const b64 = d.b64_json || null;
+      let file = null;
+      if (opts.files && b64) {
+        file = await opts.files.store(b64, {
+          name: `generated_image_${i + 1}.png`,
+          mimeType: 'image/png',
+          lifecycle: 'execution'
+        });
+      }
+      images.push({ url, b64, file });
+    }
     return { ok: true, images };
   },
   // Memory embeddings from text (real embeddings)

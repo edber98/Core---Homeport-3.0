@@ -60,7 +60,7 @@ import type {
 
 type FieldType =
   | 'text' | 'textarea' | 'number' | 'date'
-  | 'select' | 'radio' | 'checkbox' | 'cron' | 'textblock';
+  | 'select' | 'radio' | 'checkbox' | 'cron' | 'file' | 'textblock';
 
 type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Array<{ label: string; run: () => void }>; };
 
@@ -508,6 +508,16 @@ export class DynamicFormBuilderComponent implements OnChanges {
       cron_size: ['default'],
       cron_borderless: [false],
       cron_showAccordion: [true],
+      file_accept: [''],
+      file_maxSize: [10485760],
+      file_multiple: [false],
+      file_maxCount: [10],
+      file_lifecycle: ['execution'],
+      file_preview: [true],
+      file_dragDrop: [false],
+      file_listType: ['text'],
+      file_buttonText: [''],
+      file_hint: [''],
       default: [''],
       options: [''],
       textHtml: [''],
@@ -790,6 +800,22 @@ export class DynamicFormBuilderComponent implements OnChanges {
         } else {
           delete (f as any).cron;
         }
+        if (f.type === 'file') {
+          (f as any).file = {
+            accept: v.file_accept || '',
+            maxSize: Number(v.file_maxSize) || 0,
+            multiple: !!v.file_multiple,
+            maxCount: Number(v.file_maxCount) || 10,
+            lifecycle: (['temp','execution','permanent'].includes(v.file_lifecycle)) ? v.file_lifecycle : 'execution',
+            preview: v.file_preview !== false,
+            dragDrop: !!v.file_dragDrop,
+            listType: (['text','picture','picture-card'].includes(v.file_listType)) ? v.file_listType : 'text',
+            buttonText: v.file_buttonText || '',
+            hint: v.file_hint || '',
+          };
+        } else {
+          delete (f as any).file;
+        }
           (f as any).default = v.default ?? undefined;
           (f as any).options = this.parseJson(v.options);
           (f as any).validators = this.parseJson(v.validators);
@@ -1023,6 +1049,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
       case 'date': return { defaultValue: null } as any;
       case 'checkbox': return { defaultValue: false } as any;
       case 'cron': return { placeholder: '*/5 * * * *', defaultValue: '' } as any;
+      case 'file': return { defaultValue: null } as any;
       case 'select':
       case 'radio': {
         const opts = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
@@ -1273,6 +1300,16 @@ export class DynamicFormBuilderComponent implements OnChanges {
         cron_size: (obj as any).cron?.size ?? 'default',
         cron_borderless: !!(obj as any).cron?.borderless,
         cron_showAccordion: !((obj as any).cron?.collapseDisable),
+        file_accept: (obj as any).file?.accept ?? '',
+        file_maxSize: (obj as any).file?.maxSize ?? 10485760,
+        file_multiple: !!(obj as any).file?.multiple,
+        file_maxCount: (obj as any).file?.maxCount ?? 10,
+        file_lifecycle: (obj as any).file?.lifecycle ?? 'execution',
+        file_preview: (obj as any).file?.preview !== false,
+        file_dragDrop: !!(obj as any).file?.dragDrop,
+        file_listType: (obj as any).file?.listType ?? 'text',
+        file_buttonText: (obj as any).file?.buttonText ?? '',
+        file_hint: (obj as any).file?.hint ?? '',
         default: (obj as any).default ?? '',
         options: this.stringifyJson((obj as any).options),
         textHtml: (obj as any).textHtml ?? '',
