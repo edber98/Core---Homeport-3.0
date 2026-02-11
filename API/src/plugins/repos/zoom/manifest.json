@@ -72,7 +72,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -226,7 +228,9 @@
             },
             "description": "Mot de passe de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -289,7 +293,9 @@
             ],
             "description": "Identifiant de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -396,7 +402,9 @@
             },
             "description": "Nouvel agenda."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -459,7 +467,9 @@
             ],
             "description": "Identifiant de la réunion à supprimer."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -556,7 +566,9 @@
             "default": 30,
             "description": "Nombre de résultats par page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunions",
       "tags": [
@@ -619,7 +631,9 @@
             ],
             "description": "Identifiant de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -682,7 +696,9 @@
             ],
             "description": "Identifiant de la réunion passée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Réunion",
       "tags": [
@@ -813,7 +829,9 @@
             },
             "description": "Description du webinaire."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webinaire",
       "tags": [
@@ -876,7 +894,9 @@
             ],
             "description": "Identifiant du webinaire."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webinaire",
       "tags": [
@@ -972,7 +992,9 @@
             },
             "description": "Nouvelle durée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webinaire",
       "tags": [
@@ -1035,7 +1057,9 @@
             ],
             "description": "Identifiant du webinaire à supprimer."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webinaire",
       "tags": [
@@ -1106,7 +1130,9 @@
             "default": 30,
             "description": "Nombre de résultats par page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webinaires",
       "tags": [
@@ -1165,7 +1191,9 @@
             "default": "me",
             "description": "ID de l'utilisateur ou \"me\"."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateur",
       "tags": [
@@ -1250,7 +1278,9 @@
             "default": 30,
             "description": "Nombre de résultats par page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateurs",
       "tags": [
@@ -1309,7 +1339,9 @@
             "default": "me",
             "description": "ID de l'utilisateur ou \"me\"."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateur",
       "tags": [
@@ -1416,7 +1448,9 @@
             },
             "description": "Titre du poste."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateur",
       "tags": [
@@ -1509,7 +1543,9 @@
             "default": 30,
             "description": "Nombre de résultats par page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Enregistrements",
       "tags": [
@@ -1573,7 +1609,9 @@
             ],
             "description": "Identifiant de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Enregistrements",
       "tags": [
@@ -1636,7 +1674,9 @@
             ],
             "description": "Identifiant de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Enregistrements",
       "tags": [
@@ -1700,7 +1740,9 @@
             ],
             "description": "Identifiant de la réunion."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Enregistrements",
       "tags": [
@@ -1801,7 +1843,9 @@
             ],
             "description": "Type de réunions."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tableau de bord",
       "tags": [
@@ -1892,7 +1936,9 @@
             ],
             "description": "Date de fin (YYYY-MM-DD)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Rapports",
       "tags": [
@@ -1973,7 +2019,9 @@
             ],
             "description": "Filtre par statut."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Téléphone",
       "tags": [
@@ -2054,7 +2102,9 @@
             "default": 30,
             "description": "Nombre de résultats par page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Contacts",
       "tags": [
@@ -2117,7 +2167,9 @@
             ],
             "description": "Identifiant du contact."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Contact",
       "tags": [

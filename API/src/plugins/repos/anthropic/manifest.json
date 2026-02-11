@@ -289,6 +289,8 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Identifiants Anthropic",
         "ui": {
           "layout": "vertical",
@@ -368,6 +370,8 @@
       ],
       "description": "Générer une réponse via l'API Messages d'Anthropic.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer un message",
         "ui": {
           "layout": "vertical",
@@ -483,6 +487,8 @@
       ],
       "description": "Générer une réponse en streaming via Anthropic.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer un message (stream)",
         "ui": {
           "layout": "vertical",
@@ -589,6 +595,8 @@
       ],
       "description": "Générer une réponse avec appel d'outils (tool use).",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer un message (tools)",
         "ui": {
           "layout": "vertical",
@@ -709,6 +717,8 @@
       ],
       "description": "Analyser une image avec un prompt via Anthropic.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer un message (vision)",
         "ui": {
           "layout": "vertical",
@@ -848,6 +858,8 @@
       ],
       "description": "Récupérer la liste des modèles disponibles.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Lister les modèles",
         "ui": {
           "layout": "vertical",
@@ -902,6 +914,8 @@
       ],
       "description": "Récupérer les détails d'un modèle par son ID.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Récupérer un modèle",
         "ui": {
           "layout": "vertical",
@@ -960,6 +974,8 @@
       ],
       "description": "Compter les tokens d'un message avant envoi.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Compter les tokens",
         "ui": {
           "layout": "vertical",
@@ -1011,6 +1027,313 @@
         ]
       },
       "group": "Tokens"
+    },
+    {
+      "key": "anthropic_classify",
+      "name": "anthropicClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via Anthropic",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Anthropic à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Claude Sonnet 4.5",
+                "value": "claude-sonnet-4-5-20250929"
+              },
+              {
+                "label": "Claude Opus 4",
+                "value": "claude-opus-4-0-20250514"
+              },
+              {
+                "label": "Claude Haiku 3.5",
+                "value": "claude-haiku-3-5-20241022"
+              }
+            ],
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "anthropic",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "anthropic_extract",
+      "name": "anthropicExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via Anthropic",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Anthropic à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Claude Sonnet 4.5",
+                "value": "claude-sonnet-4-5-20250929"
+              },
+              {
+                "label": "Claude Opus 4",
+                "value": "claude-opus-4-0-20250514"
+              },
+              {
+                "label": "Claude Haiku 3.5",
+                "value": "claude-haiku-3-5-20241022"
+              }
+            ],
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "anthropic",
+        "extraction",
+        "ai"
+      ]
     }
   ]
 }

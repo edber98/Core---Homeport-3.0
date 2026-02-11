@@ -54,7 +54,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -241,7 +243,9 @@
               "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -330,7 +334,9 @@
               "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -409,7 +415,9 @@
             ],
             "default": "view"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Permissions",
       "group": "Permissions",

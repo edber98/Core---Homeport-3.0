@@ -29,7 +29,9 @@ const NodeTemplateSchema = new Schema({
   authorize_catch_error: { type: Boolean, default: true },
   authorize_skip_error: { type: Boolean, default: false },
   allowWithoutCredentials: { type: Boolean, default: false },
-  // output_array_field removed in v2; conditions handle their own outputs from model context
+  output_array_field: { type: String, default: undefined },
+  output_schema_field: { type: String, default: undefined },
+  outputSchema: { type: [Schema.Types.Mixed], default: undefined },
   checksumArgs: { type: String },
   checksumFeature: { type: String },
   // Origin repo (optional)

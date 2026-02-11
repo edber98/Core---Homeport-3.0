@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -36,6 +36,9 @@ export interface FieldConfigCommon {
         listType?: 'text' | 'picture' | 'picture-card';
         buttonText?: string;
         hint?: string;
+    };
+    tags?: {
+        itemType?: 'text' | 'number';
     };
     default?: any;
     validators?: FieldValidator[];
@@ -275,6 +278,8 @@ export class DynamicFormService {
                 case 'radio':
                 case 'date': return null;
                 case 'file': return null;
+                case 'schema_builder': return null;
+                case 'tags': return [];
                 default: return ''; // text / textarea
             }
         }
@@ -399,6 +404,12 @@ export class DynamicFormService {
             } catch {
                 return String(raw);
             }
+        }
+
+        // tags
+        if (field.type === 'tags') {
+            if (Array.isArray(raw)) return raw.join(', ');
+            return String(raw);
         }
 
         // file

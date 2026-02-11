@@ -986,7 +986,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -1106,7 +1108,9 @@
             },
             "description": "Requête de recherche Drive (q parameter)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1165,7 +1169,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1259,7 +1265,9 @@
               "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1327,7 +1335,9 @@
             },
             "description": "MIME type d'export (pour Google Docs)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1386,7 +1396,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1454,7 +1466,9 @@
             },
             "description": "ID du dossier parent."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dossiers",
       "group": "Dossiers",
@@ -1536,7 +1550,9 @@
             },
             "description": "ID de l'ancien dossier parent."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1613,7 +1629,9 @@
             },
             "description": "ID du dossier destination."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1727,7 +1745,9 @@
             },
             "description": "Email du destinataire (si type=user)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Permissions",
       "group": "Permissions",
@@ -1796,7 +1816,9 @@
             "description": "Nombre de résultats.",
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1864,7 +1886,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -1923,7 +1947,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -1991,7 +2017,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -2078,7 +2106,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -2137,7 +2167,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -2196,7 +2228,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "group": "Documents",
@@ -2255,7 +2289,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2314,7 +2350,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2387,7 +2425,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2469,7 +2509,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2551,7 +2593,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2624,7 +2668,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2697,7 +2743,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2770,7 +2818,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2857,7 +2907,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2916,7 +2968,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "group": "Feuilles de calcul",
@@ -2960,7 +3014,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "group": "Calendrier",
@@ -3018,7 +3074,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "group": "Calendrier",
@@ -3093,7 +3151,9 @@
             },
             "description": "Ex: America/Montreal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "group": "Calendrier",
@@ -3151,7 +3211,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "group": "Calendrier",
@@ -3275,7 +3337,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3346,7 +3410,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3507,7 +3573,9 @@
             },
             "description": "Minutes avant l'événement."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3627,7 +3695,9 @@
             },
             "description": "Emails séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3698,7 +3768,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3767,7 +3839,9 @@
             ],
             "description": "Ex: \"Réunion demain 15h\"."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3851,7 +3925,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3940,7 +4016,9 @@
             },
             "description": "Format ISO 8601."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",

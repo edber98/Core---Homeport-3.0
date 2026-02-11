@@ -45,6 +45,24 @@ function computeOutputOrder(node, edges){
       }
       return ['out'];
     }
+    // Function with output_array_field (multi-output like classify): dynamic handles from context array
+    if (tmpl.output_array_field && String(tmpl.type) !== 'condition'){
+      const field = tmpl.output_array_field;
+      const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+      const ids = arr.map((it, i) => (it && typeof it === 'object' && it._id) ? String(it._id) : String(i));
+      // Preserve connected handles as well (stable union)
+      const connected = [];
+      for (const e of (edges || [])){
+        if (String(e.source) === String(node.id)){
+          const h = e.sourceHandle != null ? String(e.sourceHandle) : '';
+          if (h) connected.push(h);
+        }
+      }
+      const merged = [];
+      for (const k of [...ids, ...connected]){ if (k && !merged.includes(String(k))) merged.push(String(k)); }
+      const enableCatch = !!tmpl.authorize_catch_error && !!model?.catch_error;
+      return enableCatch ? ['err', ...merged] : merged;
+    }
     // Generic templates with declared outputHandles
     if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length){
       const ids = tmpl.outputHandles

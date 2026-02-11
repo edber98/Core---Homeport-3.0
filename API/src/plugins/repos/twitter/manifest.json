@@ -490,7 +490,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -568,7 +570,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -626,7 +630,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -684,7 +690,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -752,7 +760,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -820,7 +830,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -888,7 +900,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tweets"
     },
@@ -946,7 +960,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateurs"
     },
@@ -989,7 +1005,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateurs"
     },
@@ -1057,7 +1075,9 @@
             },
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Abonnements"
     },
@@ -1125,7 +1145,9 @@
             },
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Abonnements"
     },
@@ -1197,7 +1219,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Abonnements"
     },
@@ -1269,7 +1293,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Abonnements"
     },
@@ -1327,7 +1353,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Listes"
     },
@@ -1395,7 +1423,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Listes"
     },
@@ -1463,7 +1493,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Signets"
     }

@@ -661,7 +661,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -743,7 +745,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Événements"
     },
@@ -802,7 +806,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Événements"
     },
@@ -870,7 +876,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Événements"
     },
@@ -951,7 +959,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Types d'événements"
     },
@@ -1010,7 +1020,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Types d'événements"
     },
@@ -1087,7 +1099,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Invités"
     },
@@ -1146,7 +1160,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Invités"
     },
@@ -1190,7 +1206,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Utilisateurs"
     },
@@ -1269,7 +1287,9 @@
             },
             "default": "1"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Liens de planification"
     },
@@ -1313,7 +1333,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Organisation"
     },
@@ -1376,7 +1398,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Organisation"
     },
@@ -1459,7 +1483,9 @@
             },
             "default": "user"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhooks"
     },
@@ -1514,7 +1540,9 @@
             },
             "default": "user"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhooks"
     },
@@ -1573,7 +1601,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhooks"
     },
@@ -1607,7 +1637,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Événements"
     }

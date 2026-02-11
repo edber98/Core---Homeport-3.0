@@ -1781,7 +1781,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/github"
     }
@@ -1857,7 +1859,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "group": "Dépôts",
@@ -1982,7 +1986,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "group": "Dépôts",
@@ -2080,7 +2086,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "group": "Dépôts",
@@ -2171,7 +2179,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "group": "Dépôts",
@@ -2262,7 +2272,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "group": "Dépôts",
@@ -2406,7 +2418,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -2502,7 +2516,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -2668,7 +2684,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -2835,7 +2853,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -2948,7 +2968,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -3056,7 +3078,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "group": "Issues",
@@ -3210,7 +3234,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "group": "Pull requests",
@@ -3306,7 +3332,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "group": "Pull requests",
@@ -3460,7 +3488,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "group": "Pull requests",
@@ -3631,7 +3661,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "group": "Pull requests",
@@ -3777,7 +3809,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "group": "Pull requests",
@@ -3868,7 +3902,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "group": "Branches",
@@ -3964,7 +4000,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "group": "Branches",
@@ -4077,7 +4115,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "group": "Branches",
@@ -4216,7 +4256,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commits",
       "group": "Commits",
@@ -4312,7 +4354,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commits",
       "group": "Commits",
@@ -4468,7 +4512,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "group": "Releases",
@@ -4559,7 +4605,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "group": "Releases",
@@ -4655,7 +4703,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "group": "Releases",
@@ -4712,7 +4762,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -4842,7 +4894,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -4921,7 +4975,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Workflows",
       "group": "Workflows",
@@ -5046,7 +5102,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Workflows",
       "group": "Workflows",
@@ -5125,7 +5183,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Labels",
       "group": "Labels",
@@ -5245,7 +5305,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Labels",
       "group": "Labels",

@@ -118,7 +118,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -173,7 +175,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -277,7 +281,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -324,7 +330,9 @@
             },
             "default": "/googlechat"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [

@@ -961,7 +961,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1070,7 +1072,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "tags": [
@@ -1129,7 +1133,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "tags": [
@@ -1224,7 +1230,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "tags": [
@@ -1296,7 +1304,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "tags": [
@@ -1391,7 +1401,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "tags": [
@@ -1450,7 +1462,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "tags": [
@@ -1536,7 +1550,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "tags": [
@@ -1599,7 +1615,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "tags": [
@@ -1699,7 +1717,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "tags": [
@@ -1758,7 +1778,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "tags": [
@@ -1830,7 +1852,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "tags": [
@@ -1889,7 +1913,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "tags": [
@@ -1989,7 +2015,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures clients",
       "tags": [
@@ -2061,7 +2089,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures clients",
       "tags": [
@@ -2161,7 +2191,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures fournisseurs",
       "tags": [
@@ -2233,7 +2265,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures fournisseurs",
       "tags": [
@@ -2324,7 +2358,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "tags": [
@@ -2383,7 +2419,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "tags": [
@@ -2446,7 +2484,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "tags": [
@@ -2550,7 +2590,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "tags": [
@@ -2613,7 +2655,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "tags": [
@@ -2676,7 +2720,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégories",
       "tags": [
@@ -2720,7 +2766,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Moyens de paiement",
       "tags": [
@@ -2765,7 +2813,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

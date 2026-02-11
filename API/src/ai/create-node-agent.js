@@ -408,6 +408,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
                   authorize_skip_error: found.authorize_skip_error,
                   allowWithoutCredentials: found.allowWithoutCredentials,
                   output_array_field: found.output_array_field,
+                  outputSchema: found.outputSchema,
                 };
                 if (n?.data?.model) { n.data.model.template = found.key; n.data.model.templateObj = templateObjN; }
                 else if (n?.data) { n.data.template = found.key; n.data.templateObj = templateObjN; }
@@ -431,6 +432,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             authorize_skip_error: tpl.authorize_skip_error,
             allowWithoutCredentials: tpl.allowWithoutCredentials,
             output_array_field: tpl.output_array_field,
+            outputSchema: tpl.outputSchema,
           };
           const model = { id: tempId, name: tpl.title || tpl.name || tpl.key, template: tpl.key, templateObj, context: {} };
           const node = { id: tempId, type: 'html-template', point: { x: 0, y: 0 }, data: { model } };
@@ -580,6 +582,7 @@ async function runCreateNodeAgent({ prompt, seedGraph, sourceId, sourceHandle = 
             allowWithoutCredentials: tpl.allowWithoutCredentials,
             // Legacy field for conditions (kept for compatibility)
             output_array_field: tpl.output_array_field,
+            outputSchema: tpl.outputSchema,
           };
           try { console.info('[ai-create-node][emit_graph][tpl_ids]', { key: tpl.key, mongoId: tpl._id?.toString?.(), outId: templateObj.id }); } catch { }
           const model = {

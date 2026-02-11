@@ -446,7 +446,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -542,7 +544,9 @@
             ],
             "default": "overwrite"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -600,7 +604,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -658,7 +664,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -729,7 +737,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -800,7 +810,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -858,7 +870,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -945,7 +959,9 @@
             ],
             "default": "false"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Dossiers"
     },
@@ -1020,7 +1036,9 @@
             },
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -1078,7 +1096,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Dossiers"
     },
@@ -1163,7 +1183,9 @@
             ],
             "default": "w128h128"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Fichiers"
     },
@@ -1221,7 +1243,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Partage"
     },
@@ -1274,7 +1298,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Partage"
     },
@@ -1360,7 +1386,9 @@
             ],
             "default": "viewer"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Partage"
     },
@@ -1404,7 +1432,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Compte"
     },
@@ -1458,7 +1488,9 @@
             },
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Paper"
     },
@@ -1518,7 +1550,9 @@
             },
             "default": 60
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Événements"
     }

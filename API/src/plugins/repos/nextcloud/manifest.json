@@ -1194,7 +1194,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/nextcloud"
     },
@@ -1279,7 +1281,9 @@
             "description": "Chemin du répertoire (ex: /Documents).",
             "default": "/"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1337,7 +1341,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1412,7 +1418,9 @@
               "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1470,7 +1478,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1542,7 +1552,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1614,7 +1626,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -1672,7 +1686,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dossiers",
       "group": "Dossiers",
@@ -1790,7 +1806,9 @@
             "description": "Permissions accordées.",
             "default": "1"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Partage",
       "group": "Partage",
@@ -1852,7 +1870,9 @@
             },
             "description": "Inclure les partages créés par d'autres."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Partage",
       "group": "Partage",
@@ -1910,7 +1930,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -2000,7 +2022,9 @@
             },
             "description": "Nom de la conversation (groupe/publique)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2043,7 +2067,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2101,7 +2127,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2159,7 +2187,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2240,7 +2270,9 @@
             },
             "description": "ID du message auquel répondre."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -2328,7 +2360,9 @@
             "description": "Direction de lecture.",
             "default": "0"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -2424,7 +2458,9 @@
             "description": "Type de participant.",
             "default": "users"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2496,7 +2532,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2563,7 +2601,9 @@
             },
             "description": "ID du dernier message lu."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -2635,7 +2675,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Conversations",
       "group": "Conversations",
@@ -2678,7 +2720,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendriers",
       "group": "Calendriers",
@@ -2759,7 +2803,9 @@
             },
             "description": "Couleur du calendrier (ex: #FF0000)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendriers",
       "group": "Calendriers",
@@ -2817,7 +2863,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendriers",
       "group": "Calendriers",
@@ -2935,7 +2983,9 @@
             },
             "description": "Lieu de l'événement."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3007,7 +3057,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3083,7 +3135,9 @@
             },
             "description": "Date de fin du filtre (ISO 8601)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3200,7 +3254,9 @@
             },
             "description": "Nouveau lieu."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3272,7 +3328,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "group": "Événements",
@@ -3343,7 +3401,9 @@
             },
             "description": "Décalage pour la pagination."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3401,7 +3461,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3500,7 +3562,9 @@
             },
             "description": "Groupes (séparés par des virgules)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3604,7 +3668,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3681,7 +3747,9 @@
             },
             "description": "Nombre maximum de résultats."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Activités",
       "group": "Activités",
@@ -3724,7 +3792,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Notifications",
       "group": "Notifications",

@@ -4301,7 +4301,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -4506,7 +4508,9 @@
             },
             "description": "Note interne."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tiers",
       "group": "Tiers",
@@ -4568,7 +4572,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tiers",
       "group": "Tiers",
@@ -4729,7 +4735,9 @@
             },
             "description": "Note privée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tiers",
       "group": "Tiers",
@@ -4791,7 +4799,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tiers",
       "group": "Tiers",
@@ -4897,7 +4907,9 @@
             },
             "description": "Filtres additionnels (ex: (t.nom:like:'Test%'))."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tiers",
       "group": "Tiers",
@@ -5067,7 +5079,9 @@
             },
             "description": "Note privée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contact",
       "group": "Contact",
@@ -5129,7 +5143,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contact",
       "group": "Contact",
@@ -5226,7 +5242,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contact",
       "group": "Contact",
@@ -5426,7 +5444,9 @@
             },
             "description": "Note privée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produit",
       "group": "Produit",
@@ -5488,7 +5508,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produit",
       "group": "Produit",
@@ -5622,7 +5644,9 @@
             },
             "description": "Note privée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produit",
       "group": "Produit",
@@ -5684,7 +5708,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produit",
       "group": "Produit",
@@ -5804,7 +5830,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produit",
       "group": "Produit",
@@ -5929,7 +5957,9 @@
             },
             "description": "Note interne."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "group": "Devis",
@@ -5991,7 +6021,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "group": "Devis",
@@ -6088,7 +6120,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "group": "Devis",
@@ -6213,7 +6247,9 @@
             },
             "description": "Note interne."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commande",
       "group": "Commande",
@@ -6275,7 +6311,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commande",
       "group": "Commande",
@@ -6372,7 +6410,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commande",
       "group": "Commande",
@@ -6529,7 +6569,9 @@
             },
             "description": "Note interne."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facture",
       "group": "Facture",
@@ -6591,7 +6633,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facture",
       "group": "Facture",
@@ -6672,7 +6716,9 @@
             "description": "1 pour désactiver les triggers.",
             "default": "0"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facture",
       "group": "Facture",
@@ -6769,7 +6815,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facture",
       "group": "Facture",
@@ -6902,7 +6950,9 @@
             },
             "description": "Pourcentage de remise."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facture",
       "group": "Facture",
@@ -7061,7 +7111,9 @@
             },
             "description": "Note privée."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Projet",
       "group": "Projet",
@@ -7123,7 +7175,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Projet",
       "group": "Projet",
@@ -7220,7 +7274,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Projet",
       "group": "Projet",
@@ -7350,7 +7406,9 @@
             },
             "description": "Progression en pourcentage."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tâche",
       "group": "Tâche",
@@ -7447,7 +7505,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tâche",
       "group": "Tâche",
@@ -7509,7 +7569,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entrepôt",
       "group": "Entrepôt",
@@ -7597,7 +7659,9 @@
             "description": "Numéro de page.",
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entrepôt",
       "group": "Entrepôt",
@@ -7729,7 +7793,9 @@
             },
             "description": "Code d'inventaire."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Stock",
       "group": "Stock",
@@ -7826,7 +7892,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Stock",
       "group": "Stock",
@@ -7964,7 +8032,9 @@
             },
             "description": "Couleur en hexadécimal (ex: FF0000)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégorie",
       "group": "Catégorie",
@@ -8026,7 +8096,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégorie",
       "group": "Catégorie",
@@ -8132,7 +8204,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégorie",
       "group": "Catégorie",
@@ -8194,7 +8268,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateur",
       "group": "Utilisateur",
@@ -8291,7 +8367,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateur",
       "group": "Utilisateur",
@@ -8431,7 +8509,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Ticket",
       "group": "Ticket",
@@ -8493,7 +8573,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Ticket",
       "group": "Ticket",
@@ -8555,7 +8637,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Ticket",
       "group": "Ticket",
@@ -8652,7 +8736,9 @@
             },
             "description": "Filtres additionnels."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Ticket",
       "group": "Ticket",
@@ -8714,7 +8800,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Banque",
       "group": "Banque",
@@ -8802,7 +8890,9 @@
             "description": "Numéro de page.",
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Banque",
       "group": "Banque",
@@ -8937,7 +9027,9 @@
             },
             "description": "Commentaire sur le paiement."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiement",
       "group": "Paiement",

@@ -1042,7 +1042,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1098,7 +1100,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1170,7 +1174,9 @@
             },
             "description": "Retourner les commandes après cet ID."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1247,7 +1253,9 @@
             },
             "description": "Statut du paiement (paid, pending, etc.)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1333,7 +1341,9 @@
             },
             "description": "Tags séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1401,7 +1411,9 @@
             },
             "description": "Raison de l'annulation."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1460,7 +1472,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1514,7 +1528,9 @@
             },
             "description": "Filtrer par statut (open, closed, any)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1573,7 +1589,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1654,7 +1672,9 @@
             },
             "description": "Retourner les produits après cet ID."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1749,7 +1769,9 @@
             },
             "description": "Statut (active, draft, archived)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1853,7 +1875,9 @@
             },
             "description": "Nouveau statut (active, draft, archived)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1912,7 +1936,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -1975,7 +2001,9 @@
             },
             "description": "Filtrer par vendeur."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2034,7 +2062,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2097,7 +2127,9 @@
             },
             "description": "Retourner les clients après cet ID."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2183,7 +2215,9 @@
             },
             "description": "Numéro de téléphone."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2278,7 +2312,9 @@
             },
             "description": "Nouveau numéro de téléphone."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2346,7 +2382,9 @@
             },
             "description": "Nombre maximum de résultats."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2409,7 +2447,9 @@
             },
             "description": "IDs séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2496,7 +2536,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2583,7 +2625,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2642,7 +2686,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2705,7 +2751,9 @@
             },
             "description": "Retourner les collections après cet ID."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2791,7 +2839,9 @@
             },
             "description": "Nom du transporteur."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2859,7 +2909,9 @@
             },
             "description": "Nombre maximum de résultats."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2927,7 +2979,9 @@
             },
             "description": "Nombre maximum de résultats."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -2986,7 +3040,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",
@@ -3032,7 +3088,9 @@
             },
             "default": "/shopify"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "Shopify",

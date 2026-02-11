@@ -30,6 +30,8 @@ export interface BackendNodeTemplate {
   authorize_skip_error?: boolean;
   allowWithoutCredentials?: boolean;
   output_array_field?: string;
+  output_schema_field?: string;
+  outputSchema?: any[];
 }
 
 @Injectable({ providedIn: 'root' })

@@ -64,7 +64,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -131,7 +133,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -203,7 +207,9 @@
             },
             "default": "{}"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -239,7 +245,9 @@
             },
             "default": "/hooks/teams"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [

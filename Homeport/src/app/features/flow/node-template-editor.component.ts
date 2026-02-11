@@ -129,12 +129,22 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         </nz-form-item>
       </div>
 
-      <!-- Function-specific options (legacy v1 outputs kept for back-compat UI, but v2 handles sont recommandés) -->
+      <!-- Function-specific options -->
       <div class="grid cols-2" *ngIf="form.get('type')?.value==='function'">
         <div>
           <div class="sub-header">
             <div class="card-title left"><span class="t">Options (function)</span><span class="s">Sorties, erreurs, identifiants</span></div>
           </div>
+          <nz-form-item>
+            <nz-form-label nzTooltipTitle="Classique = sortie unique, Multi-sortie = branches dynamiques par args, Schéma dynamique = output déterminé par un champ du formulaire">Sous-type</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="functionSubType">
+                <nz-option nzValue="classic" nzLabel="Classique"></nz-option>
+                <nz-option nzValue="multi_output" nzLabel="Multi-sortie (output_array_field)"></nz-option>
+                <nz-option nzValue="dynamic_schema" nzLabel="Schéma dynamique (output_schema_field)"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
           <nz-form-item>
             <nz-form-control>
               <label nz-checkbox formControlName="authorize_catch_error" nz-tooltip="Autoriser le catch d'erreur (branche err)">Autoriser catch error</label>
@@ -153,17 +163,46 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
           </nz-form-item>
         </div>
         <div>
-          <div class="sub-header">
-            <div class="card-title left"><span class="t">Sorties (v1, obsolète)</span><span class="s">Préférez les handles v2 ci-dessous</span></div>
-          </div>
-          <div class="outputs" cdkDropList (cdkDropListDropped)="dropOutput($event)">
-            <div class="row" *ngFor="let ctrl of outputs.controls; let i=index" [formGroup]="ctrl" cdkDrag>
-              <span class="drag" cdkDragHandle>⋮⋮</span>
-              <input nz-input formControlName="value" placeholder="Ex: Success"/>
-              <button nz-button nzDanger (click)="removeOutput(i)"><i nz-icon nzType="delete"></i></button>
+          <!-- Multi-sortie: output_array_field + outputSchema -->
+          <ng-container *ngIf="form.get('functionSubType')?.value==='multi_output'">
+            <div class="sub-header">
+              <div class="card-title left"><span class="t">Multi-sortie</span><span class="s">Branches dynamiques par un champ tableau dans les args</span></div>
             </div>
-            <button nz-button class="apple-btn" (click)="addOutput()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
-          </div>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Nom du champ section_array dans les args qui contient les branches (ex: categories)">output_array_field</nz-form-label>
+              <nz-form-control><input nz-input formControlName="output_array_field" placeholder="categories"/></nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Schéma de sortie commun à chaque branche (JSON array d'objets avec key/type/label)">outputSchema (JSON)</nz-form-label>
+              <nz-form-control>
+                <monaco-json-editor [value]="outputSchemaJson" (valueChange)="outputSchemaJson = $event" [height]="140"></monaco-json-editor>
+              </nz-form-control>
+            </nz-form-item>
+          </ng-container>
+          <!-- Schéma dynamique: output_schema_field -->
+          <ng-container *ngIf="form.get('functionSubType')?.value==='dynamic_schema'">
+            <div class="sub-header">
+              <div class="card-title left"><span class="t">Schéma dynamique</span><span class="s">Le schéma de sortie est déterminé par un champ du formulaire</span></div>
+            </div>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Nom du champ dans les args dont la valeur définit le schéma de sortie (ex: extraction_schema)">output_schema_field</nz-form-label>
+              <nz-form-control><input nz-input formControlName="output_schema_field" placeholder="extraction_schema"/></nz-form-control>
+            </nz-form-item>
+          </ng-container>
+          <!-- Classique: legacy outputs -->
+          <ng-container *ngIf="form.get('functionSubType')?.value==='classic'">
+            <div class="sub-header">
+              <div class="card-title left"><span class="t">Sorties (v1, obsolète)</span><span class="s">Préférez les handles v2 ci-dessous</span></div>
+            </div>
+            <div class="outputs" cdkDropList (cdkDropListDropped)="dropOutput($event)">
+              <div class="row" *ngFor="let ctrl of outputs.controls; let i=index" [formGroup]="ctrl" cdkDrag>
+                <span class="drag" cdkDragHandle>⋮⋮</span>
+                <input nz-input formControlName="value" placeholder="Ex: Success"/>
+                <button nz-button nzDanger (click)="removeOutput(i)"><i nz-icon nzType="delete"></i></button>
+              </div>
+              <button nz-button class="apple-btn" (click)="addOutput()"><i nz-icon nzType="plus"></i><span class="label">Ajouter une sortie</span></button>
+            </div>
+          </ng-container>
         </div>
       </div>
 
@@ -397,6 +436,8 @@ export class NodeTemplateEditorComponent implements OnInit {
   // Pending returns from Form Builder for output handles (when handles not yet loaded)
   private _pendingOutSchemas: Map<number, string> = new Map();
   private _pendingOutSessions: Map<number, string> = new Map();
+  // Multi-output / dynamic schema state
+  outputSchemaJson = '[]';
   // Embed form builder state
   // duplicate declarations removed
   iconOptions: string[] = [
@@ -428,7 +469,9 @@ export class NodeTemplateEditorComponent implements OnInit {
       authorize_catch_error: new FormControl<boolean>(true, { nonNullable: true }),
       authorize_skip_error: new FormControl<boolean>(false, { nonNullable: true }),
       allow_without_credentials: new FormControl<boolean>(false, { nonNullable: true }),
-      output_array_field: new FormControl<string>('items'),
+      functionSubType: new FormControl<string>('classic', { nonNullable: true }),
+      output_array_field: new FormControl<string>(''),
+      output_schema_field: new FormControl<string>(''),
       output: this.fb.array<FormGroup<any>>([]),
       inputHandles: this.fb.array<FormGroup<any>>([]),
       outputHandles: this.fb.array<FormGroup<any>>([]),
@@ -597,14 +640,24 @@ export class NodeTemplateEditorComponent implements OnInit {
     this.form.patchValue({ icon: (t as any).icon || '', iconUrl: (t as any).iconUrl || '', title: (t as any).title || '', subtitle: (t as any).subtitle || '' }, { emitEvent: false });
     if (t.type === 'function') {
       this.form.get('authorize_catch_error')?.setValue(!!t.authorize_catch_error, { emitEvent: false });
-      // skip support visibility flag
       // @ts-ignore
       this.form.get('authorize_skip_error')?.setValue(!!(t as any).authorize_skip_error, { emitEvent: false });
-      // allow without credentials
       // @ts-ignore
       this.form.get('allow_without_credentials')?.setValue(!!(t as any).allowWithoutCredentials, { emitEvent: false });
       this.outputs.clear();
       (t.output || []).forEach(o => this.addOutput(o));
+      // Detect function sub-type
+      const tAny = t as any;
+      if (tAny.output_array_field) {
+        this.form.get('functionSubType')?.setValue('multi_output', { emitEvent: false });
+        this.form.get('output_array_field')?.setValue(tAny.output_array_field || '', { emitEvent: false });
+        this.outputSchemaJson = JSON.stringify(Array.isArray(tAny.outputSchema) ? tAny.outputSchema : [], null, 2);
+      } else if (tAny.output_schema_field) {
+        this.form.get('functionSubType')?.setValue('dynamic_schema', { emitEvent: false });
+        this.form.get('output_schema_field')?.setValue(tAny.output_schema_field || '', { emitEvent: false });
+      } else {
+        this.form.get('functionSubType')?.setValue('classic', { emitEvent: false });
+      }
     }
     // v2 handles
     try {
@@ -743,9 +796,21 @@ export class NodeTemplateEditorComponent implements OnInit {
       outputHandles: v.type === 'condition' ? undefined : (outHs.length ? outHs : undefined),
       linkedHandles: v.type === 'condition' ? undefined : (linkHs.length ? linkHs : undefined),
       output: undefined,
-      output_array_field: v.type === 'condition' ? (v.output_array_field || 'items') : undefined,
+      output_array_field: (v.type === 'condition')
+        ? (v.output_array_field || 'items')
+        : (v.type === 'function' && v.functionSubType === 'multi_output')
+          ? (v.output_array_field || undefined)
+          : undefined,
       args
     } as any;
+    // Multi-output: save outputSchema
+    if (v.type === 'function' && v.functionSubType === 'multi_output') {
+      try { (tpl as any).outputSchema = JSON.parse(this.outputSchemaJson || '[]'); } catch { (tpl as any).outputSchema = []; }
+    }
+    // Dynamic schema: save output_schema_field
+    if (v.type === 'function' && v.functionSubType === 'dynamic_schema') {
+      (tpl as any).output_schema_field = v.output_schema_field || undefined;
+    }
     // also store app object with _id for compatibility
     if (v.appId) (tpl as any).app = { _id: v.appId };
     // constraints removed per new model (not used)

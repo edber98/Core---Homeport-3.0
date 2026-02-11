@@ -91,6 +91,16 @@
             <i class="fa-solid fa-paragraph"></i>
             <span class="quick-label">Bloc</span>
           </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('schema_builder')" [disabled]="!canQuickAddField" aria-label="Ajouter schéma">
+            <i class="fa-solid fa-table-columns"></i>
+            <span class="quick-label">Schéma</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('tags')" [disabled]="!canQuickAddField" aria-label="Ajouter liste de tags">
+            <i class="fa-solid fa-tags"></i>
+            <span class="quick-label">Tags</span>
+          </button>
         </div>
       </nz-card>
 

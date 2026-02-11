@@ -1221,7 +1221,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1319,7 +1321,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1416,7 +1420,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1487,7 +1493,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1567,7 +1575,9 @@
             },
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1651,7 +1661,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1752,7 +1764,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1810,7 +1824,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1881,7 +1897,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1952,7 +1970,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1996,7 +2016,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "group": "Équipes",
@@ -2054,7 +2076,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "group": "Équipes",
@@ -2112,7 +2136,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "group": "Équipes",
@@ -2201,7 +2227,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "group": "Équipes",
@@ -2296,7 +2324,9 @@
             },
             "description": "Adresses email séparées par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "group": "Réunions",
@@ -2354,7 +2384,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "group": "Réunions",
@@ -2407,7 +2439,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "group": "Réunions",
@@ -2487,7 +2521,9 @@
             },
             "description": "User IDs séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "group": "Chats",
@@ -2540,7 +2576,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "group": "Chats",
@@ -2598,7 +2636,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "group": "Chats",
@@ -2656,7 +2696,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "group": "Sites",
@@ -2714,7 +2756,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "group": "Sites",
@@ -2772,7 +2816,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "group": "Sites",
@@ -2861,7 +2907,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "group": "Listes",
@@ -2932,7 +2980,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "group": "Listes",
@@ -3011,7 +3061,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "group": "Listes",
@@ -3091,7 +3143,9 @@
             },
             "description": "Champs de l'élément au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "group": "Listes",
@@ -3184,7 +3238,9 @@
             },
             "description": "Champs à mettre à jour au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "group": "Listes",
@@ -3251,7 +3307,9 @@
             },
             "description": "ID du dossier (vide = racine)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -3322,7 +3380,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -3403,7 +3463,9 @@
             },
             "description": "Contenu du fichier (texte ou base64)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -3474,7 +3536,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -3545,7 +3609,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -3607,7 +3673,9 @@
             },
             "description": "Filtre OData (ex: startsWith(displayName,'A'))."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3665,7 +3733,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -3709,7 +3779,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",

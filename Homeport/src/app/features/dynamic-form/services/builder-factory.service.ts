@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import type { FieldConfig, SectionConfig, StepConfig } from '../../../modules/dynamic-form/dynamic-form.service';
 
-export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'cron'|'file'|'textblock';
+export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'cron'|'file'|'textblock'|'schema_builder'|'tags';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderFactoryService {
@@ -52,6 +52,15 @@ export class BuilderFactoryService {
       if (type === 'file') {
         base.default = null;
         base.file = { accept: '', maxSize: 10485760, multiple: false, maxCount: 10, lifecycle: 'execution', preview: true, dragDrop: false, listType: 'text', buttonText: '', hint: '' };
+        base.col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
+      }
+      if (type === 'schema_builder') {
+        base.default = null;
+        base.col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
+      }
+      if (type === 'tags') {
+        base.default = [];
+        base.tags = { itemType: 'text' };
         base.col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
       }
     }

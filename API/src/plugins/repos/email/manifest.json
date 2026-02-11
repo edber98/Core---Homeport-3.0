@@ -378,7 +378,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -429,7 +431,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -479,7 +483,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -604,7 +610,9 @@
             },
             "default": "[]"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Envoi",
       "group": "Envoi",
@@ -679,7 +687,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Lecture",
       "group": "Lecture",
@@ -724,7 +734,9 @@
             },
             "default": "INBOX"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [
@@ -767,7 +779,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "group": "Libellés",
@@ -840,7 +854,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "group": "Libellés",
@@ -913,7 +929,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "group": "Libellés",

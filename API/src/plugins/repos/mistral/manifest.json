@@ -218,6 +218,24 @@
           }
         }
       ]
+    },
+    "llm_text": {
+      "title": "Réponse (texte)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte généré par le modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -237,6 +255,8 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Identifiants Mistral",
         "ui": {
           "layout": "vertical",
@@ -316,6 +336,8 @@
       ],
       "description": "Générer une complétion de chat via Mistral AI.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer une complétion",
         "ui": {
           "layout": "vertical",
@@ -430,6 +452,8 @@
       ],
       "description": "Générer une complétion en streaming.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer une complétion (stream)",
         "ui": {
           "layout": "vertical",
@@ -526,6 +550,8 @@
       ],
       "description": "Générer une complétion avec appel d'outils.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer une complétion (tools)",
         "ui": {
           "layout": "vertical",
@@ -655,6 +681,8 @@
       ],
       "description": "Générer une réponse en format JSON structuré.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer une complétion (JSON)",
         "ui": {
           "layout": "vertical",
@@ -751,6 +779,8 @@
       ],
       "description": "Générer des vecteurs d'embedding via Mistral.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Créer un embedding",
         "ui": {
           "layout": "vertical",
@@ -819,6 +849,8 @@
       ],
       "description": "Récupérer la liste des modèles disponibles.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Lister les modèles",
         "ui": {
           "layout": "vertical",
@@ -862,6 +894,8 @@
       ],
       "description": "Générer une complétion via un agent Mistral.",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Complétion agent",
         "ui": {
           "layout": "vertical",
@@ -917,6 +951,406 @@
         ]
       },
       "group": "Agents"
+    },
+    {
+      "key": "mistral_classify",
+      "name": "mistralClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via Mistral",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Mistral à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Mistral Large",
+                "value": "mistral-large-latest"
+              },
+              {
+                "label": "Mistral Medium",
+                "value": "mistral-medium-latest"
+              },
+              {
+                "label": "Mistral Small",
+                "value": "mistral-small-latest"
+              }
+            ],
+            "default": "mistral-large-latest"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "mistral",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "mistral_extract",
+      "name": "mistralExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via Mistral",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Mistral à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Mistral Large",
+                "value": "mistral-large-latest"
+              },
+              {
+                "label": "Mistral Medium",
+                "value": "mistral-medium-latest"
+              },
+              {
+                "label": "Mistral Small",
+                "value": "mistral-small-latest"
+              }
+            ],
+            "default": "mistral-large-latest"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "mistral",
+        "extraction",
+        "ai"
+      ]
+    },
+    {
+      "key": "mistral_vision",
+      "name": "mistralVision",
+      "schemaVersion": 2,
+      "title": "Analyser une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "mistral",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "description": "Analyser une image avec un prompt via Mistral",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Analyser une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Mistral à utiliser.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "Pixtral Large", "value": "pixtral-large-latest" },
+              { "label": "Mistral Small", "value": "mistral-small-latest" }
+            ],
+            "default": "pixtral-large-latest"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Question ou instruction sur l'image.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image",
+            "description": "Image à analyser.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }],
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          }
+        ]
+      },
+      "subtitle": "Vision",
+      "group": "Vision",
+      "tags": ["mistral", "vision", "ai"]
     }
   ]
 }

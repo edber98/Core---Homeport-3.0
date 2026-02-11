@@ -1013,7 +1013,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1104,7 +1106,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1163,7 +1167,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1258,7 +1264,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1317,7 +1325,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1385,7 +1395,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1448,7 +1460,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -1534,7 +1548,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1593,7 +1609,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1679,7 +1697,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1738,7 +1758,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1806,7 +1828,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1869,7 +1893,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "group": "Entreprises",
@@ -1955,7 +1981,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2014,7 +2042,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2100,7 +2130,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2159,7 +2191,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2227,7 +2261,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2290,7 +2326,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "group": "Deals",
@@ -2385,7 +2423,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2444,7 +2484,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2530,7 +2572,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2589,7 +2633,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2652,7 +2698,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2738,7 +2786,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Notes",
       "group": "Notes",
@@ -2824,7 +2874,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tâches",
       "group": "Tâches",
@@ -2910,7 +2962,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "group": "Réunions",
@@ -2996,7 +3050,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appels",
       "group": "Appels",
@@ -3065,7 +3121,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pipelines",
       "group": "Pipelines",
@@ -3148,7 +3206,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pipelines",
       "group": "Pipelines",
@@ -3220,7 +3280,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Propriétaires",
       "group": "Propriétaires",

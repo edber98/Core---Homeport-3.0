@@ -1094,7 +1094,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/slack"
     }
@@ -1182,7 +1184,9 @@
             },
             "description": "Activer le dépliage des aperçus de liens."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1269,7 +1273,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1342,7 +1348,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1429,7 +1437,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1502,7 +1512,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1589,7 +1601,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1676,7 +1690,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "group": "Messages",
@@ -1745,7 +1761,9 @@
             },
             "description": "Créer un canal privé."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1827,7 +1845,9 @@
             "description": "Nombre maximum de résultats.",
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1886,7 +1906,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -1945,7 +1967,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -2018,7 +2042,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "group": "Canaux",
@@ -2073,7 +2099,9 @@
             "description": "Nombre maximum de résultats.",
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -2132,7 +2160,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -2191,7 +2221,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -2250,7 +2282,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "group": "Utilisateurs",
@@ -2338,7 +2372,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réactions",
       "group": "Réactions",
@@ -2425,7 +2461,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réactions",
       "group": "Réactions",
@@ -2498,7 +2536,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réactions",
       "group": "Réactions",
@@ -2587,7 +2627,9 @@
             },
             "description": "Nom du fichier à afficher."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -2678,7 +2720,9 @@
             "description": "Nombre maximum de fichiers.",
             "default": 20
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -2737,7 +2781,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -2796,7 +2842,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "group": "Fichiers",
@@ -2869,7 +2917,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Épingles",
       "group": "Épingles",
@@ -2928,7 +2978,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Épingles",
       "group": "Épingles",
@@ -3011,7 +3063,9 @@
             },
             "description": "ID de l'utilisateur (optionnel)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rappels",
       "group": "Rappels",
@@ -3055,7 +3109,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rappels",
       "group": "Rappels",
@@ -3114,7 +3170,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rappels",
       "group": "Rappels",
@@ -3211,7 +3269,9 @@
             "description": "Type de signet.",
             "default": "link"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Signets",
       "group": "Signets",
@@ -3270,7 +3330,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Signets",
       "group": "Signets",

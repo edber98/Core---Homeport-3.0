@@ -58,7 +58,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/twilio"
     }
@@ -154,7 +156,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "envoi",
@@ -229,7 +233,9 @@
             },
             "default": 20
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "liste",
@@ -331,7 +337,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "création",
@@ -392,7 +400,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "lecture",
@@ -506,7 +516,9 @@
             },
             "default": 20
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "liste",
@@ -563,7 +575,9 @@
             },
             "default": 20
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "liste",
@@ -624,7 +638,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "lecture",
@@ -685,7 +701,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "lecture",
@@ -746,7 +764,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "suppression",
@@ -817,7 +837,9 @@
             },
             "default": 6
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "création",
@@ -924,7 +946,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "envoi",
@@ -1013,7 +1037,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "lecture",
@@ -1083,7 +1109,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "recherche",
@@ -1128,7 +1156,9 @@
             },
             "default": "/twilio"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

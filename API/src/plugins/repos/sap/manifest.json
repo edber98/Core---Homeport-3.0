@@ -1354,7 +1354,9 @@
             },
             "default": "100"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1455,7 +1457,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "group": "Business Partners",
@@ -1514,7 +1518,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "group": "Business Partners",
@@ -1591,7 +1597,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "group": "Business Partners",
@@ -1650,7 +1658,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "group": "Business Partners",
@@ -1724,7 +1734,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "group": "Business Partners",
@@ -1834,7 +1846,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "group": "Commandes de vente",
@@ -1893,7 +1907,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "group": "Commandes de vente",
@@ -1961,7 +1977,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "group": "Commandes de vente",
@@ -2052,7 +2070,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "group": "Commandes de vente",
@@ -2126,7 +2146,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "group": "Commandes de vente",
@@ -2227,7 +2249,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "group": "Commandes d'achat",
@@ -2286,7 +2310,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "group": "Commandes d'achat",
@@ -2354,7 +2380,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "group": "Commandes d'achat",
@@ -2428,7 +2456,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "group": "Commandes d'achat",
@@ -2519,7 +2549,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "group": "Articles",
@@ -2578,7 +2610,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "group": "Articles",
@@ -2655,7 +2689,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "group": "Articles",
@@ -2729,7 +2765,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "group": "Articles",
@@ -2788,7 +2826,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "group": "Facturation",
@@ -2862,7 +2902,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "group": "Facturation",
@@ -2941,7 +2983,9 @@
             },
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "group": "Facturation",
@@ -3014,7 +3058,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "group": "Comptabilité",
@@ -3097,7 +3143,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "group": "Comptabilité",
@@ -3170,7 +3218,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "group": "Comptabilité",
@@ -3244,7 +3294,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "group": "Comptabilité",
@@ -3303,7 +3355,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "group": "Production",
@@ -3389,7 +3443,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "group": "Production",
@@ -3463,7 +3519,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "group": "Production",
@@ -3522,7 +3580,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "OData",
       "group": "OData",
@@ -3590,7 +3650,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "OData",
       "group": "OData",

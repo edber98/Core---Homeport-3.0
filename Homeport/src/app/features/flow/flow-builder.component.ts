@@ -3349,10 +3349,10 @@ export class FlowBuilderComponent {
       try { delete (model as any).aiArgsHistory; } catch {}
       // Adjust name to indicate duplication (non-bloquant)
       try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch { }
-      // For condition nodes: regenerate stable _id for items to avoid handle collisions
+      // For condition/multi-output nodes: regenerate stable _id for items to avoid handle collisions
       try {
         const tmpl = model?.templateObj || {};
-        if (tmpl?.type === 'condition') {
+        if (tmpl?.type === 'condition' || !!tmpl?.output_array_field) {
           const field = tmpl.output_array_field || 'items';
           const used = this.collectAllConditionHandleIds();
           // Build old->new handle id mapping by index
@@ -4435,10 +4435,11 @@ export class FlowBuilderComponent {
       }
     } catch {}
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
-    // Short-circuit if condition outputs did not change to avoid re-renders/deselection loops
+    // Short-circuit if condition/multi-output outputs did not change to avoid re-renders/deselection loops
     try {
       const ty = String(stable?.templateObj?.type || '').toLowerCase();
-      if (ty === 'condition') {
+      const hasOutputArray = !!stable?.templateObj?.output_array_field;
+      if (ty === 'condition' || hasOutputArray) {
         const before = this.fbUtils.getConditionItemsFull(oldModel).map(it => it.id);
         const after = this.fbUtils.getConditionItemsFull(stable).map(it => it.id);
         const same = before.length === after.length && before.every((v, i) => String(v) === String(after[i]));
@@ -5645,10 +5646,10 @@ export class FlowBuilderComponent {
         // Reset AI chat/args state on paste
         try { delete (m as any).aiChatThreadId; } catch {}
         try { delete (m as any).aiArgsHistory; } catch {}
-        // Condition branch id remap
+        // Condition/multi-output branch id remap
         try {
           const tt = m?.templateObj?.type;
-          if (tt === 'condition') {
+          if (tt === 'condition' || !!m?.templateObj?.output_array_field) {
             const field = m?.templateObj?.output_array_field || 'items';
             const arr = (m?.context && Array.isArray(m.context[field])) ? m.context[field] : [];
             const oldArr = (oldM?.context && Array.isArray(oldM.context[field])) ? oldM.context[field] : [];

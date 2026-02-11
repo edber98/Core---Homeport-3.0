@@ -293,13 +293,38 @@ function simulateMsgForScenario(targetId, choice, graph) {
           try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
           msg.payload = resultObj; payloadSet = true;
         } else {
-          schema = getHandleSchema(node.model, edge.sourceHandle || '');
-          sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
-          msg[from] = sample && typeof sample === 'object' ? sample : {};
-          try { msg._nodes[from] = { simulated: true, kind: kind || 'function', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
-          // Préférer payload issue des fonctions
-          if (kind === 'function') { msg.payload = msg[from]; payloadSet = true; }
-          else if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+          // Check for output_schema_field: node output schema is derived from a context field (e.g., extraction_schema)
+          const outputSchemaField = tmpl.output_schema_field;
+          if (outputSchemaField && node.model?.context) {
+            const dynSchema = node.model.context[outputSchemaField];
+            const resultObj = { ok: true };
+            // dynSchema can be a FormSchema { fields: [...] } or a flat SchemaField[]
+            const fields = Array.isArray(dynSchema) ? dynSchema
+              : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
+                ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+                : [];
+            const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+            for (const f of fields) {
+              const k = String(f.key || ''); if (!k) continue;
+              const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
+              if (ft === 'number') resultObj[k] = 0;
+              else if (ft === 'boolean') resultObj[k] = true;
+              else if (ft === 'text_array' || ft === 'number_array' || ft === 'array') resultObj[k] = [];
+              else if (ft === 'date') resultObj[k] = new Date().toISOString();
+              else resultObj[k] = `sample_${k}`;
+            }
+            msg[from] = resultObj;
+            try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: String(edge.sourceHandle || ''), schema: dynSchema || {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+            msg.payload = resultObj; payloadSet = true;
+          } else {
+            schema = getHandleSchema(node.model, edge.sourceHandle || '');
+            sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
+            msg[from] = sample && typeof sample === 'object' ? sample : {};
+            try { msg._nodes[from] = { simulated: true, kind: kind || 'function', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+            // Préférer payload issue des fonctions
+            if (kind === 'function') { msg.payload = msg[from]; payloadSet = true; }
+            else if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
+          }
         }
       }
     }
@@ -409,13 +434,31 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
     }
     const path = (() => { try { const e = (msgIn && (msgIn._path && msgIn._path.edges)) ? msgIn._path.edges : []; return { edges: e }; } catch { return undefined; } })();
     // Static simulate: provide basic pseudo-trace using node order inferred from path
+    // Also populate resultPreview from _nodes data for UI display
     const trace = (() => {
       try {
+        const { buildOneLevelPreview } = require('./flow-simulate-engine');
         const arr = Array.isArray(path?.edges) ? path.edges : [];
         const order = [];
         const seen = new Set();
-        for (const e of arr){ if (!seen.has(e.sourceId)) { seen.add(e.sourceId); order.push({ nodeId: e.sourceId, kind: undefined, handlesUsed: [String(e.sourceHandle||'')], resultPreview: [] }); } }
-        const last = arr.length ? arr[arr.length-1] : null; if (last && !seen.has(last.targetId)) order.push({ nodeId: last.targetId, kind: undefined, handlesUsed: [], resultPreview: [] });
+        for (const e of arr){
+          if (!seen.has(e.sourceId)) {
+            seen.add(e.sourceId);
+            let resultPreview = [];
+            try {
+              const nodeData = ordered?._nodes?.[e.sourceId];
+              const gNode = graph.nodesById.get(e.sourceId);
+              const tmpl = gNode?.model?.templateObj || {};
+              const tmplWithCtx = tmpl ? { ...tmpl, context: gNode?.model?.context } : null;
+              const result = nodeData?.result || null;
+              const { preview } = buildOneLevelPreview(result, tmplWithCtx);
+              resultPreview = preview || [];
+            } catch {}
+            order.push({ nodeId: e.sourceId, kind: undefined, handlesUsed: [String(e.sourceHandle||'')], resultPreview });
+          }
+        }
+        const last = arr.length ? arr[arr.length-1] : null;
+        if (last && !seen.has(last.targetId)) order.push({ nodeId: last.targetId, kind: undefined, handlesUsed: [], resultPreview: [] });
         return order;
       } catch { return []; }
     })();

@@ -764,7 +764,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -823,7 +825,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Pages"
     },
@@ -891,7 +895,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Publications"
     },
@@ -959,7 +965,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Publications"
     },
@@ -1041,7 +1049,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Publications"
     },
@@ -1099,7 +1109,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Publications"
     },
@@ -1157,7 +1169,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Publications"
     },
@@ -1229,7 +1243,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Commentaires"
     },
@@ -1297,7 +1313,9 @@
             },
             "default": 25
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Commentaires"
     },
@@ -1355,7 +1373,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Commentaires"
     },
@@ -1437,7 +1457,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Photos"
     },
@@ -1505,7 +1527,9 @@
             },
             "default": 25
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Photos"
     },
@@ -1591,7 +1615,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Messenger"
     },
@@ -1659,7 +1685,9 @@
             },
             "default": 25
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Leads"
     },
@@ -1751,7 +1779,9 @@
             ],
             "default": "day"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Insights"
     },
@@ -1860,7 +1890,9 @@
             ],
             "default": "CUSTOM"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Audiences"
     },
@@ -1928,7 +1960,9 @@
             },
             "default": 25
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Audiences"
     }

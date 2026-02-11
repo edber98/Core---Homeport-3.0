@@ -1829,7 +1829,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1947,7 +1949,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "group": "Clients",
@@ -2006,7 +2010,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "group": "Clients",
@@ -2137,7 +2143,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "group": "Clients",
@@ -2196,7 +2204,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "group": "Clients",
@@ -2259,7 +2269,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "group": "Clients",
@@ -2372,7 +2384,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -2431,7 +2445,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -2526,7 +2542,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -2585,7 +2603,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -2648,7 +2668,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "group": "Contacts",
@@ -2784,7 +2806,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2843,7 +2867,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -2956,7 +2982,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -3015,7 +3043,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -3096,7 +3126,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -3196,7 +3228,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "group": "Tickets",
@@ -3255,7 +3289,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "group": "Agents",
@@ -3318,7 +3354,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "group": "Agents",
@@ -3377,7 +3415,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "group": "Agents",
@@ -3436,7 +3476,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "group": "Alertes",
@@ -3508,7 +3550,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "group": "Alertes",
@@ -3567,7 +3611,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "group": "Alertes",
@@ -3611,7 +3657,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "group": "Alertes",
@@ -3670,7 +3718,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "group": "Appareils",
@@ -3742,7 +3792,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "group": "Appareils",
@@ -3819,7 +3871,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "group": "Appareils",
@@ -3928,7 +3982,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "group": "Contrats",
@@ -3987,7 +4043,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "group": "Contrats",
@@ -4050,7 +4108,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "group": "Contrats",
@@ -4109,7 +4169,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "group": "Contrats",
@@ -4190,7 +4252,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "group": "Base de connaissances",
@@ -4249,7 +4313,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "group": "Base de connaissances",
@@ -4312,7 +4378,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "group": "Base de connaissances",
@@ -4371,7 +4439,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Départements",
       "group": "Départements",
@@ -4434,7 +4504,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Départements",
       "group": "Départements",
@@ -4497,7 +4569,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tarifs",
       "group": "Tarifs",
@@ -4557,7 +4631,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "group": "Factures",
@@ -4620,7 +4696,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "group": "Factures",
@@ -4680,7 +4758,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "group": "Champs personnalisés",
@@ -4724,7 +4804,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "group": "Champs personnalisés",
@@ -4811,7 +4893,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "group": "Champs personnalisés",

@@ -522,6 +522,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       if (routeHandle && nextOuts.length > 1) {
         const pick = nextOuts.find(o => String(o.sourceHandle || '') === routeHandle);
         if (pick) { nextOuts = [pick]; try { console.log('[engine] fn:routed', { node: node.id, handle: routeHandle }); } catch {} }
+        else { try { console.log('[engine] fn:route.miss', { node: node.id, routeHandle, handles: nextOuts.map(o => String(o.sourceHandle || '')) }); } catch {} }
       }
     }
     if (nextOuts.length === 1){

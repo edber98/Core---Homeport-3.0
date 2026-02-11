@@ -47,6 +47,9 @@ export type NodeTemplate = {
   allowWithoutCredentials?: boolean;
   // Condition-specific
   output_array_field?: string;
+  // Extract-specific: output schema derived from this context field
+  output_schema_field?: string;
+  outputSchema?: any[];
 };
 
 export type AppProvider = {
@@ -255,6 +258,8 @@ export class CatalogService {
           authorize_skip_error: t.authorize_skip_error,
           allowWithoutCredentials: !!t.allowWithoutCredentials,
           output_array_field: t.output_array_field,
+          output_schema_field: (t as any).output_schema_field,
+          outputSchema: (t as any).outputSchema,
         };
         return tpl;
       })));
@@ -295,6 +300,8 @@ export class CatalogService {
         authorize_skip_error: tpl.authorize_skip_error,
         allowWithoutCredentials: tpl.allowWithoutCredentials,
         output_array_field: tpl.output_array_field,
+        output_schema_field: (tpl as any).output_schema_field,
+        outputSchema: (tpl as any).outputSchema,
       };
       return this.templatesApi.update(tpl.id, body, force).pipe(map(() => tpl));
     }

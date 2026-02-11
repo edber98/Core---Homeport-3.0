@@ -1269,7 +1269,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
       const usedIds = new Set((g.nodes||[]).map(n => String(n.id)));
       const id = generateNodeId(tpl, usedIds);
       const point = { x: 400, y: 240 };
-      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
+      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field, output_schema_field: tpl.output_schema_field, outputSchema: tpl.outputSchema };
       const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: {}, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };
       // Auto-attach first credential if available for this provider
       try {
@@ -1365,7 +1365,7 @@ async function buildTools({ DynamicStructuredTool, getGraph, emitPatch, emitSnap
         console.log('[ai-flow][node] add_node', { nodeId: id, templateKey, providerKey: tpl.providerKey || null, nearNodeId: nearNodeId || null, argsFields: fieldCount });
         try { emitMessage(`[node] add template=${templateKey} argsFields=${fieldCount}`); } catch {}
       } catch {}
-      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field };
+      const templateObj = { id: tpl.key, name: tpl.name, title: tpl.title, type: tpl.type, category: tpl.category, providerKey: tpl.providerKey, appId: tpl.providerKey, args: tpl.args, output: tpl.output, authorize_catch_error: tpl.authorize_catch_error, authorize_skip_error: tpl.authorize_skip_error, allowWithoutCredentials: tpl.allowWithoutCredentials, output_array_field: tpl.output_array_field, output_schema_field: tpl.output_schema_field, outputSchema: tpl.outputSchema };
       // Initialize context with structural skeleton if args exist (no semantic values)
       const initCtx = (() => { try { const a = tpl.args || {}; const has = (Array.isArray(a.fields) && a.fields.length) || (Array.isArray(a.steps) && a.steps.some(s => Array.isArray(s?.fields) && s.fields.length)); return has ? makeEmptyContextFromArgs(a) : {}; } catch { return {}; } })();
       const model = { id, name: name || (tpl.title || tpl.name || tpl.key), template: tpl.key, templateObj, context: initCtx, templateChecksum: argsChecksum(tpl.args||{}), templateFeatureSig: featureChecksum(tpl) };

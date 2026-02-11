@@ -56,6 +56,45 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
       let schema = {};
       if (handle && handle.schema) schema = handle.schema;
       else if (tpl && tpl.output && tpl.output.schema) schema = tpl.output.schema;
+      const schemaEmpty = !schema || (typeof schema === 'object' && !Object.keys(schema).length);
+      // Fallback: outputSchema for multi-output functions (classify)
+      if (schemaEmpty && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+        const resultObj = {};
+        for (const field of tpl.outputSchema) {
+          const k = String(field.key || field.name || ''); if (!k) continue;
+          const ft = String(field.type || 'text').toLowerCase();
+          if (ft === 'number') resultObj[k] = 0;
+          else if (ft === 'boolean') resultObj[k] = true;
+          else if (ft === 'array' || ft === 'text_array' || ft === 'number_array') resultObj[k] = [];
+          else if (ft === 'object') resultObj[k] = {};
+          else resultObj[k] = `sample_${k}`;
+        }
+        try { console.log('[simulate:engine] fn-mock outputSchema', { nodeId: id, keys: Object.keys(resultObj) }); } catch {}
+        return resultObj;
+      }
+      // Fallback: output_schema_field for dynamic schema functions (extract)
+      if (schemaEmpty && tpl.output_schema_field && model?.context) {
+        const dynSchema = model.context[tpl.output_schema_field];
+        const fields = Array.isArray(dynSchema) ? dynSchema
+          : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
+            ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+            : [];
+        if (fields.length) {
+          const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+          const resultObj = { ok: true };
+          for (const f of fields) {
+            const k = String(f.key || ''); if (!k) continue;
+            const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
+            if (ft === 'number') resultObj[k] = 0;
+            else if (ft === 'boolean') resultObj[k] = true;
+            else if (ft === 'text_array' || ft === 'number_array' || ft === 'array') resultObj[k] = [];
+            else if (ft === 'date') resultObj[k] = new Date().toISOString();
+            else resultObj[k] = `sample_${k}`;
+          }
+          try { console.log('[simulate:engine] fn-mock output_schema_field', { nodeId: id, field: tpl.output_schema_field, keys: Object.keys(resultObj) }); } catch {}
+          return resultObj;
+        }
+      }
       const sample = buildSampleFromSchema(schema || {}, { arraysOneItem: true });
       try { console.log('[simulate:engine] fn-mock', { nodeId: id, template: tpl?.id || tpl?.name || model?.template, pickedHandle: handle?.id || null }); } catch {}
       return sample;
@@ -134,7 +173,8 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           if (te) {
             te.finishedAt = ev.finishedAt || new Date().toISOString();
             const evNode = nodeById.get(idStr);
-            const evTmpl = evNode?.data?.model?.templateObj || null;
+            const evModel = evNode?.data?.model || {};
+            const evTmpl = evModel.templateObj ? { ...evModel.templateObj, context: evModel.context } : null;
             const { preview, count } = buildOneLevelPreview(ev.result, evTmpl);
             te.resultPreview = preview;
             te.outputsCount = count;
@@ -303,9 +343,21 @@ function buildOneLevelPreview(result, templateObj){
     };
     const out = [];
     let totalCount = 0;
-    // If result is empty/error but template has outputSchema, use it as fallback
-    const isEmpty = result == null || (typeof result === 'object' && !Array.isArray(result) && (result.error || result.ok === false) && Object.keys(result).length <= 2);
-    const schema = Array.isArray(templateObj?.outputSchema) ? templateObj.outputSchema : null;
+    // If result is empty/error but template has outputSchema or output_schema_field, use as fallback
+    const isEmpty = result == null || (typeof result === 'object' && !Array.isArray(result) && (Object.keys(result).length === 0 || ((result.error || result.ok === false) && Object.keys(result).length <= 2)));
+    let schema = Array.isArray(templateObj?.outputSchema) ? templateObj.outputSchema : null;
+    // Dynamic output schema from a context field (e.g., extraction_schema from schema_builder)
+    if (!schema && templateObj?.output_schema_field && templateObj?.context) {
+      const dynSchema = templateObj.context[templateObj.output_schema_field];
+      if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
+        const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+        schema = dynSchema.fields
+          .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+          .map(f => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));
+      } else if (Array.isArray(dynSchema)) {
+        schema = dynSchema;
+      }
+    }
     if (isEmpty && schema && schema.length) {
       for (const field of schema) {
         const k = String(field.key || field.name || '');
@@ -567,4 +619,4 @@ async function simulateViaEngineSplit(flow, targetNodeId){
   return { targetNodeId: String(targetNodeId), scenarios };
 }
 
-module.exports = { simulateViaEngine, simulateViaEngineSplit };
+module.exports = { simulateViaEngine, simulateViaEngineSplit, buildOneLevelPreview };

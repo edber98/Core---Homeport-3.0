@@ -55,7 +55,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -107,7 +109,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -194,7 +198,9 @@
             },
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "group": "Google Agenda",
@@ -273,7 +279,9 @@
             },
             "default": "{}"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "group": "Google Agenda",
@@ -365,7 +373,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "group": "Google Agenda",
@@ -401,7 +411,9 @@
             },
             "default": "/hooks/gcal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [
@@ -491,7 +503,9 @@
             },
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "group": "Outlook Agenda",
@@ -570,7 +584,9 @@
             },
             "default": "{}"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "group": "Outlook Agenda",
@@ -662,7 +678,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "group": "Outlook Agenda",
@@ -698,7 +716,9 @@
             },
             "default": "/hooks/outlook-cal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [
