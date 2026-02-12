@@ -225,7 +225,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .group-title .group-mini { width: 18px; height: 18px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; margin-right:6px; vertical-align: text-bottom; }
     .palette .group-title .group-mini i { font-size: 12px; line-height: 1; color: #fff; }
     .palette .group-title .group-mini img { width: 12px; height: 12px; object-fit: contain; display:block; }
-    .palette .subgroup-title { font-weight: 600; font-size: 12px; color:#111; margin: 4px 0 0px; letter-spacing: .02em; text-transform: none; padding: 0 20px; }
+    .palette .subgroup-title { font-weight: 600; font-size: 13px; color:#6b7280; margin: 8px 0 0px; letter-spacing: .02em; text-transform: none; padding: 0 20px; }
     .palette .group-overlay .subgroup-title { margin-top: 12px; }
     .palette .group-topbar { justify-content:center; position: relative; }
     .palette .group-topbar .back-btn { position:absolute; left:22px; top:50%; transform: translateY(-50%); }
@@ -268,8 +268,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .search-results { margin-top: 6px; }
     .palette .search-group-title { display:flex; align-items:center; justify-content:center; gap:0; margin: 16px 0 16px; text-align: center; padding: 0 12px; width: 100%; background: transparent; border: 0; cursor: pointer; }
     .palette .search-group-title.searching { border-top: 0.5px solid #f1f5f9; padding-top: 16px; }
-    .palette .search-group-title .group-mini { width: 20px; height: 20px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; }
-    .palette .search-group-title .group-mini { margin-right: 10px; }
+    .palette .search-group-title .group-mini { width: 20px; height: 20px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; margin-right: 10px; }
     .palette .search-group-title .group-mini i { font-size: 12px; line-height: 1; color: #fff; }
     .palette .search-group-title .group-mini img { width: 12px; height: 12px; object-fit: contain; display:block; }
     .palette .search-group-title .group-name { font-weight:700; font-size: 14px; color:#111; }
@@ -279,10 +278,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .empty { color:#94a3b8; font-size: 12px; padding: 6px 2px; display:flex; flex-direction:column; gap:8px; }
     .palette .items { display:flex; flex-direction:column; gap:0; }
     .palette .item { display:flex; align-items:center; gap:10px; padding: 14px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04); position: relative; transition: border-color .3s ease; }
-    .palette .item.flat { padding: 9px 22px; border: none; background: transparent; box-shadow: none; border-radius: 0; }
+    .palette .item.flat { padding: 6px 22px; border: none; background: transparent; box-shadow: none; border-radius: 0; }
     .palette .item.flat:hover:not(.disabled) { background: #f8fafc; border-color: transparent; border-width: 0; }
     .palette .item.flat .meta { flex: 1 1 auto; min-width: 0; }
-    .palette .item.flat .title-row { display:flex; align-items:center; gap:10px; font-weight: 600; font-size: 13px; }
+    .palette .item.flat .title-row { display:flex; align-items:center; gap:6px; font-weight: 600; font-size: 13px; }
     .palette .item.flat .title-pack { display:inline-flex; align-items:center; gap:10px; flex: 1 1 auto; min-width: 0; }
     .palette .item.flat .title-row .label { flex: 0 1 auto; white-space: nowrap; color:#111; font-weight: 400; }
     .palette .item.flat .info { color:#94a3b8; cursor: help; display:inline-flex; align-items:center; justify-content:center; padding-right: 8px; }
