@@ -464,6 +464,24 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -588,6 +606,24 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -691,6 +727,24 @@
               }
             }
           ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
           "col": {
             "xs": 24
           }

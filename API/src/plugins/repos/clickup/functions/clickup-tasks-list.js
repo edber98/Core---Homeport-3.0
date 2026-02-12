@@ -17,6 +17,6 @@ module.exports = {
       assignees: (r.assignees || []).map(a => a.username || a.id).join(", "),
       due_date: r.due_date || "", date_created: r.date_created || ""
     }));
-    return { ok: true, tasks };
+    return { ok: true, tasks, totalCount: tasks.length };
   }
 };

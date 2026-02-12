@@ -9,6 +9,6 @@ module.exports = {
 
     const results = (res.data && res.data.QueryResponse && res.data.QueryResponse.Bill) || [];
     const bills = results.map(r => ({ id: String(r.Id || ""), docNumber: r.DocNumber || "", txnDate: r.TxnDate || "", totalAmt: String(r.TotalAmt != null ? r.TotalAmt : ""), balance: String(r.Balance != null ? r.Balance : "") }));
-    return { ok: true, bills };
+    return { ok: true, bills, totalCount: res.data?.QueryResponse?.totalCount || bills.length };
   }
 };

@@ -5092,7 +5092,7 @@
         "displayDescription": false
       },
       "subtitle": "Contact",
-      "group": "Contact",
+      "group": "Contacts",
       "tags": [
         "création",
         "dolibarr"
@@ -5156,7 +5156,7 @@
         "displayDescription": false
       },
       "subtitle": "Contact",
-      "group": "Contact",
+      "group": "Contacts",
       "tags": [
         "lecture",
         "dolibarr"
@@ -5255,7 +5255,7 @@
         "displayDescription": false
       },
       "subtitle": "Contact",
-      "group": "Contact",
+      "group": "Contacts",
       "tags": [
         "liste",
         "dolibarr"
@@ -5469,7 +5469,7 @@
         "displayDescription": false
       },
       "subtitle": "Produit",
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "création",
         "dolibarr"
@@ -5533,7 +5533,7 @@
         "displayDescription": false
       },
       "subtitle": "Produit",
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "lecture",
         "dolibarr"
@@ -5669,7 +5669,7 @@
         "displayDescription": false
       },
       "subtitle": "Produit",
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "mise-à-jour",
         "dolibarr"
@@ -5733,7 +5733,7 @@
         "displayDescription": false
       },
       "subtitle": "Produit",
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "suppression",
         "dolibarr"
@@ -5859,7 +5859,7 @@
         "displayDescription": false
       },
       "subtitle": "Produit",
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "liste",
         "dolibarr"
@@ -6276,7 +6276,7 @@
         "displayDescription": false
       },
       "subtitle": "Commande",
-      "group": "Commande",
+      "group": "Commandes",
       "tags": [
         "création",
         "dolibarr"
@@ -6340,7 +6340,7 @@
         "displayDescription": false
       },
       "subtitle": "Commande",
-      "group": "Commande",
+      "group": "Commandes",
       "tags": [
         "lecture",
         "dolibarr"
@@ -6439,7 +6439,7 @@
         "displayDescription": false
       },
       "subtitle": "Commande",
-      "group": "Commande",
+      "group": "Commandes",
       "tags": [
         "liste",
         "dolibarr"
@@ -6602,7 +6602,7 @@
         "displayDescription": false
       },
       "subtitle": "Facture",
-      "group": "Facture",
+      "group": "Factures",
       "tags": [
         "création",
         "dolibarr"
@@ -6666,7 +6666,7 @@
         "displayDescription": false
       },
       "subtitle": "Facture",
-      "group": "Facture",
+      "group": "Factures",
       "tags": [
         "lecture",
         "dolibarr"
@@ -6749,7 +6749,7 @@
         "displayDescription": false
       },
       "subtitle": "Facture",
-      "group": "Facture",
+      "group": "Factures",
       "tags": [
         "mise-à-jour",
         "dolibarr"
@@ -6848,7 +6848,7 @@
         "displayDescription": false
       },
       "subtitle": "Facture",
-      "group": "Facture",
+      "group": "Factures",
       "tags": [
         "liste",
         "dolibarr"
@@ -6983,7 +6983,7 @@
         "displayDescription": false
       },
       "subtitle": "Facture",
-      "group": "Facture",
+      "group": "Factures",
       "tags": [
         "création",
         "dolibarr"
@@ -7148,7 +7148,7 @@
         "displayDescription": false
       },
       "subtitle": "Projet",
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "création",
         "dolibarr"
@@ -7212,7 +7212,7 @@
         "displayDescription": false
       },
       "subtitle": "Projet",
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "lecture",
         "dolibarr"
@@ -7311,7 +7311,7 @@
         "displayDescription": false
       },
       "subtitle": "Projet",
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "liste",
         "dolibarr"
@@ -7443,7 +7443,7 @@
         "displayDescription": false
       },
       "subtitle": "Tâche",
-      "group": "Tâche",
+      "group": "Tâches",
       "tags": [
         "création",
         "dolibarr"
@@ -7542,7 +7542,7 @@
         "displayDescription": false
       },
       "subtitle": "Tâche",
-      "group": "Tâche",
+      "group": "Tâches",
       "tags": [
         "liste",
         "dolibarr"
@@ -7606,7 +7606,7 @@
         "displayDescription": false
       },
       "subtitle": "Entrepôt",
-      "group": "Entrepôt",
+      "group": "Entrepôts",
       "tags": [
         "lecture",
         "dolibarr"
@@ -7696,7 +7696,7 @@
         "displayDescription": false
       },
       "subtitle": "Entrepôt",
-      "group": "Entrepôt",
+      "group": "Entrepôts",
       "tags": [
         "liste",
         "dolibarr"
@@ -7834,7 +7834,7 @@
         "displayDescription": false
       },
       "subtitle": "Stock",
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "création",
         "dolibarr"
@@ -7933,7 +7933,7 @@
         "displayDescription": false
       },
       "subtitle": "Stock",
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "liste",
         "dolibarr"
@@ -8077,7 +8077,7 @@
         "displayDescription": false
       },
       "subtitle": "Catégorie",
-      "group": "Catégorie",
+      "group": "Catégories",
       "tags": [
         "création",
         "dolibarr"
@@ -8141,7 +8141,7 @@
         "displayDescription": false
       },
       "subtitle": "Catégorie",
-      "group": "Catégorie",
+      "group": "Catégories",
       "tags": [
         "lecture",
         "dolibarr"
@@ -8249,7 +8249,7 @@
         "displayDescription": false
       },
       "subtitle": "Catégorie",
-      "group": "Catégorie",
+      "group": "Catégories",
       "tags": [
         "liste",
         "dolibarr"
@@ -8313,7 +8313,7 @@
         "displayDescription": false
       },
       "subtitle": "Utilisateur",
-      "group": "Utilisateur",
+      "group": "Utilisateurs",
       "tags": [
         "lecture",
         "dolibarr"
@@ -8412,7 +8412,7 @@
         "displayDescription": false
       },
       "subtitle": "Utilisateur",
-      "group": "Utilisateur",
+      "group": "Utilisateurs",
       "tags": [
         "liste",
         "dolibarr"
@@ -8558,7 +8558,7 @@
         "displayDescription": false
       },
       "subtitle": "Ticket",
-      "group": "Ticket",
+      "group": "Tickets",
       "tags": [
         "création",
         "dolibarr"
@@ -8622,7 +8622,7 @@
         "displayDescription": false
       },
       "subtitle": "Ticket",
-      "group": "Ticket",
+      "group": "Tickets",
       "tags": [
         "lecture",
         "dolibarr"
@@ -8686,7 +8686,7 @@
         "displayDescription": false
       },
       "subtitle": "Ticket",
-      "group": "Ticket",
+      "group": "Tickets",
       "tags": [
         "mise-à-jour",
         "dolibarr"
@@ -8785,7 +8785,7 @@
         "displayDescription": false
       },
       "subtitle": "Ticket",
-      "group": "Ticket",
+      "group": "Tickets",
       "tags": [
         "liste",
         "dolibarr"
@@ -9076,7 +9076,7 @@
         "displayDescription": false
       },
       "subtitle": "Paiement",
-      "group": "Paiement",
+      "group": "Paiements",
       "tags": [
         "création",
         "dolibarr"

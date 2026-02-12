@@ -11,6 +11,6 @@ module.exports = {
 
     const results = (res.data && res.data.spaces) || [];
     const spaces = results.map(r => ({ id: r.id || "", name: r.name || "", private: String(r.private || false) }));
-    return { ok: true, spaces };
+    return { ok: true, spaces, totalCount: spaces.length };
   }
 };

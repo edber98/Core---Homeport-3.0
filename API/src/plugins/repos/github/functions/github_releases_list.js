@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/releases`, { query: { per_page: d.per_page } });
     if (!res.ok) return res;
     const releases = (res.data || []).map(r => ({ id: r.id, tag_name: r.tag_name, name: r.name, draft: r.draft, prerelease: r.prerelease, html_url: r.html_url, created_at: r.created_at, published_at: r.published_at }));
-    return { ok: true, releases };
+    return { ok: true, releases, totalCount: releases.length };
   }
 };

@@ -14,6 +14,6 @@ module.exports = {
       gid: r.gid || "", text: r.text || "", type: r.type || "",
       created_at: r.created_at || ""
     }));
-    return { ok: true, stories };
+    return { ok: true, stories, totalCount: String(stories.length) };
   }
 };

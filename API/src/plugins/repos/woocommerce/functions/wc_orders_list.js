@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : [];
     const orders = items.map(o => ({ id: String(o.id), number: String(o.number || ""), status: o.status || "", total: o.total || "", currency: o.currency || "", billing_email: (o.billing && o.billing.email) || "", payment_method: o.payment_method || "", date_created: o.date_created || "" }));
-    return { ok: true, orders };
+    return { ok: true, orders, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

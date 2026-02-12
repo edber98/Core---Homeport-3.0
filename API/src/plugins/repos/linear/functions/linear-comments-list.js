@@ -20,6 +20,6 @@ module.exports = {
       id: c.id || "", body: c.body || "",
       userName: c.user ? c.user.name : "", createdAt: c.createdAt || ""
     }));
-    return { ok: true, comments };
+    return { ok: true, comments, totalCount: String(comments.length) };
   }
 };

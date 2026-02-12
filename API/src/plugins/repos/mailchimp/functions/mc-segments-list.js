@@ -10,6 +10,6 @@ module.exports = {
 
     const results = (res.data && res.data.segments) || [];
     const segments = results.map(r => ({ id: String(r.id || ""), name: r.name || "", memberCount: String(r.member_count || 0), createdAt: r.created_at || "" }));
-    return { ok: true, segments };
+    return { ok: true, segments, totalCount: res.data?.total_items || 0 };
   }
 };

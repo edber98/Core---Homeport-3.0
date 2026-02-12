@@ -11,6 +11,6 @@ module.exports = {
 
     const results = (res.data && res.data.lists) || [];
     const lists = results.map(r => ({ id: String(r.id || ""), name: r.name || "", totalSubscribers: String(r.totalSubscribers || 0), folderId: String(r.folderId || ""), createdAt: r.createdAt || "" }));
-    return { ok: true, lists };
+    return { ok: true, lists, totalCount: res.data?.count || 0 };
   }
 };

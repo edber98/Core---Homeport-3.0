@@ -14,6 +14,8 @@ module.exports = {
       webUrl: s.webUrl || "",
       description: s.description || ""
     }));
-    return { ok: true, sites };
+    const totalCount = res.data?.["@odata.count"] || sites.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, sites, totalCount, hasMore };
   }
 };

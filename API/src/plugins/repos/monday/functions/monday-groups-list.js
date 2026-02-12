@@ -9,6 +9,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const boards = res.data.boards || [];
     const groups = (boards[0]?.groups || []).map(r => ({ id: r.id, title: r.title, color: r.color }));
-    return { ok: true, groups };
+    return { ok: true, groups, totalCount: String(groups.length) };
   }
 };

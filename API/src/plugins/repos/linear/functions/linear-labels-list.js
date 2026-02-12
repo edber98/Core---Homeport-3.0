@@ -16,6 +16,6 @@ module.exports = {
 
     const nodes = (res.data && res.data.issueLabels && res.data.issueLabels.nodes) || [];
     const labels = nodes.map(l => ({ id: l.id || "", name: l.name || "", color: l.color || "" }));
-    return { ok: true, labels };
+    return { ok: true, labels, totalCount: String(labels.length) };
   }
 };

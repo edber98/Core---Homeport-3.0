@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.fulfillments) || [];
     const fulfillments = items.map(f => ({ id: String(f.id), order_id: String(f.order_id || ""), status: f.status || "", tracking_number: f.tracking_number || "", tracking_url: f.tracking_url || "", created_at: f.created_at || "" }));
-    return { ok: true, fulfillments };
+    return { ok: true, fulfillments, totalCount: fulfillments.length };
   }
 };

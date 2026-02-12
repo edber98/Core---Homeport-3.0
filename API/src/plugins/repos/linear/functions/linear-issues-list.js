@@ -32,6 +32,6 @@ module.exports = {
       state: i.state ? i.state.name : "", priority: String(i.priority || 0),
       assignee: i.assignee ? i.assignee.name : "", createdAt: i.createdAt || ""
     }));
-    return { ok: true, issues };
+    return { ok: true, issues, totalCount: String(issues.length) };
   }
 };

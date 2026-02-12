@@ -12,6 +12,6 @@ module.exports = {
     const dates = utils.parseXmlTag(res.data, "CreationDate");
 
     const buckets = names.map((n, i) => ({ name: n, creationDate: dates[i] || "" }));
-    return { ok: true, buckets };
+    return { ok: true, buckets, totalCount: buckets.length };
   }
 };

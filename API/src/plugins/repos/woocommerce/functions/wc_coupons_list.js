@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : [];
     const coupons = items.map(c => ({ id: String(c.id), code: c.code || "", discount_type: c.discount_type || "", amount: c.amount || "", date_expires: c.date_expires || "" }));
-    return { ok: true, coupons };
+    return { ok: true, coupons, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

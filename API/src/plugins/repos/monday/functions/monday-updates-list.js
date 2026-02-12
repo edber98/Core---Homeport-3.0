@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const items = res.data.items || [];
     const updates = (items[0]?.updates || []).map(r => ({ id: r.id, body: r.body, creator_id: r.creator_id, created_at: r.created_at }));
-    return { ok: true, updates };
+    return { ok: true, updates, totalCount: String(updates.length) };
   }
 };

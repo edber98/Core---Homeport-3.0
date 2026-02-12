@@ -7,6 +7,6 @@ module.exports = {
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const workspaces = (res.data.workspaces || []).map(r => ({ id: r.id, name: r.name, kind: r.kind, description: r.description }));
-    return { ok: true, workspaces };
+    return { ok: true, workspaces, totalCount: String(workspaces.length) };
   }
 };

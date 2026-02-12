@@ -13,6 +13,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.items) || [];
     const forms = items.map(r => ({ id: r.id, title: r.title, type: r.type || "", status: r.settings?.is_public ? "public" : "private", link: r._links?.display || "", createdAt: r.created_at || "" }));
-    return { ok: true, forms };
+    return { ok: true, forms, totalCount: res.data?.total_items || forms.length, totalPages: res.data?.page_count || 0 };
   }
 };

@@ -20,6 +20,7 @@ module.exports = {
       url: s.url || "",
       expiration: s.expiration || ""
     }));
-    return { ok: true, shares };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || shares.length;
+    return { ok: true, totalCount, shares };
   }
 };

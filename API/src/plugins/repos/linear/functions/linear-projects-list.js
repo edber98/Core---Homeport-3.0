@@ -19,6 +19,6 @@ module.exports = {
       id: p.id || "", name: p.name || "", state: p.state || "",
       progress: String(p.progress || 0)
     }));
-    return { ok: true, projects };
+    return { ok: true, projects, totalCount: String(projects.length) };
   }
 };

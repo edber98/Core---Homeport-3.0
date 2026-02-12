@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/branches`, { query: { per_page: d.per_page } });
     if (!res.ok) return res;
     const branches = (res.data || []).map(r => ({ name: r.name, sha: r.commit?.sha, protected: r.protected }));
-    return { ok: true, branches };
+    return { ok: true, branches, totalCount: branches.length };
   }
 };

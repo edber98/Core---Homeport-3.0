@@ -7,6 +7,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const results = (res.data && res.data.results) || [];
     const users = results.map(r => ({ id: r.id, name: r.name, type: r.type, email: r.person?.email || "", avatar_url: r.avatar_url || "" }));
-    return { ok: true, users };
+    return { ok: true, users, hasMore: !!res.data?.has_more, nextCursor: res.data?.next_cursor || "" };
   }
 };

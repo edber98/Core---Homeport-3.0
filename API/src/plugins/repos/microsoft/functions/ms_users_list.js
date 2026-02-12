@@ -20,6 +20,8 @@ module.exports = {
       userPrincipalName: u.userPrincipalName || "",
       jobTitle: u.jobTitle || ""
     }));
-    return { ok: true, users };
+    const totalCount = res.data?.["@odata.count"] || users.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, users, totalCount, hasMore };
   }
 };

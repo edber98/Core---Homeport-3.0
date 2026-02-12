@@ -129,7 +129,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "lecture",
         "GitLab"
@@ -235,7 +235,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "liste",
         "GitLab"
@@ -361,7 +361,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "création",
         "GitLab"
@@ -486,7 +486,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "mise-à-jour",
         "GitLab"
@@ -554,7 +554,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Projet",
+      "group": "Projets",
       "tags": [
         "suppression",
         "GitLab"
@@ -711,7 +711,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Issue",
+      "group": "Issues",
       "tags": [
         "création",
         "GitLab"
@@ -798,7 +798,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Issue",
+      "group": "Issues",
       "tags": [
         "lecture",
         "GitLab"
@@ -966,7 +966,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Issue",
+      "group": "Issues",
       "tags": [
         "mise-à-jour",
         "GitLab"
@@ -1106,7 +1106,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Issue",
+      "group": "Issues",
       "tags": [
         "liste",
         "GitLab"
@@ -1212,7 +1212,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Issue",
+      "group": "Issues",
       "tags": [
         "création",
         "GitLab"
@@ -1379,7 +1379,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Merge Request",
+      "group": "Merge Requests",
       "tags": [
         "création",
         "GitLab"
@@ -1466,7 +1466,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Merge Request",
+      "group": "Merge Requests",
       "tags": [
         "lecture",
         "GitLab"
@@ -1620,7 +1620,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Merge Request",
+      "group": "Merge Requests",
       "tags": [
         "mise-à-jour",
         "GitLab"
@@ -1764,7 +1764,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Merge Request",
+      "group": "Merge Requests",
       "tags": [
         "liste",
         "GitLab"
@@ -1893,7 +1893,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Merge Request",
+      "group": "Merge Requests",
       "tags": [
         "mise-à-jour",
         "GitLab"
@@ -2031,7 +2031,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pipeline",
+      "group": "Pipelines",
       "tags": [
         "liste",
         "GitLab"
@@ -2118,7 +2118,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pipeline",
+      "group": "Pipelines",
       "tags": [
         "lecture",
         "GitLab"
@@ -2205,7 +2205,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pipeline",
+      "group": "Pipelines",
       "tags": [
         "création",
         "GitLab"
@@ -2292,7 +2292,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pipeline",
+      "group": "Pipelines",
       "tags": [
         "mise-à-jour",
         "GitLab"
@@ -2389,7 +2389,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Branche",
+      "group": "Branches",
       "tags": [
         "liste",
         "GitLab"
@@ -2495,7 +2495,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Branche",
+      "group": "Branches",
       "tags": [
         "création",
         "GitLab"
@@ -2582,7 +2582,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Branche",
+      "group": "Branches",
       "tags": [
         "suppression",
         "GitLab"
@@ -2707,7 +2707,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commit",
+      "group": "Commits",
       "tags": [
         "liste",
         "GitLab"
@@ -2794,7 +2794,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commit",
+      "group": "Commits",
       "tags": [
         "lecture",
         "GitLab"
@@ -2877,7 +2877,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Release",
+      "group": "Releases",
       "tags": [
         "liste",
         "GitLab"
@@ -2992,7 +2992,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Release",
+      "group": "Releases",
       "tags": [
         "création",
         "GitLab"
@@ -3055,7 +3055,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateur",
+      "group": "Utilisateurs",
       "tags": [
         "lecture",
         "GitLab"
@@ -3133,7 +3133,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateur",
+      "group": "Utilisateurs",
       "tags": [
         "liste",
         "GitLab"
@@ -3211,7 +3211,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Groupe",
+      "group": "Groupes",
       "tags": [
         "liste",
         "GitLab"
@@ -3279,7 +3279,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Groupe",
+      "group": "Groupes",
       "tags": [
         "lecture",
         "GitLab"

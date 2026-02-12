@@ -52,6 +52,7 @@ module.exports = {
         }
       }
     }
-    return { ok: true, events };
+    const totalCount = events.length;
+    return { ok: true, totalCount, events };
   }
 };

@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/pulls`, { query: { state: d.state, head: d.head, base: d.base, sort: d.sort, per_page: d.per_page } });
     if (!res.ok) return res;
     const prs = (res.data || []).map(r => ({ id: r.id, number: r.number, title: r.title, state: r.state, html_url: r.html_url, head: r.head?.ref, base: r.base?.ref, user: r.user?.login, draft: r.draft, created_at: r.created_at }));
-    return { ok: true, prs };
+    return { ok: true, prs, totalCount: prs.length };
   }
 };

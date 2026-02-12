@@ -15,6 +15,8 @@ module.exports = {
       chatType: c.chatType || "",
       createdDateTime: c.createdDateTime || ""
     }));
-    return { ok: true, chats };
+    const totalCount = res.data?.["@odata.count"] || chats.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, chats, totalCount, hasMore };
   }
 };

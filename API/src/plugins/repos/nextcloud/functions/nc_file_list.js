@@ -10,6 +10,7 @@ module.exports = {
     });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const files = utils.parseWebdavMultistatus(res.data);
-    return { ok: true, files };
+    const totalCount = files.length;
+    return { ok: true, totalCount, files };
   }
 };

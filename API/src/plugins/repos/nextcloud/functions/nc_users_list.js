@@ -21,6 +21,7 @@ module.exports = {
         quota: u.quota ? JSON.stringify(u.quota) : ""
       };
     });
-    return { ok: true, users };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || users.length;
+    return { ok: true, totalCount, users };
   }
 };

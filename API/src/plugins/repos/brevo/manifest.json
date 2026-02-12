@@ -76,6 +76,14 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Contacts",
           "description": "Liste des contacts",
@@ -208,6 +216,14 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Listes",
@@ -350,6 +366,14 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Campagnes",
@@ -510,6 +534,14 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Templates",

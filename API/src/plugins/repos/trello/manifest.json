@@ -199,7 +199,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "création",
         "trello"
@@ -276,7 +276,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "lecture",
         "trello"
@@ -375,7 +375,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -485,7 +485,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "liste",
         "trello"
@@ -562,7 +562,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "liste",
         "trello"
@@ -639,7 +639,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "liste",
         "trello"
@@ -728,7 +728,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Board",
+      "group": "Tableaux",
       "tags": [
         "liste",
         "trello"
@@ -888,7 +888,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -989,7 +989,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "lecture",
         "trello"
@@ -1165,7 +1165,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -1230,7 +1230,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "suppression",
         "trello"
@@ -1334,7 +1334,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -1415,7 +1415,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -1496,7 +1496,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -1577,7 +1577,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "suppression",
         "trello"
@@ -1658,7 +1658,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -1739,7 +1739,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "suppression",
         "trello"
@@ -1804,7 +1804,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "liste",
         "trello"
@@ -1907,7 +1907,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -1972,7 +1972,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "liste",
         "trello"
@@ -2070,7 +2070,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "création",
         "trello"
@@ -2158,7 +2158,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Card",
+      "group": "Cartes",
       "tags": [
         "liste",
         "trello"
@@ -2251,7 +2251,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "création",
         "trello"
@@ -2328,7 +2328,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "lecture",
         "trello"
@@ -2439,7 +2439,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -2516,7 +2516,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "liste",
         "trello"
@@ -2581,7 +2581,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -2662,7 +2662,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "List",
+      "group": "Listes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -2805,7 +2805,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Label",
+      "group": "Étiquettes",
       "tags": [
         "création",
         "trello"
@@ -2882,7 +2882,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Label",
+      "group": "Étiquettes",
       "tags": [
         "lecture",
         "trello"
@@ -3019,7 +3019,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Label",
+      "group": "Étiquettes",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -3084,7 +3084,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Label",
+      "group": "Étiquettes",
       "tags": [
         "suppression",
         "trello"
@@ -3176,7 +3176,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "création",
         "trello"
@@ -3265,7 +3265,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "lecture",
         "trello"
@@ -3330,7 +3330,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "suppression",
         "trello"
@@ -3407,7 +3407,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "liste",
         "trello"
@@ -3511,7 +3511,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "création",
         "trello"
@@ -3592,7 +3592,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "suppression",
         "trello"
@@ -3736,7 +3736,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Checklist",
+      "group": "Checklists",
       "tags": [
         "mise-à-jour",
         "trello"
@@ -3814,7 +3814,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Member",
+      "group": "Membres",
       "tags": [
         "lecture",
         "trello"
@@ -3937,7 +3937,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Member",
+      "group": "Membres",
       "tags": [
         "liste",
         "trello"
@@ -4015,7 +4015,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Member",
+      "group": "Membres",
       "tags": [
         "liste",
         "trello"
@@ -4093,7 +4093,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Member",
+      "group": "Membres",
       "tags": [
         "liste",
         "trello"
@@ -4170,7 +4170,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organization",
+      "group": "Organisations",
       "tags": [
         "lecture",
         "trello"
@@ -4288,7 +4288,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organization",
+      "group": "Organisations",
       "tags": [
         "liste",
         "trello"
@@ -4365,7 +4365,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organization",
+      "group": "Organisations",
       "tags": [
         "liste",
         "trello"
@@ -4488,7 +4488,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Search",
+      "group": "Recherche",
       "tags": [
         "recherche",
         "trello"
@@ -4587,7 +4587,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Search",
+      "group": "Recherche",
       "tags": [
         "recherche",
         "trello"
@@ -4691,7 +4691,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhook",
+      "group": "Webhooks",
       "tags": [
         "création",
         "événement",
@@ -4757,7 +4757,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhook",
+      "group": "Webhooks",
       "tags": [
         "lecture",
         "événement",
@@ -4868,7 +4868,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhook",
+      "group": "Webhooks",
       "tags": [
         "mise-à-jour",
         "événement",
@@ -4934,7 +4934,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhook",
+      "group": "Webhooks",
       "tags": [
         "suppression",
         "événement",
@@ -5012,7 +5012,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Action",
+      "group": "Actions",
       "tags": [
         "lecture",
         "trello"
@@ -5077,7 +5077,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Action",
+      "group": "Actions",
       "tags": [
         "suppression",
         "trello"

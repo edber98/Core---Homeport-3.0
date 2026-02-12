@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.custom_collections) || [];
     const collections = items.map(c => ({ id: String(c.id), title: c.title || "", handle: c.handle || "", published_at: c.published_at || "" }));
-    return { ok: true, collections };
+    return { ok: true, collections, totalCount: collections.length };
   }
 };

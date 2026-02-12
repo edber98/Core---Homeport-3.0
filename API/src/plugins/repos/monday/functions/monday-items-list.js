@@ -11,6 +11,6 @@ module.exports = {
     const boards = res.data.boards || [];
     const rawItems = boards[0]?.items_page?.items || [];
     const items = rawItems.map(r => ({ id: r.id, name: r.name, board_id: r.board?.id, group_id: r.group?.id, state: r.state, column_values: JSON.stringify(r.column_values || []), created_at: r.created_at, updated_at: r.updated_at }));
-    return { ok: true, items };
+    return { ok: true, items, totalCount: String(items.length) };
   }
 };

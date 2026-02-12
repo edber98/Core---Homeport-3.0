@@ -252,7 +252,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhook",
+      "group": "Webhooks",
       "tags": [
         "http"
       ]

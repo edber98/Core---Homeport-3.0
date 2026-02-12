@@ -13,6 +13,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.data) || [];
     const notes = items.map(r => ({ id: r.id, body: r.body || "", author: r.author?.name || "", createdAt: String(r.created_at || "") }));
-    return { ok: true, notes };
+    return { ok: true, notes, totalCount: res.data?.total_count || notes.length, hasMore: !!res.data?.pages?.next };
   }
 };

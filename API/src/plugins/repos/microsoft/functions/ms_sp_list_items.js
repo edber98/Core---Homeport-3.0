@@ -16,6 +16,8 @@ module.exports = {
       id: i.id,
       fields: JSON.stringify(i.fields || {})
     }));
-    return { ok: true, items };
+    const totalCount = res.data?.["@odata.count"] || items.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, items, totalCount, hasMore };
   }
 };

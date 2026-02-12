@@ -14,6 +14,6 @@ module.exports = {
       const attrs = r.attributes || {};
       return { id: String(r.id || ""), email: r.email || "", firstName: attrs.FIRSTNAME || "", lastName: attrs.LASTNAME || "", phone: attrs.SMS || "", createdAt: r.createdAt || "" };
     });
-    return { ok: true, contacts };
+    return { ok: true, contacts, totalCount: res.data?.count || 0 };
   }
 };

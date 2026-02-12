@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.conversations) || [];
     const conversations = items.map(r => ({ id: r.id, title: r.title || "", state: r.state || "", priority: r.priority || "", adminAssigneeId: r.admin_assignee_id?.toString() || "", createdAt: String(r.created_at || "") }));
-    return { ok: true, conversations };
+    return { ok: true, conversations, totalCount: res.data?.total_count || conversations.length, hasMore: !!res.data?.pages?.next };
   }
 };

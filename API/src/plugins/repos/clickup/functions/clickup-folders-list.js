@@ -11,6 +11,6 @@ module.exports = {
 
     const results = (res.data && res.data.folders) || [];
     const folders = results.map(r => ({ id: r.id || "", name: r.name || "", hidden: String(r.hidden || false) }));
-    return { ok: true, folders };
+    return { ok: true, folders, totalCount: folders.length };
   }
 };

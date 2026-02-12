@@ -11,6 +11,7 @@ module.exports = {
       message: n.message || "",
       datetime: n.datetime || ""
     }));
-    return { ok: true, notifications };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || notifications.length;
+    return { ok: true, totalCount, notifications };
   }
 };

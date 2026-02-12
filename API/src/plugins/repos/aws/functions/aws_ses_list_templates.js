@@ -13,6 +13,6 @@ module.exports = {
     const dates = utils.parseXmlTag(res.data, "CreatedTimestamp");
     const templates = names.map((n, i) => ({ name: n, createdTimestamp: dates[i] || "" }));
 
-    return { ok: true, templates };
+    return { ok: true, templates, totalCount: templates.length };
   }
 };

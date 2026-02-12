@@ -17,6 +17,7 @@ module.exports = {
       datetime: a.datetime || a.date || "",
       user: a.user || ""
     }));
-    return { ok: true, activities };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || activities.length;
+    return { ok: true, totalCount, activities };
   }
 };

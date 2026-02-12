@@ -103,6 +103,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Commandes",
           "description": "Liste des commandes",
@@ -272,6 +279,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Produits",
           "description": "Liste des produits",
@@ -433,6 +447,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Clients",
@@ -604,6 +625,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Collections",
           "description": "Liste des collections",
@@ -723,6 +751,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Expéditions",
@@ -859,6 +894,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Variants",

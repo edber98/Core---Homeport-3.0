@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : [];
     const categories = items.map(c => ({ id: String(c.id), name: c.name || "", slug: c.slug || "", count: c.count || 0 }));
-    return { ok: true, categories };
+    return { ok: true, categories, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

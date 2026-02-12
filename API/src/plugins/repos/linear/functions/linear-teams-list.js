@@ -9,6 +9,6 @@ module.exports = {
 
     const nodes = (res.data && res.data.teams && res.data.teams.nodes) || [];
     const teams = nodes.map(t => ({ id: t.id || "", name: t.name || "", key: t.key || "" }));
-    return { ok: true, teams };
+    return { ok: true, teams, totalCount: String(teams.length) };
   }
 };

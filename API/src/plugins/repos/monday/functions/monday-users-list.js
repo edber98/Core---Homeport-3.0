@@ -7,6 +7,6 @@ module.exports = {
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const users = (res.data.users || []).map(r => ({ id: r.id, name: r.name, email: r.email }));
-    return { ok: true, users };
+    return { ok: true, users, totalCount: String(users.length) };
   }
 };

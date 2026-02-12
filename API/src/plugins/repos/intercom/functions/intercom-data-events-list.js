@@ -8,6 +8,7 @@ module.exports = {
     const query = { type: d.type || "user", intercom_user_id: d.userId };
     const res = await utils.intercomRequest(opts, "/events", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
-    return { ok: true, status: "success", message: JSON.stringify((res.data?.events || res.data?.data || [])) };
+    const events = res.data?.events || res.data?.data || [];
+    return { ok: true, status: "success", message: JSON.stringify(events), totalCount: res.data?.total_count || events.length, hasMore: !!res.data?.pages?.next };
   }
 };

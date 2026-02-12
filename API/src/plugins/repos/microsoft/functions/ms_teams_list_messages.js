@@ -16,6 +16,8 @@ module.exports = {
       from: m.from?.user?.displayName || "",
       createdDateTime: m.createdDateTime
     }));
-    return { ok: true, messages };
+    const totalCount = res.data?.["@odata.count"] || messages.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, messages, totalCount, hasMore };
   }
 };

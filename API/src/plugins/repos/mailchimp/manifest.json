@@ -58,6 +58,14 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Audiences",
           "description": "Liste des audiences",
@@ -181,6 +189,14 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Membres",
@@ -324,6 +340,14 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Campagnes",
           "description": "Liste des campagnes",
@@ -448,6 +472,14 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Templates",
           "description": "Liste des templates",
@@ -536,6 +568,14 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Tags",
           "description": "Liste des tags",
@@ -623,6 +663,14 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Segments",

@@ -9,6 +9,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const results = (res.data && res.data.results) || [];
     const comments = results.map(r => ({ id: r.id, discussion_id: r.discussion_id, rich_text: r.rich_text?.map(t => t.plain_text).join("") || "", created_time: r.created_time }));
-    return { ok: true, comments };
+    return { ok: true, comments, hasMore: !!res.data?.has_more, nextCursor: res.data?.next_cursor || "" };
   }
 };

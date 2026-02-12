@@ -487,7 +487,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partenaire",
+      "group": "Partenaires",
       "tags": [
         "création",
         "odoo"
@@ -550,7 +550,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partenaire",
+      "group": "Partenaires",
       "tags": [
         "lecture",
         "odoo"
@@ -658,7 +658,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partenaire",
+      "group": "Partenaires",
       "tags": [
         "mise-à-jour",
         "odoo"
@@ -721,7 +721,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partenaire",
+      "group": "Partenaires",
       "tags": [
         "suppression",
         "odoo"
@@ -799,7 +799,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partenaire",
+      "group": "Partenaires",
       "tags": [
         "liste",
         "odoo"
@@ -917,7 +917,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "création",
         "odoo"
@@ -980,7 +980,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "lecture",
         "odoo"
@@ -1070,7 +1070,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "mise-à-jour",
         "odoo"
@@ -1133,7 +1133,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "suppression",
         "odoo"
@@ -1223,7 +1223,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produit",
+      "group": "Produits",
       "tags": [
         "liste",
         "odoo"
@@ -3256,7 +3256,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "création",
         "odoo"
@@ -3319,7 +3319,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "lecture",
         "odoo"
@@ -3396,7 +3396,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "liste",
         "odoo"
@@ -3503,7 +3503,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stock",
+      "group": "Stocks",
       "tags": [
         "liste",
         "odoo"
@@ -4628,7 +4628,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptabilite",
+      "group": "Comptabilité",
       "tags": [
         "liste",
         "odoo"
@@ -4726,7 +4726,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptabilite",
+      "group": "Comptabilité",
       "tags": [
         "liste",
         "odoo"
@@ -4821,7 +4821,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Generique",
+      "group": "Générique",
       "tags": [
         "lecture",
         "odoo"
@@ -4922,7 +4922,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Generique",
+      "group": "Générique",
       "tags": [
         "recherche",
         "lecture",

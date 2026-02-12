@@ -16,6 +16,8 @@ module.exports = {
       endDateTime: m.endDateTime,
       joinWebUrl: m.joinWebUrl || ""
     }));
-    return { ok: true, meetings };
+    const totalCount = res.data?.["@odata.count"] || meetings.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, meetings, totalCount, hasMore };
   }
 };

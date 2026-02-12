@@ -14,6 +14,6 @@ module.exports = {
       id: String(r.id || ""), comment_text: r.comment_text || "",
       user: r.user ? r.user.username || "" : "", date: r.date || ""
     }));
-    return { ok: true, comments };
+    return { ok: true, comments, totalCount: comments.length };
   }
 };

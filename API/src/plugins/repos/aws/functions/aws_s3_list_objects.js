@@ -23,6 +23,9 @@ module.exports = {
       etag: (etags[i] || "").replace(/"/g, ""), storageClass: classes[i] || ""
     }));
 
-    return { ok: true, objects };
+    const keyCount = parseInt(utils.parseXmlTagSingle(res.data, "KeyCount") || "0", 10) || objects.length;
+    const isTruncated = utils.parseXmlTagSingle(res.data, "IsTruncated") === "true";
+    const nextToken = utils.parseXmlTagSingle(res.data, "NextContinuationToken") || "";
+    return { ok: true, objects, totalCount: keyCount, isTruncated, nextToken };
   }
 };

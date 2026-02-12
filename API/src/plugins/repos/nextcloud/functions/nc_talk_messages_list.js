@@ -18,6 +18,7 @@ module.exports = {
       message: m.message || "",
       timestamp: String(m.timestamp || "")
     }));
-    return { ok: true, messages };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || messages.length;
+    return { ok: true, totalCount, messages };
   }
 };

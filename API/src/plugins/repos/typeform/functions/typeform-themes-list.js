@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.items) || [];
     const themes = items.map(r => ({ id: r.id, name: r.name, font: r.font || "" }));
-    return { ok: true, themes };
+    return { ok: true, themes, totalCount: res.data?.total_items || themes.length, totalPages: res.data?.page_count || 0 };
   }
 };

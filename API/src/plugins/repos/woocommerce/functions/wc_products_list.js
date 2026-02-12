@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : [];
     const products = items.map(p => ({ id: String(p.id), name: p.name || "", type: p.type || "", status: p.status || "", price: p.price || "", sku: p.sku || "", stock_quantity: p.stock_quantity || 0, date_created: p.date_created || "" }));
-    return { ok: true, products };
+    return { ok: true, products, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

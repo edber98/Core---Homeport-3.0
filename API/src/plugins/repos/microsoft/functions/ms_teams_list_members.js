@@ -14,6 +14,8 @@ module.exports = {
       email: m.email || "",
       roles: (m.roles || []).join(", ")
     }));
-    return { ok: true, members };
+    const totalCount = res.data?.["@odata.count"] || members.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, members, totalCount, hasMore };
   }
 };

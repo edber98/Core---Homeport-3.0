@@ -22,6 +22,7 @@ module.exports = {
       color: "",
       url: e.path || ""
     }));
-    return { ok: true, calendars };
+    const totalCount = calendars.length;
+    return { ok: true, totalCount, calendars };
   }
 };

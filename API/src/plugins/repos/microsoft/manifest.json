@@ -70,6 +70,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Messages Teams",
           "description": "Liste",
@@ -168,6 +186,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Canaux Teams",
           "description": "Liste",
@@ -258,6 +294,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Équipes Teams",
           "description": "Liste",
@@ -347,6 +401,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Membres Teams",
@@ -454,6 +526,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Réunions Teams",
           "description": "Liste",
@@ -560,6 +650,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Chats Teams",
           "description": "Liste",
@@ -657,6 +765,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Sites SharePoint",
@@ -756,6 +882,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Listes SharePoint",
           "description": "Liste",
@@ -837,6 +981,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Éléments de liste",
@@ -935,6 +1097,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Fichiers SharePoint",
@@ -1057,6 +1237,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Utilisateurs Microsoft",

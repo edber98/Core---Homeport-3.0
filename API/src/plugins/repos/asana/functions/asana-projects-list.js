@@ -17,6 +17,6 @@ module.exports = {
       gid: r.gid || "", name: r.name || "", color: r.color || "",
       workspace: r.workspace ? r.workspace.name : ""
     }));
-    return { ok: true, projects };
+    return { ok: true, projects, totalCount: String(projects.length) };
   }
 };

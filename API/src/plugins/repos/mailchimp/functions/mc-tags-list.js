@@ -10,6 +10,6 @@ module.exports = {
 
     const results = (res.data && res.data.tags) || [];
     const tags = results.map(r => ({ id: String(r.id || ""), name: r.name || "" }));
-    return { ok: true, tags };
+    return { ok: true, tags, totalCount: res.data?.total_items || 0 };
   }
 };

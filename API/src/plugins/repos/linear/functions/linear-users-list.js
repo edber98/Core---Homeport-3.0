@@ -12,6 +12,6 @@ module.exports = {
       id: u.id || "", name: u.name || "", email: u.email || "",
       active: String(u.active !== undefined ? u.active : true)
     }));
-    return { ok: true, users };
+    return { ok: true, users, totalCount: String(users.length) };
   }
 };

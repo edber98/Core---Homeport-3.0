@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.variants) || [];
     const variants = items.map(v => ({ id: String(v.id), product_id: String(v.product_id || ""), title: v.title || "", price: v.price || "", sku: v.sku || "", inventory_quantity: v.inventory_quantity || 0 }));
-    return { ok: true, variants };
+    return { ok: true, variants, totalCount: variants.length };
   }
 };

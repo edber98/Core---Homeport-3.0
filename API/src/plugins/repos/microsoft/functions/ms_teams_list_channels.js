@@ -14,6 +14,8 @@ module.exports = {
       description: c.description || "",
       membershipType: c.membershipType || ""
     }));
-    return { ok: true, channels };
+    const totalCount = res.data?.["@odata.count"] || channels.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, channels, totalCount, hasMore };
   }
 };

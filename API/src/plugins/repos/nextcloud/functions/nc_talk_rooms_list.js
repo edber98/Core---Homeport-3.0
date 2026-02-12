@@ -13,6 +13,7 @@ module.exports = {
       lastMessage: (r.lastMessage && r.lastMessage.message) || "",
       unreadMessages: String(r.unreadMessages || "0")
     }));
-    return { ok: true, rooms };
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || rooms.length;
+    return { ok: true, totalCount, rooms };
   }
 };

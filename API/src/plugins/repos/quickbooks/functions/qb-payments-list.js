@@ -9,6 +9,6 @@ module.exports = {
 
     const results = (res.data && res.data.QueryResponse && res.data.QueryResponse.Payment) || [];
     const payments = results.map(r => ({ id: String(r.Id || ""), txnDate: r.TxnDate || "", totalAmt: String(r.TotalAmt != null ? r.TotalAmt : ""), customerRef: (r.CustomerRef && String(r.CustomerRef.value)) || "" }));
-    return { ok: true, payments };
+    return { ok: true, payments, totalCount: res.data?.QueryResponse?.totalCount || payments.length };
   }
 };

@@ -11,6 +11,6 @@ module.exports = {
 
     const results = (res.data && res.data.templates) || [];
     const templates = results.map(r => ({ id: String(r.id || ""), name: r.name || "", subject: r.subject || "", createdAt: r.createdAt || "" }));
-    return { ok: true, templates };
+    return { ok: true, templates, totalCount: res.data?.count || 0 };
   }
 };

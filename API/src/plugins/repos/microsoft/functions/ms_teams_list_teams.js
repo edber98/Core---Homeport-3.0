@@ -10,6 +10,8 @@ module.exports = {
       displayName: t.displayName,
       description: t.description || ""
     }));
-    return { ok: true, teams };
+    const totalCount = res.data?.["@odata.count"] || teams.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, teams, totalCount, hasMore };
   }
 };

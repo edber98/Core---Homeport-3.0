@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : [];
     const customers = items.map(c => ({ id: String(c.id), email: c.email || "", first_name: c.first_name || "", last_name: c.last_name || "", username: c.username || "", date_created: c.date_created || "" }));
-    return { ok: true, customers };
+    return { ok: true, customers, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

@@ -13,6 +13,6 @@ module.exports = {
 
     const results = (res.data && res.data.campaigns) || [];
     const campaigns = results.map(r => ({ id: String(r.id || ""), name: r.name || "", subject: r.subject || "", status: r.status || "", type: r.type || "", createdAt: r.createdAt || "" }));
-    return { ok: true, campaigns };
+    return { ok: true, campaigns, totalCount: res.data?.count || 0 };
   }
 };

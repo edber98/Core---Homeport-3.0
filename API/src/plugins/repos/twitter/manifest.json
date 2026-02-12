@@ -103,6 +103,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de résultats.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextToken",
+          "label": "Token suivant",
+          "description": "Token pour la page suivante.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
           "type": "section",
           "title": "Tweets",
           "description": "Liste des tweets",
@@ -280,6 +298,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de résultats.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextToken",
+          "label": "Token suivant",
+          "description": "Token pour la page suivante.",
+          "col": {
+            "xs": 12
+          }
+        },
         {
           "type": "section",
           "title": "Utilisateurs",

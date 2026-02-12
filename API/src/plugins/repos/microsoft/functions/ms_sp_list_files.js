@@ -23,6 +23,8 @@ module.exports = {
       createdDateTime: f.createdDateTime || "",
       lastModifiedDateTime: f.lastModifiedDateTime || ""
     }));
-    return { ok: true, files };
+    const totalCount = res.data?.["@odata.count"] || files.length;
+    const hasMore = !!res.data?.["@odata.nextLink"];
+    return { ok: true, files, totalCount, hasMore };
   }
 };

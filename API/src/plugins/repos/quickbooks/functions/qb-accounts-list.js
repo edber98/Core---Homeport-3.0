@@ -9,6 +9,6 @@ module.exports = {
 
     const results = (res.data && res.data.QueryResponse && res.data.QueryResponse.Account) || [];
     const accounts = results.map(r => ({ id: String(r.Id || ""), name: r.Name || "", accountType: r.AccountType || "", currentBalance: String(r.CurrentBalance != null ? r.CurrentBalance : "") }));
-    return { ok: true, accounts };
+    return { ok: true, accounts, totalCount: res.data?.QueryResponse?.totalCount || accounts.length };
   }
 };

@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/actions/workflows`);
     if (!res.ok) return res;
     const workflows = (res.data?.workflows || []).map(r => ({ id: r.id, name: r.name, path: r.path, state: r.state, html_url: r.html_url, created_at: r.created_at }));
-    return { ok: true, workflows };
+    return { ok: true, workflows, totalCount: workflows.length };
   }
 };

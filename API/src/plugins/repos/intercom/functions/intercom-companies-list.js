@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.data) || [];
     const companies = items.map(r => ({ id: r.id, name: r.name || "", companyId: r.company_id || "", plan: r.plan?.name || "", industry: r.industry || "", createdAt: String(r.created_at || "") }));
-    return { ok: true, companies };
+    return { ok: true, companies, totalCount: res.data?.total_count || companies.length, hasMore: !!res.data?.pages?.next };
   }
 };

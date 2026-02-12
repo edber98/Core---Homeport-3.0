@@ -94,6 +94,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
           "type": "section",
           "title": "Formulaires",
           "description": "Liste des formulaires",
@@ -227,6 +245,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
           "type": "section",
           "title": "Réponses",
           "description": "Liste des réponses",
@@ -342,6 +378,24 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
           "type": "section",
           "title": "Workspaces",
           "description": "Liste des workspaces",
@@ -438,6 +492,24 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
         {
           "type": "section",
           "title": "Thèmes",

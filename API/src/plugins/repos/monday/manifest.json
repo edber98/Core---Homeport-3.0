@@ -180,6 +180,15 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -304,6 +313,15 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -389,6 +407,15 @@
               }
             }
           ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
           "col": {
             "xs": 24
           }
@@ -525,6 +552,15 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -631,6 +667,15 @@
           "col": {
             "xs": 24
           }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -734,6 +779,15 @@
               }
             }
           ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
           "col": {
             "xs": 24
           }

@@ -14,6 +14,6 @@ module.exports = {
 
     const results = (res.data && res.data.data) || [];
     const tags = results.map(r => ({ gid: r.gid || "", name: r.name || "", color: r.color || "" }));
-    return { ok: true, tags };
+    return { ok: true, tags, totalCount: String(tags.length) };
   }
 };

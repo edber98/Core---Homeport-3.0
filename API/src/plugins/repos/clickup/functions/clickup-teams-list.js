@@ -7,6 +7,6 @@ module.exports = {
 
     const results = (res.data && res.data.teams) || [];
     const teams = results.map(r => ({ id: r.id || "", name: r.name || "", color: r.color || "" }));
-    return { ok: true, teams };
+    return { ok: true, teams, totalCount: teams.length };
   }
 };

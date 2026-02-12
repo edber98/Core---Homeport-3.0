@@ -15,6 +15,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.items) || [];
     const responses = items.map(r => ({ responseId: r.response_id || r.token, formId: d.formId, landedAt: r.landed_at || "", submittedAt: r.submitted_at || "", answers: JSON.stringify(r.answers || []) }));
-    return { ok: true, responses };
+    return { ok: true, responses, totalCount: res.data?.total_items || responses.length, totalPages: res.data?.page_count || 0 };
   }
 };

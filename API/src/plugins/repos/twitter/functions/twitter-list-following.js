@@ -23,6 +23,6 @@ module.exports = {
       description: u.description,
       followers: u.public_metrics?.followers_count
     }));
-    return { ok: true, users, resultCount: r.meta?.result_count };
+    return { ok: true, users, totalCount: r.meta?.result_count || users.length, nextToken: r.meta?.next_token || "" };
   }
 };

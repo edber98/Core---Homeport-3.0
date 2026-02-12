@@ -27,6 +27,6 @@ module.exports = {
       id: c.id || "", number: String(c.number || ""), name: c.name || "",
       startsAt: c.startsAt || "", endsAt: c.endsAt || ""
     }));
-    return { ok: true, cycles };
+    return { ok: true, cycles, totalCount: String(cycles.length) };
   }
 };

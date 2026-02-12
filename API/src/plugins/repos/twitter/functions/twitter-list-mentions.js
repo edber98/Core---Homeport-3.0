@@ -24,6 +24,6 @@ module.exports = {
       likes: t.public_metrics?.like_count,
       retweets: t.public_metrics?.retweet_count
     }));
-    return { ok: true, tweets };
+    return { ok: true, tweets, totalCount: r.meta?.result_count || tweets.length, nextToken: r.meta?.next_token || "" };
   }
 };

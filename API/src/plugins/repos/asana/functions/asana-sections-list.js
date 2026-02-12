@@ -11,6 +11,6 @@ module.exports = {
 
     const results = (res.data && res.data.data) || [];
     const sections = results.map(r => ({ gid: r.gid || "", name: r.name || "" }));
-    return { ok: true, sections };
+    return { ok: true, sections, totalCount: String(sections.length) };
   }
 };

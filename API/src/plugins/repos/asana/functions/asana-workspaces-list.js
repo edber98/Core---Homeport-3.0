@@ -7,6 +7,6 @@ module.exports = {
 
     const results = (res.data && res.data.data) || [];
     const workspaces = results.map(r => ({ gid: r.gid || "", name: r.name || "" }));
-    return { ok: true, workspaces };
+    return { ok: true, workspaces, totalCount: String(workspaces.length) };
   }
 };

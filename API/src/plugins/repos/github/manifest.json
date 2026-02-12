@@ -895,6 +895,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Dépôts",
           "description": "Liste des dépôts",
@@ -1010,6 +1017,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Issues",
           "description": "Liste des issues",
@@ -1115,6 +1129,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Pull requests",
@@ -1231,6 +1252,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Branches",
           "description": "Liste des branches",
@@ -1282,6 +1310,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Commits",
@@ -1352,6 +1387,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Releases",
@@ -1450,6 +1492,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Utilisateurs",
           "description": "Liste des utilisateurs",
@@ -1538,6 +1587,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Commentaires",
           "description": "Liste des commentaires",
@@ -1607,6 +1663,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Workflows",
@@ -1686,6 +1749,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Labels",

@@ -12,6 +12,6 @@ module.exports = {
     const ids = utils.parseXmlTag(res.data, "member");
     const identities = ids.map(id => ({ identity: id }));
 
-    return { ok: true, identities };
+    return { ok: true, identities, totalCount: identities.length };
   }
 };

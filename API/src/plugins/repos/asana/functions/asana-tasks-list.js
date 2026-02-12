@@ -19,6 +19,6 @@ module.exports = {
       completed: String(r.completed || false), due_on: r.due_on || "",
       created_at: r.created_at || ""
     }));
-    return { ok: true, tasks };
+    return { ok: true, tasks, totalCount: String(tasks.length) };
   }
 };

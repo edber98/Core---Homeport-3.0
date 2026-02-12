@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.items) || [];
     const workspaces = items.map(r => ({ id: r.id, name: r.name, shared: String(r.shared || false), default: String(r.default || false) }));
-    return { ok: true, workspaces };
+    return { ok: true, workspaces, totalCount: res.data?.total_items || workspaces.length, totalPages: res.data?.page_count || 0 };
   }
 };

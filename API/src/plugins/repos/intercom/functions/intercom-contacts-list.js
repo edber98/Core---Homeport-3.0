@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.data) || [];
     const contacts = items.map(r => ({ id: r.id, type: r.type || r.role, name: r.name || "", email: r.email || "", phone: r.phone || "", role: r.role || "", createdAt: String(r.created_at || "") }));
-    return { ok: true, contacts };
+    return { ok: true, contacts, totalCount: res.data?.total_count || contacts.length, hasMore: !!res.data?.pages?.next };
   }
 };

@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.products) || [];
     const products = items.map(p => ({ id: String(p.id), title: p.title || "", vendor: p.vendor || "", product_type: p.product_type || "", status: p.status || "", handle: p.handle || "", created_at: p.created_at || "" }));
-    return { ok: true, products };
+    return { ok: true, products, totalCount: products.length };
   }
 };
