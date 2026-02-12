@@ -30,61 +30,343 @@
         },
         "fields": [
           {
+            "type": "select",
+            "key": "type_auth",
+            "label": "Type d'authentification",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "itemStyle": {
+              "marginTop": "8px",
+              "marginRight": "4px",
+              "marginBottom": "8px",
+              "marginLeft": "4px",
+              "paddingTop": "4px",
+              "paddingRight": "8px",
+              "paddingBottom": "4px",
+              "paddingLeft": "8px"
+            },
+            "options": [
+              {
+                "label": "Token (clé API)",
+                "value": "token"
+              },
+              {
+                "label": "Login (utilisateur / mot de passe)",
+                "value": "login"
+              }
+            ],
+            "default": "token",
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "secret": false,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "text",
             "key": "url",
             "label": "URL Odoo",
             "description": "URL de l'instance Odoo (ex: https://mycompany.odoo.com)",
             "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "database",
-            "label": "Base de données",
-            "description": "Nom de la base de données.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "username",
-            "label": "Utilisateur",
-            "description": "Email ou login.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "apiKey",
-            "label": "Clé API",
-            "description": "Clé API ou mot de passe.",
-            "col": {
-              "xs": 24
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
             },
             "validators": [
               {
                 "type": "required"
               }
             ],
-            "secret": true
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "secret": false,
+            "default": "",
+            "itemStyle": {
+              "marginTop": "0px",
+              "marginRight": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "paddingTop": "0px",
+              "paddingRight": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px"
+            }
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API (bearer token)",
+            "description": "Clé API générée dans Odoo (Préférences > Sécurité du compte > Nouvelle clé API).",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true,
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "default": "",
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "token"
+              ]
+            },
+            "requiredIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "token"
+              ]
+            },
+            "itemStyle": {
+              "marginTop": "0px",
+              "marginRight": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "paddingTop": "0px",
+              "paddingRight": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px"
+            }
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base de données",
+            "description": "Nom de la base de données Odoo.",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "secret": false,
+            "default": "",
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            },
+            "requiredIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            },
+            "itemStyle": {
+              "marginTop": "0px",
+              "marginRight": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "paddingTop": "0px",
+              "paddingRight": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px"
+            }
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Email ou login Odoo.",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "secret": false,
+            "default": "",
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            },
+            "requiredIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            },
+            "itemStyle": {
+              "marginTop": "0px",
+              "marginRight": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "paddingTop": "0px",
+              "paddingRight": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px"
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe ou clé API utilisée comme mot de passe.",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "itemStyle": {
+              "marginTop": "0px",
+              "marginRight": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "paddingTop": "0px",
+              "paddingRight": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px"
+            },
+            "default": "",
+            "expression": {
+              "allow": true,
+              "showPreviewErrors": true,
+              "defaultMode": "val",
+              "large": false,
+              "showDialogAction": false,
+              "dialogMode": "textarea",
+              "autoHeight": false,
+              "groupBefore": true,
+              "showFormulaAction": true,
+              "suggestionPlacement": "auto",
+              "errorMode": false,
+              "showPreview": true,
+              "inline": true
+            },
+            "secret": true,
+            "validators": [],
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            },
+            "requiredIf": {
+              "==": [
+                {
+                  "var": "type_auth"
+                },
+                "login"
+              ]
+            }
           }
         ],
         "displayTitle": false,
