@@ -142,12 +142,16 @@ export class SchemaBuilderComponent implements ControlValueAccessor, OnInit, Aft
     } catch {}
   }
 
+  private _renderGen = 0;
   private async renderPreview(): Promise<void> {
     this.destroyPreview();
+    const gen = ++this._renderGen;
     if (!this.formSchema || !this.viewReady || !this.previewContainer) return;
     try {
       // Dynamic import to avoid circular dependency (DynamicForm -> Fields -> SchemaBuilder)
       const { DynamicForm } = await import('../../dynamic-form');
+      if (gen !== this._renderGen) return; // stale call, skip
+      this.destroyPreview(); // destroy any component created by a concurrent call
       this.previewRef = this.previewContainer.createComponent(DynamicForm);
       this.previewRef.instance.schema = this.formSchema;
       this.previewRef.instance.hideActions = true;

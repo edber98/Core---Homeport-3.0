@@ -452,26 +452,46 @@ async function layoutGraph(graph, opts = {}){
           const m = new Map(); ids.forEach((id, i) => m.set(String(id), i));
           outIndex.set(String(n.id), m);
         }
-        // 2) Candidats enfants au niveau suivant (level + 1)
-        const parentsAll = new Map(); // child -> parents[] (tous)
-        const childHandleIdx = new Map(); // key "p->c" -> handle index
+        // 2) Candidats enfants au niveau suivant + virtual chain nodes for long edges
+        const parentsAll = new Map();
+        const childHandleIdx = new Map();
+        const virtualIds = new Set();
+        let _vIdx = 0;
         for (const e of (elkGraph.edges || [])){
           const s = String(e.sources?.[0] || '');
           const t = String(e.targets?.[0] || '');
           if (!s || !t) continue;
           const sl = level.get(s) || 0; const tl = level.get(t) || 0;
-          if (tl !== sl + 1) continue;
-          if (!parentsAll.has(t)) parentsAll.set(t, []);
-          parentsAll.get(t).push(s);
           const port = String(e.sourcePort || '');
           const hId = port.startsWith('out:') ? port.slice(4) : '';
           const m = outIndex.get(s) || new Map();
-          const idx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
-          childHandleIdx.set(`${s}=>${t}`, idx);
+          const srcIdx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
+          if (tl === sl + 1) {
+            // Normal edge: direct parent-child at next level
+            if (!parentsAll.has(t)) parentsAll.set(t, []);
+            parentsAll.get(t).push(s);
+            childHandleIdx.set(`${s}=>${t}`, srcIdx);
+          } else if (tl > sl + 1) {
+            // Long edge: create virtual chain s → v1 → v2 → ... → vN → t
+            let prev = s;
+            for (let lv = sl + 1; lv < tl; lv++){
+              const vid = `__v${_vIdx++}`;
+              virtualIds.add(vid);
+              level.set(vid, lv);
+              if (!parentsAll.has(vid)) parentsAll.set(vid, []);
+              parentsAll.get(vid).push(prev);
+              childHandleIdx.set(`${prev}=>${vid}`, lv === sl + 1 ? srcIdx : 0);
+              prev = vid;
+            }
+            // Connect last virtual to the actual target so it becomes a candidate parent
+            if (!parentsAll.has(t)) parentsAll.set(t, []);
+            parentsAll.get(t).push(prev);
+            childHandleIdx.set(`${prev}=>${t}`, 0);
+          }
         }
-        // 3) Construire une arborescence primaire (un seul parent par enfant): parent avec plus petit handle index
-        const primaryParent = new Map(); // child -> parent
-        const childrenByParent = new Map(); // parent -> children[] (au level+1)
+        // 3) Parent primaire min handle index (includes virtual parents from long edges)
+        const primaryParent = new Map();
+        const childrenByParent = new Map();
         for (const [t, ps] of parentsAll.entries()){
           let bestP = null; let bestIdx = Number.POSITIVE_INFINITY;
           for (const p of ps){
@@ -529,8 +549,31 @@ async function layoutGraph(graph, opts = {}){
           width.set(id, sumWint);
         };
         for (const r of roots) dfs(r);
-        // 7) Convertir en positions: x par lanes, y par level
+        // 6.5) Recentrer les nœuds de reconvergence (plusieurs parents dans le graphe)
+        // Traiter par niveau croissant pour que les parents soient déjà repositionnés
+        const reconvNodes = [];
+        for (const [t, ps] of parentsAll.entries()) {
+          if (ps.length <= 1 || virtualIds.has(t)) continue;
+          reconvNodes.push({ id: t, level: level.get(t) || 0 });
+        }
+        reconvNodes.sort((a, b) => a.level - b.level);
+        for (const { id: t } of reconvNodes) {
+          const ps = parentsAll.get(t) || [];
+          let sum = 0;
+          for (const p of ps) sum += (xlane.get(String(p)) || 0);
+          const avg = sum / ps.length;
+          const current = xlane.get(String(t)) || 0;
+          const delta = avg - current;
+          if (Math.abs(delta) < 0.001) continue;
+          const shiftSub = (nd) => {
+            xlane.set(nd, (xlane.get(nd) || 0) + delta);
+            for (const ch of (childrenByParent.get(nd) || [])) shiftSub(ch);
+          };
+          shiftSub(String(t));
+        }
+        // 7) Convertir en positions: x par lanes, y par level (skip virtual nodes)
         for (const id of allIds){
+          if (virtualIds.has(id)) continue;
           const lv = level.get(String(id)) || 0;
           const xL = xlane.has(String(id)) ? xlane.get(String(id)) : 0;
           const x = Math.round(xL * gapX);
@@ -974,24 +1017,44 @@ async function layoutGraph(graph, opts = {}){
           const m = new Map(); ids.forEach((id, i) => m.set(String(id), i));
           outIndex.set(String(n.id), m);
         }
-        // 2) Enfants au niveau suivant
+        // 2) Enfants au niveau suivant + virtual chain nodes for long edges
         const parentsAll = new Map();
         const childHandleIdx = new Map();
+        const virtualIds = new Set();
+        let _vIdx = 0;
         for (const e of (elkGraph.edges || [])){
           const s = String(e.sources?.[0] || '');
           const t = String(e.targets?.[0] || '');
           if (!s || !t) continue;
           const sl = level.get(s) || 0; const tl = level.get(t) || 0;
-          if (tl !== sl + 1) continue;
-          if (!parentsAll.has(t)) parentsAll.set(t, []);
-          parentsAll.get(t).push(s);
           const port = String(e.sourcePort || '');
           const hId = port.startsWith('out:') ? port.slice(4) : '';
           const m = outIndex.get(s) || new Map();
-          const idx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
-          childHandleIdx.set(`${s}=>${t}`, idx);
+          const srcIdx = Number.isFinite(m.get(hId)) ? m.get(hId) : 0;
+          if (tl === sl + 1) {
+            // Normal edge: direct parent-child at next level
+            if (!parentsAll.has(t)) parentsAll.set(t, []);
+            parentsAll.get(t).push(s);
+            childHandleIdx.set(`${s}=>${t}`, srcIdx);
+          } else if (tl > sl + 1) {
+            // Long edge: create virtual chain s → v1 → v2 → ... → vN → t
+            let prev = s;
+            for (let lv = sl + 1; lv < tl; lv++){
+              const vid = `__v${_vIdx++}`;
+              virtualIds.add(vid);
+              level.set(vid, lv);
+              if (!parentsAll.has(vid)) parentsAll.set(vid, []);
+              parentsAll.get(vid).push(prev);
+              childHandleIdx.set(`${prev}=>${vid}`, lv === sl + 1 ? srcIdx : 0);
+              prev = vid;
+            }
+            // Connect last virtual to the actual target so it becomes a candidate parent
+            if (!parentsAll.has(t)) parentsAll.set(t, []);
+            parentsAll.get(t).push(prev);
+            childHandleIdx.set(`${prev}=>${t}`, 0);
+          }
         }
-        // 3) Parent primaire min handle index
+        // 3) Parent primaire min handle index (includes virtual parents from long edges)
         const primaryParent = new Map();
         const childrenByParent = new Map();
         for (const [t, ps] of parentsAll.entries()){
@@ -1048,8 +1111,30 @@ async function layoutGraph(graph, opts = {}){
           height.set(id, sumH);
         };
         for (const r of roots) dfs(r);
-        // 6) Positions
+        // 5.5) Recentrer les nœuds de reconvergence (plusieurs parents dans le graphe)
+        const reconvNodes = [];
+        for (const [t, ps] of parentsAll.entries()) {
+          if (ps.length <= 1 || virtualIds.has(t)) continue;
+          reconvNodes.push({ id: t, level: level.get(t) || 0 });
+        }
+        reconvNodes.sort((a, b) => a.level - b.level);
+        for (const { id: t } of reconvNodes) {
+          const ps = parentsAll.get(t) || [];
+          let sum = 0;
+          for (const p of ps) sum += (ylane.get(String(p)) || 0);
+          const avg = sum / ps.length;
+          const current = ylane.get(String(t)) || 0;
+          const delta = avg - current;
+          if (Math.abs(delta) < 0.001) continue;
+          const shiftSub = (nd) => {
+            ylane.set(nd, (ylane.get(nd) || 0) + delta);
+            for (const ch of (childrenByParent.get(nd) || [])) shiftSub(ch);
+          };
+          shiftSub(String(t));
+        }
+        // 6) Positions (skip virtual nodes)
         for (const id of allIds){
+          if (virtualIds.has(id)) continue;
           const lv = level.get(String(id)) || 0;
           const yL = ylane.has(String(id)) ? ylane.get(String(id)) : 0;
           const y = Math.round(yL * gapY);
