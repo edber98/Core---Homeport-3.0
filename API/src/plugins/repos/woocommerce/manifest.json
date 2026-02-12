@@ -870,7 +870,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -927,7 +929,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1000,7 +1004,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1087,7 +1093,9 @@
             },
             "description": "Articles de la commande au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1165,7 +1173,9 @@
             },
             "description": "Metadata au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1225,7 +1235,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1285,7 +1297,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1367,7 +1381,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1472,7 +1488,9 @@
             },
             "description": "Statut (publish, draft, pending, private)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1577,7 +1595,9 @@
             },
             "description": "Nouveau statut."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1637,7 +1657,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1697,7 +1719,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1770,7 +1794,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1857,7 +1883,9 @@
             },
             "description": "Nom d'utilisateur."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -1944,7 +1972,9 @@
             },
             "description": "Nouveau nom."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2004,7 +2034,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2068,7 +2100,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2146,7 +2180,9 @@
             },
             "description": "Description de la catégorie."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2206,7 +2242,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2270,7 +2308,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2362,7 +2402,9 @@
             },
             "description": "Date d'expiration (YYYY-MM-DD)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2422,7 +2464,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2486,7 +2530,9 @@
             },
             "description": "Date de fin (YYYY-MM-DD)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2550,7 +2596,9 @@
             },
             "description": "Date de fin (YYYY-MM-DD)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2595,7 +2643,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",
@@ -2642,7 +2692,9 @@
             },
             "default": "/woocommerce"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "WooCommerce",

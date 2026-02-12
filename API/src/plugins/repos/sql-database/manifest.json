@@ -348,7 +348,9 @@
             ],
             "default": "false"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -409,7 +411,9 @@
             ],
             "description": "Requête SQL à exécuter."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Requêtes"
     },
@@ -478,7 +482,9 @@
             },
             "description": "Tableau de valeurs pour les paramètres."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Requêtes"
     },
@@ -533,7 +539,9 @@
             },
             "description": "Schéma à lister (PostgreSQL). Défaut: public."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tables"
     },
@@ -601,7 +609,9 @@
             },
             "description": "Schéma (PostgreSQL). Défaut: public."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Tables"
     },
@@ -706,7 +716,9 @@
             },
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Données"
     },
@@ -779,7 +791,9 @@
             ],
             "description": "Objet clé-valeur des données."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Données"
     },
@@ -866,7 +880,9 @@
             ],
             "description": "Condition de filtrage."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Données"
     },
@@ -939,7 +955,9 @@
             ],
             "description": "Condition de filtrage."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Données"
     },
@@ -1007,7 +1025,9 @@
             },
             "description": "Tableau de paramètres."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Procédures"
     }

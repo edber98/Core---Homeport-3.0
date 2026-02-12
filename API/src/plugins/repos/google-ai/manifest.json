@@ -1,0 +1,727 @@
+{
+  "repo": {
+    "name": "google-ai",
+    "type": "local",
+    "label": "Google Gemini"
+  },
+  "variables": {
+    "gemini_text": {
+      "title": "Réponse (texte)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte généré par le modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "llm_text": {
+      "title": "Réponse (texte)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte généré par le modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "google_ai_image": {
+      "title": "Image générée",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de l'image générée.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "textarea",
+          "key": "b64",
+          "label": "Base64",
+          "description": "Image encodée en base64.",
+          "col": { "xs": 24 }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "google_ai",
+      "name": "Google AI",
+      "title": "Google Gemini",
+      "iconClass": "fa-brands fa-google",
+      "iconUrl": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/gemini-color.png",
+      "color": "#4285F4",
+      "tags": [
+        "ai",
+        "llm"
+      ],
+      "categories": [
+        "AI"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Identifiants Google AI",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Google AI",
+            "description": "Clé API Google AI Studio.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "defaultModel",
+            "label": "Modèle par défaut",
+            "description": "Modèle utilisé par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "default": "gemini-2.0-flash"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "google_ai_chat",
+      "name": "googleAiChat",
+      "schemaVersion": 2,
+      "title": "Chat Completion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "google_ai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gemini_text"
+        }
+      ],
+      "description": "Générer une complétion de chat via Google Gemini",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Chat Completion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Gemini à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Gemini 2.0 Flash",
+                "value": "gemini-2.0-flash"
+              },
+              {
+                "label": "Gemini 2.0 Flash Lite",
+                "value": "gemini-2.0-flash-lite"
+              },
+              {
+                "label": "Gemini 1.5 Pro",
+                "value": "gemini-1.5-pro"
+              },
+              {
+                "label": "Gemini 1.5 Flash",
+                "value": "gemini-1.5-flash"
+              }
+            ],
+            "default": "gemini-2.0-flash"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-2).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens de sortie.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Complétions",
+      "group": "Complétions",
+      "tags": [
+        "google",
+        "gemini"
+      ]
+    },
+    {
+      "key": "google_ai_classify",
+      "name": "googleAiClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "google_ai",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via Google Gemini",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Gemini à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Gemini 2.0 Flash",
+                "value": "gemini-2.0-flash"
+              },
+              {
+                "label": "Gemini 2.0 Flash Lite",
+                "value": "gemini-2.0-flash-lite"
+              },
+              {
+                "label": "Gemini 1.5 Pro",
+                "value": "gemini-1.5-pro"
+              },
+              {
+                "label": "Gemini 1.5 Flash",
+                "value": "gemini-1.5-flash"
+              }
+            ],
+            "default": "gemini-2.0-flash"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "google",
+        "gemini",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "google_ai_extract",
+      "name": "googleAiExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "google_ai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via Google Gemini",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Gemini à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Gemini 2.0 Flash",
+                "value": "gemini-2.0-flash"
+              },
+              {
+                "label": "Gemini 2.0 Flash Lite",
+                "value": "gemini-2.0-flash-lite"
+              },
+              {
+                "label": "Gemini 1.5 Pro",
+                "value": "gemini-1.5-pro"
+              },
+              {
+                "label": "Gemini 1.5 Flash",
+                "value": "gemini-1.5-flash"
+              }
+            ],
+            "default": "gemini-2.0-flash"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "google",
+        "gemini",
+        "extraction",
+        "ai"
+      ]
+    },
+    {
+      "key": "google_ai_vision",
+      "name": "googleAiVision",
+      "schemaVersion": 2,
+      "title": "Analyser une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "google_ai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "description": "Analyser une image avec un prompt via Google Gemini",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Analyser une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Gemini à utiliser.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "Gemini 2.0 Flash", "value": "gemini-2.0-flash" },
+              { "label": "Gemini 1.5 Pro", "value": "gemini-1.5-pro" }
+            ],
+            "default": "gemini-2.0-flash"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Question ou instruction sur l'image.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image",
+            "description": "Image à analyser.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }],
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          }
+        ]
+      },
+      "subtitle": "Vision",
+      "group": "Vision",
+      "tags": ["google", "gemini", "vision", "ai"]
+    },
+    {
+      "key": "google_ai_image_generate",
+      "name": "googleAiImageGenerate",
+      "schemaVersion": 2,
+      "title": "Générer une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "google_ai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:google_ai_image"
+        }
+      ],
+      "description": "Générer une image à partir d'un prompt via Google AI Imagen",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Générer une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Imagen à utiliser.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "Imagen 3.0", "value": "imagen-3.0-generate-001" }
+            ],
+            "default": "imagen-3.0-generate-001"
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Description de l'image souhaitée.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "select",
+            "key": "size",
+            "label": "Ratio",
+            "description": "Ratio d'aspect de l'image.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "1:1", "value": "1:1" },
+              { "label": "16:9", "value": "16:9" },
+              { "label": "9:16", "value": "9:16" },
+              { "label": "4:3", "value": "4:3" },
+              { "label": "3:4", "value": "3:4" }
+            ],
+            "default": "1:1"
+          }
+        ]
+      },
+      "subtitle": "Images",
+      "group": "Images",
+      "tags": ["google", "gemini", "images", "ai"]
+    }
+  ]
+}

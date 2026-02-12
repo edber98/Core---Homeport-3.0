@@ -766,6 +766,32 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
             outSchemas = acc;
           } catch {}
         }
+        // For multi-output functions with outputSchema (flat array [{key,type,label}]),
+        // convert to FormSchema-like object for label resolution
+        if ((!outSchemas || !Object.keys(outSchemas).length) && Array.isArray((template as any)?.outputSchema)) {
+          try {
+            const fields = (template as any).outputSchema.map((f: any) => ({
+              key: f.key || f.name || '', type: f.type || 'text', label: f.label || f.key || ''
+            }));
+            outSchemas = { ok: { title: 'Sortie', fields } };
+          } catch {}
+        }
+        // Dynamic output schema from context field (e.g., extract nodes with schema_builder)
+        if ((!outSchemas || !Object.keys(outSchemas).length) && (template as any)?.output_schema_field && model?.context) {
+          try {
+            const dynSchema = model.context[(template as any).output_schema_field];
+            const typeMap: any = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+            let fields: any[] = [];
+            if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
+              fields = dynSchema.fields
+                .filter((f: any) => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+                .map((f: any) => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));
+            } else if (Array.isArray(dynSchema)) {
+              fields = dynSchema.map((f: any) => ({ key: f.key || '', type: f.type || 'text', label: f.label || f.key || '' }));
+            }
+            if (fields.length) outSchemas = { ok: { title: 'Sortie', fields } };
+          } catch {}
+        }
         // Merge args for start_form (payload keys)
         const isStartForm = String(template?.type || '').toLowerCase() === 'start_form';
         const startSchema = isStartForm ? (model?.startFormSchema || template?.args || null) : null;

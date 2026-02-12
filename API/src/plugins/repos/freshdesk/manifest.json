@@ -858,7 +858,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1004,7 +1006,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-square-plus",
@@ -1064,7 +1068,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-eye",
@@ -1196,7 +1202,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-pen-to-square",
@@ -1256,7 +1264,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-trash",
@@ -1320,7 +1330,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-list",
@@ -1380,7 +1392,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1467,7 +1481,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-square-plus",
@@ -1527,7 +1543,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-eye",
@@ -1614,7 +1632,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-pen-to-square",
@@ -1678,7 +1698,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
@@ -1756,7 +1778,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-square-plus",
@@ -1816,7 +1840,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-eye",
@@ -1871,7 +1897,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-list",
@@ -1931,7 +1959,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "icon": "fa-solid fa-user",
@@ -1986,7 +2016,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "icon": "fa-solid fa-users",
@@ -2046,7 +2078,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Groupes",
       "icon": "fa-solid fa-users",
@@ -2091,7 +2125,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Groupes",
       "icon": "fa-solid fa-users",
@@ -2184,7 +2220,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Notes",
       "icon": "fa-solid fa-comment",
@@ -2244,7 +2282,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Notes",
       "icon": "fa-solid fa-comments",
@@ -2327,7 +2367,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Temps",
       "icon": "fa-solid fa-clock",
@@ -2387,7 +2429,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Temps",
       "icon": "fa-solid fa-clock",
@@ -2442,7 +2486,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Satisfaction",
       "icon": "fa-solid fa-star",
@@ -2506,7 +2552,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

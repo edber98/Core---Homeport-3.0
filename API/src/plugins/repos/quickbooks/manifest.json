@@ -1316,7 +1316,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1398,7 +1400,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-square-plus",
@@ -1458,7 +1462,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-eye",
@@ -1554,7 +1560,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-pen-to-square",
@@ -1618,7 +1626,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-list",
@@ -1678,7 +1688,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1765,7 +1777,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-square-plus",
@@ -1825,7 +1839,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-eye",
@@ -1917,7 +1933,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-pen-to-square",
@@ -1991,7 +2009,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-trash",
@@ -2055,7 +2075,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-list",
@@ -2124,7 +2146,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-paper-plane",
@@ -2216,7 +2240,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-square-plus",
@@ -2276,7 +2302,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-eye",
@@ -2340,7 +2368,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-list",
@@ -2445,7 +2475,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-square-plus",
@@ -2505,7 +2537,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-eye",
@@ -2606,7 +2640,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-pen-to-square",
@@ -2670,7 +2706,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-list",
@@ -2757,7 +2795,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "icon": "fa-solid fa-square-plus",
@@ -2817,7 +2857,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "icon": "fa-solid fa-eye",
@@ -2881,7 +2923,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fournisseurs",
       "icon": "fa-solid fa-list",
@@ -2968,7 +3012,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures fournisseurs",
       "icon": "fa-solid fa-square-plus",
@@ -3028,7 +3074,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures fournisseurs",
       "icon": "fa-solid fa-eye",
@@ -3092,7 +3140,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures fournisseurs",
       "icon": "fa-solid fa-list",
@@ -3152,7 +3202,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptes",
       "icon": "fa-solid fa-eye",
@@ -3216,7 +3268,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptes",
       "icon": "fa-solid fa-list",
@@ -3280,7 +3334,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rapports",
       "icon": "fa-solid fa-chart-line",
@@ -3344,7 +3400,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rapports",
       "icon": "fa-solid fa-chart-line",
@@ -3431,7 +3489,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "icon": "fa-solid fa-square-plus",
@@ -3491,7 +3551,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "icon": "fa-solid fa-eye",
@@ -3555,7 +3617,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Devis",
       "icon": "fa-solid fa-list",
@@ -3602,7 +3666,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

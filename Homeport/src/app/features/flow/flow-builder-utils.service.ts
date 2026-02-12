@@ -131,7 +131,10 @@ export class FlowBuilderUtilsService {
   ensureStableConditionIds(oldModel: any | undefined | null, model: any | undefined | null) {
     try {
       const tmpl = model?.templateObj;
-      if (!tmpl || tmpl.type !== 'condition') return model;
+      if (!tmpl) return model;
+      // Handle both condition nodes AND function nodes with output_array_field
+      const hasOutputArray = !!tmpl.output_array_field;
+      if (tmpl.type !== 'condition' && !hasOutputArray) return model;
       const field = tmpl.output_array_field || 'items';
       const newModel = JSON.parse(JSON.stringify(model || {}));
       const newArr: any[] = (newModel?.context && Array.isArray(newModel.context[field])) ? newModel.context[field] : [];
@@ -184,7 +187,8 @@ export class FlowBuilderUtilsService {
       const before = edges.length;
       let outEdges = edges.slice();
 
-      if (type === 'condition') {
+      const hasOutputArray = !!model?.templateObj?.output_array_field;
+      if (type === 'condition' || hasOutputArray) {
         const oldFull = this.getConditionItemsFull(oldModel);
         const full = this.getConditionItemsFull(model);
         const idSet = new Set(full.map(it => it.id));

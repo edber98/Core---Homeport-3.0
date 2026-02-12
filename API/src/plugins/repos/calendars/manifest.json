@@ -55,7 +55,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -107,7 +109,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -194,7 +198,9 @@
             },
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "icon": "fa-solid fa-square-plus",
@@ -274,7 +280,9 @@
             },
             "default": "{}"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "icon": "fa-solid fa-pen-to-square",
@@ -367,7 +375,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Google Agenda",
       "icon": "fa-solid fa-circle-check",
@@ -405,7 +415,9 @@
             },
             "default": "/hooks/gcal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [
@@ -495,7 +507,9 @@
             },
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "icon": "fa-solid fa-square-plus",
@@ -575,7 +589,9 @@
             },
             "default": "{}"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "icon": "fa-solid fa-pen-to-square",
@@ -668,7 +684,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Outlook Agenda",
       "icon": "fa-solid fa-circle-check",
@@ -706,7 +724,9 @@
             },
             "default": "/hooks/outlook-cal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [

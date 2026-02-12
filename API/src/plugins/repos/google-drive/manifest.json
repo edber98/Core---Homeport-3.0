@@ -986,7 +986,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -1106,7 +1108,9 @@
             },
             "description": "Requête de recherche Drive (q parameter)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-list",
@@ -1166,7 +1170,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-eye",
@@ -1261,7 +1267,9 @@
               "hint": "Téléverser un fichier ou utiliser une expression"
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-file-arrow-up",
@@ -1330,7 +1338,9 @@
             },
             "description": "MIME type d'export (pour Google Docs)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-download",
@@ -1390,7 +1400,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-trash",
@@ -1459,7 +1471,9 @@
             },
             "description": "ID du dossier parent."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dossiers",
       "icon": "fa-solid fa-folder-plus",
@@ -1542,7 +1556,9 @@
             },
             "description": "ID de l'ancien dossier parent."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-arrow-right",
@@ -1620,7 +1636,9 @@
             },
             "description": "ID du dossier destination."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-copy",
@@ -1735,7 +1753,9 @@
             },
             "description": "Email du destinataire (si type=user)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Permissions",
       "icon": "fa-solid fa-link",
@@ -1805,7 +1825,9 @@
             "description": "Nombre de résultats.",
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1874,7 +1896,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-square-plus",
@@ -1934,7 +1958,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-eye",
@@ -2003,7 +2029,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-pen-to-square",
@@ -2091,7 +2119,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-pen-to-square",
@@ -2151,7 +2181,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-file-lines",
@@ -2211,7 +2243,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Documents",
       "icon": "fa-solid fa-file-pdf",
@@ -2271,7 +2305,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-square-plus",
@@ -2331,7 +2367,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-eye",
@@ -2405,7 +2443,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-eye",
@@ -2488,7 +2528,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-pen-to-square",
@@ -2571,7 +2613,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-square-plus",
@@ -2645,7 +2689,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-eraser",
@@ -2719,7 +2765,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-square-plus",
@@ -2793,7 +2841,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-trash",
@@ -2881,7 +2931,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-copy",
@@ -2941,7 +2993,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Feuilles de calcul",
       "icon": "fa-solid fa-list",
@@ -2986,7 +3040,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "icon": "fa-solid fa-list",
@@ -3045,7 +3101,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "icon": "fa-solid fa-eye",
@@ -3121,7 +3179,9 @@
             },
             "description": "Ex: America/Montreal"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "icon": "fa-solid fa-square-plus",
@@ -3180,7 +3240,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Calendrier",
       "icon": "fa-solid fa-trash",
@@ -3305,7 +3367,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-list",
@@ -3377,7 +3441,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-eye",
@@ -3539,7 +3605,9 @@
             },
             "description": "Minutes avant l'événement."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-square-plus",
@@ -3660,7 +3728,9 @@
             },
             "description": "Emails séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-pen-to-square",
@@ -3732,7 +3802,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-trash",
@@ -3802,7 +3874,9 @@
             ],
             "description": "Ex: \"Réunion demain 15h\"."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-wand-magic-sparkles",
@@ -3887,7 +3961,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-arrow-right",
@@ -3977,7 +4053,9 @@
             },
             "description": "Format ISO 8601."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Événements",
       "icon": "fa-solid fa-list",

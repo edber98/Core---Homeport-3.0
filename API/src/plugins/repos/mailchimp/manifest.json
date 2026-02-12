@@ -844,7 +844,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -899,7 +901,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Audiences",
       "icon": "fa-solid fa-eye",
@@ -963,7 +967,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Audiences",
       "icon": "fa-solid fa-list",
@@ -1093,7 +1099,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Audiences",
       "icon": "fa-solid fa-square-plus",
@@ -1208,7 +1216,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-user-plus",
@@ -1282,7 +1292,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-eye",
@@ -1397,7 +1409,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-pen-to-square",
@@ -1471,7 +1485,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-trash",
@@ -1549,7 +1565,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-list",
@@ -1609,7 +1627,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Membres",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1729,7 +1749,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-square-plus",
@@ -1789,7 +1811,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-eye",
@@ -1880,7 +1904,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-list",
@@ -1940,7 +1966,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-paper-plane",
@@ -2014,7 +2042,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-calendar-check",
@@ -2074,7 +2104,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-ban",
@@ -2138,7 +2170,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Templates",
       "icon": "fa-solid fa-list",
@@ -2198,7 +2232,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Templates",
       "icon": "fa-solid fa-eye",
@@ -2258,7 +2294,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-tags",
@@ -2346,7 +2384,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-tag",
@@ -2434,7 +2474,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-trash",
@@ -2494,7 +2536,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Segments",
       "icon": "fa-solid fa-list",
@@ -2568,7 +2612,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Segments",
       "icon": "fa-solid fa-eye",
@@ -2632,7 +2678,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rapports",
       "icon": "fa-solid fa-chart-line",
@@ -2692,7 +2740,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Rapports",
       "icon": "fa-solid fa-chart-line",
@@ -2760,7 +2810,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

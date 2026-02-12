@@ -1,8 +1,10 @@
 // dynamic-form-builder.component.ts
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, ViewChild, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostListener, ViewChild, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -60,7 +62,8 @@ import type {
 
 type FieldType =
   | 'text' | 'textarea' | 'number' | 'date'
-  | 'select' | 'radio' | 'checkbox' | 'cron' | 'file' | 'textblock';
+  | 'select' | 'radio' | 'checkbox' | 'cron' | 'file' | 'textblock'
+  | 'schema_builder' | 'tags';
 
 type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Array<{ label: string; run: () => void }>; };
 
@@ -105,7 +108,7 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
   templateUrl: './dynamic-form-builder.component.html',
   styleUrl: './dynamic-form-builder.component.scss',
 })
-export class DynamicFormBuilderComponent implements OnChanges {
+export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy {
   // Schéma en cours d’édition
   schema: FormSchema = { title: 'Nouveau formulaire' };
   // Embedding API
@@ -118,6 +121,7 @@ export class DynamicFormBuilderComponent implements OnChanges {
   private returnTo: string | null = null;
   showRouteSave = false;
   private bootstrappedFromLocation = false;
+  private routeParamSub: Subscription | null = null;
   // Preset defaults for templates (vertical layout, cols=24, expressions allowed)
   private applyTplPreset = false;
   // Persisted form context when opened from /forms
@@ -2454,6 +2458,23 @@ export class DynamicFormBuilderComponent implements OnChanges {
           this.showRouteSave = !!this.returnTo;
         } catch {}
       }
+      // Ultimate fallback: recover session key from schema_builder.active_session if URL params were lost
+      if (!this.sessionKey) {
+        try {
+          const sbActive = localStorage.getItem('schema_builder.active_session');
+          if (sbActive && localStorage.getItem('formbuilder.session.' + sbActive)) {
+            this.sessionKey = sbActive;
+            try { console.log('[form-builder] recovered sessionKey from schema_builder.active_session', sbActive); } catch {}
+          }
+        } catch {}
+      }
+      // Fallback: read returnTo from localStorage (stored by schema_builder for robustness)
+      if (!this.returnTo && this.sessionKey) {
+        try {
+          const stored = localStorage.getItem('formbuilder.return.' + this.sessionKey);
+          if (stored) { this.returnTo = stored; this.showRouteSave = true; }
+        } catch {}
+      }
       // Load schema and locks from either router or location
       const schemaParam = qp.get('schema') || (search ? new URLSearchParams(search).get('schema') : null);
       const tplPresetParam = qp.get('tplPreset') || (search ? new URLSearchParams(search).get('tplPreset') : null);
@@ -2479,11 +2500,22 @@ export class DynamicFormBuilderComponent implements OnChanges {
       if (schemaParam) {
         try {
           const parsed = JSON.parse(schemaParam);
-          this.model = parsed; this.schema = parsed; this.select(this.schema);
+          this.model = parsed; this.schema = JSON.parse(JSON.stringify(parsed)); this.select(this.schema);
           if (this.applyTplPreset) this.applyTemplateDefaults();
-          // Consider initial schema as saved baseline to avoid false unsaved prompt
           this.updateLastChecksum();
         } catch { }
+      }
+      // Fallback: if session key present but no schema param, load from localStorage
+      if (!schemaParam && !formId && this.sessionKey) {
+        try {
+          const stored = localStorage.getItem('formbuilder.session.' + this.sessionKey);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            this.model = parsed; this.schema = JSON.parse(JSON.stringify(parsed)); this.select(this.schema);
+            if (this.applyTplPreset) this.applyTemplateDefaults();
+            this.updateLastChecksum();
+          }
+        } catch {}
       }
       const lockTitle = qp.get('lockTitle') || (search ? new URLSearchParams(search).get('lockTitle') : null);
       const locksParam = qp.get('locks') || (search ? new URLSearchParams(search).get('locks') : null);
@@ -2499,10 +2531,66 @@ export class DynamicFormBuilderComponent implements OnChanges {
         ['session','return','schema','locks','lockTitle','tplPreset','form','id'].forEach(k => { const v = sp.get(k); if (v != null) q[k] = v; });
         try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
       }
+      // If URL has no session but we recovered from localStorage, push session into URL for layout-main detection
+      if (!this.bootstrappedFromLocation && this.sessionKey && (this.router.url || '').indexOf('session=') < 0) {
+        this.bootstrappedFromLocation = true;
+        const q: any = { session: this.sessionKey };
+        if (this.returnTo) q['return'] = this.returnTo;
+        if (tplPresetParam) q['tplPreset'] = tplPresetParam;
+        try { this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
+      }
       // Initial emit/persist
       if (!schemaParam && this.applyTplPreset) this.applyTemplateDefaults();
       this.refresh();
     } catch {}
+    // Subscribe to queryParams changes (re-init when navigating to same route with new params)
+    this.routeParamSub = this.route.queryParamMap.pipe(skip(1)).subscribe(qp => {
+      try {
+        const newSession = qp.get('session');
+        const newReturn = qp.get('return');
+        const newSchemaParam = qp.get('schema');
+        // Only re-init if session changed (new schema_builder open)
+        if (!newSession || newSession === this.sessionKey) return;
+        this.sessionKey = newSession;
+        this.returnTo = newReturn;
+        this.showRouteSave = !!newReturn;
+        this.currentFormId = null;
+        const tplPresetParam = qp.get('tplPreset');
+        this.applyTplPreset = !!tplPresetParam && (tplPresetParam === '1' || tplPresetParam === 'true' || tplPresetParam === 'yes');
+        if (newSchemaParam) {
+          try {
+            const parsed = JSON.parse(newSchemaParam);
+            this.model = parsed; this.schema = JSON.parse(JSON.stringify(parsed)); this.select(this.schema);
+            if (this.applyTplPreset) this.applyTemplateDefaults();
+            this.updateLastChecksum();
+          } catch {}
+        }
+        // Fallback: load from localStorage if no schema param
+        if (!newSchemaParam && newSession) {
+          try {
+            const stored = localStorage.getItem('formbuilder.session.' + newSession);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              this.model = parsed; this.schema = JSON.parse(JSON.stringify(parsed)); this.select(this.schema);
+              if (this.applyTplPreset) this.applyTemplateDefaults();
+              this.updateLastChecksum();
+            }
+          } catch {}
+        }
+        const lockTitle = qp.get('lockTitle');
+        let locks: any = {};
+        const locksParam = qp.get('locks');
+        if (locksParam) { try { locks = JSON.parse(locksParam); } catch { locks = {}; } }
+        if (lockTitle) locks.title = { disabled: true, value: lockTitle };
+        this.inspectorLocks = locks;
+        this.leavingAfterSave = false;
+        this.refresh();
+      } catch {}
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routeParamSub?.unsubscribe();
   }
 
   private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }

@@ -97,7 +97,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
             visitFields(f.fields || []);
           } else if (t && t !== 'textblock') {
             const cur = f.expression && typeof f.expression === 'object' ? f.expression : {};
-            const mode = t === 'file' ? 'val' : 'expr';
+            const mode = (t === 'schema_builder' || t === 'tags') ? 'val' : 'expr';
             f.expression = { ...cur, allow: true, defaultMode: mode };
           }
         }
@@ -179,13 +179,13 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
       v2 = { ...toV2Handles(t), linkedHandles: undefined, schemaVersion: 2 };
     }
     const checksumArgs = checksumJSON(argsWithExpr || {});
-    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, nodeKind: v2.nodeKind, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles });
+    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, nodeKind: v2.nodeKind, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, output_array_field: t.output_array_field, output_schema_field: t.output_schema_field, outputSchema: t.outputSchema });
     const existing = await NodeTemplate.findOne({ key });
     // Normalize name/title/description
     const normName = toCamelCase(t.name || key);
     const normTitle = t.title || humanizeTitle(normName);
     const normDesc = t.description || `${normTitle} node`;
-    const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, checksumArgs, checksumFeature };
+    const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || undefined, output_schema_field: t.output_schema_field || undefined, outputSchema: t.outputSchema || undefined, checksumArgs, checksumFeature };
     if (!existing){
       if (!dryRun){ const doc = { ...base }; if (repo && repo.id) { doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; } await NodeTemplate.create(doc); record('template', key, 'created', null, checksumFeature + '|' + checksumArgs); }
       summary.nodeTemplates.created++;

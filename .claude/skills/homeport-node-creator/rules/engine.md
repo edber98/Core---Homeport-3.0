@@ -72,7 +72,10 @@ Start → Function A → Condition → [Branche 1] → Function B
     - `skip_error` → return (ignore)
     - `catch_error` → route vers handle `err`/`error`
     - Sinon → throw Error
-  - Si succes: route vers handles != `err`/`error`
+  - Si succes:
+    - Si `result._output` est defini → route vers le handle `sourceHandle === _output` uniquement
+    - Si `forceBranches[nodeId]` est defini (simulation) → route vers ce handle uniquement
+    - Sinon → route vers tous les handles != `err`/`error` (comportement standard)
 
 ### condition
 - Evalue chaque branche (`items`) via `evaluateCondition()`

@@ -1,0 +1,35 @@
+.schema-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.schema-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.schema-count {
+  font-size: 12px;
+  color: #666;
+  flex: 1;
+}
+
+.schema-form-preview {
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 12px;
+  background: #fafafa;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.schema-empty {
+  padding: 8px 0;
+}
+
+.schema-add-btn {
+  width: 100%;
+}

@@ -1221,7 +1221,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1319,7 +1321,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "icon": "fa-solid fa-paper-plane",
@@ -1417,7 +1421,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "icon": "fa-solid fa-reply",
@@ -1489,7 +1495,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "icon": "fa-solid fa-paper-plane",
@@ -1570,7 +1578,9 @@
             },
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "icon": "fa-solid fa-list",
@@ -1655,7 +1665,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Messages",
       "icon": "fa-solid fa-eye",
@@ -1757,7 +1769,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "icon": "fa-solid fa-square-plus",
@@ -1816,7 +1830,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
@@ -1888,7 +1904,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "icon": "fa-solid fa-eye",
@@ -1960,7 +1978,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Canaux",
       "icon": "fa-solid fa-trash",
@@ -2005,7 +2025,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "icon": "fa-solid fa-users",
@@ -2064,7 +2086,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "icon": "fa-solid fa-eye",
@@ -2123,7 +2147,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "icon": "fa-solid fa-users",
@@ -2213,7 +2239,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Équipes",
       "icon": "fa-solid fa-user-plus",
@@ -2309,7 +2337,9 @@
             },
             "description": "Adresses email séparées par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "icon": "fa-solid fa-calendar-check",
@@ -2368,7 +2398,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "icon": "fa-solid fa-eye",
@@ -2422,7 +2454,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "icon": "fa-solid fa-list",
@@ -2503,7 +2537,9 @@
             },
             "description": "User IDs séparés par des virgules."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "icon": "fa-solid fa-comments",
@@ -2557,7 +2593,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "icon": "fa-solid fa-comments",
@@ -2616,7 +2654,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Chats",
       "icon": "fa-solid fa-eye",
@@ -2675,7 +2715,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "icon": "fa-solid fa-eye",
@@ -2734,7 +2776,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "icon": "fa-solid fa-magnifying-glass",
@@ -2793,7 +2837,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Sites",
       "icon": "fa-solid fa-list",
@@ -2883,7 +2929,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-square-plus",
@@ -2955,7 +3003,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-eye",
@@ -3035,7 +3085,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-list",
@@ -3116,7 +3168,9 @@
             },
             "description": "Champs de l'élément au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-square-plus",
@@ -3210,7 +3264,9 @@
             },
             "description": "Champs à mettre à jour au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-pen-to-square",
@@ -3278,7 +3334,9 @@
             },
             "description": "ID du dossier (vide = racine)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-list",
@@ -3350,7 +3408,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-eye",
@@ -3432,7 +3492,9 @@
             },
             "description": "Contenu du fichier (texte ou base64)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-file-arrow-up",
@@ -3504,7 +3566,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-download",
@@ -3576,7 +3640,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Fichiers",
       "icon": "fa-solid fa-trash",
@@ -3639,7 +3705,9 @@
             },
             "description": "Filtre OData (ex: startsWith(displayName,'A'))."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-users",
@@ -3698,7 +3766,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-user",
@@ -3743,7 +3813,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-user",

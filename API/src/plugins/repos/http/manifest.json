@@ -240,7 +240,9 @@
             },
             "default": ""
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhook",
       "tags": [
@@ -356,7 +358,9 @@
               ]
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Call API",
       "tags": [

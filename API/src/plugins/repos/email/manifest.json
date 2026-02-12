@@ -378,7 +378,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -429,7 +431,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -479,7 +483,9 @@
             },
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -604,7 +610,9 @@
             },
             "default": "[]"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Envoi",
       "icon": "fa-solid fa-paper-plane",
@@ -680,7 +688,9 @@
             },
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Lecture",
       "icon": "fa-solid fa-envelope-open-text",
@@ -727,7 +737,9 @@
             },
             "default": "INBOX"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Déclencheur",
       "tags": [
@@ -770,7 +782,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "icon": "fa-solid fa-tags",
@@ -844,7 +858,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "icon": "fa-solid fa-tag",
@@ -918,7 +934,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Libellés",
       "icon": "fa-solid fa-trash",

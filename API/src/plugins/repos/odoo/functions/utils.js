@@ -8,7 +8,12 @@ let sessionId = null;
 async function odooAuthenticate(credentials) {
   const { url, database, username, apiKey } = credentials;
   if (!url || !database || !username || !apiKey) throw new Error("Missing Odoo credentials.");
-
+console.log("body :",JSON.stringify({
+      jsonrpc: "2.0",
+      method: "call",
+      id: 1,
+      params: { db: database, login: username, password: apiKey }
+    }))
   const baseUrl = url.replace(/\/+$/, "");
   const res = await fetch(`${baseUrl}/web/session/authenticate`, {
     method: "POST",
@@ -20,15 +25,17 @@ async function odooAuthenticate(credentials) {
       params: { db: database, login: username, password: apiKey }
     })
   });
+  
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  console.log("odoores", data, res.headers.get("set-cookie") || "non cookie")
+  if (data.error) throw new Error(data.error.data.message || data.error.message || JSON.stringify(data.error));
   if (!data.result || !data.result.uid) throw new Error("Authentication failed.");
 
   // Extract session cookie
   const cookies = res.headers.get("set-cookie") || "";
   const match = cookies.match(/session_id=([^;]+)/);
   sessionId = match ? match[1] : null;
-
+  console.log("odooCookie", cookies)
   return { uid: data.result.uid, sessionId };
 }
 

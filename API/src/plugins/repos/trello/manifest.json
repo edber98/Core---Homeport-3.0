@@ -58,7 +58,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -189,7 +191,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -264,7 +268,9 @@
             "description": "Champs à retourner (séparés par virgule).",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -361,7 +367,9 @@
             "description": "Archiver le tableau.",
             "default": false
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -465,7 +473,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -540,7 +550,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -615,7 +627,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -702,7 +716,9 @@
             "description": "Nombre maximum de labels.",
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Board",
       "tags": [
@@ -860,7 +876,9 @@
             },
             "description": "URL à attacher a la carte."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -959,7 +977,9 @@
             "description": "Inclure les membres.",
             "default": false
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1133,7 +1153,9 @@
             },
             "description": "IDs des labels (séparés par virgule)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1196,7 +1218,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1298,7 +1322,9 @@
             "description": "Position dans la liste: top, bottom, ou nombre.",
             "default": "bottom"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1377,7 +1403,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1456,7 +1484,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1535,7 +1565,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1614,7 +1646,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1693,7 +1727,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1756,7 +1792,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1857,7 +1895,9 @@
             },
             "description": "Type MIME du fichier."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -1920,7 +1960,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -2016,7 +2058,9 @@
             },
             "description": "Position: top, bottom, ou nombre."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -2102,7 +2146,9 @@
             "description": "Nombre maximum d'actions.",
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Card",
       "tags": [
@@ -2193,7 +2239,9 @@
             "description": "Position: top, bottom, ou nombre.",
             "default": "bottom"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2268,7 +2316,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2377,7 +2427,9 @@
             "description": "S'abonner à la liste.",
             "default": false
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2452,7 +2504,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2515,7 +2569,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2594,7 +2650,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "List",
       "tags": [
@@ -2731,7 +2789,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Label",
       "tags": [
@@ -2806,7 +2866,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Label",
       "tags": [
@@ -2937,7 +2999,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Label",
       "tags": [
@@ -3000,7 +3064,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Label",
       "tags": [
@@ -3090,7 +3156,9 @@
             },
             "description": "Position: top, bottom, ou nombre."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3177,7 +3245,9 @@
             "description": "Inclure les items de la checklist.",
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3240,7 +3310,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3315,7 +3387,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3417,7 +3491,9 @@
             "description": "Item coché par défaut.",
             "default": false
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3496,7 +3572,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3634,7 +3712,9 @@
             },
             "description": "Nouvelle position."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Checklist",
       "tags": [
@@ -3710,7 +3790,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Member",
       "tags": [
@@ -3827,7 +3909,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Member",
       "tags": [
@@ -3903,7 +3987,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Member",
       "tags": [
@@ -3979,7 +4065,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Member",
       "tags": [
@@ -4054,7 +4142,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Organization",
       "tags": [
@@ -4166,7 +4256,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Organization",
       "tags": [
@@ -4241,7 +4333,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Organization",
       "tags": [
@@ -4362,7 +4456,9 @@
             "description": "Nombre max. de boards.",
             "default": 10
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Search",
       "tags": [
@@ -4459,7 +4555,9 @@
             },
             "description": "Filtrer par organisation."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Search",
       "tags": [
@@ -4561,7 +4659,9 @@
             "description": "Webhook actif.",
             "default": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhook",
       "tags": [
@@ -4625,7 +4725,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhook",
       "tags": [
@@ -4734,7 +4836,9 @@
             "description": "Webhook actif.",
             "default": false
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhook",
       "tags": [
@@ -4798,7 +4902,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Webhook",
       "tags": [
@@ -4874,7 +4980,9 @@
             "description": "Champs à retourner.",
             "default": "all"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Action",
       "tags": [
@@ -4937,7 +5045,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Action",
       "tags": [

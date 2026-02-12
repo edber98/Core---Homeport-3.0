@@ -56,6 +56,45 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
       let schema = {};
       if (handle && handle.schema) schema = handle.schema;
       else if (tpl && tpl.output && tpl.output.schema) schema = tpl.output.schema;
+      const schemaEmpty = !schema || (typeof schema === 'object' && !Object.keys(schema).length);
+      // Fallback: outputSchema for multi-output functions (classify)
+      if (schemaEmpty && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+        const resultObj = {};
+        for (const field of tpl.outputSchema) {
+          const k = String(field.key || field.name || ''); if (!k) continue;
+          const ft = String(field.type || 'text').toLowerCase();
+          if (ft === 'number') resultObj[k] = 0;
+          else if (ft === 'boolean') resultObj[k] = true;
+          else if (ft === 'array' || ft === 'text_array' || ft === 'number_array') resultObj[k] = [];
+          else if (ft === 'object') resultObj[k] = {};
+          else resultObj[k] = `sample_${k}`;
+        }
+        try { console.log('[simulate:engine] fn-mock outputSchema', { nodeId: id, keys: Object.keys(resultObj) }); } catch {}
+        return resultObj;
+      }
+      // Fallback: output_schema_field for dynamic schema functions (extract)
+      if (schemaEmpty && tpl.output_schema_field && model?.context) {
+        const dynSchema = model.context[tpl.output_schema_field];
+        const fields = Array.isArray(dynSchema) ? dynSchema
+          : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
+            ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+            : [];
+        if (fields.length) {
+          const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+          const resultObj = { ok: true };
+          for (const f of fields) {
+            const k = String(f.key || ''); if (!k) continue;
+            const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
+            if (ft === 'number') resultObj[k] = 0;
+            else if (ft === 'boolean') resultObj[k] = true;
+            else if (ft === 'text_array' || ft === 'number_array' || ft === 'array') resultObj[k] = [];
+            else if (ft === 'date') resultObj[k] = new Date().toISOString();
+            else resultObj[k] = `sample_${k}`;
+          }
+          try { console.log('[simulate:engine] fn-mock output_schema_field', { nodeId: id, field: tpl.output_schema_field, keys: Object.keys(resultObj) }); } catch {}
+          return resultObj;
+        }
+      }
       const sample = buildSampleFromSchema(schema || {}, { arraysOneItem: true });
       try { console.log('[simulate:engine] fn-mock', { nodeId: id, template: tpl?.id || tpl?.name || model?.template, pickedHandle: handle?.id || null }); } catch {}
       return sample;
@@ -73,14 +112,16 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
   // Build edge index for logging
   const edgeBySrcTgt = new Map(edges.map(e => [`${e.source}|${e.target}`, e]));
 
-  // Force branches toward the target for condition nodes
+  // Force branches toward the target for condition nodes AND functions with dynamic outputs (output_array_field)
   // Build default forced choices to ensure a deterministic path; allow overrides via opts.forceBranches
   const forceBranches = {};
   for (const nid of ancestors){
     try {
       const n = nodeById.get(String(nid));
-      const kind = String(n?.data?.model?.templateObj?.type || n?.data?.model?.nodeKind || '').toLowerCase();
-      if (kind !== 'condition') continue;
+      const tmpl = n?.data?.model?.templateObj || {};
+      const kind = String(tmpl.type || n?.data?.model?.nodeKind || '').toLowerCase();
+      const hasDynamicOutputs = !!tmpl.output_array_field;
+      if (kind !== 'condition' && !hasDynamicOutputs) continue;
       const outs = outEdges.get(String(nid)) || [];
       const viable = outs.filter(e => ancestors.has(String(e.target)) || String(e.target) === String(targetNodeId));
       if (viable.length){ const h = String(viable[0].sourceHandle || ''); forceBranches[String(nid)] = h; }
@@ -131,7 +172,10 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
           const te = traceMap.get(idStr);
           if (te) {
             te.finishedAt = ev.finishedAt || new Date().toISOString();
-            const { preview, count } = buildOneLevelPreview(ev.result);
+            const evNode = nodeById.get(idStr);
+            const evModel = evNode?.data?.model || {};
+            const evTmpl = evModel.templateObj ? { ...evModel.templateObj, context: evModel.context } : null;
+            const { preview, count } = buildOneLevelPreview(ev.result, evTmpl);
             te.resultPreview = preview;
             te.outputsCount = count;
           }
@@ -141,18 +185,20 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         // Capturer le msgIn fourni par le moteur
         let msgIn = ev.msgIn || null;
         try {
-          // Si la dernière arête vers la cible provient d'une condition, refléter le 'chosen' dans payload (sans écraser)
+          // Si la dernière arête vers la cible provient d'une condition ou d'une fonction multi-output, refléter le 'chosen' dans payload
           const incoming = takenEdges.filter(e => String(e.targetId) === String(targetNodeId));
           const last = incoming[incoming.length - 1] || null;
           if (last) {
             const src = nodeById.get(String(last.sourceId));
-            const kind = String(src?.data?.model?.templateObj?.type || src?.data?.model?.nodeKind || '').toLowerCase();
-            if (kind === 'condition') {
+            const srcTmpl = src?.data?.model?.templateObj || {};
+            const kind = String(srcTmpl.type || src?.data?.model?.nodeKind || '').toLowerCase();
+            const isBranching = kind === 'condition' || !!srcTmpl.output_array_field;
+            if (isBranching) {
               const chosen = String(last.sourceHandle || '');
               try {
                 if (!msgIn || typeof msgIn !== 'object') msgIn = {};
                 msgIn.payload = { chosen };
-                console.info('[simulate:engine] payload.replaced_from_condition', { sourceId: last.sourceId, chosen });
+                console.info('[simulate:engine] payload.replaced_from_branching', { sourceId: last.sourceId, chosen, kind });
               } catch {}
             }
           }
@@ -273,7 +319,8 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
 }
 
 // Produce a preview of a node result for settings UI and count visible outputs
-function buildOneLevelPreview(result){
+// templateObj is optional — used to fallback on outputSchema when result is empty/error
+function buildOneLevelPreview(result, templateObj){
   try {
     const t = (v) => {
       if (v === null) return 'null';
@@ -296,6 +343,30 @@ function buildOneLevelPreview(result){
     };
     const out = [];
     let totalCount = 0;
+    // If result is empty/error but template has outputSchema or output_schema_field, use as fallback
+    const isEmpty = result == null || (typeof result === 'object' && !Array.isArray(result) && (Object.keys(result).length === 0 || ((result.error || result.ok === false) && Object.keys(result).length <= 2)));
+    let schema = Array.isArray(templateObj?.outputSchema) ? templateObj.outputSchema : null;
+    // Dynamic output schema from a context field (e.g., extraction_schema from schema_builder)
+    if (!schema && templateObj?.output_schema_field && templateObj?.context) {
+      const dynSchema = templateObj.context[templateObj.output_schema_field];
+      if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
+        const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+        schema = dynSchema.fields
+          .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+          .map(f => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));
+      } else if (Array.isArray(dynSchema)) {
+        schema = dynSchema;
+      }
+    }
+    if (isEmpty && schema && schema.length) {
+      for (const field of schema) {
+        const k = String(field.key || field.name || '');
+        if (!k) continue;
+        out.push({ key: k, type: String(field.type || 'string') });
+        totalCount++;
+      }
+      return { preview: out, count: totalCount };
+    }
     if (result == null) return { preview: out, count: 0 };
     if (typeof result === 'object' && !Array.isArray(result)) {
       for (const [k,v] of Object.entries(result)) {
@@ -548,4 +619,4 @@ async function simulateViaEngineSplit(flow, targetNodeId){
   return { targetNodeId: String(targetNodeId), scenarios };
 }
 
-module.exports = { simulateViaEngine, simulateViaEngineSplit };
+module.exports = { simulateViaEngine, simulateViaEngineSplit, buildOneLevelPreview };

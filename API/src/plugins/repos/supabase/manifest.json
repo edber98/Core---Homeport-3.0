@@ -415,7 +415,9 @@
             "secret": true,
             "description": "Requis pour les opérations admin (auth, storage)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -521,7 +523,9 @@
             },
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -594,7 +598,9 @@
             ],
             "description": "Objet ou tableau d'objets."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -680,7 +686,9 @@
             ],
             "description": "Filtre PostgREST (ex: id=eq.123)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -761,7 +769,9 @@
             },
             "description": "Colonnes pour la détection de conflit (ex: id)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -834,7 +844,9 @@
             ],
             "description": "Filtre PostgREST (ex: id=eq.123)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -902,7 +914,9 @@
             },
             "description": "Objet de paramètres."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Base de données"
     },
@@ -991,7 +1005,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Authentification"
     },
@@ -1064,7 +1080,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Authentification"
     },
@@ -1123,7 +1141,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Authentification"
     },
@@ -1187,7 +1207,9 @@
             },
             "default": 50
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Authentification"
     },
@@ -1246,7 +1268,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Authentification"
     },
@@ -1344,7 +1368,9 @@
             },
             "default": "application/octet-stream"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Stockage"
     },
@@ -1416,7 +1442,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Stockage"
     },
@@ -1492,7 +1520,9 @@
             },
             "default": 100
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Stockage"
     },
@@ -1564,7 +1594,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "group": "Stockage"
     }

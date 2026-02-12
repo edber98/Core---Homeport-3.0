@@ -199,6 +199,8 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Identifiants OpenAI",
         "ui": {
           "layout": "vertical",
@@ -282,6 +284,8 @@
       ],
       "description": "Générer une complétion de chat (messages System/User)",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Chat Completion",
         "ui": {
           "layout": "vertical",
@@ -368,6 +372,8 @@
       ],
       "description": "Définir une mémoire statique (texte)",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Memory (Static)",
         "ui": {
           "layout": "vertical",
@@ -426,6 +432,8 @@
       ],
       "description": "Fusionner ou relayer des mémoires AI",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Memory Merge",
         "ui": {
           "layout": "vertical",
@@ -470,6 +478,8 @@
       ],
       "description": "Définir un outil LangChain (nom, description, schéma)",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Tool (LangChain)",
         "ui": {
           "layout": "vertical",
@@ -547,6 +557,8 @@
       ],
       "description": "Générer des vecteurs d’embedding",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Embeddings",
         "ui": {
           "layout": "vertical",
@@ -615,6 +627,8 @@
       ],
       "description": "Générer une image à partir d’un prompt",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Image Generate",
         "ui": {
           "layout": "vertical",
@@ -708,6 +722,8 @@
       ],
       "description": "Indexer un texte en vecteurs (embeddings)",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Memory Embeddings",
         "ui": {
           "layout": "vertical",
@@ -792,6 +808,8 @@
       ],
       "description": "Agent OpenAI consommant Memory/Tools",
       "args": {
+        "displayTitle": false,
+        "displayDescription": false,
         "title": "Agent OpenAI",
         "ui": {
           "layout": "vertical",
@@ -849,6 +867,422 @@
       "tags": [
         "openai"
       ]
+    },
+    {
+      "key": "openai_classify",
+      "name": "openaiClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via OpenAI",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              },
+              {
+                "label": "GPT-4 Turbo",
+                "value": "gpt-4-turbo"
+              },
+              {
+                "label": "o1",
+                "value": "o1"
+              },
+              {
+                "label": "o1-mini",
+                "value": "o1-mini"
+              }
+            ],
+            "default": "gpt-4o"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "openai",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "openai_extract",
+      "name": "openaiExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via OpenAI",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              },
+              {
+                "label": "GPT-4 Turbo",
+                "value": "gpt-4-turbo"
+              },
+              {
+                "label": "o1",
+                "value": "o1"
+              },
+              {
+                "label": "o1-mini",
+                "value": "o1-mini"
+              }
+            ],
+            "default": "gpt-4o"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "openai",
+        "extraction",
+        "ai"
+      ]
+    },
+    {
+      "key": "openai_vision",
+      "name": "openaiVision",
+      "schemaVersion": 2,
+      "title": "Analyser une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "description": "Analyser une image avec un prompt via OpenAI",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Analyser une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": { "xs": 24 },
+            "options": [
+              { "label": "GPT-4o", "value": "gpt-4o" },
+              { "label": "GPT-4o mini", "value": "gpt-4o-mini" }
+            ],
+            "default": "gpt-4o"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Question ou instruction sur l'image.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image",
+            "description": "Image à analyser.",
+            "col": { "xs": 24 },
+            "validators": [{ "type": "required" }],
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          }
+        ]
+      },
+      "subtitle": "Vision",
+      "group": "Vision",
+      "tags": ["openai", "vision", "ai"]
     }
   ]
 }

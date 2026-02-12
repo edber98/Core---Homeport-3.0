@@ -112,9 +112,19 @@
                     <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">{{ opt.label || '' }}</label>
                   </nz-radio-group>
 
+                  <nz-select *ngIf="field.type==='tags'"
+                             [formControlName]="key"
+                             nzMode="tags"
+                             nzAllowClear
+                             [nzPlaceHolder]="field.placeholder || 'Ajouter...'">
+                  </nz-select>
+
                   <df-file-field *ngIf="field.type==='file'"
                                  [formControlName]="key"
                                  [config]="$any(field).file || {}"></df-file-field>
+
+                  <df-schema-builder *ngIf="field.type==='schema_builder'"
+                                     [formControlName]="key"></df-schema-builder>
                 </ng-container>
               </ng-container>
               </ng-container>

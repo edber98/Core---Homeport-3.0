@@ -1104,7 +1104,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1204,7 +1206,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-square-plus",
@@ -1264,7 +1268,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-eye",
@@ -1360,7 +1366,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-pen-to-square",
@@ -1420,7 +1428,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-trash",
@@ -1502,7 +1512,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-list",
@@ -1589,7 +1601,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pages",
       "icon": "fa-solid fa-square-plus",
@@ -1649,7 +1663,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pages",
       "icon": "fa-solid fa-eye",
@@ -1736,7 +1752,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pages",
       "icon": "fa-solid fa-pen-to-square",
@@ -1796,7 +1814,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pages",
       "icon": "fa-solid fa-trash",
@@ -1878,7 +1898,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pages",
       "icon": "fa-solid fa-list",
@@ -1956,7 +1978,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Médias",
       "icon": "fa-solid fa-file-arrow-up",
@@ -2016,7 +2040,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Médias",
       "icon": "fa-solid fa-eye",
@@ -2089,7 +2115,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Médias",
       "icon": "fa-solid fa-list",
@@ -2149,7 +2177,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Médias",
       "icon": "fa-solid fa-trash",
@@ -2227,7 +2257,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégories",
       "icon": "fa-solid fa-square-plus",
@@ -2287,7 +2319,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégories",
       "icon": "fa-solid fa-eye",
@@ -2351,7 +2385,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Catégories",
       "icon": "fa-solid fa-list",
@@ -2420,7 +2456,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-tag",
@@ -2484,7 +2522,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-tags",
@@ -2576,7 +2616,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-comment",
@@ -2636,7 +2678,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-comment",
@@ -2709,7 +2753,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-comments",
@@ -2787,7 +2833,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-pen-to-square",
@@ -2847,7 +2895,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-eye",
@@ -2911,7 +2961,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-list",
@@ -2966,7 +3018,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Extensions",
       "icon": "fa-solid fa-list",
@@ -3013,7 +3067,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

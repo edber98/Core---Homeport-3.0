@@ -1629,7 +1629,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/stripe"
     }
@@ -1721,7 +1723,9 @@
             },
             "description": "Metadata au format JSON."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-square-plus",
@@ -1781,7 +1785,9 @@
             ],
             "description": "Identifiant du client (cus_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-eye",
@@ -1877,7 +1883,9 @@
             },
             "description": "Nouveau numéro de téléphone."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-pen-to-square",
@@ -1937,7 +1945,9 @@
             ],
             "description": "Identifiant du client (cus_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-trash",
@@ -2010,7 +2020,9 @@
             },
             "description": "Filtrer par adresse e-mail."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-list",
@@ -2088,7 +2100,9 @@
             },
             "description": "Produit actif (true/false)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "icon": "fa-solid fa-square-plus",
@@ -2148,7 +2162,9 @@
             ],
             "description": "Identifiant du produit (prod_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "icon": "fa-solid fa-eye",
@@ -2235,7 +2251,9 @@
             },
             "description": "Produit actif (true/false)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "icon": "fa-solid fa-pen-to-square",
@@ -2308,7 +2326,9 @@
             },
             "description": "Filtrer par statut actif."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Produits",
       "icon": "fa-solid fa-list",
@@ -2405,7 +2425,9 @@
             },
             "description": "day, week, month, year (vide = paiement unique)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Prix",
       "icon": "fa-solid fa-square-plus",
@@ -2465,7 +2487,9 @@
             ],
             "description": "Identifiant du prix (price_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Prix",
       "icon": "fa-solid fa-eye",
@@ -2547,7 +2571,9 @@
             },
             "description": "Filtrer par statut actif."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Prix",
       "icon": "fa-solid fa-list",
@@ -2648,7 +2674,9 @@
             },
             "description": "Types de paiement separes par virgule (ex: card)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-square-plus",
@@ -2708,7 +2736,9 @@
             ],
             "description": "Identifiant du payment intent (pi_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-eye",
@@ -2777,7 +2807,9 @@
             },
             "description": "Identifiant de la methode de paiement (pm_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-circle-check",
@@ -2837,7 +2869,9 @@
             ],
             "description": "Identifiant du payment intent (pi_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-ban",
@@ -2910,7 +2944,9 @@
             },
             "description": "Filtrer par client."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Paiements",
       "icon": "fa-solid fa-list",
@@ -2993,7 +3029,9 @@
             },
             "description": "Nombre de jours d'essai gratuit."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Abonnements",
       "icon": "fa-solid fa-square-plus",
@@ -3053,7 +3091,9 @@
             ],
             "description": "Identifiant de l'abonnement (sub_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Abonnements",
       "icon": "fa-solid fa-eye",
@@ -3131,7 +3171,9 @@
             },
             "description": "Timestamp de fin d'essai ou 'now'."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Abonnements",
       "icon": "fa-solid fa-pen-to-square",
@@ -3191,7 +3233,9 @@
             ],
             "description": "Identifiant de l'abonnement (sub_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Abonnements",
       "icon": "fa-solid fa-ban",
@@ -3273,7 +3317,9 @@
             },
             "description": "Filtrer par statut (active, past_due, canceled, etc.)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Abonnements",
       "icon": "fa-solid fa-list",
@@ -3351,7 +3397,9 @@
             },
             "description": "Avancer automatiquement la facture."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-square-plus",
@@ -3411,7 +3459,9 @@
             ],
             "description": "Identifiant de la facture (in_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-eye",
@@ -3471,7 +3521,9 @@
             ],
             "description": "Identifiant de la facture (in_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-circle-check",
@@ -3531,7 +3583,9 @@
             ],
             "description": "Identifiant de la facture (in_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-money-bill-wave",
@@ -3613,7 +3667,9 @@
             },
             "description": "Filtrer par statut (draft, open, paid, void, uncollectible)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-list",
@@ -3673,7 +3729,9 @@
             ],
             "description": "Identifiant de la charge (ch_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Charges",
       "icon": "fa-solid fa-eye",
@@ -3746,7 +3804,9 @@
             },
             "description": "Filtrer par client."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Charges",
       "icon": "fa-solid fa-list",
@@ -3828,7 +3888,9 @@
             },
             "description": "duplicate, fraudulent, requested_by_customer."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Remboursements",
       "icon": "fa-solid fa-rotate-left",
@@ -3888,7 +3950,9 @@
             ],
             "description": "Identifiant du remboursement (re_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Remboursements",
       "icon": "fa-solid fa-eye",
@@ -3961,7 +4025,9 @@
             },
             "description": "Filtrer par charge."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Remboursements",
       "icon": "fa-solid fa-list",
@@ -4077,7 +4143,9 @@
             },
             "description": "Identifiant du client (cus_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Checkout",
       "icon": "fa-solid fa-cart-shopping",
@@ -4137,7 +4205,9 @@
             ],
             "description": "Identifiant de la session (cs_...)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Checkout",
       "icon": "fa-solid fa-eye",
@@ -4201,7 +4271,9 @@
             },
             "description": "Curseur de pagination."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Checkout",
       "icon": "fa-solid fa-list",
@@ -4246,7 +4318,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Solde",
       "icon": "fa-solid fa-coins",
@@ -4319,7 +4393,9 @@
             },
             "description": "Filtrer par type de transaction."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Solde",
       "icon": "fa-solid fa-list",

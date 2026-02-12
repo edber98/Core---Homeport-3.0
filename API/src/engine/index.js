@@ -513,6 +513,17 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
         return h !== 'err' && h !== 'error';
       });
       if (okOuts.length) nextOuts = okOuts;
+      // Dynamic output routing: handler returned _output (sourceHandle id) to pick a specific branch
+      const resultObj = nodeLog && nodeLog.result && typeof nodeLog.result === 'object' ? nodeLog.result : null;
+      const explicitOutput = resultObj && resultObj._output ? String(resultObj._output) : null;
+      // Also support forceBranches override for simulation of multi-output functions
+      const forcedFn = forceBranches && (forceBranches[node.id] || forceBranches[String(node.id)]);
+      const routeHandle = forcedFn != null ? String(forcedFn) : explicitOutput;
+      if (routeHandle && nextOuts.length > 1) {
+        const pick = nextOuts.find(o => String(o.sourceHandle || '') === routeHandle);
+        if (pick) { nextOuts = [pick]; try { console.log('[engine] fn:routed', { node: node.id, handle: routeHandle }); } catch {} }
+        else { try { console.log('[engine] fn:route.miss', { node: node.id, routeHandle, handles: nextOuts.map(o => String(o.sourceHandle || '')) }); } catch {} }
+      }
     }
     if (nextOuts.length === 1){
       await send({ type: 'edge.taken', sourceId: node.id, targetId: nextOuts[0].target });

@@ -872,7 +872,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -995,7 +997,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-square-plus",
@@ -1055,7 +1059,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-eye",
@@ -1200,7 +1206,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-pen-to-square",
@@ -1260,7 +1268,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-trash",
@@ -1324,7 +1334,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-list",
@@ -1384,7 +1396,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1485,7 +1499,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-square-plus",
@@ -1545,7 +1561,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-eye",
@@ -1632,7 +1650,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-pen-to-square",
@@ -1696,7 +1716,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-list",
@@ -1756,7 +1778,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1825,7 +1849,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Organisations",
       "icon": "fa-solid fa-square-plus",
@@ -1885,7 +1911,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Organisations",
       "icon": "fa-solid fa-eye",
@@ -1949,7 +1977,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Organisations",
       "icon": "fa-solid fa-list",
@@ -2009,7 +2039,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Groupes",
       "icon": "fa-solid fa-eye",
@@ -2054,7 +2086,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Groupes",
       "icon": "fa-solid fa-list",
@@ -2147,7 +2181,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-comment",
@@ -2207,7 +2243,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commentaires",
       "icon": "fa-solid fa-comments",
@@ -2281,7 +2319,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-tag",
@@ -2355,7 +2395,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tags",
       "icon": "fa-solid fa-trash",
@@ -2400,7 +2442,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Macros",
       "icon": "fa-solid fa-list",
@@ -2474,7 +2518,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Macros",
       "icon": "fa-solid fa-wand-magic-sparkles",
@@ -2529,7 +2575,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Satisfaction",
       "icon": "fa-solid fa-star",
@@ -2593,7 +2641,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

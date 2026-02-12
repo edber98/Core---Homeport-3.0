@@ -1,5 +1,9 @@
 {
-  "repo": { "name": "logic", "type": "local", "label": "Logique" },
+  "repo": {
+    "name": "logic",
+    "type": "local",
+    "label": "Logique"
+  },
   "providers": [
     {
       "key": "logic",
@@ -8,7 +12,10 @@
       "order": 2,
       "iconClass": "fa-solid fa-diagram-project",
       "color": "#334155",
-      "tags": ["logic", "core"],
+      "tags": [
+        "logic",
+        "core"
+      ],
       "hasCredentials": false
     }
   ],
@@ -25,10 +32,12 @@
       "icon": "fa-solid fa-code-branch",
       "output_array_field": "items",
       "description": "Branche selon une condition",
- 
       "args": {
         "title": "Conditions",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "section",
@@ -36,17 +45,93 @@
             "description": "Définissez les branches et leurs conditions.",
             "key": "items",
             "mode": "array",
-            "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } },
+            "array": {
+              "initialItems": 1,
+              "minItems": 0,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter"
+                },
+                "remove": {
+                  "kind": "text",
+                  "text": "Supprimer"
+                }
+              }
+            },
             "fields": [
-              { "type": "text", "key": "name", "label": "Nom", "description": "Nom lisible de la branche.", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] },
-              { "type": "text", "key": "condition", "label": "Condition", "description": "Expression évaluée pour activer la branche.", "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "default": "", "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "description": "Nom lisible de la branche.",
+                "col": {
+                  "xs": 24,
+                  "sm": 24,
+                  "md": 24,
+                  "lg": 24,
+                  "xl": 24
+                },
+                "default": "",
+                "expression": {
+                  "allow": true
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "condition",
+                "label": "Condition",
+                "description": "Expression évaluée pour activer la branche.",
+                "col": {
+                  "xs": 24,
+                  "sm": 24,
+                  "md": 24,
+                  "lg": 24,
+                  "xl": 24
+                },
+                "default": "",
+                "expression": {
+                  "allow": true
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              }
             ],
-            "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 },
-            "grid": { "gutter": 16 },
-            "ui": { "layout": "vertical" }
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
           },
-          { "type": "checkbox", "key": "else_enabled", "label": "Activer Else", "description": "Ajouter une branche par défaut (sinon).", "col": { "xs": 24 }, "default": false }
-        ]
+          {
+            "type": "checkbox",
+            "key": "else_enabled",
+            "label": "Activer Else",
+            "description": "Ajouter une branche par défaut (sinon).",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "authorize_catch_error": false,
       "authorize_skip_error": false
@@ -63,25 +148,132 @@
       "icon": "fa-solid fa-arrows-rotate",
       "description": "Itérer sur une collection et exécuter une branche pour chaque élément.",
       "inputHandles": [
-        { "id": "in", "name": "In", "type": "payload", "accepts": ["payload", "any"] },
-        { "id": "items", "name": "Items", "type": "payload", "multiple": true, "accepts": ["payload", "any"] }
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        },
+        {
+          "id": "items",
+          "name": "Items",
+          "type": "payload",
+          "multiple": true,
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
       ],
       "outputHandles": [
-        { "id": "after", "name": "After", "type": "payload" },
-        { "id": "each", "name": "Each", "type": "payload" }
+        {
+          "id": "after",
+          "name": "After",
+          "type": "payload"
+        },
+        {
+          "id": "each",
+          "name": "Each",
+          "type": "payload"
+        }
       ],
       "args": {
         "title": "Loop",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "itemsArg", "label": "Tableau ou chemin (JSON/chemin)", "description": "Tableau d\u2019entrée ou chemin JSON vers celui-ci.", "expression": { "allow": true }, "col": { "xs": 24 } },
-          { "type": "text", "key": "elementExpr", "label": "Mapper l'élément (optionnel)", "description": "Expression pour transformer chaque élément.", "expression": { "allow": true }, "col": { "xs": 24 } },
-          { "type": "text", "key": "itemVar", "label": "Nom de la variable élément", "description": "Nom de la variable représentant l\u2019élément.", "default": "item", "col": { "xs": 12 } },
-          { "type": "text", "key": "indexVar", "label": "Nom de la variable index", "description": "Nom de la variable représentant l\u2019index.", "default": "index", "col": { "xs": 12 } },
-          { "type": "checkbox", "key": "perItemPayload", "label": "Définir payload = élément pour la branche", "description": "Transmet l\u2019élément comme payload dans la branche.", "default": true, "col": { "xs": 24 } },
-          { "type": "select", "key": "resultMode", "label": "Résultat final", "description": "Mode d\u2019agrégation des résultats.", "options": [ { "label": "Collecter tous les payloads", "value": "collect" }, { "label": "Conserver le dernier payload", "value": "last" } ], "default": "collect", "col": { "xs": 24 } },
-          { "type": "number", "key": "maxIterations", "label": "Itérations max", "description": "Nombre maximum d\u2019itérations.", "default": 1000, "col": { "xs": 24 } }
-        ]
+          {
+            "type": "text",
+            "key": "itemsArg",
+            "label": "Tableau ou chemin (JSON/chemin)",
+            "description": "Tableau d’entrée ou chemin JSON vers celui-ci.",
+            "expression": {
+              "allow": true
+            },
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "elementExpr",
+            "label": "Mapper l'élément (optionnel)",
+            "description": "Expression pour transformer chaque élément.",
+            "expression": {
+              "allow": true
+            },
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemVar",
+            "label": "Nom de la variable élément",
+            "description": "Nom de la variable représentant l’élément.",
+            "default": "item",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "indexVar",
+            "label": "Nom de la variable index",
+            "description": "Nom de la variable représentant l’index.",
+            "default": "index",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "perItemPayload",
+            "label": "Définir payload = élément pour la branche",
+            "description": "Transmet l’élément comme payload dans la branche.",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "resultMode",
+            "label": "Résultat final",
+            "description": "Mode d’agrégation des résultats.",
+            "options": [
+              {
+                "label": "Collecter tous les payloads",
+                "value": "collect"
+              },
+              {
+                "label": "Conserver le dernier payload",
+                "value": "last"
+              }
+            ],
+            "default": "collect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxIterations",
+            "label": "Itérations max",
+            "description": "Nombre maximum d’itérations.",
+            "default": 1000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "authorize_catch_error": false,
       "authorize_skip_error": false
@@ -95,11 +287,52 @@
       "type": "function",
       "category": "Logique",
       "providerKey": "logic",
-      "inputHandles": [ { "id": "in", "name": "In", "type": "any", "accepts": ["any","payload"] } ],
-      "outputHandles": [ { "id": "ok", "name": "Success", "type": "payload" } ],
-      "args": { "title": "Delay", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
-        { "type": "number", "key": "ms", "label": "Milliseconds", "description": "Durée d\u2019attente en millisecondes.", "default": 100, "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "expression": { "allow": true } }
-      ] },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "args": {
+        "title": "Delay",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ms",
+            "label": "Milliseconds",
+            "description": "Durée d’attente en millisecondes.",
+            "default": 100,
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24,
+              "lg": 24,
+              "xl": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "description": "Attendre un certain temps",
       "authorize_catch_error": true
     }

@@ -1354,7 +1354,9 @@
             },
             "default": "100"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1455,7 +1457,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "icon": "fa-solid fa-square-plus",
@@ -1515,7 +1519,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "icon": "fa-solid fa-eye",
@@ -1593,7 +1599,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "icon": "fa-solid fa-pen-to-square",
@@ -1653,7 +1661,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "icon": "fa-solid fa-trash",
@@ -1728,7 +1738,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Business Partners",
       "icon": "fa-solid fa-list",
@@ -1839,7 +1851,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "icon": "fa-solid fa-square-plus",
@@ -1899,7 +1913,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "icon": "fa-solid fa-eye",
@@ -1968,7 +1984,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "icon": "fa-solid fa-pen-to-square",
@@ -2060,7 +2078,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "icon": "fa-solid fa-square-plus",
@@ -2135,7 +2155,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes de vente",
       "icon": "fa-solid fa-list",
@@ -2237,7 +2259,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "icon": "fa-solid fa-square-plus",
@@ -2297,7 +2321,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "icon": "fa-solid fa-eye",
@@ -2366,7 +2392,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "icon": "fa-solid fa-pen-to-square",
@@ -2441,7 +2469,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commandes d'achat",
       "icon": "fa-solid fa-list",
@@ -2533,7 +2563,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-square-plus",
@@ -2593,7 +2625,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-eye",
@@ -2671,7 +2705,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-pen-to-square",
@@ -2746,7 +2782,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Articles",
       "icon": "fa-solid fa-list",
@@ -2806,7 +2844,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "icon": "fa-solid fa-eye",
@@ -2881,7 +2921,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "icon": "fa-solid fa-list",
@@ -2961,7 +3003,9 @@
             },
             "default": 0
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Facturation",
       "icon": "fa-solid fa-list",
@@ -3035,7 +3079,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "icon": "fa-solid fa-eye",
@@ -3119,7 +3165,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "icon": "fa-solid fa-list",
@@ -3193,7 +3241,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "icon": "fa-solid fa-eye",
@@ -3268,7 +3318,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Comptabilité",
       "icon": "fa-solid fa-list",
@@ -3328,7 +3380,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "icon": "fa-solid fa-eye",
@@ -3415,7 +3469,9 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "icon": "fa-solid fa-circle-check",
@@ -3490,7 +3546,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Production",
       "icon": "fa-solid fa-list",
@@ -3550,7 +3608,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "OData",
       "icon": "fa-solid fa-eye",
@@ -3619,7 +3679,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "OData",
       "icon": "fa-solid fa-paper-plane",

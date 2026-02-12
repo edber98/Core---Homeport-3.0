@@ -792,7 +792,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -883,7 +885,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-square-plus",
@@ -943,7 +947,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-eye",
@@ -1039,7 +1045,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-pen-to-square",
@@ -1099,7 +1107,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
@@ -1163,7 +1173,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
@@ -1237,7 +1249,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-file-arrow-up",
@@ -1311,7 +1325,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-square-plus",
@@ -1371,7 +1387,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-eye",
@@ -1435,7 +1453,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-list",
@@ -1509,7 +1529,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Listes",
       "icon": "fa-solid fa-user-plus",
@@ -1643,7 +1665,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-square-plus",
@@ -1703,7 +1727,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-eye",
@@ -1794,7 +1820,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-list",
@@ -1868,7 +1896,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-paper-plane",
@@ -1928,7 +1958,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Campagnes",
       "icon": "fa-solid fa-paper-plane",
@@ -2052,7 +2084,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Emails transactionnels",
       "icon": "fa-solid fa-envelope",
@@ -2116,7 +2150,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Statistiques",
       "icon": "fa-solid fa-chart-line",
@@ -2180,7 +2216,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Templates",
       "icon": "fa-solid fa-list",
@@ -2240,7 +2278,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Templates",
       "icon": "fa-solid fa-eye",
@@ -2285,7 +2325,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Expéditeurs",
       "icon": "fa-solid fa-users",
@@ -2357,7 +2399,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "événement",

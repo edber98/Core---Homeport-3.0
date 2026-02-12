@@ -1829,7 +1829,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1947,7 +1949,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-square-plus",
@@ -2007,7 +2011,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-eye",
@@ -2139,7 +2145,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-pen-to-square",
@@ -2199,7 +2207,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-trash",
@@ -2263,7 +2273,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Clients",
       "icon": "fa-solid fa-list",
@@ -2377,7 +2389,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-square-plus",
@@ -2437,7 +2451,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-eye",
@@ -2533,7 +2549,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-pen-to-square",
@@ -2593,7 +2611,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
@@ -2657,7 +2677,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
@@ -2794,7 +2816,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-square-plus",
@@ -2854,7 +2878,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-eye",
@@ -2968,7 +2994,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-pen-to-square",
@@ -3028,7 +3056,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-trash",
@@ -3110,7 +3140,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-list",
@@ -3211,7 +3243,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-comment",
@@ -3271,7 +3305,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "icon": "fa-solid fa-eye",
@@ -3335,7 +3371,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "icon": "fa-solid fa-list",
@@ -3395,7 +3433,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Agents",
       "icon": "fa-solid fa-trash",
@@ -3455,7 +3495,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "icon": "fa-solid fa-eye",
@@ -3528,7 +3570,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "icon": "fa-solid fa-list",
@@ -3588,7 +3632,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "icon": "fa-solid fa-circle-check",
@@ -3633,7 +3679,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Alertes",
       "icon": "fa-solid fa-hashtag",
@@ -3693,7 +3741,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "icon": "fa-solid fa-eye",
@@ -3766,7 +3816,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "icon": "fa-solid fa-list",
@@ -3844,7 +3896,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appareils",
       "icon": "fa-solid fa-desktop",
@@ -3954,7 +4008,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "icon": "fa-solid fa-square-plus",
@@ -4014,7 +4070,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "icon": "fa-solid fa-eye",
@@ -4078,7 +4136,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "icon": "fa-solid fa-list",
@@ -4138,7 +4198,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contrats",
       "icon": "fa-solid fa-trash",
@@ -4220,7 +4282,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "icon": "fa-solid fa-book",
@@ -4280,7 +4344,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "icon": "fa-solid fa-book",
@@ -4344,7 +4410,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Base de connaissances",
       "icon": "fa-solid fa-book",
@@ -4404,7 +4472,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Départements",
       "icon": "fa-solid fa-eye",
@@ -4468,7 +4538,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Départements",
       "icon": "fa-solid fa-list",
@@ -4532,7 +4604,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tarifs",
       "icon": "fa-solid fa-list",
@@ -4593,7 +4667,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-eye",
@@ -4657,7 +4733,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Factures",
       "icon": "fa-solid fa-list",
@@ -4718,7 +4796,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-eye",
@@ -4763,7 +4843,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
@@ -4851,7 +4933,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-pen-to-square",

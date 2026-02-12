@@ -1781,7 +1781,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "iconUrl": "https://cdn.simpleicons.org/github"
     }
@@ -1857,7 +1859,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "icon": "fa-solid fa-eye",
@@ -1983,7 +1987,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "icon": "fa-solid fa-list",
@@ -2082,7 +2088,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "icon": "fa-solid fa-square-plus",
@@ -2174,7 +2182,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "icon": "fa-solid fa-code-branch",
@@ -2266,7 +2276,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Dépôts",
       "icon": "fa-solid fa-code-branch",
@@ -2411,7 +2423,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-square-plus",
@@ -2508,7 +2522,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-eye",
@@ -2675,7 +2691,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-pen-to-square",
@@ -2843,7 +2861,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-list",
@@ -2957,7 +2977,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-comment",
@@ -3066,7 +3088,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Issues",
       "icon": "fa-solid fa-comments",
@@ -3221,7 +3245,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "icon": "fa-solid fa-square-plus",
@@ -3318,7 +3344,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "icon": "fa-solid fa-eye",
@@ -3473,7 +3501,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "icon": "fa-solid fa-pen-to-square",
@@ -3645,7 +3675,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "icon": "fa-solid fa-list",
@@ -3792,7 +3824,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pull requests",
       "icon": "fa-solid fa-code-merge",
@@ -3884,7 +3918,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "icon": "fa-solid fa-code-branch",
@@ -3981,7 +4017,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "icon": "fa-solid fa-eye",
@@ -4095,7 +4133,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Branches",
       "icon": "fa-solid fa-code-branch",
@@ -4235,7 +4275,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commits",
       "icon": "fa-solid fa-list",
@@ -4332,7 +4374,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Commits",
       "icon": "fa-solid fa-eye",
@@ -4489,7 +4533,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "icon": "fa-solid fa-square-plus",
@@ -4581,7 +4627,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "icon": "fa-solid fa-list",
@@ -4678,7 +4726,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Releases",
       "icon": "fa-solid fa-eye",
@@ -4736,7 +4786,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-user",
@@ -4867,7 +4919,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-list",
@@ -4947,7 +5001,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Workflows",
       "icon": "fa-solid fa-list",
@@ -5073,7 +5129,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Workflows",
       "icon": "fa-solid fa-bolt",
@@ -5153,7 +5211,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Labels",
       "icon": "fa-solid fa-tags",
@@ -5274,7 +5334,9 @@
               "allow": true
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Labels",
       "icon": "fa-solid fa-tag",

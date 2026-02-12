@@ -821,7 +821,9 @@
             ],
             "secret": true
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -878,7 +880,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -942,7 +946,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1002,7 +1008,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1066,7 +1074,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1158,7 +1168,9 @@
             },
             "description": "Produit actif (0 ou 1)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1254,7 +1266,9 @@
             },
             "description": "Nouveau statut (0 ou 1)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1314,7 +1328,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1378,7 +1394,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1480,7 +1498,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1540,7 +1560,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1604,7 +1626,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1664,7 +1688,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1728,7 +1754,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1829,7 +1857,9 @@
             },
             "description": "Règle active (0 ou 1)."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1893,7 +1923,9 @@
             },
             "description": "Numéro de page."
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1938,7 +1970,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -1983,7 +2017,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -2028,7 +2064,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -2073,7 +2111,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -2118,7 +2158,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -2163,7 +2205,9 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": []
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",
@@ -2210,7 +2254,9 @@
             },
             "default": "/prestashop"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "tags": [
         "PrestaShop",

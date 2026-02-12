@@ -1013,7 +1013,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
@@ -1104,7 +1106,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-square-plus",
@@ -1164,7 +1168,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-eye",
@@ -1260,7 +1266,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-pen-to-square",
@@ -1320,7 +1328,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
@@ -1389,7 +1399,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1453,7 +1465,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
@@ -1540,7 +1554,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-square-plus",
@@ -1600,7 +1616,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-eye",
@@ -1687,7 +1705,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-pen-to-square",
@@ -1747,7 +1767,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-trash",
@@ -1816,7 +1838,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-magnifying-glass",
@@ -1880,7 +1904,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Entreprises",
       "icon": "fa-solid fa-list",
@@ -1967,7 +1993,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-handshake",
@@ -2027,7 +2055,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-eye",
@@ -2114,7 +2144,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-pen-to-square",
@@ -2174,7 +2206,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-trash",
@@ -2243,7 +2277,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-magnifying-glass",
@@ -2307,7 +2343,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Deals",
       "icon": "fa-solid fa-list",
@@ -2403,7 +2441,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-square-plus",
@@ -2463,7 +2503,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-eye",
@@ -2550,7 +2592,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-pen-to-square",
@@ -2610,7 +2654,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-trash",
@@ -2674,7 +2720,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tickets",
       "icon": "fa-solid fa-list",
@@ -2761,7 +2809,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Notes",
       "icon": "fa-solid fa-note-sticky",
@@ -2848,7 +2898,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Tâches",
       "icon": "fa-solid fa-square-check",
@@ -2935,7 +2987,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Réunions",
       "icon": "fa-solid fa-calendar-check",
@@ -3022,7 +3076,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Appels",
       "icon": "fa-solid fa-phone",
@@ -3092,7 +3148,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pipelines",
       "icon": "fa-solid fa-list",
@@ -3176,7 +3234,9 @@
               }
             ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Pipelines",
       "icon": "fa-solid fa-list-ol",
@@ -3249,7 +3309,9 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       },
       "subtitle": "Propriétaires",
       "icon": "fa-solid fa-users",
