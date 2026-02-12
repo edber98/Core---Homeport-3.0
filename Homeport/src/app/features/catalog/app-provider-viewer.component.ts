@@ -30,9 +30,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     <div class="content">
       <div class="left-pane">
         <div class="icon" [style.background]="a.color || '#f3f4f6'">
-          <i *ngIf="a.iconClass" [class]="a.iconClass"></i>
-          <img *ngIf="!a.iconClass && a.iconUrl" [src]="a.iconUrl" alt="icon"/>
-          <img *ngIf="!a.iconClass && !a.iconUrl" [src]="simpleIconUrl(a.id)" alt="icon"/>
+          <img *ngIf="a.iconUrl" [src]="a.iconUrl" alt="icon"/>
+          <i *ngIf="!a.iconUrl && a.iconClass" [class]="a.iconClass" [style.color]="fgColor(a.color)"></i>
+          <img *ngIf="!a.iconUrl && !a.iconClass" [src]="simpleIconUrl(a.id)" alt="icon"/>
         </div>
         <div class="kv">
           <div><span class="k">ID</span><span class="v">{{ a.id }}</span></div>
@@ -133,6 +133,21 @@ export class AppProviderViewerComponent implements OnInit, OnDestroy {
     } catch {}
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
+  fgColor(bg?: string | null): string {
+    const b = String(bg || '#1677ff');
+    try {
+      const { r, g, b: bb } = this.hexToRgb(b);
+      const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
+      return yiq >= 140 ? '#111' : '#fff';
+    } catch { return '#111'; }
+  }
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    let s = hex.trim();
+    if (s.startsWith('#')) s = s.slice(1);
+    if (s.length === 3) s = s.split('').map(c => c + c).join('');
+    const num = parseInt(s, 16);
+    return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 };
+  }
   back() { history.back(); }
   edit() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { id: this.app.id } }); }
   duplicate() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { duplicateFrom: this.app.id } }); }
