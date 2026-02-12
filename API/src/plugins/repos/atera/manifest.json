@@ -112,6 +112,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total de clients.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Clients",
           "description": "Liste des clients",
@@ -1754,6 +1790,211 @@
         }
       ]
     },
+    "atera_customer_search_results": {
+      "title": "Résultats recherche clients",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "matchCount",
+          "label": "Nombre de résultats",
+          "description": "Nombre de clients correspondants.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalScanned",
+          "label": "Total analysés",
+          "description": "Nombre total de clients parcourus.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Clients trouvés",
+          "description": "Liste des clients correspondants",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "CustomerID",
+              "label": "ID client",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Nom",
+              "description": "Nom du client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Domain",
+              "label": "Domaine",
+              "description": "Domaine.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "City",
+              "label": "Ville",
+              "description": "Ville.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CreatedOn",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_customer_find_result": {
+      "title": "Client trouvé",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "found",
+          "label": "Trouvé",
+          "description": "Client trouvé ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Domain",
+          "label": "Domaine",
+          "description": "Domaine web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Address",
+          "label": "Adresse",
+          "description": "Adresse postale.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "City",
+          "label": "Ville",
+          "description": "Ville.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "State",
+          "label": "Province/État",
+          "description": "Province ou état.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Country",
+          "label": "Pays",
+          "description": "Pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Notes",
+          "label": "Notes",
+          "description": "Notes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CreatedOn",
+          "label": "Date de création",
+          "description": "Date de création du client.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
     "atera_alerts_count": {
       "title": "Compteur d'alertes",
       "ui": {
@@ -2282,6 +2523,204 @@
       "group": "Clients",
       "tags": [
         "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_search",
+      "name": "ateraCustomerSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer_search_results"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des clients par nom, domaine ou autre champ. Parcourt toutes les pages et filtre côté serveur.",
+      "args": {
+        "title": "Rechercher des clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte ou expression régulière à rechercher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "searchField",
+            "label": "Champ de recherche",
+            "description": "Dans quel champ chercher.",
+            "options": [
+              { "label": "Tous les champs", "value": "all" },
+              { "label": "Nom du client", "value": "CustomerName" },
+              { "label": "Domaine", "value": "Domain" },
+              { "label": "Adresse", "value": "Address" },
+              { "label": "Ville", "value": "City" },
+              { "label": "Téléphone", "value": "Phone" },
+              { "label": "Notes", "value": "Notes" }
+            ],
+            "default": "all",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "matchMode",
+            "label": "Mode de recherche",
+            "description": "Contient (insensible à la casse) ou expression régulière.",
+            "options": [
+              { "label": "Contient", "value": "contains" },
+              { "label": "Regex", "value": "regex" }
+            ],
+            "default": "contains",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Clients",
+      "tags": [
+        "recherche",
+        "filtre",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_find",
+      "name": "ateraCustomerFind",
+      "schemaVersion": 2,
+      "title": "Trouver un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer_find_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Trouve le premier client correspondant à la recherche. Parcourt les pages jusqu'à trouver une correspondance.",
+      "args": {
+        "title": "Trouver un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte ou expression régulière à rechercher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "searchField",
+            "label": "Champ de recherche",
+            "description": "Dans quel champ chercher.",
+            "options": [
+              { "label": "Tous les champs", "value": "all" },
+              { "label": "Nom du client", "value": "CustomerName" },
+              { "label": "Domaine", "value": "Domain" },
+              { "label": "Adresse", "value": "Address" },
+              { "label": "Ville", "value": "City" },
+              { "label": "Téléphone", "value": "Phone" },
+              { "label": "Notes", "value": "Notes" }
+            ],
+            "default": "all",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "matchMode",
+            "label": "Mode de recherche",
+            "description": "Contient (insensible à la casse) ou expression régulière.",
+            "options": [
+              { "label": "Contient", "value": "contains" },
+              { "label": "Regex", "value": "regex" }
+            ],
+            "default": "contains",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-user-magnifying-glass",
+      "group": "Clients",
+      "tags": [
+        "recherche",
+        "filtre",
         "atera"
       ]
     },

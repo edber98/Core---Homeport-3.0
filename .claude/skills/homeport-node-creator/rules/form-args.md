@@ -207,7 +207,9 @@ Le moteur evalue l'expression et passe le resultat au handler.
 }
 ```
 
-## Visibilite conditionnelle
+## Visibilite conditionnelle (visibleIf / requiredIf)
+
+### Syntaxe simple (valeur parmi une liste)
 
 Affiche un champ uniquement si un autre champ a une certaine valeur:
 
@@ -221,6 +223,88 @@ Affiche un champ uniquement si un autre champ a une certaine valeur:
 ```
 
 Le champ `body` n'apparait que si `method` vaut POST, PUT ou PATCH.
+
+### Syntaxe JSON Logic (visibleIf + requiredIf)
+
+Pour des conditions plus precises, utiliser la syntaxe JSON Logic. Cela permet de combiner visibilite ET obligation conditionnelle :
+
+```json
+{
+  "type": "text",
+  "key": "username",
+  "label": "Utilisateur",
+  "validators": [{ "type": "required" }],
+  "visibleIf": {
+    "==": [{ "var": "type_auth" }, "login"]
+  },
+  "requiredIf": {
+    "==": [{ "var": "type_auth" }, "login"]
+  }
+}
+```
+
+- **`visibleIf`** : Le champ est affiche QUE si la condition est remplie
+- **`requiredIf`** : Le champ est requis QUE si la condition est remplie (remplace le validator `required` pour le mode conditionnel)
+- Syntaxe : `{ "==": [{ "var": "nom_du_champ_source" }, "valeur_attendue"] }`
+- Les deux se combinent : un champ cache par `visibleIf` n'est jamais requis
+- Fonctionne dans les `args` des nodeTemplates ET dans les `credentialsForm` des providers
+
+### Exemple complet : formulaire avec choix conditionnel
+
+```json
+"args": {
+  "title": "Configuration",
+  "ui": { "layout": "vertical", "labelsOnTop": true },
+  "fields": [
+    {
+      "type": "select",
+      "key": "mode",
+      "label": "Mode de recherche",
+      "options": [
+        { "label": "Par ID", "value": "by_id" },
+        { "label": "Par nom", "value": "by_name" },
+        { "label": "Par email", "value": "by_email" }
+      ],
+      "default": "by_id",
+      "col": { "xs": 24 },
+      "validators": [{ "type": "required" }]
+    },
+    {
+      "type": "text",
+      "key": "recordId",
+      "label": "ID de l'enregistrement",
+      "col": { "xs": 24 },
+      "expression": { "allow": true },
+      "visibleIf": { "==": [{ "var": "mode" }, "by_id"] },
+      "requiredIf": { "==": [{ "var": "mode" }, "by_id"] }
+    },
+    {
+      "type": "text",
+      "key": "name",
+      "label": "Nom",
+      "col": { "xs": 24 },
+      "expression": { "allow": true },
+      "visibleIf": { "==": [{ "var": "mode" }, "by_name"] },
+      "requiredIf": { "==": [{ "var": "mode" }, "by_name"] }
+    },
+    {
+      "type": "text",
+      "key": "email",
+      "label": "Email",
+      "col": { "xs": 24 },
+      "expression": { "allow": true },
+      "visibleIf": { "==": [{ "var": "mode" }, "by_email"] },
+      "requiredIf": { "==": [{ "var": "mode" }, "by_email"] }
+    }
+  ]
+}
+```
+
+Dans le handler, verifier `inputs.mode` pour adapter le comportement :
+```javascript
+if (inputs.mode === "by_id") { /* chercher par ID */ }
+else if (inputs.mode === "by_name") { /* chercher par nom */ }
+```
 
 ## Expressions
 
