@@ -1147,7 +1147,6 @@
       "name": "Microsoft 365",
       "title": "Microsoft 365",
       "iconClass": "fa-brands fa-microsoft",
-      "iconUrl": "https://cdn.simpleicons.org/microsoft",
       "color": "#0078D4",
       "tags": [
         "microsoft",

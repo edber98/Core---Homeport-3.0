@@ -279,7 +279,7 @@
       "title": "Anthropic Claude",
       "iconClass": "fa-solid fa-brain",
       "iconUrl": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/claude-color.png",
-      "color": "#bebebe",
+      "color": "#ffd3c5",
       "tags": [
         "ai",
         "llm"

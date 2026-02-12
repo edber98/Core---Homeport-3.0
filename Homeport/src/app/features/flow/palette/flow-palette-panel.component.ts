@@ -26,9 +26,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
             <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
               <img *ngIf="isOpenAiGroup(g.group)" [src]="openAiIconUrl" alt="icon" />
-              <i *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
-              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconClass && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
-              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconClass && !g.group?.appIconUrl" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
+              <img *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
+              <i *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
+              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && !g.group?.appIconClass" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
             </span>
             <span class="group-name">{{ g.group?.title }}</span>
             <span class="group-spacer" *ngIf="g.group?.appId"></span>
@@ -96,9 +96,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
           <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
             <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
-            <i *ngIf="!isOpenAiGroup(g) && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
-            <img *ngIf="!isOpenAiGroup(g) && !g.appIconClass && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
-            <img *ngIf="!isOpenAiGroup(g) && !g.appIconClass && !g.appIconUrl" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
+            <img *ngIf="!isOpenAiGroup(g) && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+            <i *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
+            <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
           </span>
             <span class="group-name">{{ g.title }}</span>
             <span class="group-count">{{ g.items?.length || 0 }}</span>
@@ -116,9 +116,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
             <span class="group-heading">
               <span class="group-mini" *ngIf="activeGroup?.appId" [style.background]="activeGroup?.appColor || '#f3f4f6'">
                 <img *ngIf="isOpenAiGroup(activeGroup)" [src]="openAiIconUrl" alt="icon" />
-                <i *ngIf="!isOpenAiGroup(activeGroup) && activeGroup?.appIconClass" [class]="activeGroup?.appIconClass" [style.color]="fgColor(activeGroup?.appColor)"></i>
-                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconClass && activeGroup?.appIconUrl" [src]="activeGroup?.appIconUrl" alt="icon" />
-                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconClass && !activeGroup?.appIconUrl" [src]="simpleIconUrlFn?.(activeGroup?.appId) || ''" alt="icon" />
+                <img *ngIf="!isOpenAiGroup(activeGroup) && activeGroup?.appIconUrl" [src]="activeGroup?.appIconUrl" alt="icon" />
+                <i *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconUrl && activeGroup?.appIconClass" [class]="activeGroup?.appIconClass" [style.color]="fgColor(activeGroup?.appColor)"></i>
+                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconUrl && !activeGroup?.appIconClass" [src]="simpleIconUrlFn?.(activeGroup?.appId) || ''" alt="icon" />
               </span>
               <span class="group-name">{{ activeGroup?.title }}</span>
             </span>

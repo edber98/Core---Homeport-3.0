@@ -426,7 +426,7 @@
       "name": "OpenProject",
       "title": "OpenProject",
       "iconClass": "fa-solid fa-diagram-project",
-      "color": "#1f6feb",
+      "color": "#cbddf7",
       "iconUrl": "https://cdn.simpleicons.org/openproject",
       "tags": [
         "openproject",

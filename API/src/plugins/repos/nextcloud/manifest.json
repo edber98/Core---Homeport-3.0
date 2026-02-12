@@ -1135,7 +1135,7 @@
       "name": "Nextcloud Files",
       "title": "Nextcloud Files",
       "iconClass": "fa-solid fa-cloud",
-      "color": "#0082C9",
+      "color": "#98daff",
       "tags": [
         "nextcloud",
         "files",
@@ -1205,7 +1205,7 @@
       "name": "Nextcloud Talk",
       "title": "Nextcloud Talk",
       "iconClass": "fa-solid fa-comments",
-      "color": "#0082C9",
+      "color": "#98daff",
       "tags": [
         "nextcloud",
         "talk",
@@ -1222,7 +1222,7 @@
       "name": "Nextcloud Calendar",
       "title": "Nextcloud Calendar",
       "iconClass": "fa-solid fa-calendar",
-      "color": "#0082C9",
+      "color": "#98daff",
       "tags": [
         "nextcloud",
         "calendar",

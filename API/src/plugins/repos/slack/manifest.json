@@ -1061,7 +1061,7 @@
       "name": "Slack",
       "title": "Slack",
       "iconClass": "fa-brands fa-slack",
-      "color": "#4A154B",
+      "color": "#fdcdff",
       "tags": [
         "slack",
         "messaging",

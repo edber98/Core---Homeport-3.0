@@ -279,7 +279,7 @@
       "title": "E-mail (SMTP/IMAP)",
       "iconClass": "fa-solid fa-envelope",
       "iconUrl": "https://cdn.simpleicons.org/gmail",
-      "color": "#ef4444",
+      "color": "#fff1f1",
       "tags": [
         "email"
       ],
@@ -389,7 +389,7 @@
       "title": "Gmail",
       "iconClass": "fa-brands fa-google",
       "iconUrl": "https://cdn.simpleicons.org/gmail",
-      "color": "#ea4335",
+      "color": "#ffcbc7",
       "tags": [
         "email",
         "gmail"
@@ -441,8 +441,8 @@
       "name": "Outlook",
       "title": "Microsoft Outlook",
       "iconClass": "fa-brands fa-microsoft",
-      "iconUrl": "https://cdn.simpleicons.org/microsoftoutlook",
-      "color": "#2563eb",
+      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
+      "color": "#6c93ed",
       "tags": [
         "email",
         "outlook"

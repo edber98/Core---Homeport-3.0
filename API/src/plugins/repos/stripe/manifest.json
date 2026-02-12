@@ -1597,7 +1597,7 @@
       "name": "Stripe",
       "title": "Stripe",
       "iconClass": "fa-brands fa-stripe",
-      "color": "#635BFF",
+      "color": "#c8c5fa",
       "tags": [
         "stripe",
         "payment",
