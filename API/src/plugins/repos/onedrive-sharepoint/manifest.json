@@ -415,7 +415,11 @@
                 "value": "edit"
               }
             ],
-            "default": "view"
+            "default": "view",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

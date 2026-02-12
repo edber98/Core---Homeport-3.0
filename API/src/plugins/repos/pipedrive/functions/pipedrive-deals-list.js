@@ -11,6 +11,7 @@ module.exports = {
 
     const results = Array.isArray(res.data) ? res.data : [];
     const deals = results.map(r => ({ id: r.id, title: r.title, value: r.value, currency: r.currency, stage_id: r.stage_id, pipeline_id: r.pipeline_id, status: r.status, person_id: r.person_id?.value || r.person_id, org_id: r.org_id?.value || r.org_id, add_time: r.add_time }));
-    return { ok: true, deals };
+    const hasMore = res.pagination?.more_items_in_collection ? "true" : "false";
+    return { ok: true, hasMore, deals };
   }
 };

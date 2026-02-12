@@ -373,7 +373,11 @@
                 "label": "refusée",
                 "value": "declined"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -682,7 +686,11 @@
                 "label": "refusée",
                 "value": "declined"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

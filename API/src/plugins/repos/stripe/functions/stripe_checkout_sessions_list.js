@@ -13,6 +13,7 @@ module.exports = {
       id: s.id, url: s.url, mode: s.mode, status: s.status,
       customer: s.customer, amount_total: s.amount_total, currency: s.currency
     }));
-    return { ok: true, sessions };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, sessions, hasMore };
   }
 };

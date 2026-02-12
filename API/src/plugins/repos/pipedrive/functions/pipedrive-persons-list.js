@@ -15,6 +15,7 @@ module.exports = {
       const phone = (Array.isArray(r.phone) && r.phone.length > 0) ? r.phone[0].value : (r.phone || "");
       return { id: r.id, name: r.name, email, phone, org_id: r.org_id, add_time: r.add_time };
     });
-    return { ok: true, persons };
+    const hasMore = res.pagination?.more_items_in_collection ? "true" : "false";
+    return { ok: true, hasMore, persons };
   }
 };

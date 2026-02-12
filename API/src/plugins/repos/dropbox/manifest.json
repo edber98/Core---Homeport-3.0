@@ -543,7 +543,11 @@
                 "value": "overwrite"
               }
             ],
-            "default": "overwrite"
+            "default": "overwrite",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -964,7 +968,11 @@
                 "value": "true"
               }
             ],
-            "default": "false"
+            "default": "false",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1191,7 +1199,11 @@
                 "value": "w256h256"
               }
             ],
-            "default": "w128h128"
+            "default": "w128h128",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1397,7 +1409,11 @@
                 "value": "editor"
               }
             ],
-            "default": "viewer"
+            "default": "viewer",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

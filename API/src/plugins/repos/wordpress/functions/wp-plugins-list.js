@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.wpRequest(opts, "/plugins", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    return { ok: true, status: "success", message: JSON.stringify(res.data) };
+    return { ok: true, status: "success", message: JSON.stringify(res.data), totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

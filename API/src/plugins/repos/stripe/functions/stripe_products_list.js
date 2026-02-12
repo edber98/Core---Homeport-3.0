@@ -14,6 +14,7 @@ module.exports = {
       id: p.id, name: p.name, description: p.description,
       active: p.active, created: p.created
     }));
-    return { ok: true, products };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, products, hasMore };
   }
 };

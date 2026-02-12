@@ -189,7 +189,11 @@
                 "label": "public",
                 "value": "public"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -459,7 +463,11 @@
                 "label": "none",
                 "value": "none"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2771,7 +2779,11 @@
                 "label": "null",
                 "value": "null"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2997,7 +3009,11 @@
                 "label": "null",
                 "value": "null"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3699,7 +3715,11 @@
                 "label": "incomplete",
                 "value": "incomplete"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -3895,7 +3915,11 @@
                 "label": "starred",
                 "value": "starred"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -4242,7 +4266,11 @@
                 "label": "public",
                 "value": "public"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",

@@ -112,6 +112,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Deals",
           "description": "Liste des deals",
@@ -290,6 +297,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Personnes",
           "description": "Liste des personnes",
@@ -422,6 +436,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Organisations",
@@ -592,6 +613,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Activités",
           "description": "Liste des activités",
@@ -743,6 +771,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Pipelines",
           "description": "Liste des pipelines",
@@ -866,6 +901,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Étapes",
@@ -1000,6 +1042,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Notes",
           "description": "Liste des notes",
@@ -1078,6 +1127,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "text",
           "key": "status",

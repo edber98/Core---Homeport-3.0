@@ -1214,7 +1214,11 @@
                 "label": "Désabonné",
                 "value": "unsubscribed"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1407,7 +1411,11 @@
                 "label": "Nettoyé",
                 "value": "cleaned"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1902,7 +1910,11 @@
                 "label": "Planifiée",
                 "value": "schedule"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2808,7 +2820,11 @@
                 "label": "Campagne envoyée",
                 "value": "campaign"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

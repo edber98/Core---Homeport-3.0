@@ -23,6 +23,8 @@ module.exports = {
           domain, fields: ["id", "name", "email", "phone", "street", "city", "country_id", "is_company"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, partners: res.data };
+        const countRes = await utils.odooCall(opts, "res.partner", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, partners: res.data, totalCount: countRes.data || 0 };
   }
 };

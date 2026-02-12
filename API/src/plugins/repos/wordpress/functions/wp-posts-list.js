@@ -14,6 +14,6 @@ module.exports = {
 
     const results = Array.isArray(res.data) ? res.data : [];
     const posts = results.map(r => ({ id: String(r.id), title: r.title?.rendered || "", slug: r.slug, status: r.status, author: String(r.author || ""), date: r.date }));
-    return { ok: true, posts };
+    return { ok: true, posts, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

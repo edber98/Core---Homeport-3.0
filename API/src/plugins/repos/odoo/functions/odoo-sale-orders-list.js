@@ -23,6 +23,8 @@ module.exports = {
           domain, fields: ["id", "name", "partner_id", "state", "amount_total", "date_order"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, sale_orders: res.data };
+        const countRes = await utils.odooCall(opts, "sale.order", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, sale_orders: res.data, totalCount: countRes.data || 0 };
   }
 };

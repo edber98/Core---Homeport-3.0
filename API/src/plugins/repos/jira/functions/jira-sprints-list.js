@@ -22,6 +22,7 @@ module.exports = {
       startDate: r.startDate || "",
       endDate: r.endDate || ""
     }));
-    return { ok: true, sprints };
+    const totalCount = res.data?.total || 0;
+    return { ok: true, totalCount, sprints };
   }
 };

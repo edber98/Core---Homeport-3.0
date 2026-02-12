@@ -180,7 +180,11 @@
                 "value": "DELETE"
               }
             ],
-            "default": "POST"
+            "default": "POST",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -208,7 +212,11 @@
                 "value": "multipart/form-data"
               }
             ],
-            "default": "application/json"
+            "default": "application/json",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "checkbox",
@@ -315,7 +323,11 @@
             "col": {
               "xs": 24
             },
-            "default": "GET"
+            "default": "GET",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",

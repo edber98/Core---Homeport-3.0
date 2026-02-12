@@ -36,7 +36,8 @@ async function pdRequest(opts, path, options = {}) {
   if (data && data.success === false) {
     return { ok: false, error: data.error || "API error", details: data };
   }
-  return { ok: true, data: data?.data ?? data };
+  const pagination = data?.additional_data?.pagination || null;
+  return { ok: true, data: data?.data ?? data, pagination };
 }
 
 module.exports = { utils: { pdRequest } };

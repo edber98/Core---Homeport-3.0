@@ -85,6 +85,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Contacts",
           "description": "Liste des contacts",
@@ -236,6 +250,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Entreprises",
           "description": "Liste des entreprises",
@@ -386,6 +414,20 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Deals",
@@ -546,6 +588,20 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Tickets",
@@ -891,6 +947,20 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Proprietaires",
@@ -3146,7 +3216,11 @@
                 "label": "Tickets",
                 "value": "tickets"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3218,7 +3292,11 @@
                 "label": "Tickets",
                 "value": "tickets"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",

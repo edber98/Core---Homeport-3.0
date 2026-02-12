@@ -23,6 +23,8 @@ module.exports = {
           domain, fields: ["id", "name", "partner_id", "picking_type_id", "state", "origin"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, pickings: res.data };
+        const countRes = await utils.odooCall(opts, "stock.picking", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, pickings: res.data, totalCount: countRes.data || 0 };
   }
 };

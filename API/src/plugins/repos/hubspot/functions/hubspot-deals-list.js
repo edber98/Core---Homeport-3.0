@@ -11,7 +11,10 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const results = (res.data && res.data.results) || [];
+    const paging = res.data && res.data.paging;
+    const hasMore = !!(paging && paging.next);
+    const nextAfter = (paging && paging.next && paging.next.after) || null;
     const deals = results.map(r => ({ id: r.id, ...r.properties, createdate: r.createdAt }));
-    return { ok: true, deals };
+    return { ok: true, deals, hasMore, nextAfter };
   }
 };

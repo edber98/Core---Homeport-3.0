@@ -36,7 +36,9 @@ async function wpRequest(opts, path, options = {}) {
   if (!res.ok) {
     return { ok: false, error: data?.message || `HTTP ${res.status}`, status: res.status, details: data };
   }
-  return { ok: true, data };
+  const totalCount = parseInt(res.headers.get("x-wp-total") || "0", 10) || 0;
+  const totalPages = parseInt(res.headers.get("x-wp-totalpages") || "0", 10) || 0;
+  return { ok: true, data, totalCount, totalPages };
 }
 
 module.exports = { utils: { wpRequest } };

@@ -53,14 +53,18 @@
           "key": "url",
           "label": "URL",
           "description": "URL de l'image générée.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "textarea",
           "key": "b64",
           "label": "Base64",
           "description": "Image encodée en base64.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     }
@@ -184,7 +188,11 @@
                 "value": "gemini-1.5-flash"
               }
             ],
-            "default": "gemini-2.0-flash"
+            "default": "gemini-2.0-flash",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -311,7 +319,11 @@
                 "value": "gemini-1.5-flash"
               }
             ],
-            "default": "gemini-2.0-flash"
+            "default": "gemini-2.0-flash",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -479,7 +491,11 @@
                 "value": "gemini-1.5-flash"
               }
             ],
-            "default": "gemini-2.0-flash"
+            "default": "gemini-2.0-flash",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -568,7 +584,9 @@
           "id": "in",
           "name": "In",
           "type": "any",
-          "accepts": ["any"]
+          "accepts": [
+            "any"
+          ]
         }
       ],
       "outputHandles": [
@@ -595,35 +613,61 @@
             "key": "model",
             "label": "Modèle",
             "description": "Modèle Gemini à utiliser.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "Gemini 2.0 Flash", "value": "gemini-2.0-flash" },
-              { "label": "Gemini 1.5 Pro", "value": "gemini-1.5-pro" }
+              {
+                "label": "Gemini 2.0 Flash",
+                "value": "gemini-2.0-flash"
+              },
+              {
+                "label": "Gemini 1.5 Pro",
+                "value": "gemini-1.5-pro"
+              }
             ],
-            "default": "gemini-2.0-flash"
+            "default": "gemini-2.0-flash",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
             "key": "system",
             "label": "Système",
             "description": "Instructions système (optionnel).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "prompt",
             "label": "Prompt",
             "description": "Question ou instruction sur l'image.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "file",
             "key": "image",
             "label": "Image",
             "description": "Image à analyser.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
             "file": {
               "accept": "image/*",
               "maxSize": 20971520,
@@ -645,7 +689,12 @@
       },
       "subtitle": "Vision",
       "group": "Vision",
-      "tags": ["google", "gemini", "vision", "ai"]
+      "tags": [
+        "google",
+        "gemini",
+        "vision",
+        "ai"
+      ]
     },
     {
       "key": "google_ai_image_generate",
@@ -661,7 +710,9 @@
           "id": "in",
           "name": "In",
           "type": "any",
-          "accepts": ["any"]
+          "accepts": [
+            "any"
+          ]
         }
       ],
       "outputHandles": [
@@ -688,40 +739,81 @@
             "key": "model",
             "label": "Modèle",
             "description": "Modèle Imagen à utiliser.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "Imagen 3.0", "value": "imagen-3.0-generate-001" }
+              {
+                "label": "Imagen 3.0",
+                "value": "imagen-3.0-generate-001"
+              }
             ],
-            "default": "imagen-3.0-generate-001"
+            "default": "imagen-3.0-generate-001",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
             "key": "prompt",
             "label": "Prompt",
             "description": "Description de l'image souhaitée.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "select",
             "key": "size",
             "label": "Ratio",
             "description": "Ratio d'aspect de l'image.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "1:1", "value": "1:1" },
-              { "label": "16:9", "value": "16:9" },
-              { "label": "9:16", "value": "9:16" },
-              { "label": "4:3", "value": "4:3" },
-              { "label": "3:4", "value": "3:4" }
+              {
+                "label": "1:1",
+                "value": "1:1"
+              },
+              {
+                "label": "16:9",
+                "value": "16:9"
+              },
+              {
+                "label": "9:16",
+                "value": "9:16"
+              },
+              {
+                "label": "4:3",
+                "value": "4:3"
+              },
+              {
+                "label": "3:4",
+                "value": "3:4"
+              }
             ],
-            "default": "1:1"
+            "default": "1:1",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ]
       },
       "subtitle": "Images",
       "group": "Images",
-      "tags": ["google", "gemini", "images", "ai"]
+      "tags": [
+        "google",
+        "gemini",
+        "images",
+        "ai"
+      ]
     }
   ]
 }

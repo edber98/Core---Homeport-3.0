@@ -9,6 +9,13 @@ module.exports = {
 
     const res = await utils.ateraRequest(opts, "/contracts", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
-    return { ok: true, items: res.data?.items || [], totalItemCount: res.data?.totalItemCount };
+    return {
+      ok: true,
+      items: res.data?.items || [],
+      totalItemCount: res.data?.totalItemCount || 0,
+      page: res.data?.page || 1,
+      itemsInPage: res.data?.itemsInPage || 0,
+      totalPages: res.data?.totalPages || 0
+    };
   }
 };

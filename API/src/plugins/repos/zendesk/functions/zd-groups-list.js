@@ -7,6 +7,6 @@ module.exports = {
 
     const results = (res.data && res.data.groups) || [];
     const groups = results.map(r => ({ id: String(r.id || ""), name: r.name || "", description: r.description || "", createdAt: r.created_at || "" }));
-    return { ok: true, groups };
+    return { ok: true, totalCount: res.data?.count || 0, groups };
   }
 };

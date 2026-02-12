@@ -85,6 +85,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Comptes",
           "description": "Liste des comptes",
@@ -235,6 +242,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Contacts",
@@ -395,6 +409,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Opportunités",
@@ -565,6 +586,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Leads",
           "description": "Liste des leads",
@@ -734,6 +762,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Cases",
           "description": "Liste des cases",
@@ -893,6 +928,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Tâches",

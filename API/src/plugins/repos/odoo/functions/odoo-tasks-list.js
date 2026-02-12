@@ -23,6 +23,8 @@ module.exports = {
           domain, fields: ["id", "name", "project_id", "stage_id", "user_ids", "date_deadline"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, tasks: res.data };
+        const countRes = await utils.odooCall(opts, "project.task", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, tasks: res.data, totalCount: countRes.data || 0 };
   }
 };

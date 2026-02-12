@@ -14,6 +14,7 @@ module.exports = {
       id: c.id, email: c.email, name: c.name, description: c.description,
       phone: c.phone, created: c.created, currency: c.currency
     }));
-    return { ok: true, customers };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, customers, hasMore };
   }
 };

@@ -681,7 +681,11 @@
                 "value": "1024x1024"
               }
             ],
-            "default": "1024x1024"
+            "default": "1024x1024",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ]
       },
@@ -946,7 +950,11 @@
                 "value": "o1-mini"
               }
             ],
-            "default": "gpt-4o"
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1117,7 +1125,11 @@
                 "value": "o1-mini"
               }
             ],
-            "default": "gpt-4o"
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1205,7 +1217,9 @@
           "id": "in",
           "name": "In",
           "type": "any",
-          "accepts": ["any"]
+          "accepts": [
+            "any"
+          ]
         }
       ],
       "outputHandles": [
@@ -1232,35 +1246,61 @@
             "key": "model",
             "label": "Modèle",
             "description": "Modèle OpenAI à utiliser.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "GPT-4o", "value": "gpt-4o" },
-              { "label": "GPT-4o mini", "value": "gpt-4o-mini" }
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              }
             ],
-            "default": "gpt-4o"
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
             "key": "system",
             "label": "Système",
             "description": "Instructions système (optionnel).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "prompt",
             "label": "Prompt",
             "description": "Question ou instruction sur l'image.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "file",
             "key": "image",
             "label": "Image",
             "description": "Image à analyser.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
             "file": {
               "accept": "image/*",
               "maxSize": 20971520,
@@ -1282,7 +1322,11 @@
       },
       "subtitle": "Vision",
       "group": "Vision",
-      "tags": ["openai", "vision", "ai"]
+      "tags": [
+        "openai",
+        "vision",
+        "ai"
+      ]
     }
   ]
 }

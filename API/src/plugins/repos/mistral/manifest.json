@@ -1029,7 +1029,11 @@
                 "value": "mistral-small-latest"
               }
             ],
-            "default": "mistral-large-latest"
+            "default": "mistral-large-latest",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1192,7 +1196,11 @@
                 "value": "mistral-small-latest"
               }
             ],
-            "default": "mistral-large-latest"
+            "default": "mistral-large-latest",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1280,7 +1288,9 @@
           "id": "in",
           "name": "In",
           "type": "any",
-          "accepts": ["any"]
+          "accepts": [
+            "any"
+          ]
         }
       ],
       "outputHandles": [
@@ -1307,35 +1317,61 @@
             "key": "model",
             "label": "Modèle",
             "description": "Modèle Mistral à utiliser.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "Pixtral Large", "value": "pixtral-large-latest" },
-              { "label": "Mistral Small", "value": "mistral-small-latest" }
+              {
+                "label": "Pixtral Large",
+                "value": "pixtral-large-latest"
+              },
+              {
+                "label": "Mistral Small",
+                "value": "mistral-small-latest"
+              }
             ],
-            "default": "pixtral-large-latest"
+            "default": "pixtral-large-latest",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
             "key": "system",
             "label": "Système",
             "description": "Instructions système (optionnel).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "textarea",
             "key": "prompt",
             "label": "Prompt",
             "description": "Question ou instruction sur l'image.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "file",
             "key": "image",
             "label": "Image",
             "description": "Image à analyser.",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
             "file": {
               "accept": "image/*",
               "maxSize": 20971520,
@@ -1357,7 +1393,11 @@
       },
       "subtitle": "Vision",
       "group": "Vision",
-      "tags": ["mistral", "vision", "ai"]
+      "tags": [
+        "mistral",
+        "vision",
+        "ai"
+      ]
     }
   ]
 }

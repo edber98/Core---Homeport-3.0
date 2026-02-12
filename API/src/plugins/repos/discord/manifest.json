@@ -799,7 +799,11 @@
                 "label": "Forum (15)",
                 "value": "15"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1669,7 +1673,11 @@
                 "label": "1 semaine",
                 "value": "10080"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

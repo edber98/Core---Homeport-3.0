@@ -568,7 +568,11 @@
                 "value": "CONNECTIONS"
               }
             ],
-            "default": "PUBLIC"
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -682,7 +686,11 @@
                 "value": "CONNECTIONS"
               }
             ],
-            "default": "PUBLIC"
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -805,7 +813,11 @@
                 "value": "CONNECTIONS"
               }
             ],
-            "default": "PUBLIC"
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

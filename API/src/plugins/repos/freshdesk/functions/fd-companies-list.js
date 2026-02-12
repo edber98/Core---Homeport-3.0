@@ -11,6 +11,6 @@ module.exports = {
 
     const results = res.data || [];
     const companies = results.map(r => ({ id: String(r.id || ""), name: r.name || "", description: r.description || "", createdAt: r.created_at || "" }));
-    return { ok: true, companies };
+    return { ok: true, totalCount: res.totalCount || 0, companies };
   }
 };

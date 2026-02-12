@@ -802,7 +802,11 @@
                 "value": "image/webp"
               }
             ],
-            "default": "image/png"
+            "default": "image/png",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1105,7 +1109,11 @@
                 "value": "claude-haiku-3-5-20241022"
               }
             ],
-            "default": "claude-sonnet-4-5-20250929"
+            "default": "claude-sonnet-4-5-20250929",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1268,7 +1276,11 @@
                 "value": "claude-haiku-3-5-20241022"
               }
             ],
-            "default": "claude-sonnet-4-5-20250929"
+            "default": "claude-sonnet-4-5-20250929",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",

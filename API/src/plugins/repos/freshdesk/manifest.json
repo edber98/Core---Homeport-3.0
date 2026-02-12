@@ -94,6 +94,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Tickets",
           "description": "Liste des tickets",
@@ -227,6 +234,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Contacts",
           "description": "Liste des contacts",
@@ -351,6 +365,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Entreprises",
           "description": "Liste des entreprises",
@@ -466,6 +487,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Agents",
           "description": "Liste des agents",
@@ -572,6 +600,13 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Groupes",
           "description": "Liste des groupes",
@@ -677,6 +712,13 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Notes",
@@ -968,7 +1010,11 @@
                 "label": "Urgente",
                 "value": "4"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -995,7 +1041,11 @@
                 "label": "Fermé",
                 "value": "5"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1164,7 +1214,11 @@
                 "label": "Urgente",
                 "value": "4"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -1191,7 +1245,11 @@
                 "label": "Fermé",
                 "value": "5"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2218,7 +2276,11 @@
                 "label": "Publique",
                 "value": "false"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2550,7 +2612,11 @@
                 "label": "Contact créé",
                 "value": "contact_created"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

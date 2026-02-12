@@ -170,7 +170,11 @@
                 "value": 8
               }
             ],
-            "description": "Type de réunion."
+            "description": "Type de réunion.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -552,7 +556,11 @@
                 "value": "upcoming"
               }
             ],
-            "description": "Type de réunions à lister."
+            "description": "Type de réunions à lister.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -793,7 +801,11 @@
                 "value": 6
               }
             ],
-            "description": "Type de webinaire."
+            "description": "Type de webinaire.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -1264,7 +1276,11 @@
                 "value": "pending"
               }
             ],
-            "description": "Filtre par statut."
+            "description": "Filtre par statut.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1841,7 +1857,11 @@
                 "value": "live"
               }
             ],
-            "description": "Type de réunions."
+            "description": "Type de réunions.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2017,7 +2037,11 @@
                 "value": "deactivate"
               }
             ],
-            "description": "Filtre par statut."
+            "description": "Filtre par statut.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2088,7 +2112,11 @@
                 "value": "external"
               }
             ],
-            "description": "Type de contacts."
+            "description": "Type de contacts.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",

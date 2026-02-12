@@ -1791,7 +1791,11 @@
                 "value": "days_28"
               }
             ],
-            "default": "day"
+            "default": "day",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1903,7 +1907,11 @@
                 "value": "OFFLINE_CONVERSION"
               }
             ],
-            "default": "CUSTOM"
+            "default": "CUSTOM",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

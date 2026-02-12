@@ -1301,7 +1301,11 @@
                 "value": "PUT"
               }
             ],
-            "default": "GET"
+            "default": "GET",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1921,7 +1925,11 @@
                 "label": "Domaine",
                 "value": "Domain"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

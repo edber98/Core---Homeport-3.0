@@ -22,6 +22,8 @@ module.exports = {
           domain, fields: ["id", "name", "type", "code"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, journals: res.data };
+        const countRes = await utils.odooCall(opts, "account.journal", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, journals: res.data, totalCount: countRes.data || 0 };
   }
 };

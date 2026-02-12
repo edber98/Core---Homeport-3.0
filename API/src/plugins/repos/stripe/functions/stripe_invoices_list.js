@@ -17,6 +17,7 @@ module.exports = {
       currency: inv.currency, created: inv.created,
       hosted_invoice_url: inv.hosted_invoice_url
     }));
-    return { ok: true, invoices };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, invoices, hasMore };
   }
 };

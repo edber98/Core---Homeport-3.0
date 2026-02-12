@@ -259,7 +259,11 @@
                 "type": "required"
               }
             ],
-            "default": "mysql"
+            "default": "mysql",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -346,7 +350,11 @@
                 "value": "true"
               }
             ],
-            "default": "false"
+            "default": "false",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

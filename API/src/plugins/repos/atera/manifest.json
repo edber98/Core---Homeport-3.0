@@ -317,6 +317,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Contacts",
           "description": "Liste des contacts",
@@ -486,6 +522,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Tickets",
           "description": "Liste des tickets",
@@ -645,6 +717,42 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Agents",
@@ -815,6 +923,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Alertes",
           "description": "Liste des alertes",
@@ -975,6 +1119,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Contrats",
           "description": "Liste des contrats",
@@ -1108,6 +1288,42 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Articles",
           "description": "Liste des articles",
@@ -1204,6 +1420,42 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Départements",
@@ -1319,6 +1571,42 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Appareils",
@@ -2585,17 +2873,42 @@
             "label": "Champ de recherche",
             "description": "Dans quel champ chercher.",
             "options": [
-              { "label": "Tous les champs", "value": "all" },
-              { "label": "Nom du client", "value": "CustomerName" },
-              { "label": "Domaine", "value": "Domain" },
-              { "label": "Adresse", "value": "Address" },
-              { "label": "Ville", "value": "City" },
-              { "label": "Téléphone", "value": "Phone" },
-              { "label": "Notes", "value": "Notes" }
+              {
+                "label": "Tous les champs",
+                "value": "all"
+              },
+              {
+                "label": "Nom du client",
+                "value": "CustomerName"
+              },
+              {
+                "label": "Domaine",
+                "value": "Domain"
+              },
+              {
+                "label": "Adresse",
+                "value": "Address"
+              },
+              {
+                "label": "Ville",
+                "value": "City"
+              },
+              {
+                "label": "Téléphone",
+                "value": "Phone"
+              },
+              {
+                "label": "Notes",
+                "value": "Notes"
+              }
             ],
             "default": "all",
             "col": {
               "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2604,12 +2917,22 @@
             "label": "Mode de recherche",
             "description": "Contient (insensible à la casse) ou expression régulière.",
             "options": [
-              { "label": "Contient", "value": "contains" },
-              { "label": "Regex", "value": "regex" }
+              {
+                "label": "Contient",
+                "value": "contains"
+              },
+              {
+                "label": "Regex",
+                "value": "regex"
+              }
             ],
             "default": "contains",
             "col": {
               "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -2684,17 +3007,42 @@
             "label": "Champ de recherche",
             "description": "Dans quel champ chercher.",
             "options": [
-              { "label": "Tous les champs", "value": "all" },
-              { "label": "Nom du client", "value": "CustomerName" },
-              { "label": "Domaine", "value": "Domain" },
-              { "label": "Adresse", "value": "Address" },
-              { "label": "Ville", "value": "City" },
-              { "label": "Téléphone", "value": "Phone" },
-              { "label": "Notes", "value": "Notes" }
+              {
+                "label": "Tous les champs",
+                "value": "all"
+              },
+              {
+                "label": "Nom du client",
+                "value": "CustomerName"
+              },
+              {
+                "label": "Domaine",
+                "value": "Domain"
+              },
+              {
+                "label": "Adresse",
+                "value": "Address"
+              },
+              {
+                "label": "Ville",
+                "value": "City"
+              },
+              {
+                "label": "Téléphone",
+                "value": "Phone"
+              },
+              {
+                "label": "Notes",
+                "value": "Notes"
+              }
             ],
             "default": "all",
             "col": {
               "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2703,12 +3051,22 @@
             "label": "Mode de recherche",
             "description": "Contient (insensible à la casse) ou expression régulière.",
             "options": [
-              { "label": "Contient", "value": "contains" },
-              { "label": "Regex", "value": "regex" }
+              {
+                "label": "Contient",
+                "value": "contains"
+              },
+              {
+                "label": "Regex",
+                "value": "regex"
+              }
             ],
             "default": "contains",
             "col": {
               "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -2716,7 +3074,7 @@
         "displayDescription": false
       },
       "subtitle": "Clients",
-      "icon": "fa-solid fa-user-magnifying-glass",
+      "icon": "fa-solid fa-magnifying-glass",
       "group": "Clients",
       "tags": [
         "recherche",

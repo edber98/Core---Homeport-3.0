@@ -16,6 +16,7 @@ module.exports = {
       current_period_start: s.current_period_start, current_period_end: s.current_period_end,
       created: s.created, cancel_at_period_end: s.cancel_at_period_end
     }));
-    return { ok: true, subscriptions };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, subscriptions, hasMore };
   }
 };

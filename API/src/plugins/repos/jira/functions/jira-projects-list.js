@@ -18,6 +18,7 @@ module.exports = {
       projectTypeKey: r.projectTypeKey || "",
       lead: r.lead ? r.lead.displayName : ""
     }));
-    return { ok: true, projects };
+    const totalCount = res.data?.total || 0;
+    return { ok: true, totalCount, projects };
   }
 };

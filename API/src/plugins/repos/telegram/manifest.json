@@ -139,7 +139,11 @@
                 "label": "MarkdownV2",
                 "value": "MarkdownV2"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "checkbox",
@@ -480,7 +484,11 @@
                 "label": "MarkdownV2",
                 "value": "MarkdownV2"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -666,7 +674,11 @@
                 "label": "MarkdownV2",
                 "value": "MarkdownV2"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2188,7 +2200,11 @@
                 "label": "quiz",
                 "value": "quiz"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "checkbox",

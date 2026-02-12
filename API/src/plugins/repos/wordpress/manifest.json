@@ -112,6 +112,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Articles",
           "description": "Liste des articles",
@@ -272,6 +286,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Pages",
           "description": "Liste des pages",
@@ -423,6 +451,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Médias",
           "description": "Liste des médias",
@@ -556,6 +598,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Catégories",
           "description": "Liste des catégories",
@@ -661,6 +717,20 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Tags",
@@ -795,6 +865,20 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Commentaires",
           "description": "Liste des commentaires",
@@ -927,6 +1011,20 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": { "xs": 24 }
+        },
         {
           "type": "section",
           "title": "Utilisateurs",

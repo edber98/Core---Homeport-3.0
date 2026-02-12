@@ -24,6 +24,8 @@ module.exports = {
           domain, fields: ["id", "name", "partner_id", "move_type", "state", "amount_total", "invoice_date"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, invoices: res.data };
+        const countRes = await utils.odooCall(opts, "account.move", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, invoices: res.data, totalCount: countRes.data || 0 };
   }
 };

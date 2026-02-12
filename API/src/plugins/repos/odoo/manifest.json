@@ -898,7 +898,11 @@
                 "label": "Stockable",
                 "value": "product"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1209,7 +1213,11 @@
                 "label": "Stockable",
                 "value": "product"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1573,7 +1581,11 @@
                 "label": "Annule",
                 "value": "cancel"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1874,7 +1886,11 @@
                 "label": "Annule",
                 "value": "cancel"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1965,7 +1981,11 @@
                 "label": "Avoir fournisseur",
                 "value": "in_refund"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2249,7 +2269,11 @@
                 "label": "Annule",
                 "value": "cancel"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -2280,7 +2304,11 @@
                 "label": "Avoir fournisseur",
                 "value": "in_refund"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -2704,7 +2732,11 @@
                 "label": "Opportunite",
                 "value": "opportunity"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3452,7 +3484,11 @@
                 "label": "Annule",
                 "value": "cancel"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -3579,7 +3615,11 @@
                 "label": "Urgente",
                 "value": "3"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3759,7 +3799,11 @@
                 "label": "Urgente",
                 "value": "3"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3930,7 +3974,11 @@
                 "label": "Urgente",
                 "value": "3"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -4493,7 +4541,11 @@
                 "label": "Annule",
                 "value": "cancel"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -4664,7 +4716,11 @@
                 "label": "Divers",
                 "value": "général"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -4872,6 +4928,78 @@
         "lecture",
         "odoo"
       ]
+    },
+    {
+      "key": "odoo_count",
+      "name": "odooCount",
+      "schemaVersion": 2,
+      "title": "Compter des enregistrements",
+      "subtitle": "Générique",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Générique",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-calculator",
+      "description": "Compter le nombre d'enregistrements d'un modèle Odoo avec un filtre optionnel.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_count_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Compter des enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom technique du modèle (ex: res.partner, sale.order).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "domain",
+            "label": "Domaine (JSON)",
+            "description": "Filtre au format JSON (ex: [[\"active\",\"=\",true]]). Vide = tous les enregistrements.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Générique",
+      "tags": [
+        "compteur",
+        "odoo"
+      ]
     }
   ],
   "variables": {
@@ -4963,6 +5091,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Partenaires",
@@ -5124,6 +5261,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Produits",
           "description": "Liste : Produits",
@@ -5274,6 +5420,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Commandes de vente",
@@ -5426,6 +5581,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Bons de commande",
           "description": "Liste : Bons de commande",
@@ -5576,6 +5740,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Factures",
@@ -5745,6 +5918,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Leads CRM",
@@ -5960,6 +6142,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Tâches",
           "description": "Liste : Tâches",
@@ -6102,6 +6293,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Bons de transfert",
           "description": "Liste : Bons de transfert",
@@ -6243,6 +6443,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Stock Quants",
@@ -6395,6 +6604,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Tickets Helpdesk",
           "description": "Liste : Tickets Helpdesk",
@@ -6546,6 +6764,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Employes",
           "description": "Liste : Employes",
@@ -6679,6 +6906,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Ordres de fabrication",
           "description": "Liste : Ordres de fabrication",
@@ -6794,6 +7030,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Comptes comptables",
           "description": "Liste : Comptes comptables",
@@ -6899,6 +7144,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements correspondant au filtre.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Journaux comptables",
@@ -7010,6 +7264,33 @@
           "key": "data",
           "label": "Données",
           "description": "Données brutes JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_count_result": {
+      "title": "Compteur Odoo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "count",
+          "label": "Nombre total",
+          "description": "Nombre total d'enregistrements.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "model",
+          "label": "Modèle",
+          "description": "Modèle Odoo interrogé.",
           "col": {
             "xs": 24
           }

@@ -13,6 +13,6 @@ module.exports = {
 
     const results = Array.isArray(res.data) ? res.data : [];
     const medias = results.map(r => ({ id: String(r.id), title: r.title?.rendered || "", source_url: r.source_url || "", media_type: r.media_type || "", date: r.date }));
-    return { ok: true, medias };
+    return { ok: true, medias, totalCount: res.totalCount || 0, totalPages: res.totalPages || 0 };
   }
 };

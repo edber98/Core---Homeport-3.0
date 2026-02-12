@@ -339,7 +339,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -477,7 +478,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -928,7 +930,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -1052,7 +1055,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -1594,7 +1598,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -1708,7 +1713,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2002,7 +2008,8 @@
               }
             ],
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {

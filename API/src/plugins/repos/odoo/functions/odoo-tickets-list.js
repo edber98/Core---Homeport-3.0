@@ -24,6 +24,8 @@ module.exports = {
           domain, fields: ["id", "name", "partner_id", "team_id", "stage_id", "priority", "description"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, tickets: res.data };
+        const countRes = await utils.odooCall(opts, "helpdesk.ticket", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, tickets: res.data, totalCount: countRes.data || 0 };
   }
 };

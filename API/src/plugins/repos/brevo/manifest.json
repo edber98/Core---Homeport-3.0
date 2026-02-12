@@ -1818,7 +1818,11 @@
                 "label": "Archivée",
                 "value": "archive"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2397,7 +2401,11 @@
                 "label": "Désabonnement",
                 "value": "unsubscribed"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

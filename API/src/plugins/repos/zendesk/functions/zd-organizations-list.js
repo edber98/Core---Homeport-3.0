@@ -12,6 +12,6 @@ module.exports = {
 
     const results = (res.data && res.data.organizations) || [];
     const organizations = results.map(r => ({ id: String(r.id || ""), name: r.name || "", domainNames: (r.domain_names || []).join(", "), createdAt: r.created_at || "" }));
-    return { ok: true, organizations };
+    return { ok: true, totalCount: res.data?.count || 0, organizations };
   }
 };

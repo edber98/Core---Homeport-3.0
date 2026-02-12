@@ -1428,7 +1428,11 @@
                 "label": "Organisation",
                 "value": "2"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",

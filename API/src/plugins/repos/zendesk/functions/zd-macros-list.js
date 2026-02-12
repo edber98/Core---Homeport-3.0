@@ -7,6 +7,6 @@ module.exports = {
 
     const results = (res.data && res.data.macros) || [];
     const macros = results.map(r => ({ id: String(r.id || ""), title: r.title || "", active: String(r.active || false), description: r.description || "" }));
-    return { ok: true, macros };
+    return { ok: true, totalCount: res.data?.count || 0, macros };
   }
 };

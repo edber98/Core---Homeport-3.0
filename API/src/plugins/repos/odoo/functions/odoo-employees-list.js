@@ -22,6 +22,8 @@ module.exports = {
           domain, fields: ["id", "name", "work_email", "job_title", "department_id", "work_phone"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, employees: res.data };
+        const countRes = await utils.odooCall(opts, "hr.employee", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, employees: res.data, totalCount: countRes.data || 0 };
   }
 };

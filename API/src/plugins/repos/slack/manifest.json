@@ -1841,7 +1841,11 @@
                 "label": "Messages directs",
                 "value": "im"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -2728,7 +2732,11 @@
                 "label": "PDF",
                 "value": "pdfs"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",

@@ -504,7 +504,11 @@
                 "label": "Pas de réponse",
                 "value": "no-answer"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -944,7 +948,11 @@
                 "label": "WhatsApp",
                 "value": "whatsapp"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

@@ -22,6 +22,8 @@ module.exports = {
           domain, fields: ["id", "name", "default_code", "list_price", "type", "categ_id"], limit
         });
         if (!res.ok) return res;
-        return { ok: true, products: res.data };
+        const countRes = await utils.odooCall(opts, "product.product", "search_count", [], { domain });
+        if (!countRes.ok) return countRes;
+        return { ok: true, products: res.data, totalCount: countRes.data || 0 };
   }
 };

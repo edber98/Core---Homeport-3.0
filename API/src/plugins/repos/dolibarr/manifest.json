@@ -4450,7 +4450,11 @@
                 "label": "Client et prospect",
                 "value": "3"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -4470,7 +4474,11 @@
                 "label": "Oui",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -5338,7 +5346,11 @@
                 "label": "Service",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -5404,7 +5416,11 @@
                 "label": "Oui",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -5424,7 +5440,11 @@
                 "label": "Oui",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -5819,7 +5839,11 @@
                 "label": "Services",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -6504,7 +6528,11 @@
                 "label": "Situation",
                 "value": "5"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -7091,7 +7119,11 @@
                 "label": "Public",
                 "value": "1"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -7773,7 +7805,11 @@
                 "label": "Transfert",
                 "value": "2"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -8003,7 +8039,11 @@
                 "label": "Utilisateur",
                 "value": "7"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -8507,7 +8547,11 @@
                 "label": "Critique",
                 "value": "CRITICAL"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

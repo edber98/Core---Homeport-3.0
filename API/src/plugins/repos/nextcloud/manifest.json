@@ -1774,7 +1774,11 @@
             "col": {
               "xs": 24
             },
-            "description": "Type de partage à créer."
+            "description": "Type de partage à créer.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -1811,7 +1815,11 @@
               "xs": 24
             },
             "description": "Permissions accordées.",
-            "default": "1"
+            "default": "1",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2012,7 +2020,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2373,7 +2385,11 @@
               "xs": 24
             },
             "description": "Direction de lecture.",
-            "default": "0"
+            "default": "0",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2472,7 +2488,11 @@
               "xs": 24
             },
             "description": "Type de participant.",
-            "default": "users"
+            "default": "users",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -3680,7 +3700,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -3764,7 +3788,11 @@
               "xs": 24
             },
             "description": "Type de filtre.",
-            "default": "all"
+            "default": "all",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",

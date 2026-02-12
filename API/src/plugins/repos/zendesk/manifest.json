@@ -94,6 +94,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Tickets",
           "description": "Liste des tickets",
@@ -227,6 +236,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Utilisateurs",
           "description": "Liste des utilisateurs",
@@ -342,6 +360,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Organisations",
           "description": "Liste des organisations",
@@ -447,6 +474,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Groupes",
@@ -677,6 +713,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Macros",
@@ -968,7 +1013,11 @@
                 "label": "Basse",
                 "value": "low"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -1159,7 +1208,11 @@
                 "label": "Fermé",
                 "value": "closed"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -1186,7 +1239,11 @@
                 "label": "Basse",
                 "value": "low"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -1497,7 +1554,11 @@
                 "label": "Administrateur",
                 "value": "admin"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2179,7 +2240,11 @@
                 "label": "Privé",
                 "value": "false"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2639,7 +2704,11 @@
                 "label": "Utilisateur créé",
                 "value": "user_created"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

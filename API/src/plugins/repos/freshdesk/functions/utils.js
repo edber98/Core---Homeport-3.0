@@ -34,7 +34,8 @@ async function freshdeskRequest(opts, path, options = {}) {
   if (!res.ok) {
     return { ok: false, error: data?.description || data?.message || `HTTP ${res.status}`, status: res.status, details: data };
   }
-  return { ok: true, data };
+  const totalCount = parseInt(res.headers.get("x-total-count") || "0", 10) || 0;
+  return { ok: true, data, totalCount };
 }
 
 module.exports = { utils: { freshdeskRequest } };

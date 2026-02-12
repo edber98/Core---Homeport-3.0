@@ -1719,7 +1719,11 @@
             "col": {
               "xs": 24
             },
-            "description": "Role de partage."
+            "description": "Role de partage.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -1742,7 +1746,11 @@
             "col": {
               "xs": 24
             },
-            "description": "Type de partage."
+            "description": "Type de partage.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -3365,7 +3373,11 @@
                 "label": "Dernière modification",
                 "value": "updated"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

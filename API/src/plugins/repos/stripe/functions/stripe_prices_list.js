@@ -17,6 +17,7 @@ module.exports = {
       recurring_interval: p.recurring && p.recurring.interval ? p.recurring.interval : null,
       active: p.active
     }));
-    return { ok: true, prices };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, prices, hasMore };
   }
 };

@@ -11,6 +11,7 @@ module.exports = {
 
     const records = (res.data && res.data.records) || [];
     const accounts = records.map(r => ({ id: r.Id, Name: r.Name, Industry: r.Industry, Phone: r.Phone, Website: r.Website, CreatedDate: r.CreatedDate }));
-    return { ok: true, accounts };
+    const totalCount = res.data?.totalSize || 0;
+    return { ok: true, totalCount, accounts };
   }
 };

@@ -14,6 +14,6 @@ module.exports = {
       const contact = r.contact || {};
       return { id: String(r.id || ""), name: contact.name || "", email: contact.email || "", active: String(r.active || false) };
     });
-    return { ok: true, agents };
+    return { ok: true, totalCount: res.totalCount || 0, agents };
   }
 };

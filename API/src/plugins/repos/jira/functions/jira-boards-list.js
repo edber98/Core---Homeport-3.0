@@ -18,6 +18,7 @@ module.exports = {
       type: r.type || "",
       projectKey: r.location ? r.location.projectKey || "" : ""
     }));
-    return { ok: true, boards };
+    const totalCount = res.data?.total || 0;
+    return { ok: true, totalCount, boards };
   }
 };

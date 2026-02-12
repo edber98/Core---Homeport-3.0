@@ -1928,7 +1928,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -1954,7 +1955,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -2654,7 +2656,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -2782,7 +2785,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -2832,7 +2836,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -3476,7 +3481,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -3592,7 +3598,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -3642,7 +3649,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -3783,7 +3791,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -4860,7 +4869,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {
@@ -4886,7 +4896,8 @@
               "xs": 24
             },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             },
             "options": [
               {

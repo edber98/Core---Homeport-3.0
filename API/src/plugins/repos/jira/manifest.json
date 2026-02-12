@@ -130,6 +130,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Issues",
           "description": "Liste des issues",
@@ -290,6 +299,15 @@
       },
       "fields": [
         {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
           "type": "section",
           "title": "Projets",
           "description": "Liste des projets",
@@ -404,6 +422,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Boards",
@@ -528,6 +555,15 @@
         "labelsOnTop": true
       },
       "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Sprints",

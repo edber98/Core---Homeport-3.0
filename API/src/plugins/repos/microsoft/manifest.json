@@ -1319,7 +1319,11 @@
                 "label": "HTML",
                 "value": "html"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1767,7 +1771,11 @@
                 "label": "Partagé",
                 "value": "shared"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2237,7 +2245,11 @@
                 "label": "Propriétaire",
                 "value": "owner"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2518,7 +2530,11 @@
                 "label": "Groupe",
                 "value": "group"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2927,7 +2943,11 @@
                 "label": "Bibliothèque de documents",
                 "value": "documentLibrary"
               }
-            ]
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

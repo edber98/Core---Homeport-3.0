@@ -14,6 +14,7 @@ module.exports = {
       id: t.id, amount: t.amount, currency: t.currency, type: t.type,
       status: t.status, created: t.created, description: t.description
     }));
-    return { ok: true, transactions };
+    const hasMore = !!(res.data && res.data.has_more);
+    return { ok: true, transactions, hasMore };
   }
 };

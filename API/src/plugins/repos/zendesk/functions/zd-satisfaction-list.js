@@ -9,6 +9,6 @@ module.exports = {
     const res = await utils.zendeskRequest(opts, "/satisfaction_ratings.json", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    return { ok: true, status: "success", message: JSON.stringify(res.data) };
+    return { ok: true, totalCount: res.data?.count || 0, status: "success", message: JSON.stringify(res.data) };
   }
 };

@@ -28,6 +28,7 @@ module.exports = {
         created: f.created || ""
       };
     });
-    return { ok: true, issues };
+    const totalCount = res.data?.total || 0;
+    return { ok: true, totalCount, issues };
   }
 };
