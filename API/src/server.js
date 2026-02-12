@@ -26,6 +26,8 @@ try { require('./realtime/socketio').attach(server); } catch {}
       try { const { seedToolsIfMissing } = require('./bootstrap/seed-tools'); await seedToolsIfMissing(); } catch (e) { try { console.error('[backend] seed tools failed:', e.message); } catch {} }
       // Start file cleanup cron
       try { const { startCleanupCron } = require('./services/file-cleanup'); startCleanupCron(); } catch (e) { try { console.error('[backend] file cleanup cron failed:', e.message); } catch {} }
+      // Start trigger manager — restore production flows
+      try { const { triggerManager } = require('./services/trigger-manager'); await triggerManager.startAll(); } catch (e) { try { console.error('[backend] trigger manager failed:', e.message); } catch {} }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);
     }
@@ -34,3 +36,12 @@ try { require('./realtime/socketio').attach(server); } catch {}
     console.log(`[backend] listening on http://localhost:${PORT}`);
   });
 })();
+
+// Graceful shutdown
+const _shutdownHandler = async (signal) => {
+  console.log(`[backend] ${signal} received, shutting down...`);
+  try { const { triggerManager } = require('./services/trigger-manager'); await triggerManager.shutdown(); } catch {}
+  process.exit(0);
+};
+process.on('SIGTERM', () => _shutdownHandler('SIGTERM'));
+process.on('SIGINT', () => _shutdownHandler('SIGINT'));

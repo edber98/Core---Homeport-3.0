@@ -41,4 +41,7 @@ module.exports = {
   FILE_TTL_DEFAULT: process.env.FILE_TTL_DEFAULT || '24h',
   FILE_CLEANUP_INTERVAL: process.env.FILE_CLEANUP_INTERVAL || '1h',
   FILE_EXECUTION_CLEANUP_DELAY: process.env.FILE_EXECUTION_CLEANUP_DELAY || '30m',
+
+  // Webhook base URL for trigger system (used to generate webhook URLs)
+  WEBHOOK_BASE_URL: process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
 };

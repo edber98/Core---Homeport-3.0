@@ -1,6 +1,6 @@
 module.exports = {
   async tg_webhook_event(node, msg, inputs, opts) {
-    const data = msg || {};
+    const data = (msg && msg.payload) || msg || {};
     const message = data.message || data.edited_message || {};
     const callback = data.callback_query || {};
     return {

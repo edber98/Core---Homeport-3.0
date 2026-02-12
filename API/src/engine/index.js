@@ -4,7 +4,7 @@ const { registry } = require('../plugins/registry');
 
 function log(step, data) { const payload = data === undefined ? '' : (typeof data === 'string' ? data : JSON.stringify(data)); console.log(`[engine] ${step} ${payload}`); }
 
-function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='loop') return 'loop'; return ''; }
+function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='loop') return 'loop'; if (s==='event' || s==='endpoint') return 'event'; return ''; }
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
@@ -81,7 +81,7 @@ const builtinRegistry = {
 };
 
 function buildGraph(flow){ const nodesById = new Map(); const outEdges = new Map(); const inEdges = new Map(); for (const n of (flow.nodes||[])){ n.model = n.data?.model || n.model || n.data || {}; nodesById.set(n.id, n); outEdges.set(n.id, []); inEdges.set(n.id, []); } for (const e of (flow.edges||[])){ const src = e.source, tgt = e.target; if (!nodesById.has(src) || !nodesById.has(tgt)) continue; const labelText = e.edgeLabels?.center?.data?.text ?? e.label ?? ''; const obj = { target: tgt, labelText: String(labelText).trim(), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle, source: src }; outEdges.get(src).push(obj); inEdges.get(tgt).push(obj); } return { nodesById, outEdges, inEdges }; }
-function findStartNode(nodesById){ for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.nodeKind) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'start') return n; } for (const n of nodesById.values()){ if (String(n.id).toLowerCase().includes('start')) return n; } return [...nodesById.values()][0] || null; }
+function findStartNode(nodesById){ for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.nodeKind) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'start') return n; } for (const n of nodesById.values()){ const tObj = n.model?.templateObj || {}; const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name); const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(n.model?.nodeKind) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type); if (nType === 'event') return n; } for (const n of nodesById.values()){ if (String(n.id).toLowerCase().includes('start')) return n; } return [...nodesById.values()][0] || null; }
 
 function evaluateCondition(node, initialContext, msg){
   const ctx = node.model?.context || {};
@@ -139,8 +139,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
     const kindFromName = normalizeNodeKind(tObj.nodeKind || tObj.name);
     const nType = kindFromName || normalizeNodeKind(tObj.type) || normalizeNodeKind(node.model?.nodeKind) || normalizeNodeKind(node.model?.type) || normalizeNodeKind(node.type);
     let rawKey = '';
-    if (nType === 'function'){
-      rawKey = node.model?.template || tObj?.template?.id || tObj?.template?.name || (String(tObj.id||'').toLowerCase() !== 'function' ? tObj.id : '') || node.model?.kind || node.model?.name || '';
+    if (nType === 'function' || nType === 'event'){
+      rawKey = node.model?.template || tObj?.template?.id || tObj?.template?.name || (String(tObj.id||'').toLowerCase() !== 'function' && String(tObj.id||'').toLowerCase() !== 'event' ? tObj.id : '') || node.model?.kind || node.model?.name || '';
     }
     const tmplKey = normalizeTemplateKey(rawKey);
     // Ensure structured logs under msg._nodes while keeping msg[nodeId] for result
@@ -165,6 +165,61 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+    } else if (nType === 'event'){
+      // Event trigger node: acts as entry point (like start) but also runs handler (like function)
+      const msgBefore = JSON.parse(JSON.stringify(msg));
+      nodeLog.start = new Date().toISOString();
+      nodeLog.args_pre_compilation = node.model?.context || null;
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore, templateKey: tmplKey, kind: 'event' });
+
+      const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey];
+      let result = null;
+      if (fn) {
+        // Resolve credentials (same logic as function)
+        let metaForFn = undefined;
+        try {
+          const getter = initialContext && typeof initialContext.getCredentials === 'function' ? initialContext.getCredentials : null;
+          if (getter){
+            const creds = await getter(node);
+            if (creds && typeof creds === 'object'){
+              const values = (creds && creds.values != null) ? creds.values : creds;
+              metaForFn = { credentials: values };
+            }
+          }
+        } catch {}
+        // Gather incoming by handle
+        try {
+          const incoming = { byHandle: {}, flat: [] };
+          const arr = inEdges.get(node.id) || [];
+          for (const ie of arr){
+            const srcId = ie.source; const res = msg && msg[srcId] ? msg[srcId] : undefined;
+            if (res !== undefined){
+              incoming.flat.push({ sourceId: srcId, sourceHandle: ie.sourceHandle, targetHandle: ie.targetHandle, result: res });
+              const th = String(ie.targetHandle || '');
+              if (!incoming.byHandle[th]) incoming.byHandle[th] = [];
+              incoming.byHandle[th].push(res);
+            }
+          }
+          metaForFn = { ...(metaForFn || {}), incoming };
+        } catch {}
+        try { if (initialContext && initialContext.files) metaForFn = { ...(metaForFn || {}), files: initialContext.files }; } catch {}
+        try {
+          const evalCtx = buildEvalContext(initialContext, msg);
+          const compiled = deepRender(node.model?.context || {}, evalCtx);
+          result = await fn({ id: node.id, model: node.model }, msg, compiled, metaForFn);
+        } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
+      } else {
+        // No handler: pass payload through
+        result = msg.payload || {};
+      }
+
+      nodeLog.result = result;
+      msg[node.id] = result;
+      msg.payload = result;
+      const msgAfter = JSON.parse(JSON.stringify(msg));
+      nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
+      try { console.log('[engine] event', { node: node.id, template: tmplKey, hasHandler: !!fn }); } catch {}
+      await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'condition'){
       const msgBefore = JSON.parse(JSON.stringify(msg));
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;

@@ -17,6 +17,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { UiMessageService } from '../../services/ui-message.service';
+import { TriggersBackendService, TriggerStatus } from '../../services/triggers-backend.service';
 import { environment } from '../../../environments/environment';
 
 type FlowItem = { id: string; name: string; description?: string };
@@ -80,7 +81,9 @@ type FlowItem = { id: string; name: string; description?: string };
                   nzTrigger="click"
                   [nzDisabled]="updatingIds.has(it.id)"
                   (click)="$event.stopPropagation()">
+              <span class="live-dot" *ngIf="isLive(it)"></span>
               {{ statusLabel(it.status) }}
+              <span class="trigger-count" *ngIf="triggerInfo(it)?.eventCount">{{ triggerInfo(it)!.eventCount }}</span>
             </span>
             <nz-dropdown-menu #statusMenu="nzDropdownMenu">
               <ul nz-menu>
@@ -226,6 +229,9 @@ type FlowItem = { id: string; name: string; description?: string };
     .chip.status-draft { background:#f5f3ff; border-color:#e9d5ff; color:#5b21b6; }
     .chip.status-test { background:#eff6ff; border-color:#dbeafe; color:#1e3a8a; }
     .chip.status-production { background:#ecfdf5; border-color:#d1fae5; color:#065f46; }
+    .chip .live-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-right:4px; animation: pulse-dot 1.5s ease infinite; }
+    @keyframes pulse-dot { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,0.4); } 50% { opacity:0.7; box-shadow:0 0 0 4px rgba(34,197,94,0); } }
+    .chip .trigger-count { margin-left:4px; font-size:10px; opacity:0.7; }
     /* Mobile status dots */
     .mobile-dots { display:none; align-items:center; gap:6px; margin-left: 6px; }
     .mobile-dots .dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; flex: 0 0 auto; }
@@ -296,7 +302,8 @@ export class FlowListComponent implements OnInit, OnDestroy {
   updatingIds = new Set<string>();
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) { }
+  activeTriggers = new Map<string, TriggerStatus>();
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService, private triggersApi: TriggersBackendService) { }
 
   private autoOpened = false;
   ngOnInit() {
@@ -335,6 +342,19 @@ export class FlowListComponent implements OnInit, OnDestroy {
             console.debug('[FlowList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
           } catch {}
           this.flows = list;
+          // Load active triggers for this workspace
+          try {
+            this.triggersApi.listActive(wsId!).subscribe({
+              next: (triggers) => {
+                this.zone.run(() => {
+                  this.activeTriggers.clear();
+                  for (const t of (triggers || [])) { if (t && (t as any).flowId) this.activeTriggers.set((t as any).flowId, t); }
+                  try { this.cdr.detectChanges(); } catch {}
+                });
+              },
+              error: () => {}
+            });
+          } catch {}
         });
       },
       error: () => {
@@ -444,6 +464,12 @@ export class FlowListComponent implements OnInit, OnDestroy {
       },
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; this.ui.error('Échec de la création du flow'); }); }
     });
+  }
+  isLive(it: FlowSummary): boolean {
+    return this.activeTriggers.has(it.id);
+  }
+  triggerInfo(it: FlowSummary): TriggerStatus | undefined {
+    return this.activeTriggers.get(it.id);
   }
   // Change handling moved to ngOnInit with throttle and cleanup
 }

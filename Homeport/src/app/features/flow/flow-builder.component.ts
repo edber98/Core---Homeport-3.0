@@ -34,6 +34,7 @@ import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
 import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
 import { AiConsoleBackendService } from '../../services/ai-console-backend.service';
+import { TriggersBackendService, TriggerStatus } from '../../services/triggers-backend.service';
 import { FlowAiChatComponent } from './components/ai-flow-chat.component';
 import { SpotlightAddNodeComponent } from './components/spotlight-add-node.component';
 import { environment } from '../../../environments/environment';
@@ -565,6 +566,7 @@ export class FlowBuilderComponent {
     private pathSvc: FlowPathHighlightService,
     private layoutApi: LayoutBackendService,
     private aiChats: AiConsoleBackendService,
+    private triggersApi: TriggersBackendService,
   ) { }
   isMobile = false;
   // Phones (<=768px wide). Tablets (coarse pointer but wider) are treated as non-phone.
@@ -627,6 +629,12 @@ export class FlowBuilderComponent {
   currentFlowDesc: string = '';
   currentFlowStatus: 'draft'|'test'|'production' = 'draft';
   currentFlowEnabled: boolean = false;
+
+  // Production trigger state
+  triggerStatus: TriggerStatus | null = null;
+  deploying = false;
+  undeploying = false;
+  get isProduction(): boolean { return this.currentFlowStatus === 'production' && !!this.triggerStatus?.active; }
 
   // Long-press detection for mobile context menu
   private lpTimer: any = null;
@@ -802,6 +810,8 @@ export class FlowBuilderComponent {
             }
           } finally {
             this.loadingFlowDoc = false;
+            // Load trigger status for production flows
+            try { this.loadTriggerStatus(); } catch {}
             // Extend suppression window a bit after render to avoid initial remove glitches
             this.suppressNodesRemovedUntil = Math.max(this.suppressNodesRemovedUntil, Date.now() + 1200);
             try { this.cdr.detectChanges(); } catch { }
@@ -5516,6 +5526,92 @@ export class FlowBuilderComponent {
       }
     } catch {}
     if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {}
+  }
+
+  // ── Production trigger management ──────────────────
+  loadTriggerStatus() {
+    if (!this.currentFlowId) return;
+    this.triggersApi.getStatus(this.currentFlowId).subscribe({
+      next: (st) => { this.zone.run(() => { this.triggerStatus = st; try { this.cdr.detectChanges(); } catch {} }); },
+      error: () => { this.triggerStatus = null; }
+    });
+  }
+
+  deployFlow() {
+    if (!this.currentFlowId || this.deploying) return;
+    // Save first, then deploy
+    const doDeploy = () => {
+      this.deploying = true;
+      this.triggersApi.deploy(this.currentFlowId!).subscribe({
+        next: (res) => {
+          this.zone.run(() => {
+            this.deploying = false;
+            this.currentFlowStatus = 'production';
+            this.loadTriggerStatus();
+            const msg = res.webhookUrl
+              ? `Déployé ! URL webhook : ${res.webhookUrl}`
+              : `Déployé en production (${res.triggerType})`;
+            try { this.message.success(msg); } catch { this.showToast(msg); }
+            // Show webhook URL in a modal if available
+            if (res.webhookUrl) {
+              this.modal.info({
+                nzTitle: 'URL Webhook',
+                nzContent: `<p>Configurez ce lien dans le service externe :</p><code style="word-break:break-all;user-select:all">${res.webhookUrl}</code>`,
+                nzOkText: 'OK',
+              });
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        },
+        error: (e) => {
+          this.zone.run(() => {
+            this.deploying = false;
+            const err = this.normalizeApiError(e);
+            try { this.message.error(err.message || 'Échec du déploiement'); } catch { this.showToast('Échec du déploiement'); }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        }
+      });
+    };
+
+    if (this.hasUnsavedChanges()) {
+      this._saveIfNeededThen(() => doDeploy());
+    } else {
+      doDeploy();
+    }
+  }
+
+  undeployFlow() {
+    if (!this.currentFlowId || this.undeploying) return;
+    this.modal.confirm({
+      nzTitle: 'Arrêter la production ?',
+      nzContent: 'Le trigger sera coupé et le flow ne recevra plus d\'événements.',
+      nzOkText: 'Arrêter',
+      nzOkDanger: true,
+      nzCancelText: 'Annuler',
+      nzOnOk: () => {
+        this.undeploying = true;
+        this.triggersApi.undeploy(this.currentFlowId!).subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.undeploying = false;
+              this.currentFlowStatus = 'draft';
+              this.triggerStatus = null;
+              try { this.message.success('Production arrêtée'); } catch { this.showToast('Production arrêtée'); }
+              try { this.cdr.detectChanges(); } catch {}
+            });
+          },
+          error: (e) => {
+            this.zone.run(() => {
+              this.undeploying = false;
+              const err = this.normalizeApiError(e);
+              try { this.message.error(err.message || 'Échec'); } catch { this.showToast('Échec'); }
+              try { this.cdr.detectChanges(); } catch {}
+            });
+          }
+        });
+      }
+    });
   }
 
 

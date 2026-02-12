@@ -32,6 +32,14 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
+      <!-- Production banner -->
+      <div class="production-banner" *ngIf="isProduction">
+        <i class="fa-solid fa-tower-broadcast"></i>
+        <span>Flow en production</span>
+        <span class="sep">—</span>
+        <span class="hint">Arrêtez la production pour modifier</span>
+        <span class="event-count" *ngIf="triggerStatus?.eventCount">{{ triggerStatus!.eventCount }} événement{{ (triggerStatus!.eventCount || 0) > 1 ? 's' : '' }}</span>
+      </div>
       <!-- Empty-graph starter: centered create card to open Spotlight assistant -->
       <div class="empty-starter" *ngIf="!loadingFlowDoc && (nodes?.length || 0) === 0">
         <button type="button" class="starter-card" (click)="openAddNodeStandalone()">
@@ -541,7 +549,7 @@
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <span class="divider before-run" aria-hidden="true"></span>
-      <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
+      <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" [disabled]="isProduction" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
         <span *ngIf="!isPhone">Lancer</span>
       </button>
@@ -551,6 +559,14 @@
           <span *ngIf="!isPhone">Stop</span>
         </button>
       </ng-template>
+      <button class="deploy-btn" *ngIf="!isProduction" (click)="deployFlow()" [disabled]="deploying" title="Déployer en production" aria-label="Déployer">
+        <i class="fa-solid fa-rocket"></i>
+        <span *ngIf="!isPhone">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
+      </button>
+      <button class="undeploy-btn" *ngIf="isProduction" (click)="undeployFlow()" [disabled]="undeploying" title="Arrêter la production" aria-label="Arrêter">
+        <i class="fa-solid fa-stop"></i>
+        <span *ngIf="!isPhone">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
+      </button>
     </div>
   </div>
 
