@@ -32,7 +32,7 @@ type LabelInfo = { label?: string; description?: string };
               <span class="caret" [class.collapsed]="isCollapsed(k)"></span>
               <span class="gtxt">{{ displayGroupTitle(k) }}</span>
             </div>
-            <div class="tree collapsible" [class.open]="!isCollapsed(k)">
+            <div class="tree" *ngIf="!isCollapsed(k)">
               <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: groupValue(k), path: groupPath(k), depth: 0 }"></ng-container>
             </div>
           </ng-container>
@@ -122,9 +122,9 @@ type LabelInfo = { label?: string; description?: string };
                       <div class="desc" *ngIf="fieldLabel(ent.fullPath)?.description as d">{{ d }}</div>
                     </div>
                   </div>
-                  <div class="collapsible" [class.open]="!isNodeCollapsed(ent.fullPath)">
+                  <ng-container *ngIf="!isNodeCollapsed(ent.fullPath)">
                     <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: ent.value, path: ent.fullPath, depth: depth + 1 }"></ng-container>
-                  </div>
+                  </ng-container>
                 </ng-container>
                 <ng-template #mobileObjRow>
                   <div class="row" [style.paddingLeft.px]="(depth+1) * 14" (click)="nodeCollapsed[ent.fullPath] = !nodeCollapsed[ent.fullPath]">
@@ -136,9 +136,9 @@ type LabelInfo = { label?: string; description?: string };
                       </div>
                     </div>
                   </div>
-                  <div class="collapsible" [class.open]="!nodeCollapsed[ent.fullPath]">
+                  <ng-container *ngIf="!isNodeCollapsed(ent.fullPath)">
                     <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: ent.value, path: ent.fullPath, depth: depth + 1 }"></ng-container>
-                  </div>
+                  </ng-container>
                 </ng-template>
               </ng-container>
               <ng-container *ngSwitchCase="'array'">
@@ -153,9 +153,9 @@ type LabelInfo = { label?: string; description?: string };
                       <div class="desc" *ngIf="fieldLabel(ent.fullPath)?.description as d">{{ d }}</div>
                     </div>
                   </div>
-                  <div class="collapsible" [class.open]="!isNodeCollapsed(ent.fullPath)">
+                  <ng-container *ngIf="!isNodeCollapsed(ent.fullPath)">
                     <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: ent.value, path: ent.fullPath, depth: depth + 1 }"></ng-container>
-                  </div>
+                  </ng-container>
                 </ng-container>
                 <ng-template #mobileArrRow>
                   <div class="row" [style.paddingLeft.px]="(depth+1) * 14" (click)="nodeCollapsed[ent.fullPath] = !nodeCollapsed[ent.fullPath]">
@@ -167,9 +167,9 @@ type LabelInfo = { label?: string; description?: string };
                       </div>
                     </div>
                   </div>
-                  <div class="collapsible" [class.open]="!nodeCollapsed[ent.fullPath]">
+                  <ng-container *ngIf="!isNodeCollapsed(ent.fullPath)">
                     <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: ent.value, path: ent.fullPath, depth: depth + 1 }"></ng-container>
-                  </div>
+                  </ng-container>
                 </ng-template>
               </ng-container>
               <!-- Scalar child → single leaf row (no extra child block) -->
@@ -211,9 +211,9 @@ type LabelInfo = { label?: string; description?: string };
                     </div>
                   </div>
                 </div>
-                <div class="collapsible" [class.open]="!isNodeCollapsed(it.fullPath)">
+                <ng-container *ngIf="!isNodeCollapsed(it.fullPath)">
                   <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: it.value, path: it.fullPath, depth: depth + 1 }"></ng-container>
-                </div>
+                </ng-container>
               </ng-container>
               <ng-container *ngSwitchCase="'array'">
                 <div class="row" [style.paddingLeft.px]="(depth+1) * 14" (click)="toggleNode(it.fullPath)">
@@ -223,9 +223,9 @@ type LabelInfo = { label?: string; description?: string };
                     </div>
                   </div>
                 </div>
-                <div class="collapsible" [class.open]="!isNodeCollapsed(it.fullPath)">
+                <ng-container *ngIf="!isNodeCollapsed(it.fullPath)">
                   <ng-container [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: it.value, path: it.fullPath, depth: depth + 1 }"></ng-container>
-                </div>
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>
@@ -308,8 +308,14 @@ export class JsonSchemaViewerV2Component implements OnChanges {
 
   toggleGroup(k: string) { this.collapsed[k] = !this.collapsed[k]; }
   isCollapsed(k: string): boolean { return !!this.collapsed[k]; }
-  toggleNode(p: string) { if (!p) return; this.nodeCollapsed[p] = !this.nodeCollapsed[p]; }
-  isNodeCollapsed(p: string): boolean { return !!this.nodeCollapsed[p]; }
+  toggleNode(p: string) { if (!p) return; this.nodeCollapsed[p] = !this.isNodeCollapsed(p); }
+  isNodeCollapsed(p: string): boolean {
+    if (p in this.nodeCollapsed) return this.nodeCollapsed[p];
+    // Default: collapse array items beyond [0] to avoid massive DOM on large datasets
+    const match = p.match(/\[(\d+)\]$/);
+    if (match && parseInt(match[1], 10) > 0) return true;
+    return false;
+  }
 
   private orderedTopKeys(): string[] {
     const d = this.data || {};
@@ -508,11 +514,16 @@ export class JsonSchemaViewerV2Component implements OnChanges {
   private logUnmapped(path: string) {
     try {
       if (!path) return;
-      if (this._unmapped.has(path)) return;
+      // Normalize: strip array indices so partners[0].name and partners[41].name = same key
+      const norm = path.replace(/\[\d+\]/g, '[]');
+      if (this._unmapped.has(norm)) return;
       const li = this.fieldLabel(path);
       if (!li || !li.label) {
-        this._unmapped.add(path);
-        try { console.info('[json-viewer-v2] Unmapped path:', path); } catch {}
+        this._unmapped.add(norm);
+        // Log at most 20 unique unmapped paths to stay useful without flooding
+        if (this._unmapped.size <= 20) {
+          console.info('[json-viewer-v2] Unmapped path:', norm);
+        }
       }
     } catch {}
   }
@@ -525,11 +536,17 @@ export class JsonSchemaViewerV2Component implements OnChanges {
   objectEntries(v: any, basePath: string): Array<{ key: string; value: any; fullPath: string }> {
     if (!v || typeof v !== 'object' || Array.isArray(v)) return [];
     const obj = v as Record<string, any>;
-    return Object.keys(obj).map(key => ({ key, value: obj[key], fullPath: `${basePath}.${key}` }));
+    const keys = Object.keys(obj);
+    // Cap object keys to avoid rendering 200+ fields per record (Odoo, etc.)
+    const cap = 80;
+    const slice = keys.length > cap ? keys.slice(0, cap) : keys;
+    return slice.map(key => ({ key, value: obj[key], fullPath: `${basePath}.${key}` }));
   }
   arrayEntries(v: any, basePath: string): Array<{ value: any; fullPath: string }> {
     if (!Array.isArray(v)) return [];
-    return v.map((it, i) => ({ value: it, fullPath: `${basePath}[${i}]` }));
+    // Cap desktop array rendering to avoid DOM freeze on large datasets (e.g. 50+ Odoo records)
+    const cap = Math.min(v.length, 50);
+    return v.slice(0, cap).map((it: any, i: number) => ({ value: it, fullPath: `${basePath}[${i}]` }));
   }
   preview(v: any): string {
     try {
@@ -557,7 +574,6 @@ export class JsonSchemaViewerV2Component implements OnChanges {
     ev.dataTransfer.setData('application/x-expression-tag', payload);
     ev.dataTransfer.setData('text/plain', path);
     ev.dataTransfer.effectAllowed = 'copy';
-    try { console.log('[settings-v2][dnd][json-viewer] dragstart', { path }); } catch {}
     try { ev.stopPropagation(); } catch {}
   }
 
