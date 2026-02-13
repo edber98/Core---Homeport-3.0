@@ -252,6 +252,20 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
           return item;
         });
       }
+      // Fallback: for nodes with empty preview, try output handle schema
+      for (const [nid, items] of Object.entries(map)) {
+        if ((items as any[]).length > 0) continue;
+        const nd = (this.nodes || []).find((n: any) => String((n as any).id) === nid);
+        const tmpl = (nd as any)?.data?.model?.templateObj;
+        if (!tmpl) continue;
+        const outs = Array.isArray(tmpl.outputHandles) ? tmpl.outputHandles : [];
+        const okH = outs.find((h: any) => String(h?.id) === 'ok') || outs[0] || null;
+        if (okH?.schema?.fields && Array.isArray(okH.schema.fields)) {
+          map[nid] = okH.schema.fields.filter((f: any) => f.key).map((f: any, i: number) => ({
+            id: `sch_${nid}_${i}`, name: String(f.key || f.name || `field_${i}`), type: String(f.type || 'text')
+          }));
+        }
+      }
     } catch {}
     return map;
   }
@@ -268,7 +282,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
       }
       // Fallbacks for nodes not in trace or missing outputsCount
       for (const [k, arr] of Object.entries(this.simOutputPreview || {})) {
-        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).length : 0;
+        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).reduce((sum: number, it: any) => sum + 1 + (it.children?.length || 0), 0) : 0;
       }
     } catch {}
     const ids = Object.keys(counts).filter(k => (counts as any)[k] > 0);
@@ -280,7 +294,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     const gapX = 260, gapY = 160;
     // Revenir au mode précédent (par niveau) avec 20px par item: base gap + (max du niveau précédent * 20)
     const baseGapY = 160; // espacement vertical de base (inchangé)
-    this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
+    this.layoutApi.layoutGraph(graph as any, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 25, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
       next: (res: any) => {
         try {
           const positions = (res && (res.positions || (res.data && res.data.positions))) || {};

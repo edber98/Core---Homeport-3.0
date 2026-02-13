@@ -383,6 +383,21 @@ function buildOneLevelPreview(result, templateObj){
       }
       return { preview: out, count: totalCount };
     }
+    // Fallback: output handle schema fields (for nodes with $var:-resolved schemas)
+    if (isEmpty && !schema) {
+      try {
+        const outs = Array.isArray(templateObj?.outputHandles) ? templateObj.outputHandles : [];
+        const okHandle = outs.find(h => String(h?.id) === 'ok') || outs[0] || null;
+        if (okHandle && okHandle.schema && typeof okHandle.schema === 'object' && Array.isArray(okHandle.schema.fields)) {
+          for (const field of okHandle.schema.fields) {
+            const k = String(field.key || field.name || ''); if (!k) continue;
+            out.push({ key: k, type: String(field.type || 'text') });
+            totalCount++;
+          }
+          if (out.length) return { preview: out, count: totalCount };
+        }
+      } catch {}
+    }
     if (result == null) return { preview: out, count: 0 };
     if (typeof result === 'object' && !Array.isArray(result)) {
       for (const [k,v] of Object.entries(result)) {
@@ -544,26 +559,44 @@ async function simulateViaEngineSplit(flow, targetNodeId){
     let mergedArgsPre = null, mergedArgsPost = null;
     let gotPayload = false;
     // Collect union of per-node previews from traces to drive UI output handles in fusion
-    const previewUnion = new Map(); // nodeId -> { kind, handlesUsed:Set<string>, keys: Map<key, type> }
+    const previewUnion = new Map(); // nodeId -> { kind, handlesUsed:Set<string>, keys: Map<key, {type, children: Map}>, maxOutputsCount: number }
     const addTraceToUnion = (traceArr) => {
       try {
         const arr = Array.isArray(traceArr) ? traceArr : [];
         for (const t of arr) {
           const nid = String(t?.nodeId || ''); if (!nid) continue;
           let slot = previewUnion.get(nid);
-          if (!slot) { slot = { kind: t?.kind || undefined, handlesUsed: new Set(), keys: new Map() }; previewUnion.set(nid, slot); }
+          if (!slot) { slot = { kind: t?.kind || undefined, handlesUsed: new Set(), keys: new Map(), maxOutputsCount: 0 }; previewUnion.set(nid, slot); }
           // Union handles used
           try { for (const h of (Array.isArray(t?.handlesUsed) ? t.handlesUsed : [])) slot.handlesUsed.add(String(h||'')); } catch {}
-          // Union preview keys; if same key has conflicting type, mark as 'mixed'
+          // Track max outputsCount from individual traces
+          try { const c = Number(t?.outputsCount); if (Number.isFinite(c) && c > slot.maxOutputsCount) slot.maxOutputsCount = c; } catch {}
+          // Union preview keys with children
           try {
             const items = Array.isArray(t?.resultPreview) ? t.resultPreview : [];
             for (const it of items) {
               const k = String((it && (it.key ?? it.name)) || ''); if (!k) continue;
               const typ = String(it?.type || '');
-              if (!slot.keys.has(k)) slot.keys.set(k, typ);
-              else {
-                const prev = slot.keys.get(k);
-                if (prev !== typ) slot.keys.set(k, 'mixed');
+              if (!slot.keys.has(k)) {
+                const entry = { type: typ, children: new Map() };
+                if (Array.isArray(it?.children)) {
+                  for (const ch of it.children) {
+                    const ck = String(ch?.key ?? ch?.name ?? ''); if (!ck) continue;
+                    entry.children.set(ck, String(ch?.type || ''));
+                  }
+                }
+                slot.keys.set(k, entry);
+              } else {
+                const existing = slot.keys.get(k);
+                if (existing.type !== typ) existing.type = 'mixed';
+                if (Array.isArray(it?.children)) {
+                  for (const ch of it.children) {
+                    const ck = String(ch?.key ?? ch?.name ?? ''); if (!ck) continue;
+                    const ct = String(ch?.type || '');
+                    if (!existing.children.has(ck)) existing.children.set(ck, ct);
+                    else if (existing.children.get(ck) !== ct) existing.children.set(ck, 'mixed');
+                  }
+                }
               }
             }
           } catch {}
@@ -615,10 +648,19 @@ async function simulateViaEngineSplit(flow, targetNodeId){
     const mergedTrace = ordered.map((nid) => {
       const slot = previewUnion.get(String(nid));
       if (!slot) return { nodeId: String(nid), handlesUsed: [], resultPreview: [], outputsCount: 0 };
-      const items = Array.from(slot.keys.entries()).map(([k, typ]) => ({ key: k, type: typ || '' }));
+      const items = Array.from(slot.keys.entries()).map(([k, entry]) => {
+        const item = { key: k, type: entry.type || '' };
+        if (entry.children && entry.children.size > 0) {
+          item.children = Array.from(entry.children.entries()).map(([ck, ct]) => ({ key: ck, type: ct || '' }));
+          item.children.sort((a, b) => a.key.localeCompare(b.key));
+        }
+        return item;
+      });
       // Stable order by key for deterministic UI
       items.sort((a,b) => a.key.localeCompare(b.key));
-      return { nodeId: String(nid), kind: slot.kind, handlesUsed: Array.from(slot.handlesUsed.values()), resultPreview: items, outputsCount: items.length };
+      const computedCount = items.reduce((sum, it) => sum + 1 + (it.children ? it.children.length : 0), 0);
+      const outputsCount = Math.max(slot.maxOutputsCount, computedCount);
+      return { nodeId: String(nid), kind: slot.kind, handlesUsed: Array.from(slot.handlesUsed.values()), resultPreview: items, outputsCount };
     });
     const mergedScenario = {
       id: 'engine_merged',

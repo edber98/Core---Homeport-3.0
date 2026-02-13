@@ -451,16 +451,18 @@ function simulateScenarios(flow, targetNodeId, mode = 'all') {
           if (!seen.has(e.sourceId)) {
             seen.add(e.sourceId);
             let resultPreview = [];
+            let outputsCount = 0;
             try {
               const nodeData = ordered?._nodes?.[e.sourceId];
               const gNode = graph.nodesById.get(e.sourceId);
               const tmpl = gNode?.model?.templateObj || {};
               const tmplWithCtx = tmpl ? { ...tmpl, context: gNode?.model?.context } : null;
               const result = nodeData?.result || null;
-              const { preview } = buildOneLevelPreview(result, tmplWithCtx);
+              const { preview, count } = buildOneLevelPreview(result, tmplWithCtx);
               resultPreview = preview || [];
+              outputsCount = count || 0;
             } catch {}
-            order.push({ nodeId: e.sourceId, kind: undefined, handlesUsed: [String(e.sourceHandle||'')], resultPreview });
+            order.push({ nodeId: e.sourceId, kind: undefined, handlesUsed: [String(e.sourceHandle||'')], resultPreview, outputsCount });
           }
         }
         const last = arr.length ? arr[arr.length-1] : null;

@@ -756,7 +756,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       const rect = host.getBoundingClientRect();
       const W = Math.max(1, rect.width); const H = Math.max(1, rect.height);
       // Approx node size aligned with layout service
-      const NODE_W = 223; const NODE_H_BASE = 110; const PER_OUTPUT_H = 20;
+      const NODE_W = 223; const NODE_H_BASE = 110; const PER_OUTPUT_H = 25;
       let minX = Number.POSITIVE_INFINITY, minY = Number.POSITIVE_INFINITY;
       let maxX = Number.NEGATIVE_INFINITY, maxY = Number.NEGATIVE_INFINITY;
       for (const n of (this.vNodes || [])) {

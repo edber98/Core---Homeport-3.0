@@ -900,6 +900,20 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
             return item;
           });
         }
+        // Fallback: for nodes with empty preview, try output handle schema
+        for (const [nid, items] of Object.entries(map)) {
+          if ((items as any[]).length > 0) continue;
+          const nd = (this.viewNodes || []).find((n: any) => String(n.id) === nid);
+          const tmpl = (nd as any)?.data?.model?.templateObj;
+          if (!tmpl) continue;
+          const outs = Array.isArray(tmpl.outputHandles) ? tmpl.outputHandles : [];
+          const okH = outs.find((h: any) => String(h?.id) === 'ok') || outs[0] || null;
+          if (okH?.schema?.fields && Array.isArray(okH.schema.fields)) {
+            map[nid] = okH.schema.fields.filter((f: any) => f.key).map((f: any, i: number) => ({
+              id: `sch_${nid}_${i}`, name: String(f.key || f.name || `field_${i}`), type: String(f.type || 'text')
+            }));
+          }
+        }
         this.simOutputPreview = map;
       } catch { this.simOutputPreview = {}; }
       // Build merged JSON for JSON mode (schema preview + execution values + extras)
@@ -965,14 +979,14 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
         if (Number.isFinite(c)) counts[id] = c;
       }
       for (const [k, arr] of Object.entries(this.simOutputPreview || {})) {
-        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).length : 0;
+        if (counts[k as string] == null) counts[String(k)] = Array.isArray(arr) ? (arr as any[]).reduce((sum: number, it: any) => sum + 1 + (it.children?.length || 0), 0) : 0;
       }
       const graph = {
         nodes: (this.viewNodes || []).map((n: any) => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
         edges: (this.displayEdges || []).map((e: any) => ({ id: String(e.id||`${e.source}->${e.target}`), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }))
       } as any;
       const gapX = 260; const baseGapY = 160;
-      this.layoutApi.layoutGraph(graph, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 20, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
+      this.layoutApi.layoutGraph(graph, 'vertical', { width: 223, height: 110, gapX, gapY: baseGapY, adjustByOutputs: true, perOutputYOffset: 25, perOutputXOffset: 12, outputsCount: counts, outputsMode: 'max', includeDescriptions: false }).subscribe({
         next: (res: any) => {
           try {
             const positions = (res && (res.positions || (res.data && res.data.positions))) || {};
