@@ -248,7 +248,9 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
               <node-toolbar *ngIf="nodeLogText?.get(ctx.node.id) as logText"
                 [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
                 <div class="node-log-bubble" [class.expanded]="nodeLogExpanded.has(ctx.node.id)"
-                     (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)">
+                     [attr.data-node-id]="ctx.node.id"
+                     (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)"
+                     (wheel)="nodeLogExpanded.has(ctx.node.id) ? onLogBubbleWheel($event, ctx.node.id) : null">
                   <span class="node-log-text">{{ logText }}</span>
                 </div>
               </node-toolbar>
@@ -415,6 +417,19 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   // Streaming log text per node (passed from execution parent)
   @Input() nodeLogText: Map<string, string> | null = null;
   nodeLogExpanded = new Set<string>();
+  nodeLogScrollLocked = new Set<string>();
+  onLogBubbleWheel(ev: WheelEvent, nodeId: string) {
+    ev.stopPropagation(); // prevent vflow zoom
+    const bubble = ((ev.target as HTMLElement)?.closest?.('.node-log-bubble') || ev.target) as HTMLElement;
+    if (!bubble) return;
+    setTimeout(() => {
+      try {
+        const atBottom = bubble.scrollTop + bubble.clientHeight >= bubble.scrollHeight - 6;
+        if (atBottom) this.nodeLogScrollLocked.delete(nodeId);
+        else this.nodeLogScrollLocked.add(nodeId);
+      } catch {}
+    }, 30);
+  }
   // Optional: list of node ids to focus when centering (fit only these)
   @Input() focusNodeIds: string[] | null = null;
   // Optional: extra padding ratio for fit (0..0.4 typical)

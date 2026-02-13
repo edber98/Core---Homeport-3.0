@@ -1398,7 +1398,8 @@ export class FlowExecutionComponent {
           else this.nodeLogText.delete(nid);
         }
         try { this.cdr.detectChanges(); } catch {};
-        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => el.scrollTop = el.scrollHeight); } catch {} }, 0);
+        // Auto-scroll expanded bubbles to bottom (skip if user scrolled up)
+        setTimeout(() => { try { const locked = this.viewer?.nodeLogScrollLocked; document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const nid = (el as HTMLElement).dataset['nodeId'] || ''; if (!locked || !locked.has(nid)) el.scrollTop = el.scrollHeight; }); } catch {} }, 0);
         return;
       }
       if (t === 'edge.taken') {

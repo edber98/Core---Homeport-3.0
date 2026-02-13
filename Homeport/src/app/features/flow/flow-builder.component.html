@@ -301,7 +301,9 @@
             <node-toolbar *ngIf="nodeLogText.get(ctx.node.id) as logText"
               [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
               <div class="node-log-bubble" [class.expanded]="nodeLogExpanded.has(ctx.node.id)"
-                   (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)">
+                   [attr.data-node-id]="ctx.node.id"
+                   (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)"
+                   (wheel)="nodeLogExpanded.has(ctx.node.id) ? onLogBubbleWheel($event, ctx.node.id) : null">
                 <span class="node-log-text">{{ logText }}</span>
               </div>
             </node-toolbar>

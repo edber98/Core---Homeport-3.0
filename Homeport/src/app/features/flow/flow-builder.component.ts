@@ -123,6 +123,19 @@ export class FlowBuilderComponent {
   // Streaming log text per node (from opts.log() in handlers)
   nodeLogText = new Map<string, string>();
   nodeLogExpanded = new Set<string>();
+  nodeLogScrollLocked = new Set<string>();
+  onLogBubbleWheel(ev: WheelEvent, nodeId: string) {
+    ev.stopPropagation(); // prevent vflow zoom
+    const bubble = ((ev.target as HTMLElement)?.closest?.('.node-log-bubble') || ev.target) as HTMLElement;
+    if (!bubble) return;
+    setTimeout(() => {
+      try {
+        const atBottom = bubble.scrollTop + bubble.clientHeight >= bubble.scrollHeight - 6;
+        if (atBottom) this.nodeLogScrollLocked.delete(nodeId);
+        else this.nodeLogScrollLocked.add(nodeId);
+      } catch {}
+    }, 30);
+  }
   // Control whether exec badges are shown on nodes
   private showExecBadges = false;
   // Snapshot of selected run (from backend) for right panel
@@ -5083,6 +5096,7 @@ export class FlowBuilderComponent {
     this.backendRunStatus = 'idle';
     this.nodeLogText.clear();
     this.nodeLogExpanded.clear();
+    this.nodeLogScrollLocked.clear();
     // Reset dialog badge + logs for a fresh run
     this.testStatus = 'idle';
     this.testStartedAt = null;
@@ -5195,7 +5209,7 @@ export class FlowBuilderComponent {
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
           // Clear streaming log when node finishes
-          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogExpanded.delete(nid); }
+          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogExpanded.delete(nid); this.nodeLogScrollLocked.delete(nid); }
           // Track per-node attempts by (nodeId, exec)
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
@@ -5359,8 +5373,8 @@ export class FlowBuilderComponent {
           else this.nodeLogText.delete(nid);
         }
         try { this.cdr.detectChanges(); } catch {}
-        // Auto-scroll expanded bubbles to bottom
-        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => el.scrollTop = el.scrollHeight); } catch {} }, 0);
+        // Auto-scroll expanded bubbles to bottom (skip if user scrolled up)
+        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const nid = (el as HTMLElement).dataset['nodeId'] || ''; if (!this.nodeLogScrollLocked.has(nid)) el.scrollTop = el.scrollHeight; }); } catch {} }, 0);
         return;
       }
       // Catch-all: append other node-scoped events to attempt logs in real-time
