@@ -89,6 +89,8 @@
 - [ ] Acceder aux args: via `inputs` (compile) ou `node.args`
 - [ ] Acceder aux credentials: via `opts.credentials`
 - [ ] Acceder aux donnees entrantes: via `opts.incoming.byHandle`
+- [ ] **Ajouter des logs de progression**: `const log = (opts && opts.log) ? opts.log : () => {};` puis `log('Étape en cours...')` à chaque étape importante
+- [ ] Échapper les apostrophes françaises dans les logs: `log('Génération de l\'image...')`
 
 ## Etape 6: Verifier
 
@@ -147,9 +149,11 @@
 ```javascript
 module.exports = {
   async mon_prov_action(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const param1 = String(inputs.param1 || '');
     if (!param1) return { ok: false, error: 'param1 is required' };
 
+    log('Traitement en cours...');
     // Logique metier ici...
 
     return { ok: true, result: param1 };
@@ -212,9 +216,12 @@ Voir **multi-output.md** pour les details complets.
 ```javascript
 module.exports = {
   async mon_prov_classify(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const categories = node.model.context.categories || [];
     const text = String(inputs.text || '').trim();
     if (!text) return { ok: false, error: 'Texte requis' };
+
+    log('Classification en cours...');
 
     // ... logique de classification (API, ML, regles) ...
     const chosenIndex = 0; // resultat de la classification

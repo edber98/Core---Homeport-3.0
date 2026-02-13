@@ -118,6 +118,7 @@ inputs = {
       { sourceId: "...", sourceHandle: "ok", targetHandle: "in", result: { ... } }
     ]
   },
+  log: function(text),             // Envoyer un message de progression en temps réel (affiché sur le node)
   files: {                         // Helper fichiers (scope workspace/run)
     store(source, metadata),       // Stocker un fichier (stream/buffer/base64) → fileRef
     resolve(fileRef),              // Resoudre fileRef/URL → { stream, record }
@@ -200,11 +201,12 @@ module.exports = {
 };
 ```
 
-### Handler avec credentials (OpenAI)
+### Handler avec credentials et logs (OpenAI)
 
 ```javascript
 module.exports = {
   async openai_chat_completion(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const apiKey = creds.apiKey;
     if (!apiKey) throw new Error('Missing OpenAI apiKey in credentials');
@@ -214,9 +216,16 @@ module.exports = {
     const system = String(inputs.system || '').trim();
     const prompt = String(inputs.prompt || '').trim();
 
-    // ... logique API ...
+    log('Envoi de la requête à OpenAI...');
+    // ... logique API avec streaming ...
+    let fullText = '';
+    for await (const chunk of stream) {
+      const token = chunk.choices?.[0]?.delta?.content || '';
+      fullText += token;
+      log(fullText);  // Streaming progressif affiché sur le node
+    }
 
-    return { ok: true, text: "reponse du modele" };
+    return { ok: true, text: fullText };
   }
 };
 ```
@@ -327,6 +336,68 @@ module.exports = {
 };
 ```
 
+## Logs de progression en temps réel (`opts.log`)
+
+Le moteur injecte une fonction `log` dans `opts` qui permet d'envoyer des messages de progression affichés en temps réel sur le node dans le flow builder et l'exécution.
+
+### Utilisation de base
+
+```javascript
+// TOUJOURS initialiser avec un fallback (log peut être absent dans certains contextes)
+const log = (opts && opts.log) ? opts.log : () => {};
+
+log('Authentification en cours...');
+// ... faire l'appel API ...
+log('Requête envoyée, traitement...');
+// ... traiter la réponse ...
+log('Terminé, 42 résultats trouvés');
+```
+
+### Pattern recommandé : étapes numérotées
+
+```javascript
+const log = (opts && opts.log) ? opts.log : () => {};
+
+log('1/3 Récupération des données...');
+const data = await fetchData(inputs.url);
+
+log('2/3 Transformation...');
+const result = transformData(data);
+
+log('3/3 Envoi du résultat...');
+await sendResult(result);
+
+return { ok: true, count: result.length };
+```
+
+### Pattern : streaming de tokens LLM
+
+Pour les handlers qui appellent un LLM avec streaming, accumuler le texte reçu :
+
+```javascript
+const log = (opts && opts.log) ? opts.log : () => {};
+let fullText = '';
+
+log('Génération en cours...');
+for await (const chunk of stream) {
+  const token = chunk.choices?.[0]?.delta?.content || '';
+  fullText += token;
+  log(fullText);  // Le frontend affiche le texte qui s'allonge avec un effet de révélation
+}
+
+return { ok: true, text: fullText };
+```
+
+### Comportement
+
+- Le texte est envoyé via un événement SSE `node.log` et affiché à côté du node
+- Le texte est affiché avec une animation shimmer et un effet de révélation progressive
+- Quand le node termine (succès ou erreur), le texte disparaît automatiquement
+- Un texte vide `log('')` efface le message affiché
+- Les appels sont non-bloquants, le handler continue son exécution
+- **IMPORTANT** : Toujours initialiser avec fallback `const log = (opts && opts.log) ? opts.log : () => {};`
+- **IMPORTANT** : Échapper les apostrophes françaises dans les strings avec `\'` (ex: `log('Génération de l\'image...')`)
+
 ## Bonnes pratiques
 
 1. **Toujours retourner un objet avec `ok`**: `{ ok: true, ... }` ou `{ ok: false, error: "..." }`
@@ -337,3 +408,4 @@ module.exports = {
 6. **Acceder aux args**: Utiliser `inputs` (deja compile) ou `node.args` / `node.model?.context`
 7. **Pas de side effects**: Les handlers doivent etre idempotents si possible
 8. **require conditionnel**: Pour les dependances optionnelles, faire un try/catch sur require()
+9. **Logs de progression**: Ajouter `opts.log()` à chaque étape importante du handler pour informer l'utilisateur en temps réel

@@ -119,6 +119,7 @@ Node B peut acceder via:
 | `node.skipped` | Node ignore | `nodeId` |
 | `edge.taken` | Edge traversee | `sourceId, targetId` |
 | `run.completed` | Fin du flow | `payload` |
+| `node.log` | Message de progression temps réel | `nodeId, text` |
 | `run.cancelled` | Flow annule | `reason` |
 
 ## Normalisation des cles
@@ -129,3 +130,12 @@ Le moteur et le registry normalisent les cles de template:
 - Remplace les caracteres speciaux par `_`
 
 Donc `openai_chat_completion`, `openaiChatCompletion`, `OpenAI_Chat_Completion` resolvent tous vers le meme handler.
+
+## Logs de progression (`opts.log`)
+
+Le moteur injecte `opts.log` dans les handlers (types `function` et `event`). Chaque appel à `log(text)` émet un événement SSE `node.log` qui est:
+1. Persisté en base (RunEvent) pour l'historique
+2. Broadcasté en temps réel via SSE au frontend
+3. Affiché à côté du node dans le flow builder/exécution avec une animation
+
+Le handler doit toujours initialiser avec fallback: `const log = (opts && opts.log) ? opts.log : () => {};`
