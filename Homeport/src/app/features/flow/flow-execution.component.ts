@@ -141,6 +141,9 @@ import { backAwareCurve } from './edge-curves';
             [portOrientation]="portOrientation"
             [showExecBadges]="true"
             [nodeLogText]="nodeLogText"
+            [nodeLogOld]="nodeLogOld"
+            [nodeLogNew]="nodeLogNew"
+            [nodeLogAnimCycle]="nodeLogAnimCycle"
             [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
@@ -888,6 +891,9 @@ export class FlowExecutionComponent {
   backendAttempts: Array<{ nodeId: string; exec?: number; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any }> = [];
   expanded: boolean[] = [];
   nodeLogText = new Map<string, string>();
+  nodeLogOld = new Map<string, string>();
+  nodeLogNew = new Map<string, string>();
+  nodeLogAnimCycle = new Map<string, number>();
   private currentStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendLastNodeId: string | null = null;
   private backendPairs = new Set<string>();
@@ -1333,7 +1339,7 @@ export class FlowExecutionComponent {
     this.expanded = [];
     this.backendPairs.clear();
     this.backendLastNodeId = null;
-    this.nodeLogText.clear();
+    this.nodeLogText.clear(); this.nodeLogOld.clear(); this.nodeLogNew.clear(); this.nodeLogAnimCycle.clear();
     const s = this.runsApi.stream(runId);
     this.currentStream = s;
     s.on((ev) => {
@@ -1386,7 +1392,7 @@ export class FlowExecutionComponent {
             this.expanded.push(false);
           }
           // Clear streaming log when node finishes
-          if (status === 'success' || status === 'error' || status === 'cancelled') this.nodeLogText.delete(nodeId);
+          if (status === 'success' || status === 'error' || status === 'cancelled') { this.nodeLogText.delete(nodeId); this.nodeLogOld.delete(nodeId); this.nodeLogNew.delete(nodeId); this.nodeLogAnimCycle.delete(nodeId); }
         }
         this.computeDecorations();
       }
@@ -1394,12 +1400,24 @@ export class FlowExecutionComponent {
         const nid = String(ev.nodeId || (ev as any)?.data?.nodeId || '');
         const text = (ev as any)?.data?.text ?? (ev as any)?.text ?? '';
         if (nid) {
-          if (text) this.nodeLogText.set(nid, text);
-          else this.nodeLogText.delete(nid);
+          if (text) {
+            const prev = this.nodeLogText.get(nid) || '';
+            if (text.startsWith(prev)) {
+              this.nodeLogOld.set(nid, prev);
+              this.nodeLogNew.set(nid, text.substring(prev.length));
+            } else {
+              this.nodeLogOld.set(nid, '');
+              this.nodeLogNew.set(nid, text);
+            }
+            this.nodeLogAnimCycle.set(nid, ((this.nodeLogAnimCycle.get(nid) || 0) + 1) % 2);
+            this.nodeLogText.set(nid, text);
+          } else {
+            this.nodeLogText.delete(nid); this.nodeLogOld.delete(nid); this.nodeLogNew.delete(nid); this.nodeLogAnimCycle.delete(nid);
+          }
         }
         try { this.cdr.detectChanges(); } catch {};
-        // Auto-scroll expanded bubbles to bottom (skip if user scrolled up)
-        setTimeout(() => { try { const locked = this.viewer?.nodeLogScrollLocked; document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const nid = (el as HTMLElement).dataset['nodeId'] || ''; if (!locked || !locked.has(nid)) el.scrollTop = el.scrollHeight; }); } catch {} }, 0);
+        // Smooth auto-scroll expanded bubbles to bottom (skip if user scrolled up)
+        setTimeout(() => { try { const locked = this.viewer?.nodeLogScrollLocked; document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const id = (el as HTMLElement).dataset['nodeId'] || ''; if (!locked || !locked.has(id)) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }); } catch {} }, 0);
         return;
       }
       if (t === 'edge.taken') {

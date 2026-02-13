@@ -251,7 +251,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                      [attr.data-node-id]="ctx.node.id"
                      (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)"
                      (wheel)="nodeLogExpanded.has(ctx.node.id) ? onLogBubbleWheel($event, ctx.node.id) : null">
-                  <span class="node-log-text">{{ logText }}</span>
+                  <span class="node-log-text"><span class="log-stable">{{ nodeLogOld?.get(ctx.node.id) }}</span><span class="log-reveal" [class.cycle-a]="(nodeLogAnimCycle?.get(ctx.node.id) || 0) === 0" [class.cycle-b]="(nodeLogAnimCycle?.get(ctx.node.id) || 0) === 1">{{ nodeLogNew?.get(ctx.node.id) }}</span></span><span class="log-cursor"></span>
                 </div>
               </node-toolbar>
             </div>
@@ -370,8 +370,16 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
       cursor: pointer; transition: max-height .2s ease;
     }
     .node-log-bubble.expanded { white-space: pre-wrap; word-break: break-word; max-height: 200px; overflow-y: auto; }
-    .node-log-bubble .node-log-text { display: block; overflow: hidden; text-overflow: ellipsis; }
+    .node-log-bubble .node-log-text { display: inline; overflow: hidden; text-overflow: ellipsis; }
     .node-log-bubble.expanded .node-log-text { overflow: visible; text-overflow: unset; white-space: pre-wrap; word-break: break-word; }
+    .node-log-bubble .log-stable { opacity: 1; }
+    .node-log-bubble .log-reveal.cycle-a { animation: revealA .35s ease forwards; }
+    .node-log-bubble .log-reveal.cycle-b { animation: revealB .35s ease forwards; }
+    @keyframes revealA { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+    @keyframes revealB { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+    .node-log-bubble .log-cursor { display: inline-block; width: 2px; height: 1em; vertical-align: text-bottom; margin-left: 1px; background: #6366f1; border-radius: 1px; animation: cursorBlink 1s step-end infinite; }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .node-log-bubble.expanded { scroll-behavior: smooth; }
     @keyframes log-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     /* Mobile/tablet: mirror builder bottom bar behavior */
@@ -421,6 +429,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() showDescriptions: boolean = true;
   // Streaming log text per node (passed from execution parent)
   @Input() nodeLogText: Map<string, string> | null = null;
+  @Input() nodeLogOld: Map<string, string> | null = null;
+  @Input() nodeLogNew: Map<string, string> | null = null;
+  @Input() nodeLogAnimCycle: Map<string, number> | null = null;
   nodeLogExpanded = new Set<string>();
   nodeLogScrollLocked = new Set<string>();
   onLogBubbleWheel(ev: WheelEvent, nodeId: string) {

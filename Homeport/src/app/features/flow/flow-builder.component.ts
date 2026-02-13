@@ -122,6 +122,9 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // Streaming log text per node (from opts.log() in handlers)
   nodeLogText = new Map<string, string>();
+  nodeLogOld = new Map<string, string>();
+  nodeLogNew = new Map<string, string>();
+  nodeLogAnimCycle = new Map<string, number>();
   nodeLogExpanded = new Set<string>();
   nodeLogScrollLocked = new Set<string>();
   onLogBubbleWheel(ev: WheelEvent, nodeId: string) {
@@ -5094,7 +5097,7 @@ export class FlowBuilderComponent {
     this.backendAttemptSeq = [];
     this.lastOverlayPairs = new Set();
     this.backendRunStatus = 'idle';
-    this.nodeLogText.clear();
+    this.nodeLogText.clear(); this.nodeLogOld.clear(); this.nodeLogNew.clear(); this.nodeLogAnimCycle.clear();
     this.nodeLogExpanded.clear();
     this.nodeLogScrollLocked.clear();
     // Reset dialog badge + logs for a fresh run
@@ -5209,7 +5212,7 @@ export class FlowBuilderComponent {
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
           // Clear streaming log when node finishes
-          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogExpanded.delete(nid); this.nodeLogScrollLocked.delete(nid); }
+          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogOld.delete(nid); this.nodeLogNew.delete(nid); this.nodeLogAnimCycle.delete(nid); this.nodeLogExpanded.delete(nid); this.nodeLogScrollLocked.delete(nid); }
           // Track per-node attempts by (nodeId, exec)
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
@@ -5369,12 +5372,24 @@ export class FlowBuilderComponent {
         const nid = String(ev.nodeId || (ev as any)?.data?.nodeId || '');
         const text = (ev as any)?.data?.text ?? (ev as any)?.text ?? '';
         if (nid) {
-          if (text) this.nodeLogText.set(nid, text);
-          else this.nodeLogText.delete(nid);
+          if (text) {
+            const prev = this.nodeLogText.get(nid) || '';
+            if (text.startsWith(prev)) {
+              this.nodeLogOld.set(nid, prev);
+              this.nodeLogNew.set(nid, text.substring(prev.length));
+            } else {
+              this.nodeLogOld.set(nid, '');
+              this.nodeLogNew.set(nid, text);
+            }
+            this.nodeLogAnimCycle.set(nid, ((this.nodeLogAnimCycle.get(nid) || 0) + 1) % 2);
+            this.nodeLogText.set(nid, text);
+          } else {
+            this.nodeLogText.delete(nid); this.nodeLogOld.delete(nid); this.nodeLogNew.delete(nid); this.nodeLogAnimCycle.delete(nid);
+          }
         }
         try { this.cdr.detectChanges(); } catch {}
-        // Auto-scroll expanded bubbles to bottom (skip if user scrolled up)
-        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const nid = (el as HTMLElement).dataset['nodeId'] || ''; if (!this.nodeLogScrollLocked.has(nid)) el.scrollTop = el.scrollHeight; }); } catch {} }, 0);
+        // Smooth auto-scroll expanded bubbles to bottom (skip if user scrolled up)
+        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const id = (el as HTMLElement).dataset['nodeId'] || ''; if (!this.nodeLogScrollLocked.has(id)) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }); } catch {} }, 0);
         return;
       }
       // Catch-all: append other node-scoped events to attempt logs in real-time

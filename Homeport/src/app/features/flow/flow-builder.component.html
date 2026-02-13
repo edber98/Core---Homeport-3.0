@@ -304,7 +304,7 @@
                    [attr.data-node-id]="ctx.node.id"
                    (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)"
                    (wheel)="nodeLogExpanded.has(ctx.node.id) ? onLogBubbleWheel($event, ctx.node.id) : null">
-                <span class="node-log-text">{{ logText }}</span>
+                <span class="node-log-text"><span class="log-stable">{{ nodeLogOld.get(ctx.node.id) }}</span><span class="log-reveal" [class.cycle-a]="(nodeLogAnimCycle.get(ctx.node.id) || 0) === 0" [class.cycle-b]="(nodeLogAnimCycle.get(ctx.node.id) || 0) === 1">{{ nodeLogNew.get(ctx.node.id) }}</span></span><span class="log-cursor"></span>
               </div>
             </node-toolbar>
         </ng-template>

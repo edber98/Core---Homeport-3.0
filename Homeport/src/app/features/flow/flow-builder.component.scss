@@ -496,8 +496,23 @@ nz-drawer { display: contents; }
   max-height: 200px;
   overflow-y: auto;
 }
-.node-log-bubble .node-log-text { display: block; overflow: hidden; text-overflow: ellipsis; }
+.node-log-bubble .node-log-text { display: inline; overflow: hidden; text-overflow: ellipsis; }
 .node-log-bubble.expanded .node-log-text { overflow: visible; text-overflow: unset; white-space: pre-wrap; word-break: break-word; }
+/* Progressive reveal animation for new tokens */
+.node-log-bubble .log-stable { opacity: 1; }
+.node-log-bubble .log-reveal.cycle-a { animation: revealA .35s ease forwards; }
+.node-log-bubble .log-reveal.cycle-b { animation: revealB .35s ease forwards; }
+@keyframes revealA { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+@keyframes revealB { from { opacity: 0; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+/* Blinking cursor at end */
+.node-log-bubble .log-cursor {
+  display: inline-block; width: 2px; height: 1em; vertical-align: text-bottom;
+  margin-left: 1px; background: #6366f1; border-radius: 1px;
+  animation: cursorBlink 1s step-end infinite;
+}
+@keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+/* Smooth scroll behavior on expanded bubble */
+.node-log-bubble.expanded { scroll-behavior: smooth; }
 @keyframes log-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
