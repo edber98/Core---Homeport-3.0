@@ -21,7 +21,7 @@ module.exports = {
         if (toInt(data.partner_id)) domain.push(["partner_id", "=", toInt(data.partner_id)]);
 
         const res = await utils.odooCall(opts, "account.move", "search_read", [], {
-          domain, fields: ["id", "name", "partner_id", "move_type", "state", "amount_total", "invoice_date"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "account.move", "search_count", [], { domain });

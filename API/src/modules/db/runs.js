@@ -17,6 +17,29 @@ function isResultError(result){
   return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
 }
 
+// ── Truncate deeply nested objects to prevent oversized RunEvents ──
+const MAX_STR = 8000;       // max chars per string value
+const MAX_ARR = 50;          // max items per array
+const MAX_DEPTH = 8;         // max nesting depth
+function truncateDeep(val, depth) {
+  if (depth === undefined) depth = 0;
+  if (val == null) return val;
+  if (depth > MAX_DEPTH) return '[…depth]';
+  if (typeof val === 'string') return val.length > MAX_STR ? val.slice(0, MAX_STR) + '…[tronqué]' : val;
+  if (Array.isArray(val)) {
+    const sliced = val.length > MAX_ARR ? val.slice(0, MAX_ARR) : val;
+    const out = sliced.map(function(v) { return truncateDeep(v, depth + 1); });
+    if (val.length > MAX_ARR) out.push('…[' + (val.length - MAX_ARR) + ' de plus]');
+    return out;
+  }
+  if (typeof val === 'object') {
+    const out = {};
+    for (const k of Object.keys(val)) { out[k] = truncateDeep(val[k], depth + 1); }
+    return out;
+  }
+  return val;
+}
+
 module.exports = function(){
   // Cooperative cancellation registry for DB-backed runs
   const cancelled = new Set();
@@ -87,9 +110,9 @@ module.exports = function(){
               if (!att) {
                 const ctr = await AttemptCounter.findOneAndUpdate({ runId: run._id, nodeId }, { $inc: { seq: 1 } }, { upsert: true, new: true });
                 usedAttempt = Math.max(1, Number(ctr?.seq || 1));
-                att = await Attempt.findOneAndUpdate({ runId: run._id, nodeId, attempt: usedAttempt }, { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } }, { upsert: true, new: true });
+                att = await Attempt.findOneAndUpdate({ runId: run._id, nodeId, attempt: usedAttempt }, { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), branchId, msgIn: truncateDeep(ev.msgIn) } }, { upsert: true, new: true });
               }
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: truncateDeep(ev.msgIn), input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
@@ -100,8 +123,8 @@ module.exports = function(){
             const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
               att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
-              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
+              att.argsPost = ev.argsPost; att.input = truncateDeep(ev.input); att.msgIn = truncateDeep(ev.msgIn); att.msgOut = truncateDeep(ev.msgOut); att.result = truncateDeep(ev.result); await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
               await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
@@ -245,17 +268,17 @@ module.exports = function(){
               usedAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: usedAttempt },
-                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } },
+                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), branchId, msgIn: truncateDeep(ev.msgIn) } },
                 { upsert: true, new: true }
               );
             } else {
               const set = {};
-              if (ev.msgIn && (att.msgIn == null)) set.msgIn = ev.msgIn;
-              if (ev.input != null && (att.input == null)) set.input = ev.input;
+              if (ev.msgIn && (att.msgIn == null)) set.msgIn = truncateDeep(ev.msgIn);
+              if (ev.input != null && (att.input == null)) set.input = truncateDeep(ev.input);
               if (ev.argsPost != null && (att.argsPost == null)) set.argsPost = ev.argsPost;
               if (Object.keys(set).length) { try { await Attempt.updateOne({ _id: att._id }, { $set: set }); } catch {} }
             }
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: truncateDeep(ev.msgIn), input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
@@ -266,8 +289,8 @@ module.exports = function(){
             const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
               att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
-              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
+              att.argsPost = ev.argsPost; att.input = truncateDeep(ev.input); att.msgIn = truncateDeep(ev.msgIn); att.msgOut = truncateDeep(ev.msgOut); att.result = truncateDeep(ev.result); await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
               await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             } else {
               // fallback: create completed attempt
@@ -279,10 +302,10 @@ module.exports = function(){
               const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: nextAttempt },
-                { $setOnInsert: { status, branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, msgIn: ev.msgIn, msgOut: ev.msgOut, result: ev.result } },
+                { $setOnInsert: { status, branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), result: truncateDeep(ev.result) } },
                 { upsert: true, new: true }
               );
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
               await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
@@ -322,10 +345,10 @@ module.exports = function(){
               const att = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
               const status = isResultError(ev.result) ? 'error' : 'success';
               const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
-              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost, result: truncateDeep(ev.result), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
               livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status, finishedAt: ev.finishedAt, durationMs: ev.durationMs, error: errMsg } });
             } catch {
-              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost, result: truncateDeep(ev.result), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
             }
           }
           if (ev.type === 'edge.taken') livePackets.push({ type: 'edge.taken', data: { sourceId: ev.sourceId, targetId: ev.targetId } });
@@ -340,7 +363,7 @@ module.exports = function(){
         doc.finalPayload = doc.result;
         doc.finishedAt = new Date();
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
-        doc.msg = finalMsg || null;
+        doc.msg = truncateDeep(finalMsg) || null;
         await doc.save();
         try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
         console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
@@ -507,18 +530,37 @@ module.exports = function(){
         const out = { ...rp };
         if (include.includes('attempts')) out.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
         if (include.includes('events')) out.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
-        return res.apiOk(out);
+        try { return res.apiOk(out); } catch (e) {
+          if (e instanceof RangeError) { delete out.graph; delete out.events; out._truncated = true; return res.apiOk(out); }
+          throw e;
+        }
       }
-      return res.apiOk(rp);
+      try { return res.apiOk(rp); } catch (e) {
+        if (e instanceof RangeError) { delete rp.graph; rp._truncated = true; return res.apiOk(rp); }
+        throw e;
+      }
     }
-    const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs, graph: run.graph };
+    const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
     if (include.length){
+      if (include.includes('graph')) base.graph = run.graph;
       if (include.includes('attempts')) base.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
       if (include.includes('events')) base.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
       if (include.includes('meta')) base.meta = run.meta || undefined;
       if (include.includes('settings')) base.settings = run.settings || undefined;
     }
-    res.apiOk(base);
+    try {
+      res.apiOk(base);
+    } catch (e) {
+      if (e instanceof RangeError) {
+        // Response too large — retry without graph
+        delete base.graph;
+        delete base.events;
+        base._truncated = true;
+        res.apiOk(base);
+      } else {
+        throw e;
+      }
+    }
   });
 
   // KPIs for a flow: counts per status and average duration
@@ -675,7 +717,7 @@ module.exports = function(){
     const { flowId } = req.query;
     const q = { workspaceId: ws._id };
     if (flowId) q.flowId = flowId;
-    const last = await Run.findOne(q).sort({ createdAt: -1 }).lean();
+    const last = await Run.findOne(q).sort({ createdAt: -1 }).select('-graph -msg -events -attempts').lean();
     res.apiOk(last || null);
   });
 

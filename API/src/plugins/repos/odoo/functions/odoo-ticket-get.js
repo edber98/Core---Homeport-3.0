@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.ticketId);
     if (!id) return { ok: false, error: "Champ ticketId requis." };
 
-    const res = await utils.odooCall(opts, "helpdesk.ticket", "read", [[id]], { fields: ["id", "name", "partner_id", "team_id", "stage_id", "priority", "description"] });
+    const res = await utils.odooCall(opts, "helpdesk.ticket", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, ticket: record };

@@ -1,10 +1,5 @@
 const { utils } = require("./utils");
 
-function toStr(value) {
-  const str = String(value || "").trim();
-  return str || null;
-}
-
 function toInt(value) {
   if (value === undefined || value === null || value === "") return null;
   const parsed = Number(value);
@@ -12,14 +7,14 @@ function toInt(value) {
 }
 
 module.exports = {
-  async odoo_employee_get(node, msg, inputs, opts) {
+  async odoo_task_get(node, msg, inputs, opts) {
     const data = inputs || {};
-    const id = toInt(data.employeeId);
-    if (!id) return { ok: false, error: "Champ employeeId requis." };
+    const id = toInt(data.taskId);
+    if (!id) return { ok: false, error: "Champ taskId requis." };
 
-    const res = await utils.odooCall(opts, "hr.employee", "read", [[id]], {});
+    const res = await utils.odooCall(opts, "project.task", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
-    return { ok: true, employee: record };
+    return { ok: true, task: record };
   }
 };

@@ -157,17 +157,42 @@ async function odooCallToken(opts, model, method, args = [], kwargs = {}) {
   return { ok: true, data };
 }
 
+// ── Heavy field stripping for read/search_read without explicit fields ──
+
+const HEAVY_FIELD_PATTERNS = /^(image_|avatar_|picture|photo|thumbnail|icon_image|message_ids|message_follower_ids|activity_ids|website_message_ids|__last_update)/;
+
+function stripHeavyFields(data) {
+  if (!data) return data;
+  if (Array.isArray(data)) return data.map(stripHeavyFields);
+  if (typeof data === 'object') {
+    const cleaned = {};
+    for (const [k, v] of Object.entries(data)) {
+      if (HEAVY_FIELD_PATTERNS.test(k)) continue;
+      // Skip any string value that looks like a large base64 blob (> 10KB)
+      if (typeof v === 'string' && v.length > 10000 && /^[A-Za-z0-9+/=\s]+$/.test(v.slice(0, 200))) continue;
+      cleaned[k] = v;
+    }
+    return cleaned;
+  }
+  return data;
+}
+
 // ── Router: dispatch to the right method based on type_auth ──
 
 async function odooCall(opts, model, method, args = [], kwargs = {}) {
   const credentials = (opts && opts.credentials) || {};
   const authType = credentials.type_auth || "token";
 
-  if (authType === "token") {
-    return odooCallToken(opts, model, method, args, kwargs);
-  } else {
-    return odooCallLogin(opts, model, method, args, kwargs);
+  const res = authType === "token"
+    ? await odooCallToken(opts, model, method, args, kwargs)
+    : await odooCallLogin(opts, model, method, args, kwargs);
+
+  // Strip heavy fields from read/search_read when no explicit fields were requested
+  if (res.ok && (method === 'read' || method === 'search_read') && !kwargs.fields?.length) {
+    res.data = stripHeavyFields(res.data);
   }
+
+  return res;
 }
 
 module.exports = { utils: { odooCall, odooAuthenticate } };

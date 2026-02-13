@@ -1,10 +1,5 @@
 const { utils } = require("./utils");
 
-function toStr(value) {
-  const str = String(value || "").trim();
-  return str || null;
-}
-
 function toInt(value) {
   if (value === undefined || value === null || value === "") return null;
   const parsed = Number(value);
@@ -12,14 +7,13 @@ function toInt(value) {
 }
 
 module.exports = {
-  async odoo_project_get(node, msg, inputs, opts) {
+  async odoo_project_delete(node, msg, inputs, opts) {
     const data = inputs || {};
     const id = toInt(data.projectId);
     if (!id) return { ok: false, error: "Champ projectId requis." };
 
-    const res = await utils.odooCall(opts, "project.project", "read", [[id]], {});
+    const res = await utils.odooCall(opts, "project.project", "unlink", [[id]]);
     if (!res.ok) return res;
-    const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
-    return { ok: true, project: record };
+    return { ok: true, deleted: true, id };
   }
 };

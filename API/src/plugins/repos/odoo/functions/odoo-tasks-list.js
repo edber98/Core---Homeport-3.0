@@ -20,7 +20,7 @@ module.exports = {
         if (toInt(data.stage_id)) domain.push(["stage_id", "=", toInt(data.stage_id)]);
 
         const res = await utils.odooCall(opts, "project.task", "search_read", [], {
-          domain, fields: ["id", "name", "project_id", "stage_id", "user_ids", "date_deadline"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "project.task", "search_count", [], { domain });

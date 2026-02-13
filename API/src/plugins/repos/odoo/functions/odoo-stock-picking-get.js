@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.pickingId);
     if (!id) return { ok: false, error: "Champ pickingId requis." };
 
-    const res = await utils.odooCall(opts, "stock.picking", "read", [[id]], { fields: ["id", "name", "partner_id", "picking_type_id", "state", "origin"] });
+    const res = await utils.odooCall(opts, "stock.picking", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, picking: record };

@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.productId);
     if (!id) return { ok: false, error: "Champ productId requis." };
 
-    const res = await utils.odooCall(opts, "product.product", "read", [[id]], { fields: ["id", "name", "default_code", "list_price", "type", "categ_id"] });
+    const res = await utils.odooCall(opts, "product.product", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, product: record };

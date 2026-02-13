@@ -20,7 +20,7 @@ module.exports = {
         if (data.domain) { try { domain.push(...JSON.parse(data.domain)); } catch(e) {} }
 
         const res = await utils.odooCall(opts, "res.partner", "search_read", [], {
-          domain, fields: ["id", "name", "email", "phone", "street", "city", "country_id", "is_company"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "res.partner", "search_count", [], { domain });

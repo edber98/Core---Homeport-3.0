@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.orderId);
     if (!id) return { ok: false, error: "Champ orderId requis." };
 
-    const res = await utils.odooCall(opts, "purchase.order", "read", [[id]], { fields: ["id", "name", "partner_id", "state", "amount_total", "date_order"] });
+    const res = await utils.odooCall(opts, "purchase.order", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, purchase_order: record };

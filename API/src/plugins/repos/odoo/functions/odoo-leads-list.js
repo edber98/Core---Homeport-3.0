@@ -20,7 +20,7 @@ module.exports = {
         if (data.type) domain.push(["type", "=", data.type]);
 
         const res = await utils.odooCall(opts, "crm.lead", "search_read", [], {
-          domain, fields: ["id", "name", "partner_id", "email_from", "phone", "expected_revenue", "stage_id", "type"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "crm.lead", "search_count", [], { domain });

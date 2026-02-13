@@ -19,7 +19,7 @@ module.exports = {
         if (data.type) domain.push(["type", "=", data.type]);
 
         const res = await utils.odooCall(opts, "product.product", "search_read", [], {
-          domain, fields: ["id", "name", "default_code", "list_price", "type", "categ_id"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "product.product", "search_count", [], { domain });

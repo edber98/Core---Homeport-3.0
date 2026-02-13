@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.leadId);
     if (!id) return { ok: false, error: "Champ leadId requis." };
 
-    const res = await utils.odooCall(opts, "crm.lead", "read", [[id]], { fields: ["id", "name", "partner_id", "email_from", "phone", "expected_revenue", "stage_id", "type"] });
+    const res = await utils.odooCall(opts, "crm.lead", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, lead: record };

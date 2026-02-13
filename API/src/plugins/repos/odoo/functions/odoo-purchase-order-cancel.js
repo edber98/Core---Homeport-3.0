@@ -1,10 +1,5 @@
 const { utils } = require("./utils");
 
-function toStr(value) {
-  const str = String(value || "").trim();
-  return str || null;
-}
-
 function toInt(value) {
   if (value === undefined || value === null || value === "") return null;
   const parsed = Number(value);
@@ -12,14 +7,13 @@ function toInt(value) {
 }
 
 module.exports = {
-  async odoo_sale_order_get(node, msg, inputs, opts) {
+  async odoo_purchase_order_cancel(node, msg, inputs, opts) {
     const data = inputs || {};
     const id = toInt(data.orderId);
     if (!id) return { ok: false, error: "Champ orderId requis." };
 
-    const res = await utils.odooCall(opts, "sale.order", "read", [[id]], {});
+    const res = await utils.odooCall(opts, "purchase.order", "button_cancel", [[id]]);
     if (!res.ok) return res;
-    const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
-    return { ok: true, sale_order: record };
+    return { ok: true, cancelled: true, id };
   }
 };

@@ -19,7 +19,7 @@ module.exports = {
         if (data.account_type) domain.push(["account_type", "=", data.account_type]);
 
         const res = await utils.odooCall(opts, "account.account", "search_read", [], {
-          domain, fields: ["id", "name", "code", "account_type"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "account.account", "search_count", [], { domain });

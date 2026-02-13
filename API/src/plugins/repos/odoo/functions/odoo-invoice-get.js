@@ -17,7 +17,7 @@ module.exports = {
     const id = toInt(data.invoiceId);
     if (!id) return { ok: false, error: "Champ invoiceId requis." };
 
-    const res = await utils.odooCall(opts, "account.move", "read", [[id]], { fields: ["id", "name", "partner_id", "move_type", "state", "amount_total", "invoice_date"] });
+    const res = await utils.odooCall(opts, "account.move", "read", [[id]], {});
     if (!res.ok) return res;
     const record = Array.isArray(res.data) ? res.data[0] || null : res.data;
     return { ok: true, invoice: record };

@@ -5000,6 +5000,1475 @@
         "compteur",
         "odoo"
       ]
+    },
+    {
+      "key": "odoo_projects_list",
+      "name": "odooProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projets",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-folder-open",
+      "description": "Lister les projets Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_projects"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "number",
+            "key": "partner_id",
+            "label": "Partenaire ID",
+            "description": "Filtrer par client.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_project_update",
+      "name": "odooProjectUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projets",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-folder-pen",
+      "description": "Modifier un projet Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_update_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "projectId",
+            "label": "ID Projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom du projet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "partner_id",
+            "label": "Partenaire ID",
+            "description": "Identifiant du partenaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "user_id",
+            "label": "Responsable ID",
+            "description": "Identifiant du responsable.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actif",
+            "description": "Activer ou désactiver le projet.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets",
+      "tags": [
+        "mise à jour",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_project_delete",
+      "name": "odooProjectDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un projet",
+      "subtitle": "Projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projets",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-folder-minus",
+      "description": "Supprimer un projet Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_delete_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "projectId",
+            "label": "ID Projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets",
+      "tags": [
+        "suppression",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_task_get",
+      "name": "odooTaskGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une tâche",
+      "subtitle": "Tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projets",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-clipboard",
+      "description": "Récupérer une tâche par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_task"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "taskId",
+            "label": "ID Tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches",
+      "tags": [
+        "tâche",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_task_delete",
+      "name": "odooTaskDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une tâche",
+      "subtitle": "Tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Projets",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-clipboard-minus",
+      "description": "Supprimer une tâche projet.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_delete_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "taskId",
+            "label": "ID Tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches",
+      "tags": [
+        "suppression",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_sale_order_update",
+      "name": "odooSaleOrderUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un devis",
+      "subtitle": "Ventes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ventes",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifier un devis ou commande de vente.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_update_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "orderId",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "partner_id",
+            "label": "Client ID",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Notes",
+            "description": "Notes de la commande.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "client_order_ref",
+            "label": "Référence client",
+            "description": "Référence du client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "validity_date",
+            "label": "Date de validité",
+            "description": "Date de validité (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "payment_term_id",
+            "label": "Conditions de paiement ID",
+            "description": "Identifiant des conditions de paiement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pricelist_id",
+            "label": "Liste de prix ID",
+            "description": "Identifiant de la liste de prix.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "mise à jour",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_purchase_order_cancel",
+      "name": "odooPurchaseOrderCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un bon de commande",
+      "subtitle": "Achats",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Achats",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-ban",
+      "description": "Annuler un bon de commande fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Annuler un bon de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "orderId",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Achats",
+      "tags": [
+        "annulation",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_users_list",
+      "name": "odooUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Administration",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-users-gear",
+      "description": "Lister les utilisateurs Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_users"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actifs uniquement",
+            "description": "Filtrer les utilisateurs actifs.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Administration",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_companies_list",
+      "name": "odooCompaniesList",
+      "schemaVersion": 2,
+      "title": "Lister les sociétés",
+      "subtitle": "Société",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Administration",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-building",
+      "description": "Lister les sociétés Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_companies"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les sociétés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Administration",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_sale_order_lines_list",
+      "name": "odooSaleOrderLinesList",
+      "schemaVersion": 2,
+      "title": "Lister les lignes de commande",
+      "subtitle": "Ventes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ventes",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-list-ol",
+      "description": "Lister les lignes d'un devis ou commande de vente.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_sale_order_lines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les lignes de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "order_id",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Filtrer par produit.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_sale_order_line_create",
+      "name": "odooSaleOrderLineCreate",
+      "schemaVersion": 2,
+      "title": "Créer une ligne de commande",
+      "subtitle": "Ventes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ventes",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter une ligne à un devis ou commande de vente.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_create_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une ligne de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "order_id",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Identifiant du produit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Description",
+            "description": "Description de la ligne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "product_uom_qty",
+            "label": "Quantité",
+            "description": "Quantité commandée.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "price_unit",
+            "label": "Prix unitaire",
+            "description": "Prix unitaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "discount",
+            "label": "Remise (%)",
+            "description": "Pourcentage de remise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "création",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_invoice_lines_list",
+      "name": "odooInvoiceLinesList",
+      "schemaVersion": 2,
+      "title": "Lister les lignes de facture",
+      "subtitle": "Facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Comptabilité",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-list-ol",
+      "description": "Lister les lignes d'une facture.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_invoice_lines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les lignes de facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "move_id",
+            "label": "ID Facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Filtrer par produit.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "account_id",
+            "label": "ID Compte",
+            "description": "Filtrer par compte comptable.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_invoice_line_create",
+      "name": "odooInvoiceLineCreate",
+      "schemaVersion": 2,
+      "title": "Créer une ligne de facture",
+      "subtitle": "Facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Comptabilité",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter une ligne à une facture.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_create_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une ligne de facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "move_id",
+            "label": "ID Facture",
+            "description": "Identifiant de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Identifiant du produit.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Libellé",
+            "description": "Libellé de la ligne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "quantity",
+            "label": "Quantité",
+            "description": "Quantité facturée.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "price_unit",
+            "label": "Prix unitaire",
+            "description": "Prix unitaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "account_id",
+            "label": "ID Compte comptable",
+            "description": "Identifiant du compte comptable.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "discount",
+            "label": "Remise (%)",
+            "description": "Pourcentage de remise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "création",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_product_categories_list",
+      "name": "odooProductCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les catégories de produit",
+      "subtitle": "Produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-tags",
+      "description": "Lister les catégories de produit Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_product_categories"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les catégories de produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "parent_id",
+            "label": "Catégorie parent ID",
+            "description": "Filtrer par catégorie parent.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Produits",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_crm_stages_list",
+      "name": "odooCrmStagesList",
+      "schemaVersion": 2,
+      "title": "Lister les étapes CRM",
+      "subtitle": "CRM",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "CRM",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-chart-bar",
+      "description": "Lister les étapes du pipeline CRM.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_crm_stages"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les étapes CRM",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "number",
+            "key": "team_id",
+            "label": "Équipe commerciale ID",
+            "description": "Filtrer par équipe commerciale.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "CRM",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_countries_list",
+      "name": "odooCountriesList",
+      "schemaVersion": 2,
+      "title": "Lister les pays",
+      "subtitle": "Référence",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Administration",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-globe",
+      "description": "Lister les pays disponibles dans Odoo.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_countries"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les pays",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 300
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Administration",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_purchase_order_lines_list",
+      "name": "odooPurchaseOrderLinesList",
+      "schemaVersion": 2,
+      "title": "Lister les lignes de bon de commande",
+      "subtitle": "Achats",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Achats",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-list-ol",
+      "description": "Lister les lignes d'un bon de commande fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_purchase_order_lines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les lignes de bon de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "order_id",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Filtrer par produit.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Achats",
+      "tags": [
+        "liste",
+        "odoo"
+      ]
+    },
+    {
+      "key": "odoo_purchase_order_line_create",
+      "name": "odooPurchaseOrderLineCreate",
+      "schemaVersion": 2,
+      "title": "Créer une ligne de bon de commande",
+      "subtitle": "Achats",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Achats",
+      "providerKey": "odoo",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter une ligne à un bon de commande fournisseur.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:odoo_create_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une ligne de bon de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "order_id",
+            "label": "ID Commande",
+            "description": "Identifiant de la commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "product_id",
+            "label": "ID Produit",
+            "description": "Identifiant du produit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Description",
+            "description": "Description de la ligne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "product_qty",
+            "label": "Quantité",
+            "description": "Quantité commandée.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "price_unit",
+            "label": "Prix unitaire",
+            "description": "Prix unitaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_planned",
+            "label": "Date prévue",
+            "description": "Date prévue de réception (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Achats",
+      "tags": [
+        "création",
+        "odoo"
+      ]
     }
   ],
   "variables": {
@@ -7291,6 +8760,843 @@
           "key": "model",
           "label": "Modèle",
           "description": "Modèle Odoo interrogé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_update_result": {
+      "title": "Résultat mise à jour",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "updated",
+          "label": "Mis à jour",
+          "description": "Indique si la mise à jour a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'enregistrement mis à jour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_delete_result": {
+      "title": "Résultat suppression",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "deleted",
+          "label": "Supprimé",
+          "description": "Indique si la suppression a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'enregistrement supprimé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l'action a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'enregistrement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_create_result": {
+      "title": "Résultat création",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du nouvel enregistrement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_projects": {
+      "title": "Projets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de projets.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Projets",
+          "description": "Liste : Projets",
+          "mode": "array",
+          "key": "projects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "description",
+              "label": "Description",
+              "description": "Description du projet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "partner_id",
+              "label": "Partenaire ID",
+              "description": "Identifiant du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "task_count",
+              "label": "Nombre de tâches",
+              "description": "Nombre de tâches dans le projet.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_users": {
+      "title": "Utilisateurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'utilisateurs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste : Utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de l'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de l'utilisateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "login",
+              "label": "Login",
+              "description": "Identifiant de connexion.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "active",
+              "label": "Actif",
+              "description": "Utilisateur actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_companies": {
+      "title": "Sociétés",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de sociétés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Sociétés",
+          "description": "Liste : Sociétés",
+          "mode": "array",
+          "key": "companies",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la société.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la société.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Numéro de téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "currency_id",
+              "label": "Devise ID",
+              "description": "Identifiant de la devise.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_sale_order_lines": {
+      "title": "Lignes de commande de vente",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de lignes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Lignes",
+          "description": "Liste : Lignes de commande",
+          "mode": "array",
+          "key": "lines",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "product_id",
+              "label": "Produit ID",
+              "description": "Identifiant du produit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Description",
+              "description": "Description de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "product_uom_qty",
+              "label": "Quantité",
+              "description": "Quantité commandée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_unit",
+              "label": "Prix unitaire",
+              "description": "Prix unitaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_subtotal",
+              "label": "Sous-total",
+              "description": "Sous-total de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "discount",
+              "label": "Remise (%)",
+              "description": "Pourcentage de remise.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_invoice_lines": {
+      "title": "Lignes de facture",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de lignes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Lignes",
+          "description": "Liste : Lignes de facture",
+          "mode": "array",
+          "key": "lines",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "product_id",
+              "label": "Produit ID",
+              "description": "Identifiant du produit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Libellé",
+              "description": "Libellé de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "quantity",
+              "label": "Quantité",
+              "description": "Quantité facturée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_unit",
+              "label": "Prix unitaire",
+              "description": "Prix unitaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_subtotal",
+              "label": "Sous-total",
+              "description": "Sous-total de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "account_id",
+              "label": "Compte ID",
+              "description": "Identifiant du compte comptable.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_product_categories": {
+      "title": "Catégories de produit",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de catégories.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Liste : Catégories de produit",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la catégorie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de la catégorie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "parent_id",
+              "label": "Catégorie parent ID",
+              "description": "Identifiant de la catégorie parent.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "complete_name",
+              "label": "Nom complet",
+              "description": "Nom complet avec hiérarchie.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_crm_stages": {
+      "title": "Étapes CRM",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'étapes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Étapes",
+          "description": "Liste : Étapes CRM",
+          "mode": "array",
+          "key": "stages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de l'étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de l'étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "sequence",
+              "label": "Séquence",
+              "description": "Ordre de la séquence.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "team_id",
+              "label": "Équipe ID",
+              "description": "Identifiant de l'équipe commerciale.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_countries": {
+      "title": "Pays",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Pays",
+          "description": "Liste : Pays",
+          "mode": "array",
+          "key": "countries",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du pays.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du pays.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code",
+              "label": "Code",
+              "description": "Code ISO du pays.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone_code",
+              "label": "Indicatif téléphonique",
+              "description": "Indicatif téléphonique du pays.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "odoo_purchase_order_lines": {
+      "title": "Lignes de bon de commande",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de lignes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Lignes",
+          "description": "Liste : Lignes de bon de commande",
+          "mode": "array",
+          "key": "lines",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "product_id",
+              "label": "Produit ID",
+              "description": "Identifiant du produit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Description",
+              "description": "Description de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "product_qty",
+              "label": "Quantité",
+              "description": "Quantité commandée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_unit",
+              "label": "Prix unitaire",
+              "description": "Prix unitaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "price_subtotal",
+              "label": "Sous-total",
+              "description": "Sous-total de la ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_planned",
+              "label": "Date prévue",
+              "description": "Date prévue de réception.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
           "col": {
             "xs": 24
           }

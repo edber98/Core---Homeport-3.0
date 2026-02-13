@@ -19,7 +19,7 @@ module.exports = {
         if (toInt(data.department_id)) domain.push(["department_id", "=", toInt(data.department_id)]);
 
         const res = await utils.odooCall(opts, "hr.employee", "search_read", [], {
-          domain, fields: ["id", "name", "work_email", "job_title", "department_id", "work_phone"], limit
+          domain, limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "hr.employee", "search_count", [], { domain });
