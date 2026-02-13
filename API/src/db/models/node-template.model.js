@@ -13,8 +13,8 @@ const NodeTemplateSchema = new Schema({
   group: { type: String },
   enabled: { type: Boolean, default: true },
   // v1: type; v2: nodeKind (superset)
-  type: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice'], required: true },
-  nodeKind: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice'], default: undefined },
+  type: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice','barrier','race'], required: true },
+  nodeKind: { type: String, enum: ['start','start_form','event','endpoint','function','condition','loop','end','flow','agent','tool_ai','memory','router','choice','barrier','race'], default: undefined },
   category: { type: String, default: '' },
   providerKey: { type: String },
   appName: { type: String },

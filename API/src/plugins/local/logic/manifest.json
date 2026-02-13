@@ -279,6 +279,101 @@
       "authorize_skip_error": false
     },
     {
+      "key": "core_barrier",
+      "name": "core_barrier",
+      "schemaVersion": 2,
+      "title": "Attendre tous",
+      "subtitle": "Barrière",
+      "type": "barrier",
+      "category": "Logic",
+      "providerKey": "logic",
+      "icon": "fa-solid fa-arrows-down-to-line",
+      "description": "Attend que toutes les branches arrivent avant de continuer. Fusionne les résultats de chaque branche.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "multiple": true,
+          "accepts": ["any", "payload"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Fusionné",
+          "type": "payload",
+          "schema": {
+            "fields": [
+              { "key": "type", "type": "text", "label": "Type" },
+              { "key": "arrived", "type": "number", "label": "Branches arrivées" },
+              { "key": "expected", "type": "number", "label": "Branches attendues" }
+            ]
+          }
+        }
+      ],
+      "args": {
+        "title": "Barrière",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "authorize_catch_error": false,
+      "authorize_skip_error": false
+    },
+    {
+      "key": "core_race",
+      "name": "core_race",
+      "schemaVersion": 2,
+      "title": "Premier arrivé",
+      "subtitle": "Course",
+      "type": "race",
+      "category": "Logic",
+      "providerKey": "logic",
+      "icon": "fa-solid fa-flag-checkered",
+      "description": "Continue dès que la première branche arrive. Les autres branches sont ignorées.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "multiple": true,
+          "accepts": ["any", "payload"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Premier",
+          "type": "payload",
+          "schema": {
+            "fields": [
+              { "key": "type", "type": "text", "label": "Type" },
+              { "key": "winner", "type": "text", "label": "Branche gagnante" },
+              { "key": "arrived", "type": "number", "label": "Branches arrivées" },
+              { "key": "expected", "type": "number", "label": "Branches attendues" }
+            ]
+          }
+        }
+      ],
+      "args": {
+        "title": "Course",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "authorize_catch_error": false,
+      "authorize_skip_error": false
+    },
+    {
       "key": "delay",
       "name": "delay",
       "schemaVersion": 2,
@@ -302,7 +397,13 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": {
+            "fields": [
+              { "key": "ok", "type": "boolean", "label": "Succès" },
+              { "key": "waited", "type": "number", "label": "Temps attendu (ms)" }
+            ]
+          }
         }
       ],
       "args": {

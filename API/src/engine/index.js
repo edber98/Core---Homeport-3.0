@@ -4,7 +4,7 @@ const { registry } = require('../plugins/registry');
 
 function log(step, data) { const payload = data === undefined ? '' : (typeof data === 'string' ? data : JSON.stringify(data)); console.log(`[engine] ${step} ${payload}`); }
 
-function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='loop') return 'loop'; if (s==='event' || s==='endpoint') return 'event'; return ''; }
+function normalizeNodeKind(nameOrType=''){ const s = String(nameOrType||'').trim().toLowerCase(); if (s==='start' || s==='start_form') return 'start'; if (s==='condition') return 'condition'; if (s==='function') return 'function'; if (s==='loop') return 'loop'; if (s==='event' || s==='endpoint') return 'event'; if (s==='barrier' || s==='wait_all' || s==='join') return 'barrier'; if (s==='race' || s==='first') return 'race'; return ''; }
 function normalizeTemplateKey(k){ if (!k) return ''; let s = String(k).trim().toLowerCase(); s = s.replace(/^tmpl_/,'').replace(/^template_/,'').replace(/^fn_/,'').replace(/^node_/,''); s = s.replace(/[^a-z0-9_]/g,'_'); return s; }
 
 function unwrapIsland(expr){ if (typeof expr !== 'string') return expr; const m = expr.match(/^\s*\{\{\s*([\s\S]*?)\s*\}\}\s*$/); return m ? m[1] : expr; }
@@ -56,6 +56,28 @@ function deepRender(obj, evalCtx){
     return out;
   }
   return obj;
+}
+
+// Merge messages from all branches arriving at a barrier node.
+// Each branch has accumulated its own node results (msg[nodeId]) and payload.
+// Merge: union of all node results + array of payloads.
+function mergeBarrierMessages(arrivedMap) {
+  const merged = { _nodes: {} };
+  const payloads = [];
+  for (const [, branchMsg] of arrivedMap) {
+    for (const [k, v] of Object.entries(branchMsg)) {
+      if (k === 'payload' || k === '_nodes') continue;
+      merged[k] = v;
+    }
+    if (branchMsg._nodes) {
+      for (const [k, v] of Object.entries(branchMsg._nodes)) {
+        merged._nodes[k] = v;
+      }
+    }
+    payloads.push(branchMsg.payload);
+  }
+  merged.payload = payloads;
+  return merged;
 }
 
 // Lightweight msg clone for loop/branch iterations.
@@ -145,6 +167,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
   const shouldCancel = typeof options.shouldCancel === 'function' ? options.shouldCancel : () => false;
   const forceBranches = (options && options.forceBranches && typeof options.forceBranches === 'object') ? options.forceBranches : null;
   if (shouldCancel()) { await send({ type: 'run.cancelled', reason: 'user_request' }); throw new Error('__CANCELLED__'); }
+  // Shared state for barrier/race convergence nodes — keyed by node id
+  const joinState = new Map();
 
   const runBranch = async (curId, msg, seen, branchId) => {
     if (shouldCancel()) throw new Error('__CANCELLED__');
@@ -508,6 +532,68 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
         await send({ type: 'edge.taken', sourceId: node.id, targetId: outAfter.target });
         await runBranch(outAfter.target, msg, seen, `${branchId}:after`);
       }
+      return;
+    } else if (nType === 'barrier' || nType === 'race') {
+      // Convergence nodes: barrier waits for ALL branches, race continues on FIRST branch
+      const expected = Math.max((inEdges.get(node.id) || []).length, 1);
+      // Initialize shared join state on first arrival
+      if (!joinState.has(node.id)) {
+        const st = { arrived: new Map(), expected, done: false, resolve: null, promise: null };
+        st.promise = new Promise(r => { st.resolve = r; });
+        joinState.set(node.id, st);
+      }
+      const st = joinState.get(node.id);
+      st.arrived.set(branchId, lightClone(msg));
+
+      if (nType === 'race') {
+        // Race: first branch to arrive wins, others are discarded
+        if (st.done) { try { console.log('[engine] race:discarded', { node: node.id, branch: branchId }); } catch {} return; }
+        st.done = true;
+        const msgBefore = lightClone(msg);
+        nodeLog.start = new Date().toISOString();
+        await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, msgIn: msgBefore, kind: 'race' });
+        nodeLog.result = { type: 'race', winner: branchId, arrived: st.arrived.size, expected: st.expected };
+        msg[node.id] = nodeLog.result;
+        // Keep payload as-is from winning branch
+        const msgAfter = lightClone(msg);
+        nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
+        try { console.log('[engine] race:winner', { node: node.id, branch: branchId }); } catch {}
+        await send({ type: 'node.done', nodeId: node.id, branchId, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+        // Route to downstream nodes
+        const outs = outEdges.get(node.id) || [];
+        for (const o of outs) await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target });
+        if (outs.length === 1) { await runBranch(outs[0].target, msg, seen, `${branchId}:race`); }
+        else if (outs.length > 1) { await Promise.all(outs.map((o, i) => runBranch(o.target, lightClone(msg), new Set(seen), `${branchId}:${i}`))); }
+        return;
+      }
+
+      // Barrier: wait for all branches to arrive
+      if (st.arrived.size < st.expected) {
+        try { console.log('[engine] barrier:waiting', { node: node.id, branch: branchId, arrived: st.arrived.size, expected: st.expected }); } catch {}
+        await st.promise; // Suspend this branch until last one arrives
+        return; // Non-final branches exit after barrier completes
+      }
+      // Last branch to arrive: resolve the promise (wakes up waiting branches), merge and continue
+      st.done = true;
+      st.resolve();
+      const merged = mergeBarrierMessages(st.arrived);
+      // Apply merged node results and payload to this branch's msg
+      for (const [k, v] of Object.entries(merged)) { if (k !== '_nodes') msg[k] = v; }
+      if (merged._nodes) { if (!msg._nodes) msg._nodes = {}; Object.assign(msg._nodes, merged._nodes); }
+      const msgBefore = lightClone(msg);
+      nodeLog.start = new Date().toISOString();
+      await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, msgIn: msgBefore, kind: 'barrier' });
+      nodeLog.result = { type: 'barrier', arrived: st.arrived.size, expected: st.expected };
+      msg[node.id] = nodeLog.result;
+      const msgAfter = lightClone(msg);
+      nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
+      try { console.log('[engine] barrier:merged', { node: node.id, arrived: st.arrived.size, expected: st.expected }); } catch {}
+      await send({ type: 'node.done', nodeId: node.id, branchId, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
+      // Route to downstream nodes
+      const outs = outEdges.get(node.id) || [];
+      for (const o of outs) await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target });
+      if (outs.length === 1) { await runBranch(outs[0].target, msg, seen, `${branchId}:merged`); }
+      else if (outs.length > 1) { await Promise.all(outs.map((o, i) => runBranch(o.target, lightClone(msg), new Set(seen), `${branchId}:${i}`))); }
       return;
     } else if (nType === 'function' || nType === 'agent' || nType === 'tool' || nType === 'tool_ai' || nType === 'memory'){
       const msgBefore = lightClone(msg);

@@ -262,6 +262,12 @@ function simulateMsgForScenario(targetId, choice, graph) {
         try { msg._nodes[from] = { simulated: true, kind: 'condition', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
         // Remplacer le payload par le choix (pas de merge)
         try { msg.payload = resultObj; payloadSet = true; } catch {}
+      } else if (kind === 'barrier' || kind === 'race' || kind === 'wait_all' || kind === 'join' || kind === 'first') {
+        // Convergence nodes: passthrough for static simulation (no output schema)
+        const resultObj = { type: kind === 'race' || kind === 'first' ? 'race' : 'barrier', arrived: 1, expected: 1 };
+        msg[from] = resultObj;
+        try { msg._nodes[from] = { simulated: true, kind, outputHandle: String(edge.sourceHandle || ''), schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+        // Don't override payload — pass through from upstream
       } else if (kind === 'loop') {
         schema = getHandleSchema(node.model, edge.sourceHandle || '');
         sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : (schema || {});
