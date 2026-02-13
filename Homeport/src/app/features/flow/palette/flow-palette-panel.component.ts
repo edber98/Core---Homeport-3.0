@@ -26,9 +26,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
             <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
               <img *ngIf="isOpenAiGroup(g.group)" [src]="openAiIconUrl" alt="icon" />
-              <i *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
-              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconClass && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
-              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconClass && !g.group?.appIconUrl" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
+              <img *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
+              <i *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
+              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && !g.group?.appIconClass" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
             </span>
             <span class="group-name">{{ g.group?.title }}</span>
             <span class="group-spacer" *ngIf="g.group?.appId"></span>
@@ -41,13 +41,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                    [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
                    (cdkDropListDropped)="null">
                 <div class="item flat" *ngFor="let it of section.items; trackBy: trackItemFn"
-                     cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
-                     [cdkDragData]="{ label: it.label, template: it.template }"
-                     [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
-                     [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                     [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                     (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
-                     (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})"
                      [class.dragging]="isDraggingFn?.(it)"
                      [class.disabled]="isItemDisabledFn?.(it)"
                      [attr.aria-disabled]="isItemDisabledFn?.(it) ? true : null"
@@ -72,18 +65,26 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                       </span>
                     </div>
                   </div>
-                  <ng-template cdkDragPreview>
-                    <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
-                      <div class="meta">
-                        <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
-                          <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
-                            <i class="mini" [class]="miniIconClassFn?.(it)"></i>
-                          </span>
-                          <span class="label">{{ it.label }}</span>
+                  <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
+                       [cdkDragData]="{ label: it.label, template: it.template }"
+                       [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
+                       [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                       [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                       (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
+                       (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})">
+                    <ng-template cdkDragPreview>
+                      <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
+                        <div class="meta">
+                          <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
+                            <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
+                              <i class="mini" [class]="miniIconClassFn?.(it)"></i>
+                            </span>
+                            <span class="label">{{ it.label }}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </ng-template>
+                    </ng-template>
+                  </div>
                 </div>
               </div>
             </ng-container>
@@ -96,9 +97,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
           <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
             <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
-            <i *ngIf="!isOpenAiGroup(g) && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
-            <img *ngIf="!isOpenAiGroup(g) && !g.appIconClass && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
-            <img *ngIf="!isOpenAiGroup(g) && !g.appIconClass && !g.appIconUrl" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
+            <img *ngIf="!isOpenAiGroup(g) && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+            <i *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
+            <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
           </span>
             <span class="group-name">{{ g.title }}</span>
             <span class="group-count">{{ g.items?.length || 0 }}</span>
@@ -116,9 +117,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
             <span class="group-heading">
               <span class="group-mini" *ngIf="activeGroup?.appId" [style.background]="activeGroup?.appColor || '#f3f4f6'">
                 <img *ngIf="isOpenAiGroup(activeGroup)" [src]="openAiIconUrl" alt="icon" />
-                <i *ngIf="!isOpenAiGroup(activeGroup) && activeGroup?.appIconClass" [class]="activeGroup?.appIconClass" [style.color]="fgColor(activeGroup?.appColor)"></i>
-                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconClass && activeGroup?.appIconUrl" [src]="activeGroup?.appIconUrl" alt="icon" />
-                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconClass && !activeGroup?.appIconUrl" [src]="simpleIconUrlFn?.(activeGroup?.appId) || ''" alt="icon" />
+                <img *ngIf="!isOpenAiGroup(activeGroup) && activeGroup?.appIconUrl" [src]="activeGroup?.appIconUrl" alt="icon" />
+                <i *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconUrl && activeGroup?.appIconClass" [class]="activeGroup?.appIconClass" [style.color]="fgColor(activeGroup?.appColor)"></i>
+                <img *ngIf="!isOpenAiGroup(activeGroup) && !activeGroup?.appIconUrl && !activeGroup?.appIconClass" [src]="simpleIconUrlFn?.(activeGroup?.appId) || ''" alt="icon" />
               </span>
               <span class="group-name">{{ activeGroup?.title }}</span>
             </span>
@@ -137,13 +138,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                      [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
                      (cdkDropListDropped)="null">
                   <div class="item flat" *ngFor="let it of section.items; trackBy: trackItemFn"
-                       cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
-                       [cdkDragData]="{ label: it.label, template: it.template }"
-                       [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
-                       [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                       [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                       (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
-                       (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})"
                        [class.dragging]="isDraggingFn?.(it)"
                        [class.disabled]="isItemDisabledFn?.(it)"
                        [attr.aria-disabled]="isItemDisabledFn?.(it) ? true : null"
@@ -168,18 +162,26 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                         </span>
                       </div>
                     </div>
-                    <ng-template cdkDragPreview>
-                      <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
-                        <div class="meta">
-                          <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
-                            <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
-                              <i class="mini" [class]="miniIconClassFn?.(it)"></i>
-                            </span>
-                            <span class="label">{{ it.label }}</span>
+                    <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
+                         [cdkDragData]="{ label: it.label, template: it.template }"
+                         [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
+                         [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                         [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                         (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
+                         (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})">
+                      <ng-template cdkDragPreview>
+                        <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
+                          <div class="meta">
+                            <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
+                              <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
+                                <i class="mini" [class]="miniIconClassFn?.(it)"></i>
+                              </span>
+                              <span class="label">{{ it.label }}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </ng-template>
+                      </ng-template>
+                    </div>
                   </div>
                 </div>
               </ng-container>
@@ -277,20 +279,28 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .mini-icon .mini { font-size: 15px; line-height: 1; color:#64748b; }
     .palette .empty { color:#94a3b8; font-size: 12px; padding: 6px 2px; display:flex; flex-direction:column; gap:8px; }
     .palette .items { display:flex; flex-direction:column; gap:0; }
-    .palette .item { display:flex; align-items:center; gap:10px; padding: 14px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04); position: relative; transition: border-color .3s ease; }
+    .palette .item { display:flex; align-items:center; gap:10px; padding: 14px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,0.04); position: relative; z-index: 0; transition: border-color .3s ease; user-select: none; -webkit-user-select: none; }
+    .palette .item * { user-select: none; -webkit-user-select: none; }
+    .palette .group-title,
+    .palette .group-row,
+    .palette .group-topbar,
+    .palette .group-heading,
+    .palette .search-group-title,
+    .palette .subgroup-title { user-select: none; -webkit-user-select: none; }
     .palette .item.flat { padding: 6px 22px; border: none; background: transparent; box-shadow: none; border-radius: 0; }
     .palette .item.flat:hover:not(.disabled) { background: #f8fafc; border-color: transparent; border-width: 0; }
     .palette .item.flat .meta { flex: 1 1 auto; min-width: 0; }
     .palette .item.flat .title-row { display:flex; align-items:center; gap:6px; font-weight: 600; font-size: 13px; }
     .palette .item.flat .title-pack { display:inline-flex; align-items:center; gap:10px; flex: 1 1 auto; min-width: 0; }
     .palette .item.flat .title-row .label { flex: 0 1 auto; white-space: nowrap; color:#111; font-weight: 400; }
-    .palette .item.flat .info { color:#94a3b8; cursor: help; display:inline-flex; align-items:center; justify-content:center; padding-right: 8px; }
+    .palette .item.flat .info { color:#94a3b8; cursor: help; display:inline-flex; align-items:center; justify-content:center; padding-right: 8px; position: relative; z-index: 2; }
     .palette .item.flat .info i { font-size: 14px; }
     .palette .item.disabled { opacity: .5; cursor: not-allowed; }
     .palette .item.disabled .drag-proxy { pointer-events: none; }
     .palette .item:active { cursor: grabbing; }
     .palette .item:hover:not(.disabled) { border-color:#1677ff; border-width:2px; }
-    .palette .item .drag-proxy { position:absolute; inset:0; }
+    /* Leave space for the info tooltip icon to receive hover events */
+    .palette .item .drag-proxy { position:absolute; inset:0; right:32px; z-index: 1; }
     .palette .item .title .start-dot { width:8px; height:8px; border-radius:50%; background:#10b981; display:inline-block; margin-left:6px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); vertical-align: middle; }
     .palette .item .meta .title { font-weight:600; font-size: 14px; }
     .palette .item .meta .subtitle { color:#8c8c8c; font-size: 13px; }

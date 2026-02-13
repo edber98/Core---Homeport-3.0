@@ -76,7 +76,7 @@
       "title": "Google Gemini",
       "iconClass": "fa-brands fa-google",
       "iconUrl": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/gemini-color.png",
-      "color": "#4285F4",
+      "color": "#f2f2f2",
       "tags": [
         "ai",
         "llm"

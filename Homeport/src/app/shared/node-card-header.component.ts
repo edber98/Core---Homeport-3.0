@@ -9,20 +9,22 @@ import { AppProvider } from '../services/catalog.service';
   template: `
     <div class="node-header">
       <div class="leading">
-        <div class="app-icon" *ngIf="app || appId" [style.background]="(app?.color || '#f3f4f6')">
-          <!-- Priority: explicit node/template iconUrl > explicit iconClass > provider iconUrl > provider iconClass > SimpleIcons fallback -->
-          <img *ngIf="iconUrl" [src]="iconUrl" alt="icon"/>
-          <i *ngIf="!iconUrl && iconClass" [class]="iconClass" [style.color]="fgColor(app?.color)"></i>
-          <img *ngIf="!iconUrl && !iconClass && app?.iconUrl" [src]="app?.iconUrl" alt="icon"/>
-          <i *ngIf="!iconUrl && !iconClass && !app?.iconUrl && app?.iconClass" [class]="app?.iconClass" [style.color]="fgColor(app?.color)"></i>
-          <img *ngIf="!iconUrl && !iconClass && !app?.iconUrl && !app?.iconClass && appId" [src]="simpleIconUrlWithColor(appId || '', fgColor(app?.color))" alt="icon"/>
+        <div class="app-icon" *ngIf="app || appId || iconUrl || iconClass" [style.background]="(app?.color || '#f3f4f6')">
+          <!-- Priority: provider iconUrl > provider iconClass > SimpleIcons fallback > node/template iconUrl > node/template iconClass -->
+          <img *ngIf="app?.iconUrl" [src]="app?.iconUrl" alt="icon"/>
+          <i *ngIf="!app?.iconUrl && app?.iconClass" [class]="app?.iconClass" [style.color]="fgColor(app?.color)"></i>
+          <img *ngIf="!app?.iconUrl && !app?.iconClass && appId" [src]="simpleIconUrlWithColor(appId || '', fgColor(app?.color))" alt="icon"/>
+          <img *ngIf="!app?.iconUrl && !app?.iconClass && !appId && iconUrl" [src]="iconUrl" alt="icon"/>
+          <i *ngIf="!app?.iconUrl && !app?.iconClass && !appId && !iconUrl && iconClass" [class]="iconClass" [style.color]="fgColor(app?.color)"></i>
         </div>
       </div>
       <div class="meta">
         <div class="title">{{ title }}</div>
         <div class="subtitle">
           <ng-container *ngIf="subtitle">{{ subtitle }}</ng-container>
-          <i class="type-badge" *ngIf="typeIcon" [class]="typeIcon" title="Type"></i>
+          <img class="group-badge-img" *ngIf="groupIconUrl" [src]="groupIconUrl" alt="icon" />
+          <i class="type-badge" *ngIf="!groupIconUrl && groupIconClass" [ngClass]="groupIconClass" title="Groupe"></i>
+          <i class="type-badge" *ngIf="!groupIconUrl && !groupIconClass && typeIcon" [class]="typeIcon" title="Type"></i>
         </div>
       </div>
     </div>
@@ -34,6 +36,7 @@ import { AppProvider } from '../services/catalog.service';
     .title { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .subtitle { color:#8c8c8c; font-size:12px; display:flex; align-items:center; gap:6px; }
     .type-badge { font-size:12px; color:#6b7280; }
+    .group-badge-img { width:12px; height:12px; object-fit:contain; display:inline-block; }
     .app-icon { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
     .app-icon i { font-size: 16px; line-height:1; }
     .app-icon img { width: 18px; height:18px; object-fit: contain; display:block; }
@@ -49,6 +52,20 @@ export class NodeCardHeaderComponent {
   // Optional node/template specific icon override
   @Input() iconClass?: string | null;
   @Input() iconUrl?: string | null;
+
+  get groupIconUrl(): string {
+    const url = String(this.iconUrl || '').trim();
+    if (url) return url;
+    const ic = String(this.iconClass || '').trim();
+    if (ic && /^https?:\/\//i.test(ic)) return ic;
+    return '';
+  }
+  get groupIconClass(): string {
+    const ic = String(this.iconClass || '').trim();
+    if (!ic) return '';
+    if (/^https?:\/\//i.test(ic)) return '';
+    return ic;
+  }
   
 
   fgColor(bg?: string|null): string {

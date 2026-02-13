@@ -806,7 +806,7 @@
       "title": "Jira",
       "iconClass": "fa-brands fa-jira",
       "iconUrl": "https://cdn.simpleicons.org/jira",
-      "color": "#9ec5ff",
+      "color": "#e2fffa",
       "tags": [
         "jira",
         "atlassian",

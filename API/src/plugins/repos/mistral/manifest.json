@@ -245,7 +245,7 @@
       "title": "Mistral AI",
       "iconClass": "fa-solid fa-wand-magic-sparkles",
       "iconUrl": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/mistral-color.png",
-      "color": "#ffba85",
+      "color": "#fcd4b5",
       "tags": [
         "ai",
         "llm"

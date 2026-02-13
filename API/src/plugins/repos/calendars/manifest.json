@@ -10,7 +10,7 @@
       "name": "Google Calendar",
       "title": "Google Calendar",
       "iconClass": "fa-brands fa-google",
-      "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
+      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
       "color": "#4285F4",
       "tags": [
         "calendar"
@@ -65,8 +65,8 @@
       "name": "Outlook Calendar",
       "title": "Outlook Calendar",
       "iconClass": "fa-brands fa-microsoft",
-      "iconUrl": "https://cdn.simpleicons.org/microsoftoutlook",
-      "color": "#0078D4",
+      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
+      "color": "#7ac3fa",
       "tags": [
         "calendar"
       ],

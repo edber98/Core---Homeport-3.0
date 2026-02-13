@@ -1817,7 +1817,7 @@
       "name": "GitHub",
       "title": "GitHub",
       "iconClass": "fa-brands fa-github",
-      "color": "#181717",
+      "color": "#ededed",
       "tags": [
         "github",
         "code",

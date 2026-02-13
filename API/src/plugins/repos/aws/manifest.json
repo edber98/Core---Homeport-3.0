@@ -492,7 +492,7 @@
       "title": "AWS S3",
       "iconClass": "fa-brands fa-aws",
       "iconUrl": "https://cdn.iconscout.com/icon/free/png-128/free-amazon-s3-logo-icon-svg-download-png-2464706.png?f=webp",
-      "color": "#FF9900",
+      "color": "#ffce87",
       "tags": [
         "aws",
         "s3",
@@ -562,7 +562,7 @@
       "title": "AWS SES",
       "iconClass": "fa-brands fa-aws",
       "iconUrl": "https://harmonizer.com/storage/app/uploads/public/65c/0dd/fe8/65c0ddfe8c4ff281343082",
-      "color": "#FF9900",
+      "color": "#ffcf87",
       "tags": [
         "aws",
         "ses",

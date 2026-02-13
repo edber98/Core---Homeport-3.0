@@ -56,7 +56,14 @@ import { AppProvider } from '../../../services/catalog.service';
       <div class="list" role="listbox" aria-label="Résultats">
         <ng-container *ngIf="itemsFlat.length; else empty">
           <ng-container *ngFor="let g of groups">
-            <div class="group-title">{{ g.title }}</div>
+            <div class="group-title">
+              <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
+                <img *ngIf="g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+                <i *ngIf="!g.appIconUrl && g.appIconClass" [class]="g.appIconClass"></i>
+                <img *ngIf="!g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlForApp(g.appId)" alt="icon" />
+              </span>
+              <span class="group-name">{{ g.title }}</span>
+            </div>
             <button type="button" class="item" *ngFor="let it of g.items" (mousemove)="hoverTo(it)" (click)="pick.emit(it)" [attr.aria-selected]="isActive(it) ? 'true' : 'false'">
               <div class="row">
                 <div class="meta">
@@ -110,7 +117,11 @@ import { AppProvider } from '../../../services/catalog.service';
     .search-meta { display:flex; justify-content:space-between; gap:10px; color:#6b7280; font-size:12px; padding:0 2px; }
     .muted { color:#6b7280; }
     .list { max-height: min(60vh, 520px); overflow:auto; padding: 8px 10px; }
-    .group-title { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#6b7280; padding: 8px 6px; }
+    .group-title { display:flex; align-items:center; justify-content:center; gap:8px; font-size:16px; font-weight:700; color:#111827; padding: 10px 6px; text-align:center; }
+    .group-title .group-mini { width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; flex:none; }
+    .group-title .group-mini img { width:14px; height:14px; object-fit:contain; display:block; }
+    .group-title .group-mini i { font-size:14px; line-height:1; color:#fff; }
+    .group-title .group-name { line-height:1.1; }
     .item { width:100%; text-align:left; padding: 10px; border-radius: 12px; border:1px solid #E5E7EB; background:#fff; cursor:pointer; display:block; margin: 6px 0; transition: border-color .15s ease, box-shadow .15s ease, background .15s ease; }
     .item:hover, .item[aria-selected="true"] { background:#F8FBFF; border-color:#DBEAFE; box-shadow: none; }
     .row { display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; }
@@ -201,6 +212,12 @@ export class SpotlightAddNodeComponent implements OnChanges, AfterViewInit {
     try {
       const appId = String((it?.template?.appId || it?.template?.app?._id || '')).trim();
       return appId ? `https://cdn.simpleicons.org/${encodeURIComponent(appId)}/ffffff` : 'https://cdn.simpleicons.org/question/ffffff';
+    } catch { return 'https://cdn.simpleicons.org/question/ffffff'; }
+  }
+  simpleIconUrlForApp(appId?: string | null): string {
+    try {
+      const id = String(appId || '').trim();
+      return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}/ffffff` : 'https://cdn.simpleicons.org/question/ffffff';
     } catch { return 'https://cdn.simpleicons.org/question/ffffff'; }
   }
 }

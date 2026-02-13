@@ -927,7 +927,7 @@
       "title": "Google Drive",
       "iconClass": "fa-brands fa-google-drive",
       "iconUrl": "https://cdn.simpleicons.org/googledrive",
-      "color": "#4285F4",
+      "color": "#99bbff",
       "tags": [
         "google",
         "drive",
@@ -997,7 +997,7 @@
       "title": "Google Docs",
       "iconClass": "fa-solid fa-file-lines",
       "iconUrl": "https://cdn.simpleicons.org/googledocs",
-      "color": "#4285F4",
+      "color": "#b5cffc",
       "tags": [
         "google",
         "docs",
@@ -1014,7 +1014,7 @@
       "title": "Google Sheets",
       "iconClass": "fa-solid fa-table",
       "iconUrl": "https://cdn.simpleicons.org/googlesheets",
-      "color": "#0F9D58",
+      "color": "#7deab6",
       "tags": [
         "google",
         "sheets",
