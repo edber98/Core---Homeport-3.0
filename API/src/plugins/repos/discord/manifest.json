@@ -1953,7 +1953,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Date et heure du message.",

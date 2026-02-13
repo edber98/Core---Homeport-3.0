@@ -112,7 +112,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -121,7 +121,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "updated_at",
           "label": "Date de mise à jour",
           "description": "Date de dernière mise à jour.",
@@ -220,7 +220,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -337,7 +337,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -436,7 +436,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date du commit.",
@@ -472,7 +472,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "files_changed",
           "label": "Fichiers modifiés",
           "description": "Nombre de fichiers modifiés.",
@@ -553,7 +553,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -562,7 +562,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "published_at",
           "label": "Date de publication",
           "description": "Date de publication.",
@@ -670,7 +670,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -724,7 +724,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -787,7 +787,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date de création",
           "description": "Date de création.",
@@ -899,7 +899,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1021,7 +1023,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1107,7 +1111,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1134,7 +1138,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1229,7 +1235,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1256,7 +1262,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1315,7 +1323,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1356,7 +1366,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date du commit.",
@@ -1392,7 +1402,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1460,7 +1472,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1469,7 +1481,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "published_at",
               "label": "Date de publication",
               "description": "Date de publication.",
@@ -1496,7 +1508,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1591,7 +1605,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1641,7 +1657,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1668,7 +1684,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1727,7 +1745,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1754,7 +1772,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",

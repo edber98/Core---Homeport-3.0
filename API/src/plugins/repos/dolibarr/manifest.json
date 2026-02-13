@@ -211,7 +211,7 @@
           "description": "Note interne."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -526,7 +526,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -625,7 +625,7 @@
           "description": "Statut du devis."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "col": {
@@ -634,7 +634,7 @@
           "description": "Date du devis."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "fin_validite",
           "label": "Date de fin",
           "col": {
@@ -661,7 +661,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -760,7 +760,7 @@
           "description": "Statut de la commande."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "col": {
@@ -769,7 +769,7 @@
           "description": "Date de la commande."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_livraison",
           "label": "Date de livraison",
           "col": {
@@ -796,7 +796,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -913,7 +913,7 @@
           "description": "Statut de la facture."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "col": {
@@ -922,7 +922,7 @@
           "description": "Date de la facture."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_lim_reglement",
           "label": "Échéance",
           "col": {
@@ -949,7 +949,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1039,7 +1039,7 @@
           "description": "0=brouillon, 1=validé, 2=fermé."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_start",
           "label": "Date de début",
           "col": {
@@ -1048,7 +1048,7 @@
           "description": "Date de début."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_end",
           "label": "Date de fin",
           "col": {
@@ -1084,7 +1084,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1174,7 +1174,7 @@
           "description": "Progression en pourcentage."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_start",
           "label": "Date de début",
           "col": {
@@ -1183,7 +1183,7 @@
           "description": "Date de début."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_end",
           "label": "Date de fin",
           "col": {
@@ -1228,7 +1228,7 @@
           "description": "Note privée."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1336,7 +1336,7 @@
           "description": "Statut de l'entrepôt."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1426,7 +1426,7 @@
           "description": "Code d'inventaire."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "datem",
           "label": "Date",
           "col": {
@@ -1507,7 +1507,7 @@
           "description": "Couleur en hexadécimal."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1615,7 +1615,7 @@
           "description": "ID du superviseur."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1768,7 +1768,7 @@
           "description": "Durée de traitement."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1777,7 +1777,7 @@
           "description": "Date de création."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_close",
           "label": "Date de fermeture",
           "col": {
@@ -1903,7 +1903,7 @@
           "description": "Statut du compte."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_creation",
           "label": "Date de création",
           "col": {
@@ -1948,7 +1948,7 @@
           "description": "Référence du paiement."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "col": {
@@ -2313,7 +2313,7 @@
               "description": "Note interne."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -2658,7 +2658,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -2772,7 +2772,7 @@
               "description": "Statut du devis."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -2781,7 +2781,7 @@
               "description": "Date du devis."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "fin_validite",
               "label": "Date de fin",
               "col": {
@@ -2808,7 +2808,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -2922,7 +2922,7 @@
               "description": "Statut de la commande."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -2931,7 +2931,7 @@
               "description": "Date de la commande."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_livraison",
               "label": "Date de livraison",
               "col": {
@@ -2958,7 +2958,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3090,7 +3090,7 @@
               "description": "Statut de la facture."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -3099,7 +3099,7 @@
               "description": "Date de la facture."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_lim_reglement",
               "label": "Échéance",
               "col": {
@@ -3126,7 +3126,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3231,7 +3231,7 @@
               "description": "0=brouillon, 1=validé, 2=fermé."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_start",
               "label": "Date de début",
               "col": {
@@ -3240,7 +3240,7 @@
               "description": "Date de début."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_end",
               "label": "Date de fin",
               "col": {
@@ -3276,7 +3276,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3381,7 +3381,7 @@
               "description": "Progression en pourcentage."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_start",
               "label": "Date de début",
               "col": {
@@ -3390,7 +3390,7 @@
               "description": "Date de début."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_end",
               "label": "Date de fin",
               "col": {
@@ -3435,7 +3435,7 @@
               "description": "Note privée."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3558,7 +3558,7 @@
               "description": "Statut de l'entrepôt."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3663,7 +3663,7 @@
               "description": "Code d'inventaire."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "datem",
               "label": "Date",
               "col": {
@@ -3759,7 +3759,7 @@
               "description": "Couleur en hexadécimal."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -3882,7 +3882,7 @@
               "description": "ID du superviseur."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -4050,7 +4050,7 @@
               "description": "Durée de traitement."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -4059,7 +4059,7 @@
               "description": "Date de création."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_close",
               "label": "Date de fermeture",
               "col": {
@@ -4200,7 +4200,7 @@
               "description": "Statut du compte."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_creation",
               "label": "Date de création",
               "col": {
@@ -5919,7 +5919,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date",
             "label": "Date",
             "col": {
@@ -5928,7 +5928,7 @@
             "description": "Date du devis (YYYY-MM-DD ou timestamp)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "fin_validite",
             "label": "Date de fin de validité",
             "col": {
@@ -6209,7 +6209,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date",
             "label": "Date",
             "col": {
@@ -6218,7 +6218,7 @@
             "description": "Date de la commande (YYYY-MM-DD ou timestamp)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_livraison",
             "label": "Date de livraison",
             "col": {
@@ -6535,7 +6535,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date",
             "label": "Date",
             "col": {
@@ -6544,7 +6544,7 @@
             "description": "Date de la facture (YYYY-MM-DD ou timestamp)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_lim_reglement",
             "label": "Échéance",
             "col": {
@@ -7075,7 +7075,7 @@
             "description": "ID du tiers associé."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_start",
             "label": "Date de début",
             "col": {
@@ -7084,7 +7084,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_end",
             "label": "Date de fin",
             "col": {
@@ -7403,7 +7403,7 @@
             "description": "ID de la tâche parente (optionnel)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_start",
             "label": "Date de début",
             "col": {
@@ -7412,7 +7412,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_end",
             "label": "Date de fin",
             "col": {
@@ -8999,7 +8999,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "datepaye",
             "label": "Date de paiement",
             "col": {

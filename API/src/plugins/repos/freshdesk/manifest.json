@@ -76,7 +76,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -98,7 +98,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -148,7 +150,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -216,7 +218,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -238,7 +240,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -288,7 +292,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -347,7 +351,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -369,7 +373,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -410,7 +416,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -491,7 +497,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -582,7 +590,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -604,7 +612,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -645,7 +655,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -695,7 +705,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -717,7 +727,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -758,7 +770,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -835,7 +847,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de l événement.",

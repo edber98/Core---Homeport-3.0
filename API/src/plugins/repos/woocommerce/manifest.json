@@ -76,7 +76,7 @@
           "description": "Méthode de paiement."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Créé le",
           "col": {
@@ -161,7 +161,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_created",
               "label": "Créé le",
               "col": {
@@ -264,7 +264,7 @@
           "description": "Quantité en stock."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Créé le",
           "col": {
@@ -349,7 +349,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_created",
               "label": "Créé le",
               "col": {
@@ -434,7 +434,7 @@
           "description": "Nom d'utilisateur."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Créé le",
           "col": {
@@ -503,7 +503,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_created",
               "label": "Créé le",
               "col": {
@@ -699,7 +699,7 @@
           "description": "Montant de la remise."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_expires",
           "label": "Date d'expiration",
           "col": {
@@ -760,7 +760,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_expires",
               "label": "Date d'expiration",
               "col": {
@@ -2484,7 +2484,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_expires",
             "label": "Date d'expiration",
             "col": {
@@ -2603,7 +2603,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "date_min",
             "label": "Date début",
             "col": {
@@ -2612,7 +2612,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_max",
             "label": "Date fin",
             "col": {
@@ -2669,7 +2669,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "date_min",
             "label": "Date début",
             "col": {
@@ -2678,7 +2678,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_max",
             "label": "Date fin",
             "col": {

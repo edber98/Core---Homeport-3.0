@@ -96,6 +96,36 @@ import { Subscription } from 'rxjs';
                 </nz-form-item>
                 
               </ng-container>
+              <ng-container *ngIf="group.get('type')?.value==='date'">
+                <div class="ins-section-header" style="margin-top:8px;">
+                  <div class="card-title"><span class="t">Date — Configuration</span><span class="s">Format et comportement</span></div>
+                </div>
+                <nz-form-item>
+                  <nz-form-label nzTooltipTitle="Format d'affichage de la date (ex: dd/MM/yyyy, yyyy-MM-dd)"><span>Format</span></nz-form-label>
+                  <nz-form-control>
+                    <nz-select formControlName="date_format">
+                      <nz-option nzValue="dd/MM/yyyy" nzLabel="dd/MM/yyyy (31/12/2024)"></nz-option>
+                      <nz-option nzValue="yyyy-MM-dd" nzLabel="yyyy-MM-dd (2024-12-31)"></nz-option>
+                      <nz-option nzValue="dd/MM/yyyy HH:mm" nzLabel="dd/MM/yyyy HH:mm (31/12/2024 14:30)"></nz-option>
+                      <nz-option nzValue="yyyy-MM-dd HH:mm" nzLabel="yyyy-MM-dd HH:mm (2024-12-31 14:30)"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Inclure un sélecteur d'heure"><span>Avec heure</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="date_showTime"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Afficher le bouton Aujourd'hui"><span>Aujourd'hui</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="date_showToday"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Autoriser la suppression de la date"><span>Effaçable</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="date_allowClear"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                </div>
+              </ng-container>
               <ng-container *ngIf="group.get('type')?.value==='file'">
                 <div class="ins-section-header" style="margin-top:8px;">
                   <div class="card-title"><span class="t">Fichier — Configuration</span><span class="s">Types, taille et comportement</span></div>

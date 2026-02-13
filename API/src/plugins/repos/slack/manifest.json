@@ -22,7 +22,7 @@
           "description": "Identifiant du canal."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "ts",
           "label": "Timestamp",
           "col": {
@@ -95,7 +95,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "ts",
               "label": "Timestamp",
               "col": {
@@ -732,7 +732,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "message_ts",
           "label": "Timestamp du message",
           "col": {
@@ -776,7 +776,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "message_ts",
               "label": "Timestamp du message",
               "col": {
@@ -1247,7 +1247,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "ts",
             "label": "Timestamp",
             "col": {
@@ -1337,7 +1337,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "ts",
             "label": "Timestamp",
             "col": {
@@ -1503,7 +1503,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "message_ts",
             "label": "Timestamp",
             "col": {
@@ -2365,7 +2365,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "timestamp",
             "label": "Timestamp",
             "col": {
@@ -2455,7 +2455,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "timestamp",
             "label": "Timestamp",
             "col": {
@@ -2545,7 +2545,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "timestamp",
             "label": "Timestamp",
             "col": {
@@ -2935,7 +2935,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "timestamp",
             "label": "Timestamp",
             "col": {

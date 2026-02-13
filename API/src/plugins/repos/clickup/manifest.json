@@ -67,7 +67,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "due_date",
           "label": "Date d'échéance",
           "description": "Date d'échéance.",
@@ -94,7 +94,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Date création",
           "description": "Date de création.",
@@ -177,7 +177,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "due_date",
               "label": "Date d'échéance",
               "description": "Échéance.",
@@ -186,7 +186,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_created",
               "label": "Date création",
               "description": "Création.",
@@ -599,7 +599,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date du commentaire.",
@@ -664,7 +664,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date.",
@@ -741,7 +741,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage.",
@@ -881,7 +881,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_date",
             "label": "Date d'échéance",
             "description": "Date d'échéance (timestamp ms ou ISO).",
@@ -1050,7 +1050,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_date",
             "label": "Date d'échéance",
             "description": "Nouvelle date d'échéance.",

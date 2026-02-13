@@ -200,6 +200,14 @@ Le moteur evalue l'expression et passe le resultat au handler.
 
 ### date - Sélecteur de date
 
+Utilise `nz-date-picker` de ng-zorro. Pour les champs de sortie (variables/output schemas),
+le viewer formate automatiquement les dates ISO en format français lisible.
+
+**IMPORTANT** : Utiliser `"type": "date"` pour TOUS les champs qui contiennent des dates
+(created_at, updated_at, due_date, timestamp, etc.) — même dans les output schemas/variables.
+Ne JAMAIS utiliser `"type": "text"` pour un champ date.
+
+**Date simple :**
 ```json
 {
   "type": "date",
@@ -209,6 +217,33 @@ Le moteur evalue l'expression et passe le resultat au handler.
   "expression": { "allow": true }
 }
 ```
+
+**Date avec options :**
+```json
+{
+  "type": "date",
+  "key": "event_start",
+  "label": "Début de l'événement",
+  "col": { "xs": 24, "md": 12 },
+  "date": {
+    "showTime": true,                    // Inclure sélecteur d'heure (défaut: false)
+    "format": "dd/MM/yyyy HH:mm",       // Format d'affichage (défaut: "dd/MM/yyyy")
+    "showToday": true,                   // Bouton "Aujourd'hui" (défaut: true)
+    "allowClear": true                   // Autoriser la suppression (défaut: true)
+  },
+  "expression": { "allow": true }
+}
+```
+
+**Formats disponibles :**
+- `dd/MM/yyyy` — 31/12/2024 (défaut)
+- `yyyy-MM-dd` — 2024-12-31
+- `dd/MM/yyyy HH:mm` — 31/12/2024 14:30 (avec showTime)
+- `yyyy-MM-dd HH:mm` — 2024-12-31 14:30 (avec showTime)
+
+Le format d'affichage dans le viewer (exec-result-viewer) s'adapte automatiquement :
+- Date seule (`2024-01-15`) → `15/01/2024`
+- Date+heure (`2024-01-15T14:30:00Z`) → `15/01/2024 14:30`
 
 ### tags - Saisie de tags (liste de valeurs)
 

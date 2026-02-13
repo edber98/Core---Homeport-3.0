@@ -225,7 +225,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "expires",
           "label": "Expiration",
           "col": {
@@ -397,7 +397,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "modified",
           "label": "Date modification",
           "col": {

@@ -771,13 +771,27 @@
             "key": "partner_type",
             "label": "Type de partenaire",
             "description": "Filtrer par rôle du partenaire.",
-            "col": { "xs": 12 },
+            "col": {
+              "xs": 12
+            },
             "default": "",
             "options": [
-              { "label": "Tous", "value": "" },
-              { "label": "Clients", "value": "customer" },
-              { "label": "Fournisseurs", "value": "supplier" },
-              { "label": "Clients & fournisseurs", "value": "customer_supplier" }
+              {
+                "label": "Tous",
+                "value": ""
+              },
+              {
+                "label": "Clients",
+                "value": "customer"
+              },
+              {
+                "label": "Fournisseurs",
+                "value": "supplier"
+              },
+              {
+                "label": "Clients & fournisseurs",
+                "value": "customer_supplier"
+              }
             ]
           },
           {
@@ -785,12 +799,23 @@
             "key": "company_type",
             "label": "Société / Contact",
             "description": "Filtrer par type d'entité.",
-            "col": { "xs": 12 },
+            "col": {
+              "xs": 12
+            },
             "default": "",
             "options": [
-              { "label": "Tous", "value": "" },
-              { "label": "Sociétés", "value": "company" },
-              { "label": "Contacts (individus)", "value": "individual" }
+              {
+                "label": "Tous",
+                "value": ""
+              },
+              {
+                "label": "Sociétés",
+                "value": "company"
+              },
+              {
+                "label": "Contacts (individus)",
+                "value": "individual"
+              }
             ]
           },
           {
@@ -798,7 +823,9 @@
             "key": "search",
             "label": "Recherche",
             "description": "Rechercher par nom ou email.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "placeholder": "Ex: Dupont, contact@exemple.com"
           },
           {
@@ -806,21 +833,27 @@
             "key": "parent_id",
             "label": "ID société parente",
             "description": "Lister uniquement les contacts rattachés à cette société.",
-            "col": { "xs": 12 }
+            "col": {
+              "xs": 12
+            }
           },
           {
             "type": "number",
             "key": "country_id",
             "label": "ID pays",
             "description": "Filtrer par pays (ID Odoo).",
-            "col": { "xs": 12 }
+            "col": {
+              "xs": 12
+            }
           },
           {
             "type": "number",
             "key": "limit",
             "label": "Limite",
             "description": "Nombre max de résultats.",
-            "col": { "xs": 12 },
+            "col": {
+              "xs": 12
+            },
             "default": 50
           },
           {
@@ -828,7 +861,9 @@
             "key": "offset",
             "label": "Décalage",
             "description": "Nombre de résultats à ignorer (pagination).",
-            "col": { "xs": 12 },
+            "col": {
+              "xs": 12
+            },
             "default": 0
           },
           {
@@ -836,7 +871,9 @@
             "key": "domain",
             "label": "Domaine avancé (JSON)",
             "description": "Filtre supplémentaire au format JSON Odoo (ex: [[\"tag_ids.name\",\"=\",\"VIP\"]]).",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1326,7 +1363,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_order",
             "label": "Date commande",
             "description": "Date de la commande (YYYY-MM-DD).",
@@ -1703,7 +1740,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_order",
             "label": "Date commande",
             "description": "Date du bon de commande (YYYY-MM-DD).",
@@ -2031,7 +2068,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "invoice_date",
             "label": "Date facture",
             "description": "Date de la facture (YYYY-MM-DD).",
@@ -3012,7 +3049,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_deadline",
             "label": "Date limite",
             "description": "Date limite (YYYY-MM-DD).",
@@ -3129,7 +3166,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_deadline",
             "label": "Date limite",
             "description": "Nouvelle date limite (YYYY-MM-DD).",
@@ -5490,7 +5527,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "validity_date",
             "label": "Date de validité",
             "description": "Date de validité (YYYY-MM-DD).",
@@ -6495,7 +6532,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "date_planned",
             "label": "Date prévue",
             "description": "Date prévue de réception (YYYY-MM-DD).",
@@ -6608,7 +6645,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'enregistrements correspondant au filtre.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -6616,35 +6655,240 @@
           "description": "Liste : Partenaires",
           "mode": "array",
           "key": "partners",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "number", "key": "id", "label": "ID", "description": "Identifiant du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "description": "Nom complet du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "display_name", "label": "Nom affiché", "description": "Nom affiché (inclut la société parente).", "col": { "xs": 24 } },
-            { "type": "text", "key": "email", "label": "Email", "description": "Adresse email.", "col": { "xs": 24 } },
-            { "type": "text", "key": "phone", "label": "Téléphone", "description": "Numéro de téléphone.", "col": { "xs": 24 } },
-            { "type": "text", "key": "mobile", "label": "Mobile", "description": "Numéro de mobile.", "col": { "xs": 24 } },
-            { "type": "text", "key": "street", "label": "Adresse", "description": "Adresse postale.", "col": { "xs": 24 } },
-            { "type": "text", "key": "street2", "label": "Adresse (suite)", "description": "Complément d'adresse.", "col": { "xs": 24 } },
-            { "type": "text", "key": "city", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
-            { "type": "text", "key": "zip", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
-            { "type": "text", "key": "country_id", "label": "Pays", "description": "Pays (ID et nom).", "col": { "xs": 24 } },
-            { "type": "text", "key": "vat", "label": "N° TVA", "description": "Numéro de TVA intracommunautaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "ref", "label": "Référence interne", "description": "Référence interne du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "website", "label": "Site web", "description": "URL du site web.", "col": { "xs": 24 } },
-            { "type": "checkbox", "key": "is_company", "label": "Société", "description": "Est une société.", "col": { "xs": 24 } },
-            { "type": "checkbox", "key": "active", "label": "Actif", "description": "Partenaire actif.", "col": { "xs": 24 } },
-            { "type": "number", "key": "customer_rank", "label": "Rang client", "description": "Rang client (> 0 = client).", "col": { "xs": 24 } },
-            { "type": "number", "key": "supplier_rank", "label": "Rang fournisseur", "description": "Rang fournisseur (> 0 = fournisseur).", "col": { "xs": 24 } },
-            { "type": "text", "key": "parent_id", "label": "Société parente", "description": "Société parente (ID et nom).", "col": { "xs": 24 } },
-            { "type": "text", "key": "company_type", "label": "Type", "description": "Type : company ou person.", "col": { "xs": 24 } },
-            { "type": "text", "key": "lang", "label": "Langue", "description": "Langue du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "category_id", "label": "Étiquettes", "description": "Étiquettes/catégories du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "commercial_partner_id", "label": "Partenaire commercial", "description": "Partenaire commercial principal.", "col": { "xs": 24 } },
-            { "type": "text", "key": "create_date", "label": "Date de création", "description": "Date de création du partenaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "write_date", "label": "Dernière modification", "description": "Date de dernière modification.", "col": { "xs": 24 } }
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom complet du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "display_name",
+              "label": "Nom affiché",
+              "description": "Nom affiché (inclut la société parente).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Numéro de téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mobile",
+              "label": "Mobile",
+              "description": "Numéro de mobile.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "street",
+              "label": "Adresse",
+              "description": "Adresse postale.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "street2",
+              "label": "Adresse (suite)",
+              "description": "Complément d'adresse.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "city",
+              "label": "Ville",
+              "description": "Ville.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "zip",
+              "label": "Code postal",
+              "description": "Code postal.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "country_id",
+              "label": "Pays",
+              "description": "Pays (ID et nom).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "vat",
+              "label": "N° TVA",
+              "description": "Numéro de TVA intracommunautaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ref",
+              "label": "Référence interne",
+              "description": "Référence interne du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "website",
+              "label": "Site web",
+              "description": "URL du site web.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_company",
+              "label": "Société",
+              "description": "Est une société.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "active",
+              "label": "Actif",
+              "description": "Partenaire actif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "customer_rank",
+              "label": "Rang client",
+              "description": "Rang client (> 0 = client).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "supplier_rank",
+              "label": "Rang fournisseur",
+              "description": "Rang fournisseur (> 0 = fournisseur).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "parent_id",
+              "label": "Société parente",
+              "description": "Société parente (ID et nom).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "company_type",
+              "label": "Type",
+              "description": "Type : company ou person.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lang",
+              "label": "Langue",
+              "description": "Langue du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "category_id",
+              "label": "Étiquettes",
+              "description": "Étiquettes/catégories du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "commercial_partner_id",
+              "label": "Partenaire commercial",
+              "description": "Partenaire commercial principal.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "create_date",
+              "label": "Date de création",
+              "description": "Date de création du partenaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "write_date",
+              "label": "Dernière modification",
+              "description": "Date de dernière modification.",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
@@ -6861,7 +7105,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_order",
           "label": "Date commande",
           "description": "Date de la commande.",
@@ -6953,7 +7197,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_order",
               "label": "Date commande",
               "description": "Date de la commande.",
@@ -7021,7 +7265,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_order",
           "label": "Date commande",
           "description": "Date du bon de commande.",
@@ -7104,7 +7348,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_order",
               "label": "Date commande",
               "description": "Date du bon de commande.",
@@ -7181,7 +7425,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "invoice_date",
           "label": "Date facture",
           "description": "Date de la facture.",
@@ -7273,7 +7517,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "invoice_date",
               "label": "Date facture",
               "description": "Date de la facture.",
@@ -7582,7 +7826,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_deadline",
           "label": "Date limite",
           "description": "Date limite de la tâche.",
@@ -7665,7 +7909,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_deadline",
               "label": "Date limite",
               "description": "Date limite de la tâche.",
@@ -9577,7 +9821,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_planned",
               "label": "Date prévue",
               "description": "Date prévue de réception.",

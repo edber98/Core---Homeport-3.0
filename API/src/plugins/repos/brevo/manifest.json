@@ -58,7 +58,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création du contact.",
@@ -140,7 +140,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -199,7 +199,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -272,7 +272,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -340,7 +340,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -349,7 +349,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "scheduledAt",
           "label": "Date planifiée",
           "description": "Date d envoi planifiée.",
@@ -431,7 +431,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -517,7 +517,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -581,7 +581,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -755,7 +755,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de l événement.",
@@ -2169,7 +2169,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date début",
             "description": "Date de début (YYYY-MM-DD).",
@@ -2178,7 +2178,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "endDate",
             "label": "Date fin",
             "description": "Date de fin (YYYY-MM-DD).",

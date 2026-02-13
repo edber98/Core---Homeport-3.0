@@ -177,7 +177,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "start_time",
             "label": "Date de début",
             "col": {
@@ -374,7 +374,7 @@
             "description": "Nouveau sujet."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "start_time",
             "label": "Date de début",
             "col": {
@@ -808,7 +808,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "start_time",
             "label": "Date de début",
             "col": {
@@ -983,7 +983,7 @@
             "description": "Nouveau sujet."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "start_time",
             "label": "Date de début",
             "col": {
@@ -1526,7 +1526,7 @@
             "description": "ID de l'utilisateur ou \"me\"."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "from",
             "label": "Date début",
             "col": {
@@ -1537,7 +1537,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "to",
             "label": "Date fin",
             "col": {
@@ -1806,7 +1806,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "from",
             "label": "Date début",
             "col": {
@@ -1822,7 +1822,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "to",
             "label": "Date fin",
             "col": {
@@ -1925,7 +1925,7 @@
             "description": "ID de l'utilisateur ou \"me\"."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "from",
             "label": "Date début",
             "col": {
@@ -1941,7 +1941,7 @@
             "description": "Date de début (YYYY-MM-DD)."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "to",
             "label": "Date fin",
             "col": {
@@ -2265,7 +2265,7 @@
               "description": "Type de réunion."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -2397,7 +2397,7 @@
               "description": "Type de réunion."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -2524,7 +2524,7 @@
               "description": "Type de webinaire."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -2629,7 +2629,7 @@
               "description": "Type de webinaire."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -3673,7 +3673,7 @@
               "description": "Sujet de la réunion."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -3682,7 +3682,7 @@
               "description": "Date/heure de début."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "end_time",
               "label": "Date de fin",
               "col": {
@@ -3769,7 +3769,7 @@
               "description": "Sujet de la réunion."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "start_time",
               "label": "Date de début",
               "col": {
@@ -3778,7 +3778,7 @@
               "description": "Date/heure de début."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "end_time",
               "label": "Date de fin",
               "col": {

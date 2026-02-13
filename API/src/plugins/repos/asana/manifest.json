@@ -58,7 +58,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "due_on",
           "label": "Date d'échéance",
           "description": "Date d'échéance.",
@@ -76,7 +76,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date création",
           "description": "Date de création.",
@@ -85,7 +85,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "modified_at",
           "label": "Date modification",
           "description": "Date de modification.",
@@ -150,7 +150,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "due_on",
               "label": "Date d'échéance",
               "description": "Échéance.",
@@ -159,7 +159,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date création",
               "description": "Création.",
@@ -236,7 +236,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date création",
           "description": "Date de création.",
@@ -712,7 +712,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_by",
           "label": "Créé par",
           "description": "Auteur.",
@@ -721,7 +721,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Date création",
           "description": "Date de création.",
@@ -777,7 +777,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date création",
               "description": "Création.",
@@ -863,7 +863,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'événement.",
@@ -1002,7 +1002,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_on",
             "label": "Date d'échéance",
             "description": "Date d'échéance (YYYY-MM-DD).",
@@ -1162,7 +1162,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_on",
             "label": "Date d'échéance",
             "description": "Nouvelle date (YYYY-MM-DD).",

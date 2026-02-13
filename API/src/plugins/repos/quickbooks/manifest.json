@@ -76,7 +76,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createTime",
           "label": "Date création",
           "description": "Date de création.",
@@ -191,7 +191,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "txnDate",
           "label": "Date",
           "description": "Date de la transaction.",
@@ -200,7 +200,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "dueDate",
           "label": "Échéance",
           "description": "Date d'échéance.",
@@ -301,7 +301,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "txnDate",
               "label": "Date",
               "description": "Date.",
@@ -351,7 +351,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "txnDate",
           "label": "Date",
           "description": "Date du paiement.",
@@ -434,7 +434,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "txnDate",
               "label": "Date",
               "description": "Date.",
@@ -786,7 +786,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "txnDate",
           "label": "Date",
           "description": "Date de la transaction.",
@@ -795,7 +795,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "dueDate",
           "label": "Échéance",
           "description": "Date d'échéance.",
@@ -878,7 +878,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "txnDate",
               "label": "Date",
               "description": "Date.",
@@ -1124,7 +1124,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "txnDate",
           "label": "Date",
           "description": "Date du devis.",
@@ -1216,7 +1216,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "txnDate",
               "label": "Date",
               "description": "Date.",
@@ -1823,7 +1823,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "txnDate",
             "label": "Date",
             "description": "Date de la facture (YYYY-MM-DD).",
@@ -1832,7 +1832,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "dueDate",
             "label": "Échéance",
             "description": "Date d'échéance (YYYY-MM-DD).",
@@ -2295,7 +2295,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "txnDate",
             "label": "Date",
             "description": "Date du paiement (YYYY-MM-DD).",
@@ -3058,7 +3058,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "txnDate",
             "label": "Date",
             "description": "Date (YYYY-MM-DD).",
@@ -3067,7 +3067,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "dueDate",
             "label": "Échéance",
             "description": "Échéance (YYYY-MM-DD).",
@@ -3389,7 +3389,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date de début",
             "description": "Date de début (YYYY-MM-DD).",
@@ -3398,7 +3398,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "endDate",
             "label": "Date de fin",
             "description": "Date de fin (YYYY-MM-DD).",
@@ -3455,7 +3455,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date de début",
             "description": "Date de début (YYYY-MM-DD).",
@@ -3464,7 +3464,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "endDate",
             "label": "Date de fin",
             "description": "Date de fin (YYYY-MM-DD).",
@@ -3535,7 +3535,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "txnDate",
             "label": "Date",
             "description": "Date du devis (YYYY-MM-DD).",

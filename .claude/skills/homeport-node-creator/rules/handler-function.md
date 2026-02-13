@@ -398,6 +398,61 @@ return { ok: true, text: fullText };
 - **IMPORTANT** : Toujours initialiser avec fallback `const log = (opts && opts.log) ? opts.log : () => {};`
 - **IMPORTANT** : Échapper les apostrophes françaises dans les strings avec `\'` (ex: `log('Génération de l\'image...')`)
 
+## Handlers de type "list" (IMPORTANT)
+
+Les handlers qui listent des éléments (list, search, etc.) DOIVENT suivre ce pattern :
+
+### Pattern obligatoire
+
+```javascript
+async my_plugin_items_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération de la liste...');
+
+    const res = await myApiCall('/items', { query: { per_page: inputs.per_page } });
+    if (!res.ok) return res;
+
+    // 1. MAPPER les données (ne garder que les champs utiles)
+    const items = (res.data || []).map(r => ({
+      id: r.id,
+      name: r.name,
+      created_at: r.created_at,
+      // ... seulement les champs pertinents
+    }));
+
+    // 2. Retourner avec une clé NOMMÉE + totalCount
+    return { ok: true, items, totalCount: items.length };
+}
+```
+
+### Règles
+
+1. **Clé nommée pour l'array** : utiliser `projects`, `issues`, `contacts`, etc. — PAS `data` générique
+2. **`totalCount`** : toujours inclure `totalCount: items.length` pour que le viewer affiche le nombre total
+3. **Mapper les champs** : extraire seulement les champs utiles, aplatir les objets imbriqués (ex: `author: r.author?.name`)
+4. **Types corrects dans la variable/schema** : `"type": "date"` pour les dates (created_at, updated_at, etc.), `"type": "checkbox"` pour les booléens
+5. **Variable correspondante** : le schema de sortie (variable) DOIT avoir un champ `totalCount` (type number) et la section array avec la même clé que le handler
+
+### Exemple de variable de sortie correspondante
+
+```json
+"my_plugin_items": {
+  "title": "Éléments",
+  "fields": [
+    { "type": "checkbox", "key": "ok", "label": "Succès" },
+    { "type": "number", "key": "totalCount", "label": "Nombre total" },
+    {
+      "type": "section", "key": "items", "title": "Éléments",
+      "mode": "array", "fields": [
+        { "type": "text", "key": "id", "label": "ID" },
+        { "type": "text", "key": "name", "label": "Nom" },
+        { "type": "date", "key": "created_at", "label": "Date de création" }
+      ]
+    }
+  ]
+}
+```
+
 ## Bonnes pratiques
 
 1. **Toujours retourner un objet avec `ok`**: `{ ok: true, ... }` ou `{ ok: false, error: "..." }`
@@ -409,3 +464,4 @@ return { ok: true, text: fullText };
 7. **Pas de side effects**: Les handlers doivent etre idempotents si possible
 8. **require conditionnel**: Pour les dependances optionnelles, faire un try/catch sur require()
 9. **Logs de progression**: Ajouter `opts.log()` à chaque étape importante du handler pour informer l'utilisateur en temps réel
+10. **List handlers** : Toujours inclure `totalCount` et utiliser des clés nommées (voir section ci-dessus)

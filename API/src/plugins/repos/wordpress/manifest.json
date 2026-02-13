@@ -76,7 +76,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de publication.",
@@ -116,14 +116,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -182,7 +186,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date.",
@@ -259,7 +263,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de publication.",
@@ -290,14 +294,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -356,7 +364,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date.",
@@ -424,7 +432,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date d'upload.",
@@ -455,14 +463,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -512,7 +524,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date.",
@@ -602,14 +614,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -722,14 +738,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -847,7 +867,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date du commentaire.",
@@ -869,14 +889,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -926,7 +950,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "description": "Date.",
@@ -1016,14 +1040,18 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "totalPages",
           "label": "Total de pages",
           "description": "Nombre total de pages.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",

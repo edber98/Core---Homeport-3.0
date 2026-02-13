@@ -22,7 +22,7 @@ function humanizeTitle(s){
 
 async function importManifest(manifest, { dryRun = false, repo = null, manifestPath = null } = {}){
   const m = manifest || {};
-  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 }, history: [] };
+  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 }, history: [], providerKeys: [], templateKeys: [] };
   const record = (kind, key, action, before, after) => {
     summary.history.push({ kind, key, action, beforeChecksum: before || null, afterChecksum: after || null, repoId: repo && repo.id || null, repoName: repo && repo.name || null, manifestPath: manifestPath || null, at: new Date() });
   };
@@ -30,6 +30,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
 
   for (const p of (m.providers || [])){
     const key = p.key; if (!key) continue;
+    summary.providerKeys.push(key);
     const credForm = p.credentialsForm || p.credentials || null;
     // Only local repos may define display order; use value from manifest when present, otherwise ignore
     const effOrder = isLocalRepo && (typeof p.order === 'number') ? p.order : undefined;
@@ -53,6 +54,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
         if (!dryRun){
           const before = existing.checksum;
           Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum });
+          existing.markModified('credentialsForm');
           if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; }
           if (repo && repo.id){
             const rid = String(repo.id);
@@ -118,6 +120,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
 
   for (const t of (m.nodeTemplates || [])){
     const key = t.key; if (!key) continue;
+    summary.templateKeys.push(key);
     // Ensure provider exists if providerKey declared
     if (t.providerKey){
       const provExisting = await Provider.findOne({ key: t.providerKey });
@@ -191,7 +194,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
       summary.nodeTemplates.created++;
     } else {
       const eq = existing.checksumArgs === checksumArgs && existing.checksumFeature === checksumFeature && existing.providerKey === base.providerKey && existing.appName === base.appName && existing.title === base.title && existing.subtitle === base.subtitle && existing.icon === base.icon && existing.description === base.description && (existing.tags || []).join(',') === (base.tags || []).join(',') && existing.group === base.group && JSON.stringify(existing.args || {}) === JSON.stringify(base.args || {}) && JSON.stringify(existing.inputHandles || []) === JSON.stringify(base.inputHandles || []) && JSON.stringify(existing.outputHandles || []) === JSON.stringify(base.outputHandles || []) && JSON.stringify(existing.linkedHandles || []) === JSON.stringify(base.linkedHandles || []);
-      if (!eq){ if (!dryRun){ const before = (existing.checksumFeature || '') + '|' + (existing.checksumArgs || ''); Object.assign(existing, base); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } if (repo && repo.id){ const rid = String(repo.id); const ids = new Set((existing.repos || []).map(x => String(x))); if (!ids.has(rid)) existing.repos = [...ids, rid]; const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean); } await existing.save(); record('template', key, 'updated', before, checksumFeature + '|' + checksumArgs); } summary.nodeTemplates.updated++; } else {
+      if (!eq){ if (!dryRun){ const before = (existing.checksumFeature || '') + '|' + (existing.checksumArgs || ''); Object.assign(existing, base); existing.markModified('args'); existing.markModified('inputHandles'); existing.markModified('outputHandles'); existing.markModified('linkedHandles'); existing.markModified('outputSchema'); if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; } if (repo && repo.id){ const rid = String(repo.id); const ids = new Set((existing.repos || []).map(x => String(x))); if (!ids.has(rid)) existing.repos = [...ids, rid]; const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean); } await existing.save(); record('template', key, 'updated', before, checksumFeature + '|' + checksumArgs); } summary.nodeTemplates.updated++; } else {
         // Keep repo linkage in sync even if skipped
         if (!dryRun && repo && repo.id){ const rid = String(repo.id); const ids = new Set((existing.repos || []).map(x => String(x))); if (!ids.has(rid)) { existing.repos = [...ids, rid]; const names = new Set([...(existing.repoNames || [])]); names.add(repo.name || ''); existing.repoNames = [...names].filter(Boolean); if (!existing.repoId) { existing.repoId = repo.id; existing.repoName = repo.name; } await existing.save(); } }
         summary.nodeTemplates.skipped++;
@@ -202,4 +205,38 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
   return summary;
 }
 
-module.exports = { importManifest };
+/**
+ * Remove providers and templates from DB that no longer exist in any manifest for a given repo.
+ * @param {string} repoId - The repo ObjectId
+ * @param {Set<string>} manifestProviderKeys - All provider keys found in this repo's manifest
+ * @param {Set<string>} manifestTemplateKeys - All template keys found in this repo's manifest
+ * @returns {Promise<{providersRemoved: number, templatesRemoved: number}>}
+ */
+async function cleanupStale(repoId, manifestProviderKeys, manifestTemplateKeys){
+  const result = { providersRemoved: 0, templatesRemoved: 0 };
+  if (!repoId) return result;
+
+  // Cleanup stale templates: belong to this repo but not in manifest anymore
+  const dbTemplates = await NodeTemplate.find({ repoId }, { key: 1, repos: 1 });
+  const staleTemplates = dbTemplates.filter(t => !manifestTemplateKeys.has(t.key));
+  if (staleTemplates.length > 0){
+    const ids = staleTemplates.map(t => t._id);
+    await NodeTemplate.deleteMany({ _id: { $in: ids } });
+    result.templatesRemoved = staleTemplates.length;
+    console.log(`[plugins] cleanup: removed ${staleTemplates.length} stale template(s) for repo ${repoId}:`, staleTemplates.map(t => t.key).join(', '));
+  }
+
+  // Cleanup stale providers: belong to this repo, not in manifest, and not shared with other repos
+  const dbProviders = await Provider.find({ repoId }, { key: 1, repos: 1 });
+  const staleProviders = dbProviders.filter(p => !manifestProviderKeys.has(p.key) && (!p.repos || p.repos.length <= 1));
+  if (staleProviders.length > 0){
+    const ids = staleProviders.map(p => p._id);
+    await Provider.deleteMany({ _id: { $in: ids } });
+    result.providersRemoved = staleProviders.length;
+    console.log(`[plugins] cleanup: removed ${staleProviders.length} stale provider(s) for repo ${repoId}:`, staleProviders.map(p => p.key).join(', '));
+  }
+
+  return result;
+}
+
+module.exports = { importManifest, cleanupStale };

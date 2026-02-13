@@ -67,7 +67,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -150,7 +150,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -342,7 +342,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -407,7 +407,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -610,7 +610,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'événement.",

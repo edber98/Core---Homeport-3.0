@@ -19,7 +19,7 @@
 
       <!-- inputs -->
       <ng-container *ngSwitchDefault>
-        <nz-form-label *ngIf="field.type!=='checkbox'"
+        <nz-form-label *ngIf="field.type !== 'checkbox' || (!disableExpressions && $any(field).expression?.allow === true && exprEnabled)"
           [nzFor]="fieldKey"
           [nzRequired]="requiredFlag"
           [nzSpan]="labelSpan"
@@ -27,7 +27,6 @@
           [nzLabelAlign]="ui?.labelAlign ?? 'left'">
           {{ field.label || '' }}
         </nz-form-label>
-        <nz-form-label *ngIf="field.type==='checkbox'" [nzSpan]="labelSpan" [nzOffset]="labelOffset"></nz-form-label>
 
         <nz-form-control
           [nzSpan]="controlSpan"
@@ -94,7 +93,13 @@
                         nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
                   <nz-date-picker *ngIf="field.type==='date'"
-                                  style="width: 100%;" [formControlName]="key"></nz-date-picker>
+                                  style="width: 100%;"
+                                  [formControlName]="key"
+                                  [nzFormat]="$any(field).date?.format || 'dd/MM/yyyy'"
+                                  [nzShowTime]="$any(field).date?.showTime || false"
+                                  [nzShowToday]="$any(field).date?.showToday !== false"
+                                  [nzAllowClear]="$any(field).date?.allowClear !== false"
+                                  [nzPlaceHolder]="field.placeholder || 'Sélectionner une date'"></nz-date-picker>
 
                   <nz-cron-expression *ngIf="field.type==='cron'"
                                       [formControlName]="key"

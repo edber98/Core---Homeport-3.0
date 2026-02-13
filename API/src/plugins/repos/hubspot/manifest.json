@@ -67,7 +67,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdate",
           "label": "Date création",
           "description": "Date de création du contact.",
@@ -89,14 +89,18 @@
           "key": "hasMore",
           "label": "Page suivante",
           "description": "Indique s'il y a une page suivante.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "nextAfter",
           "label": "Curseur suivant",
           "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -164,7 +168,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdate",
               "label": "Date création",
               "description": "Date de création.",
@@ -232,7 +236,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdate",
           "label": "Date création",
           "description": "Date de création.",
@@ -254,14 +258,18 @@
           "key": "hasMore",
           "label": "Page suivante",
           "description": "Indique s'il y a une page suivante.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "nextAfter",
           "label": "Curseur suivant",
           "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -320,7 +328,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdate",
               "label": "Date création",
               "description": "Date de création.",
@@ -388,7 +396,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdate",
           "label": "Date création",
           "description": "Date de création.",
@@ -397,7 +405,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "closedate",
           "label": "Date fermeture",
           "description": "Date de fermeture.",
@@ -419,14 +427,18 @@
           "key": "hasMore",
           "label": "Page suivante",
           "description": "Indique s'il y a une page suivante.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "nextAfter",
           "label": "Curseur suivant",
           "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -485,7 +497,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdate",
               "label": "Date création",
               "description": "Date de création.",
@@ -494,7 +506,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "closedate",
               "label": "Date fermeture",
               "description": "Date de fermeture.",
@@ -571,7 +583,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdate",
           "label": "Date création",
           "description": "Date de création.",
@@ -593,14 +605,18 @@
           "key": "hasMore",
           "label": "Page suivante",
           "description": "Indique s'il y a une page suivante.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "nextAfter",
           "label": "Curseur suivant",
           "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -668,7 +684,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdate",
               "label": "Date création",
               "description": "Date de création.",
@@ -718,7 +734,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'engagement.",
@@ -727,7 +743,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdate",
           "label": "Date création",
           "description": "Date de création.",
@@ -952,14 +968,18 @@
           "key": "hasMore",
           "label": "Page suivante",
           "description": "Indique s'il y a une page suivante.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "nextAfter",
           "label": "Curseur suivant",
           "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -2853,7 +2873,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "hs_timestamp",
             "label": "Horodatage",
             "description": "Horodatage ISO (optionnel, defaut: maintenant).",
@@ -2960,7 +2980,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "hs_timestamp",
             "label": "Horodatage",
             "description": "Horodatage ISO (optionnel).",

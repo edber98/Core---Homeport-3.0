@@ -512,6 +512,10 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
       cron_size: ['default'],
       cron_borderless: [false],
       cron_showAccordion: [true],
+      date_showTime: [false],
+      date_format: ['dd/MM/yyyy'],
+      date_showToday: [true],
+      date_allowClear: [true],
       file_accept: [''],
       file_maxSize: [10485760],
       file_multiple: [false],
@@ -803,6 +807,16 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
           };
         } else {
           delete (f as any).cron;
+        }
+        if (f.type === 'date') {
+          (f as any).date = {
+            showTime: !!v.date_showTime,
+            format: v.date_format || 'dd/MM/yyyy',
+            showToday: v.date_showToday !== false,
+            allowClear: v.date_allowClear !== false,
+          };
+        } else {
+          delete (f as any).date;
         }
         if (f.type === 'file') {
           (f as any).file = {
@@ -1304,6 +1318,10 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
         cron_size: (obj as any).cron?.size ?? 'default',
         cron_borderless: !!(obj as any).cron?.borderless,
         cron_showAccordion: !((obj as any).cron?.collapseDisable),
+        date_showTime: !!(obj as any).date?.showTime,
+        date_format: (obj as any).date?.format ?? 'dd/MM/yyyy',
+        date_showToday: (obj as any).date?.showToday !== false,
+        date_allowClear: (obj as any).date?.allowClear !== false,
         file_accept: (obj as any).file?.accept ?? '',
         file_maxSize: (obj as any).file?.maxSize ?? 10485760,
         file_multiple: !!(obj as any).file?.multiple,

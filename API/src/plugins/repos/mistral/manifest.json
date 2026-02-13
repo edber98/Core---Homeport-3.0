@@ -159,7 +159,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created",
               "label": "Créé le",
               "description": "Timestamp de création.",

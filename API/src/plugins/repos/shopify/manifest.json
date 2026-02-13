@@ -76,7 +76,7 @@
           "description": "Code devise."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Créé le",
           "col": {
@@ -107,7 +107,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -177,7 +179,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Créé le",
               "col": {
@@ -261,7 +263,7 @@
           "description": "Handle URL."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Créé le",
           "col": {
@@ -283,7 +285,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -345,7 +349,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Créé le",
               "col": {
@@ -430,7 +434,7 @@
           "description": "Montant total dépensé."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Créé le",
           "col": {
@@ -452,7 +456,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -522,7 +528,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Créé le",
               "col": {
@@ -607,7 +613,7 @@
           "description": "Handle URL."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "published_at",
           "label": "Publié le",
           "col": {
@@ -629,7 +635,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -667,7 +675,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "published_at",
               "label": "Publié le",
               "col": {
@@ -734,7 +742,7 @@
           "description": "URL de suivi."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created_at",
           "label": "Créé le",
           "col": {
@@ -756,7 +764,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -810,7 +820,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Créé le",
               "col": {
@@ -899,7 +909,9 @@
           "key": "totalCount",
           "label": "Nombre total",
           "description": "Nombre total d'éléments.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",

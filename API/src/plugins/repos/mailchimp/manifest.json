@@ -40,7 +40,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "dateCreated",
           "label": "Date création",
           "description": "Date de création.",
@@ -104,7 +104,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateCreated",
               "label": "Date création",
               "description": "Date de création.",
@@ -313,7 +313,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "sendTime",
           "label": "Date d envoi",
           "description": "Date d envoi.",
@@ -322,7 +322,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createTime",
           "label": "Date création",
           "description": "Date de création.",
@@ -404,7 +404,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createTime",
               "label": "Date création",
               "description": "Date de création.",
@@ -454,7 +454,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "dateCreated",
           "label": "Date création",
           "description": "Date de création.",
@@ -518,7 +518,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateCreated",
               "label": "Date création",
               "description": "Date de création.",
@@ -646,7 +646,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -710,7 +710,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Date de création.",
@@ -769,7 +769,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "sendTime",
           "label": "Date d envoi",
           "description": "Date d envoi.",
@@ -841,7 +841,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de l événement.",
@@ -2089,7 +2089,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "scheduleTime",
             "label": "Date et heure",
             "description": "Date et heure d envoi (ISO 8601).",

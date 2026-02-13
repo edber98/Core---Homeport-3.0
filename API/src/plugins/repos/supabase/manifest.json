@@ -95,7 +95,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date de création",
           "col": {
@@ -155,7 +155,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date de création",
               "col": {
@@ -217,7 +217,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date de création",
           "col": {

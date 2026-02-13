@@ -94,7 +94,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création du deal.",
@@ -116,7 +116,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -211,7 +213,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -279,7 +281,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création.",
@@ -301,7 +303,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -360,7 +364,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -419,7 +423,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création.",
@@ -441,7 +445,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -491,7 +497,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -541,7 +547,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "due_date",
           "label": "Date prévue",
           "description": "Date prévue.",
@@ -550,7 +556,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "due_time",
           "label": "Heure prévue",
           "description": "Heure prévue.",
@@ -595,7 +601,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création.",
@@ -617,7 +623,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -658,7 +666,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "due_date",
               "label": "Date prévue",
               "description": "Date prévue.",
@@ -694,7 +702,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -753,7 +761,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création.",
@@ -775,7 +783,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -825,7 +835,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -906,7 +916,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1024,7 +1036,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "add_time",
           "label": "Date création",
           "description": "Date de création.",
@@ -1046,7 +1058,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1105,7 +1119,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "add_time",
               "label": "Date création",
               "description": "Date de création.",
@@ -1132,7 +1146,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
@@ -1198,7 +1214,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'événement.",
@@ -2573,7 +2589,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_date",
             "label": "Date prévue",
             "description": "Date prévue (YYYY-MM-DD).",
@@ -2582,7 +2598,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_time",
             "label": "Heure prévue",
             "description": "Heure prévue (HH:MM).",
@@ -2760,7 +2776,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due_date",
             "label": "Date prévue",
             "description": "Nouvelle date prévue.",

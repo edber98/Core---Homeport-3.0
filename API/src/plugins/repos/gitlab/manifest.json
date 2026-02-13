@@ -3417,7 +3417,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création du projet.",
@@ -3426,7 +3426,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "last_activity_at",
               "label": "Dernière activité",
               "description": "Date de dernière activité.",
@@ -3477,9 +3477,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -3487,7 +3486,7 @@
         {
           "type": "section",
           "title": "Projets",
-          "key": "data",
+          "key": "projects",
           "fields": [
             {
               "type": "number",
@@ -3503,24 +3502,6 @@
               "key": "name",
               "label": "Nom",
               "description": "Nom du projet.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "name_with_namespace",
-              "label": "Nom complet",
-              "description": "Nom avec namespace.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "path",
-              "label": "Chemin",
-              "description": "Chemin du projet.",
               "col": {
                 "xs": 24
               }
@@ -3554,33 +3535,6 @@
             },
             {
               "type": "text",
-              "key": "web_url",
-              "label": "URL web",
-              "description": "URL du projet dans GitLab.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "http_url_to_repo",
-              "label": "URL HTTP",
-              "description": "URL HTTP du dépôt.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "ssh_url_to_repo",
-              "label": "URL SSH",
-              "description": "URL SSH du dépôt.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
               "key": "default_branch",
               "label": "Branche par défaut",
               "description": "Branche par défaut.",
@@ -3590,6 +3544,15 @@
             },
             {
               "type": "text",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du projet dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création du projet.",
@@ -3598,7 +3561,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "last_activity_at",
               "label": "Dernière activité",
               "description": "Date de dernière activité.",
@@ -3730,7 +3693,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -3739,7 +3702,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -3748,7 +3711,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "closed_at",
               "label": "Date de fermeture",
               "description": "Date de fermeture.",
@@ -3790,9 +3753,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -3800,7 +3762,7 @@
         {
           "type": "section",
           "title": "Issues",
-          "key": "data",
+          "key": "issues",
           "fields": [
             {
               "type": "number",
@@ -3866,7 +3828,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -3875,7 +3837,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -3884,7 +3846,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "closed_at",
               "label": "Date de fermeture",
               "description": "Date de fermeture.",
@@ -3893,10 +3855,19 @@
               }
             },
             {
-              "type": "checkbox",
-              "key": "confidential",
-              "label": "Confidentielle",
-              "description": "Issue confidentielle.",
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignee",
+              "label": "Assigné",
+              "description": "Nom de la personne assignée.",
               "col": {
                 "xs": 24
               }
@@ -4034,7 +4005,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -4043,7 +4014,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -4052,7 +4023,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "merged_at",
               "label": "Date de fusion",
               "description": "Date de fusion.",
@@ -4085,17 +4056,16 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
         },
         {
           "type": "section",
-          "title": "Merge",
-          "key": "data",
+          "title": "Merge requests",
+          "key": "merge_requests",
           "fields": [
             {
               "type": "number",
@@ -4179,16 +4149,7 @@
               }
             },
             {
-              "type": "text",
-              "key": "merge_status",
-              "label": "Statut de merge",
-              "description": "Statut de fusion.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -4197,7 +4158,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -4206,10 +4167,19 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "merged_at",
               "label": "Date de fusion",
               "description": "Date de fusion.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
               "col": {
                 "xs": 24
               }
@@ -4311,7 +4281,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -4320,7 +4290,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -4329,7 +4299,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "started_at",
               "label": "Date de début",
               "description": "Date de début d'exécution.",
@@ -4338,7 +4308,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "finished_at",
               "label": "Date de fin",
               "description": "Date de fin d'exécution.",
@@ -4380,9 +4350,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -4390,7 +4359,7 @@
         {
           "type": "section",
           "title": "Pipelines",
-          "key": "data",
+          "key": "pipelines",
           "fields": [
             {
               "type": "number",
@@ -4439,15 +4408,15 @@
             },
             {
               "type": "text",
-              "key": "web_url",
-              "label": "URL web",
-              "description": "URL du pipeline dans GitLab.",
+              "key": "source",
+              "label": "Source",
+              "description": "Source du pipeline.",
               "col": {
                 "xs": 24
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -4456,7 +4425,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",
@@ -4466,27 +4435,9 @@
             },
             {
               "type": "text",
-              "key": "started_at",
-              "label": "Date de début",
-              "description": "Date de début d'exécution.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "finished_at",
-              "label": "Date de fin",
-              "description": "Date de fin d'exécution.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "number",
-              "key": "duration",
-              "label": "Durée",
-              "description": "Durée en secondes.",
+              "key": "web_url",
+              "label": "URL web",
+              "description": "URL du pipeline dans GitLab.",
               "col": {
                 "xs": 24
               }
@@ -4594,9 +4545,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -4604,7 +4554,7 @@
         {
           "type": "section",
           "title": "Branches",
-          "key": "data",
+          "key": "branches",
           "fields": [
             {
               "type": "text",
@@ -4634,10 +4584,55 @@
               }
             },
             {
+              "type": "checkbox",
+              "key": "default",
+              "label": "Par défaut",
+              "description": "Branche par défaut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
               "type": "text",
               "key": "web_url",
               "label": "URL web",
               "description": "URL de la branche dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "commit_id",
+              "label": "ID commit",
+              "description": "SHA court du dernier commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "commit_title",
+              "label": "Titre commit",
+              "description": "Titre du dernier commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "commit_author",
+              "label": "Auteur commit",
+              "description": "Auteur du dernier commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "commit_date",
+              "label": "Date commit",
+              "description": "Date du dernier commit.",
               "col": {
                 "xs": 24
               }
@@ -4739,7 +4734,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "authored_date",
               "label": "Date d'auteur",
               "description": "Date de l'auteur.",
@@ -4748,7 +4743,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "committed_date",
               "label": "Date de commit",
               "description": "Date du commit.",
@@ -4790,9 +4785,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -4800,7 +4794,7 @@
         {
           "type": "section",
           "title": "Commits",
-          "key": "data",
+          "key": "commits",
           "fields": [
             {
               "type": "text",
@@ -4857,7 +4851,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "authored_date",
               "label": "Date d'auteur",
               "description": "Date de l'auteur.",
@@ -4866,7 +4860,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "committed_date",
               "label": "Date de commit",
               "description": "Date du commit.",
@@ -4953,7 +4947,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -4962,7 +4956,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "released_at",
               "label": "Date de publication",
               "description": "Date de publication.",
@@ -4995,9 +4989,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -5005,7 +4998,7 @@
         {
           "type": "section",
           "title": "Releases",
-          "key": "data",
+          "key": "releases",
           "fields": [
             {
               "type": "text",
@@ -5035,7 +5028,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -5044,7 +5037,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "released_at",
               "label": "Date de publication",
               "description": "Date de publication.",
@@ -5182,9 +5175,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -5192,7 +5184,7 @@
         {
           "type": "section",
           "title": "Utilisateurs",
-          "key": "data",
+          "key": "users",
           "fields": [
             {
               "type": "number",
@@ -5217,15 +5209,6 @@
               "key": "name",
               "label": "Nom",
               "description": "Nom complet.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "email",
-              "label": "Email",
-              "description": "Adresse email.",
               "col": {
                 "xs": 24
               }
@@ -5396,9 +5379,8 @@
         },
         {
           "type": "number",
-          "key": "status",
-          "label": "Status HTTP",
-          "description": "Code de statut HTTP.",
+          "key": "totalCount",
+          "label": "Nombre total",
           "col": {
             "xs": 24
           }
@@ -5406,7 +5388,7 @@
         {
           "type": "section",
           "title": "Groupes",
-          "key": "data",
+          "key": "groups",
           "fields": [
             {
               "type": "number",
@@ -5436,24 +5418,6 @@
               }
             },
             {
-              "type": "text",
-              "key": "full_name",
-              "label": "Nom complet",
-              "description": "Nom complet avec hiérarchie.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "full_path",
-              "label": "Chemin complet",
-              "description": "Chemin complet avec hiérarchie.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
               "type": "textarea",
               "key": "description",
               "label": "Description",
@@ -5476,6 +5440,15 @@
               "key": "web_url",
               "label": "URL web",
               "description": "URL du groupe dans GitLab.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création du groupe.",
               "col": {
                 "xs": 24
               }
@@ -5550,7 +5523,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created_at",
               "label": "Date de création",
               "description": "Date de création.",
@@ -5559,7 +5532,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "updated_at",
               "label": "Dernière mise à jour",
               "description": "Date de dernière mise à jour.",

@@ -103,7 +103,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created",
           "label": "Date création",
           "description": "Date de création.",
@@ -112,7 +112,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "updated",
           "label": "Date modification",
           "description": "Date de dernière modification.",
@@ -222,7 +222,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created",
               "label": "Date création",
               "description": "Date de création.",
@@ -520,7 +520,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "startDate",
           "label": "Date début",
           "description": "Date de début.",
@@ -529,7 +529,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "endDate",
           "label": "Date fin",
           "description": "Date de fin.",
@@ -603,7 +603,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "startDate",
               "label": "Date début",
               "description": "Date de début.",
@@ -612,7 +612,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "endDate",
               "label": "Date fin",
               "description": "Date de fin.",
@@ -707,7 +707,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created",
           "label": "Date création",
           "description": "Date de création.",
@@ -779,7 +779,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'événement.",
@@ -1933,7 +1933,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date début",
             "description": "Date de début (ISO 8601).",
@@ -1942,7 +1942,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "endDate",
             "label": "Date fin",
             "description": "Date de fin (ISO 8601).",

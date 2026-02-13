@@ -176,7 +176,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "creationDate",
           "label": "Date de création",
           "col": {
@@ -229,7 +229,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "creationDate",
               "label": "Date de création",
               "col": {
@@ -370,7 +370,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdTimestamp",
               "label": "Date de création",
               "col": {

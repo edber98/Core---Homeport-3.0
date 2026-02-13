@@ -829,7 +829,7 @@
             "default": "bottom"
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due",
             "label": "Date d'échéance",
             "col": {
@@ -1118,7 +1118,7 @@
             "description": "Nouvelle position."
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "due",
             "label": "Date d'échéance",
             "col": {
@@ -5215,7 +5215,7 @@
               "description": "Code du lien court."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateLastActivity",
               "label": "Dernière activité",
               "col": {
@@ -5342,7 +5342,7 @@
               "description": "Position dans la liste."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "due",
               "label": "Échéance",
               "col": {
@@ -5405,7 +5405,7 @@
               "description": "Code du lien court."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateLastActivity",
               "label": "Dernière activité",
               "col": {
@@ -6079,7 +6079,7 @@
               "description": "Type d'action."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -6161,7 +6161,7 @@
               "description": "Taille en octets."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -6311,7 +6311,7 @@
               "description": "Code du lien court."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateLastActivity",
               "label": "Dernière activité",
               "col": {
@@ -6443,7 +6443,7 @@
               "description": "Position dans la liste."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "due",
               "label": "Échéance",
               "col": {
@@ -6506,7 +6506,7 @@
               "description": "Code du lien court."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dateLastActivity",
               "label": "Dernière activité",
               "col": {
@@ -7133,7 +7133,7 @@
               "description": "Type d'action."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -7220,7 +7220,7 @@
               "description": "Taille en octets."
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date",
               "label": "Date",
               "col": {
@@ -7366,7 +7366,7 @@
                   "description": "Position dans la liste."
                 },
                 {
-                  "type": "text",
+                  "type": "date",
                   "key": "due",
                   "label": "Échéance",
                   "col": {
@@ -7429,7 +7429,7 @@
                   "description": "Code du lien court."
                 },
                 {
-                  "type": "text",
+                  "type": "date",
                   "key": "dateLastActivity",
                   "label": "Dernière activité",
                   "col": {
@@ -7525,7 +7525,7 @@
                   "description": "Code du lien court."
                 },
                 {
-                  "type": "text",
+                  "type": "date",
                   "key": "dateLastActivity",
                   "label": "Dernière activité",
                   "col": {

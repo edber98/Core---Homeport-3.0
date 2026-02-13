@@ -112,7 +112,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdTime",
           "label": "Date création",
           "description": "Date de création.",
@@ -204,7 +204,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdTime",
               "label": "Date création",
               "description": "Date.",
@@ -319,7 +319,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdTime",
               "label": "Date création",
               "description": "Date.",
@@ -425,7 +425,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdTime",
               "label": "Date création",
               "description": "Date.",
@@ -484,7 +484,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdTime",
           "label": "Date création",
           "description": "Date de création.",
@@ -531,7 +531,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdTime",
               "label": "Date création",
               "description": "Date.",

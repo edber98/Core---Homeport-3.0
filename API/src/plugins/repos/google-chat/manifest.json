@@ -46,7 +46,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "eventTime",
           "label": "Date",
           "col": {

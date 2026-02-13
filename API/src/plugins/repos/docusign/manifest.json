@@ -49,7 +49,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "sentDateTime",
           "label": "Date envoi",
           "description": "Date d'envoi.",
@@ -58,7 +58,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdDateTime",
           "label": "Date création",
           "description": "Date de création.",
@@ -123,7 +123,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "sentDateTime",
               "label": "Date envoi",
               "description": "Date d'envoi.",
@@ -132,7 +132,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdDateTime",
               "label": "Date création",
               "description": "Date de création.",
@@ -315,7 +315,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "created",
           "label": "Date création",
           "description": "Date de création.",
@@ -380,7 +380,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "created",
               "label": "Date création",
               "description": "Date de création.",
@@ -590,7 +590,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage de l'événement.",
@@ -891,7 +891,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "date",
             "key": "fromDate",
             "label": "Date début",
             "description": "Date de début (ISO 8601).",
@@ -900,7 +900,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "toDate",
             "label": "Date fin",
             "description": "Date de fin (ISO 8601).",

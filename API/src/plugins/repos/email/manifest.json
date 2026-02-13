@@ -291,7 +291,7 @@
           "description": "Corps du message en HTML."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date",
           "label": "Date",
           "description": "Date de réception (ISO 8601)."

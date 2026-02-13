@@ -191,7 +191,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "dueDate",
           "label": "Fin",
           "description": "Date d’échéance (YYYY-MM-DD).",
@@ -292,7 +292,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "dueDate",
               "label": "Fin",
               "description": "Date d’échéance (YYYY-MM-DD).",
@@ -671,7 +671,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date de debut (YYYY-MM-DD)",
             "description": "Date de début prévue.",
@@ -680,7 +680,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "dueDate",
             "label": "Date limite (YYYY-MM-DD)",
             "description": "Date d’échéance.",
@@ -1032,7 +1032,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "startDate",
             "label": "Date de debut (YYYY-MM-DD)",
             "description": "Nouvelle date de début.",
@@ -1041,7 +1041,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "dueDate",
             "label": "Date limite (YYYY-MM-DD)",
             "description": "Nouvelle date d’échéance.",

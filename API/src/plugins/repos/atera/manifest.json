@@ -94,7 +94,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "CreatedOn",
           "label": "Date de création",
           "description": "Date de création du client.",
@@ -204,7 +204,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "CreatedOn",
               "label": "Date de création",
               "description": "Date de création.",
@@ -299,7 +299,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "CreatedOn",
           "label": "Date de création",
           "description": "Date de création.",
@@ -504,7 +504,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "TicketCreatedDate",
           "label": "Date de création",
           "description": "Date de création.",
@@ -614,7 +614,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "TicketCreatedDate",
               "label": "Date de création",
               "description": "Date de création.",
@@ -896,7 +896,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "Created",
           "label": "Date de création",
           "description": "Date de création.",
@@ -1015,7 +1015,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "Created",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1092,7 +1092,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "StartDate",
           "label": "Date de début",
           "description": "Date de début.",
@@ -1101,7 +1101,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "EndDate",
           "label": "Date de fin",
           "description": "Date de fin.",
@@ -1261,7 +1261,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "KBTimestamp",
           "label": "Date de création",
           "description": "Date de création.",
@@ -1362,7 +1362,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "KBTimestamp",
               "label": "Date de création",
               "description": "Date de création.",
@@ -1829,7 +1829,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "InvoiceDate",
           "label": "Date de facture",
           "description": "Date de la facture.",
@@ -1912,7 +1912,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "InvoiceDate",
               "label": "Date de facture",
               "description": "Date de la facture.",
@@ -2160,7 +2160,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "CreatedOn",
               "label": "Date de création",
               "description": "Date de création.",
@@ -2273,7 +2273,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "CreatedOn",
           "label": "Date de création",
           "description": "Date de création du client.",
@@ -4788,7 +4788,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "StartDate",
             "label": "Date de début",
             "description": "Date de début (ISO 8601).",
@@ -4797,7 +4797,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "EndDate",
             "label": "Date de fin",
             "description": "Date de fin (ISO 8601).",

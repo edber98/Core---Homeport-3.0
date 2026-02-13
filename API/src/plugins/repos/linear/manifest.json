@@ -94,7 +94,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -103,7 +103,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "updatedAt",
           "label": "Date modification",
           "description": "Date de modification.",
@@ -186,7 +186,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Création.",
@@ -272,7 +272,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -387,7 +387,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "startsAt",
           "label": "Date début",
           "description": "Date de début.",
@@ -396,7 +396,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "endsAt",
           "label": "Date fin",
           "description": "Date de fin.",
@@ -856,7 +856,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "createdAt",
           "label": "Date création",
           "description": "Date de création.",
@@ -912,7 +912,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "createdAt",
               "label": "Date création",
               "description": "Création.",
@@ -998,7 +998,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "timestamp",
           "label": "Horodatage",
           "description": "Horodatage.",

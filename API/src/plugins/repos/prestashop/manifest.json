@@ -58,7 +58,7 @@
           "description": "Méthode de paiement."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_add",
           "label": "Créé le",
           "col": {
@@ -127,7 +127,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_add",
               "label": "Créé le",
               "col": {
@@ -203,7 +203,7 @@
           "description": "Produit actif."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_add",
           "label": "Créé le",
           "col": {
@@ -280,7 +280,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_add",
               "label": "Créé le",
               "col": {
@@ -347,7 +347,7 @@
           "description": "Client actif."
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_add",
           "label": "Créé le",
           "col": {
@@ -416,7 +416,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "date",
               "key": "date_add",
               "label": "Créé le",
               "col": {

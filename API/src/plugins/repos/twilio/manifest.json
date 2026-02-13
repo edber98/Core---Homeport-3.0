@@ -1229,7 +1229,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Date de création",
           "description": "Date de création.",
@@ -1337,7 +1337,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "date",
           "key": "date_created",
           "label": "Date de création",
           "description": "Date de création.",
