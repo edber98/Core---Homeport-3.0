@@ -234,11 +234,17 @@ function simulateMsgForScenario(targetId, choice, graph) {
       const kind = nodeKind(node.model);
       let schema = null;
       let sample = null;
-      if (kind === 'start' || kind === 'start_form'){
-        schema = getStartFormSchema(node.model);
-        sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : {};
+      if (kind === 'start' || kind === 'start_form' || kind === 'event'){
+        // For event nodes, prefer the outputHandle schema (describes what the trigger emits)
+        if (kind === 'event') {
+          schema = getHandleSchema(node.model, edge.sourceHandle || 'ok');
+          sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : {};
+        } else {
+          schema = getStartFormSchema(node.model);
+          sample = (schema && typeof schema === 'object' && (schema.fields || schema.steps)) ? buildSampleFromSchema(schema, { arraysOneItem: true }) : {};
+        }
         msg[from] = sample && typeof sample === 'object' ? sample : {};
-        // Start-like defines payload
+        // Start-like / event defines payload
         if (!payloadSet) { msg.payload = msg[from]; payloadSet = true; }
         try {
           const k = (msg[from] && typeof msg[from]==='object') ? Object.keys(msg[from]) : [];
@@ -248,7 +254,7 @@ function simulateMsgForScenario(targetId, choice, graph) {
           console.info('[simulate] start.sample', { node: from, keys: k, fields: fcnt, steps: scnt, sections: secnt });
         } catch {}
         // Log _nodes entry
-        try { msg._nodes[from] = { simulated: true, kind: 'start', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+        try { msg._nodes[from] = { simulated: true, kind: kind || 'start', outputHandle: String(edge.sourceHandle || ''), schema: schema || {}, result: msg[from], startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
       } else if (kind === 'condition') {
         const chosenHandle = String(edge.sourceHandle || chosen || '') || null;
         const resultObj = { chosen: chosenHandle || null };

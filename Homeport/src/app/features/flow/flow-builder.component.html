@@ -32,14 +32,6 @@
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <!-- Production banner -->
-      <div class="production-banner" *ngIf="isProduction">
-        <i class="fa-solid fa-tower-broadcast"></i>
-        <span>Flow en production</span>
-        <span class="sep">—</span>
-        <span class="hint">Arrêtez la production pour modifier</span>
-        <span class="event-count" *ngIf="triggerStatus?.eventCount">{{ triggerStatus!.eventCount }} événement{{ (triggerStatus!.eventCount || 0) > 1 ? 's' : '' }}</span>
-      </div>
       <!-- Empty-graph starter: centered create card to open Spotlight assistant -->
       <div class="empty-starter" *ngIf="!loadingFlowDoc && (nodes?.length || 0) === 0">
         <button type="button" class="starter-card" (click)="openAddNodeStandalone()">

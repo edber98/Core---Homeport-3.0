@@ -172,6 +172,20 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.args_pre_compilation = node.model?.context || null;
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore, templateKey: tmplKey, kind: 'event' });
 
+      // If waitForEvent is provided (test/dev run), start a temporary adapter and wait for 1 real event
+      const waitForEvent = initialContext && typeof initialContext.waitForEvent === 'function' ? initialContext.waitForEvent : null;
+      if (waitForEvent && (msg.payload == null || (typeof msg.payload === 'object' && Object.keys(msg.payload).length === 0))) {
+        try {
+          console.log('[engine] event:waitForEvent', { node: node.id, template: tmplKey });
+          const eventPayload = await waitForEvent(node);
+          msg.payload = eventPayload;
+          console.log('[engine] event:received', { node: node.id, template: tmplKey, keys: eventPayload && typeof eventPayload === 'object' ? Object.keys(eventPayload) : [] });
+        } catch (e) {
+          console.error('[engine] event:waitForEvent failed', { node: node.id, error: e.message });
+          // Continue with empty payload on timeout/error
+        }
+      }
+
       const fn = registry.resolve(tmplKey) || builtinRegistry[tmplKey];
       let result = null;
       if (fn) {
@@ -218,7 +232,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       msg.payload = result;
       const msgAfter = JSON.parse(JSON.stringify(msg));
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
-      try { console.log('[engine] event', { node: node.id, template: tmplKey, hasHandler: !!fn }); } catch {}
+      try { console.log('[engine] event', { node: node.id, template: tmplKey, hasHandler: !!fn, waited: !!waitForEvent }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'condition'){
       const msgBefore = JSON.parse(JSON.stringify(msg));

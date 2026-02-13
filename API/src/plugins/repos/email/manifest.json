@@ -254,7 +254,7 @@
       ]
     },
     "email_event": {
-      "title": "Événement",
+      "title": "E-mail reçu",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -262,12 +262,51 @@
       "fields": [
         {
           "type": "text",
-          "key": "event",
-          "label": "Event",
-          "description": "Type d’événement e-mail.",
-          "col": {
-            "xs": 24
-          }
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Adresse e-mail de l'expéditeur."
+        },
+        {
+          "type": "text",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Adresse e-mail du destinataire."
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Objet",
+          "description": "Objet du message."
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte brut",
+          "description": "Corps du message en texte brut."
+        },
+        {
+          "type": "textarea",
+          "key": "html",
+          "label": "HTML",
+          "description": "Corps du message en HTML."
+        },
+        {
+          "type": "text",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de réception (ISO 8601)."
+        },
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "Identifiant unique du message."
+        },
+        {
+          "type": "number",
+          "key": "attachmentCount",
+          "label": "Pièces jointes",
+          "description": "Nombre de pièces jointes."
         }
       ]
     }

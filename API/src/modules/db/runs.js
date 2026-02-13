@@ -11,6 +11,7 @@ const { runFlow } = require('../../engine');
 const { broadcast } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
 const { createFilesHelper } = require('../../services/file-storage');
+const { waitForOneEvent } = require('../../services/triggers/wait-for-one-event');
 
 function isResultError(result){
   return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
@@ -210,7 +211,18 @@ module.exports = function(){
           } catch { return null; }
         };
         const filesHelper = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId, runId: run._id, uploadedBy: req.user?.id || '' });
-        await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelper }, initialMsg, async (ev) => {
+        // waitForEvent: for test/dev runs, start a temporary trigger and wait for 1 real event
+        const waitForEvent = async (eventNode) => {
+          // Resolve credentials for the event node
+          const creds = await getCredentials(eventNode);
+          const credValues = (creds && creds.values != null) ? creds.values : (creds || {});
+          // Broadcast a waiting status so the frontend knows we're listening
+          const waitPkt = { type: 'node.status', nodeId: eventNode.id || eventNode.data?.id, data: { status: 'waiting', message: 'En attente d\'un événement...' } };
+          broadcast(String(run._id), waitPkt);
+          broadcastRun(String(run._id), waitPkt);
+          return waitForOneEvent(eventNode, credValues, { timeoutMs: 120000, flow });
+        };
+        await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelper, waitForEvent }, initialMsg, async (ev) => {
           const ts = new Date();
           // Translate engine ev -> LiveEvents and persist
           if (ev.type === 'run.started'){

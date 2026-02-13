@@ -296,12 +296,6 @@
 .bottom-bar .undeploy-btn:hover:not(:disabled) { background:#b91c1c; box-shadow:0 6px 16px rgba(220,38,38,0.25); transform: translateY(-1px); }
 .bottom-bar .undeploy-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .bottom-bar .undeploy-btn i { font-size:13px; }
-/* Production banner */
-.production-banner { position:absolute; top:0; left:0; right:0; z-index:30; display:flex; align-items:center; gap:8px; padding:8px 16px; background:linear-gradient(90deg, #059669, #047857); color:#fff; font-size:13px; font-weight:500; }
-.production-banner i { font-size:15px; }
-.production-banner .sep { opacity:0.5; }
-.production-banner .hint { opacity:0.8; font-weight:400; }
-.production-banner .event-count { margin-left:auto; font-size:12px; opacity:0.9; background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:999px; }
 :host ::ng-deep  .ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
     margin: 0 0 0px 0;
 }

@@ -34,12 +34,28 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
       const t = String(n?.data?.model?.templateObj?.type || n?.data?.model?.nodeKind || '').toLowerCase();
       if (t === 'start' || t === 'start_form') return n;
     }
+    // Fallback: event node (trigger)
+    for (const n of nodes){
+      const t = String(n?.data?.model?.templateObj?.type || n?.data?.model?.nodeKind || '').toLowerCase();
+      if (t === 'event') return n;
+    }
     return nodes.find(n => String(n?.id||'').toLowerCase().includes('start')) || nodes[0] || null;
   })();
-  // Initial payload from Start Form args
+  // Initial payload from Start Form args or event outputHandle schema
   const startModel = startNode?.data?.model || {};
-  const startSchema = getStartFormSchema(startModel || {});
-  const payloadSample = buildSampleFromSchema(startSchema || {}, { arraysOneItem: true });
+  const startKind = String(startModel?.templateObj?.type || startModel?.nodeKind || '').toLowerCase();
+  let payloadSample;
+  if (startKind === 'event') {
+    // For event nodes, use the outputHandle schema (describes what the trigger emits)
+    const tpl = startModel?.templateObj || {};
+    const outs = Array.isArray(tpl.outputHandles) ? tpl.outputHandles : [];
+    const okHandle = outs.find(h => String(h?.id) === 'ok') || outs[0] || null;
+    const evSchema = (okHandle && okHandle.schema) || {};
+    payloadSample = buildSampleFromSchema(evSchema, { arraysOneItem: true });
+  } else {
+    const startSchema = getStartFormSchema(startModel || {});
+    payloadSample = buildSampleFromSchema(startSchema || {}, { arraysOneItem: true });
+  }
   try {
     const countFields = Array.isArray(startSchema?.fields) ? startSchema.fields.length : 0;
     const countSteps = Array.isArray(startSchema?.steps) ? startSchema.steps.length : 0;

@@ -297,7 +297,7 @@ class TriggerManager {
     const wsId = String(workspaceId);
     return [...this.activeTriggers.entries()]
       .filter(([_, t]) => String(t.flow?.workspaceId) === wsId)
-      .map(([fid, t]) => ({ flowId: fid, ...t.getStatus() }));
+      .map(([fid, t]) => ({ flowId: t.flow?.id || fid, _id: fid, ...t.getStatus() }));
   }
 
   async shutdown() {

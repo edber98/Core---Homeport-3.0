@@ -1,0 +1,974 @@
+{
+  "repo": {
+    "name": "yousign",
+    "type": "local",
+    "label": "Yousign"
+  },
+  "variables": {
+    "ys_signature_request": {
+      "title": "Demande de signature",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant unique de la demande.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la demande.", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut (draft, ongoing, done, declined, expired, canceled).", "col": { "xs": 24 } },
+        { "type": "text", "key": "delivery_mode", "label": "Mode de livraison", "description": "Mode de livraison (email, none).", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "description": "Date de création (ISO 8601).", "col": { "xs": 24 } },
+        { "type": "text", "key": "expiration_date", "label": "Date d'expiration", "description": "Date d'expiration.", "col": { "xs": 24 } },
+        { "type": "text", "key": "external_id", "label": "ID externe", "description": "Identifiant externe personnalisé.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "ordered_signers", "label": "Signataires ordonnés", "description": "Signataires dans un ordre précis.", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_signature_request_full": {
+      "title": "Demande de signature (détail)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "delivery_mode", "label": "Mode de livraison", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } },
+        { "type": "text", "key": "expiration_date", "label": "Date d'expiration", "col": { "xs": 24 } },
+        { "type": "text", "key": "external_id", "label": "ID externe", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "ordered_signers", "label": "Signataires ordonnés", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Signataires", "key": "signers", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section", "title": "Documents", "key": "documents", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "nature", "label": "Nature", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        }
+      ]
+    },
+    "ys_signature_requests": {
+      "title": "Demandes de signature",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Demandes", "key": "requests", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+            { "type": "text", "key": "delivery_mode", "label": "Mode de livraison", "col": { "xs": 24 } },
+            { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "text", "key": "totalCount", "label": "Total", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_document": {
+      "title": "Document",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "filename", "label": "Nom du fichier", "col": { "xs": 24 } },
+        { "type": "text", "key": "nature", "label": "Nature", "description": "signable_document ou attachment.", "col": { "xs": 24 } },
+        { "type": "text", "key": "content_type", "label": "Type de contenu", "col": { "xs": 24 } },
+        { "type": "number", "key": "total_pages", "label": "Nombre de pages", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_documents": {
+      "title": "Documents",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Documents", "key": "documents", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "filename", "label": "Nom du fichier", "col": { "xs": 24 } },
+            { "type": "text", "key": "nature", "label": "Nature", "col": { "xs": 24 } },
+            { "type": "number", "key": "total_pages", "label": "Pages", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "text", "key": "totalCount", "label": "Total", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_file_download": {
+      "title": "Fichier téléchargé",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "name", "label": "Nom du fichier", "col": { "xs": 24 } },
+        { "type": "text", "key": "contentType", "label": "Type de contenu", "col": { "xs": 24 } },
+        { "type": "number", "key": "size", "label": "Taille (octets)", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_signer": {
+      "title": "Signataire",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "description": "initiated, notified, verified, processing, signed, aborted, error.", "col": { "xs": 24 } },
+        { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 24 } },
+        { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 } },
+        { "type": "text", "key": "phone_number", "label": "Téléphone", "col": { "xs": 24 } },
+        { "type": "text", "key": "signature_level", "label": "Niveau de signature", "col": { "xs": 24 } },
+        { "type": "text", "key": "signature_link", "label": "Lien de signature", "col": { "xs": 24 } },
+        { "type": "text", "key": "signed_at", "label": "Signé le", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_signers": {
+      "title": "Signataires",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Signataires", "key": "signers", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+            { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 24 } },
+            { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 } },
+            { "type": "text", "key": "signature_link", "label": "Lien de signature", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "text", "key": "totalCount", "label": "Total", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_reminder_sent": {
+      "title": "Rappel envoyé",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "sent", "label": "Envoyé", "col": { "xs": 24 } },
+        { "type": "text", "key": "signer_id", "label": "ID du signataire", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_contact": {
+      "title": "Contact",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 24 } },
+        { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 } },
+        { "type": "text", "key": "phone_number", "label": "Téléphone", "col": { "xs": 24 } },
+        { "type": "text", "key": "company_name", "label": "Société", "col": { "xs": 24 } },
+        { "type": "text", "key": "job_title", "label": "Poste", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_contacts": {
+      "title": "Contacts",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Contacts", "key": "contacts", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 24 } },
+            { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 } },
+            { "type": "text", "key": "company_name", "label": "Société", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "text", "key": "totalCount", "label": "Total", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_deleted": {
+      "title": "Suppression",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "deleted", "label": "Supprimé", "col": { "xs": 24 } },
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_webhook": {
+      "title": "Webhook",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "endpoint", "label": "Endpoint", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "enabled", "label": "Activé", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "sandbox", "label": "Sandbox", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "auto_retry", "label": "Auto-retry", "col": { "xs": 24 } },
+        { "type": "text", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_webhooks": {
+      "title": "Webhooks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        {
+          "type": "section", "title": "Webhooks", "key": "webhooks", "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+            { "type": "text", "key": "endpoint", "label": "Endpoint", "col": { "xs": 24 } },
+            { "type": "checkbox", "key": "enabled", "label": "Activé", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "text", "key": "totalCount", "label": "Total", "col": { "xs": 24 } }
+      ]
+    },
+    "ys_webhook_event": {
+      "title": "Événement Yousign",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "event_name", "label": "Nom de l'événement", "description": "Type d'événement (ex: signature_request.done)." },
+        { "type": "text", "key": "event_time", "label": "Date de l'événement" },
+        { "type": "text", "key": "signature_request_id", "label": "ID de la demande" },
+        { "type": "text", "key": "signature_request_name", "label": "Nom de la demande" },
+        { "type": "text", "key": "signature_request_status", "label": "Statut de la demande" },
+        { "type": "text", "key": "signer_id", "label": "ID du signataire" },
+        { "type": "text", "key": "signer_email", "label": "E-mail du signataire" }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "yousign",
+      "name": "Yousign",
+      "title": "Yousign",
+      "iconClass": "fa-solid fa-file-signature",
+      "iconUrl": "https://cdn.simpleicons.org/yousign",
+      "color": "#0B68FF",
+      "tags": ["signature", "esignature", "document"],
+      "categories": ["Signature électronique"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Yousign",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Bearer de votre compte Yousign.",
+            "col": { "xs": 24 },
+            "secret": true,
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "select",
+            "key": "environment",
+            "label": "Environnement",
+            "description": "Sandbox pour les tests, Production pour les signatures réelles.",
+            "col": { "xs": 24 },
+            "default": "sandbox",
+            "options": [
+              { "label": "Sandbox", "value": "sandbox" },
+              { "label": "Production", "value": "production" }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "yousign_signature_request_create",
+      "name": "yousignSignatureRequestCreate",
+      "schemaVersion": 2,
+      "title": "Créer une demande de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-file-circle-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Créer une nouvelle demande de signature Yousign",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signature_request" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Demande de signature",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom", "description": "Nom de la demande de signature.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "delivery_mode", "label": "Mode de livraison", "description": "Mode d'envoi aux signataires.", "col": { "xs": 24 }, "default": "email", "options": [{ "label": "E-mail", "value": "email" }, { "label": "Aucun (lien API)", "value": "none" }] },
+          { "type": "text", "key": "expiration_date", "label": "Date d'expiration", "description": "Date limite (ISO 8601, ex: 2025-12-31).", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "ordered_signers", "label": "Signataires ordonnés", "description": "Les signataires doivent signer dans l'ordre.", "col": { "xs": 24 }, "default": false },
+          { "type": "text", "key": "external_id", "label": "ID externe", "description": "Identifiant personnalisé pour le suivi.", "col": { "xs": 24 } },
+          { "type": "text", "key": "custom_experience_id", "label": "ID expérience personnalisée", "description": "ID de l'expérience de signature personnalisée.", "col": { "xs": 24 } },
+          { "type": "text", "key": "timezone", "label": "Fuseau horaire", "description": "Ex: Europe/Paris.", "col": { "xs": 24 }, "default": "Europe/Paris" }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["création", "signature"]
+    },
+    {
+      "key": "yousign_signature_request_get",
+      "name": "yousignSignatureRequestGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une demande de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Récupérer les détails d'une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signature_request_full" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer une demande",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "description": "Identifiant UUID de la demande.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["lecture", "signature"]
+    },
+    {
+      "key": "yousign_signature_requests_list",
+      "name": "yousignSignatureRequestsList",
+      "schemaVersion": 2,
+      "title": "Lister les demandes de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Lister les demandes de signature avec filtres",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signature_requests" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les demandes",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "select", "key": "status", "label": "Statut", "description": "Filtrer par statut.", "col": { "xs": 24 }, "options": [{ "label": "Tous", "value": "" }, { "label": "Brouillon", "value": "draft" }, { "label": "En cours", "value": "ongoing" }, { "label": "Terminé", "value": "done" }, { "label": "Refusé", "value": "declined" }, { "label": "Expiré", "value": "expired" }, { "label": "Annulé", "value": "canceled" }] },
+          { "type": "number", "key": "limit", "label": "Limite", "description": "Nombre maximum de résultats.", "col": { "xs": 24 }, "default": 100 },
+          { "type": "text", "key": "q", "label": "Recherche", "description": "Rechercher par nom.", "col": { "xs": 24 } },
+          { "type": "text", "key": "external_id", "label": "ID externe", "description": "Filtrer par ID externe.", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["liste", "signature"]
+    },
+    {
+      "key": "yousign_signature_request_activate",
+      "name": "yousignSignatureRequestActivate",
+      "schemaVersion": 2,
+      "title": "Activer une demande de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-circle-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Activer une demande de signature (envoi aux signataires)",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signature_request" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Activer une demande",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["activation", "signature"]
+    },
+    {
+      "key": "yousign_signature_request_cancel",
+      "name": "yousignSignatureRequestCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une demande de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-circle-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Annuler une demande de signature en cours",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signature_request" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Annuler une demande",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "reason", "label": "Raison", "description": "Raison de l'annulation.", "col": { "xs": 24 }, "options": [{ "label": "Demandé par le contractant", "value": "contractualization_aborted" }, { "label": "Autre", "value": "other" }] },
+          { "type": "textarea", "key": "custom_note", "label": "Note personnalisée", "description": "Message optionnel.", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["annulation", "signature"]
+    },
+    {
+      "key": "yousign_signature_request_delete",
+      "name": "yousignSignatureRequestDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une demande de signature",
+      "subtitle": "Signature",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Supprimer une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_deleted" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une demande",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "checkbox", "key": "permanent_delete", "label": "Suppression permanente", "description": "Supprimer définitivement (irréversible).", "col": { "xs": 24 }, "default": false }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Demandes",
+      "tags": ["suppression", "signature"]
+    },
+    {
+      "key": "yousign_document_upload",
+      "name": "yousignDocumentUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser un document",
+      "subtitle": "Documents",
+      "icon": "fa-solid fa-file-arrow-up",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Téléverser un document PDF dans une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_document" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Téléverser un document",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "file", "key": "file", "label": "Fichier", "description": "Document PDF à signer.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "filename", "label": "Nom du fichier", "description": "Nom affiché (par défaut: document.pdf).", "col": { "xs": 24 }, "default": "document.pdf" },
+          { "type": "select", "key": "nature", "label": "Nature", "description": "Type de document.", "col": { "xs": 24 }, "default": "signable_document", "options": [{ "label": "Document à signer", "value": "signable_document" }, { "label": "Pièce jointe", "value": "attachment" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Documents",
+      "tags": ["téléversement", "document"]
+    },
+    {
+      "key": "yousign_documents_list",
+      "name": "yousignDocumentsList",
+      "schemaVersion": 2,
+      "title": "Lister les documents",
+      "subtitle": "Documents",
+      "icon": "fa-solid fa-folder-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Lister les documents d'une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_documents" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les documents",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Documents",
+      "tags": ["liste", "document"]
+    },
+    {
+      "key": "yousign_documents_download",
+      "name": "yousignDocumentsDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger les documents signés",
+      "subtitle": "Documents",
+      "icon": "fa-solid fa-file-arrow-down",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Télécharger les documents signés d'une demande terminée",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_file_download" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Télécharger les documents",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "version", "label": "Version", "description": "Version des documents.", "col": { "xs": 24 }, "default": "completed", "options": [{ "label": "Complétée (signée)", "value": "completed" }, { "label": "Originale", "value": "original" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Documents",
+      "tags": ["téléchargement", "document"]
+    },
+    {
+      "key": "yousign_audit_trail_download",
+      "name": "yousignAuditTrailDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger la piste d'audit",
+      "subtitle": "Audit",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Télécharger le certificat de preuve d'une demande",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_file_download" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Piste d'audit",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Documents",
+      "tags": ["audit", "preuve"]
+    },
+    {
+      "key": "yousign_signer_create",
+      "name": "yousignSignerCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un signataire",
+      "subtitle": "Signataires",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Ajouter un signataire à une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signer" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un signataire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "phone_number", "label": "Téléphone", "description": "Format international (ex: +33612345678).", "col": { "xs": 24 } },
+          { "type": "select", "key": "signature_level", "label": "Niveau de signature", "col": { "xs": 24 }, "default": "electronic_signature", "options": [{ "label": "Signature électronique simple", "value": "electronic_signature" }, { "label": "Signature avancée", "value": "advanced_electronic_signature" }, { "label": "Signature qualifiée", "value": "qualified_electronic_signature" }] },
+          { "type": "select", "key": "signature_authentication_mode", "label": "Mode d'authentification", "col": { "xs": 24 }, "options": [{ "label": "Aucun", "value": "no_otp" }, { "label": "OTP par SMS", "value": "otp_sms" }, { "label": "OTP par e-mail", "value": "otp_email" }] },
+          { "type": "select", "key": "locale", "label": "Langue", "col": { "xs": 24 }, "default": "fr", "options": [{ "label": "Français", "value": "fr" }, { "label": "Anglais", "value": "en" }, { "label": "Allemand", "value": "de" }, { "label": "Espagnol", "value": "es" }, { "label": "Italien", "value": "it" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Signataires",
+      "tags": ["création", "signataire"]
+    },
+    {
+      "key": "yousign_signers_list",
+      "name": "yousignSignersList",
+      "schemaVersion": 2,
+      "title": "Lister les signataires",
+      "subtitle": "Signataires",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Lister les signataires d'une demande de signature",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signers" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les signataires",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Signataires",
+      "tags": ["liste", "signataire"]
+    },
+    {
+      "key": "yousign_signer_get",
+      "name": "yousignSignerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un signataire",
+      "subtitle": "Signataires",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Récupérer les détails d'un signataire",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_signer" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un signataire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signer_id", "label": "ID du signataire", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Signataires",
+      "tags": ["lecture", "signataire"]
+    },
+    {
+      "key": "yousign_signer_send_reminder",
+      "name": "yousignSignerSendReminder",
+      "schemaVersion": 2,
+      "title": "Envoyer un rappel",
+      "subtitle": "Signataires",
+      "icon": "fa-solid fa-bell",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Envoyer un rappel de signature à un signataire",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_reminder_sent" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un rappel",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "signature_request_id", "label": "ID de la demande", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "signer_id", "label": "ID du signataire", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Signataires",
+      "tags": ["rappel", "signataire"]
+    },
+    {
+      "key": "yousign_contact_create",
+      "name": "yousignContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-address-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Créer un nouveau contact dans Yousign",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_contact" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un contact",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "email", "label": "E-mail", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "phone_number", "label": "Téléphone", "col": { "xs": 24 } },
+          { "type": "text", "key": "company_name", "label": "Société", "col": { "xs": 24 } },
+          { "type": "text", "key": "job_title", "label": "Poste", "col": { "xs": 24 } },
+          { "type": "select", "key": "locale", "label": "Langue", "col": { "xs": 24 }, "default": "fr", "options": [{ "label": "Français", "value": "fr" }, { "label": "Anglais", "value": "en" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts",
+      "tags": ["création", "contact"]
+    },
+    {
+      "key": "yousign_contacts_list",
+      "name": "yousignContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-address-book",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Lister les contacts enregistrés dans Yousign",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_contacts" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les contacts",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "q", "label": "Recherche", "description": "Rechercher par nom ou e-mail.", "col": { "xs": 24 } },
+          { "type": "number", "key": "limit", "label": "Limite", "col": { "xs": 24 }, "default": 100 }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts",
+      "tags": ["liste", "contact"]
+    },
+    {
+      "key": "yousign_contact_get",
+      "name": "yousignContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-id-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Récupérer les détails d'un contact",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_contact" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "contact_id", "label": "ID du contact", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts",
+      "tags": ["lecture", "contact"]
+    },
+    {
+      "key": "yousign_contact_delete",
+      "name": "yousignContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Supprimer un contact de Yousign",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_deleted" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "contact_id", "label": "ID du contact", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts",
+      "tags": ["suppression", "contact"]
+    },
+    {
+      "key": "yousign_webhook_create",
+      "name": "yousignWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-satellite-dish",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Créer un abonnement webhook dans Yousign",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_webhook" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un webhook",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "endpoint", "label": "URL du endpoint", "description": "URL HTTPS qui recevra les événements.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "textarea", "key": "subscribed_events", "label": "Événements (JSON)", "description": "Tableau JSON des événements. Ex: [\"signature_request.done\", \"signer.done\"]", "col": { "xs": 24 }, "default": "[\"signature_request.done\"]", "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "sandbox", "label": "Sandbox", "description": "Webhook pour l'environnement sandbox.", "col": { "xs": 12 }, "default": true },
+          { "type": "checkbox", "key": "auto_retry", "label": "Auto-retry", "description": "Réessayer en cas d'échec.", "col": { "xs": 12 }, "default": true },
+          { "type": "checkbox", "key": "enabled", "label": "Activé", "col": { "xs": 12 }, "default": true }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": ["création", "webhook"]
+    },
+    {
+      "key": "yousign_webhooks_list",
+      "name": "yousignWebhooksList",
+      "schemaVersion": 2,
+      "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-tower-broadcast",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Lister les abonnements webhook configurés",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_webhooks" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les webhooks",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": ["liste", "webhook"]
+    },
+    {
+      "key": "yousign_webhook_delete",
+      "name": "yousignWebhookDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Supprimer un abonnement webhook",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_deleted" },
+        { "id": "err", "name": "Error", "type": "error" }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un webhook",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "webhook_id", "label": "ID du webhook", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": ["suppression", "webhook"]
+    },
+    {
+      "key": "yousign_webhook_event",
+      "name": "yousignWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement Yousign",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "description": "Déclenché à la réception d'un webhook Yousign",
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:ys_webhook_event" }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déclencheur",
+      "tags": ["événement", "webhook", "signature"]
+    }
+  ]
+}

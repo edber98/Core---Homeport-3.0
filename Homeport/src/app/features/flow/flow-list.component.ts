@@ -83,7 +83,10 @@ type FlowItem = { id: string; name: string; description?: string };
                   (click)="$event.stopPropagation()">
               <span class="live-dot" *ngIf="isLive(it)"></span>
               {{ statusLabel(it.status) }}
-              <span class="trigger-count" *ngIf="triggerInfo(it)?.eventCount">{{ triggerInfo(it)!.eventCount }}</span>
+            </span>
+            <span class="chip trigger-chip" *ngIf="isLive(it)">
+              <i class="fa-solid fa-tower-broadcast"></i>
+              {{ triggerInfo(it)?.eventCount || 0 }} exéc.
             </span>
             <nz-dropdown-menu #statusMenu="nzDropdownMenu">
               <ul nz-menu>
@@ -231,7 +234,8 @@ type FlowItem = { id: string; name: string; description?: string };
     .chip.status-production { background:#ecfdf5; border-color:#d1fae5; color:#065f46; }
     .chip .live-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-right:4px; animation: pulse-dot 1.5s ease infinite; }
     @keyframes pulse-dot { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,0.4); } 50% { opacity:0.7; box-shadow:0 0 0 4px rgba(34,197,94,0); } }
-    .chip .trigger-count { margin-left:4px; font-size:10px; opacity:0.7; }
+    .chip.trigger-chip { background:#ecfdf5; border-color:#d1fae5; color:#065f46; display:inline-flex; align-items:center; gap:4px; }
+    .chip.trigger-chip i { font-size:10px; }
     /* Mobile status dots */
     .mobile-dots { display:none; align-items:center; gap:6px; margin-left: 6px; }
     .mobile-dots .dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; flex: 0 0 auto; }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ApiClientService } from './api-client.service';
 
 export interface TriggerStatus {
@@ -23,7 +23,15 @@ export interface DeployResult {
 
 @Injectable({ providedIn: 'root' })
 export class TriggersBackendService {
+  /** Emits the flowId whenever deploy/undeploy succeeds */
+  readonly statusChanged$ = new Subject<string>();
+
   constructor(private api: ApiClientService) {}
+
+  /** Notify all subscribers that a flow's trigger status changed */
+  notifyStatusChanged(flowId: string) {
+    this.statusChanged$.next(flowId);
+  }
 
   deploy(flowId: string): Observable<DeployResult> {
     return this.api.post<DeployResult>(`/api/flows/${encodeURIComponent(flowId)}/deploy`);

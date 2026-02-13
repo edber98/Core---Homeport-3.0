@@ -5548,6 +5548,7 @@ export class FlowBuilderComponent {
             this.deploying = false;
             this.currentFlowStatus = 'production';
             this.loadTriggerStatus();
+            this.triggersApi.notifyStatusChanged(this.currentFlowId!);
             const msg = res.webhookUrl
               ? `Déployé ! URL webhook : ${res.webhookUrl}`
               : `Déployé en production (${res.triggerType})`;
@@ -5597,6 +5598,7 @@ export class FlowBuilderComponent {
               this.undeploying = false;
               this.currentFlowStatus = 'draft';
               this.triggerStatus = null;
+              this.triggersApi.notifyStatusChanged(this.currentFlowId!);
               try { this.message.success('Production arrêtée'); } catch { this.showToast('Production arrêtée'); }
               try { this.cdr.detectChanges(); } catch {}
             });

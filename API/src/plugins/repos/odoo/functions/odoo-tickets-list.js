@@ -21,7 +21,7 @@ module.exports = {
         if (data.priority) domain.push(["priority", "=", data.priority]);
 
         const res = await utils.odooCall(opts, "helpdesk.ticket", "search_read", [], {
-          domain, fields: ["id", "name", "partner_id", "team_id", "stage_id", "priority", "description"], limit
+          domain, fields: ["id", "name", "partner_id", "team_id", "stage_id", "priority", "description", "sync"], limit
         });
         if (!res.ok) return res;
         const countRes = await utils.odooCall(opts, "helpdesk.ticket", "search_count", [], { domain });
