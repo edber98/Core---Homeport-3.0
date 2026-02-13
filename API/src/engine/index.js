@@ -58,6 +58,21 @@ function deepRender(obj, evalCtx){
   return obj;
 }
 
+// Lightweight msg clone for loop/branch iterations.
+// Previous node results (msg.nodeA, msg.nodeB, etc.) are shared by reference (read-only).
+// Only payload, _nodes, and loop are deep-copied since they change per iteration.
+function lightClone(msg) {
+  const clone = {};
+  for (const k of Object.keys(msg)) {
+    if (k === 'payload' || k === '_nodes' || k === 'loop') {
+      try { clone[k] = JSON.parse(JSON.stringify(msg[k])); } catch { clone[k] = msg[k]; }
+    } else {
+      clone[k] = msg[k]; // share reference — these are read-only
+    }
+  }
+  return clone;
+}
+
 // Minimal lodash.get equivalent for dotted/bracket paths (a.b[0].c)
 function dotGet(obj, path, def){
   try {
@@ -149,7 +164,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
     const nodeLog = msg._nodes[node.id];
 
     if (nType === 'start'){
-      const msgBefore = JSON.parse(JSON.stringify(msg));
+      const msgBefore = lightClone(msg);
       nodeLog.start = new Date().toISOString();
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: node.model?.context || null, msgIn: msgBefore });
       // Start-like node: take current msg.payload as the node result and keep it in payload
@@ -161,13 +176,13 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       try { msg[node.id] = nodeLog.result; } catch {}
       // Ensure payload is set to the result value (form or external payload)
       try { msg.payload = (msg && typeof msg.payload !== 'undefined') ? msg.payload : null; } catch {}
-      const msgAfter = JSON.parse(JSON.stringify(msg));
+      const msgAfter = lightClone(msg);
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] start', { node: node.id, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'event'){
       // Event trigger node: acts as entry point (like start) but also runs handler (like function)
-      const msgBefore = JSON.parse(JSON.stringify(msg));
+      const msgBefore = lightClone(msg);
       nodeLog.start = new Date().toISOString();
       nodeLog.args_pre_compilation = node.model?.context || null;
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore, templateKey: tmplKey, kind: 'event' });
@@ -230,12 +245,12 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.result = result;
       msg[node.id] = result;
       msg.payload = result;
-      const msgAfter = JSON.parse(JSON.stringify(msg));
+      const msgAfter = lightClone(msg);
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] event', { node: node.id, template: tmplKey, hasHandler: !!fn, waited: !!waitForEvent }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else if (nType === 'condition'){
-      const msgBefore = JSON.parse(JSON.stringify(msg));
+      const msgBefore = lightClone(msg);
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore });
       let chosen = evaluateCondition(node, initialContext, msg);
@@ -250,7 +265,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.result = { chosen };
       // Keep payload unchanged for condition; still expose chosen under msg[nodeId]
       msg[node.id] = nodeLog.result;
-      const msgAfter = JSON.parse(JSON.stringify(msg));
+      const msgAfter = lightClone(msg);
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] condition', { node: node.id, chosen }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_pre_compilation, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
@@ -264,12 +279,12 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
         if (targets.length === 1) {
           await runBranch(targets[0].target, msg, seen, `${branchId}:${targets[0].idx}`);
         } else if (targets.length > 1) {
-          await Promise.all(targets.map(t => runBranch(t.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${t.idx}`)));
+          await Promise.all(targets.map(t => runBranch(t.target, lightClone(msg), new Set(seen), `${branchId}:${t.idx}`)));
         }
       }
       return;
     } else if (nType === 'loop'){
-      const msgBefore = JSON.parse(JSON.stringify(msg));
+      const msgBefore = lightClone(msg);
       nodeLog.start = new Date().toISOString();
       nodeLog.args_pre_compilation = node.model?.context || null;
       await send({ type: 'node.started', nodeId: node.id, branchId, startedAt: nodeLog.start, argsPre: nodeLog.args_pre_compilation, msgIn: msgBefore });
@@ -440,8 +455,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       for (const rawItem of items){
         if (shouldCancel()) throw new Error('__CANCELLED__');
         if (!outEach) break; // nothing to iterate into
-        // Prepare iteration message
-        const msgClone = JSON.parse(JSON.stringify(msg));
+        // Prepare iteration message — use lightClone to avoid copying all previous node results
+        const msgClone = lightClone(msg);
         const iter = { item: rawItem, index: i, length: items.length };
         try { msgClone.loop = iter; } catch {}
         // Optionally map element through elementExpr (only if non-empty string or {$expr})
@@ -483,7 +498,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       try { msg[node.id] = nodeLog.result; } catch {}
       if (collectResults) { try { msg.payload = results; } catch {} }
       else if (resultMode === 'last') { try { msg.payload = lastPayload; } catch {} }
-      const msgAfter = JSON.parse(JSON.stringify(msg));
+      const msgAfter = lightClone(msg);
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       try { console.log('[engine] loop:done', { node: node.id, count: items.length, resultMode, collected: collectResults ? results.length : undefined }); } catch {}
       await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: compiled, result: nodeLog.result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
@@ -495,7 +510,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       }
       return;
     } else if (nType === 'function' || nType === 'agent' || nType === 'tool' || nType === 'tool_ai' || nType === 'memory'){
-      const msgBefore = JSON.parse(JSON.stringify(msg));
+      const msgBefore = lightClone(msg);
       nodeLog.start = new Date().toISOString(); nodeLog.args_pre_compilation = node.model?.context || null;
       const evalCtx = buildEvalContext(initialContext, msg);
       const compiled = deepRender(node.model?.context || {}, evalCtx);
@@ -554,7 +569,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       nodeLog.result = result;
       msg[node.id] = result;
       msg.payload = result;
-      const msgAfter = JSON.parse(JSON.stringify(msg));
+      const msgAfter = lightClone(msg);
       nodeLog.end = new Date().toISOString(); nodeLog.duration = Date.parse(nodeLog.end) - Date.parse(nodeLog.start);
       await send({ type: 'node.done', nodeId: node.id, branchId, input: msgBefore.payload ?? null, argsPre: nodeLog.args_pre_compilation, argsPost: nodeLog.args_post_compilation, result, startedAt: nodeLog.start, finishedAt: nodeLog.end, durationMs: nodeLog.duration, msgIn: msgBefore, msgOut: msgAfter });
     } else {
@@ -599,7 +614,7 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       await runBranch(nextOuts[0].target, msg, seen, `${branchId}:0`);
     } else if (nextOuts.length > 1){
       for (let i=0;i<nextOuts.length;i++){ const o = nextOuts[i]; await send({ type: 'edge.taken', sourceId: node.id, targetId: o.target }); }
-      await Promise.all(nextOuts.map((o,i) => runBranch(o.target, JSON.parse(JSON.stringify(msg)), new Set(seen), `${branchId}:${i}`)));
+      await Promise.all(nextOuts.map((o,i) => runBranch(o.target, lightClone(msg), new Set(seen), `${branchId}:${i}`)));
     }
   };
 

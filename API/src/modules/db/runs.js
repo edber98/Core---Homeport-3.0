@@ -8,7 +8,7 @@ const Attempt = require('../../db/models/attempt.model');
 const AttemptCounter = require('../../db/models/attempt-counter.model');
 const RunEvent = require('../../db/models/run-event.model');
 const { runFlow } = require('../../engine');
-const { broadcast } = require('../../realtime/ws');
+const { broadcast, cleanup: wsCleanup } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
 const { createFilesHelper } = require('../../services/file-storage');
 const { waitForOneEvent } = require('../../services/triggers/wait-for-one-event');
@@ -367,6 +367,9 @@ module.exports = function(){
         await doc.save();
         try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
         console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
+        // Cleanup: free WS listeners and cancelled flag for this run
+        cancelled.delete(String(run._id));
+        setTimeout(() => wsCleanup(String(run._id)), 5000);
       } catch (e) {
         if (String(e && e.message) === '__CANCELLED__') {
           // Mark last open attempt as cancelled for better node badge
@@ -393,6 +396,8 @@ module.exports = function(){
           broadcast(String(run._id), pkt);
           broadcastRun(String(run._id), pkt);
           console.warn(`[runs][db] cancelled during run: runId=${String(run._id)}`);
+          cancelled.delete(String(run._id));
+          setTimeout(() => wsCleanup(String(run._id)), 5000);
         } else {
           const doc = await Run.findById(run._id);
           doc.status = 'error';
@@ -407,6 +412,8 @@ module.exports = function(){
           broadcast(String(run._id), pkt);
           broadcastRun(String(run._id), pkt);
           console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
+          cancelled.delete(String(run._id));
+          setTimeout(() => wsCleanup(String(run._id)), 5000);
         }
       }
       })();
@@ -612,7 +619,16 @@ module.exports = function(){
       if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status, startedAt: doc0.startedAt, finishedAt: doc0.finishedAt, durationMs: doc0.durationMs } });
     } catch {}
 
+    const streamStart = Date.now();
+    const MAX_STREAM_MS = 10 * 60 * 1000; // 10 min max to prevent infinite polling
     const interval = setInterval(async () => {
+      // Safety: close stream if it's been open too long
+      if (Date.now() - streamStart > MAX_STREAM_MS) {
+        clearInterval(interval);
+        try { sendLive({ type: 'run.status', runId: String(run._id), run: { status: 'timed_out' } }); } catch {}
+        try { res.end(); } catch {}
+        return;
+      }
       const doc = await Run.findById(run._id).lean();
       if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
       const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
