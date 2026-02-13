@@ -1716,7 +1716,9 @@ export class FlowBuilderComponent {
       const filtered = q ? base.filter(it => {
         try {
           const tpl = this.normalizeTemplate(it?.template);
-          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''}`.toLowerCase();
+          const appId = String((tpl as any)?.appId || (tpl as any)?.app?._id || '').trim();
+          const app = appId ? this.appsMap.get(appId) : undefined;
+          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''} ${app?.name || ''} ${app?.title || ''} ${appId}`.toLowerCase();
           return hay.includes(q);
         } catch { return true; }
       }) : base;
