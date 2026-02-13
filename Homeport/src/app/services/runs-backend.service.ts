@@ -75,7 +75,7 @@ export class RunsBackendService {
         }
       };
       // Support both generic 'live' channel and typed events from engine
-      const types = ['live','run.status','node.started','node.status','node.done','node.result','edge.taken','run.failed','error'];
+      const types = ['live','run.status','node.started','node.status','node.done','node.result','node.log','edge.taken','run.failed','error'];
       types.forEach(t => source.addEventListener(t, handler as any));
       // Fallback default message
       source.onmessage = handler as any;

@@ -256,11 +256,17 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
           metaForFn = { ...(metaForFn || {}), incoming };
         } catch {}
         try { if (initialContext && initialContext.files) metaForFn = { ...(metaForFn || {}), files: initialContext.files }; } catch {}
+        // Streaming log: opts.log() sends real-time text to frontend
+        const _logQueue = [];
+        const _logFn = (text) => { _logQueue.push(send({ type: 'node.log', nodeId: node.id, branchId, text: String(text || '') })); };
+        metaForFn = { ...(metaForFn || {}), log: _logFn };
         try {
           const evalCtx = buildEvalContext(initialContext, msg);
           const compiled = deepRender(node.model?.context || {}, evalCtx);
           result = await fn({ id: node.id, model: node.model }, msg, compiled, metaForFn);
         } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
+        // Flush pending log messages before emitting node.done
+        if (_logQueue.length) try { await Promise.all(_logQueue); } catch {}
       } else {
         // No handler: pass payload through
         result = msg.payload || {};
@@ -644,10 +650,16 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
             metaForFn = { ...(metaForFn || {}), files: initialContext.files };
           }
         } catch {}
+        // Streaming log: opts.log() sends real-time text to frontend
+        const _logQueue = [];
+        const _logFn = (text) => { _logQueue.push(send({ type: 'node.log', nodeId: node.id, branchId, text: String(text || '') })); };
+        metaForFn = { ...(metaForFn || {}), log: _logFn };
         try {
           try { console.log('[engine] fn opts', { node: node.id, hasCredentials: !!metaForFn }); } catch {}
           result = await fn({ id: node.id, model: node.model }, msg, inputsForFn, metaForFn);
         } catch (e) { result = { error: (e && e.message) ? e.message : String(e) }; }
+        // Flush pending log messages before emitting node.done
+        if (_logQueue.length) try { await Promise.all(_logQueue); } catch {}
       }
       // Store function result under msg[nodeId] and mirror to payload
       const isError = !!(result && typeof result === 'object' && (result.ok === false || result.error != null));

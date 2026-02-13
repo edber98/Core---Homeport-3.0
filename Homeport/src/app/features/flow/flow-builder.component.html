@@ -297,7 +297,13 @@
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
             </div>
             </div>
-     
+            <!-- Streaming log overlay via node-toolbar -->
+            <node-toolbar *ngIf="nodeLogText.get(ctx.node.id) as logText"
+              [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
+              <div class="node-log-bubble">
+                <span class="node-log-text">{{ logText }}</span>
+              </div>
+            </node-toolbar>
         </ng-template>
         <ng-template let-ctx connectionTemplate>
           <div class="edge-labels">

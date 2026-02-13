@@ -120,6 +120,8 @@ export class FlowBuilderComponent {
   private backendAttemptSeq: string[] = [];
   private lastOverlayPairs = new Set<string>();
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
+  // Streaming log text per node (from opts.log() in handlers)
+  nodeLogText = new Map<string, string>();
   // Control whether exec badges are shown on nodes
   private showExecBadges = false;
   // Snapshot of selected run (from backend) for right panel
@@ -5078,6 +5080,7 @@ export class FlowBuilderComponent {
     this.backendAttemptSeq = [];
     this.lastOverlayPairs = new Set();
     this.backendRunStatus = 'idle';
+    this.nodeLogText.clear();
     // Reset dialog badge + logs for a fresh run
     this.testStatus = 'idle';
     this.testStartedAt = null;
@@ -5189,6 +5192,8 @@ export class FlowBuilderComponent {
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
+          // Clear streaming log when node finishes
+          if (st === 'success' || st === 'error' || st === 'cancelled') this.nodeLogText.delete(nid);
           // Track per-node attempts by (nodeId, exec)
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
@@ -5340,6 +5345,16 @@ export class FlowBuilderComponent {
             this.outputLoading = false;
           }
           // Edge path was updated on node.status running; nothing else to do here
+        }
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'node.log') {
+        const nid = String(ev.nodeId || (ev as any)?.data?.nodeId || '');
+        const text = (ev as any)?.data?.text ?? (ev as any)?.text ?? '';
+        if (nid) {
+          if (text) this.nodeLogText.set(nid, text);
+          else this.nodeLogText.delete(nid);
         }
         try { this.cdr.detectChanges(); } catch {}
         return;

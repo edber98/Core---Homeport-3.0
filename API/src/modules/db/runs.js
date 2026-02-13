@@ -328,6 +328,9 @@ module.exports = function(){
           if (ev.type === 'edge.taken'){
             await RunEvent.create({ runId: run._id, type: 'edge.taken', seq: ++seq, data: { sourceId: ev.sourceId, targetId: ev.targetId }, ts });
           }
+          if (ev.type === 'node.log'){
+            await RunEvent.create({ runId: run._id, type: 'node.log', nodeId: String(ev.nodeId || ''), branchId: String(ev.branchId || ''), seq: ++seq, data: { text: ev.text || '' }, ts });
+          }
           // broadcast Live-like messages for frontend
           const livePackets = [];
           if (ev.type === 'run.started') livePackets.push({ type: 'run.status', run: { status: 'running' } });
@@ -352,6 +355,7 @@ module.exports = function(){
             }
           }
           if (ev.type === 'edge.taken') livePackets.push({ type: 'edge.taken', data: { sourceId: ev.sourceId, targetId: ev.targetId } });
+          if (ev.type === 'node.log') livePackets.push({ type: 'node.log', nodeId: String(ev.nodeId || ''), data: { text: ev.text || '' } });
           if (ev.type === 'run.completed') livePackets.push({ type: 'run.status', run: { status: 'success', result: ev.payload } });
           for (const pkt of livePackets){ broadcast(String(run._id), pkt); broadcastRun(String(run._id), pkt); }
           try { if (ev && ev.type) console.log(`[runs][db] event: runId=${String(run._id)} type=${ev.type}`); } catch {}
