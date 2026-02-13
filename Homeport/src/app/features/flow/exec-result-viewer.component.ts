@@ -1,7 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FilesBackendService } from '../../services/files-backend.service';
 
 interface ViewField {
@@ -9,12 +12,19 @@ interface ViewField {
   label: string;
   type: string;
   options?: Array<{ label: string; value: any }>;
-}
-
-interface ViewSection {
-  title: string;
-  mode?: string;
-  fields: ViewField[];
+  // File-specific
+  accept?: string;
+  multiple?: boolean;
+  listType?: string;
+  preview?: boolean;
+  // Tags-specific
+  tags?: { itemType?: string };
+  // Secret
+  secret?: boolean;
+  // Cron-specific
+  cron?: any;
+  // Any extra field config
+  [extra: string]: any;
 }
 
 interface ScalarEntry {
@@ -37,46 +47,72 @@ interface NestedSection {
 @Component({
   selector: 'exec-result-viewer',
   standalone: true,
-  imports: [CommonModule, NzTagModule, NzCollapseModule],
+  imports: [CommonModule, FormsModule, NzTagModule, NzCollapseModule, NzSwitchModule],
   template: `
     <div class="rv-root" *ngIf="hasData; else emptyTpl">
       <!-- Schema-based rendering -->
-      <ng-container *ngIf="schema; else fallbackTpl">
-        <!-- Scalar fields table -->
-        <table class="rv-table" *ngIf="scalarEntries.length">
-          <tr *ngFor="let entry of scalarEntries">
-            <td class="rv-label">{{ entry.field.label }}</td>
-            <td class="rv-value">
+      <ng-container *ngIf="hasSchema">
+        <!-- Scalar fields -->
+        <ng-container *ngIf="!labelsOnTop">
+          <table class="rv-table" *ngIf="scalarEntries.length">
+            <tr *ngFor="let entry of scalarEntries">
+              <td class="rv-label">{{ entry.field.label }}</td>
+              <td class="rv-value">
+                <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: entry.field, value: entry.value }"></ng-container>
+              </td>
+            </tr>
+          </table>
+        </ng-container>
+        <ng-container *ngIf="labelsOnTop">
+          <div class="rv-vertical" *ngFor="let entry of scalarEntries">
+            <div class="rv-vlabel">{{ entry.field.label }}</div>
+            <div class="rv-vvalue">
               <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: entry.field, value: entry.value }"></ng-container>
-            </td>
-          </tr>
-        </table>
+            </div>
+          </div>
+        </ng-container>
 
         <!-- Array sections -->
         <div class="rv-array-section" *ngFor="let sec of arraySections">
-          <div class="rv-array-title">{{ sec.title }}</div>
-          <table class="rv-data-table" *ngIf="sec.rows.length; else emptyArrayTpl">
-            <thead>
-              <tr>
-                <th *ngFor="let col of sec.fields">{{ col.label }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of sec.rows">
-                <td *ngFor="let col of sec.fields">
-                  <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: col, value: row[col.key] }"></ng-container>
+          <div class="rv-array-title">{{ sec.title }} <span class="rv-array-count">({{ sec.rows.length }})</span></div>
+          <div class="rv-table-scroll">
+            <table class="rv-data-table" *ngIf="sec.rows.length; else emptyArrayTpl">
+              <thead>
+                <tr><th *ngFor="let col of sec.fields">{{ col.label }}</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of sec.rows">
+                  <td *ngFor="let col of sec.fields">
+                    <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: col, value: row[col.key] }"></ng-container>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #emptyArrayTpl><div class="rv-empty">Aucun élément</div></ng-template>
+        </div>
+
+        <!-- Unknown fields (not in schema) -->
+        <ng-container *ngIf="unknownEntries.length">
+          <div class="rv-unknown-header">
+            <span class="rv-unknown-label">Champs hors schéma ({{ unknownEntries.length }})</span>
+            <nz-switch [(ngModel)]="showUnknown" nzSize="small"></nz-switch>
+          </div>
+          <ng-container *ngIf="showUnknown">
+            <table class="rv-table rv-unknown-table">
+              <tr *ngFor="let entry of unknownEntries">
+                <td class="rv-label">{{ entry.key }}</td>
+                <td class="rv-value">
+                  <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: entry.value }"></ng-container>
                 </td>
               </tr>
-            </tbody>
-          </table>
-          <ng-template #emptyArrayTpl>
-            <div class="rv-empty">Aucun élément</div>
-          </ng-template>
-        </div>
+            </table>
+          </ng-container>
+        </ng-container>
       </ng-container>
 
       <!-- Fallback: no schema -->
-      <ng-template #fallbackTpl>
+      <ng-container *ngIf="!hasSchema">
         <ng-container *ngIf="fallbackMode === 'scalar'">
           <div class="rv-value rv-scalar-only">
             <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: data }"></ng-container>
@@ -92,7 +128,6 @@ interface NestedSection {
               </td>
             </tr>
           </table>
-          <!-- Nested sub-objects -->
           <ng-container *ngFor="let sub of nestedSections">
             <nz-collapse [nzBordered]="false" class="rv-nested-collapse">
               <nz-collapse-panel [nzHeader]="sub.label" [nzActive]="false">
@@ -103,20 +138,20 @@ interface NestedSection {
         </ng-container>
 
         <ng-container *ngIf="fallbackMode === 'array-objects'">
-          <table class="rv-data-table">
-            <thead>
-              <tr>
-                <th *ngFor="let col of autoColumns">{{ col }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of data">
-                <td *ngFor="let col of autoColumns">
-                  <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: row[col] }"></ng-container>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="rv-table-scroll">
+            <table class="rv-data-table">
+              <thead>
+                <tr><th *ngFor="let col of autoColumns">{{ col }}</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of data">
+                  <td *ngFor="let col of autoColumns">
+                    <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: row[col] }"></ng-container>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </ng-container>
 
         <ng-container *ngIf="fallbackMode === 'array-scalars'">
@@ -126,7 +161,7 @@ interface NestedSection {
             </li>
           </ul>
         </ng-container>
-      </ng-template>
+      </ng-container>
     </div>
 
     <ng-template #emptyTpl>
@@ -135,42 +170,102 @@ interface NestedSection {
 
     <!-- Schema-aware cell template -->
     <ng-template #cellTpl let-field="field" let-value="value">
-      <span *ngIf="isTextType(field.type)">{{ value ?? '—' }}</span>
-
-      <span *ngIf="field.type === 'checkbox'" class="rv-bool">
-        <i class="fa-solid" [ngClass]="value ? 'fa-circle-check rv-check-ok' : 'fa-circle-xmark rv-check-no'"></i>
-        {{ value ? 'Oui' : 'Non' }}
-      </span>
-
-      <span *ngIf="field.type === 'date'">{{ formatDate(value) }}</span>
-
-      <span *ngIf="field.type === 'select' || field.type === 'radio'">{{ optionLabel(field, value) }}</span>
-
-      <span *ngIf="field.type === 'tags'" class="rv-tags">
-        <nz-tag *ngFor="let t of asArray(value)">{{ t }}</nz-tag>
-      </span>
-
-      <ng-container *ngIf="field.type === 'file'">
-        <ng-container *ngIf="isFileRef(value)">
-          <img *ngIf="isImage(value)" [src]="fileUrl(value)" class="rv-img-preview" />
-          <a *ngIf="!isImage(value)" [href]="fileUrl(value)" target="_blank" class="rv-file-link">
-            <i class="fa-solid fa-file"></i> {{ value.name }} ({{ formatSize(value.size) }})
-          </a>
-        </ng-container>
-        <div *ngIf="isFileArray(value)" class="rv-file-grid">
-          <ng-container *ngFor="let f of value">
-            <img *ngIf="isImage(f)" [src]="fileUrl(f)" class="rv-img-preview" />
-            <a *ngIf="!isImage(f)" [href]="fileUrl(f)" target="_blank" class="rv-file-link">
-              <i class="fa-solid fa-file"></i> {{ f.name }}
-            </a>
-          </ng-container>
-        </div>
-        <span *ngIf="!isFileRef(value) && !isFileArray(value)">{{ value ?? '—' }}</span>
+      <!-- Secret fields → masked -->
+      <ng-container *ngIf="field.secret && value">
+        <span class="rv-secret">••••••••</span>
       </ng-container>
 
-      <!-- Fallback for unknown schema types -->
-      <ng-container *ngIf="isUnknownType(field.type)">
-        <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: value }"></ng-container>
+      <ng-container *ngIf="!field.secret">
+        <!-- Simple text types: text, number, tel, password, hidden -->
+        <span *ngIf="isSimpleTextType(field.type)">{{ value ?? '—' }}</span>
+
+        <!-- textarea → preserve whitespace -->
+        <span *ngIf="field.type === 'textarea'" class="rv-prewrap">{{ value ?? '—' }}</span>
+
+        <!-- url → clickable link -->
+        <ng-container *ngIf="field.type === 'url'">
+          <a *ngIf="value" [href]="value" target="_blank" rel="noopener" class="rv-link">{{ value }}</a>
+          <span *ngIf="!value">—</span>
+        </ng-container>
+
+        <!-- email → mailto link -->
+        <ng-container *ngIf="field.type === 'email'">
+          <a *ngIf="value" [href]="'mailto:' + value" class="rv-link">{{ value }}</a>
+          <span *ngIf="!value">—</span>
+        </ng-container>
+
+        <!-- color → swatch + hex -->
+        <ng-container *ngIf="field.type === 'color'">
+          <span *ngIf="value" class="rv-color">
+            <span class="rv-color-swatch" [style.background]="value"></span>
+            {{ value }}
+          </span>
+          <span *ngIf="!value">—</span>
+        </ng-container>
+
+        <!-- code / expression / cron → monospace -->
+        <ng-container *ngIf="field.type === 'code' || field.type === 'expression' || field.type === 'cron'">
+          <code *ngIf="value != null" class="rv-code">{{ value }}</code>
+          <span *ngIf="value == null">—</span>
+        </ng-container>
+
+        <!-- json → formatted JSON block -->
+        <ng-container *ngIf="field.type === 'json' || field.type === 'schema_builder'">
+          <pre *ngIf="value != null" class="rv-json">{{ formatJson(value) }}</pre>
+          <span *ngIf="value == null">—</span>
+        </ng-container>
+
+        <!-- html → rendered HTML -->
+        <ng-container *ngIf="field.type === 'html'">
+          <div *ngIf="value" class="rv-html" [innerHTML]="sanitizeHtml(value)"></div>
+          <span *ngIf="!value">—</span>
+        </ng-container>
+
+        <!-- checkbox / boolean -->
+        <span *ngIf="field.type === 'checkbox' || field.type === 'boolean'" class="rv-bool">
+          <i class="fa-solid" [ngClass]="value ? 'fa-circle-check rv-check-ok' : 'fa-circle-xmark rv-check-no'"></i>
+          {{ value ? 'Oui' : 'Non' }}
+        </span>
+
+        <!-- date -->
+        <span *ngIf="field.type === 'date'">{{ formatDate(value, field) }}</span>
+
+        <!-- select / radio → option label -->
+        <span *ngIf="field.type === 'select' || field.type === 'radio'">{{ optionLabel(field, value) }}</span>
+
+        <!-- tags / text_array -->
+        <span *ngIf="field.type === 'tags' || field.type === 'text_array'" class="rv-tags">
+          <nz-tag *ngFor="let t of asArray(value)" [nzColor]="field.tags?.itemType === 'number' ? 'blue' : ''">{{ t }}</nz-tag>
+          <span *ngIf="!asArray(value).length">—</span>
+        </span>
+
+        <!-- file -->
+        <ng-container *ngIf="field.type === 'file'">
+          <!-- Single file ref -->
+          <ng-container *ngIf="isFileRef(value)">
+            <img *ngIf="isImageFile(value, field)" [src]="fileUrl(value)" class="rv-img-preview"
+                 [class.rv-img-card]="field.listType === 'picture-card'" />
+            <a *ngIf="!isImageFile(value, field)" [href]="fileUrl(value)" target="_blank" class="rv-file-link">
+              <i class="fa-solid fa-file"></i> {{ value.name }} ({{ formatSize(value.size) }})
+            </a>
+          </ng-container>
+          <!-- Array of files -->
+          <div *ngIf="isFileArray(value)" [class]="isImageAccept(field) ? 'rv-img-grid' : 'rv-file-list'">
+            <ng-container *ngFor="let f of value">
+              <img *ngIf="isImageFile(f, field)" [src]="fileUrl(f)" class="rv-img-preview"
+                   [class.rv-img-card]="field.listType === 'picture-card'" />
+              <a *ngIf="!isImageFile(f, field)" [href]="fileUrl(f)" target="_blank" class="rv-file-link">
+                <i class="fa-solid fa-file"></i> {{ f.name }} ({{ formatSize(f.size) }})
+              </a>
+            </ng-container>
+          </div>
+          <span *ngIf="!isFileRef(value) && !isFileArray(value)">{{ value ?? '—' }}</span>
+        </ng-container>
+
+        <!-- Fallback for any remaining unknown type -->
+        <ng-container *ngIf="isUnknownType(field.type)">
+          <ng-container [ngTemplateOutlet]="autoCellTpl" [ngTemplateOutletContext]="{ value: value }"></ng-container>
+        </ng-container>
       </ng-container>
     </ng-template>
 
@@ -187,8 +282,10 @@ interface NestedSection {
           <i class="fa-solid" [ngClass]="value ? 'fa-circle-check rv-check-ok' : 'fa-circle-xmark rv-check-no'"></i>
           {{ value ? 'Oui' : 'Non' }}
         </span>
+        <span *ngIf="isDateValue(value)" class="rv-date-auto">{{ formatDate(value) }}</span>
         <span *ngIf="isImageUrl(value)"><img [src]="value" class="rv-img-preview" /></span>
-        <span *ngIf="!isBool(value) && !isImageUrl(value)">{{ formatAuto(value) }}</span>
+        <a *ngIf="isUrl(value)" [href]="value" target="_blank" rel="noopener" class="rv-link">{{ value }}</a>
+        <span *ngIf="!isBool(value) && !isDateValue(value) && !isImageUrl(value) && !isUrl(value)">{{ formatAuto(value) }}</span>
       </ng-container>
     </ng-template>
   `,
@@ -198,13 +295,24 @@ interface NestedSection {
     .rv-table { width: 100%; border-collapse: collapse; }
     .rv-table .rv-label { width: 35%; font-weight: 500; color: #374151; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; background: #fafafa; vertical-align: top; white-space: nowrap; }
     .rv-table .rv-value { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; word-break: break-word; }
+    @media (max-width: 600px) {
+      .rv-table .rv-label { width: auto; display: block; border-bottom: none; padding-bottom: 2px; }
+      .rv-table .rv-value { display: block; padding-top: 0; }
+      .rv-table tr { display: block; border-bottom: 1px solid #f0f0f0; padding: 4px 0; }
+    }
 
+    .rv-vertical { margin-bottom: 10px; }
+    .rv-vlabel { font-weight: 500; color: #374151; font-size: 12px; margin-bottom: 2px; }
+    .rv-vvalue { padding: 2px 0; word-break: break-word; }
+
+    .rv-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .rv-data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .rv-data-table th { background: #f9fafb; font-weight: 500; padding: 6px 10px; border: 1px solid #e5e7eb; text-align: left; }
+    .rv-data-table th { background: #f9fafb; font-weight: 500; padding: 6px 10px; border: 1px solid #e5e7eb; text-align: left; white-space: nowrap; }
     .rv-data-table td { padding: 6px 10px; border: 1px solid #e5e7eb; }
-    .rv-data-table tr:hover { background: #f0f7ff; }
+    .rv-data-table tr:hover td { background: #f0f7ff; }
 
     .rv-array-title { font-weight: 600; margin: 12px 0 6px; font-size: 13px; color: #374151; }
+    .rv-array-count { font-weight: 400; color: #9ca3af; }
     .rv-array-section + .rv-array-section { margin-top: 8px; }
 
     .rv-check-ok { color: #16a34a; }
@@ -213,12 +321,26 @@ interface NestedSection {
 
     .rv-tags { display: inline-flex; gap: 4px; flex-wrap: wrap; }
 
-    .rv-img-preview { max-width: 120px; max-height: 80px; border-radius: 6px; object-fit: cover; cursor: pointer; }
-    .rv-file-link { color: #1677ff; text-decoration: none; }
+    .rv-img-preview { max-width: 160px; max-height: 100px; border-radius: 6px; object-fit: cover; cursor: pointer; }
+    .rv-file-link { color: #1677ff; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .rv-file-link:hover { text-decoration: underline; }
-    .rv-file-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .rv-img-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .rv-file-list { display: flex; flex-direction: column; gap: 4px; }
+    .rv-img-card { max-width: 140px; max-height: 140px; border-radius: 8px; border: 1px solid #e5e7eb; padding: 4px; }
+    .rv-secret { color: #9ca3af; letter-spacing: 2px; }
+    .rv-date-auto { font-variant-numeric: tabular-nums; }
 
-    .rv-section-title { font-weight: 600; margin: 10px 0 4px; padding: 4px 0; border-bottom: 1px solid #e5e7eb; }
+    .rv-link { color: #1677ff; text-decoration: none; word-break: break-all; }
+    .rv-link:hover { text-decoration: underline; }
+
+    .rv-color { display: inline-flex; align-items: center; gap: 6px; font-family: monospace; }
+    .rv-color-swatch { display: inline-block; width: 18px; height: 18px; border-radius: 4px; border: 1px solid #d1d5db; flex-shrink: 0; }
+
+    .rv-code { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
+    .rv-json { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; background: #f3f4f6; padding: 8px 10px; border-radius: 6px; margin: 0; overflow-x: auto; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+    .rv-html { font-size: 13px; line-height: 1.5; }
+    .rv-prewrap { white-space: pre-wrap; }
+
     .rv-empty { color: #9ca3af; font-style: italic; padding: 16px; text-align: center; }
 
     .rv-scalar-only { padding: 8px 10px; }
@@ -228,15 +350,25 @@ interface NestedSection {
     .rv-nested-collapse { margin-top: 4px; }
     :host ::ng-deep .rv-nested-collapse .ant-collapse-header { padding: 6px 10px !important; font-weight: 500; font-size: 13px; background: #fafafa; }
     :host ::ng-deep .rv-nested-collapse .ant-collapse-content-box { padding: 4px 8px !important; }
+
+    .rv-unknown-header { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 6px 10px; background: #fefce8; border: 1px solid #fde68a; border-radius: 6px; }
+    .rv-unknown-label { font-size: 12px; color: #92400e; font-weight: 500; }
+    .rv-unknown-table { margin-top: 6px; opacity: 0.85; }
+    .rv-unknown-table .rv-label { background: #fffbeb; }
   `]
 })
 export class ExecResultViewerComponent implements OnChanges {
   @Input() data: any;
   @Input() schema: any = null;
+  @Output() hasTableContent = new EventEmitter<boolean>();
 
   hasData = false;
+  hasSchema = false;
+  labelsOnTop = false;
+  showUnknown = false;
   scalarEntries: ScalarEntry[] = [];
   arraySections: ArraySection[] = [];
+  unknownEntries: Array<{ key: string; value: any }> = [];
 
   // Fallback (no schema)
   fallbackMode: 'scalar' | 'flat-object' | 'array-objects' | 'array-scalars' | null = null;
@@ -244,68 +376,149 @@ export class ExecResultViewerComponent implements OnChanges {
   nestedSections: NestedSection[] = [];
   autoColumns: string[] = [];
 
-  private textTypes = new Set(['text', 'textarea', 'number', 'email', 'url', 'tel', 'password', 'color', 'hidden', 'expression', 'code', 'json', 'html']);
-  private knownTypes = new Set([...this.textTypes, 'checkbox', 'date', 'select', 'radio', 'tags', 'file']);
+  // Simple text types (plain text rendering)
+  private simpleTextTypes = new Set(['text', 'number', 'tel', 'password', 'hidden']);
+  // All known types (anything not in here goes to auto-fallback)
+  private knownTypes = new Set([
+    'text', 'textarea', 'number', 'tel', 'password', 'hidden',
+    'url', 'email', 'color',
+    'code', 'expression', 'cron', 'json', 'schema_builder', 'html',
+    'checkbox', 'boolean', 'date', 'select', 'radio',
+    'tags', 'text_array', 'file'
+  ]);
 
-  constructor(private filesService: FilesBackendService) {}
+  private htmlCache = new Map<string, SafeHtml>();
+
+  constructor(private filesService: FilesBackendService, private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes: SimpleChanges) {
+    this.htmlCache.clear();
     this.compute();
   }
 
   private compute() {
     const d = this.data;
     this.hasData = d != null && d !== '' && !(typeof d === 'object' && !Array.isArray(d) && Object.keys(d).length === 0);
-    if (!this.hasData) return;
+    if (!this.hasData) { this.hasSchema = false; this.hasTableContent.emit(false); return; }
 
-    if (this.schema && this.schema.fields) {
-      this.computeWithSchema();
-    } else if (this.schema && Array.isArray(this.schema)) {
-      // Schema is directly an array of fields
-      this.schema = { fields: this.schema };
-      this.computeWithSchema();
+    const sch = this.normalizeSchema(this.schema);
+    this.hasSchema = !!(sch && sch.fields && sch.fields.length);
+    this.labelsOnTop = !!(sch?.ui?.labelsOnTop);
+
+    console.log('[exec-result-viewer] compute', {
+      dataKeys: (typeof d === 'object' && !Array.isArray(d)) ? Object.keys(d) : (Array.isArray(d) ? `array[${d.length}]` : typeof d),
+      hasSchema: this.hasSchema,
+      labelsOnTop: this.labelsOnTop,
+      schemaFields: sch?.fields?.map((f: any) => ({ key: f.key, label: f.label, title: f.title, type: f.type })),
+    });
+
+    if (this.hasSchema) {
+      this.computeWithSchema(sch);
     } else {
       this.computeFallback();
     }
+
+    // Signal whether we have table content (for dialog width adaptation)
+    const hasTables = this.arraySections.length > 0 || this.fallbackMode === 'array-objects';
+    this.hasTableContent.emit(hasTables);
   }
 
-  private computeWithSchema() {
-    const fields: any[] = this.schema.fields || [];
-    const sections: ViewSection[] = this.schema.sections || [];
+  private normalizeSchema(raw: any): any {
+    if (!raw) return null;
+    if (Array.isArray(raw)) return { fields: raw };
+    if (raw.fields) return raw;
+    return null;
+  }
+
+  private fieldLabel(f: any): string {
+    return f.title || f.label || f.name || f.key || '—';
+  }
+
+  private computeWithSchema(sch: any) {
+    const fields: any[] = sch.fields || [];
+    const sections: any[] = sch.sections || [];
     const d = this.data || {};
 
     this.scalarEntries = [];
     this.arraySections = [];
+    this.unknownEntries = [];
 
-    // Process sections (mode=array) first
-    const sectionKeys = new Set<string>();
+    const schemaKeys = new Set<string>();
+    const metaKeys = new Set(['ok', 'error', '_output', '_type']);
+
+    // Process top-level sections (mode=array) first
     for (const sec of sections) {
       if (sec.mode === 'array' && sec.fields) {
-        const key = (sec as any).key || sec.title;
-        const arrData = d[key] || d[(sec as any).dataKey] || [];
-        sectionKeys.add(key);
-        if ((sec as any).dataKey) sectionKeys.add((sec as any).dataKey);
+        const key = sec.key || sec.title;
+        const arrData = d[key] || d[sec.dataKey] || [];
+        schemaKeys.add(key);
+        if (sec.dataKey) schemaKeys.add(sec.dataKey);
         this.arraySections.push({
           title: sec.title || key,
-          fields: sec.fields.map(f => ({ key: f.key, label: f.label || f.key, type: f.type || 'text', options: f.options })),
+          fields: sec.fields.map((f: any) => ({ ...f, label: this.fieldLabel(f), type: f.type || 'text' })),
           rows: Array.isArray(arrData) ? arrData : []
         });
       }
     }
 
-    // Process top-level fields as scalars
+    // Process fields
     for (const f of fields) {
-      if (sectionKeys.has(f.key)) continue;
-      // If field data is an array of objects and no section defined, auto-create array section
+      if (f.type === 'textblock') continue;
+
+      // section_array → array table
+      if (f.type === 'section_array') {
+        schemaKeys.add(f.key);
+        const arrData = d[f.key] || d[f.dataKey] || [];
+        if (f.dataKey) schemaKeys.add(f.dataKey);
+        const subFields = (f.fields || []).filter((sf: any) => sf.key && sf.type !== 'textblock' && sf.type !== 'section');
+        if (subFields.length) {
+          this.arraySections.push({
+            title: this.fieldLabel(f),
+            fields: subFields.map((sf: any) => ({ ...sf, label: this.fieldLabel(sf), type: sf.type || 'text' })),
+            rows: Array.isArray(arrData) ? arrData : []
+          });
+        }
+        continue;
+      }
+
+      // section (mode=array)
+      if (f.type === 'section' && f.mode === 'array' && f.fields) {
+        schemaKeys.add(f.key);
+        const arrData = d[f.key] || d[f.dataKey] || [];
+        if (f.dataKey) schemaKeys.add(f.dataKey);
+        const subFields = (f.fields || []).filter((sf: any) => sf.key && sf.type !== 'textblock');
+        if (subFields.length) {
+          this.arraySections.push({
+            title: this.fieldLabel(f),
+            fields: subFields.map((sf: any) => ({ ...sf, label: this.fieldLabel(sf), type: sf.type || 'text' })),
+            rows: Array.isArray(arrData) ? arrData : []
+          });
+        }
+        continue;
+      }
+
+      // Regular section (non-array) → skip
+      if (f.type === 'section') continue;
+
+      schemaKeys.add(f.key);
       const val = d[f.key];
+      // Array of objects → auto array section
       if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && !this.isFileRef(val[0])) {
         const cols = Object.keys(val[0]).map(k => ({ key: k, label: k, type: 'text' as string, options: undefined as any }));
-        this.arraySections.push({ title: f.label || f.key, fields: cols, rows: val });
+        this.arraySections.push({ title: this.fieldLabel(f), fields: cols, rows: val });
       } else {
         this.scalarEntries.push({
-          field: { key: f.key, label: f.label || f.key, type: f.type || 'text', options: f.options },
+          field: { ...f, label: this.fieldLabel(f), type: f.type || 'text' },
           value: val
         });
+      }
+    }
+
+    // Detect unknown keys
+    if (typeof d === 'object' && !Array.isArray(d)) {
+      for (const key of Object.keys(d)) {
+        if (schemaKeys.has(key) || metaKeys.has(key)) continue;
+        this.unknownEntries.push({ key, value: d[key] });
       }
     }
   }
@@ -315,6 +528,7 @@ export class ExecResultViewerComponent implements OnChanges {
     this.flatEntries = [];
     this.nestedSections = [];
     this.autoColumns = [];
+    this.unknownEntries = [];
 
     if (Array.isArray(d)) {
       if (d.length === 0) {
@@ -343,7 +557,7 @@ export class ExecResultViewerComponent implements OnChanges {
   }
 
   // Type checks
-  isTextType(type: string): boolean { return this.textTypes.has(type); }
+  isSimpleTextType(type: string): boolean { return this.simpleTextTypes.has(type); }
   isUnknownType(type: string): boolean { return !this.knownTypes.has(type); }
 
   isFileRef(v: any): boolean {
@@ -358,8 +572,27 @@ export class ExecResultViewerComponent implements OnChanges {
     return /^image\//i.test(ref?.mimeType || '');
   }
 
+  /** Check if file should display as image based on mimeType + field.accept */
+  isImageFile(ref: any, field?: any): boolean {
+    if (this.isImage(ref)) return true;
+    if (field?.accept && /image/i.test(field.accept)) return true;
+    if (field?.listType === 'picture' || field?.listType === 'picture-card') return true;
+    return false;
+  }
+
+  /** Check if field accepts images */
+  isImageAccept(field: any): boolean {
+    return field?.accept && /image/i.test(field.accept);
+  }
+
   isBool(v: any): boolean {
     return typeof v === 'boolean';
+  }
+
+  /** Auto-detect ISO date strings (2024-01-15, 2024-01-15T14:30:00Z, etc.) */
+  isDateValue(v: any): boolean {
+    if (typeof v !== 'string' || v.length < 10 || v.length > 30) return false;
+    return /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?(\.\d+)?(Z|[+-]\d{2}:?\d{2})?)?$/.test(v);
   }
 
   isImageUrl(v: any): boolean {
@@ -367,14 +600,29 @@ export class ExecResultViewerComponent implements OnChanges {
     return /^https?:\/\/.+\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(v);
   }
 
+  isUrl(v: any): boolean {
+    if (typeof v !== 'string' || this.isImageUrl(v)) return false;
+    return /^https?:\/\/.+/i.test(v);
+  }
+
   fileUrl(ref: any): string {
     if (!ref?.fileId) return '';
     return this.filesService.downloadUrl(ref.fileId);
   }
 
-  formatDate(v: any): string {
+  formatDate(v: any, field?: any): string {
+    if (v == null) return '—';
     try {
-      return new Date(v).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const d = new Date(v);
+      if (isNaN(d.getTime())) return String(v);
+      const s = String(v);
+      // Date-only (no time part) → show just date
+      const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(s);
+      if (isDateOnly) {
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+      // Full datetime
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     } catch { return String(v); }
   }
 
@@ -388,6 +636,22 @@ export class ExecResultViewerComponent implements OnChanges {
     if (bytes < 1024) return bytes + ' o';
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' Ko';
     return (bytes / 1048576).toFixed(1) + ' Mo';
+  }
+
+  formatJson(v: any): string {
+    if (v == null) return '—';
+    if (typeof v === 'string') {
+      try { return JSON.stringify(JSON.parse(v), null, 2); } catch { return v; }
+    }
+    try { return JSON.stringify(v, null, 2); } catch { return String(v); }
+  }
+
+  sanitizeHtml(v: any): SafeHtml {
+    const s = String(v || '');
+    if (this.htmlCache.has(s)) return this.htmlCache.get(s)!;
+    const safe = this.sanitizer.bypassSecurityTrustHtml(s);
+    this.htmlCache.set(s, safe);
+    return safe;
   }
 
   asArray(v: any): any[] {

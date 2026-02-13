@@ -198,14 +198,133 @@ Le moteur evalue l'expression et passe le resultat au handler.
 
 **Note**: L'importer active automatiquement les expressions sur les champs file avec `defaultMode: "val"` (le mode upload est le defaut, l'utilisateur peut basculer en mode expression).
 
+### date - Sélecteur de date
+
+```json
+{
+  "type": "date",
+  "key": "due_date",
+  "label": "Date d'échéance",
+  "col": { "xs": 24, "md": 12 },
+  "expression": { "allow": true }
+}
+```
+
+### tags - Saisie de tags (liste de valeurs)
+
+```json
+{
+  "type": "tags",
+  "key": "labels",
+  "label": "Étiquettes",
+  "col": { "xs": 24 },
+  "tags": {
+    "itemType": "text"          // "text" ou "number"
+  },
+  "expression": { "allow": true }
+}
+```
+
+### radio - Boutons radio
+
+```json
+{
+  "type": "radio",
+  "key": "priority",
+  "label": "Priorité",
+  "options": [
+    { "label": "Basse", "value": "low" },
+    { "label": "Moyenne", "value": "medium" },
+    { "label": "Haute", "value": "high" }
+  ],
+  "default": "medium",
+  "col": { "xs": 24 }
+}
+```
+
+### color - Sélecteur de couleur
+
+```json
+{
+  "type": "color",
+  "key": "bg_color",
+  "label": "Couleur de fond",
+  "col": { "xs": 24, "md": 12 },
+  "default": "#1677ff"
+}
+```
+
+### cron - Éditeur d'expression cron
+
+```json
+{
+  "type": "cron",
+  "key": "schedule",
+  "label": "Planification",
+  "col": { "xs": 24 },
+  "cron": {
+    "type": "linux",             // "linux" ou "spring"
+    "size": "default",           // "large" | "small" | "default"
+    "borderless": false,
+    "collapseDisable": false
+  }
+}
+```
+
+### schema_builder - Constructeur de schéma dynamique
+
+Permet à l'utilisateur de définir un schéma de sortie personnalisé dans le formulaire.
+
+```json
+{
+  "type": "schema_builder",
+  "key": "extraction_schema",
+  "label": "Schéma d'extraction",
+  "col": { "xs": 24 }
+}
+```
+
+Utilisé avec `output_schema_field` sur le template pour que la sortie du node utilise le schéma défini par l'utilisateur :
+```json
+"output_schema_field": "extraction_schema"
+```
+
+### section_array - Section tableau (alias explicite)
+
+Même comportement que `section` avec `mode: "array"`, mais avec le type explicite :
+
+```json
+{
+  "type": "section_array",
+  "key": "contacts",
+  "title": "Contacts",
+  "col": { "xs": 24 },
+  "fields": [
+    { "type": "text", "key": "name", "label": "Nom" },
+    { "type": "text", "key": "email", "label": "Email" },
+    { "type": "text", "key": "phone", "label": "Téléphone" }
+  ]
+}
+```
+
 ### textblock - Texte statique informatif
 
 ```json
 {
   "type": "textblock",
-  "label": "Note: Ce champ est calcule automatiquement."
+  "label": "Note: Ce champ est calculé automatiquement."
 }
 ```
+
+## IMPORTANT : Exec Result Viewer
+
+Quand un nouveau type de champ est ajouté au système de formulaires, il FAUT aussi mettre à jour le viewer de résultats d'exécution pour qu'il sache afficher ce type en lecture seule.
+
+**Fichier** : `Homeport/src/app/features/flow/exec-result-viewer.component.ts`
+
+1. Ajouter le type dans `knownTypes` (ou `simpleTextTypes` si rendu texte simple)
+2. Ajouter le template de rendu dans `cellTpl` (ng-template)
+3. Passer les options spécifiques du champ (accept, listType, tags.itemType, etc.) via le spread `{ ...f }` dans `computeWithSchema`
 
 ## Visibilite conditionnelle (visibleIf / requiredIf)
 

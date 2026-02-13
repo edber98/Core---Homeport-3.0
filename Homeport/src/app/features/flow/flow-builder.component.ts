@@ -3140,13 +3140,13 @@ export class FlowBuilderComponent {
 
   get execResultTemplate(): any {
     if (!this.execResultNodeId) return null;
-    const node = (this.items || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    const node = (this.nodes || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
     return node?.data?.model?.templateObj || null;
   }
 
   get execResultModel(): any {
     if (!this.execResultNodeId) return null;
-    const node = (this.items || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    const node = (this.nodes || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
     return node?.data?.model || null;
   }
 
