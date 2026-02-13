@@ -460,8 +460,20 @@ nz-drawer { display: contents; }
 .canvas-host .empty-starter .starter-card .title { font-weight:700; font-size:13px; color:#0f172a; }
 .canvas-host .empty-starter .starter-card .hint { font-size:12px; color:#64748b; }
 
+/* Streaming log: push toolbar foreignObject below other nodes */
+:host ::ng-deep .vflow-node > foreignObject:has(.node-log-bubble) {
+  overflow: visible;
+  z-index: -1;
+  pointer-events: none;
+}
+:host ::ng-deep .vflow-node > foreignObject:has(.node-log-bubble.expanded) {
+  z-index: auto;
+  pointer-events: auto;
+}
+
 /* Streaming log bubble (node-toolbar based) */
 .node-log-bubble {
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   padding: 3px 10px;

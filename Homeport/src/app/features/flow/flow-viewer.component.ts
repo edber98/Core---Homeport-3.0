@@ -355,8 +355,13 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .link, .node-card .link-label { cursor: grab; user-select: none; }
     .node-card .link:active, .node-card .link-label:active { cursor: grabbing; }
 
+    /* Streaming log: push toolbar foreignObject below other nodes */
+    :host ::ng-deep .vflow-node > foreignObject:has(.node-log-bubble) { overflow: visible; z-index: -1; pointer-events: none; }
+    :host ::ng-deep .vflow-node > foreignObject:has(.node-log-bubble.expanded) { z-index: auto; pointer-events: auto; }
+
     /* Streaming log bubble (node-toolbar based) */
     .node-log-bubble {
+      pointer-events: auto;
       display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 6px;
       font-size: 11px; color: #475569;
       background: linear-gradient(90deg, rgba(99,102,241,0.06) 0%, rgba(99,102,241,0.15) 50%, rgba(99,102,241,0.06) 100%);
