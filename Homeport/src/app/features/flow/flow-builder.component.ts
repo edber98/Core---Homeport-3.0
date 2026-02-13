@@ -41,11 +41,12 @@ import { environment } from '../../../environments/environment';
 import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
 import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive';
 import { SpotlightCreationChatComponent } from './components/spotlight-creation-chat.component';
+import { NodeExecResultDialogComponent } from './node-exec-result-dialog.component';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent, SpotlightCreationChatComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, FlowAiChatComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent, SpotlightCreationChatComponent, NodeExecResultDialogComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
@@ -3114,6 +3115,47 @@ export class FlowBuilderComponent {
       return { argsPre: (last as any).argsPre, argsPost: (last as any).argsPost };
     } catch { return null; }
   }
+
+  // Exec result dialog state
+  execResultOpen = false;
+  execResultNodeId: string | null = null;
+
+  onExecBadgeClick(ev: MouseEvent, nodeId: string) {
+    ev.stopPropagation();
+    const atts = this.backendNodeAttempts.get(nodeId);
+    if (!atts || !atts.length) return;
+    this.execResultNodeId = nodeId;
+    this.execResultOpen = true;
+  }
+
+  closeExecResult() {
+    this.execResultOpen = false;
+    this.execResultNodeId = null;
+  }
+
+  get execResultAttempts(): any[] {
+    if (!this.execResultNodeId) return [];
+    return (this.backendNodeAttempts.get(this.execResultNodeId) || []).slice();
+  }
+
+  get execResultTemplate(): any {
+    if (!this.execResultNodeId) return null;
+    const node = (this.items || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    return node?.data?.model?.templateObj || null;
+  }
+
+  get execResultModel(): any {
+    if (!this.execResultNodeId) return null;
+    const node = (this.items || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    return node?.data?.model || null;
+  }
+
+  get execResultTitle(): string {
+    const tpl = this.execResultTemplate;
+    const model = this.execResultModel;
+    return tpl?.title || model?.name || 'Résultat';
+  }
+
   private groupExecCounts(atts: any[]): Map<number, number> {
     const m = new Map<number, number>();
     for (const a of atts) { const e = Number(a.exec); if (!Number.isFinite(e)) continue; m.set(e, (m.get(e) || 0) + 1); }

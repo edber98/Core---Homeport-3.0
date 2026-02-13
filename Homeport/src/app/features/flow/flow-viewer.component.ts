@@ -240,7 +240,8 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                   </div>
                 </ng-template>
               </ng-container>
-              <div class="exec-badge" *ngIf="showExecBadges && ctx.node.data.execStatus as st">
+              <div class="exec-badge" *ngIf="showExecBadges && ctx.node.data.execStatus as st"
+                   (click)="onExecBadgeClick($event, ctx.node.id)" style="cursor:pointer;">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : (st === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
               </div>
@@ -336,6 +337,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .exec-badge .fa-stop.stop { color:#111827; }
     .node-card .exec-badge .fa-clock.pending { color:#6b7280; }
     .node-card .exec-badge .cnt { font-size:11px; color:#374151; }
+    .node-card .exec-badge:hover { transform: scale(1.1); }
     /* Bottom bar and tooltips (unchanged) */
     .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
     .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
@@ -455,6 +457,12 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Output() save = new EventEmitter<void>();
   @Output() selected = new EventEmitter<any>();
   @Output() connect = new EventEmitter<any>();
+  @Output() execBadgeClick = new EventEmitter<{ nodeId: string }>();
+
+  onExecBadgeClick(ev: MouseEvent, nodeId: string) {
+    ev.stopPropagation();
+    this.execBadgeClick.emit({ nodeId });
+  }
 
   @ViewChild('flowHost', { static: false }) flowHost?: ElementRef<HTMLElement>;
   @ViewChild('flow', { static: false }) flow?: any;

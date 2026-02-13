@@ -19,11 +19,12 @@ import { CatalogService } from '../../services/catalog.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { backAwareCurve } from './edge-curves';
+import { NodeExecResultDialogComponent } from './node-exec-result-dialog.component';
 
 @Component({
   selector: 'flow-execution',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzDrawerModule, NzButtonModule, NzTagModule, NzSelectModule],
+  imports: [CommonModule, FormsModule, FlowViewerComponent, NzModalModule, NzDrawerModule, NzButtonModule, NzTagModule, NzSelectModule, NodeExecResultDialogComponent],
   template: `
   <div class="flow-exec">
     <!-- Reusable left panel content (desktop + drawer) -->
@@ -145,7 +146,8 @@ import { backAwareCurve } from './edge-curves';
             [nodeLogNew]="nodeLogNew"
             [nodeLogAnimCycle]="nodeLogAnimCycle"
             [useStorage]="false"
-            [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
+            [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"
+            (execBadgeClick)="onViewerExecBadgeClick($event)"></flow-viewer>
         </div>
         <aside class="details-panel" *ngIf="rightPanelOpen && selectedBackendRun" #detailsPanel>
           <div class="panel-heading details-heading">
@@ -329,6 +331,11 @@ import { backAwareCurve } from './edge-curves';
         </div>
       </ng-container>
     </nz-drawer>
+    <node-exec-result-dialog *ngIf="execResultOpen && execResultNodeId"
+      [attempts]="execResultAttempts" [template]="execResultTemplate"
+      [model]="execResultModel" [nodeTitle]="execResultTitle"
+      (close)="closeExecResult()">
+    </node-exec-result-dialog>
   </div>
   `,
   styles: [`
@@ -908,6 +915,49 @@ export class FlowExecutionComponent {
   private flowRunsHasMore = true;
   trackBackendRun(index: number, b: BackendRun) { return b && (b as any).id; }
   trackExecGroup(index: number, g: { key: string }) { return g?.key || index; }
+
+  // Exec result dialog state
+  execResultOpen = false;
+  execResultNodeId: string | null = null;
+
+  onViewerExecBadgeClick(ev: { nodeId: string }) {
+    const atts = this.backendAttempts.filter(a => a.nodeId === ev.nodeId);
+    if (!atts.length) return;
+    this.execResultNodeId = ev.nodeId;
+    this.execResultOpen = true;
+  }
+
+  closeExecResult() {
+    this.execResultOpen = false;
+    this.execResultNodeId = null;
+  }
+
+  get execResultAttempts(): any[] {
+    if (!this.execResultNodeId) return [];
+    return this.backendAttempts.filter(a => a.nodeId === this.execResultNodeId);
+  }
+
+  get execResultTemplate(): any {
+    if (!this.execResultNodeId || !this.currentGraph) return null;
+    const nodes = (this.currentGraph.nodes || []) as any[];
+    const node = nodes.find((n: any) => String(n.id) === String(this.execResultNodeId));
+    const m = node?.data?.model || node?.data || node?.model || null;
+    return m?.templateObj || null;
+  }
+
+  get execResultModel(): any {
+    if (!this.execResultNodeId || !this.currentGraph) return null;
+    const nodes = (this.currentGraph.nodes || []) as any[];
+    const node = nodes.find((n: any) => String(n.id) === String(this.execResultNodeId));
+    return node?.data?.model || node?.data || node?.model || null;
+  }
+
+  get execResultTitle(): string {
+    const tpl = this.execResultTemplate;
+    const model = this.execResultModel;
+    return tpl?.title || model?.name || 'Résultat';
+  }
+
   groupedBackendRuns() {
     const runs = this.backendFlowRuns || [];
     const groups = new Map<string, { key: string; label: string; items: BackendRun[] }>();

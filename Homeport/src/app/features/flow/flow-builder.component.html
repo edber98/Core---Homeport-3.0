@@ -292,7 +292,8 @@
                 </div>
               </div>
             </ng-template>
-            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
+            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st"
+                 (click)="onExecBadgeClick($event, ctx.node.id)" style="cursor:pointer;">
               <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
             </div>
@@ -658,3 +659,8 @@
     ></flow-right-panel>
   </ng-container>
 </nz-drawer>
+<node-exec-result-dialog *ngIf="execResultOpen && execResultNodeId"
+  [attempts]="execResultAttempts" [template]="execResultTemplate"
+  [model]="execResultModel" [nodeTitle]="execResultTitle"
+  (close)="closeExecResult()">
+</node-exec-result-dialog>
