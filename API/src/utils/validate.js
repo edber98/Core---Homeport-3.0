@@ -252,4 +252,108 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
   return { ok: errors.length === 0, errors, warnings };
 }
 
-module.exports = { validateFlowGraph, normalizeTemplateKey };
+async function validateFlowTemplates(flowGraph) {
+  const errors = [];
+  const { nodes } = collectGraph(flowGraph);
+  const nNodes = nodes.map(n => ({
+    ...n, model: (n.data?.model) || n.model || n.data || {}
+  }));
+
+  // Collect template keys
+  const templateKeys = new Map(); // normalizedKey → [nodeIds]
+  for (const n of nNodes) {
+    const kind = normalizeNodeKind(n.model?.templateObj?.type)
+              || normalizeNodeKind(n.model?.type);
+    if (kind === 'start') continue;
+    const rawKey = n.model?.template || n.model?.templateObj?.id || n.model?.name || '';
+    const key = normalizeTemplateKey(rawKey);
+    if (!key) continue;
+    if (!templateKeys.has(key)) templateKeys.set(key, []);
+    templateKeys.get(key).push(n.id);
+  }
+  if (templateKeys.size === 0) return { ok: true, errors };
+
+  // Batch query
+  const NodeTemplate = require('../db/models/node-template.model');
+  const dbTemplates = await NodeTemplate.find({ key: { $in: [...templateKeys.keys()] } }).lean();
+  const dbMap = new Map();
+  for (const t of dbTemplates) dbMap.set(t.key, t);
+
+  // Check existence
+  for (const [key, nodeIds] of templateKeys.entries()) {
+    if (!dbMap.has(key)) {
+      for (const nid of nodeIds) {
+        errors.push({ code: 'template_deleted', message: `Template '${key}' n'existe plus`,
+          details: { nodeId: nid, templateKey: key } });
+      }
+    }
+  }
+
+  // Check checksums (args + feature) and required fields
+  const { checksumJSON } = require('./checksum');
+  for (const n of nNodes) {
+    const kind = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type);
+    if (kind === 'start') continue;
+    const rawKey = n.model?.template || n.model?.templateObj?.id || '';
+    const key = normalizeTemplateKey(rawKey);
+    if (!key) continue;
+    const liveTpl = dbMap.get(key);
+    if (!liveTpl) continue;
+
+    // Args changed?
+    const embeddedArgs = checksumJSON(n.model?.templateObj?.args || {});
+    if (liveTpl.checksumArgs && embeddedArgs !== liveTpl.checksumArgs) {
+      errors.push({ code: 'template_args_changed',
+        message: `Template '${key}' a changé (arguments)`,
+        details: { nodeId: n.id, templateKey: key } });
+    }
+
+    // Feature/structure changed?
+    // IMPORTANT: defaults must match importer.js L185 exactly (no || [] or || '')
+    // undefined values are stripped by JSON.stringify, so they must stay undefined
+    const embTpl = n.model?.templateObj || {};
+    const embeddedFeature = checksumJSON({
+      authorize_catch_error: !!embTpl.authorize_catch_error,
+      authorize_skip_error: !!embTpl.authorize_skip_error,
+      allowWithoutCredentials: !!embTpl.allowWithoutCredentials,
+      nodeKind: embTpl.nodeKind || embTpl.type,
+      inputHandles: embTpl.inputHandles,
+      outputHandles: embTpl.outputHandles,
+      linkedHandles: embTpl.linkedHandles,
+      output_array_field: embTpl.output_array_field,
+      output_schema_field: embTpl.output_schema_field,
+      outputSchema: embTpl.outputSchema,
+    });
+    if (liveTpl.checksumFeature && embeddedFeature !== liveTpl.checksumFeature) {
+      errors.push({ code: 'template_structure_changed',
+        message: `Template '${key}' a changé (structure)`,
+        details: { nodeId: n.id, templateKey: key } });
+    }
+
+    // Required fields missing?
+    try {
+      const schema = n.model?.templateObj?.args || null;
+      const fields = Array.isArray(schema?.fields) ? schema.fields : [];
+      const ctx = n.model?.context || {};
+      for (const f of fields) {
+        if (!f || typeof f !== 'object') continue;
+        const visible = f.visibleIf ? !!evalLogic(f.visibleIf, ctx) : true;
+        if (!visible) continue;
+        const reqByValidator = Array.isArray(f.validators) ? f.validators.some(v => (v && (v.type === 'required' || v.name === 'required'))) : false;
+        const reqByFlag = !!f.required;
+        const reqByCond = f.requiredIf ? !!evalLogic(f.requiredIf, ctx) : false;
+        if (reqByValidator || reqByFlag || reqByCond) {
+          if (isEmptyValue(ctx[f.key])) {
+            errors.push({ code: 'field_required',
+              message: `Champ requis manquant: ${f.label || f.key}`,
+              details: { nodeId: n.id, templateKey: key, field: f.key } });
+          }
+        }
+      }
+    } catch {}
+  }
+
+  return { ok: errors.length === 0, errors };
+}
+
+module.exports = { validateFlowGraph, validateFlowTemplates, normalizeTemplateKey };

@@ -382,13 +382,23 @@ export class FlowBuilderUtilsService {
     return ('00000000' + h.toString(16)).slice(-8);
   }
 
-  // Compute a short signature for template feature flags that affect node behavior
+  // Compute a short signature for template structural fields that affect node behavior
   featureChecksum(tpl: any): string {
     try {
-      const a = !!(tpl && tpl.authorize_catch_error);
-      const s = !!(tpl && (tpl as any).authorize_skip_error);
-      // pack two booleans into a short string
-      return (a ? '1' : '0') + (s ? '1' : '0');
-    } catch { return '00'; }
+      if (!tpl) return '';
+      const obj = {
+        authorize_catch_error: !!tpl.authorize_catch_error,
+        authorize_skip_error: !!tpl.authorize_skip_error,
+        allowWithoutCredentials: !!tpl.allowWithoutCredentials,
+        nodeKind: tpl.nodeKind || tpl.type || '',
+        inputHandles: tpl.inputHandles || [],
+        outputHandles: tpl.outputHandles || [],
+        linkedHandles: tpl.linkedHandles || [],
+        output_array_field: tpl.output_array_field || undefined,
+        output_schema_field: tpl.output_schema_field || undefined,
+        outputSchema: tpl.outputSchema || undefined,
+      };
+      return this.argsChecksum(obj);
+    } catch { return ''; }
   }
 }

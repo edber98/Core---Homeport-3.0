@@ -65,6 +65,28 @@ module.exports = function(){
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      try {
+        const { validateFlowTemplates } = require('../../utils/validate');
+        const tv = await validateFlowTemplates(flow.graph || flow);
+        if (!tv.ok) {
+          console.warn(`[runs][db] pre-exec validation failed flowId=${String(flow._id)} errors:`, JSON.stringify(tv.errors));
+          try {
+            const Notification = require('../../db/models/notification.model');
+            await Notification.create({
+              companyId: ws.companyId, workspaceId: ws._id,
+              entityType: 'flow', entityId: String(flow._id),
+              severity: 'critical', code: 'flow_template_invalid',
+              message: `Exécution bloquée: ${tv.errors.length} problème(s) de template`,
+              details: { errors: tv.errors },
+              link: `/flows/${String(flow._id)}/editor`
+            });
+          } catch {}
+          return res.apiError(409, 'flow_template_invalid',
+            'Flow uses deleted or outdated templates', { errors: tv.errors });
+        }
+      } catch (e) {
+        console.error('[runs] pre-exec validation error:', e?.message || e);
+      }
       const now = new Date();
       // Snapshot graph and settings (meta) at execution time
       let graphSnapshot = {};
@@ -200,6 +222,28 @@ module.exports = function(){
     if (flow.enabled === false) {
       console.warn(`[runs][db] start: flow disabled flowId=${fid} enabled=${flow.enabled} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
       return res.apiError(409, 'flow_disabled', 'Flow is disabled', { flowId: String(flow._id), workspaceId: String(ws._id), enabled: flow.enabled });
+    }
+    try {
+      const { validateFlowTemplates } = require('../../utils/validate');
+      const tv = await validateFlowTemplates(flow.graph || flow);
+      if (!tv.ok) {
+        console.warn(`[runs][db] pre-exec validation failed flowId=${fid} errors:`, JSON.stringify(tv.errors));
+        try {
+          const Notification = require('../../db/models/notification.model');
+          await Notification.create({
+            companyId: ws.companyId, workspaceId: ws._id,
+            entityType: 'flow', entityId: String(flow._id),
+            severity: 'critical', code: 'flow_template_invalid',
+            message: `Exécution bloquée: ${tv.errors.length} problème(s) de template`,
+            details: { errors: tv.errors },
+            link: `/flows/${String(flow._id)}/editor`
+          });
+        } catch {}
+        return res.apiError(409, 'flow_template_invalid',
+          'Flow uses deleted or outdated templates', { errors: tv.errors });
+      }
+    } catch (e) {
+      console.error('[runs] pre-exec validation error:', e?.message || e);
     }
     console.log(`[runs][db] start: flowId=${fid} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
     const now = new Date();

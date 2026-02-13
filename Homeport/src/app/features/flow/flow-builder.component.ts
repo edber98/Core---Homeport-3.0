@@ -3724,9 +3724,10 @@ export class FlowBuilderComponent {
       const argsMismatch = !!(stored && current && stored !== current);
       const list = this.allTemplates || [];
       const tpl = list.find((t: any) => String(t?.id) === String(tplId));
-      const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+      const storedFeat = String((model as any).templateFeatureSig ?? '');
       const currentFeat = this.fbUtils.featureChecksum(tpl);
-      const featMismatch = !!(storedFeat && currentFeat && storedFeat !== currentFeat);
+      // Legacy 2-char → skip (will update on next save)
+      const featMismatch = !!(storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat);
       return argsMismatch || featMismatch;
     } catch { return false; }
   }
@@ -3762,9 +3763,9 @@ export class FlowBuilderComponent {
         const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
         const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
         if (stored && current && stored !== current) return true;
-        const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+        const storedFeat = String((model as any).templateFeatureSig ?? '');
         const currentFeat = this.fbUtils.featureChecksum(currentTpl);
-        if (storedFeat && currentFeat && storedFeat !== currentFeat) return true;
+        if (storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat) return true;
       } catch { }
       // Credentials requirement
       try {
@@ -3824,9 +3825,10 @@ export class FlowBuilderComponent {
           const stored = String(model?.templateChecksum || '');
           const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
           if (stored && current && stored !== current) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (arguments). Vérifier ce nœud.` });
-          const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+          const storedFeat = String((model as any).templateFeatureSig ?? '');
           const currentFeat = this.fbUtils.featureChecksum(currentTpl);
-          if (storedFeat && currentFeat && storedFeat !== currentFeat) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (options). Vérifier ce nœud.` });
+          if (storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat)
+            issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (structure). Vérifier ce nœud.` });
         } catch { }
         // Credentials and form validation + condition-specific checks
         try {
@@ -5116,7 +5118,29 @@ export class FlowBuilderComponent {
           },
           error: (e) => {
             const err = this.normalizeApiError(e);
-            try { this.message.error(err?.message || 'Échec du démarrage backend'); } catch { this.showToast(err?.message || 'Échec du démarrage backend'); }
+            const code = String(err?.code || '');
+            if (code === 'flow_template_invalid' || code === 'flow_disabled') {
+              const errors = Array.isArray(err?.details?.errors) ? err.details.errors : [];
+              if (errors.length) {
+                const fmt = (it: any) => {
+                  const c = it?.code || 'error';
+                  const msg = it?.message ? `: ${it.message}` : '';
+                  const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                  const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                  const detKey = it?.details?.templateKey ? ` [${it.details.templateKey}]` : '';
+                  return `• ${c}${msg}${detNode}${detField}${detKey}`;
+                };
+                const listErr = errors.map(fmt).join('<br/>');
+                this.modal.error({
+                  nzTitle: 'Exécution impossible',
+                  nzContent: `Le flow ne peut pas être exécuté.<br/><br/>${listErr}`,
+                });
+              } else {
+                try { this.message.error(err?.message || 'Exécution impossible'); } catch { this.showToast(err?.message || 'Exécution impossible'); }
+              }
+            } else {
+              try { this.message.error(err?.message || 'Échec du démarrage backend'); } catch { this.showToast(err?.message || 'Échec du démarrage backend'); }
+            }
           }
         });
       };

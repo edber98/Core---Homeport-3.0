@@ -12,7 +12,7 @@ function isResultError(result){
 module.exports = function(store){
   const r = express.Router();
   // Public route to start a run if Start Form is public
-  r.post('/public/flows/:flowId/runs', (req, res) => {
+  r.post('/public/flows/:flowId/runs', async (req, res) => {
     try { console.log('[api][public-run][mem] start', req.params.flowId, 'payload:', JSON.stringify(req.body?.payload)); } catch {}
     const { flowId } = req.params; const flow = store.flows.get(flowId);
     if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
@@ -26,6 +26,17 @@ module.exports = function(store){
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      try {
+        const { validateFlowTemplates } = require('../utils/validate');
+        const tv = await validateFlowTemplates(flow.graph || flow);
+        if (!tv.ok) {
+          console.warn(`[runs][mem] pre-exec validation failed flowId=${flowId} errors:`, JSON.stringify(tv.errors));
+          return res.apiError(409, 'flow_template_invalid',
+            'Flow uses deleted or outdated templates', { errors: tv.errors });
+        }
+      } catch (e) {
+        console.error('[runs][mem] pre-exec validation error:', e?.message || e);
+      }
       const ws = store.workspaces.get(flow.workspaceId);
       const runId = randomUUID();
       const now = new Date();
@@ -92,6 +103,17 @@ module.exports = function(store){
     if (flow.enabled === false) {
       console.warn(`[runs][mem] start: flow disabled flowId=${flowId} workspaceId=${ws.id} companyId=${ws.companyId} reqUser=${req.user?.id} reqId=${req.requestId}`);
       return res.apiError(409, 'flow_disabled', 'Flow is disabled', { flowId, workspaceId: ws.id, enabled: flow.enabled });
+    }
+    try {
+      const { validateFlowTemplates } = require('../utils/validate');
+      const tv = await validateFlowTemplates(flow.graph || flow);
+      if (!tv.ok) {
+        console.warn(`[runs][mem] pre-exec validation failed flowId=${flowId} errors:`, JSON.stringify(tv.errors));
+        return res.apiError(409, 'flow_template_invalid',
+          'Flow uses deleted or outdated templates', { errors: tv.errors });
+      }
+    } catch (e) {
+      console.error('[runs][mem] pre-exec validation error:', e?.message || e);
     }
     console.log(`[runs][mem] start: flowId=${flowId} enabled=${flow.enabled !== false} ws=${ws.id} user=${req.user?.id} reqId=${req.requestId}`);
     const runId = randomUUID();

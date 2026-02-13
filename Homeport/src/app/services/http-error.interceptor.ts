@@ -17,6 +17,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
           try { tokens.clear(); } catch {}
           try { router.navigateByUrl('/login'); } catch {}
           msg.error('Session expirée. Merci de vous reconnecter.');
+        } else if (err.status === 409) {
+          // 409 Conflict: business logic errors handled by callers (flow_disabled, flow_template_invalid, etc.)
         } else {
           const m = (err.error && (err.error.message || err.error?.error?.message)) || err.statusText || 'Erreur réseau';
           if (m) msg.error(m);

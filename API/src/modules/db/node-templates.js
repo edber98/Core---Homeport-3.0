@@ -68,9 +68,19 @@ module.exports = function(){
     if (!patch.subtitle && (patch.providerKey || tpl.providerKey)) patch.subtitle = patch.providerKey || tpl.providerKey;
     Object.assign(tpl, patch); await tpl.save();
 
-    // If args (form) changed, flag impacted flows (optional)
+    // If args (form) or structure changed, flag impacted flows
     const schemaChanged = JSON.stringify(old.args || {}) !== JSON.stringify(tpl.args || {});
-    if (schemaChanged){
+    const structureChanged = (
+      JSON.stringify(old.inputHandles || []) !== JSON.stringify(tpl.inputHandles || []) ||
+      JSON.stringify(old.outputHandles || []) !== JSON.stringify(tpl.outputHandles || []) ||
+      JSON.stringify(old.linkedHandles || []) !== JSON.stringify(tpl.linkedHandles || []) ||
+      JSON.stringify(old.outputSchema || []) !== JSON.stringify(tpl.outputSchema || []) ||
+      old.output_array_field !== tpl.output_array_field ||
+      old.output_schema_field !== tpl.output_schema_field ||
+      !!old.authorize_catch_error !== !!tpl.authorize_catch_error ||
+      !!old.authorize_skip_error !== !!tpl.authorize_skip_error
+    );
+    if (schemaChanged || structureChanged){
       // get all flows in company scope? templates are global, validate all flows
       const flows = await Flow.find();
       const impacted = [];
@@ -100,18 +110,32 @@ module.exports = function(){
           getProviderByKey: async (k) => Provider.findOne({ key: k }).lean(),
           hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
         };
-        const { validateFlowGraph } = require('../../utils/validate');
+        const { validateFlowGraph, validateFlowTemplates } = require('../../utils/validate');
         const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
         const { uses, ids } = flowUsesTemplate(f);
         if (!uses) continue; // skip flows that do not use this template
+        // Collect errors from graph validation (filtered to affected nodes)
+        const allErrors = [];
         if (!v.ok){
           const filtered = (v.errors || []).filter(e => {
             const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
             return nid ? ids.has(nid) : false;
           });
-          if (filtered.length){
-            impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: filtered });
+          allErrors.push(...filtered);
+        }
+        // Also check template staleness (embedded checksums vs live DB)
+        try {
+          const tv = await validateFlowTemplates(f.graph || f);
+          if (!tv.ok) {
+            const tplErrors = (tv.errors || []).filter(e => {
+              const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
+              return nid ? ids.has(nid) : false;
+            });
+            allErrors.push(...tplErrors);
           }
+        } catch {}
+        if (allErrors.length){
+          impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: allErrors });
         }
       }
       if (impacted.length && !force){
