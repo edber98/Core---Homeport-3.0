@@ -1,10 +1,12 @@
 const { utils } = require("./utils");
 module.exports = {
   async notion_block_list_children(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const blockId = (d.blockId || "").trim();
     if (!blockId) return { ok: false, error: "Missing blockId." };
     const pageSize = parseInt(d.pageSize, 10) || 100;
+    log('Récupération de la liste...');
     const res = await utils.notionRequest(opts, `/blocks/${encodeURIComponent(blockId)}/children`, { query: { page_size: pageSize } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const results = (res.data && res.data.results) || [];

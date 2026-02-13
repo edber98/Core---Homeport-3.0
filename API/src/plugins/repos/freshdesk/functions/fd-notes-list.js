@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async fd_notes_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = parseInt(d.ticketId, 10);
     if (isNaN(ticketId)) return { ok: false, error: "Missing ticketId." };
 
+    log('Récupération de la liste...');
     const res = await utils.freshdeskRequest(opts, `/tickets/${ticketId}/conversations`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

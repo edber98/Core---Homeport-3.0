@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linkedin_delete_post(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const postUrn = (d.postUrn || "").trim();
     if (!postUrn) return { ok: false, error: "Missing postUrn." };
 
+    log('Suppression en cours...');
     const res = await utils.linkedinRequest(opts, `/ugcPosts/${encodeURIComponent(postUrn)}`, {
       method: "DELETE"
     });

@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_stock_picking_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
         const data = inputs || {};
         const payload = {};
         const _picking_type_id = toStr(data.picking_type_id);

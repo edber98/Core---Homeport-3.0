@@ -244,6 +244,14 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : (st === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
               </div>
+              <!-- Streaming log overlay via node-toolbar -->
+              <node-toolbar *ngIf="nodeLogText?.get(ctx.node.id) as logText"
+                [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
+                <div class="node-log-bubble" [class.expanded]="nodeLogExpanded.has(ctx.node.id)"
+                     (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)">
+                  <span class="node-log-text">{{ logText }}</span>
+                </div>
+              </node-toolbar>
             </div>
           </ng-template>
         </vflow>
@@ -345,6 +353,20 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .link, .node-card .link-label { cursor: grab; user-select: none; }
     .node-card .link:active, .node-card .link-label:active { cursor: grabbing; }
 
+    /* Streaming log bubble (node-toolbar based) */
+    .node-log-bubble {
+      display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 6px;
+      font-size: 11px; color: #475569;
+      background: linear-gradient(90deg, rgba(99,102,241,0.06) 0%, rgba(99,102,241,0.15) 50%, rgba(99,102,241,0.06) 100%);
+      background-size: 200% 100%; animation: log-shimmer 2s ease-in-out infinite;
+      max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      cursor: pointer; transition: max-height .2s ease;
+    }
+    .node-log-bubble.expanded { white-space: pre-wrap; word-break: break-word; max-height: 200px; overflow-y: auto; }
+    .node-log-bubble .node-log-text { display: block; overflow: hidden; text-overflow: ellipsis; }
+    .node-log-bubble.expanded .node-log-text { overflow: visible; text-overflow: unset; white-space: pre-wrap; word-break: break-word; }
+    @keyframes log-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
     /* Mobile/tablet: mirror builder bottom bar behavior */
     @media (max-width: 1280px) {
       .bottom-bar { position: fixed; left: 6px; right: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); z-index: 90; }
@@ -390,6 +412,9 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
   @Input() simOutputPreview: { [nodeId: string]: Array<{ id: string; name: string; type: string; children?: Array<{ id: string; name: string; type: string }> }> } | null = null;
   // Show node descriptions (hidden in node-settings/simulation)
   @Input() showDescriptions: boolean = true;
+  // Streaming log text per node (passed from execution parent)
+  @Input() nodeLogText: Map<string, string> | null = null;
+  nodeLogExpanded = new Set<string>();
   // Optional: list of node ids to focus when centering (fit only these)
   @Input() focusNodeIds: string[] | null = null;
   // Optional: extra padding ratio for fit (0..0.4 typical)

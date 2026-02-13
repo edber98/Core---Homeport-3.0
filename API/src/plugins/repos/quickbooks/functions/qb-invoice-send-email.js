@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_invoice_send_email(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const invoiceId = (d.invoiceId || "").toString().trim();
     if (!invoiceId) return { ok: false, error: "Missing invoiceId." };
@@ -9,6 +10,7 @@ module.exports = {
     const query = {};
     if (d.email) query.sendTo = d.email;
 
+    log('Création en cours...');
     const res = await utils.qbRequest(opts, `/invoice/${encodeURIComponent(invoiceId)}/send`, { method: "POST", query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

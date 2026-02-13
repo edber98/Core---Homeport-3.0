@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_list_chats(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     let path = "/me/chats";
     if (d.top) path += `?$top=${d.top}`;
 
+    log('Récupération de la liste...');
     const res = await utils.graphRequest(opts, path);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

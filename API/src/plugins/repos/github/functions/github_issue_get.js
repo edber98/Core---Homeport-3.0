@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_issue_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
     const issue_number = (d.issue_number || "").toString().trim();
     if (!owner || !repo || !issue_number) return { ok: false, error: "owner, repo et issue_number requis." };
+    log('Récupération des données...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/issues/${issue_number}`);
     if (!res.ok) return res;
     const r = res.data;

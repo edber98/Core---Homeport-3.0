@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_task_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const taskGid = (d.taskGid || "").trim();
     if (!taskGid) return { ok: false, error: "Missing taskGid." };
@@ -15,6 +16,7 @@ module.exports = {
 
     if (Object.keys(data).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.asanaRequest(opts, `/tasks/${encodeURIComponent(taskGid)}`, {
       method: "PUT", body: { data }
     });

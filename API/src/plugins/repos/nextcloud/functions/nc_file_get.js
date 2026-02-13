@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_file_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin requis." };
+    log('Récupération des données...');
     const res = await utils.webdavRequest(opts, d.path, { method: "GET", rawResponse: true });
     if (!res.ok) return { ok: false, error: res.error, status: res.status };
 

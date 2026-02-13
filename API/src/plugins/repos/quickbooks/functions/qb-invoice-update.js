@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_invoice_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const invoiceId = (d.invoiceId || "").toString().trim();
     const syncToken = (d.syncToken || "").toString().trim();
@@ -14,6 +15,7 @@ module.exports = {
       try { body.Line = JSON.parse(d.lineItems); } catch { return { ok: false, error: "Invalid lineItems JSON." }; }
     }
 
+    log('Mise à jour en cours...');
     const res = await utils.qbRequest(opts, "/invoice", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

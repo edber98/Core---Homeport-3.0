@@ -5,9 +5,11 @@ module.exports = {
    * Get a Billing Document by key
    */
   async sap_billing_doc_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.billingDocument) return { ok: false, error: "Missing billingDocument." };
 
+    log('Récupération des données...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_BILLING_DOCUMENT_SRV/A_BillingDocument('${d.billingDocument}')`
@@ -20,12 +22,14 @@ module.exports = {
    * List Billing Documents
    */
   async sap_billing_docs_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.top !== undefined && d.top !== null && d.top !== "") query["$top"] = d.top;
     if (d.skip !== undefined && d.skip !== null && d.skip !== "") query["$skip"] = d.skip;
     if (d.filter) query["$filter"] = d.filter;
 
+    log('Récupération de la liste...');
     const res = await utils.sapRequest(
       opts,
       "/sap/opu/odata/sap/API_BILLING_DOCUMENT_SRV/A_BillingDocument",
@@ -40,6 +44,7 @@ module.exports = {
    * List Billing Document Items
    */
   async sap_billing_doc_items_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.billingDocument) return { ok: false, error: "Missing billingDocument." };
 
@@ -47,6 +52,7 @@ module.exports = {
     if (d.top !== undefined && d.top !== null && d.top !== "") query["$top"] = d.top;
     if (d.skip !== undefined && d.skip !== null && d.skip !== "") query["$skip"] = d.skip;
 
+    log('Récupération de la liste...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_BILLING_DOCUMENT_SRV/A_BillingDocument('${d.billingDocument}')/to_Item`,

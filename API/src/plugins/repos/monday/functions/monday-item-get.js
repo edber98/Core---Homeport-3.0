@@ -1,10 +1,12 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_item_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const itemId = (d.itemId || "").toString().trim();
     if (!itemId) return { ok: false, error: "Missing itemId." };
     const query = `{ items (ids: [${itemId}]) { id name board { id } group { id } state column_values { id text value } created_at updated_at } }`;
+    log('Récupération des données...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const items = res.data.items || [];

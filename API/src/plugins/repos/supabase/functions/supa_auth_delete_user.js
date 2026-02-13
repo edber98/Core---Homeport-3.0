@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_auth_delete_user(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.userId) return { ok: false, error: "ID de l'utilisateur requis." };
 

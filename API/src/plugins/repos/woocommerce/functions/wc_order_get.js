@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wc_order_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.orderId) return { ok: false, error: "Missing orderId." };
+    log('Récupération des données...');
     const res = await utils.wcRequest(opts, `/orders/${d.orderId}`);
     if (!res.ok) return res;
     const o = res.data || {};

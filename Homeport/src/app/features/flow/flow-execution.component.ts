@@ -140,6 +140,7 @@ import { backAwareCurve } from './edge-curves';
             [background]="flowBackground"
             [portOrientation]="portOrientation"
             [showExecBadges]="true"
+            [nodeLogText]="nodeLogText"
             [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"></flow-viewer>
         </div>
@@ -886,6 +887,7 @@ export class FlowExecutionComponent {
   backendEvents: any[] = [];
   backendAttempts: Array<{ nodeId: string; exec?: number; status?: string; durationMs?: number; startedAt?: string; finishedAt?: string; input?: any; argsPre?: any; argsPost?: any; result?: any; msgIn?: any; msgOut?: any }> = [];
   expanded: boolean[] = [];
+  nodeLogText = new Map<string, string>();
   private currentStream?: { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void };
   private backendLastNodeId: string | null = null;
   private backendPairs = new Set<string>();
@@ -1331,6 +1333,7 @@ export class FlowExecutionComponent {
     this.expanded = [];
     this.backendPairs.clear();
     this.backendLastNodeId = null;
+    this.nodeLogText.clear();
     const s = this.runsApi.stream(runId);
     this.currentStream = s;
     s.on((ev) => {
@@ -1382,8 +1385,21 @@ export class FlowExecutionComponent {
             this.backendAttempts.push({ nodeId, exec, status, startedAt, finishedAt, durationMs } as any);
             this.expanded.push(false);
           }
+          // Clear streaming log when node finishes
+          if (status === 'success' || status === 'error' || status === 'cancelled') this.nodeLogText.delete(nodeId);
         }
         this.computeDecorations();
+      }
+      if (t === 'node.log') {
+        const nid = String(ev.nodeId || (ev as any)?.data?.nodeId || '');
+        const text = (ev as any)?.data?.text ?? (ev as any)?.text ?? '';
+        if (nid) {
+          if (text) this.nodeLogText.set(nid, text);
+          else this.nodeLogText.delete(nid);
+        }
+        try { this.cdr.detectChanges(); } catch {};
+        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => el.scrollTop = el.scrollHeight); } catch {} }, 0);
+        return;
       }
       if (t === 'edge.taken') {
         const s = String(ev?.data?.sourceId || ev?.sourceId || '');

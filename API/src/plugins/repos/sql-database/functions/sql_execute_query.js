@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async sql_execute_query(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.query) return { ok: false, error: "Requête SQL requise." };
 

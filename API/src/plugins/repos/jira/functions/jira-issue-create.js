@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_issue_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectKey = (d.projectKey || "").trim();
     const summary = (d.summary || "").trim();
@@ -19,6 +20,7 @@ module.exports = {
     if (d.priority) fields.priority = { name: d.priority };
     if (d.assigneeAccountId) fields.assignee = { accountId: d.assigneeAccountId };
 
+    log('Création en cours...');
     const res = await utils.jiraRequest(opts, "/rest/api/3/issue", {
       method: "POST",
       body: { fields }

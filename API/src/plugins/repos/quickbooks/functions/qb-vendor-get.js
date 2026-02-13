@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_vendor_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const vendorId = (d.vendorId || "").toString().trim();
     if (!vendorId) return { ok: false, error: "Missing vendorId." };
 
+    log('Récupération des données...');
     const res = await utils.qbRequest(opts, `/vendor/${encodeURIComponent(vendorId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

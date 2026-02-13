@@ -5,10 +5,12 @@ module.exports = {
    * Get a Cost Center by Controlling Area + Cost Center number
    */
   async sap_cost_center_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.controllingArea) return { ok: false, error: "Missing controllingArea." };
     if (!d.costCenter) return { ok: false, error: "Missing costCenter." };
 
+    log('Récupération des données...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_COSTCENTER_SRV/A_CostCenter(ControllingArea='${d.controllingArea}',CostCenter='${d.costCenter}')`
@@ -21,6 +23,7 @@ module.exports = {
    * List Cost Centers
    */
   async sap_cost_centers_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.top !== undefined && d.top !== null && d.top !== "") query["$top"] = d.top;
@@ -29,6 +32,7 @@ module.exports = {
       query["$filter"] = `ControllingArea eq '${d.controllingArea}'`;
     }
 
+    log('Récupération de la liste...');
     const res = await utils.sapRequest(opts, "/sap/opu/odata/sap/API_COSTCENTER_SRV/A_CostCenter", { query });
     if (!res.ok) return res;
     const results = (res.data && res.data.results) || (Array.isArray(res.data) ? res.data : []);

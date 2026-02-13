@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_user_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const username = (d.username || "").trim();
     const path = username ? `/users/${username}` : "/user";
+    log('Récupération des données...');
     const res = await utils.githubRequest(opts, path);
     if (!res.ok) return res;
     const r = res.data;

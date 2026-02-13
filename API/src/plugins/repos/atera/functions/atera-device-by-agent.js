@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async atera_device_by_agent(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.customerId) return { ok: false, error: "Missing customerId." };
 
@@ -9,6 +10,7 @@ module.exports = {
     if (d.page) query.page = d.page;
     if (d.itemsInPage) query.itemsInPage = d.itemsInPage;
 
+    log('Appel API en cours...');
     const res = await utils.ateraRequest(opts, `/agents/customer/${encodeURIComponent(d.customerId)}`, { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true, items: res.data?.items || [], totalItemCount: res.data?.totalItemCount };

@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_variant_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.variantId) return { ok: false, error: "Missing variantId." };
+    log('Récupération des données...');
     const res = await utils.shopifyRequest(opts, `/variants/${d.variantId}.json`);
     if (!res.ok) return res;
     const v = res.data.variant || {};

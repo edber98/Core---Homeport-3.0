@@ -92,7 +92,7 @@ class PluginRegistry {
               for (const [k, fn] of Object.entries(exp)) if (typeof fn === 'function') { if (this.register(k, fn, full)) loaded.push(k); }
               continue;
             }
-          } catch {}
+          } catch (loadErr) { try { console.error('[plugins] handler load error', full, loadErr && loadErr.message ? loadErr.message : loadErr); } catch {} }
         }
       }
     }

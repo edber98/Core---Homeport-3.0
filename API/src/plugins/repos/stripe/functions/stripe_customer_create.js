@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async stripe_customer_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.email) return { ok: false, error: "Missing email." };
     const body = { email: d.email };
@@ -14,6 +15,7 @@ module.exports = {
         if (typeof meta === "object") body.metadata = meta;
       } catch {}
     }
+    log('Création en cours...');
     const res = await utils.stripeRequest(opts, "/customers", { method: "POST", body });
     if (!res.ok) return res;
     return { ok: true, ...res.data };

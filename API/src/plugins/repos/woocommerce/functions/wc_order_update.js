@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wc_order_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.orderId) return { ok: false, error: "Missing orderId." };
     const body = {};
     if (d.status) body.status = d.status;
     if (d.meta_data) { try { body.meta_data = typeof d.meta_data === "string" ? JSON.parse(d.meta_data) : d.meta_data; } catch {} }
+    log('Mise à jour en cours...');
     const res = await utils.wcRequest(opts, `/orders/${d.orderId}`, { method: "PUT", body });
     if (!res.ok) return res;
     const o = res.data || {};

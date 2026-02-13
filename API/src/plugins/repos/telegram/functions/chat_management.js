@@ -1,5 +1,6 @@
 module.exports = {
   async tg_get_chat(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -9,6 +10,7 @@ module.exports = {
   },
 
   async tg_get_chat_members_count(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -18,6 +20,7 @@ module.exports = {
   },
 
   async tg_get_chat_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -28,6 +31,7 @@ module.exports = {
   },
 
   async tg_ban_chat_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -39,6 +43,7 @@ module.exports = {
   },
 
   async tg_unban_chat_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -50,6 +55,7 @@ module.exports = {
   },
 
   async tg_set_chat_title(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};

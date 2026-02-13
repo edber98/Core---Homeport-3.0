@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async mistral_agent_completion(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const agentId = (d.agentId || "").trim();
     if (!agentId) return { ok: false, error: "Missing agentId." };
@@ -22,21 +23,18 @@ module.exports = {
     const body = { agent_id: agentId, messages };
     if (d.maxTokens) body.max_tokens = parseInt(d.maxTokens, 10);
 
-    const res = await utils.mistralRequest(opts, "/agents/completions", {
-      method: "POST",
-      body
-    });
+    log('Envoi du prompt...');
+    const res = await utils.mistralRequestStream(opts, "/agents/completions", { body }, (text) => log(text));
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};
-    const choice = (r.choices || [])[0] || {};
     return {
       ok: true,
       id: r.id,
-      text: choice.message?.content || "",
-      finishReason: choice.finish_reason,
-      promptTokens: r.usage?.prompt_tokens,
-      completionTokens: r.usage?.completion_tokens
+      text: r.text || "",
+      finishReason: r.finishReason,
+      promptTokens: r.promptTokens,
+      completionTokens: r.completionTokens
     };
   }
 };

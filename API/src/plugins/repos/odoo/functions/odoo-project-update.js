@@ -8,6 +8,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_project_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const id = toInt(data.projectId);
     if (!id) return { ok: false, error: "Champ projectId requis." };

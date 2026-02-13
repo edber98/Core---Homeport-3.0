@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_s3_list_buckets(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const credentials = (opts && opts.credentials) || {};
     const region = credentials.region || "us-east-1";
 
+    log('Récupération de la liste...');
     const res = await utils.s3Request(opts, "GET", "/");
     if (!res.ok) return res;
 

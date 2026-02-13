@@ -1,5 +1,6 @@
 module.exports = {
   async jira_webhook_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const body = (msg && msg.body) || {};
     return {
       ok: true,

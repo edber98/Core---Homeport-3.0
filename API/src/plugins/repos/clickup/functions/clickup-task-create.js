@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_task_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const listId = (d.listId || "").trim();
     const name = (d.name || "").trim();
@@ -14,6 +15,7 @@ module.exports = {
     if (d.due_date) body.due_date = d.due_date;
     if (d.assignees) body.assignees = d.assignees.split(",").map(s => parseInt(s.trim(), 10));
 
+    log('Création en cours...');
     const res = await utils.clickupRequest(opts, `/list/${encodeURIComponent(listId)}/task`, {
       method: "POST", body
     });

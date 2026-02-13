@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async docusign_envelope_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!(d.emailSubject || "").trim()) return { ok: false, error: "Missing emailSubject." };
     if (!(d.signerEmail || "").trim()) return { ok: false, error: "Missing signerEmail." };
@@ -21,6 +22,7 @@ module.exports = {
     };
     if (d.templateId) envelope.templateId = d.templateId;
 
+    log('Création en cours...');
     const res = await utils.docusignRequest(opts, "/envelopes", { method: "POST", body: envelope });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

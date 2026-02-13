@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_customer_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const customerId = (d.customerId || "").toString().trim();
     if (!customerId) return { ok: false, error: "Missing customerId." };
@@ -16,6 +17,7 @@ module.exports = {
     if (d.primaryEmailAddr) body.PrimaryEmailAddr = { Address: d.primaryEmailAddr };
     if (d.primaryPhone) body.PrimaryPhone = { FreeFormNumber: d.primaryPhone };
 
+    log('Mise à jour en cours...');
     const res = await utils.qbRequest(opts, "/customer", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

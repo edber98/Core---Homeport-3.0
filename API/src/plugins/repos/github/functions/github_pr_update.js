@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_pr_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     if (d.body) body.body = d.body;
     if (d.state) body.state = d.state;
     if (d.base) body.base = d.base;
+    log('Mise à jour en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/pulls/${pull_number}`, { method: "PATCH", body });
     if (!res.ok) return res;
     const r = res.data;

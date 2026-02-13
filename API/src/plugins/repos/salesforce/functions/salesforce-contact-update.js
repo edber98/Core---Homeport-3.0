@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_contact_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const contactId = (d.contactId || "").toString().trim();
     if (!contactId) return { ok: false, error: "Missing contactId." };
@@ -14,6 +15,7 @@ module.exports = {
 
     if (Object.keys(body).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.sfRequest(opts, `/sobjects/Contact/${encodeURIComponent(contactId)}`, { method: "PATCH", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

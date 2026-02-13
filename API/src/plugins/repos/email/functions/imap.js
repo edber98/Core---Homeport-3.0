@@ -1,9 +1,11 @@
 module.exports = {
   async email_read(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     // Placeholder: would connect IMAP and fetch emails
     return { ok: true, messages: [] };
   },
   async email_new_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     // Parse raw email payload from trigger
     const data = (msg && msg.payload) || {};
     return {

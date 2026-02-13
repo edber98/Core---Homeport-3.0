@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_create_custom_audience(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const adAccountId = (d.adAccountId || "").trim();
     if (!adAccountId) return { ok: false, error: "Missing adAccountId." };
@@ -14,6 +15,7 @@ module.exports = {
     if (description) body.description = description;
     if (d.customerFileSource) body.customer_file_source = d.customerFileSource;
 
+    log('Création en cours...');
     const res = await utils.facebookRequest(opts, `/act_${encodeURIComponent(adAccountId)}/customaudiences`, {
       method: "POST",
       body

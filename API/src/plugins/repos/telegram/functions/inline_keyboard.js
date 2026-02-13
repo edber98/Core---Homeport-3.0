@@ -1,5 +1,6 @@
 module.exports = {
   async tg_send_inline_keyboard(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -14,6 +15,7 @@ module.exports = {
   },
 
   async tg_answer_callback(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -25,6 +27,7 @@ module.exports = {
   },
 
   async tg_edit_reply_markup(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};

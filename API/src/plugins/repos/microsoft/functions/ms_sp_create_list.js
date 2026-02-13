@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_sp_create_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.siteId) return { ok: false, error: "Missing siteId." };
     if (!d.displayName) return { ok: false, error: "Missing displayName." };
@@ -11,6 +12,7 @@ module.exports = {
       list: { template: d.template || "genericList" }
     };
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, `/sites/${d.siteId}/lists`, {
       method: "POST",
       body

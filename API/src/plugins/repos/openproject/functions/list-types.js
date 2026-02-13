@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async list_openproject_task_types(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération de la liste...');
     const res = await utils.openprojectRequest(opts, "/types");
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

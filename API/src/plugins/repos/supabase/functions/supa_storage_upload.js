@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_storage_upload(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.bucket || !d.path) return { ok: false, error: "Bucket et chemin requis." };
 

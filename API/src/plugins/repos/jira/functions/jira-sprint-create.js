@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_sprint_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     const name = (d.name || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
     if (d.endDate) body.endDate = d.endDate;
     if (d.goal) body.goal = d.goal;
 
+    log('Création en cours...');
     const res = await utils.jiraRequest(opts, "/rest/agile/1.0/sprint", {
       method: "POST",
       body,

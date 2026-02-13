@@ -3,6 +3,7 @@ const crypto = require("crypto");
 
 module.exports = {
   async aws_s3_presigned_url(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.bucket) return { ok: false, error: "Bucket requis." };
     if (!d.key) return { ok: false, error: "Clé de l'objet requise." };

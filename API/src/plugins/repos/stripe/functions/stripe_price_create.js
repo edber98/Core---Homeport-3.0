@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async stripe_price_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.product) return { ok: false, error: "Missing product." };
     if (!d.unit_amount && d.unit_amount !== 0) return { ok: false, error: "Missing unit_amount." };
@@ -14,6 +15,7 @@ module.exports = {
     if (d.recurring_interval) {
       body["recurring[interval]"] = d.recurring_interval;
     }
+    log('Création en cours...');
     const res = await utils.stripeRequest(opts, "/prices", { method: "POST", body });
     if (!res.ok) return res;
     const p = res.data;

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_pr_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     const body = { title, head, base };
     if (d.body) body.body = d.body;
     if (d.draft !== undefined) body.draft = !!d.draft;
+    log('Création en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/pulls`, { method: "POST", body });
     if (!res.ok) return res;
     const r = res.data;

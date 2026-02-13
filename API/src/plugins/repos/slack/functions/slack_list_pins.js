@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async slack_list_pins(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const body = {};
   if (d.channel !== undefined && d.channel !== "" && d.channel !== null) body.channel = d.channel;
 
+    log('Création en cours...');
     const res = await utils.slackRequest(opts, "pins.list", body);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
 

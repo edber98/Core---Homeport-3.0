@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_list_comments(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const postId = (d.postId || "").trim();
     if (!postId) return { ok: false, error: "Missing postId." };
     const limit = parseInt(d.limit, 10) || 25;
 
+    log('Récupération de la liste...');
     const res = await utils.facebookRequest(opts, `/${encodeURIComponent(postId)}/comments`, {
       query: { fields: "id,message,from,created_time", limit }
     });

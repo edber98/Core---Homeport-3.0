@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_project_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectId = (d.projectId || "").trim();
     if (!projectId) return { ok: false, error: "Missing projectId." };

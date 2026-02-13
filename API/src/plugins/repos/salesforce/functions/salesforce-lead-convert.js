@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_lead_convert(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const leadId = (d.leadId || "").toString().trim();
     if (!leadId) return { ok: false, error: "Missing leadId." };
@@ -16,6 +17,7 @@ module.exports = {
     if (d.accountId) body.accountId = d.accountId;
     if (d.createOpportunity === false || d.createOpportunity === "false") body.doNotCreateOpportunity = true;
 
+    log('Appel API en cours...');
     const res = await utils.sfRequest(opts, "/sobjects/Lead/" + encodeURIComponent(leadId) + "?_HttpMethod=PATCH", {
       method: "POST",
       body: { Status: convertedStatus }

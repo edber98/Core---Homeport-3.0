@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_customer_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.customerId) return { ok: false, error: "Missing customerId." };
+    log('Récupération des données...');
     const res = await utils.shopifyRequest(opts, `/customers/${d.customerId}.json`);
     if (!res.ok) return res;
     const c = res.data.customer || {};

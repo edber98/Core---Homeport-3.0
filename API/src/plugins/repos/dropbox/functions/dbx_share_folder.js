@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dbx_share_folder(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin du dossier requis." };
 

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async slack_list_users(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const body = {};
   if (d.limit !== undefined && d.limit !== "" && d.limit !== null) body.limit = d.limit;
 
+    log('Récupération de la liste...');
     const res = await utils.slackRequest(opts, "users.list", body);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
 

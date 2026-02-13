@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_upload_photo(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const pageId = (d.pageId || "").trim();
     if (!pageId) return { ok: false, error: "Missing pageId." };
@@ -12,6 +13,7 @@ module.exports = {
     const body = { url };
     if (caption) body.caption = caption;
 
+    log('Téléversement en cours...');
     const res = await utils.facebookRequest(opts, `/${encodeURIComponent(pageId)}/photos`, {
       method: "POST",
       body

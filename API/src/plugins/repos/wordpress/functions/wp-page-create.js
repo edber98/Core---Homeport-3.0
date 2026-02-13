@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_page_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const title = (d.title || "").trim();
     if (!title) return { ok: false, error: "Missing title." };
@@ -10,6 +11,7 @@ module.exports = {
     if (d.content) body.content = d.content;
     if (d.parent) body.parent = parseInt(d.parent, 10) || 0;
 
+    log('Création en cours...');
     const res = await utils.wpRequest(opts, "/pages", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

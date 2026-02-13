@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_payment_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const paymentId = (d.paymentId || "").toString().trim();
     if (!paymentId) return { ok: false, error: "Missing paymentId." };
 
+    log('Récupération des données...');
     const res = await utils.qbRequest(opts, `/payment/${encodeURIComponent(paymentId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

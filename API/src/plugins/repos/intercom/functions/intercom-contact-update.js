@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async intercom_contact_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!(d.contactId || "").trim()) return { ok: false, error: "Missing contactId." };
 
@@ -11,6 +12,7 @@ module.exports = {
     if (d.phone) body.phone = d.phone;
     if (d.role) body.role = d.role;
 
+    log('Mise à jour en cours...');
     const res = await utils.intercomRequest(opts, `/contacts/${d.contactId}`, { method: "PUT", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

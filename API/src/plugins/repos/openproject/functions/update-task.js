@@ -13,6 +13,7 @@ function toStr(value) {
 
 module.exports = {
   async update_openproject_task(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const taskId = toInt(data.task_id);
     if (!taskId) return { ok: false, error: "Missing task_id." };

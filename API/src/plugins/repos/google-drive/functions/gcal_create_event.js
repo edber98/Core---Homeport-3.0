@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async gcal_create_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const calendarId = d.calendarId || "primary";
     if (!d.summary) return { ok: false, error: "Missing summary." };
@@ -25,6 +26,7 @@ module.exports = {
       body.reminders = { useDefault: false, overrides: [{ method: "popup", minutes: Number(d.reminders_minutes) }] };
     }
 
+    log('Création en cours...');
     const res = await utils.googleRequest(opts, `${utils.CALENDAR_API}/calendars/${encodeURIComponent(calendarId)}/events`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true, ...res.data };

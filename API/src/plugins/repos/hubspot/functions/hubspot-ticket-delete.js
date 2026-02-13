@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_ticket_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = (d.ticketId || "").toString().trim();
     if (!ticketId) return { ok: false, error: "Missing ticketId." };
 
+    log('Suppression en cours...');
     const res = await utils.hubspotRequest(opts, `/crm/v3/objects/tickets/${encodeURIComponent(ticketId)}`, {
       method: "DELETE"
     });

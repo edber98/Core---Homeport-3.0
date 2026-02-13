@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pipedrive_stages_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.pipeline_id) query.pipeline_id = parseInt(d.pipeline_id, 10);
 
+    log('Récupération de la liste...');
     const res = await utils.pdRequest(opts, "/stages", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

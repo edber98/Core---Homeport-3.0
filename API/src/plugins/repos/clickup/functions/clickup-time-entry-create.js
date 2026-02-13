@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_time_entry_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const teamId = (d.teamId || "").trim();
     const duration = parseInt(d.duration, 10);
@@ -12,6 +13,7 @@ module.exports = {
     if (d.taskId) body.tid = d.taskId;
     if (d.description) body.description = d.description;
 
+    log('Création en cours...');
     const res = await utils.clickupRequest(opts, `/team/${encodeURIComponent(teamId)}/time_entries`, {
       method: "POST", body
     });

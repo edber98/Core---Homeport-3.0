@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linkedin_create_comment(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const postUrn = (d.postUrn || "").trim();
     if (!postUrn) return { ok: false, error: "Missing postUrn." };
@@ -10,6 +11,7 @@ module.exports = {
     const text = (d.text || "").trim();
     if (!text) return { ok: false, error: "Missing text." };
 
+    log('Création en cours...');
     const res = await utils.linkedinRequest(opts, "/socialActions/" + encodeURIComponent(postUrn) + "/comments", {
       method: "POST",
       body: {

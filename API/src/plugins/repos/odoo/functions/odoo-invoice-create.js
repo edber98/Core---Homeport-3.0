@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_invoice_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
         const data = inputs || {};
         const payload = {};
         const _partner_id = toStr(data.partner_id);

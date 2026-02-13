@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_tag_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const workspaceGid = (d.workspaceGid || "").trim();
     const name = (d.name || "").trim();
@@ -11,6 +12,7 @@ module.exports = {
     const data = { name, workspace: workspaceGid };
     if (d.color) data.color = d.color;
 
+    log('Création en cours...');
     const res = await utils.asanaRequest(opts, "/tags", { method: "POST", body: { data } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

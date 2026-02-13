@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_comment_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const issueId = (d.issueId || "").trim();
     const body = (d.body || "").trim();

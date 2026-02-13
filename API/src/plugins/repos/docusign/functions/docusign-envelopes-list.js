@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async docusign_envelopes_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.fromDate) query.from_date = d.fromDate;
@@ -10,6 +11,7 @@ module.exports = {
     if (d.status) query.status = d.status;
     if (d.count) query.count = d.count;
 
+    log('Récupération de la liste...');
     const res = await utils.docusignRequest(opts, "/envelopes", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.envelopes) || [];

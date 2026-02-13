@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async anthropic_count_tokens(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = (d.model || "claude-sonnet-4-5-20250929").trim();
     const prompt = (d.prompt || "").trim();
@@ -20,6 +21,7 @@ module.exports = {
     const body = { model, messages };
     if (d.system) body.system = d.system.trim();
 
+    log('Comptage des tokens...');
     const res = await utils.anthropicRequest(opts, "/messages/count_tokens", {
       method: "POST",
       body

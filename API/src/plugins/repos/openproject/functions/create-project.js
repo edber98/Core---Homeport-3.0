@@ -7,6 +7,7 @@ function toStr(value) {
 
 module.exports = {
   async create_openproject_project(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const name = toStr(data.name);
     const identifier = toStr(data.identifier);
@@ -18,6 +19,7 @@ module.exports = {
     const payload = { name, identifier };
     if (description) payload.description = { format: "markdown", raw: description };
 
+    log('Création en cours...');
     const res = await utils.openprojectRequest(opts, "/projects", {
       method: "POST",
       body: payload

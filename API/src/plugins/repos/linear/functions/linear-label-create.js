@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_label_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const teamId = (d.teamId || "").trim();
     const name = (d.name || "").trim();

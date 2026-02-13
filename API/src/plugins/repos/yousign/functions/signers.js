@@ -3,6 +3,7 @@ const { utils } = require('./utils');
 module.exports = {
   // ── Ajouter un signataire ──────────────────────────────
   async yousign_signer_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
@@ -35,6 +36,7 @@ module.exports = {
       } catch {}
     }
 
+    log('Création en cours...');
     const res = await utils.yousignRequest(opts, 'POST', `/signature_requests/${encodeURIComponent(srId)}/signers`, body);
     if (!res.ok) return res;
     const s = res.data || {};
@@ -55,10 +57,12 @@ module.exports = {
 
   // ── Lister les signataires d'une demande ───────────────
   async yousign_signers_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
 
+    log('Récupération de la liste...');
     const res = await utils.yousignRequest(opts, 'GET', `/signature_requests/${encodeURIComponent(srId)}/signers`);
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : (res.data?.data || []);
@@ -79,10 +83,12 @@ module.exports = {
 
   // ── Récupérer un signataire ────────────────────────────
   async yousign_signer_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.signer_id || '').trim();
     if (!id) return { ok: false, error: "L'ID du signataire est requis." };
 
+    log('Récupération des données...');
     const res = await utils.yousignRequest(opts, 'GET', `/signers/${encodeURIComponent(id)}`);
     if (!res.ok) return res;
     const s = res.data || {};
@@ -104,12 +110,14 @@ module.exports = {
 
   // ── Envoyer un rappel à un signataire ──────────────────
   async yousign_signer_send_reminder(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     const signerId = String(d.signer_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
     if (!signerId) return { ok: false, error: "L'ID du signataire est requis." };
 
+    log('Création en cours...');
     const res = await utils.yousignRequest(opts, 'POST', `/signature_requests/${encodeURIComponent(srId)}/signers/${encodeURIComponent(signerId)}/send_reminder`);
     if (!res.ok) return res;
     return { ok: true, sent: true, signer_id: signerId };

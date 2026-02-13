@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_contact_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const LastName = (d.LastName || "").trim();
     if (!LastName) return { ok: false, error: "Missing LastName." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.Phone) body.Phone = d.Phone;
     if (d.AccountId) body.AccountId = d.AccountId;
 
+    log('Création en cours...');
     const res = await utils.sfRequest(opts, "/sobjects/Contact", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

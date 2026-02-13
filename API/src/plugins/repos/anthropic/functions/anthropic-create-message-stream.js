@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async anthropic_create_message_stream(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = (d.model || "claude-sonnet-4-5-20250929").trim();
     const maxTokens = parseInt(d.maxTokens, 10) || 1024;
@@ -20,17 +21,14 @@ module.exports = {
       messages = [{ role: "user", content: prompt }];
     }
 
-    const body = { model, max_tokens: maxTokens, messages, stream: true };
+    const body = { model, max_tokens: maxTokens, messages };
     if (system) body.system = system;
     if (temperature != null) body.temperature = temperature;
 
-    const res = await utils.anthropicRequest(opts, "/messages", {
-      method: "POST",
-      body
-    });
+    log('Envoi du prompt...');
+    const res = await utils.anthropicRequestStream(opts, "/messages", { body }, (text) => log(text));
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    const text = typeof res.data === "string" ? res.data : JSON.stringify(res.data);
-    return { ok: true, text, model, stream: true };
+    return { ok: true, text: res.data?.text || "", model: res.data?.model, stream: true };
   }
 };

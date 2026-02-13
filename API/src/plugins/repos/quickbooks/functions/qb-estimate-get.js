@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_estimate_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const estimateId = (d.estimateId || "").toString().trim();
     if (!estimateId) return { ok: false, error: "Missing estimateId." };
 
+    log('Récupération des données...');
     const res = await utils.qbRequest(opts, `/estimate/${encodeURIComponent(estimateId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

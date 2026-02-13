@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async sql_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.table || !d.where) return { ok: false, error: "Table et condition WHERE requis." };
     if (!d.data) return { ok: false, error: "Données requises." };

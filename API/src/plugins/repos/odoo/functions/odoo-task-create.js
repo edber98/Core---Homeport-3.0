@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_task_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const name = toStr(data.name);
     if (!name) return { ok: false, error: "Champ name requis." };

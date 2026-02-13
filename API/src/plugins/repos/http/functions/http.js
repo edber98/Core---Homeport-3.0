@@ -1,7 +1,8 @@
 // Simple HTTP client function using global fetch (Node >=18)
 // Exposed key must match node template key: 'http'
 module.exports = {
-  async http(node, msg, inputs) {
+  async http(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const args = (node && node.args) || {};
     const method = String(args.method || 'GET').toUpperCase();
     const url = String(args.url || '').trim();
@@ -20,6 +21,7 @@ module.exports = {
         headers['content-type'] = headers['content-type'] || 'application/json';
       }
     }
+    log('Appel API en cours...');
     const res = await fetch(url, { method, headers, body });
     const ct = String(res.headers.get('content-type') || '').toLowerCase();
     let data;

@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_product_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.productId) return { ok: false, error: "Missing productId." };
+    log('Récupération des données...');
     const res = await utils.shopifyRequest(opts, `/products/${d.productId}.json`);
     if (!res.ok) return res;
     const p = res.data.product || {};

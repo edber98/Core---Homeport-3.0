@@ -1,11 +1,13 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_items_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     if (!boardId) return { ok: false, error: "Missing boardId." };
     const limit = parseInt(d.limit, 10) || 25;
     const query = `{ boards (ids: [${boardId}]) { items_page (limit: ${limit}) { items { id name board { id } group { id } state column_values { id text value } created_at updated_at } } } }`;
+    log('Récupération de la liste...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const boards = res.data.boards || [];

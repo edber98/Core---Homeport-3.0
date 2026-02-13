@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_worklog_add(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const issueKey = (d.issueKey || "").trim();
     const timeSpent = (d.timeSpent || "").trim();
@@ -11,6 +12,7 @@ module.exports = {
     const body = { timeSpent };
     if (d.comment) body.comment = { type: "doc", version: 1, content: [{ type: "paragraph", content: [{ type: "text", text: d.comment }] }] };
 
+    log('Création en cours...');
     const res = await utils.jiraRequest(opts, `/rest/api/3/issue/${encodeURIComponent(issueKey)}/worklog`, {
       method: "POST",
       body

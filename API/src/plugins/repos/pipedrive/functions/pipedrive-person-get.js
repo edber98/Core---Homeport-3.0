@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pipedrive_person_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const personId = (d.personId || "").toString().trim();
     if (!personId) return { ok: false, error: "Missing personId." };
 
+    log('Récupération des données...');
     const res = await utils.pdRequest(opts, `/persons/${encodeURIComponent(personId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

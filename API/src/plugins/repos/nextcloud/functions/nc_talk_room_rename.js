@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_talk_room_rename(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.token) return { ok: false, error: "Token requis." };
     if (!d.roomName) return { ok: false, error: "Nom requis." };
+    log('Mise à jour en cours...');
     const res = await utils.ocsRequest(opts, `/ocs/v2.php/apps/spreed/api/v4/room/${encodeURIComponent(d.token)}`, {
       method: "PUT",
       body: { roomName: d.roomName }

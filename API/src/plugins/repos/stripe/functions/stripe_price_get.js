@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async stripe_price_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.priceId) return { ok: false, error: "Missing priceId." };
+    log('Récupération des données...');
     const res = await utils.stripeRequest(opts, `/prices/${d.priceId}`);
     if (!res.ok) return res;
     const p = res.data;

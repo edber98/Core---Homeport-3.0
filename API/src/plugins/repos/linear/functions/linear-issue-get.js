@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_issue_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const issueId = (d.issueId || "").trim();
     if (!issueId) return { ok: false, error: "Missing issueId." };

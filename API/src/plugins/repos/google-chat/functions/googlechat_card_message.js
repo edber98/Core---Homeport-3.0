@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async googlechat_card_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.title) return { ok: false, error: "Missing title." };
 
@@ -22,6 +23,7 @@ module.exports = {
       }]
     };
 
+    log('Envoi du prompt...');
     const res = await utils.chatWebhookRequest(opts, card);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true, status: "sent", message: "Card sent successfully." };

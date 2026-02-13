@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async atera_customer_find(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const search = (d.search || "").trim();
     if (!search) return { ok: false, error: "Le champ recherche est requis." };
@@ -34,6 +35,7 @@ module.exports = {
     let page = 1;
 
     while (page <= maxPages) {
+      log('Recherche en cours...');
       const res = await utils.ateraRequest(opts, "/customers", {
         query: { page, itemsInPage: 50 }
       });

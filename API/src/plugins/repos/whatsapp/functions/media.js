@@ -1,5 +1,6 @@
 module.exports = {
   async wa_upload_media(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { getPhoneNumberId } = require("../utils").utils;
     const credentials = (opts && opts.credentials) || {};
     const accessToken = credentials.accessToken;
@@ -24,6 +25,7 @@ module.exports = {
 
     let res;
     try {
+      log('Téléversement en cours...');
       res = await fetch(`https://graph.facebook.com/v18.0/${phoneNumberId}/media`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${accessToken}` },
@@ -38,6 +40,7 @@ module.exports = {
   },
 
   async wa_get_media(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const credentials = (opts && opts.credentials) || {};
     const accessToken = credentials.accessToken;
     if (!accessToken) return { ok: false, error: "Token d'accès WhatsApp manquant." };
@@ -46,6 +49,7 @@ module.exports = {
 
     let res;
     try {
+      log('Récupération des données...');
       res = await fetch(`https://graph.facebook.com/v18.0/${mediaId}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${accessToken}` }

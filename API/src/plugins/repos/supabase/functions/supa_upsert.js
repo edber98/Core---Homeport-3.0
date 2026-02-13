@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_upsert(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.table) return { ok: false, error: "Table requise." };
     if (!d.data) return { ok: false, error: "Données requises." };
@@ -15,6 +16,7 @@ module.exports = {
     let path = `/rest/v1/${encodeURIComponent(d.table)}`;
     if (d.onConflict) path += `?on_conflict=${d.onConflict}`;
 
+    log('Appel API en cours...');
     const res = await utils.supaRequest(opts, path, {
       method: "POST", body, headers, prefer: "return=representation,resolution=merge-duplicates"
     });

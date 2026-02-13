@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_create_channel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.teamId) return { ok: false, error: "Missing teamId." };
     if (!d.displayName) return { ok: false, error: "Missing displayName." };
@@ -10,6 +11,7 @@ module.exports = {
     if (d.description) body.description = d.description;
     if (d.membershipType) body.membershipType = d.membershipType;
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, `/teams/${d.teamId}/channels`, {
       method: "POST",
       body

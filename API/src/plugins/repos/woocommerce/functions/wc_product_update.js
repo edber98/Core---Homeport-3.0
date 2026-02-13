@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wc_product_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.productId) return { ok: false, error: "Missing productId." };
     const body = {};
@@ -10,6 +11,7 @@ module.exports = {
     if (d.description) body.description = d.description;
     if (d.sku) body.sku = d.sku;
     if (d.status) body.status = d.status;
+    log('Mise à jour en cours...');
     const res = await utils.wcRequest(opts, `/products/${d.productId}`, { method: "PUT", body });
     if (!res.ok) return res;
     const p = res.data || {};

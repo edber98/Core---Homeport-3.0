@@ -13,6 +13,7 @@ function toStr(value) {
 
 module.exports = {
   async add_openproject_task(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const title = toStr(data.title);
     const description = toStr(data.description);
@@ -46,6 +47,7 @@ module.exports = {
     if (statusId) payload._links.status = { href: `/api/v3/statuses/${statusId}` };
     if (priorityId) payload._links.priority = { href: `/api/v3/priorities/${priorityId}` };
 
+    log('Création en cours...');
     const res = await utils.openprojectRequest(opts, "/work_packages", {
       method: "POST",
       body: payload

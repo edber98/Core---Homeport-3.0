@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ps_product_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.productId) return { ok: false, error: "Missing productId." };
     const product = {};
@@ -10,6 +11,7 @@ module.exports = {
     if (d.reference) product.reference = d.reference;
     if (d.active !== undefined) product.active = d.active;
     const body = { product };
+    log('Mise à jour en cours...');
     const res = await utils.psRequest(opts, `/products/${d.productId}`, { method: "PUT", body });
     if (!res.ok) return res;
     const p = (res.data && res.data.product) || {};

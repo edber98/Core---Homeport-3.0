@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_folder_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const spaceId = (d.spaceId || "").trim();
     const name = (d.name || "").trim();
     if (!spaceId) return { ok: false, error: "Missing spaceId." };
     if (!name) return { ok: false, error: "Missing name." };
 
+    log('Création en cours...');
     const res = await utils.clickupRequest(opts, `/space/${encodeURIComponent(spaceId)}/folder`, {
       method: "POST", body: { name }
     });

@@ -1,5 +1,6 @@
 module.exports = {
   async wa_webhook_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = msg || {};
     const entry = (data.entry && data.entry[0]) || {};
     const changes = (entry.changes && entry.changes[0]) || {};

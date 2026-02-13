@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wc_customer_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.email) return { ok: false, error: "Missing email." };
     const body = { email: d.email };
     if (d.first_name) body.first_name = d.first_name;
     if (d.last_name) body.last_name = d.last_name;
     if (d.username) body.username = d.username;
+    log('Création en cours...');
     const res = await utils.wcRequest(opts, "/customers", { method: "POST", body });
     if (!res.ok) return res;
     const c = res.data || {};

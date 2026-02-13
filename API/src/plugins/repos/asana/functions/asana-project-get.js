@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_project_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectGid = (d.projectGid || "").trim();
     if (!projectGid) return { ok: false, error: "Missing projectGid." };
 
+    log('Récupération des données...');
     const res = await utils.asanaRequest(opts, `/projects/${encodeURIComponent(projectGid)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

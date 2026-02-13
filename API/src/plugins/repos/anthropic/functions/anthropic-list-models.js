@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async anthropic_list_models(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const limit = parseInt(d.limit, 10) || 20;
 
+    log('Récupération de la liste...');
     const res = await utils.anthropicRequest(opts, "/models", {
       query: { limit }
     });

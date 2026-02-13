@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linkedin_list_posts(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const authorUrn = (d.authorUrn || "").trim();
     if (!authorUrn) return { ok: false, error: "Missing authorUrn." };
     const count = parseInt(d.count, 10) || 10;
 
+    log('Récupération de la liste...');
     const res = await utils.linkedinRequest(opts, "/ugcPosts", {
       query: { q: "authors", authors: `List(${authorUrn})`, count }
     });

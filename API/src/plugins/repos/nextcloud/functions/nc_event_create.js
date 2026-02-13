@@ -3,6 +3,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_event_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.calendarName) return { ok: false, error: "Calendrier requis." };
     if (!d.summary) return { ok: false, error: "Résumé requis." };
@@ -29,6 +30,7 @@ module.exports = {
       "END:VCALENDAR"
     ].filter(Boolean).join("\r\n");
 
+    log('Création en cours...');
     const res = await utils.caldavRequest(opts, `${d.calendarName}/${uid}.ics`, {
       method: "PUT",
       body: ics,

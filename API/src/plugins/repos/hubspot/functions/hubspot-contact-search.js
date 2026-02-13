@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_contact_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = (d.query || "").trim();
     if (!query) return { ok: false, error: "Missing query." };
 
     const limit = parseInt(d.limit, 10) || 10;
 
+    log('Recherche en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/contacts/search", {
       method: "POST",
       body: { query, limit }

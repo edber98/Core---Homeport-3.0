@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_add_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.teamId) return { ok: false, error: "Missing teamId." };
     if (!d.userId) return { ok: false, error: "Missing userId." };
@@ -12,6 +13,7 @@ module.exports = {
       "user@odata.bind": `https://graph.microsoft.com/v1.0/users('${d.userId}')`
     };
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, `/teams/${d.teamId}/members`, {
       method: "POST",
       body

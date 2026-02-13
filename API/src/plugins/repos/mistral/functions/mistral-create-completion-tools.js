@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async mistral_create_completion_tools(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = (d.model || "mistral-small-latest").trim();
     const temperature = d.temperature != null ? Number(d.temperature) : 0.7;
@@ -31,23 +32,20 @@ module.exports = {
     if (maxTokens) body.max_tokens = maxTokens;
     if (d.toolChoice) body.tool_choice = d.toolChoice;
 
-    const res = await utils.mistralRequest(opts, "/chat/completions", {
-      method: "POST",
-      body
-    });
+    log('Envoi du prompt...');
+    const res = await utils.mistralRequestStream(opts, "/chat/completions", { body }, (text) => log(text));
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};
-    const choice = (r.choices || [])[0] || {};
     return {
       ok: true,
       id: r.id,
       model: r.model,
-      text: choice.message?.content || "",
-      toolCalls: choice.message?.tool_calls || [],
-      finishReason: choice.finish_reason,
-      promptTokens: r.usage?.prompt_tokens,
-      completionTokens: r.usage?.completion_tokens
+      text: r.text || "",
+      toolCalls: [],
+      finishReason: r.finishReason,
+      promptTokens: r.promptTokens,
+      completionTokens: r.completionTokens
     };
   }
 };

@@ -1,5 +1,6 @@
 module.exports = {
   async tg_pin_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -11,6 +12,7 @@ module.exports = {
   },
 
   async tg_unpin_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};

@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async stripe_prices_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.limit) query.limit = d.limit;
     if (d.starting_after) query.starting_after = d.starting_after;
     if (d.product) query.product = d.product;
     if (d.active !== undefined && d.active !== null && d.active !== "") query.active = String(d.active);
+    log('Récupération de la liste...');
     const res = await utils.stripeRequest(opts, "/prices", { query });
     if (!res.ok) return res;
     const items = (res.data && res.data.data) || [];

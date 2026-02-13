@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async fd_note_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = parseInt(d.ticketId, 10);
     if (isNaN(ticketId)) return { ok: false, error: "Missing ticketId." };
@@ -10,6 +11,7 @@ module.exports = {
     const isPrivate = d.private !== "false";
     const body = { body: d.body, private: isPrivate };
 
+    log('Création en cours...');
     const res = await utils.freshdeskRequest(opts, `/tickets/${ticketId}/notes`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

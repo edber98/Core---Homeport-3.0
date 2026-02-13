@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_media_upload(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const fileUrl = (d.fileUrl || "").trim();
     if (!fileUrl) return { ok: false, error: "Missing fileUrl." };
@@ -22,7 +23,8 @@ module.exports = {
     const headers = { "Authorization": `Basic ${auth}`, "Content-Type": contentType, "Content-Disposition": `attachment; filename="${filename}"` };
 
     let res;
-    try { res = await fetch(url, { method: "POST", headers, body: buffer }); } catch (e) { return { ok: false, error: e.message }; }
+    try { log('Téléversement en cours...');
+    res = await fetch(url, { method: "POST", headers, body: buffer }); } catch (e) { return { ok: false, error: e.message }; }
 
     const text = await res.text();
     let data = null;

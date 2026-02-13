@@ -76,12 +76,14 @@ async function trelloApi(method, pathTemplate, inputs, credentials, options = {}
 
 module.exports = {
   async trello_board_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/boards', inputs, opts?.credentials, {
       bodyParams: ['name', 'desc', 'idOrganization', 'defaultLists', 'defaultLabels', 'prefs_permissionLevel']
     });
   },
 
   async trello_board_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/boards/{idBoard}', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       queryParams: ['fields']
@@ -89,6 +91,7 @@ module.exports = {
   },
 
   async trello_board_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/boards/{idBoard}', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       bodyParams: ['name', 'desc', 'closed']
@@ -96,6 +99,7 @@ module.exports = {
   },
 
   async trello_board_lists(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/boards/{idBoard}/lists', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       queryParams: ['filter', 'fields']
@@ -103,6 +107,7 @@ module.exports = {
   },
 
   async trello_board_cards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/boards/{idBoard}/cards', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       queryParams: ['fields']
@@ -110,6 +115,7 @@ module.exports = {
   },
 
   async trello_board_members(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/boards/{idBoard}/members', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       queryParams: ['fields']
@@ -117,6 +123,7 @@ module.exports = {
   },
 
   async trello_board_labels(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/boards/{idBoard}/labels', inputs, opts?.credentials, {
       pathParams: ['idBoard'],
       queryParams: ['fields', 'limit']
@@ -128,12 +135,14 @@ module.exports = {
   // ============================================================
 
   async trello_card_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards', inputs, opts?.credentials, {
       bodyParams: ['idList', 'name', 'desc', 'pos', 'due', 'dueComplete', 'idMembers', 'idLabels', 'urlSource']
     });
   },
 
   async trello_card_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/cards/{idCard}', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       queryParams: ['fields', 'attachments', 'members']
@@ -141,6 +150,7 @@ module.exports = {
   },
 
   async trello_card_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/cards/{idCard}', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['name', 'desc', 'closed', 'idList', 'idBoard', 'pos', 'due', 'dueComplete', 'idMembers', 'idLabels']
@@ -148,12 +158,14 @@ module.exports = {
   },
 
   async trello_card_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/cards/{idCard}', inputs, opts?.credentials, {
       pathParams: ['idCard']
     });
   },
 
   async trello_card_move(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/cards/{idCard}', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['idList', 'idBoard', 'pos']
@@ -161,6 +173,7 @@ module.exports = {
   },
 
   async trello_card_add_comment(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards/{idCard}/actions/comments', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['text']
@@ -168,6 +181,7 @@ module.exports = {
   },
 
   async trello_card_add_label(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards/{idCard}/idLabels', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['value']
@@ -175,12 +189,14 @@ module.exports = {
   },
 
   async trello_card_remove_label(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/cards/{idCard}/idLabels/{idLabel}', inputs, opts?.credentials, {
       pathParams: ['idCard', 'idLabel']
     });
   },
 
   async trello_card_add_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards/{idCard}/idMembers', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['value']
@@ -188,18 +204,21 @@ module.exports = {
   },
 
   async trello_card_remove_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/cards/{idCard}/idMembers/{idMember}', inputs, opts?.credentials, {
       pathParams: ['idCard', 'idMember']
     });
   },
 
   async trello_card_attachments(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/cards/{idCard}/attachments', inputs, opts?.credentials, {
       pathParams: ['idCard']
     });
   },
 
   async trello_card_add_attachment(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards/{idCard}/attachments', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['name', 'url', 'mimeType']
@@ -207,12 +226,14 @@ module.exports = {
   },
 
   async trello_card_checklists(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/cards/{idCard}/checklists', inputs, opts?.credentials, {
       pathParams: ['idCard']
     });
   },
 
   async trello_card_add_checklist(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/cards/{idCard}/checklists', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       bodyParams: ['name', 'idChecklistSource', 'pos']
@@ -220,6 +241,7 @@ module.exports = {
   },
 
   async trello_card_actions(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/cards/{idCard}/actions', inputs, opts?.credentials, {
       pathParams: ['idCard'],
       queryParams: ['filter', 'limit']
@@ -231,12 +253,14 @@ module.exports = {
   // ============================================================
 
   async trello_list_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/lists', inputs, opts?.credentials, {
       bodyParams: ['name', 'idBoard', 'pos']
     });
   },
 
   async trello_list_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/lists/{idList}', inputs, opts?.credentials, {
       pathParams: ['idList'],
       queryParams: ['fields']
@@ -244,6 +268,7 @@ module.exports = {
   },
 
   async trello_list_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/lists/{idList}', inputs, opts?.credentials, {
       pathParams: ['idList'],
       bodyParams: ['name', 'closed', 'pos', 'subscribed']
@@ -251,6 +276,7 @@ module.exports = {
   },
 
   async trello_list_cards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/lists/{idList}/cards', inputs, opts?.credentials, {
       pathParams: ['idList'],
       queryParams: ['fields']
@@ -258,12 +284,14 @@ module.exports = {
   },
 
   async trello_list_archive_cards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/lists/{idList}/archiveAllCards', inputs, opts?.credentials, {
       pathParams: ['idList']
     });
   },
 
   async trello_list_move_cards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/lists/{idList}/moveAllCards', inputs, opts?.credentials, {
       pathParams: ['idList'],
       bodyParams: ['idBoard']
@@ -275,12 +303,14 @@ module.exports = {
   // ============================================================
 
   async trello_label_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/labels', inputs, opts?.credentials, {
       bodyParams: ['name', 'color', 'idBoard']
     });
   },
 
   async trello_label_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/labels/{idLabel}', inputs, opts?.credentials, {
       pathParams: ['idLabel'],
       queryParams: ['fields']
@@ -288,6 +318,7 @@ module.exports = {
   },
 
   async trello_label_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/labels/{idLabel}', inputs, opts?.credentials, {
       pathParams: ['idLabel'],
       bodyParams: ['name', 'color']
@@ -295,6 +326,7 @@ module.exports = {
   },
 
   async trello_label_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/labels/{idLabel}', inputs, opts?.credentials, {
       pathParams: ['idLabel']
     });
@@ -305,12 +337,14 @@ module.exports = {
   // ============================================================
 
   async trello_checklist_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/checklists', inputs, opts?.credentials, {
       bodyParams: ['idCard', 'name', 'pos']
     });
   },
 
   async trello_checklist_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/checklists/{idChecklist}', inputs, opts?.credentials, {
       pathParams: ['idChecklist'],
       queryParams: ['fields', 'checkItems']
@@ -318,12 +352,14 @@ module.exports = {
   },
 
   async trello_checklist_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/checklists/{idChecklist}', inputs, opts?.credentials, {
       pathParams: ['idChecklist']
     });
   },
 
   async trello_checklist_items(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/checklists/{idChecklist}/checkItems', inputs, opts?.credentials, {
       pathParams: ['idChecklist'],
       queryParams: ['fields']
@@ -331,6 +367,7 @@ module.exports = {
   },
 
   async trello_checklist_add_item(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/checklists/{idChecklist}/checkItems', inputs, opts?.credentials, {
       pathParams: ['idChecklist'],
       bodyParams: ['name', 'pos', 'checked']
@@ -338,12 +375,14 @@ module.exports = {
   },
 
   async trello_checklist_delete_item(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/checklists/{idChecklist}/checkItems/{idCheckItem}', inputs, opts?.credentials, {
       pathParams: ['idChecklist', 'idCheckItem']
     });
   },
 
   async trello_checklist_update_item(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/cards/{idCard}/checklist/{idChecklist}/checkItem/{idCheckItem}', inputs, opts?.credentials, {
       pathParams: ['idCard', 'idChecklist', 'idCheckItem'],
       bodyParams: ['name', 'state', 'pos']
@@ -355,6 +394,7 @@ module.exports = {
   // ============================================================
 
   async trello_member_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/members/{idMember}', inputs, opts?.credentials, {
       pathParams: ['idMember'],
       queryParams: ['fields']
@@ -362,6 +402,7 @@ module.exports = {
   },
 
   async trello_member_boards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/members/{idMember}/boards', inputs, opts?.credentials, {
       pathParams: ['idMember'],
       queryParams: ['filter', 'fields']
@@ -369,6 +410,7 @@ module.exports = {
   },
 
   async trello_member_cards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/members/{idMember}/cards', inputs, opts?.credentials, {
       pathParams: ['idMember'],
       queryParams: ['fields']
@@ -376,6 +418,7 @@ module.exports = {
   },
 
   async trello_member_organizations(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/members/{idMember}/organizations', inputs, opts?.credentials, {
       pathParams: ['idMember'],
       queryParams: ['fields']
@@ -387,6 +430,7 @@ module.exports = {
   // ============================================================
 
   async trello_org_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/organizations/{idOrg}', inputs, opts?.credentials, {
       pathParams: ['idOrg'],
       queryParams: ['fields']
@@ -394,6 +438,7 @@ module.exports = {
   },
 
   async trello_org_boards(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/organizations/{idOrg}/boards', inputs, opts?.credentials, {
       pathParams: ['idOrg'],
       queryParams: ['filter', 'fields']
@@ -401,6 +446,7 @@ module.exports = {
   },
 
   async trello_org_members(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/organizations/{idOrg}/members', inputs, opts?.credentials, {
       pathParams: ['idOrg'],
       queryParams: ['fields']
@@ -412,12 +458,14 @@ module.exports = {
   // ============================================================
 
   async trello_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/search', inputs, opts?.credentials, {
       queryParams: ['query', 'idBoards', 'idOrganizations', 'modelTypes', 'cards_limit', 'boards_limit']
     });
   },
 
   async trello_search_members(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/search/members', inputs, opts?.credentials, {
       queryParams: ['query', 'limit', 'idBoard', 'idOrganization']
     });
@@ -428,18 +476,21 @@ module.exports = {
   // ============================================================
 
   async trello_webhook_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('POST', '/webhooks', inputs, opts?.credentials, {
       bodyParams: ['callbackURL', 'idModel', 'description', 'active']
     });
   },
 
   async trello_webhook_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/webhooks/{idWebhook}', inputs, opts?.credentials, {
       pathParams: ['idWebhook']
     });
   },
 
   async trello_webhook_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('PUT', '/webhooks/{idWebhook}', inputs, opts?.credentials, {
       pathParams: ['idWebhook'],
       bodyParams: ['callbackURL', 'idModel', 'description', 'active']
@@ -447,6 +498,7 @@ module.exports = {
   },
 
   async trello_webhook_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/webhooks/{idWebhook}', inputs, opts?.credentials, {
       pathParams: ['idWebhook']
     });
@@ -457,6 +509,7 @@ module.exports = {
   // ============================================================
 
   async trello_action_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('GET', '/actions/{idAction}', inputs, opts?.credentials, {
       pathParams: ['idAction'],
       queryParams: ['fields']
@@ -464,6 +517,7 @@ module.exports = {
   },
 
   async trello_action_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return trelloApi('DELETE', '/actions/{idAction}', inputs, opts?.credentials, {
       pathParams: ['idAction']
     });

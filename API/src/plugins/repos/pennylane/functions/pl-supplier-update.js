@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_supplier_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const supplierId = (d.supplierId || "").toString().trim();
     if (!supplierId) return { ok: false, error: "Missing supplierId." };
@@ -11,6 +12,7 @@ module.exports = {
     if (d.email) supplier.emails = [{ email: d.email }];
     if (d.phone) supplier.phone = d.phone;
 
+    log('Mise à jour en cours...');
     const res = await utils.plRequest(opts, `/suppliers/${encodeURIComponent(supplierId)}`, { method: "PUT", body: { supplier } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

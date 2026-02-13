@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_ses_send_email(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.from) return { ok: false, error: "Expéditeur requis." };
     if (!d.to) return { ok: false, error: "Destinataire requis." };
@@ -32,6 +33,7 @@ module.exports = {
       params["Message.Body.Text.Charset"] = "UTF-8";
     }
 
+    log('Création en cours...');
     const res = await utils.sesRequest(opts, "SendEmail", params);
     if (!res.ok) return res;
     const messageId = utils.parseXmlTagSingle(res.data, "MessageId") || "";

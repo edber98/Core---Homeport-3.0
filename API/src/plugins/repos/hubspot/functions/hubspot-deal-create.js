@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_deal_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const dealname = (d.dealname || "").trim();
     if (!dealname) return { ok: false, error: "Missing dealname." };
@@ -11,6 +12,7 @@ module.exports = {
     if (d.pipeline) properties.pipeline = d.pipeline;
     if (d.dealstage) properties.dealstage = d.dealstage;
 
+    log('Création en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/deals", {
       method: "POST",
       body: { properties }

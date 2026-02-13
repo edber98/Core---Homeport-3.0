@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_comment_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const taskId = (d.taskId || "").trim();
     const comment_text = (d.comment_text || "").trim();
     if (!taskId) return { ok: false, error: "Missing taskId." };
     if (!comment_text) return { ok: false, error: "Missing comment_text." };
 
+    log('Création en cours...');
     const res = await utils.clickupRequest(opts, `/task/${encodeURIComponent(taskId)}/comment`, {
       method: "POST", body: { comment_text }
     });

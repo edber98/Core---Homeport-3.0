@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_file_share(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin requis." };
     const body = {
@@ -10,6 +11,7 @@ module.exports = {
       permissions: parseInt(d.permissions || "1", 10)
     };
     if (d.shareWith) body.shareWith = d.shareWith;
+    log('Appel API en cours...');
     const res = await utils.ocsRequest(opts, "/ocs/v2.php/apps/files_sharing/api/v1/shares", {
       method: "POST",
       body

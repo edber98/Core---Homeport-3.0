@@ -3,6 +3,7 @@ const { utils } = require('./utils');
 module.exports = {
   // ── Téléverser un document dans une demande ────────────
   async yousign_document_upload(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
@@ -54,6 +55,7 @@ module.exports = {
 
     let res;
     try {
+      log('Téléversement en cours...');
       res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -90,10 +92,12 @@ module.exports = {
 
   // ── Lister les documents d'une demande ─────────────────
   async yousign_documents_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
 
+    log('Récupération de la liste...');
     const res = await utils.yousignRequest(opts, 'GET', `/signature_requests/${encodeURIComponent(srId)}/documents`);
     if (!res.ok) return res;
     const items = Array.isArray(res.data) ? res.data : (res.data?.data || []);
@@ -110,6 +114,7 @@ module.exports = {
 
   // ── Télécharger les documents signés ───────────────────
   async yousign_documents_download(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
@@ -125,6 +130,7 @@ module.exports = {
 
     let res;
     try {
+      log('Récupération des données...');
       res = await fetch(url, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${apiKey}` },
@@ -162,6 +168,7 @@ module.exports = {
 
   // ── Télécharger la piste d'audit ───────────────────────
   async yousign_audit_trail_download(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const srId = String(d.signature_request_id || '').trim();
     if (!srId) return { ok: false, error: "L'ID de la demande de signature est requis." };
@@ -176,6 +183,7 @@ module.exports = {
 
     let res;
     try {
+      log('Récupération des données...');
       res = await fetch(url, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${apiKey}` },

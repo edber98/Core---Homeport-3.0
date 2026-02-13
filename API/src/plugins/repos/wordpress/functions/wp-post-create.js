@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_post_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const title = (d.title || "").trim();
     if (!title) return { ok: false, error: "Missing title." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.categories) body.categories = String(d.categories).split(",").map(s => parseInt(s.trim(),10)).filter(Boolean);
     if (d.tags) body.tags = String(d.tags).split(",").map(s => parseInt(s.trim(),10)).filter(Boolean);
 
+    log('Création en cours...');
     const res = await utils.wpRequest(opts, "/posts", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

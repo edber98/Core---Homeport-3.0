@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async fd_ticket_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.subject) return { ok: false, error: "Missing subject." };
     if (!d.description) return { ok: false, error: "Missing description." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.status) body.status = parseInt(d.status, 10);
     if (d.tags) body.tags = d.tags.split(",").map(t => t.trim()).filter(Boolean);
 
+    log('Création en cours...');
     const res = await utils.freshdeskRequest(opts, "/tickets", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

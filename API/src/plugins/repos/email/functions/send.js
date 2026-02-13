@@ -1,5 +1,6 @@
 module.exports = {
   async email_send(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     try {
       let nodemailer;
       try {

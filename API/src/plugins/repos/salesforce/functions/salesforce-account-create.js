@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_account_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const Name = (d.Name || "").trim();
     if (!Name) return { ok: false, error: "Missing Name." };
@@ -11,6 +12,7 @@ module.exports = {
     if (d.Phone) body.Phone = d.Phone;
     if (d.Website) body.Website = d.Website;
 
+    log('Création en cours...');
     const res = await utils.sfRequest(opts, "/sobjects/Account", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

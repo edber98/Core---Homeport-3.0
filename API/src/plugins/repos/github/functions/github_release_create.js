@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_release_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
     if (d.draft !== undefined) body.draft = !!d.draft;
     if (d.prerelease !== undefined) body.prerelease = !!d.prerelease;
     if (d.target_commitish) body.target_commitish = d.target_commitish;
+    log('Création en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/releases`, { method: "POST", body });
     if (!res.ok) return res;
     const r = res.data;

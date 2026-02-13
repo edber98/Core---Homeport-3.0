@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pipedrive_activity_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const subject = (d.subject || "").trim();
     if (!subject) return { ok: false, error: "Missing subject." };
@@ -15,6 +16,7 @@ module.exports = {
     if (d.person_id) body.person_id = parseInt(d.person_id, 10);
     if (d.org_id) body.org_id = parseInt(d.org_id, 10);
 
+    log('Création en cours...');
     const res = await utils.pdRequest(opts, "/activities", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

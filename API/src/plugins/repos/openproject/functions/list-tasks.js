@@ -8,6 +8,7 @@ function toInt(value) {
 
 module.exports = {
   async list_openproject_tasks(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const projectId = toInt(data.project_id);
     const userId = toInt(data.user_id);
@@ -24,6 +25,7 @@ module.exports = {
     const query = { pageSize: 1000, offset: 0 };
     if (filters.length) query.filters = JSON.stringify(filters);
 
+    log('Récupération de la liste...');
     const res = await utils.openprojectRequest(opts, "/work_packages", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

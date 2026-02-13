@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_story_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const taskGid = (d.taskGid || "").trim();
     const text = (d.text || "").trim();
     if (!taskGid) return { ok: false, error: "Missing taskGid." };
     if (!text) return { ok: false, error: "Missing text." };
 
+    log('Création en cours...');
     const res = await utils.asanaRequest(opts, `/tasks/${encodeURIComponent(taskGid)}/stories`, {
       method: "POST", body: { data: { text } }
     });

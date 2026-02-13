@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async sql_describe_table(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.table) return { ok: false, error: "Nom de la table requis." };
 

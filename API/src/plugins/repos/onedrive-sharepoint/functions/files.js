@@ -1,5 +1,6 @@
 module.exports = {
   async onedrive_upload_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
     let body;
@@ -16,6 +17,7 @@ module.exports = {
     return { ok: true, uploaded: true, path: d.path || node.args?.path };
   },
   async sharepoint_upload_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
     let body;
@@ -32,6 +34,7 @@ module.exports = {
     return { ok: true, uploaded: true };
   },
   async sharepoint_share_link(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     return { ok: true, link: 'https://sharepoint.fake/link/' + (node.args?.itemId || '') };
   }
 };

@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_sale_order_confirm(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const id = toInt(data.orderId);
     if (!id) return { ok: false, error: "Champ orderId requis." };

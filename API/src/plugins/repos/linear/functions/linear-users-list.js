@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_users_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const query = `query { users { nodes { id name email active } } }`;
 
     const res = await utils.linearQuery(opts, query, {});

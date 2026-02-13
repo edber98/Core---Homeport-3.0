@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_teams_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const query = `query { teams { nodes { id name key } } }`;
 
     const res = await utils.linearQuery(opts, query, {});

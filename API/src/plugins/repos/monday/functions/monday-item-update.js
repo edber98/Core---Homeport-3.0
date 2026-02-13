@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_item_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     const itemId = (d.itemId || "").toString().trim();
@@ -9,6 +10,7 @@ module.exports = {
     if (!itemId) return { ok: false, error: "Missing itemId." };
     if (!columnValues) return { ok: false, error: "Missing columnValues." };
     const query = `mutation { change_multiple_column_values (board_id: ${boardId}, item_id: ${itemId}, column_values: ${JSON.stringify(columnValues)}) { id name board { id } group { id } state column_values { id text value } created_at updated_at } }`;
+    log('Mise à jour en cours...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const r = res.data.change_multiple_column_values || {};

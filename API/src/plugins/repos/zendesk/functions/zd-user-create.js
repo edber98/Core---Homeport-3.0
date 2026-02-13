@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async zd_user_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Missing name." };
 
@@ -10,6 +11,7 @@ module.exports = {
     if (d.phone) user.phone = d.phone;
     if (d.role) user.role = d.role;
 
+    log('Création en cours...');
     const res = await utils.zendeskRequest(opts, "/users.json", { method: "POST", body: { user } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

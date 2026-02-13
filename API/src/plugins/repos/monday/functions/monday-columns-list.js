@@ -1,10 +1,12 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_columns_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     if (!boardId) return { ok: false, error: "Missing boardId." };
     const query = `{ boards (ids: [${boardId}]) { columns { id title type settings_str } } }`;
+    log('Récupération de la liste...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const boards = res.data.boards || [];

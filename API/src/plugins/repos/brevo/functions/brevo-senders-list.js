@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async brevo_senders_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Création en cours...');
     const res = await utils.brevoRequest(opts, "/senders");
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

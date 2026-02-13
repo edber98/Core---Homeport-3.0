@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_list_feed(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const pageId = (d.pageId || "").trim();
     if (!pageId) return { ok: false, error: "Missing pageId." };
     const limit = parseInt(d.limit, 10) || 10;
 
+    log('Récupération de la liste...');
     const res = await utils.facebookRequest(opts, `/${encodeURIComponent(pageId)}/feed`, {
       query: { fields: "id,message,created_time,from,type", limit }
     });

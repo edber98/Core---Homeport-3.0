@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_variants_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.productId) return { ok: false, error: "Missing productId." };
     const query = {};
     if (d.limit) query.limit = d.limit;
+    log('Récupération de la liste...');
     const res = await utils.shopifyRequest(opts, `/products/${d.productId}/variants.json`, { query });
     if (!res.ok) return res;
     const items = (res.data && res.data.variants) || [];

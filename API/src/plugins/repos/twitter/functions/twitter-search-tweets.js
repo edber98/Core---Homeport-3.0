@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_search_tweets(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = (d.query || "").trim();
     if (!query) return { ok: false, error: "Missing query." };
     const maxResults = parseInt(d.maxResults, 10) || 10;
 
+    log('Recherche en cours...');
     const res = await utils.twitterRequest(opts, "/tweets/search/recent", {
       query: {
         query,

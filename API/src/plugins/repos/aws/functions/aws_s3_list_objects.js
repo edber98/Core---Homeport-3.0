@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_s3_list_objects(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.bucket) return { ok: false, error: "Bucket requis." };
 
@@ -9,6 +10,7 @@ module.exports = {
     if (d.prefix) params.set("prefix", d.prefix);
     if (d.maxKeys) params.set("max-keys", String(d.maxKeys));
 
+    log('Récupération de la liste...');
     const res = await utils.s3Request(opts, "GET", `/${d.bucket}?${params}`);
     if (!res.ok) return res;
 

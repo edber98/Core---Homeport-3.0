@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async brevo_contacts_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const limit = parseInt(d.limit, 10) || 50;
     const offset = parseInt(d.offset, 10) || 0;
 
+    log('Récupération de la liste...');
     const res = await utils.brevoRequest(opts, "/contacts", { query: { limit, offset } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

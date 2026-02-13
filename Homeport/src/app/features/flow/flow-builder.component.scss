@@ -475,8 +475,17 @@ nz-drawer { display: contents; }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+  transition: max-height .2s ease;
+}
+.node-log-bubble.expanded {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
 }
 .node-log-bubble .node-log-text { display: block; overflow: hidden; text-overflow: ellipsis; }
+.node-log-bubble.expanded .node-log-text { overflow: visible; text-overflow: unset; white-space: pre-wrap; word-break: break-word; }
 @keyframes log-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }

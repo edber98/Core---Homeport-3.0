@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async notion_database_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const parentPageId = (d.parentPageId || "").trim();
     const title = (d.title || "").trim();
@@ -11,6 +12,7 @@ module.exports = {
     let properties;
     try { properties = typeof propertiesStr === "object" ? propertiesStr : JSON.parse(propertiesStr); } catch { return { ok: false, error: "Invalid JSON in properties." }; }
     const body = { parent: { page_id: parentPageId }, title: [{ text: { content: title } }], properties };
+    log('Création en cours...');
     const res = await utils.notionRequest(opts, "/databases", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_get_user(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const username = (d.username || "").trim();
     if (!username) return { ok: false, error: "Missing username." };
 
+    log('Récupération des données...');
     const res = await utils.twitterRequest(opts, `/users/by/username/${encodeURIComponent(username)}`, {
       query: { "user.fields": "id,name,username,description,profile_image_url,public_metrics,created_at,verified" }
     });

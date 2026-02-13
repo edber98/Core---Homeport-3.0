@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_mrp_production_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const id = toInt(data.productionId);
     if (!id) return { ok: false, error: "Champ productionId requis." };

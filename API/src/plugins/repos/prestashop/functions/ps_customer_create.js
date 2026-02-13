@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ps_customer_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.email) return { ok: false, error: "Missing email." };
     if (!d.firstname) return { ok: false, error: "Missing firstname." };
@@ -9,6 +10,7 @@ module.exports = {
     if (!d.passwd) return { ok: false, error: "Missing passwd." };
     const customer = { email: d.email, firstname: d.firstname, lastname: d.lastname, passwd: d.passwd };
     const body = { customer };
+    log('Création en cours...');
     const res = await utils.psRequest(opts, "/customers", { method: "POST", body });
     if (!res.ok) return res;
     const c = (res.data && res.data.customer) || {};

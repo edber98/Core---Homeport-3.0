@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async calendly_events_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     let userUri = d.userUri;
     if (!userUri) userUri = await utils.getMyUserUri(opts);
@@ -12,6 +13,7 @@ module.exports = {
     if (d.count) query.count = d.count;
     if (d.pageToken) query.page_token = d.pageToken;
 
+    log('Récupération de la liste...');
     const res = await utils.calendlyRequest(opts, "/scheduled_events", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.collection) || [];

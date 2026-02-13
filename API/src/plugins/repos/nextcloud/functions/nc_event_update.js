@@ -3,6 +3,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_event_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.calendarName) return { ok: false, error: "Calendrier requis." };
     if (!d.eventId) return { ok: false, error: "ID événement requis." };
@@ -41,6 +42,7 @@ module.exports = {
       "END:VCALENDAR"
     ].filter(Boolean).join("\r\n");
 
+    log('Mise à jour en cours...');
     const res = await utils.caldavRequest(opts, `${d.calendarName}/${d.eventId}.ics`, {
       method: "PUT",
       body: ics,

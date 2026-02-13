@@ -1,5 +1,6 @@
 module.exports = {
   async discord_webhook_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = msg || {};
     const user = data.d?.author || data.d?.user || data.d?.member?.user || {};
     return {

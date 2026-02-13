@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dolibarr_stock_movements_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
     const params = {};
@@ -13,6 +14,7 @@ module.exports = {
     const qs = Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join("&");
     const path = qs ? "/stockmovements" + "?" + qs : "/stockmovements";
 
+    log('Mise à jour en cours...');
     const res = await utils.dolibarrRequest(opts, path);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = Array.isArray(res.data) ? res.data : [];

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async brevo_list_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const listId = parseInt(d.listId, 10);
     if (isNaN(listId)) return { ok: false, error: "Missing listId." };
 
+    log('Récupération de la liste...');
     const res = await utils.brevoRequest(opts, `/contacts/lists/${listId}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

@@ -5,6 +5,7 @@ module.exports = {
    * Create a Material (Product)
    */
   async sap_material_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.Product) return { ok: false, error: "Missing Product." };
     if (!d.ProductType) return { ok: false, error: "Missing ProductType." };
@@ -16,6 +17,7 @@ module.exports = {
     if (d.IndustrySector) body.IndustrySector = d.IndustrySector;
     if (d.BaseUnit) body.BaseUnit = d.BaseUnit;
 
+    log('Création en cours...');
     const res = await utils.sapRequest(opts, "/sap/opu/odata/sap/API_PRODUCT_SRV/A_Product", {
       method: "POST",
       body,
@@ -28,9 +30,11 @@ module.exports = {
    * Get a Material by key
    */
   async sap_material_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.material) return { ok: false, error: "Missing material." };
 
+    log('Récupération des données...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_PRODUCT_SRV/A_Product('${d.material}')`
@@ -43,6 +47,7 @@ module.exports = {
    * Update a Material
    */
   async sap_material_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.material) return { ok: false, error: "Missing material." };
 
@@ -50,6 +55,7 @@ module.exports = {
     if (d.ProductType) body.ProductType = d.ProductType;
     if (d.BaseUnit) body.BaseUnit = d.BaseUnit;
 
+    log('Mise à jour en cours...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_PRODUCT_SRV/A_Product('${d.material}')`,
@@ -63,12 +69,14 @@ module.exports = {
    * List Materials
    */
   async sap_materials_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.top !== undefined && d.top !== null && d.top !== "") query["$top"] = d.top;
     if (d.skip !== undefined && d.skip !== null && d.skip !== "") query["$skip"] = d.skip;
     if (d.filter) query["$filter"] = d.filter;
 
+    log('Récupération de la liste...');
     const res = await utils.sapRequest(opts, "/sap/opu/odata/sap/API_PRODUCT_SRV/A_Product", { query });
     if (!res.ok) return res;
     const results = (res.data && res.data.results) || (Array.isArray(res.data) ? res.data : []);

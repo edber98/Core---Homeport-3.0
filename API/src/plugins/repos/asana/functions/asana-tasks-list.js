@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_tasks_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectGid = (d.projectGid || "").trim();
     if (!projectGid) return { ok: false, error: "Missing projectGid." };
 
     const limit = parseInt(d.limit, 10) || 100;
+    log('Récupération de la liste...');
     const res = await utils.asanaRequest(opts, `/tasks`, {
       query: { project: projectGid, limit, opt_fields: "name,assignee.name,completed,due_on,created_at" }
     });

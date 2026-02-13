@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_account_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const accountId = (d.accountId || "").toString().trim();
     if (!accountId) return { ok: false, error: "Missing accountId." };
@@ -14,6 +15,7 @@ module.exports = {
 
     if (Object.keys(body).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.sfRequest(opts, `/sobjects/Account/${encodeURIComponent(accountId)}`, { method: "PATCH", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

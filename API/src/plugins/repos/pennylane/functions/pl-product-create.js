@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_product_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const label = (d.label || "").trim();
     if (!label) return { ok: false, error: "Missing label." };
@@ -13,6 +14,7 @@ module.exports = {
     if (d.vat_rate) product.vat_rate = d.vat_rate;
     if (d.reference) product.reference = d.reference;
 
+    log('Création en cours...');
     const res = await utils.plRequest(opts, "/products", { method: "POST", body: { product } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

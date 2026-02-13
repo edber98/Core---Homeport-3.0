@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_partner_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const id = toInt(data.partnerId);
     if (!id) return { ok: false, error: "Champ partnerId requis." };

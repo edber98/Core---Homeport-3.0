@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_events_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.calendarName) return { ok: false, error: "Calendrier requis." };
 
@@ -28,6 +29,7 @@ module.exports = {
   </c:filter>
 </c:calendar-query>`;
 
+    log('Récupération de la liste...');
     const res = await utils.caldavRequest(opts, d.calendarName + "/", {
       method: "REPORT",
       body,

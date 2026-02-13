@@ -1,5 +1,6 @@
 module.exports = {
   async tg_send_sticker(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -10,6 +11,7 @@ module.exports = {
   },
 
   async tg_send_video(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -24,6 +26,7 @@ module.exports = {
   },
 
   async tg_send_voice(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};

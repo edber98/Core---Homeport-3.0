@@ -1,5 +1,6 @@
 module.exports = {
   async asana_webhook_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const body = (msg && msg.body) || {};
     const events = body.events || [body];
     const ev = events[0] || {};

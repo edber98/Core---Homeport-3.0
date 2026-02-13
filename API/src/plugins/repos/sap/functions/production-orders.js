@@ -5,10 +5,12 @@ module.exports = {
    * Get a Production Order by key
    */
   async sap_production_order_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.manufacturingOrder)
       return { ok: false, error: "Missing manufacturingOrder." };
 
+    log('Récupération des données...');
     const res = await utils.sapRequest(
       opts,
       `/sap/opu/odata/sap/API_PRODUCTION_ORDER_2_SRV/A_ProductionOrder_2('${d.manufacturingOrder}')`
@@ -21,6 +23,7 @@ module.exports = {
    * Confirm a Production Order (create confirmation)
    */
   async sap_production_order_confirm(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.manufacturingOrder)
       return { ok: false, error: "Missing manufacturingOrder." };
@@ -32,6 +35,7 @@ module.exports = {
     if (d.yieldQuantity) body.YieldQuantity = d.yieldQuantity;
     if (d.unitOfMeasure) body.UnitOfMeasure = d.unitOfMeasure;
 
+    log('Appel API en cours...');
     const res = await utils.sapRequest(
       opts,
       "/sap/opu/odata/sap/API_PROD_ORDER_CONFIRMATION_2_SRV/ProdnOrdConfMatlDocItm",
@@ -49,12 +53,14 @@ module.exports = {
    * List Production Orders
    */
   async sap_production_orders_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.top !== undefined && d.top !== null && d.top !== "") query["$top"] = d.top;
     if (d.skip !== undefined && d.skip !== null && d.skip !== "") query["$skip"] = d.skip;
     if (d.filter) query["$filter"] = d.filter;
 
+    log('Récupération de la liste...');
     const res = await utils.sapRequest(
       opts,
       "/sap/opu/odata/sap/API_PRODUCTION_ORDER_2_SRV/A_ProductionOrder_2",

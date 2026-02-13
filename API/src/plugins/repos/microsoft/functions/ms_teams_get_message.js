@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_get_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.teamId) return { ok: false, error: "Missing teamId." };
     if (!d.channelId) return { ok: false, error: "Missing channelId." };
     if (!d.messageId) return { ok: false, error: "Missing messageId." };
 
+    log('Récupération des données...');
     const res = await utils.graphRequest(opts, `/teams/${d.teamId}/channels/${d.channelId}/messages/${d.messageId}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

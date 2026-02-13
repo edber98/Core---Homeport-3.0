@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_ticket_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
         const data = inputs || {};
         const payload = {};
         const _name = toStr(data.name);

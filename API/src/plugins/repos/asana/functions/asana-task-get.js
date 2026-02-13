@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_task_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const taskGid = (d.taskGid || "").trim();
     if (!taskGid) return { ok: false, error: "Missing taskGid." };
 
+    log('Récupération des données...');
     const res = await utils.asanaRequest(opts, `/tasks/${encodeURIComponent(taskGid)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

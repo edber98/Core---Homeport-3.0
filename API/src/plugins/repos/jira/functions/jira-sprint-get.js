@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_sprint_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const sprintId = (d.sprintId || "").toString().trim();
     if (!sprintId) return { ok: false, error: "Missing sprintId." };
 
+    log('Récupération des données...');
     const res = await utils.jiraRequest(opts, `/rest/agile/1.0/sprint/${encodeURIComponent(sprintId)}`, {
       agile: true
     });

@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_notifications_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération de la liste...');
     const res = await utils.ocsRequest(opts, "/ocs/v2.php/apps/notifications/api/v2/notifications");
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const raw = (res.data && res.data.ocs && res.data.ocs.data) || [];

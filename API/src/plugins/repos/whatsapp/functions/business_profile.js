@@ -1,5 +1,6 @@
 module.exports = {
   async wa_get_business_profile(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -8,6 +9,7 @@ module.exports = {
   },
 
   async wa_update_business_profile(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);

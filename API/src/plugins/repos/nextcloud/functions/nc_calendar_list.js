@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_calendar_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération de la liste...');
     const res = await utils.caldavRequest(opts, "/", {
       method: "PROPFIND",
       headers: { "Depth": "1", "Content-Type": "application/xml" },

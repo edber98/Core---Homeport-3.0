@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_estimate_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const customer_id = (d.customer_id || "").toString().trim();
     const label = (d.label || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     if (d.date) estimate.date = d.date;
     if (d.currency) estimate.currency = d.currency;
 
+    log('Création en cours...');
     const res = await utils.plRequest(opts, "/estimates", { method: "POST", body: { estimate } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

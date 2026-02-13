@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_comment_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const commentId = (d.commentId || "").toString().trim();
     if (!commentId) return { ok: false, error: "Missing commentId." };
 
+    log('Récupération des données...');
     const res = await utils.wpRequest(opts, `/comments/${encodeURIComponent(commentId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

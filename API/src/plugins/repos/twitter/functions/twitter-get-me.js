@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_get_me(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération des données...');
     const res = await utils.twitterRequest(opts, "/users/me", {
       query: { "user.fields": "id,name,username,description,profile_image_url,public_metrics,created_at" }
     });

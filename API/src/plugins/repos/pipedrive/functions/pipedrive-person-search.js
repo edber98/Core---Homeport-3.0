@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pipedrive_person_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const term = (d.term || "").trim();
     if (!term) return { ok: false, error: "Missing term." };
     const limit = parseInt(d.limit, 10) || 10;
 
+    log('Recherche en cours...');
     const res = await utils.pdRequest(opts, "/persons/search", { query: { term, limit } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

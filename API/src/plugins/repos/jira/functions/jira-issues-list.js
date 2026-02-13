@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_issues_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectKey = (d.projectKey || "").trim();
     if (!projectKey) return { ok: false, error: "Missing projectKey." };
@@ -9,6 +10,7 @@ module.exports = {
     const maxResults = parseInt(d.maxResults, 10) || 50;
     const jql = `project = ${projectKey} ORDER BY created DESC`;
 
+    log('Récupération de la liste...');
     const res = await utils.jiraRequest(opts, "/rest/api/3/search", {
       query: { jql, maxResults }
     });

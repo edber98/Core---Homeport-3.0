@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async search_many_openproject_users(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Recherche en cours...');
     const res = await utils.openprojectRequest(opts, "/users", {
       query: { pageSize: 1000, offset: 0 }
     });

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_storage_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.bucket) return { ok: false, error: "Bucket requis." };
 

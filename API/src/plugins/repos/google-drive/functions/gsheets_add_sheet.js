@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async gsheets_add_sheet(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.spreadsheetId || !d.title) return { ok: false, error: "Missing spreadsheetId or title." };
+    log('Création en cours...');
     const res = await utils.googleRequest(opts, `${utils.SHEETS_API}/${d.spreadsheetId}:batchUpdate`, {
       method: "POST",
       body: { requests: [{ addSheet: { properties: { title: d.title } } }] }

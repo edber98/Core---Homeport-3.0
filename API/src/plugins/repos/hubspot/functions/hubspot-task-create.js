@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_task_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const subject = (d.hs_task_subject || "").trim();
     if (!subject) return { ok: false, error: "Missing hs_task_subject." };
@@ -11,6 +12,7 @@ module.exports = {
     if (d.hs_task_status) properties.hs_task_status = d.hs_task_status;
     if (d.hs_timestamp) properties.hs_timestamp = d.hs_timestamp;
 
+    log('Création en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/tasks", {
       method: "POST",
       body: { properties }

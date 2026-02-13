@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_project_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const name = (d.name || "").trim();
     const teamIds = (d.teamIds || "").split(",").map(s => s.trim()).filter(Boolean);

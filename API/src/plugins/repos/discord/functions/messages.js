@@ -1,5 +1,6 @@
 module.exports = {
   async discord_send_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -14,6 +15,7 @@ module.exports = {
   },
 
   async discord_get_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -23,6 +25,7 @@ module.exports = {
   },
 
   async discord_edit_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -37,6 +40,7 @@ module.exports = {
   },
 
   async discord_delete_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -46,6 +50,7 @@ module.exports = {
   },
 
   async discord_list_messages(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -59,6 +64,7 @@ module.exports = {
   },
 
   async discord_react_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";

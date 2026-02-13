@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_reply_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.teamId) return { ok: false, error: "Missing teamId." };
     if (!d.channelId) return { ok: false, error: "Missing channelId." };
@@ -12,6 +13,7 @@ module.exports = {
       body: { contentType: "text", content: d.content }
     };
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, `/teams/${d.teamId}/channels/${d.channelId}/messages/${d.messageId}/replies`, {
       method: "POST",
       body

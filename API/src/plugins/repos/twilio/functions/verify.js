@@ -1,5 +1,6 @@
 module.exports = {
   async twilio_create_verify_service(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioVerifyRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -10,6 +11,7 @@ module.exports = {
   },
 
   async twilio_create_verification(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioVerifyRequest } = require("../utils").utils;
     const args = node.args || {};
     const serviceSid = args.service_sid || "";
@@ -21,6 +23,7 @@ module.exports = {
   },
 
   async twilio_check_verification(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioVerifyRequest } = require("../utils").utils;
     const args = node.args || {};
     const serviceSid = args.service_sid || "";

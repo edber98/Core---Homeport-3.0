@@ -1,5 +1,6 @@
 module.exports = {
   async googlechat_incoming_webhook(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = msg || {};
     return {
       ok: true,

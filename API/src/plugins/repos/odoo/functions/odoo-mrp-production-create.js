@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_mrp_production_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
         const data = inputs || {};
         const payload = {};
         const _product_id = toStr(data.product_id);

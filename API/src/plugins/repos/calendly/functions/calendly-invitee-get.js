@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async calendly_invitee_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!(d.inviteeUuid || "").trim()) return { ok: false, error: "Missing inviteeUuid." };
 
+    log('Création en cours...');
     const res = await utils.calendlyRequest(opts, `/invitees/${d.inviteeUuid}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = (res.data && res.data.resource) || {};

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_file_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.query) return { ok: false, error: "Recherche requise." };
     const body = `<?xml version="1.0" encoding="UTF-8"?>
@@ -14,6 +15,7 @@ module.exports = {
     <d:where><d:like><d:prop><d:displayname/></d:prop><d:literal>%${d.query}%</d:literal></d:like></d:where>
   </d:basicsearch>
 </d:searchrequest>`;
+    log('Recherche en cours...');
     const res = await utils.nextcloudRequest(opts, "/remote.php/dav/", {
       method: "SEARCH",
       body,

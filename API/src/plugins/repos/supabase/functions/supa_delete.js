@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.table || !d.filter) return { ok: false, error: "Table et filtre requis." };
 
+    log('Suppression en cours...');
     const res = await utils.supaRequest(opts, `/rest/v1/${encodeURIComponent(d.table)}?${d.filter}`, {
       method: "DELETE"
     });

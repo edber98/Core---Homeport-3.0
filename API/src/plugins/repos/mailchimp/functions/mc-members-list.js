@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async mc_members_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.listId) return { ok: false, error: "Missing listId." };
     const count = parseInt(d.count, 10) || 10;
     const offset = parseInt(d.offset, 10) || 0;
 
+    log('Récupération de la liste...');
     const res = await utils.mailchimpRequest(opts, `/lists/${d.listId}/members`, { query: { count, offset } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

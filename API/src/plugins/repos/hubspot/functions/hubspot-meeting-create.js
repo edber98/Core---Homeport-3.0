@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_meeting_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const title = (d.hs_meeting_title || "").trim();
     if (!title) return { ok: false, error: "Missing hs_meeting_title." };
@@ -11,6 +12,7 @@ module.exports = {
     if (d.hs_meeting_start_time) properties.hs_meeting_start_time = d.hs_meeting_start_time;
     if (d.hs_meeting_end_time) properties.hs_meeting_end_time = d.hs_meeting_end_time;
 
+    log('Création en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/meetings", {
       method: "POST",
       body: { properties }

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_s3_put_object(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.bucket) return { ok: false, error: "Bucket requis." };
     if (!d.key) return { ok: false, error: "Clé de l'objet requise." };
@@ -17,6 +18,7 @@ module.exports = {
       body = fileVal || "";
     }
 
+    log('Appel API en cours...');
     const res = await utils.s3Request(opts, "PUT", `/${d.bucket}/${encodeURIComponent(d.key)}`, {
       body,
       contentType: d.contentType || "application/octet-stream"

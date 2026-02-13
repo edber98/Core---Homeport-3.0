@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_lead_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const leadId = (d.leadId || "").toString().trim();
     if (!leadId) return { ok: false, error: "Missing leadId." };
 
+    log('Récupération des données...');
     const res = await utils.sfRequest(opts, `/sobjects/Lead/${encodeURIComponent(leadId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

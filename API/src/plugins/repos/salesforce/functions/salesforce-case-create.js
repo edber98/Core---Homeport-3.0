@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_case_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const Subject = (d.Subject || "").trim();
     if (!Subject) return { ok: false, error: "Missing Subject." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.Priority) body.Priority = d.Priority;
     if (d.ContactId) body.ContactId = d.ContactId;
 
+    log('Création en cours...');
     const res = await utils.sfRequest(opts, "/sobjects/Case", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

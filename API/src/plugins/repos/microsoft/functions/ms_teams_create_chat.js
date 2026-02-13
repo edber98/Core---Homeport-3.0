@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_create_chat(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
     const body = {
@@ -18,6 +19,7 @@ module.exports = {
       }));
     }
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, "/chats", {
       method: "POST",
       body

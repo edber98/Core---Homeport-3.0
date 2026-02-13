@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_opportunity_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const opportunityId = (d.opportunityId || "").toString().trim();
     if (!opportunityId) return { ok: false, error: "Missing opportunityId." };
@@ -14,6 +15,7 @@ module.exports = {
 
     if (Object.keys(body).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.sfRequest(opts, `/sobjects/Opportunity/${encodeURIComponent(opportunityId)}`, { method: "PATCH", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

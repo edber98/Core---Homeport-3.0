@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async fd_contact_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Missing name." };
 
@@ -10,6 +11,7 @@ module.exports = {
     if (d.phone) body.phone = d.phone;
     if (d.companyId) body.company_id = parseInt(d.companyId, 10);
 
+    log('Création en cours...');
     const res = await utils.freshdeskRequest(opts, "/contacts", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

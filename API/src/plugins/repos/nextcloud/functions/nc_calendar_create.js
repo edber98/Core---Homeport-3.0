@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_calendar_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.calendarName) return { ok: false, error: "Identifiant du calendrier requis." };
     if (!d.displayName) return { ok: false, error: "Nom affiché requis." };
@@ -18,6 +19,7 @@ module.exports = {
     </d:prop>
   </d:set>
 </c:mkcalendar>`;
+    log('Création en cours...');
     const res = await utils.caldavRequest(opts, d.calendarName + "/", {
       method: "MKCALENDAR",
       body,

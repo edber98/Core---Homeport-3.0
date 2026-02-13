@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async brevo_contact_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const email = (d.email || "").trim();
     if (!email) return { ok: false, error: "Missing email." };
@@ -14,6 +15,7 @@ module.exports = {
       try { Object.assign(body.attributes, JSON.parse(d.attributes)); } catch {}
     }
 
+    log('Mise à jour en cours...');
     const res = await utils.brevoRequest(opts, `/contacts/${encodeURIComponent(email)}`, { method: "PUT", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

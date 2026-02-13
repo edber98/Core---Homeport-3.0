@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async slack_schedule_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const body = {};
   if (d.channel !== undefined && d.channel !== "" && d.channel !== null) body.channel = d.channel;
@@ -9,6 +10,7 @@ module.exports = {
   if (d.post_at !== undefined && d.post_at !== "" && d.post_at !== null) body.post_at = d.post_at;
   if (body.post_at) body.post_at = Number(body.post_at);
 
+    log('Création en cours...');
     const res = await utils.slackRequest(opts, "chat.scheduleMessage", body);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
 

@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_order_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.orderId) return { ok: false, error: "Missing orderId." };
+    log('Récupération des données...');
     const res = await utils.shopifyRequest(opts, `/orders/${d.orderId}.json`);
     if (!res.ok) return res;
     const o = res.data.order || {};

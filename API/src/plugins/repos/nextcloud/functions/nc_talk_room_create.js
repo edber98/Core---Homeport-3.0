@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_talk_room_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.roomType) return { ok: false, error: "Type de conversation requis." };
     const body = { roomType: parseInt(d.roomType, 10) };
     if (d.invite) body.invite = d.invite;
     if (d.roomName) body.roomName = d.roomName;
+    log('Création en cours...');
     const res = await utils.ocsRequest(opts, "/ocs/v2.php/apps/spreed/api/v4/room", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const room = (res.data && res.data.ocs && res.data.ocs.data) || {};

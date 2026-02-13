@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_list_user_tweets(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const userId = (d.userId || "").trim();
     if (!userId) return { ok: false, error: "Missing userId." };
     const maxResults = parseInt(d.maxResults, 10) || 10;
 
+    log('Récupération de la liste...');
     const res = await utils.twitterRequest(opts, `/users/${encodeURIComponent(userId)}/tweets`, {
       query: {
         max_results: maxResults,

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_product_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.productId) return { ok: false, error: "Missing productId." };
     const product = {};
@@ -10,6 +11,7 @@ module.exports = {
     if (d.vendor) product.vendor = d.vendor;
     if (d.product_type) product.product_type = d.product_type;
     if (d.status) product.status = d.status;
+    log('Mise à jour en cours...');
     const res = await utils.shopifyRequest(opts, `/products/${d.productId}.json`, { method: "PUT", body: { product } });
     if (!res.ok) return res;
     const p = res.data.product || {};

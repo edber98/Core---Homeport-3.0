@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_comment_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const post = (d.post || "").toString().trim();
     const content = (d.content || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     if (d.author_name) body.author_name = d.author_name;
     if (d.author_email) body.author_email = d.author_email;
 
+    log('Création en cours...');
     const res = await utils.wpRequest(opts, "/comments", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

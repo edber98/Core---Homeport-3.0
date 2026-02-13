@@ -1,5 +1,6 @@
 module.exports = {
   async tg_send_poll(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -17,6 +18,7 @@ module.exports = {
   },
 
   async tg_send_contact(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -29,6 +31,7 @@ module.exports = {
   },
 
   async tg_send_venue(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async sql_list_tables(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const credentials = (opts && opts.credentials) || {};
     const dbType = credentials.dbType || "mysql";

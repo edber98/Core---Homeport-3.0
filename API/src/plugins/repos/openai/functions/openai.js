@@ -27,6 +27,7 @@ function getEmbeddingsModel(creds, model) {
 module.exports = {
   // Chat completion: system + user
   async openai_chat_completion(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const modelName = String(inputs.model || creds.defaultModel || 'gpt-4o-mini');
     const temperature = (inputs.temperature == null ? 0.7 : Number(inputs.temperature));
@@ -37,13 +38,19 @@ module.exports = {
     const messages = [];
     if (sys) messages.push({ role: 'system', content: sys });
     messages.push({ role: 'user', content: prompt });
-    const res = await llm.invoke(messages);
-    const text = (res && res.content) || '';
+    log('Envoi du prompt...');
+    let text = '';
+    const stream = await llm.stream(messages);
+    for await (const chunk of stream) {
+      const token = typeof chunk.content === 'string' ? chunk.content : '';
+      if (token) { text += token; log(text); }
+    }
     return { ok: true, text };
   },
 
   // Embeddings for a single string or array of strings (JSON array string accepted)
   async openai_embeddings(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const modelName = String(inputs.model || 'text-embedding-3-small');
     let inp = inputs.input;
@@ -55,12 +62,14 @@ module.exports = {
     }
     const input = Array.isArray(inp) ? inp.map(v => String(v)) : [ String(inp || '') ];
     const emb = getEmbeddingsModel(creds, modelName);
+    log('Calcul des embeddings...');
     const vectors = await emb.embedDocuments(input);
     return { ok: true, vectorsCount: vectors.length, dimensions: vectors[0] ? vectors[0].length : 0, vectors };
   },
 
   // Image generation
   async openai_image_generate(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const apiKey = creds && creds.apiKey;
     const baseURL = creds && creds.baseUrl ? String(creds.baseUrl) : 'https://api.openai.com/v1';
@@ -68,6 +77,7 @@ module.exports = {
     const model = String(inputs.model || 'gpt-image-1');
     const prompt = String(inputs.prompt || '');
     const size = String(inputs.size || '1024x1024');
+    log('Génération de l\'image...');
     const res = await fetch(`${baseURL.replace(/\/$/,'')}/images/generations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
@@ -97,6 +107,7 @@ module.exports = {
   },
   // Memory embeddings from text (real embeddings)
   async openai_memory_embed(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const modelName = String(inputs.model || 'text-embedding-3-small');
     // Prefer text from args, else look at incoming handle 'in'
@@ -110,11 +121,13 @@ module.exports = {
       }
     } catch {}
     const emb = getEmbeddingsModel(creds, modelName);
+    log('Calcul des embeddings...');
     const vectors = await emb.embedDocuments([ text ]);
     return { ok: true, type: 'ai_memory', texts: [text], vectors };
   },
   // Agent that consumes memory/tools via incoming handles and produces a real answer via ChatOpenAI
   async openai_agent(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const modelName = String(inputs.model || creds.defaultModel || 'gpt-4o-mini');
     const temperature = (inputs.temperature == null ? 0.7 : Number(inputs.temperature));
@@ -143,8 +156,13 @@ module.exports = {
     const messages = [];
     if (sysMsg) messages.push({ role: 'system', content: sysMsg });
     messages.push({ role: 'user', content: prompt });
-    const res = await llm.invoke(messages);
-    const text = (res && res.content) || '';
+    log('Envoi du prompt...');
+    let text = '';
+    const stream = await llm.stream(messages);
+    for await (const chunk of stream) {
+      const token = typeof chunk.content === 'string' ? chunk.content : '';
+      if (token) { text += token; log(text); }
+    }
     return { ok: true, text };
   },
   // Memory static (text→ai_memory)

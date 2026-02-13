@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_ticket_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = (d.ticketId || "").toString().trim();
     if (!ticketId) return { ok: false, error: "Missing ticketId." };
 
     const props = "subject,content,hs_pipeline,hs_pipeline_stage,hs_ticket_priority";
+    log('Récupération des données...');
     const res = await utils.hubspotRequest(opts, `/crm/v3/objects/tickets/${encodeURIComponent(ticketId)}`, {
       query: { properties: props }
     });

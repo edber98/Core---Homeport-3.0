@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async supa_auth_sign_up(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.email || !d.password) return { ok: false, error: "Email et mot de passe requis." };
 

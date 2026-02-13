@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async gdrive_upload_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Missing name." };
 
@@ -36,6 +37,7 @@ module.exports = {
       multipartBody = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${body}\r\n--${boundary}--`;
     }
 
+    log('Téléversement en cours...');
     const res = await utils.googleRequest(opts, "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType,size,webViewLink,createdTime,modifiedTime,parents", {
       method: "POST",
       headers: { "Content-Type": `multipart/related; boundary=${boundary}` },

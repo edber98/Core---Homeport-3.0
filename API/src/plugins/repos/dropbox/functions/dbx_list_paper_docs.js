@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dbx_list_paper_docs(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
+    log('Récupération de la liste...');
     const res = await utils.dbxRequest(opts, "/files/list_folder", {
       path: "", recursive: false, limit: d.limit || 100
     });

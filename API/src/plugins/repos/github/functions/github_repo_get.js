@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_repo_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
     if (!owner || !repo) return { ok: false, error: "owner et repo requis." };
+    log('Récupération des données...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}`);
     if (!res.ok) return res;
     const r = res.data;

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_team_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const teamId = (d.teamId || "").trim();
     if (!teamId) return { ok: false, error: "Missing teamId." };

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_leads_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const limit = parseInt(d.limit, 10) || 10;
 
     const soql = `SELECT Id, FirstName, LastName, Email, Phone, Company, Status, CreatedDate FROM Lead ORDER BY CreatedDate DESC LIMIT ${limit}`;
+    log('Récupération de la liste...');
     const res = await utils.sfRequest(opts, `/query`, { query: { q: soql } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

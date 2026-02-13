@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dbx_upload_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin de destination requis." };
 
@@ -23,6 +24,7 @@ module.exports = {
       mute: false
     };
 
+    log('Téléversement en cours...');
     const res = await utils.dbxRequest(opts, "/files/upload", args, {
       isContent: true, upload: body
     });

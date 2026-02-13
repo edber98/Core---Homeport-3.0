@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linkedin_create_text_post(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const authorUrn = (d.authorUrn || "").trim();
     if (!authorUrn) return { ok: false, error: "Missing authorUrn (ex.: urn:li:person:xxx)." };
@@ -22,6 +23,7 @@ module.exports = {
       visibility: { "com.linkedin.ugc.MemberNetworkVisibility": visibility }
     };
 
+    log('Création en cours...');
     const res = await utils.linkedinRequest(opts, "/ugcPosts", {
       method: "POST",
       body

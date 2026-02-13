@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_issue_search_jql(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const jql = (d.jql || "").trim();
     if (!jql) return { ok: false, error: "Missing jql." };
 
     const maxResults = parseInt(d.maxResults, 10) || 50;
 
+    log('Recherche en cours...');
     const res = await utils.jiraRequest(opts, "/rest/api/3/search", {
       query: { jql, maxResults }
     });

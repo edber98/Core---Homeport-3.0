@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_subitem_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const parentItemId = (d.parentItemId || "").toString().trim();
     const itemName = (d.itemName || "").trim();
@@ -11,6 +12,7 @@ module.exports = {
     let query = `mutation { create_subitem (parent_item_id: ${parentItemId}, item_name: "${itemName}"`;
     if (colVals) query += `, column_values: ${JSON.stringify(colVals)}`;
     query += `) { id name board { id } group { id } state column_values { id text value } created_at updated_at } }`;
+    log('Création en cours...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const r = res.data.create_subitem || {};

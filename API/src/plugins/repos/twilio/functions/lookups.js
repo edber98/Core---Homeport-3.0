@@ -1,5 +1,6 @@
 module.exports = {
   async twilio_phone_lookup(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioLookupRequest } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumber = encodeURIComponent(args.phone_number || "");

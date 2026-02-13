@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async stripe_balance_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération des données...');
     const res = await utils.stripeRequest(opts, "/balance");
     if (!res.ok) return res;
     const b = res.data;

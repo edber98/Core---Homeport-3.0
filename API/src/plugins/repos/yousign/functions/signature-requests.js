@@ -3,6 +3,7 @@ const { utils } = require('./utils');
 module.exports = {
   // ── Créer une demande de signature ─────────────────────
   async yousign_signature_request_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const name = String(d.name || '').trim();
     if (!name) return { ok: false, error: 'Le nom de la demande est requis.' };
@@ -16,6 +17,7 @@ module.exports = {
     if (d.custom_experience_id) body.custom_experience_id = d.custom_experience_id;
     if (d.branding_id) body.branding_id = d.branding_id;
 
+    log('Création en cours...');
     const res = await utils.yousignRequest(opts, 'POST', '/signature_requests', body);
     if (!res.ok) return res;
     const sr = res.data || {};
@@ -34,10 +36,12 @@ module.exports = {
 
   // ── Récupérer une demande de signature ─────────────────
   async yousign_signature_request_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.signature_request_id || '').trim();
     if (!id) return { ok: false, error: "L'ID de la demande est requis." };
 
+    log('Récupération des données...');
     const res = await utils.yousignRequest(opts, 'GET', `/signature_requests/${encodeURIComponent(id)}`);
     if (!res.ok) return res;
     const sr = res.data || {};
@@ -59,6 +63,7 @@ module.exports = {
 
   // ── Lister les demandes de signature ───────────────────
   async yousign_signature_requests_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const qs = utils.buildQueryString({
       status: d.status || undefined,
@@ -68,6 +73,7 @@ module.exports = {
       external_id: d.external_id || undefined,
     });
 
+    log('Récupération de la liste...');
     const res = await utils.yousignRequest(opts, 'GET', `/signature_requests${qs}`);
     if (!res.ok) return res;
     const raw = res.data || {};
@@ -85,10 +91,12 @@ module.exports = {
 
   // ── Activer une demande de signature ───────────────────
   async yousign_signature_request_activate(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.signature_request_id || '').trim();
     if (!id) return { ok: false, error: "L'ID de la demande est requis." };
 
+    log('Appel API en cours...');
     const res = await utils.yousignRequest(opts, 'POST', `/signature_requests/${encodeURIComponent(id)}/activate`);
     if (!res.ok) return res;
     const sr = res.data || {};
@@ -103,6 +111,7 @@ module.exports = {
 
   // ── Annuler une demande de signature ───────────────────
   async yousign_signature_request_cancel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.signature_request_id || '').trim();
     if (!id) return { ok: false, error: "L'ID de la demande est requis." };
@@ -111,6 +120,7 @@ module.exports = {
     if (d.reason) body.reason = d.reason;
     if (d.custom_note) body.custom_note = d.custom_note;
 
+    log('Appel API en cours...');
     const res = await utils.yousignRequest(opts, 'POST', `/signature_requests/${encodeURIComponent(id)}/cancel`, body);
     if (!res.ok) return res;
     const sr = res.data || {};
@@ -124,11 +134,13 @@ module.exports = {
 
   // ── Supprimer une demande de signature ─────────────────
   async yousign_signature_request_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.signature_request_id || '').trim();
     if (!id) return { ok: false, error: "L'ID de la demande est requis." };
 
     const permanent = d.permanent_delete === true || d.permanent_delete === 'true' ? '?permanent_delete=true' : '';
+    log('Suppression en cours...');
     const res = await utils.yousignRequest(opts, 'DELETE', `/signature_requests/${encodeURIComponent(id)}${permanent}`);
     if (!res.ok) return res;
     return { ok: true, deleted: true, id };

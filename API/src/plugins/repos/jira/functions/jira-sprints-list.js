@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_sprints_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     if (!boardId) return { ok: false, error: "Missing boardId." };
 
     const maxResults = parseInt(d.maxResults, 10) || 50;
 
+    log('Récupération de la liste...');
     const res = await utils.jiraRequest(opts, `/rest/agile/1.0/board/${encodeURIComponent(boardId)}/sprint`, {
       query: { maxResults },
       agile: true

@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async notion_page_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const parentType = (d.parentType || "").trim();
     const parentId = (d.parentId || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     const properties = { title: { title: [{ text: { content: title } }] } };
     const body = { parent, properties };
     if (d.content) { body.children = [{ object: "block", type: "paragraph", paragraph: { rich_text: [{ text: { content: d.content } }] } }]; }
+    log('Création en cours...');
     const res = await utils.notionRequest(opts, "/pages", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

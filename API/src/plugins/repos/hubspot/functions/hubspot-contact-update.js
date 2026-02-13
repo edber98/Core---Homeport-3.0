@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_contact_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const contactId = (d.contactId || "").toString().trim();
     if (!contactId) return { ok: false, error: "Missing contactId." };
@@ -14,6 +15,7 @@ module.exports = {
 
     if (Object.keys(properties).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.hubspotRequest(opts, `/crm/v3/objects/contacts/${encodeURIComponent(contactId)}`, {
       method: "PATCH",
       body: { properties }

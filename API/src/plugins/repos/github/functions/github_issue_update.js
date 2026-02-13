@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_issue_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
     if (d.state) body.state = d.state;
     if (d.labels) body.labels = d.labels.split(",").map(l => l.trim()).filter(Boolean);
     if (d.assignees) body.assignees = d.assignees.split(",").map(a => a.trim()).filter(Boolean);
+    log('Mise à jour en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/issues/${issue_number}`, { method: "PATCH", body });
     if (!res.ok) return res;
     const r = res.data;

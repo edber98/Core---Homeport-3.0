@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_deal_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const dealId = (d.dealId || "").toString().trim();
     if (!dealId) return { ok: false, error: "Missing dealId." };
@@ -13,6 +14,7 @@ module.exports = {
 
     if (Object.keys(properties).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.hubspotRequest(opts, `/crm/v3/objects/deals/${encodeURIComponent(dealId)}`, {
       method: "PATCH",
       body: { properties }

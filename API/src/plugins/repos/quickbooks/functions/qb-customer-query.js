@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_customer_query(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = (d.query || "").trim();
     if (!query) return { ok: false, error: "Missing query." };

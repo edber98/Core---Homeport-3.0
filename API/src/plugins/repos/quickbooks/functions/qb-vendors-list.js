@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_vendors_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = d.query || "SELECT * FROM Vendor";
     const res = await utils.qbQuery(opts, query, d.maxResults);

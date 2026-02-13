@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async fd_ticket_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = parseInt(d.ticketId, 10);
     if (isNaN(ticketId)) return { ok: false, error: "Missing ticketId." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.status) body.status = parseInt(d.status, 10);
     if (d.assigneeId) body.responder_id = parseInt(d.assigneeId, 10);
 
+    log('Mise à jour en cours...');
     const res = await utils.freshdeskRequest(opts, `/tickets/${ticketId}`, { method: "PUT", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

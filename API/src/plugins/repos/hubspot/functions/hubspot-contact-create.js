@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_contact_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const email = (d.email || "").trim();
     if (!email) return { ok: false, error: "Missing email." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.phone) properties.phone = d.phone;
     if (d.company) properties.company = d.company;
 
+    log('Création en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/contacts", {
       method: "POST",
       body: { properties }

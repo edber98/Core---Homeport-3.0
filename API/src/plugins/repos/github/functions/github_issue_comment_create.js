@@ -2,12 +2,14 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_issue_comment_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
     const issue_number = (d.issue_number || "").toString().trim();
     const bodyText = (d.body || "").trim();
     if (!owner || !repo || !issue_number || !bodyText) return { ok: false, error: "owner, repo, issue_number et body requis." };
+    log('Création en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/issues/${issue_number}/comments`, { method: "POST", body: { body: bodyText } });
     if (!res.ok) return res;
     const r = res.data;

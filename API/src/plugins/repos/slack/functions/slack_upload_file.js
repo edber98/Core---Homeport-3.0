@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async slack_upload_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
 
     let body;

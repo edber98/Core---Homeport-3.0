@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_order_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.email) return { ok: false, error: "Missing email." };
     const order = { email: d.email };
     if (d.line_items) { try { order.line_items = typeof d.line_items === "string" ? JSON.parse(d.line_items) : d.line_items; } catch {} }
     if (d.financial_status) order.financial_status = d.financial_status;
+    log('Création en cours...');
     const res = await utils.shopifyRequest(opts, "/orders.json", { method: "POST", body: { order } });
     if (!res.ok) return res;
     const o = res.data.order || {};

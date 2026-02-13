@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async atera_ticket_add_comment(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.ticketId) return { ok: false, error: "Missing ticketId." };
     if (!d.CommentText) return { ok: false, error: "Missing CommentText." };
@@ -17,6 +18,7 @@ module.exports = {
       body.EnduserCommentDetails = { EnduserId: Number(d.EnduserId) };
     }
 
+    log('Création en cours...');
     const res = await utils.ateraRequest(opts, `/tickets/${encodeURIComponent(d.ticketId)}/comments`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true };

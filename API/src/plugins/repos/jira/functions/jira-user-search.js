@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async jira_user_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = (d.query || "").trim();
     if (!query) return { ok: false, error: "Missing query." };
 
+    log('Recherche en cours...');
     const res = await utils.jiraRequest(opts, "/rest/api/3/user/search", {
       query: { query }
     });

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async shopify_customers_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.query) return { ok: false, error: "Missing query." };
     const query = { query: d.query };
     if (d.limit) query.limit = d.limit;
+    log('Recherche en cours...');
     const res = await utils.shopifyRequest(opts, "/customers/search.json", { query });
     if (!res.ok) return res;
     const items = (res.data && res.data.customers) || [];

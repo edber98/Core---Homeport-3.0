@@ -3,6 +3,7 @@ const { utils } = require('./utils');
 module.exports = {
   // ── Créer un contact ───────────────────────────────────
   async yousign_contact_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const firstName = String(d.first_name || '').trim();
     const lastName = String(d.last_name || '').trim();
@@ -17,6 +18,7 @@ module.exports = {
     if (d.job_title) body.job_title = d.job_title;
     if (d.locale) body.locale = d.locale;
 
+    log('Création en cours...');
     const res = await utils.yousignRequest(opts, 'POST', '/contacts', body);
     if (!res.ok) return res;
     const c = res.data || {};
@@ -35,6 +37,7 @@ module.exports = {
 
   // ── Lister les contacts ────────────────────────────────
   async yousign_contacts_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const qs = utils.buildQueryString({
       after: d.after || undefined,
@@ -42,6 +45,7 @@ module.exports = {
       q: d.q || undefined,
     });
 
+    log('Récupération de la liste...');
     const res = await utils.yousignRequest(opts, 'GET', `/contacts${qs}`);
     if (!res.ok) return res;
     const raw = res.data || {};
@@ -60,10 +64,12 @@ module.exports = {
 
   // ── Récupérer un contact ───────────────────────────────
   async yousign_contact_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.contact_id || '').trim();
     if (!id) return { ok: false, error: "L'ID du contact est requis." };
 
+    log('Récupération des données...');
     const res = await utils.yousignRequest(opts, 'GET', `/contacts/${encodeURIComponent(id)}`);
     if (!res.ok) return res;
     const c = res.data || {};
@@ -82,10 +88,12 @@ module.exports = {
 
   // ── Supprimer un contact ───────────────────────────────
   async yousign_contact_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.contact_id || '').trim();
     if (!id) return { ok: false, error: "L'ID du contact est requis." };
 
+    log('Suppression en cours...');
     const res = await utils.yousignRequest(opts, 'DELETE', `/contacts/${encodeURIComponent(id)}`);
     if (!res.ok) return res;
     return { ok: true, deleted: true, id };

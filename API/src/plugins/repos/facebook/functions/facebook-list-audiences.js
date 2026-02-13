@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_list_audiences(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const adAccountId = (d.adAccountId || "").trim();
     if (!adAccountId) return { ok: false, error: "Missing adAccountId." };
     const limit = parseInt(d.limit, 10) || 25;
 
+    log('Récupération de la liste...');
     const res = await utils.facebookRequest(opts, `/act_${encodeURIComponent(adAccountId)}/customaudiences`, {
       query: { fields: "id,name,subtype,approximate_count,delivery_status", limit }
     });

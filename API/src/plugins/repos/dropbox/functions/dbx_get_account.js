@@ -2,6 +2,8 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dbx_get_account(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération des données...');
     const res = await utils.dbxRequest(opts, "/users/get_current_account", null);
     if (!res.ok) return res;
     const a = res.data;

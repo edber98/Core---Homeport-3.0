@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_estimate_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const customerRef = (d.customerRef || "").toString().trim();
     if (!customerRef) return { ok: false, error: "Missing customerRef." };
@@ -13,6 +14,7 @@ module.exports = {
       try { body.Line = JSON.parse(d.lineItems); } catch { return { ok: false, error: "Invalid lineItems JSON." }; }
     }
 
+    log('Création en cours...');
     const res = await utils.qbRequest(opts, "/estimate", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

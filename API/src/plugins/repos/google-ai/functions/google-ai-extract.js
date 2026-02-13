@@ -2,6 +2,7 @@ const { extractWithAx, resolveImageInput } = require('../../_shared/ax-helpers')
 
 module.exports = {
   async google_ai_extract(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const apiKey = creds.apiKey;
     if (!apiKey) throw new Error('Missing Google AI apiKey in credentials');
@@ -14,6 +15,7 @@ module.exports = {
     const img = inputs.image ? await resolveImageInput(inputs, opts) : null;
     if (!content && !img) throw new Error('Le contenu ou une image est requis');
 
+    log('Extraction en cours...');
     const result = await extractWithAx('google-gemini', apiKey, model, system, content, schema, img?.base64, img?.mimeType);
     return { ok: true, ...result };
   },

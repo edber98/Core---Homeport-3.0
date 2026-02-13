@@ -1,5 +1,6 @@
 module.exports = {
   async wa_list_templates(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest } = require("../utils").utils;
     const args = node.args || {};
     const businessId = args.business_id || "";

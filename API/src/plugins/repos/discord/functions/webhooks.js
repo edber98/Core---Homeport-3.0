@@ -1,5 +1,6 @@
 module.exports = {
   async discord_execute_webhook(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const args = node.args || {};
     const webhookUrl = args.webhook_url || "";
     if (!webhookUrl) return { ok: false, error: "URL du webhook manquante." };
@@ -14,6 +15,7 @@ module.exports = {
 
     let res;
     try {
+      log('Exécution en cours...');
       res = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

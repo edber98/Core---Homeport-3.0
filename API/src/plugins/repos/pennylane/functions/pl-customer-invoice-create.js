@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_customer_invoice_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const customer_id = (d.customer_id || "").toString().trim();
     const label = (d.label || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
     if (d.deadline) invoice.deadline = d.deadline;
     if (d.currency) invoice.currency = d.currency;
 
+    log('Création en cours...');
     const res = await utils.plRequest(opts, "/customer_invoices", { method: "POST", body: { invoice } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

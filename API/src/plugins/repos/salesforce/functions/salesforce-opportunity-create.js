@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_opportunity_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const Name = (d.Name || "").trim();
     if (!Name) return { ok: false, error: "Missing Name." };
@@ -14,6 +15,7 @@ module.exports = {
     if (d.Amount) body.Amount = parseFloat(d.Amount);
     if (d.AccountId) body.AccountId = d.AccountId;
 
+    log('Création en cours...');
     const res = await utils.sfRequest(opts, "/sobjects/Opportunity", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

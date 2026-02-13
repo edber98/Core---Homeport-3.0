@@ -1,5 +1,6 @@
 module.exports = {
   async google_ai_image_generate(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const apiKey = creds.apiKey;
     if (!apiKey) throw new Error('Missing Google AI apiKey in credentials');
@@ -9,6 +10,7 @@ module.exports = {
     const aspectRatio = String(inputs.size || '1:1');
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predict?key=${apiKey}`;
+    log('Génération de l\'image...');
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

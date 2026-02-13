@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_projects_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const workspaceGid = (d.workspaceGid || "").trim();
     if (!workspaceGid) return { ok: false, error: "Missing workspaceGid." };
 
     const limit = parseInt(d.limit, 10) || 100;
+    log('Récupération de la liste...');
     const res = await utils.asanaRequest(opts, "/projects", {
       query: { workspace: workspaceGid, limit, opt_fields: "name,color,workspace.name" }
     });

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async brevo_contact_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const email = (d.email || "").trim();
     if (!email) return { ok: false, error: "Missing email." };
@@ -16,6 +17,7 @@ module.exports = {
     }
     if (Object.keys(attributes).length) body.attributes = attributes;
 
+    log('Création en cours...');
     const res = await utils.brevoRequest(opts, "/contacts", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

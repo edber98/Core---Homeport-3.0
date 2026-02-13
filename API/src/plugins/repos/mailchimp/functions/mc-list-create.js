@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async mc_list_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Missing name." };
 
@@ -16,6 +17,7 @@ module.exports = {
       email_type_option: true
     };
 
+    log('Création en cours...');
     const res = await utils.mailchimpRequest(opts, "/lists", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

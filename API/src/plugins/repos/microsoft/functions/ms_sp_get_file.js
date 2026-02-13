@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_sp_get_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.siteId) return { ok: false, error: "Missing siteId." };
     if (!d.itemId) return { ok: false, error: "Missing itemId." };
 
+    log('Récupération des données...');
     const res = await utils.graphRequest(opts, `/sites/${d.siteId}/drive/items/${d.itemId}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

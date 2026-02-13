@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_file_upload(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin requis." };
 
@@ -31,6 +32,7 @@ module.exports = {
       uploadPath = uploadPath.replace(/\/+$/, '') + '/' + fileName;
     }
 
+    log('Téléversement en cours...');
     const res = await utils.webdavRequest(opts, uploadPath, {
       method: "PUT",
       body,

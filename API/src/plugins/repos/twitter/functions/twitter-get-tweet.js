@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_get_tweet(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const tweetId = (d.tweetId || "").trim();
     if (!tweetId) return { ok: false, error: "Missing tweetId." };
 
+    log('Récupération des données...');
     const res = await utils.twitterRequest(opts, `/tweets/${encodeURIComponent(tweetId)}`, {
       query: { "tweet.fields": "created_at,author_id,public_metrics,text,lang" }
     });

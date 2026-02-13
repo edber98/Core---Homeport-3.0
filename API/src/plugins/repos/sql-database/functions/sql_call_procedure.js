@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async sql_call_procedure(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Nom de la procédure requis." };
 

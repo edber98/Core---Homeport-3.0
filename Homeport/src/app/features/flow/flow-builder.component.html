@@ -300,7 +300,8 @@
             <!-- Streaming log overlay via node-toolbar -->
             <node-toolbar *ngIf="nodeLogText.get(ctx.node.id) as logText"
               [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
-              <div class="node-log-bubble">
+              <div class="node-log-bubble" [class.expanded]="nodeLogExpanded.has(ctx.node.id)"
+                   (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)">
                 <span class="node-log-text">{{ logText }}</span>
               </div>
             </node-toolbar>

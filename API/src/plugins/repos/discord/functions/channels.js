@@ -1,5 +1,6 @@
 module.exports = {
   async discord_get_channel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -8,6 +9,7 @@ module.exports = {
   },
 
   async discord_list_channels(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -16,6 +18,7 @@ module.exports = {
   },
 
   async discord_create_channel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -29,6 +32,7 @@ module.exports = {
   },
 
   async discord_modify_channel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -42,6 +46,7 @@ module.exports = {
   },
 
   async discord_delete_channel(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";

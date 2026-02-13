@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_issue_search(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const searchQuery = (d.query || "").trim();
     if (!searchQuery) return { ok: false, error: "Missing query." };

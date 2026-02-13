@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_note_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const body = (d.hs_note_body || "").trim();
     if (!body) return { ok: false, error: "Missing hs_note_body." };
@@ -27,6 +28,7 @@ module.exports = {
     }
     if (associations.length > 0) payload.associations = associations;
 
+    log('Création en cours...');
     const res = await utils.hubspotRequest(opts, "/crm/v3/objects/notes", {
       method: "POST",
       body: payload

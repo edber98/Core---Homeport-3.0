@@ -1,5 +1,6 @@
 module.exports = {
   async discord_get_guild(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -8,6 +9,7 @@ module.exports = {
   },
 
   async discord_list_guild_channels(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -16,6 +18,7 @@ module.exports = {
   },
 
   async discord_list_guild_members(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";

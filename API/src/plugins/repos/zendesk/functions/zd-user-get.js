@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async zd_user_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const userId = parseInt(d.userId, 10);
     if (isNaN(userId)) return { ok: false, error: "Missing userId." };
 
+    log('Récupération des données...');
     const res = await utils.zendeskRequest(opts, `/users/${userId}.json`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

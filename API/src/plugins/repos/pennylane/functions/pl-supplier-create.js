@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_supplier_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const name = (d.name || "").trim();
     if (!name) return { ok: false, error: "Missing name." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.address) supplier.address = d.address;
     if (d.country) supplier.country_alpha2 = d.country;
 
+    log('Création en cours...');
     const res = await utils.plRequest(opts, "/suppliers", { method: "POST", body: { supplier } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

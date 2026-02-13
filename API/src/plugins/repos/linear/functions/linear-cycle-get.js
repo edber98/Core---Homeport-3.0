@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linear_cycle_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const cycleId = (d.cycleId || "").trim();
     if (!cycleId) return { ok: false, error: "Missing cycleId." };

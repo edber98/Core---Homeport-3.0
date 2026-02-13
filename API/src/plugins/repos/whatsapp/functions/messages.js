@@ -1,5 +1,6 @@
 module.exports = {
   async wa_send_text(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -14,6 +15,7 @@ module.exports = {
   },
 
   async wa_send_template(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -35,6 +37,7 @@ module.exports = {
   },
 
   async wa_send_image(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -53,6 +56,7 @@ module.exports = {
   },
 
   async wa_send_document(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -72,6 +76,7 @@ module.exports = {
   },
 
   async wa_send_location(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -91,6 +96,7 @@ module.exports = {
   },
 
   async wa_send_contact(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);
@@ -114,6 +120,7 @@ module.exports = {
   },
 
   async wa_mark_read(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
     const args = node.args || {};
     const phoneNumberId = getPhoneNumberId(opts);

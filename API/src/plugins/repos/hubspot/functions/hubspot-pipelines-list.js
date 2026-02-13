@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async hubspot_pipelines_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const objectType = (d.objectType || "").trim();
     if (!objectType) return { ok: false, error: "Missing objectType." };
 
+    log('Récupération de la liste...');
     const res = await utils.hubspotRequest(opts, `/crm/v3/pipelines/${encodeURIComponent(objectType)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

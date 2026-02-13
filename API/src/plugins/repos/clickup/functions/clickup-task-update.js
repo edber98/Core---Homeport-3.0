@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_task_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const taskId = (d.taskId || "").trim();
     if (!taskId) return { ok: false, error: "Missing taskId." };
@@ -15,6 +16,7 @@ module.exports = {
 
     if (Object.keys(body).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.clickupRequest(opts, `/task/${encodeURIComponent(taskId)}`, {
       method: "PUT", body
     });

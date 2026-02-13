@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_commit_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
     const ref = (d.ref || "").trim();
     if (!owner || !repo || !ref) return { ok: false, error: "owner, repo et ref requis." };
+    log('Récupération des données...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/commits/${ref}`);
     if (!res.ok) return res;
     const r = res.data;

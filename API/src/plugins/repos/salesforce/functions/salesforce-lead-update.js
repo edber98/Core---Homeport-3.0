@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async salesforce_lead_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const leadId = (d.leadId || "").toString().trim();
     if (!leadId) return { ok: false, error: "Missing leadId." };
@@ -15,6 +16,7 @@ module.exports = {
 
     if (Object.keys(body).length === 0) return { ok: false, error: "No fields to update." };
 
+    log('Mise à jour en cours...');
     const res = await utils.sfRequest(opts, `/sobjects/Lead/${encodeURIComponent(leadId)}`, { method: "PATCH", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

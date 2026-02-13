@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async clickup_list_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const folderId = (d.folderId || "").trim();
     const name = (d.name || "").trim();
@@ -11,6 +12,7 @@ module.exports = {
     const body = { name };
     if (d.content) body.content = d.content;
 
+    log('Création en cours...');
     const res = await utils.clickupRequest(opts, `/folder/${encodeURIComponent(folderId)}/list`, {
       method: "POST", body
     });

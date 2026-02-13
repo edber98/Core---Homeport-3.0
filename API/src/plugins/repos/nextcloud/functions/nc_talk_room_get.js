@@ -2,8 +2,10 @@ const { utils } = require("./utils");
 
 module.exports = {
   async nc_talk_room_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.token) return { ok: false, error: "Token requis." };
+    log('Récupération des données...');
     const res = await utils.ocsRequest(opts, `/ocs/v2.php/apps/spreed/api/v4/room/${encodeURIComponent(d.token)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const room = (res.data && res.data.ocs && res.data.ocs.data) || {};

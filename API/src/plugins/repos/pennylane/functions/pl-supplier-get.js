@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_supplier_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const supplierId = (d.supplierId || "").toString().trim();
     if (!supplierId) return { ok: false, error: "Missing supplierId." };
 
+    log('Récupération des données...');
     const res = await utils.plRequest(opts, `/suppliers/${encodeURIComponent(supplierId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

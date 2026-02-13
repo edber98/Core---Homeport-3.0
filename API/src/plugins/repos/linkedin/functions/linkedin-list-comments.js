@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async linkedin_list_comments(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const postUrn = (d.postUrn || "").trim();
     if (!postUrn) return { ok: false, error: "Missing postUrn." };
 
+    log('Récupération de la liste...');
     const res = await utils.linkedinRequest(opts, "/socialActions/" + encodeURIComponent(postUrn) + "/comments");
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

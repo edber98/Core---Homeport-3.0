@@ -3,6 +3,7 @@ const { utils } = require('./utils');
 module.exports = {
   // ── Créer un webhook ───────────────────────────────────
   async yousign_webhook_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const endpoint = String(d.endpoint || '').trim();
     if (!endpoint) return { ok: false, error: "L'URL du endpoint est requise." };
@@ -25,6 +26,7 @@ module.exports = {
     if (d.auto_retry !== undefined) body.auto_retry = d.auto_retry === true || d.auto_retry === 'true';
     if (d.enabled !== undefined) body.enabled = d.enabled !== false && d.enabled !== 'false';
 
+    log('Création en cours...');
     const res = await utils.yousignRequest(opts, 'POST', '/webhooks/subscriptions', body);
     if (!res.ok) return res;
     const w = res.data || {};
@@ -43,6 +45,8 @@ module.exports = {
 
   // ── Lister les webhooks ────────────────────────────────
   async yousign_webhooks_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    log('Récupération de la liste...');
     const res = await utils.yousignRequest(opts, 'GET', '/webhooks');
     if (!res.ok) return res;
     const raw = res.data || {};
@@ -61,10 +65,12 @@ module.exports = {
 
   // ── Supprimer un webhook ───────────────────────────────
   async yousign_webhook_delete(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const id = String(d.webhook_id || '').trim();
     if (!id) return { ok: false, error: "L'ID du webhook est requis." };
 
+    log('Suppression en cours...');
     const res = await utils.yousignRequest(opts, 'DELETE', `/webhooks/${encodeURIComponent(id)}`);
     if (!res.ok) return res;
     return { ok: true, deleted: true, id };
@@ -72,6 +78,7 @@ module.exports = {
 
   // ── Événement webhook (trigger event handler) ──────────
   async yousign_webhook_event(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = (msg && msg.payload) || {};
     return {
       ok: true,

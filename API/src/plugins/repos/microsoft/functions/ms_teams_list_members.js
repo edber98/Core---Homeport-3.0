@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_list_members(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.teamId) return { ok: false, error: "Missing teamId." };
 
+    log('Récupération de la liste...');
     const res = await utils.graphRequest(opts, `/teams/${d.teamId}/members`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_post_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const postId = (d.postId || "").toString().trim();
     if (!postId) return { ok: false, error: "Missing postId." };
@@ -12,6 +13,7 @@ module.exports = {
     if (d.status) body.status = d.status;
     if (d.excerpt) body.excerpt = d.excerpt;
 
+    log('Mise à jour en cours...');
     const res = await utils.wpRequest(opts, `/posts/${encodeURIComponent(postId)}`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

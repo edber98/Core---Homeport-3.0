@@ -14,6 +14,7 @@ function toFloat(value) {
 
 module.exports = {
   async odoo_purchase_order_line_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const orderId = toInt(data.order_id);
     const productId = toInt(data.product_id);

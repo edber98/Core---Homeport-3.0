@@ -1,5 +1,6 @@
 module.exports = {
   async twilio_send_sms(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -12,6 +13,7 @@ module.exports = {
   },
 
   async twilio_list_sms(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
     const args = node.args || {};
     const params = [];

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async asana_task_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const projectGid = (d.projectGid || "").trim();
     const name = (d.name || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
     if (d.assignee) data.assignee = d.assignee;
     if (d.due_on) data.due_on = d.due_on;
 
+    log('Création en cours...');
     const res = await utils.asanaRequest(opts, "/tasks", { method: "POST", body: { data } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

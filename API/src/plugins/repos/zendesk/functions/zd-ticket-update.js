@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async zd_ticket_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = parseInt(d.ticketId, 10);
     if (isNaN(ticketId)) return { ok: false, error: "Missing ticketId." };
@@ -13,6 +14,7 @@ module.exports = {
     if (d.assigneeId) ticket.assignee_id = parseInt(d.assigneeId, 10);
     if (d.comment) ticket.comment = { body: d.comment, public: true };
 
+    log('Mise à jour en cours...');
     const res = await utils.zendeskRequest(opts, `/tickets/${ticketId}.json`, { method: "PUT", body: { ticket } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

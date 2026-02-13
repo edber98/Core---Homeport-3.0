@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async pl_customer_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const name = (d.name || "").trim();
     if (!name) return { ok: false, error: "Missing name." };
@@ -14,6 +15,7 @@ module.exports = {
     if (d.registration_number) customer.registration_number = d.registration_number;
     if (d.vat_number) customer.vat_number = d.vat_number;
 
+    log('Création en cours...');
     const res = await utils.plRequest(opts, "/customers", { method: "POST", body: { customer } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

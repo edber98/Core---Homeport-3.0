@@ -15,9 +15,11 @@ const MIME_MAP = {
 
 module.exports = {
   async dbx_download_file(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin du fichier requis." };
 
+    log('Récupération des données...');
     const res = await utils.dbxRequest(opts, "/files/download", { path: d.path }, { isContent: true });
     if (!res.ok) return res;
     const entry = utils.mapEntry(res.data);

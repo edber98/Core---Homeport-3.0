@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async mistral_create_embedding(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = (d.model || "mistral-embed").trim();
     const input = (d.input || "").trim();
@@ -13,6 +14,7 @@ module.exports = {
       inputArray = Array.isArray(parsed) ? parsed : [input];
     } catch { inputArray = [input]; }
 
+    log('Calcul des embeddings...');
     const res = await utils.mistralRequest(opts, "/embeddings", {
       method: "POST",
       body: { model, input: inputArray }

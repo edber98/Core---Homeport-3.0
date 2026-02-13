@@ -122,6 +122,7 @@ export class FlowBuilderComponent {
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
   // Streaming log text per node (from opts.log() in handlers)
   nodeLogText = new Map<string, string>();
+  nodeLogExpanded = new Set<string>();
   // Control whether exec badges are shown on nodes
   private showExecBadges = false;
   // Snapshot of selected run (from backend) for right panel
@@ -5081,6 +5082,7 @@ export class FlowBuilderComponent {
     this.lastOverlayPairs = new Set();
     this.backendRunStatus = 'idle';
     this.nodeLogText.clear();
+    this.nodeLogExpanded.clear();
     // Reset dialog badge + logs for a fresh run
     this.testStatus = 'idle';
     this.testStartedAt = null;
@@ -5193,7 +5195,7 @@ export class FlowBuilderComponent {
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
           // Clear streaming log when node finishes
-          if (st === 'success' || st === 'error' || st === 'cancelled') this.nodeLogText.delete(nid);
+          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogExpanded.delete(nid); }
           // Track per-node attempts by (nodeId, exec)
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
@@ -5357,6 +5359,8 @@ export class FlowBuilderComponent {
           else this.nodeLogText.delete(nid);
         }
         try { this.cdr.detectChanges(); } catch {}
+        // Auto-scroll expanded bubbles to bottom
+        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => el.scrollTop = el.scrollHeight); } catch {} }, 0);
         return;
       }
       // Catch-all: append other node-scoped events to attempt logs in real-time

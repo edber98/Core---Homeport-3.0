@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dolibarr_payment_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.id) return { ok: false, error: "Champ id requis." };
     if (!d.datepaye && d.datepaye !== 0) return { ok: false, error: "Champ datepaye requis." };
@@ -16,6 +17,7 @@ module.exports = {
     if (d.accountid !== undefined && d.accountid !== null && d.accountid !== "") body.accountid = d.accountid;
     if (d.comment !== undefined && d.comment !== null && d.comment !== "") body.comment = d.comment;
 
+    log('Création en cours...');
     const res = await utils.dolibarrRequest(opts, `/invoices/${encodeURIComponent(d.id)}/payments`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true, ...( typeof res.data === 'object' && res.data !== null ? res.data : { id: res.data }) };

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async facebook_send_message(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const pageId = (d.pageId || "").trim();
     if (!pageId) return { ok: false, error: "Missing pageId." };
@@ -10,6 +11,7 @@ module.exports = {
     const text = (d.text || "").trim();
     if (!text) return { ok: false, error: "Missing text." };
 
+    log('Création en cours...');
     const res = await utils.facebookRequest(opts, `/${encodeURIComponent(pageId)}/messages`, {
       method: "POST",
       body: {

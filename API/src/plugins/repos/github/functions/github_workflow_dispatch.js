@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async github_workflow_dispatch(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const owner = (d.owner || "").trim();
     const repo = (d.repo || "").trim();
@@ -12,6 +13,7 @@ module.exports = {
     if (d.inputs) {
       try { body.inputs = JSON.parse(d.inputs); } catch (e) { return { ok: false, error: "inputs JSON invalide: " + e.message }; }
     }
+    log('Mise à jour en cours...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, { method: "POST", body });
     if (!res.ok) return res;
     return { ok: true, message: "Workflow déclenché avec succès.", status: "dispatched" };

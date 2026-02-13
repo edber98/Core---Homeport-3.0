@@ -1,5 +1,6 @@
 module.exports = {
   async discord_list_roles(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -8,6 +9,7 @@ module.exports = {
   },
 
   async discord_create_role(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";
@@ -21,6 +23,7 @@ module.exports = {
   },
 
   async discord_add_role_to_member(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";

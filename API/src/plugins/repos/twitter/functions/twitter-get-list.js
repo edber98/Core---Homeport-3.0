@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async twitter_get_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const listId = (d.listId || "").trim();
     if (!listId) return { ok: false, error: "Missing listId." };
 
+    log('Récupération de la liste...');
     const res = await utils.twitterRequest(opts, `/lists/${encodeURIComponent(listId)}`, {
       query: { "list.fields": "id,name,description,owner_id,follower_count,member_count,created_at" }
     });

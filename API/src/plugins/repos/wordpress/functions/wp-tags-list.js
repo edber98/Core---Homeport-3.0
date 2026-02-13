@@ -2,11 +2,13 @@ const { utils } = require("./utils");
 
 module.exports = {
   async wp_tags_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = {};
     if (d.per_page) query.per_page = d.per_page;
     if (d.search) query.search = d.search;
 
+    log('Récupération de la liste...');
     const res = await utils.wpRequest(opts, "/tags", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_ses_list_templates(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const params = {};
     if (d.maxItems) params["MaxItems"] = String(d.maxItems);
 
+    log('Récupération de la liste...');
     const res = await utils.sesRequest(opts, "ListTemplates", params);
     if (!res.ok) return res;
 

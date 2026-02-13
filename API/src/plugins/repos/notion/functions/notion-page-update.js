@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async notion_page_update(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const pageId = (d.pageId || "").trim();
     const propertiesStr = (d.properties || "").trim();
@@ -8,6 +9,7 @@ module.exports = {
     if (!propertiesStr) return { ok: false, error: "Missing properties." };
     let properties;
     try { properties = typeof propertiesStr === "object" ? propertiesStr : JSON.parse(propertiesStr); } catch { return { ok: false, error: "Invalid JSON in properties." }; }
+    log('Mise à jour en cours...');
     const res = await utils.notionRequest(opts, `/pages/${encodeURIComponent(pageId)}`, { method: "PATCH", body: { properties } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

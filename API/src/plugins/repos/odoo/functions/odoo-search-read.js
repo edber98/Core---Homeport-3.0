@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_search_read(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const model = toStr(data.model);
     if (!model) return { ok: false, error: "Champ model requis." };

@@ -1,5 +1,6 @@
 module.exports = {
   async discord_create_thread(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const channelId = args.channel_id || "";
@@ -16,6 +17,7 @@ module.exports = {
   },
 
   async discord_list_threads(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
     const args = node.args || {};
     const guildId = args.guild_id || "";

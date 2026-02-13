@@ -1,5 +1,6 @@
 module.exports = {
   async twilio_create_call(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
     const args = node.args || {};
     const body = {};
@@ -13,6 +14,7 @@ module.exports = {
   },
 
   async twilio_get_call(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
     const args = node.args || {};
     const callSid = args.call_sid || "";
@@ -21,6 +23,7 @@ module.exports = {
   },
 
   async twilio_list_calls(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
     const args = node.args || {};
     const params = [];

@@ -1,6 +1,7 @@
 const { utils } = require("./utils");
 module.exports = {
   async monday_group_create(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const boardId = (d.boardId || "").toString().trim();
     const groupName = (d.groupName || "").trim();
@@ -9,6 +10,7 @@ module.exports = {
     let query = `mutation { create_group (board_id: ${boardId}, group_name: "${groupName}"`;
     if (d.groupColor) query += `, group_color: "${d.groupColor}"`;
     query += `) { id title color } }`;
+    log('Création en cours...');
     const res = await utils.mondayRequest(opts, query);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const r = res.data.create_group || {};

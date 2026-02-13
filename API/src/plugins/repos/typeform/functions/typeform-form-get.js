@@ -2,9 +2,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async typeform_form_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!(d.formId || "").trim()) return { ok: false, error: "Missing formId." };
 
+    log('Récupération des données...');
     const res = await utils.typeformRequest(opts, `/forms/${d.formId}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const r = res.data || {};

@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async zd_macro_apply(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const ticketId = parseInt(d.ticketId, 10);
     if (isNaN(ticketId)) return { ok: false, error: "Missing ticketId." };
@@ -19,6 +20,7 @@ module.exports = {
     if (actions.priority) ticket.priority = actions.priority;
     if (actions.assignee_id) ticket.assignee_id = actions.assignee_id;
 
+    log('Appel API en cours...');
     const res = await utils.zendeskRequest(opts, `/tickets/${ticketId}.json`, { method: "PUT", body: { ticket } });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

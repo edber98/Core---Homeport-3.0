@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async aws_ses_list_identities(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const params = {};
     if (d.identityType) params["IdentityType"] = d.identityType;
 
+    log('Récupération de la liste...');
     const res = await utils.sesRequest(opts, "ListIdentities", params);
     if (!res.ok) return res;
 

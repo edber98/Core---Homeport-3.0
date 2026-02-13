@@ -2,6 +2,7 @@ const { utils } = require("./utils");
 
 module.exports = {
   async ms_teams_create_meeting(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.subject) return { ok: false, error: "Missing subject." };
     if (!d.startDateTime) return { ok: false, error: "Missing startDateTime." };
@@ -23,6 +24,7 @@ module.exports = {
       };
     }
 
+    log('Création en cours...');
     const res = await utils.graphRequest(opts, "/me/onlineMeetings", {
       method: "POST",
       body

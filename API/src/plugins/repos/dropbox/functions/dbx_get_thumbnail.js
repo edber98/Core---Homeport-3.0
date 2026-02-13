@@ -3,9 +3,11 @@ const { utils } = require("./utils");
 
 module.exports = {
   async dbx_get_thumbnail(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.path) return { ok: false, error: "Chemin du fichier requis." };
 
+    log('Récupération des données...');
     const res = await utils.dbxRequest(opts, "/files/get_thumbnail_v2", {
       resource: { ".tag": "path", path: d.path },
       size: { ".tag": d.size || "w128h128" },

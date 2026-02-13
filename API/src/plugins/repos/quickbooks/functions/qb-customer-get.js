@@ -2,10 +2,12 @@ const { utils } = require("./utils");
 
 module.exports = {
   async qb_customer_get(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const customerId = (d.customerId || "").toString().trim();
     if (!customerId) return { ok: false, error: "Missing customerId." };
 
+    log('Récupération des données...');
     const res = await utils.qbRequest(opts, `/customer/${encodeURIComponent(customerId)}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 

@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_lead_won(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
     const data = inputs || {};
     const id = toInt(data.leadId);
     if (!id) return { ok: false, error: "Champ leadId requis." };

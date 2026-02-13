@@ -13,6 +13,7 @@ function toInt(value) {
 
 module.exports = {
   async odoo_employees_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
         const data = inputs || {};
         const limit = toInt(data.limit) || 50;
         const domain = [];
