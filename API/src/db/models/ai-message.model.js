@@ -15,11 +15,18 @@ const QuestionSchema = new Schema({
   options: [{ label: String, value: String, description: String }],
 }, { _id: false });
 
+const SegmentSchema = new Schema({
+  type: { type: String, enum: ['text', 'tools'], required: true },
+  content: { type: String },
+  toolCalls: { type: [ToolCallSchema], default: undefined },
+}, { _id: false });
+
 const AiMessageSchema = new Schema({
   threadId: { type: Types.ObjectId, ref: 'AiThread', required: true, index: true },
   role: { type: String, enum: ['user', 'assistant', 'system', 'tool'], required: true },
   content: { type: String, default: '' },
   toolCalls: { type: [ToolCallSchema], default: undefined },
+  segments: { type: [SegmentSchema], default: undefined },
   question: { type: QuestionSchema, default: undefined },
   attachments: { type: [Schema.Types.Mixed], default: undefined },
   answer: { type: Schema.Types.Mixed, default: undefined },

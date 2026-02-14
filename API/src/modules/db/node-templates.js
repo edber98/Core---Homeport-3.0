@@ -5,6 +5,12 @@ const Workspace = require('../../db/models/workspace.model');
 const Flow = require('../../db/models/flow.model');
 const Notification = require('../../db/models/notification.model');
 const { validateFlowGraph } = require('../../utils/validate');
+const { toolIndex } = require('../../ai/tools/tool-index');
+
+/** Rebuild AI tool index in background after template changes */
+function rebuildToolIndex() {
+  toolIndex.rebuild().catch(e => console.error('[node-templates] toolIndex rebuild error:', e?.message));
+}
 
 module.exports = function(){
   const r = express.Router();
@@ -54,6 +60,7 @@ module.exports = function(){
     if (!body.title && body.name) body.title = body.name;
     if (!body.subtitle && body.providerKey) body.subtitle = body.providerKey;
     const t = await NodeTemplate.create(body);
+    rebuildToolIndex();
     res.status(201).json({ success: true, data: t, requestId: req.requestId, ts: Date.now() });
   });
 
@@ -156,8 +163,10 @@ module.exports = function(){
           await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
+      rebuildToolIndex();
       return res.apiOk({ template: tpl, impacted });
     }
+    rebuildToolIndex();
     res.apiOk({ template: tpl, impacted: [] });
   });
 
@@ -225,6 +234,7 @@ module.exports = function(){
         await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow disabled due to deleted template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
       }
     }
+    rebuildToolIndex();
     res.apiOk({ deleted: true, key, impacted });
   });
 

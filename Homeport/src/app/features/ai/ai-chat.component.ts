@@ -28,7 +28,7 @@ const TOOL_LABELS: Record<string, string> = {
   get_scenarios: 'Scénarios', get_msgin_preview: 'Aperçu msgIn',
   get_form_schema: 'Schéma form', set_form_schema: 'MAJ schéma', add_field: 'Ajout champ',
   update_field: 'Modif champ', remove_field: 'Suppr champ', create_form: 'Création form',
-  save_form: 'Sauvegarde form', get_output_schema: 'Schéma sortie',
+  save_form: 'Sauvegarde form', get_output_schema: 'Schéma sortie', build_schema: 'Construction schéma',
 };
 
 interface StreamSegment {
@@ -63,21 +63,21 @@ interface StreamTool {
         <div class="ai-msg assistant">
           <div class="avatar"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
           <div class="body">
-            <ng-container *ngFor="let seg of segments">
+            <ng-container *ngFor="let seg of segments; let i = index; trackBy: trackSeg">
               <!-- Text segment -->
-              <div class="content" *ngIf="seg.type === 'text' && seg.html" [innerHTML]="seg.html"></div>
+              <div class="content" *ngIf="seg.type === 'text' && seg.html"
+                   [innerHTML]="seg.html"></div>
 
-              <!-- Tools segment -->
-              <div class="tool-tags" *ngIf="seg.type === 'tools' && seg.tools?.length">
-                <ng-container *ngFor="let t of seg.tools">
+              <!-- Tools segment: flat list of tags (no grouping during stream to avoid DOM thrash) -->
+              <div class="tool-tags stream-tools" *ngIf="seg.type === 'tools' && seg.tools?.length">
+                <ng-container *ngFor="let t of seg.tools; trackBy: trackTool">
                   <nz-tag
                     class="tool-tag"
                     [nzColor]="t.status === 'error' ? 'red' : t.status === 'running' ? 'processing' : 'geekblue'"
                     nz-popover
                     [nzPopoverContent]="popTpl"
                     nzPopoverTrigger="hover"
-                    nzPopoverPlacement="topLeft"
-                    [nzPopoverOverlayStyle]="{ maxWidth: '500px' }">
+                    nzPopoverPlacement="topLeft">
                     <span nz-icon [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline" [nzSpin]="t.status === 'running'" class="tag-icon"></span>
                     {{ toolLabel(t.name) }}
                     <span class="tag-extra" *ngIf="toolExtra(t)">{{ toolExtra(t) }}</span>
@@ -139,7 +139,8 @@ interface StreamTool {
     .streaming-msg .content :host ::ng-deep p:last-child { margin: 0; }
     .streaming-msg .content :host ::ng-deep code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .streaming-msg .content :host ::ng-deep pre { background: #e8e8e8; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; max-width: 85%; }
+    .stream-tools { max-width: 85%; margin: 2px 0; }
+    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
     .tag-icon { font-size: 11px; }
     .tag-extra { opacity: 0.7; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -189,59 +190,18 @@ export class AiChatComponent {
   private handleStream(events$: any) {
     events$.subscribe({
       next: (ev: AiStreamEvent) => {
-        switch (ev.type) {
-          case 'message': {
-            const text = (ev as any).text || '';
-            // Get or create a text segment at the end
-            let last = this.segments[this.segments.length - 1];
-            if (!last || last.type !== 'text') {
-              last = { type: 'text', rawText: '', html: '' };
-              this.segments = [...this.segments, last];
-            }
-            last.rawText = (last.rawText || '') + text;
-            last.html = this.renderMd(last.rawText);
-            // Force new ref for change detection
-            this.segments = [...this.segments];
-            break;
-          }
-          case 'tool.start': {
-            const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'running' };
-            let last = this.segments[this.segments.length - 1];
-            if (!last || last.type !== 'tools') {
-              last = { type: 'tools', tools: [] };
-              this.segments = [...this.segments, last];
-            }
-            last.tools = [...(last.tools || []), tool];
-            this.segments = [...this.segments];
-            break;
-          }
-          case 'tool.end': {
-            // Find and update the tool in any tools segment
-            for (const seg of this.segments) {
-              if (seg.type !== 'tools' || !seg.tools) continue;
-              const idx = seg.tools.findIndex(t => t.id === (ev as any).id);
-              if (idx >= 0) {
-                seg.tools[idx] = {
-                  ...seg.tools[idx],
-                  status: (ev as any).status || 'success',
-                  duration: (ev as any).duration,
-                  args: (ev as any).args,
-                  result: (ev as any).result,
-                };
-                seg.tools = [...seg.tools];
-                break;
-              }
-            }
-            this.segments = [...this.segments];
-            break;
-          }
-          case 'done':
-            // Delay clearing so message transition is smooth
-            setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
-            break;
+        try {
+          this.processStreamEvent(ev);
+        } catch (e) {
+          console.error('[ai-chat] stream event error:', e);
         }
         this.cdr.detectChanges();
         this.scrollToBottom();
+      },
+      error: (err: any) => {
+        console.error('[ai-chat] stream error:', err);
+        this.stopFn = undefined;
+        this.cdr.detectChanges();
       },
       complete: () => {
         setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
@@ -249,6 +209,62 @@ export class AiChatComponent {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  /** Process a single stream event — fully immutable segment updates */
+  private processStreamEvent(ev: AiStreamEvent) {
+    switch (ev.type) {
+      case 'message': {
+        const text = (ev as any).text || '';
+        const last = this.segments[this.segments.length - 1];
+        if (last && last.type === 'text') {
+          // Append to existing text segment — create NEW object
+          const raw = (last.rawText || '') + text;
+          const updated: StreamSegment = { type: 'text', rawText: raw, html: this.renderMd(raw) };
+          this.segments = [...this.segments.slice(0, -1), updated];
+        } else {
+          // New text segment
+          this.segments = [...this.segments, { type: 'text', rawText: text, html: this.renderMd(text) }];
+        }
+        break;
+      }
+      case 'tool.start': {
+        const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'running' };
+        const last = this.segments[this.segments.length - 1];
+        if (last && last.type === 'tools') {
+          // Add tool to existing tools segment — create NEW object
+          const updated: StreamSegment = { type: 'tools', tools: [...(last.tools || []), tool] };
+          this.segments = [...this.segments.slice(0, -1), updated];
+        } else {
+          // New tools segment
+          this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
+        }
+        break;
+      }
+      case 'tool.end': {
+        const evId = (ev as any).id;
+        // Find and update the tool — create NEW segment + tools array
+        this.segments = this.segments.map(seg => {
+          if (seg.type !== 'tools' || !seg.tools) return seg;
+          const idx = seg.tools.findIndex(t => t.id === evId);
+          if (idx < 0) return seg;
+          const updatedTools = seg.tools.map((t, i) =>
+            i === idx ? {
+              ...t,
+              status: ((ev as any).status || 'success') as 'running' | 'success' | 'error',
+              duration: (ev as any).duration,
+              args: (ev as any).args,
+              result: (ev as any).result,
+            } : t
+          );
+          return { ...seg, tools: updatedTools };
+        });
+        break;
+      }
+      case 'done':
+        setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
+        break;
+    }
   }
 
   renderMd(src: string): string {
@@ -260,6 +276,11 @@ export class AiChatComponent {
       });
     } catch { return src; }
   }
+
+  // trackBy functions to avoid DOM thrashing during streaming
+  trackSeg(i: number, seg: StreamSegment): string { return `${i}-${seg.type}`; }
+  trackTool(i: number, t: StreamTool): string { return t.id; }
+
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;

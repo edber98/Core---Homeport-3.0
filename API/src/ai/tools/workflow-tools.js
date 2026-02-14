@@ -768,7 +768,16 @@ function createWorkflowExecutor(metadata, emit) {
       const g = gref();
       const idx = findNodeIndex(input.nodeId);
       if (idx < 0) return { success: false, error: 'Node introuvable' };
-      const args = input.args || {};
+      // Accept args nested under input.args OR as flat properties (LLMs often flatten)
+      let args = input.args || {};
+      if (!Object.keys(args).length) {
+        // Fallback: extract all non-meta keys as args
+        const meta = new Set(['nodeId', 'args']);
+        args = {};
+        for (const [k, v] of Object.entries(input)) {
+          if (!meta.has(k) && v !== undefined) args[k] = v;
+        }
+      }
       if (!Object.keys(args).length) return { success: false, error: 'Aucun argument fourni' };
 
       g.nodes[idx].data = g.nodes[idx].data || {};
@@ -999,6 +1008,25 @@ function createWorkflowExecutor(metadata, emit) {
     },
     getGraph() { return gref(); },
     hasChanges() { return changed; },
+    /** Auto-save graph to DB when agent finishes — prevents lost work */
+    async cleanup() {
+      if (!changed) return;
+      try {
+        let flow = flowDoc;
+        if (!flow && metadata.flowId) {
+          const fid = String(metadata.flowId);
+          flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : await Flow.findOne({ id: fid });
+        }
+        if (flow && graph) {
+          flow.graph = graph;
+          await flow.save();
+          console.log(`[wf-tools] auto-saved flow (${(graph.nodes || []).length} nodes, ${(graph.edges || []).length} edges)`);
+          changed = false;
+        }
+      } catch (e) {
+        console.error('[wf-tools] auto-save failed:', e?.message || e);
+      }
+    },
   };
 }
 

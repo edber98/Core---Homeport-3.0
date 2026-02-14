@@ -226,6 +226,7 @@ module.exports = function () {
     try {
       let fullText = '';
       const toolCalls = [];
+      const segments = []; // Interleaved [{type:'text',content}, {type:'tools',toolCalls:[]}]
       let questionData = null;
 
       const generator = runAgent({
@@ -240,20 +241,45 @@ module.exports = function () {
         if (closed) break;
 
         switch (event.type) {
-          case 'message':
+          case 'message': {
             fullText += event.text || '';
+            // Accumulate into current text segment
+            let lastSeg = segments[segments.length - 1];
+            if (!lastSeg || lastSeg.type !== 'text') {
+              lastSeg = { type: 'text', content: '' };
+              segments.push(lastSeg);
+            }
+            lastSeg.content += event.text || '';
             send(event);
             break;
+          }
 
-          case 'tool.start':
+          case 'tool.start': {
+            // Ensure we have a tools segment
+            let lastSeg = segments[segments.length - 1];
+            if (!lastSeg || lastSeg.type !== 'tools') {
+              lastSeg = { type: 'tools', toolCalls: [] };
+              segments.push(lastSeg);
+            }
+            // Add placeholder for this tool
+            lastSeg.toolCalls.push({ id: event.id, name: event.name, status: 'running' });
+            send(event);
+            break;
+          }
+
           case 'tool.input_delta':
             send(event);
             break;
 
           case 'tool.end': {
-            // Find matching start to capture args
             const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status };
             toolCalls.push(tc);
+            // Update the tool in its tools segment
+            for (const seg of segments) {
+              if (seg.type !== 'tools' || !seg.toolCalls) continue;
+              const idx = seg.toolCalls.findIndex(t => t.id === event.id);
+              if (idx >= 0) { seg.toolCalls[idx] = tc; break; }
+            }
             send(event);
             break;
           }
@@ -283,13 +309,18 @@ module.exports = function () {
         }
       }
 
-      // Save assistant message
+      // Save assistant message with interleaved segments
       if (fullText || toolCalls.length) {
+        // Clean empty segments
+        const cleanSegments = segments.filter(s =>
+          (s.type === 'text' && s.content?.trim()) || (s.type === 'tools' && s.toolCalls?.length)
+        );
         await AiMessage.create({
           threadId: thread._id,
           role: 'assistant',
           content: fullText,
           toolCalls: toolCalls.length ? toolCalls : undefined,
+          segments: cleanSegments.length > 1 ? cleanSegments : undefined,
           question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options } : undefined,
         });
       }

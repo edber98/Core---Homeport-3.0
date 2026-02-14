@@ -169,6 +169,10 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
 
     // No tool calls → agent is done
     if (pendingToolCalls.length === 0) {
+      // Auto-save any pending changes from mode executors
+      for (const exec of modeExecutors) {
+        if (exec?.cleanup) { try { await exec.cleanup(); } catch (e) { console.error('[agent] cleanup error:', e?.message); } }
+      }
       yield { type: 'done', usage: null };
       return;
     }
@@ -219,6 +223,10 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     // Check for ask_user — pause and wait for user response
     const askUserCall = pendingToolCalls.find(tc => tc.name === 'ask_user');
     if (askUserCall) {
+      // Auto-save before pausing for user response
+      for (const exec of modeExecutors) {
+        if (exec?.cleanup) { try { await exec.cleanup(); } catch (e) { console.error('[agent] cleanup error:', e?.message); } }
+      }
       const askResult = toolResults.find(r => r.id === askUserCall.id);
       if (askResult?.result) {
         yield { type: 'question', ...askResult.result };
@@ -240,7 +248,10 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     }
   }
 
-  // Max loops
+  // Max loops — auto-save before finishing
+  for (const exec of modeExecutors) {
+    if (exec?.cleanup) { try { await exec.cleanup(); } catch (e) { console.error('[agent] cleanup error:', e?.message); } }
+  }
   yield { type: 'message', text: '\n\n*Limite de boucles atteinte. Reformule ta demande si nécessaire.*' };
   yield { type: 'done', usage: null };
 }

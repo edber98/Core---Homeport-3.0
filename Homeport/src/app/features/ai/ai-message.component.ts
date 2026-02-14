@@ -30,6 +30,43 @@ const TOOL_LABELS: Record<string, string> = {
   get_output_schema: 'Schéma sortie', build_schema: 'Construction schéma',
 };
 
+interface ToolGroup {
+  category: string;
+  icon: string;
+  color: string;
+  tools: AiToolCall[];
+}
+
+const TOOL_CATEGORIES: Record<string, { category: string; icon: string; color: string }> = {};
+const CAT_PLAN = { category: 'Analyse', icon: 'search', color: '#722ed1' };
+const CAT_QUESTION = { category: 'Question', icon: 'question-circle', color: '#fa8c16' };
+const CAT_BUILD = { category: 'Construction', icon: 'tool', color: '#1677ff' };
+const CAT_EXEC = { category: 'Exécution', icon: 'thunderbolt', color: '#52c41a' };
+const CAT_VALID = { category: 'Finalisation', icon: 'check-circle', color: '#13c2c2' };
+const CAT_MEM = { category: 'Mémoire', icon: 'database', color: '#eb2f96' };
+
+// Planning
+for (const k of ['search_tools', 'get_tool_details', 'get_templates', 'get_template_details',
+  'list_graph', 'get_output_options', 'get_node_schema', 'get_output_schema', 'get_node_info',
+  'list_predecessors', 'get_predecessor_context', 'search_predecessors', 'get_scenarios',
+  'get_msgin_preview', 'list_providers', 'search_workflows', 'get_form_schema', 'get_field_types'])
+  TOOL_CATEGORIES[k] = CAT_PLAN;
+// Question
+TOOL_CATEGORIES['ask_user'] = CAT_QUESTION;
+// Building
+for (const k of ['create_flow', 'ensure_start', 'add_node', 'remove_node', 'replace_node',
+  'connect_nodes', 'disconnect_nodes', 'connect_by_output_name',
+  'set_node_args', 'set_node_description', 'create_start_form', 'build_schema',
+  'propose_context_mapping', 'set_form_schema', 'add_field', 'update_field', 'remove_field',
+  'add_section', 'reorder_fields', 'create_form'])
+  TOOL_CATEGORIES[k] = CAT_BUILD;
+// Execution
+for (const k of ['execute_tool', 'run_workflow']) TOOL_CATEGORIES[k] = CAT_EXEC;
+// Validation
+for (const k of ['validate_flow', 'auto_layout', 'save_flow', 'save_form']) TOOL_CATEGORIES[k] = CAT_VALID;
+// Memory
+for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES[k] = CAT_MEM;
+
 @Component({
   selector: 'ai-message',
   standalone: true,
@@ -45,23 +82,44 @@ const TOOL_LABELS: Record<string, string> = {
         <!-- Segments mode: render in execution order -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
           <ng-container *ngFor="let seg of msg.segments">
-            <div class="content" *ngIf="seg.type === 'text' && seg.content" [innerHTML]="renderMarkdown(seg.content)"></div>
-            <div class="tool-tags" *ngIf="seg.type === 'tools' && seg.toolCalls?.length">
-              <ng-container *ngFor="let tc of seg.toolCalls">
-                <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
+            <div class="content" *ngIf="seg.type === 'text' && seg.content"
+                 [innerHTML]="renderMarkdown(seg.content)"></div>
+            <ng-container *ngIf="seg.type === 'tools' && seg.toolCalls?.length">
+              <ng-container *ngFor="let group of groupTools(seg.toolCalls || [])">
+                <div class="tool-group">
+                  <div class="tool-group-header" [style.color]="group.color">
+                    <span nz-icon [nzType]="group.icon" nzTheme="outline" class="group-icon"></span>
+                    <span class="group-label">{{ group.category }}</span>
+                  </div>
+                  <div class="tool-tags">
+                    <ng-container *ngFor="let tc of group.tools">
+                      <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
+                    </ng-container>
+                  </div>
+                </div>
               </ng-container>
-            </div>
+            </ng-container>
           </ng-container>
         </ng-container>
 
         <!-- Flat layout: content + tools (for DB-loaded messages without segments) -->
         <ng-template #flatLayout>
           <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
-          <div class="tool-tags" *ngIf="msg.toolCalls?.length">
-            <ng-container *ngFor="let tc of msg.toolCalls">
-              <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
+          <ng-container *ngIf="msg.toolCalls?.length">
+            <ng-container *ngFor="let group of groupTools(msg.toolCalls!)">
+              <div class="tool-group">
+                <div class="tool-group-header" [style.color]="group.color">
+                  <span nz-icon [nzType]="group.icon" nzTheme="outline" class="group-icon"></span>
+                  <span class="group-label">{{ group.category }}</span>
+                </div>
+                <div class="tool-tags">
+                  <ng-container *ngFor="let tc of group.tools">
+                    <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
+                  </ng-container>
+                </div>
+              </div>
             </ng-container>
-          </div>
+          </ng-container>
         </ng-template>
 
         <!-- Reusable tool tag template -->
@@ -113,7 +171,11 @@ const TOOL_LABELS: Record<string, string> = {
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; max-width: 85%; }
+    .tool-group { max-width: 85%; margin: 2px 0; }
+    .tool-group-header { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; opacity: 0.85; }
+    .group-icon { font-size: 12px; }
+    .group-label { text-transform: uppercase; letter-spacing: 0.5px; }
+    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
     .tag-icon { font-size: 11px; }
     .tag-extra { opacity: 0.7; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -129,6 +191,8 @@ const TOOL_LABELS: Record<string, string> = {
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
 
+  private _groupCache = new WeakMap<AiToolCall[], ToolGroup[]>();
+
   renderMarkdown(src: string): string {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
@@ -137,6 +201,25 @@ export class AiMessageComponent {
         ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
       });
     } catch { return src; }
+  }
+
+  /** Group consecutive tools by category, preserving execution order */
+  groupTools(toolCalls: AiToolCall[]): ToolGroup[] {
+    if (this._groupCache.has(toolCalls)) return this._groupCache.get(toolCalls)!;
+
+    const groups: ToolGroup[] = [];
+    for (const tc of toolCalls) {
+      const cat = TOOL_CATEGORIES[tc.name] || { category: 'Autre', icon: 'api', color: '#666' };
+      const last = groups[groups.length - 1];
+      if (last && last.category === cat.category) {
+        last.tools.push(tc);
+      } else {
+        groups.push({ category: cat.category, icon: cat.icon, color: cat.color, tools: [tc] });
+      }
+    }
+
+    this._groupCache.set(toolCalls, groups);
+    return groups;
   }
 
   toolLabel(name: string): string {
