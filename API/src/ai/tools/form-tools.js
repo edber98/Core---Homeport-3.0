@@ -6,13 +6,35 @@ const Form = require('../../db/models/form.model');
 
 const FORM_TOOL_DEFINITIONS = [
   {
+    name: 'search_forms',
+    description: 'Recherche des formulaires existants dans le workspace par nom ou description.',
+    parameters: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Texte de recherche (nom ou description)' },
+        limit: { type: 'number', description: 'Nombre max de résultats (défaut: 10)' },
+      },
+    },
+  },
+  {
+    name: 'load_form',
+    description: 'Charge un formulaire existant pour le modifier. Utilise l\'ID obtenu via search_forms.',
+    parameters: {
+      type: 'object',
+      properties: {
+        formId: { type: 'string', description: 'ID du formulaire à charger' },
+      },
+      required: ['formId'],
+    },
+  },
+  {
     name: 'get_form_schema',
-    description: 'Récupère le schéma actuel du formulaire (champs, sections, étapes). TOUJOURS appeler en premier pour voir l\'état du formulaire.',
+    description: 'Récupère le schéma actuel du formulaire chargé (champs, sections, étapes). Appelle load_form d\'abord si tu modifies un formulaire existant.',
     parameters: { type: 'object', properties: {} },
   },
   {
     name: 'set_form_schema',
-    description: 'Remplace le schéma complet du formulaire. Utilise quand tu construis un formulaire de zéro ou pour un remplacement complet.',
+    description: 'Remplace le schéma complet du formulaire. Utilise quand tu construis un formulaire de zéro ou pour un remplacement complet. Le layout vertical + labelsOnTop est appliqué automatiquement.',
     parameters: {
       type: 'object',
       properties: {
@@ -216,21 +238,89 @@ function createFormExecutor(metadata, emit) {
     { type: 'section_array', description: 'Section dynamique (tableau, l\'utilisateur ajoute/supprime des lignes)' },
   ];
 
+  /** Ensure schema has default UI layout (vertical + labelsOnTop) */
+  function ensureDefaultUi(s) {
+    if (!s) return s;
+    if (!s.ui) s.ui = {};
+    if (!s.ui.layout) s.ui.layout = 'vertical';
+    if (s.ui.labelsOnTop === undefined) s.ui.labelsOnTop = true;
+    return s;
+  }
+
+  /**
+   * Guard: require a form to be loaded or created before modifications.
+   * Returns null if OK, or an error result if no form is loaded.
+   */
+  function requireFormLoaded() {
+    if (formDoc || metadata.formId) return null;
+    return {
+      success: false,
+      error: 'Aucun formulaire chargé. Tu DOIS d\'abord appeler create_form (nouveau formulaire) ou search_forms + load_form (formulaire existant) avant de modifier des champs.',
+    };
+  }
+
   const tools = {
+    async search_forms(input) {
+      const q = input?.query || '';
+      const limit = input?.limit || 10;
+      const filter = { workspaceId: metadata.workspaceId };
+      if (q) {
+        const rx = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        filter.$or = [{ name: rx }, { description: rx }];
+      }
+      const forms = await Form.find(filter, 'id name description status createdAt updatedAt')
+        .sort({ updatedAt: -1 }).limit(limit).lean();
+      return {
+        success: true,
+        forms: forms.map(f => ({
+          id: f.id, name: f.name, description: f.description || '',
+          status: f.status || 'draft',
+          updatedAt: f.updatedAt,
+        })),
+      };
+    },
+
+    async load_form(input) {
+      if (!input?.formId) return { success: false, error: 'formId requis' };
+      const fid = String(input.formId);
+      const form = Types.ObjectId.isValid(fid)
+        ? await Form.findById(fid)
+        : await Form.findOne({ id: fid, workspaceId: metadata.workspaceId });
+      if (!form) return { success: false, error: `Formulaire '${fid}' introuvable` };
+      formDoc = form;
+      metadata.formId = form._id;
+      schema = form.schema || { fields: [] };
+      return {
+        success: true, formId: form.id, name: form.name,
+        description: form.description || '',
+        fieldCount: (schema?.fields || []).length,
+        fields: (schema?.fields || []).map(f => ({
+          key: f.key, type: f.type, label: f.label,
+          ...(f.type === 'section' || f.type === 'section_array'
+            ? { subFields: (f.fields || []).map(sf => ({ key: sf.key, type: sf.type, label: sf.label })) }
+            : {}),
+        })),
+      };
+    },
+
     async get_form_schema() {
       const s = await ensureSchema();
       return { success: true, schema: s, fieldCount: (s?.fields || []).length };
     },
 
     async set_form_schema(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       const s = input?.schema;
       if (!s) return { success: false, error: 'Schéma manquant' };
-      schema = s;
+      schema = ensureDefaultUi(s);
       emitUpdate();
       return { success: true, fieldCount: (s?.fields || []).length };
     },
 
     async add_field(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       await ensureSchema();
       const fields = schema.fields || [];
 
@@ -268,6 +358,8 @@ function createFormExecutor(metadata, emit) {
     },
 
     async update_field(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       await ensureSchema();
       const field = findField(schema.fields || [], input.key);
       if (!field) return { success: false, error: `Champ '${input.key}' introuvable` };
@@ -289,6 +381,8 @@ function createFormExecutor(metadata, emit) {
     },
 
     async remove_field(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       await ensureSchema();
       const removed = removeFieldFromArray(schema.fields || [], input.key);
       if (!removed) return { success: false, error: `Champ '${input.key}' introuvable` };
@@ -297,6 +391,8 @@ function createFormExecutor(metadata, emit) {
     },
 
     async add_section(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       await ensureSchema();
       const fields = schema.fields || [];
 
@@ -325,6 +421,8 @@ function createFormExecutor(metadata, emit) {
     },
 
     async reorder_fields(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
       await ensureSchema();
       const order = input?.order || [];
       if (!order.length) return { success: false, error: 'Ordre vide' };
@@ -349,13 +447,14 @@ function createFormExecutor(metadata, emit) {
     },
 
     async create_form(input) {
+      const defaultSchema = { ui: { layout: 'vertical', labelsOnTop: true }, fields: [] };
       const form = await Form.create({
         name: input.name, description: input.description || '',
-        workspaceId: metadata.workspaceId, schema: { fields: [] },
+        workspaceId: metadata.workspaceId, schema: defaultSchema,
       });
       formDoc = form;
       metadata.formId = form._id;
-      schema = { fields: [] };
+      schema = defaultSchema;
       emit({ type: 'form.created', form: { id: form.id, _id: String(form._id), name: form.name } });
       return { success: true, formId: form.id };
     },
@@ -385,6 +484,21 @@ function createFormExecutor(metadata, emit) {
     },
     getSchema() { return schema; },
     hasChanges() { return changed; },
+    isFormLoaded() { return !!(formDoc || metadata.formId); },
+    /** Auto-save unsaved changes when the session ends */
+    async cleanup() {
+      if (!changed || !schema) return;
+      let form = formDoc;
+      if (!form && metadata.formId) {
+        const fid = String(metadata.formId);
+        form = Types.ObjectId.isValid(fid) ? await Form.findById(fid) : await Form.findOne({ id: fid });
+      }
+      if (form) {
+        form.schema = schema;
+        await form.save();
+        changed = false;
+      }
+    },
   };
 }
 

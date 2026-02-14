@@ -12,16 +12,16 @@ const AiUserContext = require('../../db/models/ai-user-context.model');
 const META_TOOL_DEFINITIONS = [
   {
     name: 'search_tools',
-    description: 'Recherche dans les actions/outils disponibles par nom, provider ou catégorie. Retourne une liste de résultats avec clé, nom, description et provider.',
+    description: 'Recherche dans les actions/outils disponibles par nom, provider ou catégorie. Détecte automatiquement le provider dans la query (ex: "openai chat" → provider=openai + query="chat"). Si query vide + provider → liste TOUTES les actions du provider.',
     parameters: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Texte de recherche (nom, description, mot-clé)' },
-        provider: { type: 'string', description: 'Filtrer par provider (ex: slack, gitlab, openai)' },
+        query: { type: 'string', description: 'Texte de recherche (nom, description, mot-clé). Peut contenir le nom du provider.' },
+        provider: { type: 'string', description: 'Filtrer par provider (clé, nom ou alias). Résolu dynamiquement depuis la DB.' },
         category: { type: 'string', description: 'Filtrer par catégorie' },
+        type: { type: 'string', enum: ['function', 'event', 'start', 'start_form', 'condition', 'loop', 'agent', 'memory', 'tool_ai'], description: 'Filtrer par type de node' },
         limit: { type: 'number', description: 'Nombre max de résultats (défaut: 15)' },
       },
-      required: ['query'],
     },
   },
   {
@@ -140,9 +140,10 @@ async function executeMetaTool(name, input, ctx) {
 
   switch (name) {
     case 'search_tools': {
-      const results = toolIndex.search(input.query, {
+      const results = toolIndex.search(input.query || '', {
         provider: input.provider,
         category: input.category,
+        type: input.type,
         limit: input.limit || 15,
       });
       return results;

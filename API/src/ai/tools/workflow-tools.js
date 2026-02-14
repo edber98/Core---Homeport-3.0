@@ -27,12 +27,12 @@ const WORKFLOW_TOOL_DEFINITIONS = [
   },
   {
     name: 'get_templates',
-    description: 'Recherche les templates de nodes disponibles (actions, conditions, boucles, etc.). Utilise avant add_node pour trouver le bon template.',
+    description: 'Recherche les templates de nodes disponibles. Détecte automatiquement le provider dans la query. Sans query + avec provider → liste TOUTES les actions du provider. Utilise avant add_node pour trouver le bon template.',
     parameters: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Texte de recherche (nom, description, provider)' },
-        provider: { type: 'string', description: 'Filtrer par provider (ex: slack, gitlab, openai)' },
+        query: { type: 'string', description: 'Texte de recherche. Peut contenir le nom du provider (ex: "openai chat completion").' },
+        provider: { type: 'string', description: 'Filtrer par provider (clé, nom ou alias — résolu dynamiquement depuis la DB)' },
         type: { type: 'string', description: 'Filtrer par type (function, condition, loop, agent, start, start_form, event)' },
         limit: { type: 'number', description: 'Nombre max de résultats (défaut: 20)' },
       },
@@ -195,7 +195,7 @@ const WORKFLOW_TOOL_DEFINITIONS = [
   },
   {
     name: 'propose_context_mapping',
-    description: 'Simule le workflow jusqu\'à un node cible et propose un mapping automatique des arguments basé sur les données entrantes (msgIn).',
+    description: 'Simule le workflow jusqu\'à un node cible et propose un mapping automatique des arguments. Retourne aussi upstreamOutputs : le schéma de sortie de chaque node en amont (CRITIQUE pour les multi-output/classifiers — contient les noms de champs exacts pour {{ }}).',
     parameters: {
       type: 'object',
       properties: {
@@ -215,7 +215,7 @@ const WORKFLOW_TOOL_DEFINITIONS = [
     parameters: {
       type: 'object',
       properties: {
-        orientation: { type: 'string', enum: ['vertical', 'horizontal'], description: 'Orientation (défaut: vertical)' },
+        orientation: { type: 'string', enum: ['horizontal', 'vertical'], description: 'Orientation (défaut: horizontal)' },
       },
     },
   },
@@ -348,33 +348,51 @@ function createWorkflowExecutor(metadata, emit) {
     return `${type}_${slug}_${s1}_${s2}`;
   }
 
-  /** DJB2 hash (same as frontend argsChecksum / featureChecksum) */
+  /** Stable JSON.stringify: sorts object keys recursively (must match frontend stableStringify) */
+  function stableStringify(obj) {
+    const seen = new WeakSet();
+    const sort = (x) => {
+      if (x === null || typeof x !== 'object') return x;
+      if (seen.has(x)) return undefined; // drop cycles
+      seen.add(x);
+      if (Array.isArray(x)) return x.map(sort);
+      const out = {};
+      Object.keys(x).sort().forEach(k => { out[k] = sort(x[k]); });
+      return out;
+    };
+    try { return JSON.stringify(sort(obj)); } catch { return JSON.stringify(obj || {}); }
+  }
+
+  /** DJB2 32-bit hash (same as frontend) */
   function djb2(str) {
-    let h = 5381;
-    for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0;
-    return (h >>> 0).toString(16).padStart(8, '0');
+    let h = 5381 >>> 0;
+    for (let i = 0; i < str.length; i++) h = (((h << 5) + h) + str.charCodeAt(i)) >>> 0;
+    return ('00000000' + h.toString(16)).slice(-8);
   }
 
+  /** Must match frontend flow-builder-utils.service.ts argsChecksum exactly */
   function argsChecksum(args) {
-    try { return djb2(JSON.stringify(args || {})); } catch { return '00000000'; }
+    try { return djb2(stableStringify(args || {})); } catch { return '00000000'; }
   }
 
+  /** Must match frontend flow-builder-utils.service.ts featureChecksum exactly */
   function featureChecksum(tpl) {
     try {
+      if (!tpl) return '';
       const obj = {
-        authorize_catch_error: tpl?.authorize_catch_error,
-        authorize_skip_error: tpl?.authorize_skip_error,
-        allowWithoutCredentials: tpl?.allowWithoutCredentials,
-        nodeKind: tpl?.nodeKind,
-        inputHandles: tpl?.inputHandles,
-        outputHandles: tpl?.outputHandles,
-        linkedHandles: tpl?.linkedHandles,
-        output_array_field: tpl?.output_array_field,
-        output_schema_field: tpl?.output_schema_field,
-        outputSchema: tpl?.outputSchema,
+        authorize_catch_error: !!tpl.authorize_catch_error,
+        authorize_skip_error: !!tpl.authorize_skip_error,
+        allowWithoutCredentials: !!tpl.allowWithoutCredentials,
+        nodeKind: tpl.nodeKind || tpl.type || '',
+        inputHandles: tpl.inputHandles || [],
+        outputHandles: tpl.outputHandles || [],
+        linkedHandles: tpl.linkedHandles || [],
+        output_array_field: tpl.output_array_field || undefined,
+        output_schema_field: tpl.output_schema_field || undefined,
+        outputSchema: tpl.outputSchema || undefined,
       };
-      return djb2(JSON.stringify(obj));
-    } catch { return '00000000'; }
+      return argsChecksum(obj);
+    } catch { return ''; }
   }
 
   /** Build proper initial context for a template (conditions, output_array_field, etc.) */
@@ -406,10 +424,29 @@ function createWorkflowExecutor(metadata, emit) {
     return ctx;
   }
 
+  /**
+   * Normalize a raw MongoDB template doc to the frontend templateObj format.
+   * Must produce EXACTLY the same object as catalog.service.ts listNodeTemplates().
+   * Only adds frontend mappings (id, appId). Never changes template values.
+   */
+  function normalizeTemplateObj(tpl) {
+    // Deep-clone and convert to plain JSON (strips ObjectIds, Dates → strings, removes undefined)
+    const obj = JSON.parse(JSON.stringify(tpl));
+    // Map key → id (frontend uses templateObj.id for identification)
+    if (!obj.id && obj.key) obj.id = obj.key;
+    // Map providerKey → appId (frontend node-card-header uses templateObj.appId for provider lookup)
+    if (!obj.appId && obj.providerKey) obj.appId = obj.providerKey;
+    // Remove Mongoose internal fields
+    delete obj._id;
+    delete obj.__v;
+    return obj;
+  }
+
   /** Build a properly structured node matching frontend format */
   function buildNode(tpl, opts = {}) {
     const id = opts.id || genNodeId(tpl);
     const ctx = { ...buildInitialContext(tpl), ...(opts.context || {}) };
+    const templateObj = normalizeTemplateObj(tpl);
 
     return {
       id,
@@ -420,7 +457,7 @@ function createWorkflowExecutor(metadata, emit) {
           id,
           name: opts.title || tpl.title || tpl.name || tpl.key || 'Node',
           template: tpl.key || tpl._id || '',
-          templateObj: tpl,
+          templateObj,
           context: ctx,
           templateChecksum: argsChecksum(tpl.args || {}),
           templateFeatureSig: featureChecksum(tpl),
@@ -536,7 +573,7 @@ function createWorkflowExecutor(metadata, emit) {
         const model = n?.data?.model || {};
         const tpl = model?.templateObj || {};
         const outputIds = getOutputHandleIds(n);
-        return {
+        const info = {
           id: n.id,
           name: model.name || tpl.title || tpl.name || n.id,
           template: model.template || tpl.key || '',
@@ -546,6 +583,12 @@ function createWorkflowExecutor(metadata, emit) {
           contextKeys: model.context ? Object.keys(model.context) : [],
           outputHandles: outputIds.map(hid => ({ id: hid, name: getOutputHandleName(n, hid) })),
         };
+        // Include output schema for multi-output nodes so AI knows the available fields
+        if (tpl.output_array_field && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+          info.isMultiOutput = true;
+          info.outputSchema = tpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
+        }
+        return info;
       });
       const edges = (g.edges || []).map(e => ({
         id: e.id, source: e.source, target: e.target,
@@ -563,14 +606,22 @@ function createWorkflowExecutor(metadata, emit) {
     async get_template_details(input) {
       const tpl = await NodeTemplate.findOne({ key: input.key }).lean();
       if (!tpl) return { success: false, error: `Template '${input.key}' introuvable` };
-      return {
+      const result = {
         success: true, key: tpl.key, name: tpl.title || tpl.name,
         description: tpl.description || '', type: tpl.type, provider: tpl.providerKey || null,
         args: tpl.args || {}, argsSchema: tpl.args ? argsToJsonSchema(tpl.args) : null,
         inputHandles: tpl.inputHandles || [], outputHandles: tpl.outputHandles || [],
         linkedHandles: tpl.linkedHandles || [], outputSchema: tpl.outputSchema || null,
         output_array_field: tpl.output_array_field || null,
+        output_schema_field: tpl.output_schema_field || null,
       };
+      // Add output fields info for multi-output nodes
+      if (tpl.output_array_field && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+        result.isMultiOutput = true;
+        result.outputArrayField = tpl.output_array_field;
+        result.dataAccessNote = 'Node multi-output. Lis outputSchema ci-dessus pour connaître les champs de sortie par branche. Accès: {{ nodeId.<champ> }} — JAMAIS d\'index numériques.';
+      }
+      return result;
     },
 
     async ensure_start(input) {
@@ -593,10 +644,31 @@ function createWorkflowExecutor(metadata, emit) {
       const tpl = await NodeTemplate.findOne({ key: input.templateKey }).lean();
       if (!tpl) return { success: false, error: `Template '${input.templateKey}' introuvable` };
 
-      // Prevent duplicate start nodes
+      // Prevent duplicate start nodes — but upgrade if different template
       if (START_TYPES.includes(String(tpl.type || '').toLowerCase())) {
         const existing = (g.nodes || []).find(n => START_TYPES.includes(String(n?.data?.model?.templateObj?.type || '').toLowerCase()));
-        if (existing) return { success: true, ensured: true, nodeId: existing.id, message: 'Noeud de démarrage existant réutilisé' };
+        if (existing) {
+          const existingKey = existing.data?.model?.template || existing.data?.model?.templateObj?.key || '';
+          if (existingKey !== tpl.key) {
+            // Upgrade: replace templateObj with the new template (e.g. start → email_new_message)
+            const idx = findNodeIndex(existing.id);
+            if (idx >= 0) {
+              const ctx = { ...buildInitialContext(tpl), ...(existing.data?.model?.context || {}) };
+              g.nodes[idx].data.model.template = tpl.key;
+              g.nodes[idx].data.model.name = tpl.title || tpl.name || tpl.key;
+              g.nodes[idx].data.model.templateObj = normalizeTemplateObj(tpl);
+              g.nodes[idx].data.model.context = ctx;
+              g.nodes[idx].data.model.templateChecksum = argsChecksum(tpl.args || {});
+              g.nodes[idx].data.model.templateFeatureSig = featureChecksum(tpl);
+              changed = true;
+              emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
+            }
+          }
+          const outputHandles = getOutputHandleIds(existing).map(hid => ({
+            id: hid, name: getOutputHandleName(existing, hid),
+          }));
+          return { success: true, ensured: true, nodeId: existing.id, type: tpl.type, outputHandles };
+        }
       }
 
       const node = buildNode(tpl, {
@@ -610,7 +682,15 @@ function createWorkflowExecutor(metadata, emit) {
       const outputHandles = getOutputHandleIds(node).map(hid => ({
         id: hid, name: getOutputHandleName(node, hid),
       }));
-      return { success: true, nodeId: node.id, name: node.data.model.name, type: tpl.type, outputHandles };
+      const result = { success: true, nodeId: node.id, name: node.data.model.name, type: tpl.type, outputHandles };
+      // For multi-output nodes: include outputSchema so AI knows the data fields per branch
+      if (tpl.output_array_field && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+        result.isMultiOutput = true;
+        result.outputArrayField = tpl.output_array_field;
+        result.outputSchema = tpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
+        result.dataAccessNote = `Node multi-output. Lis outputSchema ci-dessus pour connaître les champs. Accès: {{ ${node.id}.<champ> }} — JAMAIS d'index numériques.`;
+      }
+      return result;
     },
 
     async remove_node(input) {
@@ -642,7 +722,7 @@ function createWorkflowExecutor(metadata, emit) {
           model: {
             ...(cur.data?.model || {}),
             template: input.templateKey,
-            templateObj: tpl,
+            templateObj: normalizeTemplateObj(tpl),
             context: ctx,
             templateChecksum: argsChecksum(tpl.args || {}),
             templateFeatureSig: featureChecksum(tpl),
@@ -843,9 +923,79 @@ function createWorkflowExecutor(metadata, emit) {
         return mapping;
       };
 
+      // Build upstream context: what each predecessor node outputs (critical for multi-output nodes)
+      const upstreamOutputs = [];
+      const incomingEdges = (g.edges || []).filter(e => String(e.target) === String(input.targetId));
+      for (const edge of incomingEdges) {
+        const srcNode = findNode(edge.source);
+        if (!srcNode) continue;
+        const srcModel = srcNode?.data?.model || {};
+        const srcTmpl = srcModel?.templateObj || {};
+
+        const info = {
+          nodeId: edge.source,
+          name: srcModel.name || srcTmpl.title || '',
+          template: srcModel.template || srcTmpl.key || '',
+          type: srcTmpl.type || '',
+          sourceHandle: edge.sourceHandle || '0',
+          availableExpressions: [],
+        };
+
+        let outputFields = null;
+
+        // 1. Multi-output (classifiers, output_array_field): outputSchema defines the fields per branch
+        if (srcTmpl.output_array_field && Array.isArray(srcTmpl.outputSchema) && srcTmpl.outputSchema.length) {
+          info.isMultiOutput = true;
+          info.outputArrayField = srcTmpl.output_array_field;
+          outputFields = srcTmpl.outputSchema.map(f => ({
+            key: f.key || f.name, type: f.type || 'text', label: f.label || '',
+          }));
+        }
+        // 2. Dynamic schema (output_schema_field): reads schema from context
+        else if (srcTmpl.output_schema_field && srcModel.context) {
+          const dynSchema = srcModel.context[srcTmpl.output_schema_field];
+          if (dynSchema?.fields && Array.isArray(dynSchema.fields)) {
+            outputFields = dynSchema.fields.filter(f => f.key).map(f => ({
+              key: f.key, type: f.type || 'text', label: f.label || '',
+            }));
+          }
+        }
+        // 3. Standard outputHandles with schema
+        else if (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles.length) {
+          const handle = srcTmpl.outputHandles.find(h => String(h.id) === String(edge.sourceHandle || '0'));
+          if (handle?.schema && typeof handle.schema === 'object') {
+            const resolveSchema = (schema) => {
+              const fields = [];
+              for (const [k, v] of Object.entries(schema)) {
+                if (k === '_id' || k === '__v') continue;
+                if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+                  fields.push({ key: k, type: v.type || 'object', label: v.label || '' });
+                } else {
+                  fields.push({ key: k, type: typeof v === 'string' ? v : 'text', label: '' });
+                }
+              }
+              return fields;
+            };
+            outputFields = resolveSchema(handle.schema);
+          }
+        }
+
+        // Generate expression examples for this upstream node
+        if (outputFields && outputFields.length) {
+          info.outputSchema = outputFields;
+          info.availableExpressions = outputFields.map(f => ({
+            field: f.key,
+            expression: `{{ ${edge.source}.${f.key} }}`,
+            type: f.type,
+          }));
+        }
+
+        upstreamOutputs.push(info);
+      }
+
       const variants = scenarios.map(sc => ({ label: sc.label || `scenario_${sc.index}`, mapping: guessMapping(tArgs, sc.msgIn || {}), previewMsg: sc.msgIn || {} }));
       const best = variants[0] || { mapping: {}, previewMsg: {} };
-      return { success: true, scenarioCount: scenarios.length, mapping: best.mapping, variants };
+      return { success: true, scenarioCount: scenarios.length, mapping: best.mapping, variants, upstreamOutputs };
     },
 
     async validate_flow() {
@@ -889,15 +1039,22 @@ function createWorkflowExecutor(metadata, emit) {
       await ensureGraph();
       const g = gref();
       try {
-        const { layoutGraphApplyToNodes } = require('../../utils/elk-layout');
-        let orient = String(input?.orientation || 'vertical').toLowerCase();
-        if (orient !== 'horizontal') orient = 'vertical';
-        const laid = await layoutGraphApplyToNodes({ nodes: g.nodes, edges: g.edges }, { orientation: orient, nodeWidth: 250, nodeHeight: 100, gapX: 260, gapY: 160, normalizeLevels: true });
-        if (laid?.nodes) {
-          for (const p of laid.nodes) { const n = (g.nodes || []).find(nn => nn.id === p.id); if (n) n.point = { x: p.x, y: p.y }; }
-          emitPatch(laid.ops || []);
+        const { layoutGraph } = require('../../utils/elk-layout');
+        let orient = String(input?.orientation || 'horizontal').toLowerCase();
+        if (orient !== 'vertical') orient = 'horizontal';
+        const { positions } = await layoutGraph(
+          { nodes: g.nodes, edges: g.edges },
+          { orientation: orient, nodeWidth: 250, nodeHeight: 110, gapX: 260, gapY: 160, normalizeLevels: true }
+        );
+        // Apply positions to nodes (same as frontend flow-builder.component.ts)
+        let applied = 0;
+        for (const [id, p] of Object.entries(positions)) {
+          const n = (g.nodes || []).find(nn => String(nn.id) === String(id));
+          if (n) { n.point = { x: Math.round(p.x), y: Math.round(p.y) }; applied++; }
         }
-        return { success: true };
+        changed = true;
+        emitSnapshot();
+        return { success: true, applied };
       } catch (e) { return { success: false, error: e?.message || String(e) }; }
     },
 
@@ -925,7 +1082,7 @@ function createWorkflowExecutor(metadata, emit) {
         ...(f.options ? { options: f.options } : {}),
       }));
 
-      const form = await Form.create({ name: input.formName, workspaceId: metadata.workspaceId, schema: { fields } });
+      const form = await Form.create({ name: input.formName, workspaceId: metadata.workspaceId, schema: { ui: { layout: 'vertical', labelsOnTop: true }, fields } });
       emit({ type: 'form.created', form: { id: form.id, _id: String(form._id), name: form.name } });
 
       await ensureGraph();
@@ -937,7 +1094,7 @@ function createWorkflowExecutor(metadata, emit) {
         const idx = findNodeIndex(startNode.id);
         if (idx >= 0) {
           g.nodes[idx].data.model.template = 'start_form';
-          g.nodes[idx].data.model.templateObj = tpl;
+          g.nodes[idx].data.model.templateObj = normalizeTemplateObj(tpl);
           g.nodes[idx].data.model.context = { ...(g.nodes[idx].data.model.context || {}), formId: form.id };
           g.nodes[idx].data.model.templateChecksum = argsChecksum(tpl.args || {});
           g.nodes[idx].data.model.templateFeatureSig = featureChecksum(tpl);
@@ -969,7 +1126,7 @@ function createWorkflowExecutor(metadata, emit) {
 
       const schema = {
         ...(input.title ? { title: input.title } : {}),
-        ui: { layout: 'vertical', labelsOnTop: true },
+        ui: input.ui || { layout: 'vertical', labelsOnTop: true },
         fields,
       };
 
