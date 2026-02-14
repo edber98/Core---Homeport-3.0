@@ -465,14 +465,6 @@
       </ng-container>
     </nz-card>
 
-    <!-- Floating AI Chat Popover Trigger + persistent popover -->
-    <button nz-button nzType="primary" class="ai-chat-fab" *ngIf="!isMobile" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
-      <i class="fa-solid fa-message"></i>
-    </button>
-    <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
-    <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
-      <df-ai-chat (close)="aiChatOpen=false" (schemaGenerated)="applyAiSchema($event)"></df-ai-chat>
-    </div>
   </div>
 
   
@@ -574,6 +566,12 @@
       <app-json-schema-viewer [data]="submitResult" [editable]="false" [editMode]="false" [initialMode]="'JSON'"></app-json-schema-viewer>
     </ng-container>
   </nz-modal>
+
+<!-- AI FAB button -->
+<button nz-button nzShape="circle" nzType="primary" class="ai-chat-fab"
+  (click)="openAiPanel()" aria-label="Assistant IA" nz-tooltip nzTooltipTitle="Assistant IA">
+  <i class="fa-solid fa-wand-magic-sparkles"></i>
+</button>
 
 <!-- Responsive drawers (mobile) -->
 <nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">

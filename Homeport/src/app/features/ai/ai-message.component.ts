@@ -28,6 +28,11 @@ const TOOL_LABELS: Record<string, string> = {
   reorder_fields: 'Réordonnancement', get_field_types: 'Types champs',
   create_form: 'Création form', save_form: 'Sauvegarde form',
   get_output_schema: 'Schéma sortie', build_schema: 'Construction schéma',
+  search_forms: 'Recherche forms', load_form: 'Chargement form',
+  update_section: 'Modif section', update_form_settings: 'Paramètres form',
+  deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
+  get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
+  list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
 };
 
 interface ToolGroup {
@@ -49,7 +54,8 @@ const CAT_MEM = { category: 'Mémoire', icon: 'database', color: '#eb2f96' };
 for (const k of ['search_tools', 'get_tool_details', 'get_templates', 'get_template_details',
   'list_graph', 'get_output_options', 'get_node_schema', 'get_output_schema', 'get_node_info',
   'list_predecessors', 'get_predecessor_context', 'search_predecessors', 'get_scenarios',
-  'get_msgin_preview', 'list_providers', 'search_workflows', 'get_form_schema', 'get_field_types'])
+  'get_msgin_preview', 'list_providers', 'search_workflows', 'get_form_schema', 'get_field_types',
+  'search_forms', 'load_form', 'get_deployment_status', 'list_runs', 'get_run_stats'])
   TOOL_CATEGORIES[k] = CAT_PLAN;
 // Question
 TOOL_CATEGORIES['ask_user'] = CAT_QUESTION;
@@ -58,10 +64,10 @@ for (const k of ['create_flow', 'ensure_start', 'add_node', 'remove_node', 'repl
   'connect_nodes', 'disconnect_nodes', 'connect_by_output_name',
   'set_node_args', 'set_node_description', 'create_start_form', 'build_schema',
   'propose_context_mapping', 'set_form_schema', 'add_field', 'update_field', 'remove_field',
-  'add_section', 'reorder_fields', 'create_form'])
+  'add_section', 'update_section', 'update_form_settings', 'reorder_fields', 'create_form'])
   TOOL_CATEGORIES[k] = CAT_BUILD;
 // Execution
-for (const k of ['execute_tool', 'run_workflow']) TOOL_CATEGORIES[k] = CAT_EXEC;
+for (const k of ['execute_tool', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'start_run']) TOOL_CATEGORIES[k] = CAT_EXEC;
 // Validation
 for (const k of ['validate_flow', 'auto_layout', 'save_flow', 'save_form']) TOOL_CATEGORIES[k] = CAT_VALID;
 // Memory
@@ -84,7 +90,11 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
           <ng-container *ngFor="let seg of msg.segments">
             <div class="content" *ngIf="seg.type === 'text' && seg.content"
                  [innerHTML]="renderMarkdown(seg.content)"></div>
-            <ng-container *ngIf="seg.type === 'tools' && seg.toolCalls?.length">
+            <div class="reasoning-block" *ngIf="seg.type === 'tools' && seg.toolCalls?.length">
+              <div class="reasoning-header">
+                <span nz-icon nzType="bulb" nzTheme="outline"></span>
+                <span>Raisonnement</span>
+              </div>
               <ng-container *ngFor="let group of groupTools(seg.toolCalls || [])">
                 <div class="tool-group">
                   <div class="tool-group-header" [style.color]="group.color">
@@ -98,14 +108,18 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
                   </div>
                 </div>
               </ng-container>
-            </ng-container>
+            </div>
           </ng-container>
         </ng-container>
 
         <!-- Flat layout: content + tools (for DB-loaded messages without segments) -->
         <ng-template #flatLayout>
           <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
-          <ng-container *ngIf="msg.toolCalls?.length">
+          <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
+            <div class="reasoning-header">
+              <span nz-icon nzType="bulb" nzTheme="outline"></span>
+              <span>Raisonnement</span>
+            </div>
             <ng-container *ngFor="let group of groupTools(msg.toolCalls!)">
               <div class="tool-group">
                 <div class="tool-group-header" [style.color]="group.color">
@@ -119,20 +133,20 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
                 </div>
               </div>
             </ng-container>
-          </ng-container>
+          </div>
         </ng-template>
 
         <!-- Reusable tool tag template -->
         <ng-template #toolTagTpl let-tc>
           <nz-tag
             class="tool-tag"
-            [nzColor]="tc.status === 'error' ? 'red' : 'geekblue'"
+            [nzColor]="!tc.status ? 'processing' : (tc.status === 'error' ? 'red' : 'green')"
             nz-popover
             [nzPopoverContent]="popoverTpl"
             nzPopoverTrigger="hover"
             nzPopoverPlacement="topLeft"
             [nzPopoverOverlayStyle]="{ maxWidth: '500px' }">
-            <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline" class="tag-icon"></span>
+            <span nz-icon [nzType]="!tc.status ? 'loading' : (tc.status === 'error' ? 'close-circle' : 'check-circle')" nzTheme="outline" class="tag-icon" [class.spinning]="!tc.status"></span>
             {{ toolLabel(tc.name) }}
             <span class="tag-extra" *ngIf="toolExtra(tc)">{{ toolExtra(tc) }}</span>
             <span class="tag-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
@@ -171,13 +185,17 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .tool-group { max-width: 85%; margin: 2px 0; }
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.5; max-width: 85%; }
+    .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .tool-group { margin: 2px 0; }
     .tool-group-header { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; opacity: 0.85; }
     .group-icon { font-size: 12px; }
     .group-label { text-transform: uppercase; letter-spacing: 0.5px; }
     .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
     .tag-icon { font-size: 11px; }
+    .tag-icon.spinning { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .tag-extra { opacity: 0.7; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tag-dur { opacity: 0.6; font-size: 10px; margin-left: 2px; }
     .popover-content { max-height: 400px; overflow-y: auto; }

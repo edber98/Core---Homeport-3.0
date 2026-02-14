@@ -31,6 +31,17 @@ function buildSystemPrompt(mode, ctx) {
       break;
   }
 
+  // Inject agent prompt fragment (dynamic provider or custom agent)
+  if (ctx._agentPromptFragment) {
+    prompt += '\n\n## Spécialisation agent\n' + ctx._agentPromptFragment;
+  }
+
+  // Inject custom instructions
+  const custom = ctx.user?.preferences?.customInstructions;
+  if (custom?.trim()) {
+    prompt += '\n\n## Instructions utilisateur\n' + custom.trim();
+  }
+
   return prompt;
 }
 

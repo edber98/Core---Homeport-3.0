@@ -5,6 +5,9 @@ const { Types } = require('mongoose');
 const Flow = require('../../db/models/flow.model');
 const Form = require('../../db/models/form.model');
 const NodeTemplate = require('../../db/models/node-template.model');
+const Credential = require('../../db/models/credential.model');
+const Provider = require('../../db/models/provider.model');
+const Run = require('../../db/models/run.model');
 const { argsToJsonSchema, extractOutputSchema } = require('./tool-converter');
 
 const WORKFLOW_TOOL_DEFINITIONS = [
@@ -278,8 +281,76 @@ const WORKFLOW_TOOL_DEFINITIONS = [
         title: { type: 'string', description: 'Titre du schéma (optionnel)' },
         targetNodeId: { type: 'string', description: 'Si fourni, applique automatiquement le schéma à ce node via set_node_args' },
         targetArgKey: { type: 'string', description: 'Clé de l\'argument schema_builder à remplir (ex: extraction_schema). Requis si targetNodeId est fourni.' },
+        displayTitle: { type: 'boolean', description: 'Afficher le titre dans le formulaire (défaut: false pour schema node, true pour form standalone)' },
+        displayDescription: { type: 'boolean', description: 'Afficher la description dans le formulaire' },
       },
       required: ['fields'],
+    },
+  },
+  // ── Deployment & Trigger tools ────────────────────────────────────────
+  {
+    name: 'deploy_flow',
+    description: 'Déploie un workflow en production. Le flow doit contenir un noeud event (trigger). Active l\'écoute des événements (webhook, polling, subscription).',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow à déployer (optionnel si un flow est déjà chargé)' },
+      },
+    },
+  },
+  {
+    name: 'undeploy_flow',
+    description: 'Arrête la production d\'un workflow. Désactive l\'écoute des événements et remet le flow en brouillon.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow à arrêter (optionnel si un flow est déjà chargé)' },
+      },
+    },
+  },
+  {
+    name: 'get_deployment_status',
+    description: 'Vérifie le statut de déploiement d\'un workflow : actif/inactif, type de trigger, date de déploiement, nombre d\'événements.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow (optionnel si un flow est déjà chargé)' },
+      },
+    },
+  },
+  // ── Run / Execution tools ─────────────────────────────────────────────
+  {
+    name: 'start_run',
+    description: 'Lance une exécution manuelle du workflow. Retourne l\'ID du run immédiatement (exécution asynchrone).',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow (optionnel si un flow est déjà chargé)' },
+        payload: { type: 'object', description: 'Données d\'entrée (optionnel)' },
+      },
+    },
+  },
+  {
+    name: 'list_runs',
+    description: 'Liste les exécutions d\'un workflow avec pagination. Retourne statut, durée, nombre de noeuds exécutés.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow (optionnel si un flow est déjà chargé)' },
+        status: { type: 'string', enum: ['queued', 'running', 'success', 'error', 'cancelled', 'timed_out'], description: 'Filtrer par statut' },
+        limit: { type: 'number', description: 'Nombre max de résultats (défaut: 20, max: 50)' },
+        offset: { type: 'number', description: 'Offset pour la pagination (défaut: 0)' },
+      },
+    },
+  },
+  {
+    name: 'get_run_stats',
+    description: 'Statistiques d\'exécution d\'un workflow : total, succès, erreurs, durée moyenne.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du flow (optionnel si un flow est déjà chargé)' },
+      },
     },
   },
 ];
@@ -334,6 +405,102 @@ function createWorkflowExecutor(metadata, emit) {
   function emitSnapshot() {
     changed = true;
     emit({ type: 'snapshot', graph: gref() });
+  }
+
+  /** Build a styled edge matching frontend format (type, labels, colors, markers) */
+  function buildEdge(sourceId, targetId, sourceHandle, targetHandle) {
+    const isErr = sourceHandle === 'err';
+    const label = computeEdgeLabelBackend(sourceId, sourceHandle);
+    return {
+      type: 'template',
+      id: `${sourceId}->${targetId}:${sourceHandle}:${targetHandle}`,
+      source: sourceId, target: targetId,
+      sourceHandle, targetHandle,
+      edgeLabels: label ? { center: { type: 'html-template', data: { text: label } } } : undefined,
+      data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
+      markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } },
+    };
+  }
+
+  /** Compute edge label from source node handle (mirrors frontend flow-graph.service.ts computeEdgeLabel EXACTLY) */
+  function computeEdgeLabelBackend(sourceId, sourceHandle) {
+    const node = findNode(sourceId);
+    if (!node) return '';
+    const model = node.data?.model || {};
+    const tmpl = model.templateObj || {};
+    const type = String(tmpl.type || '').toLowerCase();
+    const names = Array.isArray(tmpl.output) && tmpl.output.length ? tmpl.output : ['Success'];
+
+    if (sourceHandle === 'err') return 'Error';
+
+    // Start/event/endpoint nodes → "Success"
+    if (['start', 'start_form', 'event', 'endpoint'].includes(type)) return 'Success';
+
+    const idx = sourceHandle != null && /^\d+$/.test(String(sourceHandle)) ? parseInt(String(sourceHandle), 10) : NaN;
+
+    // CONDITION NODES
+    if (type === 'condition') {
+      const field = tmpl.output_array_field || 'items';
+      const arr = (model.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+
+      if (Number.isFinite(idx)) {
+        const it = arr[idx];
+        if (it == null) return '';
+        if (typeof it === 'string') return it;
+        if (typeof it === 'object') return it.name ?? '';
+        return '';
+      }
+      // Match by _id
+      const it = arr.find(x => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
+      if (it) return (typeof it === 'object') ? (it.name ?? '') : '';
+      // Else branch
+      try {
+        const elseId = (model.context?.else?._id) ? String(model.context.else._id) : (model.context?.elseId ? String(model.context.elseId) : null);
+        if (elseId && String(sourceHandle) === elseId) return 'Else';
+      } catch {}
+      return '';
+    }
+
+    // MULTI-OUTPUT FUNCTIONS (output_array_field on non-condition)
+    const dynField = tmpl.output_array_field;
+    if (dynField) {
+      const arr = (model.context && Array.isArray(model.context[dynField])) ? model.context[dynField] : [];
+
+      if (Number.isFinite(idx)) {
+        const it = arr[idx];
+        if (it == null) return '';
+        if (typeof it === 'string') return it;
+        if (typeof it === 'object') return it.name ?? '';
+        return '';
+      }
+      // Match by _id
+      const it = arr.find(x => x && typeof x === 'object' && String(x._id) === String(sourceHandle));
+      if (it) return (typeof it === 'object') ? (it.name ?? '') : '';
+      // Else branch
+      try {
+        const elseId = (model.context?.else?._id) ? String(model.context.else._id) : (model.context?.elseId ? String(model.context.elseId) : null);
+        if (elseId && String(sourceHandle) === elseId) return 'Else';
+      } catch {}
+      return '';
+    }
+
+    // V2 OUTPUT HANDLES (declared on template)
+    if (Array.isArray(tmpl.outputHandles) && tmpl.outputHandles.length) {
+      if (type === 'loop') {
+        const legacy = String(sourceHandle);
+        if (legacy === 'loop_start' || legacy === 'each') return 'Each';
+        if (legacy === 'loop_end' || legacy === 'end' || legacy === 'after') return 'After';
+      }
+      const h = tmpl.outputHandles
+        .filter(x => !Array.isArray(x?.accepts) && !x?.arrayField)
+        .find(hh => String(hh.id) === String(sourceHandle));
+      return h?.name || '';
+    }
+
+    // LEGACY: numeric index → tmpl.output array
+    if (Array.isArray(names) && Number.isFinite(idx) && idx >= 0 && idx < names.length) return names[idx];
+    if (Array.isArray(names) && names.length === 1) return names[0] || 'Success';
+    return '';
   }
 
   const START_TYPES = ['start', 'start_form', 'event', 'endpoint', 'trigger'];
@@ -443,10 +610,30 @@ function createWorkflowExecutor(metadata, emit) {
   }
 
   /** Build a properly structured node matching frontend format */
-  function buildNode(tpl, opts = {}) {
+  async function buildNode(tpl, opts = {}) {
     const id = opts.id || genNodeId(tpl);
     const ctx = { ...buildInitialContext(tpl), ...(opts.context || {}) };
     const templateObj = normalizeTemplateObj(tpl);
+
+    // Auto-assign credential if the provider requires one
+    let credentialId;
+    if (tpl.providerKey && !tpl.allowWithoutCredentials) {
+      try {
+        const provider = await Provider.findOne({ key: tpl.providerKey }, 'hasCredentials allowWithoutCredentials').lean();
+        if (provider?.hasCredentials && !provider?.allowWithoutCredentials) {
+          const creds = await Credential.find(
+            { providerKey: tpl.providerKey, workspaceId: metadata.workspaceId },
+            'id _id name'
+          ).lean();
+          if (creds.length === 1) {
+            credentialId = String(creds[0]._id);
+          } else if (creds.length > 1) {
+            // Use the first one as default — user can change later
+            credentialId = String(creds[0]._id);
+          }
+        }
+      } catch {}
+    }
 
     return {
       id,
@@ -461,6 +648,7 @@ function createWorkflowExecutor(metadata, emit) {
           context: ctx,
           templateChecksum: argsChecksum(tpl.args || {}),
           templateFeatureSig: featureChecksum(tpl),
+          ...(credentialId ? { credentialId } : {}),
           ...(tpl.authorize_catch_error ? { catch_error: false } : {}),
         },
       },
@@ -553,6 +741,13 @@ function createWorkflowExecutor(metadata, emit) {
 
   const tools = {
     async create_flow(input) {
+      // Block if already inside a flow builder (flowId exists)
+      if (metadata.flowId || flowDoc) {
+        return {
+          success: false,
+          error: 'Un workflow est déjà ouvert dans le builder. Tu NE DOIS PAS créer un nouveau flow. Utilise list_graph pour voir l\'état actuel et modifie le graph existant avec add_node, remove_node, connect_nodes, etc.',
+        };
+      }
       const flow = await Flow.create({
         name: input.name,
         description: input.description || '',
@@ -632,7 +827,7 @@ function createWorkflowExecutor(metadata, emit) {
 
       const key = String(input?.type || 'start').toLowerCase();
       const tpl = await NodeTemplate.findOne({ key }).lean() || { key, name: key, type: key };
-      const node = buildNode(tpl, { point: { x: 0, y: 0 } });
+      const node = await buildNode(tpl, { point: { x: 0, y: 0 } });
       g.nodes.push(node);
       emitPatch([{ op: 'add', path: '/nodes/-', value: node }]);
       return { success: true, ensured: true, nodeId: node.id, type: key };
@@ -671,7 +866,7 @@ function createWorkflowExecutor(metadata, emit) {
         }
       }
 
-      const node = buildNode(tpl, {
+      const node = await buildNode(tpl, {
         title: input.title,
         point: input.near || { x: 0, y: 0 },
       });
@@ -721,6 +916,7 @@ function createWorkflowExecutor(metadata, emit) {
           ...cur.data,
           model: {
             ...(cur.data?.model || {}),
+            name: tpl.title || tpl.name || tpl.key || 'Node',
             template: input.templateKey,
             templateObj: normalizeTemplateObj(tpl),
             context: ctx,
@@ -729,7 +925,22 @@ function createWorkflowExecutor(metadata, emit) {
           },
         },
       };
-      emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: gref().nodes[idx] }]);
+
+      // Recompute edge labels on all outgoing edges (template change affects labels)
+      const nodeId = String(input.nodeId);
+      const g = gref();
+      const ops = [{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }];
+      for (let i = 0; i < g.edges.length; i++) {
+        const e = g.edges[i];
+        if (String(e.source) === nodeId) {
+          const updated = buildEdge(e.source, e.target, e.sourceHandle || '0', e.targetHandle || 'in');
+          updated.id = e.id || updated.id; // preserve original edge id
+          g.edges[i] = updated;
+          ops.push({ op: 'replace', path: `/edges/${i}`, value: updated });
+        }
+      }
+
+      emitPatch(ops);
       return { success: true };
     },
 
@@ -776,10 +987,7 @@ function createWorkflowExecutor(metadata, emit) {
         return { success: true, edgeId: existingEdge.id, message: 'Connexion déjà existante' };
       }
 
-      const edge = {
-        id: `e_${Date.now().toString(36)}`, source: input.sourceId, target: input.targetId,
-        sourceHandle, targetHandle,
-      };
+      const edge = buildEdge(input.sourceId, input.targetId, sourceHandle, targetHandle);
       gref().edges.push(edge);
       emitPatch([{ op: 'add', path: '/edges/-', value: edge }]);
       return { success: true, edgeId: edge.id };
@@ -865,11 +1073,32 @@ function createWorkflowExecutor(metadata, emit) {
       const existing = g.nodes[idx].data.model.context || {};
       g.nodes[idx].data.model.context = { ...existing, ...args };
 
-      // Recalculate templateChecksum after args change
+      // Ensure stable _ids on condition/multi-output array items (mirrors frontend ensureStableConditionIds)
       const tpl = g.nodes[idx].data.model.templateObj || {};
+      const nodeType = String(tpl.type || '').toLowerCase();
+      const oaf = tpl.output_array_field;
+      if (nodeType === 'condition' || oaf) {
+        const field = oaf || 'items';
+        const arr = g.nodes[idx].data.model.context[field];
+        if (Array.isArray(arr)) {
+          const used = new Set();
+          for (const item of arr) {
+            if (item && typeof item === 'object') {
+              if (item._id) { used.add(item._id); continue; }
+              let id;
+              do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id));
+              item._id = id;
+              used.add(id);
+            }
+          }
+        }
+      }
+
+      // Recalculate templateChecksum after args change
       g.nodes[idx].data.model.templateChecksum = argsChecksum(tpl.args || {});
 
-      emitPatch([{ op: 'replace', path: `/nodes/${idx}/data/model/context`, value: g.nodes[idx].data.model.context }]);
+      // Emit full node replace so frontend gets _id changes + output handles
+      emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
       emit({ type: 'args', nodeId: input.nodeId, args });
       return { success: true, keys: Object.keys(args) };
     },
@@ -1013,7 +1242,10 @@ function createWorkflowExecutor(metadata, emit) {
         const type = String(n?.data?.model?.templateObj?.type || '').toLowerCase();
         if (START_TYPES.includes(type)) continue;
         if (!connectedTargets.has(id) && !connectedSources.has(id)) {
-          issues.push({ level: 'warning', nodeId: id, message: `Node '${n?.data?.model?.name || id}' orphelin (aucune connexion)` });
+          issues.push({ level: 'error', nodeId: id, message: `Node '${n?.data?.model?.name || id}' orphelin (aucune connexion)` });
+        } else if (!connectedTargets.has(id)) {
+          // Non-trigger nodes MUST have at least one incoming edge
+          issues.push({ level: 'error', nodeId: id, message: `Node '${n?.data?.model?.name || id}' n'a aucune entrée (tous les nodes sauf triggers doivent être connectés en entrée)` });
         }
       }
 
@@ -1040,11 +1272,16 @@ function createWorkflowExecutor(metadata, emit) {
       const g = gref();
       try {
         const { layoutGraph } = require('../../utils/elk-layout');
-        let orient = String(input?.orientation || 'horizontal').toLowerCase();
-        if (orient !== 'vertical') orient = 'horizontal';
+        // Read orientation from flow settings (same as frontend) or input override
+        let orient = String(input?.orientation || '').toLowerCase();
+        if (orient !== 'horizontal' && orient !== 'vertical') {
+          orient = flowDoc?.settings?.portOrientation === 'vertical' ? 'vertical' : 'horizontal';
+        }
+        // Use same layout params as frontend flow-builder.component.ts
+        const gapX = orient === 'horizontal' ? 360 : 260;
         const { positions } = await layoutGraph(
           { nodes: g.nodes, edges: g.edges },
-          { orientation: orient, nodeWidth: 250, nodeHeight: 110, gapX: 260, gapY: 160, normalizeLevels: true }
+          { orientation: orient, nodeWidth: 223, nodeHeight: 110, gapX, gapY: 160, normalizeLevels: true }
         );
         // Apply positions to nodes (same as frontend flow-builder.component.ts)
         let applied = 0;
@@ -1082,34 +1319,62 @@ function createWorkflowExecutor(metadata, emit) {
         ...(f.options ? { options: f.options } : {}),
       }));
 
-      const form = await Form.create({ name: input.formName, workspaceId: metadata.workspaceId, schema: { ui: { layout: 'vertical', labelsOnTop: true }, fields } });
-      emit({ type: 'form.created', form: { id: form.id, _id: String(form._id), name: form.name } });
+      // Build form schema — embedded directly in the node model (NOT a separate Form document)
+      const schema = {
+        title: input.formName || 'Formulaire de démarrage',
+        ui: { layout: 'vertical', labelsOnTop: true },
+        fields,
+        displayTitle: true,
+        displayDescription: true,
+      };
 
       await ensureGraph();
       const g = gref();
       const tpl = await NodeTemplate.findOne({ key: 'start_form' }).lean() || { key: 'start_form', name: 'Formulaire', type: 'start_form' };
       const startNode = (g.nodes || []).find(n => START_TYPES.includes(String(n?.data?.model?.templateObj?.type || '').toLowerCase()));
 
+      let nodeId;
       if (startNode) {
         const idx = findNodeIndex(startNode.id);
         if (idx >= 0) {
           g.nodes[idx].data.model.template = 'start_form';
+          g.nodes[idx].data.model.name = input.formName || tpl.title || 'Démarrage formulaire';
           g.nodes[idx].data.model.templateObj = normalizeTemplateObj(tpl);
-          g.nodes[idx].data.model.context = { ...(g.nodes[idx].data.model.context || {}), formId: form.id };
+          g.nodes[idx].data.model.startFormSchema = schema;
+          g.nodes[idx].data.model.startFormEnabled = true;
+          g.nodes[idx].data.model.startFormAppliedAt = Date.now();
           g.nodes[idx].data.model.templateChecksum = argsChecksum(tpl.args || {});
           g.nodes[idx].data.model.templateFeatureSig = featureChecksum(tpl);
           emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
+          nodeId = String(startNode.id);
         }
       } else {
-        const node = buildNode(tpl, {
-          point: { x: 0, y: 0 },
-          context: { formId: form.id },
-        });
+        const node = await buildNode(tpl, { point: { x: 0, y: 0 } });
+        node.data.model.startFormSchema = schema;
+        node.data.model.startFormEnabled = true;
+        node.data.model.startFormAppliedAt = Date.now();
+        node.data.model.name = input.formName || tpl.title || 'Démarrage formulaire';
         g.nodes.push(node);
         emitPatch([{ op: 'add', path: '/nodes/-', value: node }]);
+        nodeId = String(node.id);
       }
 
-      return { success: true, formId: form.id, fields: fields.map(f => f.key) };
+      // Recompute edge labels on outgoing edges
+      if (nodeId) {
+        const edgeOps = [];
+        for (let i = 0; i < g.edges.length; i++) {
+          const e = g.edges[i];
+          if (String(e.source) === nodeId) {
+            const updated = buildEdge(e.source, e.target, e.sourceHandle || 'ok', e.targetHandle || 'in');
+            updated.id = e.id || updated.id;
+            g.edges[i] = updated;
+            edgeOps.push({ op: 'replace', path: `/edges/${i}`, value: updated });
+          }
+        }
+        if (edgeOps.length) emitPatch(edgeOps);
+      }
+
+      return { success: true, nodeId, fields: fields.map(f => f.key), formTitle: schema.title };
     },
 
     async build_schema(input) {
@@ -1117,15 +1382,22 @@ function createWorkflowExecutor(metadata, emit) {
         key: f.key,
         type: f.type || 'text',
         label: f.label,
-        description: f.description || '',
+        ...(f.description ? { description: f.description } : {}),
         defaultValue: f.defaultValue !== undefined ? f.defaultValue : '',
         validators: f.required ? [{ type: 'required' }] : [],
         col: f.col || { xs: 24, sm: 24, md: f.type === 'textarea' ? 24 : 12 },
         ...(f.options ? { options: f.options } : {}),
       }));
 
+      // When building a schema for node args (schema_builder, extraction_schema, etc.),
+      // hide title and description by default. For standalone forms/start_forms, show them.
+      const isNodeSchema = !!(input.targetNodeId && input.targetArgKey);
       const schema = {
         ...(input.title ? { title: input.title } : {}),
+        ...(input.description ? { description: input.description } : {}),
+        // Hide title/description for embedded schemas (node args), show for standalone forms
+        displayTitle: isNodeSchema ? false : (input.displayTitle !== undefined ? input.displayTitle : true),
+        displayDescription: isNodeSchema ? false : (input.displayDescription !== undefined ? input.displayDescription : true),
         ui: input.ui || { layout: 'vertical', labelsOnTop: true },
         fields,
       };
@@ -1142,10 +1414,205 @@ function createWorkflowExecutor(metadata, emit) {
 
       return { success: true, applied: false, fieldCount: fields.length, schema };
     },
+
+    // ── Deployment & Trigger tools ──────────────────────────────────────
+
+    async deploy_flow(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const flow = await Flow.findById(fid);
+        if (!flow) return { success: false, error: 'Flow introuvable' };
+        if (!flow.enabled) return { success: false, error: 'Le flow est désactivé. Active-le d\'abord.' };
+        if (flow.status === 'production') return { success: false, error: 'Le flow est déjà en production.' };
+
+        const triggerManager = require('../../services/trigger-manager');
+        const status = await triggerManager.deployFlow(flow._id);
+        return {
+          success: true,
+          status: 'deployed',
+          triggerType: status?.triggerType || flow.triggerType || null,
+          webhookUrl: status?.webhookUrl || null,
+          message: `Flow "${flow.name}" déployé en production.`,
+        };
+      } catch (e) {
+        const msg = e?.message || String(e);
+        if (msg.includes('already')) return { success: false, error: 'Le flow est déjà déployé.' };
+        if (msg.includes('event') || msg.includes('trigger')) return { success: false, error: 'Aucun noeud event/trigger trouvé. Ajoute un noeud event pour activer le déploiement.' };
+        if (msg.includes('adapter')) return { success: false, error: 'Adaptateur de trigger introuvable pour ce type d\'événement.' };
+        return { success: false, error: msg };
+      }
+    },
+
+    async undeploy_flow(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const flow = await Flow.findById(fid);
+        if (!flow) return { success: false, error: 'Flow introuvable' };
+        if (flow.status !== 'production') return { success: false, error: 'Le flow n\'est pas en production.' };
+
+        const triggerManager = require('../../services/trigger-manager');
+        await triggerManager.undeployFlow(flow._id);
+        return { success: true, status: 'undeployed', message: `Flow "${flow.name}" arrêté.` };
+      } catch (e) {
+        return { success: false, error: e?.message || String(e) };
+      }
+    },
+
+    async get_deployment_status(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const flow = await Flow.findById(fid).lean();
+        if (!flow) return { success: false, error: 'Flow introuvable' };
+
+        const triggerManager = require('../../services/trigger-manager');
+        const triggerStatus = triggerManager.getStatus ? triggerManager.getStatus(flow._id) : {};
+        return {
+          success: true,
+          flowName: flow.name,
+          status: flow.status || 'draft',
+          enabled: flow.enabled !== false,
+          deployed: flow.status === 'production',
+          deployedAt: flow.deployedAt || null,
+          triggerType: flow.triggerType || triggerStatus?.triggerType || null,
+          triggerNodeId: flow.triggerNodeId || null,
+          active: triggerStatus?.active || false,
+          eventCount: triggerStatus?.eventCount || 0,
+        };
+      } catch (e) {
+        return { success: false, error: e?.message || String(e) };
+      }
+    },
+
+    // ── Run / Execution tools ───────────────────────────────────────────
+
+    async start_run(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const flow = await Flow.findById(fid);
+        if (!flow) return { success: false, error: 'Flow introuvable' };
+        if (!flow.enabled) return { success: false, error: 'Le flow est désactivé.' };
+
+        // Validate templates before run
+        const { validateFlowTemplates } = require('../../plugins/validate');
+        const valResult = validateFlowTemplates(flow.graph);
+        if (valResult && valResult.errors && valResult.errors.length) {
+          return { success: false, error: 'Le flow a des erreurs de validation.', validationErrors: valResult.errors.slice(0, 5) };
+        }
+
+        const run = await Run.create({
+          flowId: flow._id,
+          workspaceId: flow.workspaceId,
+          companyId: flow.companyId,
+          status: 'queued',
+          graph: flow.graph,
+          meta: flow.settings || {},
+          startedAt: new Date(),
+        });
+
+        // Async execution
+        const { runFlow } = require('../../engine');
+        setImmediate(async () => {
+          try {
+            await Run.updateOne({ _id: run._id }, { status: 'running' });
+            const result = await runFlow(flow.graph, { flowId: flow._id, workspaceId: flow.workspaceId }, input?.payload ? { payload: input.payload } : { payload: {} });
+            await Run.updateOne({ _id: run._id }, { status: 'success', result, finishedAt: new Date(), durationMs: Date.now() - run.startedAt.getTime() });
+          } catch (err) {
+            await Run.updateOne({ _id: run._id }, { status: 'error', result: { error: err?.message || String(err) }, finishedAt: new Date(), durationMs: Date.now() - run.startedAt.getTime() });
+          }
+        });
+
+        return { success: true, runId: String(run._id), status: 'queued', message: `Exécution lancée pour "${flow.name}".` };
+      } catch (e) {
+        return { success: false, error: e?.message || String(e) };
+      }
+    },
+
+    async list_runs(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const limit = Math.min(Math.max(input?.limit || 20, 1), 50);
+        const offset = Math.max(input?.offset || 0, 0);
+
+        const query = { flowId: fid };
+        if (input?.status) query.status = input.status;
+
+        const [runs, total] = await Promise.all([
+          Run.find(query, 'status startedAt finishedAt durationMs')
+            .sort({ createdAt: -1 }).skip(offset).limit(limit).lean(),
+          Run.countDocuments(query),
+        ]);
+
+        return {
+          success: true,
+          total,
+          limit,
+          offset,
+          runs: runs.map(r => ({
+            id: String(r._id),
+            status: r.status,
+            startedAt: r.startedAt,
+            finishedAt: r.finishedAt || null,
+            durationMs: r.durationMs || null,
+          })),
+        };
+      } catch (e) {
+        return { success: false, error: e?.message || String(e) };
+      }
+    },
+
+    async get_run_stats(input) {
+      const fid = input?.flowId || metadata.flowId;
+      if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
+      try {
+        const flowObjId = Types.ObjectId.isValid(fid) ? new Types.ObjectId(fid) : null;
+        if (!flowObjId) return { success: false, error: 'flowId invalide' };
+
+        const stats = await Run.aggregate([
+          { $match: { flowId: flowObjId } },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: 1 },
+              success: { $sum: { $cond: [{ $eq: ['$status', 'success'] }, 1, 0] } },
+              error: { $sum: { $cond: [{ $eq: ['$status', 'error'] }, 1, 0] } },
+              running: { $sum: { $cond: [{ $eq: ['$status', 'running'] }, 1, 0] } },
+              cancelled: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] } },
+              timed_out: { $sum: { $cond: [{ $eq: ['$status', 'timed_out'] }, 1, 0] } },
+              avgDurationMs: { $avg: '$durationMs' },
+            },
+          },
+        ]);
+
+        const s = stats[0] || { total: 0, success: 0, error: 0, running: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
+        return {
+          success: true,
+          total: s.total,
+          success: s.success,
+          error: s.error,
+          running: s.running,
+          cancelled: s.cancelled,
+          timed_out: s.timed_out,
+          avgDurationMs: s.avgDurationMs ? Math.round(s.avgDurationMs) : null,
+        };
+      } catch (e) {
+        return { success: false, error: e?.message || String(e) };
+      }
+    },
   };
 
+  // When a flow is already loaded (builder mode), remove create_flow from the tool list
+  // so the LLM cannot even attempt to call it
+  const defs = metadata.flowId
+    ? WORKFLOW_TOOL_DEFINITIONS.filter(d => d.name !== 'create_flow')
+    : WORKFLOW_TOOL_DEFINITIONS;
+
   return {
-    definitions: WORKFLOW_TOOL_DEFINITIONS,
+    definitions: defs,
     canHandle(name) { return name in tools; },
     async execute(name, input) {
       if (!(name in tools)) throw new Error(`Unknown workflow tool: ${name}`);

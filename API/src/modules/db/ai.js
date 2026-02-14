@@ -10,6 +10,7 @@ const AiUserContext = require('../../db/models/ai-user-context.model');
 const AiAgent = require('../../db/models/ai-agent.model');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
+const Flow = require('../../db/models/flow.model');
 const { buildContext } = require('../../ai/context/context-builder');
 const { runAgent } = require('../../ai/agent-runner');
 const { toolIndex } = require('../../ai/tools/tool-index');
@@ -18,6 +19,47 @@ module.exports = function () {
   const r = express.Router();
   r.use(authMiddleware());
   r.use(requireCompanyScope());
+
+  // ── Resolve agent overrides (provider:xxx or aia_xxx) ──
+  async function resolveAgentOverrides(agentId, context) {
+    if (!agentId || agentId === 'general') return null;
+
+    // System agent: provider:<key>
+    if (agentId.startsWith('provider:')) {
+      const providerKey = agentId.slice('provider:'.length);
+      const provider = (context.availableProviders || []).find(p => p.key === providerKey);
+      if (!provider) return null;
+
+      // Load all node templates for this provider to list available tools
+      const NodeTemplate = require('../../db/models/node-template.model');
+      const templates = await NodeTemplate.find(
+        { providerKey, enabled: { $ne: false } },
+        'key title description type'
+      ).lean();
+
+      const toolLines = templates.map(t =>
+        `- \`${t.key}\` : ${t.title || t.key}${t.description ? ' — ' + t.description : ''}`
+      );
+
+      const promptFragment = `Tu es un spécialiste ${provider.name}. Tu connais parfaitement les outils ${provider.name} et tu privilégies leur utilisation.
+
+### Outils ${provider.name} disponibles (${templates.length})
+${toolLines.join('\n')}
+
+Quand l'utilisateur demande une action liée à ${provider.name}, utilise directement les outils ci-dessus via \`execute_tool\` avec la clé correspondante. Propose des solutions concrètes en utilisant ces outils plutôt que des explications théoriques.`;
+
+      return { promptFragment };
+    }
+
+    // Custom agent: aia_xxx
+    const agent = await AiAgent.findOne({ id: agentId }).lean();
+    if (!agent) return null;
+    return {
+      promptFragment: agent.systemPrompt || null,
+      llmProvider: agent.llmProvider || null,
+      llmModel: agent.llmModel || null,
+    };
+  }
 
   // ── Workspace access helper (supports both ObjectId and custom id like ws_xxx) ──
   async function ensureWorkspaceAccess(req, res) {
@@ -62,13 +104,23 @@ module.exports = function () {
     const ws = await ensureWorkspaceAccess(req, res);
     if (!ws) return;
     const { mode, title, flowId, nodeId, agentId, metadata } = req.body || {};
+    // Resolve flowId: could be a short ID (flw_xxx) or an ObjectId string
+    let resolvedFlowId;
+    if (flowId) {
+      if (Types.ObjectId.isValid(flowId)) {
+        resolvedFlowId = flowId;
+      } else {
+        const flow = await Flow.findOne({ id: flowId }, '_id').lean();
+        resolvedFlowId = flow ? flow._id : undefined;
+      }
+    }
     const thread = await AiThread.create({
       companyId: ws.companyId,
       workspaceId: ws._id,
       userId: req.user.id,
       mode: mode || 'chat',
       title: title || 'Chat',
-      flowId: flowId || undefined,
+      flowId: resolvedFlowId,
       nodeId: nodeId || undefined,
       agentId: agentId || undefined,
       metadata: metadata || undefined,
@@ -122,7 +174,7 @@ module.exports = function () {
     const ws = await Workspace.findById(thread.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
 
-    const { content, answer, attachments } = req.body || {};
+    const { content, answer, attachments, graph, schema } = req.body || {};
     if (!content && !answer) return res.apiError(400, 'empty_message', 'content or answer required');
 
     // Save user message
@@ -180,16 +232,22 @@ module.exports = function () {
       return res.apiError(500, 'context_error', 'Failed to build AI context');
     }
 
-    // Load agent overrides if agentId is set
+    // Load agent overrides if agentId is set (dynamic provider or custom)
     let agentOverrides = null;
     if (thread.agentId) {
-      const agent = await AiAgent.findOne({ id: thread.agentId }).lean();
-      if (agent) {
-        agentOverrides = {
-          systemPrompt: agent.systemPrompt || null,
-          llmProvider: agent.llmProvider || null,
-          llmModel: agent.llmModel || null,
-        };
+      const resolved = await resolveAgentOverrides(thread.agentId, context);
+      if (resolved) {
+        // Inject prompt fragment into context for buildSystemPrompt
+        if (resolved.promptFragment) {
+          context._agentPromptFragment = resolved.promptFragment;
+        }
+        // Pass LLM overrides if custom agent specifies them
+        if (resolved.llmProvider || resolved.llmModel) {
+          agentOverrides = {
+            llmProvider: resolved.llmProvider || null,
+            llmModel: resolved.llmModel || null,
+          };
+        }
       }
     }
 
@@ -214,12 +272,14 @@ module.exports = function () {
     req.on('close', () => { closed = true; clearInterval(heartbeat); });
 
     // Build metadata from thread for mode-specific tools
+    // graph/schema from body (latest unsaved state) take priority over thread metadata (DB state)
     const metadata = {
       flowId: thread.flowId || undefined,
       nodeId: thread.nodeId || undefined,
       formId: thread.metadata?.formId || undefined,
       branch: thread.metadata?.branch || undefined,
-      graph: thread.metadata?.graph || undefined,
+      graph: graph || thread.metadata?.graph || undefined,
+      schema: schema || thread.metadata?.schema || undefined,
       workspaceId: String(ws._id),
     };
 
@@ -281,6 +341,10 @@ module.exports = function () {
               if (idx >= 0) { seg.toolCalls[idx] = tc; break; }
             }
             send(event);
+            // Detect thread transfer (compact_and_transfer tool)
+            if (event.name === 'compact_and_transfer' && event.result?._transfer) {
+              send({ type: 'thread.transfer', threadId: event.result.threadId, title: event.result.title, mode: event.result.mode });
+            }
             break;
           }
 
@@ -392,15 +456,43 @@ module.exports = function () {
     res.apiOk(doc);
   });
 
-  // Update user context / memory
+  // Update user context / memory (merge key-by-key, null = delete)
   r.put('/ai/context/user', async (req, res) => {
     const { preferences, memory } = req.body || {};
     const update = {};
-    if (preferences !== undefined) update.preferences = preferences;
-    if (memory !== undefined) update.memory = memory;
+    const unset = {};
+
+    // Merge preferences key-by-key (not replace entire object)
+    if (preferences !== undefined) {
+      for (const [k, v] of Object.entries(preferences)) {
+        if (v === null) {
+          unset[`preferences.${k}`] = '';
+        } else {
+          update[`preferences.${k}`] = v;
+        }
+      }
+    }
+
+    // Merge memory key-by-key, null = delete key
+    if (memory !== undefined) {
+      for (const [k, v] of Object.entries(memory)) {
+        if (v === null) {
+          unset[`memory.${k}`] = '';
+        } else {
+          update[`memory.${k}`] = v;
+        }
+      }
+    }
+
+    const ops = {};
+    if (Object.keys(update).length) ops.$set = update;
+    if (Object.keys(unset).length) ops.$unset = unset;
+    if (!ops.$set) ops.$set = {};
+    ops.$setOnInsert = { companyId: req.user.companyId, userId: req.user.id };
+
     const doc = await AiUserContext.findOneAndUpdate(
       { userId: req.user.id },
-      { $set: update, $setOnInsert: { companyId: req.user.companyId, userId: req.user.id } },
+      ops,
       { upsert: true, new: true }
     );
     res.apiOk(doc);
@@ -456,10 +548,70 @@ module.exports = function () {
   });
 
   // ══════════════════════════════
-  //  AGENTS (admin)
+  //  AGENTS
   // ══════════════════════════════
 
-  // List agents
+  // Available agents (system + custom) for the current workspace
+  r.get('/ai/agents/available', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+
+    try {
+      const Credential = require('../../db/models/credential.model');
+      const Provider = require('../../db/models/provider.model');
+      const NodeTemplate = require('../../db/models/node-template.model');
+
+      // 1. General agent (always first)
+      const agents = [
+        { id: 'general', name: 'Général', description: 'Assistant polyvalent', icon: null, type: 'system', toolCount: 0 },
+      ];
+
+      // 2. System agents from providers with credentials
+      const credentials = await Credential.find({ workspaceId: ws._id }, 'name providerKey').lean();
+      const providerKeys = [...new Set(credentials.map(c => c.providerKey))];
+      if (providerKeys.length) {
+        const providers = await Provider.find({ key: { $in: providerKeys } }, 'key name title iconUrl').lean();
+        const toolCounts = await NodeTemplate.aggregate([
+          { $match: { providerKey: { $in: providerKeys }, enabled: { $ne: false } } },
+          { $group: { _id: '$providerKey', count: { $sum: 1 } } },
+        ]);
+        const countMap = new Map(toolCounts.map(t => [t._id, t.count]));
+
+        for (const p of providers) {
+          agents.push({
+            id: `provider:${p.key}`,
+            name: p.title || p.name,
+            description: `Spécialiste ${p.title || p.name} (${countMap.get(p.key) || 0} actions)`,
+            icon: p.iconUrl || null,
+            type: 'system',
+            toolCount: countMap.get(p.key) || 0,
+          });
+        }
+      }
+
+      // 3. Custom agents from DB
+      const customFilter = { companyId: ws.companyId, enabled: { $ne: false } };
+      if (ws._id) customFilter.$or = [{ workspaceId: ws._id }, { workspaceId: { $exists: false } }, { workspaceId: null }];
+      const customAgents = await AiAgent.find(customFilter).sort({ createdAt: -1 }).lean();
+      for (const a of customAgents) {
+        agents.push({
+          id: a.id,
+          name: a.name,
+          description: a.description || '',
+          icon: a.icon || null,
+          type: 'custom',
+          toolCount: 0,
+        });
+      }
+
+      res.apiOk(agents);
+    } catch (e) {
+      console.error('[ai] agents/available error:', e?.message || e);
+      res.apiError(500, 'agents_error', 'Failed to load available agents');
+    }
+  });
+
+  // List agents (admin)
   r.get('/ai/agents', async (req, res) => {
     const filter = { companyId: req.user.companyId };
     if (req.query.workspaceId) filter.workspaceId = req.query.workspaceId;

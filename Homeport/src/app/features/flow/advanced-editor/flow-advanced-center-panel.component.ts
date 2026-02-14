@@ -9,19 +9,17 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AiConsoleBackendService } from '../../../services/ai-console-backend.service';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc, FormSummary, FormDoc } from '../../../services/catalog.service';
 import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
-import { NodeAssistantChatComponent } from '../components/node-assistant-chat.component';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'flow-advanced-center-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzInputModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent, NodeAssistantChatComponent],
+  imports: [CommonModule, FormsModule, NzTabsModule, NzSwitchModule, NzSelectModule, NzButtonModule, NzInputModule, NzIconModule, NzBadgeModule, DynamicForm, CredentialEditDialogComponent],
   template: `
     <div class="card" [class.panel-card]="bare">
       <div class="tabs">
@@ -191,20 +189,7 @@ import { environment } from '../../../../environments/environment';
             <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
           </div>
         </nz-tab>
-        <nz-tab nzTitle="Assistant AI">
-          <div class="settings-pane" style="padding:0;">
-            <node-assistant-chat [flowId]="flowId || null" [nodeId]="model?.id"
-              [nodeName]="model?.name || model?.templateObj?.title || model?.templateObj?.name || model?.id"
-              [threadId]="model?.aiChatThreadId || null" [branch]="(simScenarios && simScenarios[simSelectedIndex]?.match?.handleId) || null"
-              [aiArgsHistory]="model?.aiArgsHistory || []"
-              (threadLinked)="onNodeAssistantLinked($event)"
-              (applyArgs)="onAssistantApplyArgs($event)"
-              (applyDesc)="onAssistantApplyDesc($event)"
-              (undoArgsRequested)="undoApplyArgs()"
-              (undoDescRequested)="undoApplyDesc()"
-              (restoreFromHistory)="restoreArgsSnapshot($event)"></node-assistant-chat>
-          </div>
-        </nz-tab>
+        <!-- Assistant AI tab removed — use the unified AI panel (drawer) instead -->
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
           <div class="settings-pane" style="gap: 6px;">
             <div *ngFor="let ev of attemptEventsView; trackBy: trackEvent" style="border:1px solid #ececec; border-radius:8px; padding:8px;">
@@ -330,7 +315,7 @@ export class FlowAdvancedCenterPanelComponent {
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService, private aiChat: AiConsoleBackendService) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {}
 
   // Credentials state
   credVisible = false;

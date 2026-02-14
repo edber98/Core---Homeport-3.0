@@ -72,8 +72,9 @@ export const routes: Routes = [
             { path: 'credentials', loadComponent: () => import('./features/credentials/credential-list.component').then(m => m.CredentialListComponent), title: 'Credentials' },
             { path: 'runs', loadComponent: () => import('./features/flow/workspace-run-list.component').then(m => m.WorkspaceRunListComponent), title: 'Exécutions (workspace)' },
             { path: 'notifications', loadComponent: () => import('./features/notifications/notifications-page.component').then(m => m.NotificationsPageComponent), title: 'Notifications' },
+            { path: 'ai', loadComponent: () => import('./features/ai/ai-fullpage.component').then(m => m.AiFullpageComponent), title: 'Assistant IA' },
             { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
-            { path: 'debug/ai-form-agent', loadComponent: () => import('./features/debug/ai-form-agent-debug.component').then(m => m.AiFormAgentDebugComponent), title: 'Debug — AI Form Agent' },
+            // AI Form Agent debug removed (old system)
             { path: 'debug/expr-json', loadComponent: () => import('./features/debug/debug-expr-json-playground.component').then(m => m.DebugExprJsonPlaygroundComponent), title: 'Debug — JSON + Expression' },
             { path: 'debug/form-viewers', loadComponent: () => import('./features/debug/debug-form-viewers.component').then(m => m.DebugFormViewersComponent), title: 'Debug — Form Viewers' },
             { path: 'debug/form-loader', loadComponent: () => import('./features/debug/form-loader-debug.component').then(m => m.FormLoaderDebugComponent), title: 'Debug — Form Loader' },
@@ -90,7 +91,7 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/flow/flow-workbench.component').then(m => m.FlowWorkbenchComponent),
                 children: [
                   { path: '', pathMatch: 'full', redirectTo: 'editor' },
-                  { path: 'ai-console', loadComponent: () => import('./features/flow/flow-ai-console.component').then(m => m.FlowAiConsoleComponent), title: 'Console AI' },
+                  // AI Console removed (replaced by unified AI panel)
                   { path: 'editor', loadComponent: () => import('./features/flow/flow-builder.component').then(m => m.FlowBuilderComponent), title: 'Flow Builder', canDeactivate: [unsavedChangesGuard] },
                   { path: 'executions', loadComponent: () => import('./features/flow/flow-execution.component').then(m => m.FlowExecutionComponent), title: 'Exécutions' },
                   { path: 'simulation', loadComponent: () => import('./features/flow/flow-simulation.component').then(m => m.FlowSimulationComponent), title: 'Simulation' },

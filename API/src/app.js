@@ -31,8 +31,7 @@ function buildApp(opts = {}){
     app.use('/api/auth', require('./modules/auth')(store));
     app.use('/api', require('./modules/core')(store));
     app.use('/api', require('./modules/flows')(store));
-    // AI Console (threads, messages, context) in memory mode
-    app.use('/api', require('./modules/ai-console')(store));
+    // AI Console removed — replaced by unified ai-v2 system
     app.use('/api', require('./modules/runs')(store));
     // Alias SSE stream without /api prefix for EventSource clients
     app.get('/runs/:runId/stream', authMiddleware(store), requireCompanyScope(), (req, res) => {
@@ -143,8 +142,6 @@ function buildApp(opts = {}){
       }, 300);
       req.on('close', () => { clearInterval(interval); console.log(`[runs][db][alias] stream closed: runId=${String(run._id)} reqId=${req.requestId}`); });
     });
-    // AI Console (threads, messages, context) in DB mode
-    app.use('/api', require('./modules/db/ai-console')());
     // AI unified (new system)
     app.use('/api', require('./modules/db/ai')());
     // Flow simulation (db)
@@ -159,16 +156,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/notifications')());
     app.use('/api', require('./modules/db/files')());
     app.use('/api', require('./modules/db/users')());
-    // AI Form (SSE) module
-    app.use('/api', require('./modules/db/ai-form')());
-    // AI Flow (SSE) module
-    app.use('/api', require('./modules/db/ai-flow')());
-    // AI Workflow v2 (SSE)
-    app.use('/api', require('./modules/db/ai-workflow')());
-    // AI Args (SSE) — specialized agent for node args completion
-    app.use('/api', require('./modules/db/ai-args')());
-    // AI Create Node (SSE) — specialized agent to plan a new node and call Args agent
-    app.use('/api', require('./modules/db/ai-create-node')());
+    // Old AI modules removed — all AI functionality is now in the unified ai.js routes
   }
 
   // API docs (Swagger UI)

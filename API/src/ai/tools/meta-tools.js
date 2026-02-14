@@ -7,6 +7,8 @@ const Credential = require('../../db/models/credential.model');
 const Provider = require('../../db/models/provider.model');
 const Flow = require('../../db/models/flow.model');
 const AiUserContext = require('../../db/models/ai-user-context.model');
+const AiThread = require('../../db/models/ai-thread.model');
+const AiMessage = require('../../db/models/ai-message.model');
 
 // Tool definitions in JSON Schema format for LLMs
 const META_TOOL_DEFINITIONS = [
@@ -117,6 +119,20 @@ const META_TOOL_DEFINITIONS = [
     name: 'get_memory',
     description: 'Récupère la mémoire persistante de l\'utilisateur (préférences, informations retenues).',
     parameters: { type: 'object', properties: {} },
+  },
+  {
+    name: 'compact_and_transfer',
+    description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread.',
+    parameters: {
+      type: 'object',
+      properties: {
+        summary: { type: 'string', description: 'Résumé compacté de la conversation : intentions, décisions prises, informations clés à conserver pour la suite.' },
+        newMode: { type: 'string', enum: ['chat', 'workflow', 'form'], description: 'Mode du nouveau thread' },
+        newTitle: { type: 'string', description: 'Titre du nouveau thread (ex: "Création workflow envoi mail")' },
+        agentId: { type: 'string', description: 'Agent ID optionnel pour le nouveau thread' },
+      },
+      required: ['summary', 'newMode', 'newTitle'],
+    },
   },
   {
     name: 'enrich_context',
@@ -231,6 +247,32 @@ async function executeMetaTool(name, input, ctx) {
     case 'get_memory': {
       const userCtx = await AiUserContext.findOne({ userId: ctx.userId }).lean();
       return userCtx?.memory || {};
+    }
+
+    case 'compact_and_transfer': {
+      const { summary, newMode, newTitle, agentId } = input;
+      // Create new thread with the summary as system context
+      const newThread = await AiThread.create({
+        companyId: ctx.companyId,
+        workspaceId: ctx.workspaceId,
+        userId: ctx.userId,
+        mode: newMode || 'chat',
+        title: newTitle || 'Suite de conversation',
+        agentId: agentId || undefined,
+      });
+      // Add the compact summary as the first system message
+      await AiMessage.create({
+        threadId: newThread._id,
+        role: 'user',
+        content: `[Contexte transféré depuis une conversation précédente]\n\n${summary}`,
+      });
+      return {
+        ok: true,
+        threadId: newThread.id,
+        title: newThread.title,
+        mode: newThread.mode,
+        _transfer: true, // Marker for SSE side event
+      };
     }
 
     case 'enrich_context': {

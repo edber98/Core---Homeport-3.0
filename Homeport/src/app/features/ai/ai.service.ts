@@ -16,6 +16,7 @@ export interface AiThread {
   flowId?: string;
   nodeId?: string;
   agentId?: string;
+  metadata?: any;
   workspaceId: string;
   createdAt: string;
   updatedAt: string;
@@ -86,6 +87,17 @@ export interface AiPageContext {
   flowId?: string;
   nodeId?: string;
   formId?: string;
+  graph?: { nodes: any[]; edges: any[] };
+  schema?: any;
+}
+
+export interface AiAvailableAgent {
+  id: string;
+  name: string;
+  description: string;
+  icon: string | null;
+  type: 'system' | 'custom';
+  toolCount: number;
 }
 
 // ── Service ──
@@ -109,6 +121,8 @@ export class AiService {
   streaming = signal(false);
   pendingQuestion = signal<AiQuestion | null>(null);
   pageContext = signal<AiPageContext>({ page: 'other' });
+  availableAgents = signal<AiAvailableAgent[]>([]);
+  selectedAgentId = signal<string>('general');
 
   // Action requests — the panel subscribes and opens appropriate modals
   actionRequests$ = new Subject<AiAction>();
@@ -137,9 +151,11 @@ export class AiService {
     return this.api.get<AiThread[]>('/api/ai/threads', params);
   }
 
-  async createThread(mode: string, metadata?: any): Promise<AiThread> {
+  async createThread(mode: string, metadata?: any, agentId?: string): Promise<AiThread> {
     const body: any = { mode, title: 'Chat' };
     if (metadata) Object.assign(body, metadata);
+    const aid = agentId || this.selectedAgentId();
+    if (aid && aid !== 'general') body.agentId = aid;
     const thread = await this.api.post<AiThread>('/api/ai/threads', body, { workspaceId: this.wsId() }).toPromise();
     this.currentThread.set(thread!);
     this.messages.set([]);
@@ -174,6 +190,11 @@ export class AiService {
     const body: any = { content };
     if (answer) body.answer = answer;
     if (attachments) body.attachments = attachments;
+
+    // Include temporary graph/schema so the AI works on the latest unsaved state
+    const ctx = this.pageContext();
+    if (ctx.page === 'flow-builder' && ctx.graph) body.graph = ctx.graph;
+    if (ctx.page === 'form-builder' && ctx.schema) body.schema = ctx.schema;
 
     const subj = new Subject<AiStreamEvent>();
     const wsId = this.wsId();
@@ -356,6 +377,45 @@ export class AiService {
     return this.api.put<any>('/api/ai/context/user', data, { workspaceId: this.wsId() });
   }
 
+  // ── Preferences ──
+  updatePreferences(prefs: Record<string, any>): Observable<any> {
+    return this.api.put<any>('/api/ai/context/user', { preferences: prefs }, { workspaceId: this.wsId() });
+  }
+
+  // ── Memory ──
+  deleteMemoryKey(key: string): Observable<any> {
+    return this.api.put<any>('/api/ai/context/user', { memory: { [key]: null } }, { workspaceId: this.wsId() });
+  }
+
+  updateMemoryKey(key: string, value: any): Observable<any> {
+    return this.api.put<any>('/api/ai/context/user', { memory: { [key]: value } }, { workspaceId: this.wsId() });
+  }
+
+  // ── Agents ──
+  loadAvailableAgents(): Observable<AiAvailableAgent[]> {
+    const obs = this.api.get<AiAvailableAgent[]>('/api/ai/agents/available', { workspaceId: this.wsId() });
+    obs.subscribe({
+      next: (res: any) => {
+        const list = res?.data || res || [];
+        this.availableAgents.set(list);
+      },
+      error: () => this.availableAgents.set([]),
+    });
+    return obs;
+  }
+
+  createAgent(data: { name: string; description?: string; systemPrompt?: string; workspaceId?: string }): Observable<any> {
+    return this.api.post<any>('/api/ai/agents', data, { workspaceId: this.wsId() });
+  }
+
+  updateAgent(agentId: string, data: any): Observable<any> {
+    return this.api.put<any>(`/api/ai/agents/${agentId}`, data, { workspaceId: this.wsId() });
+  }
+
+  deleteAgent(agentId: string): Observable<any> {
+    return this.api.delete<any>(`/api/ai/agents/${agentId}`, { workspaceId: this.wsId() });
+  }
+
   // ── Tools ──
   searchTools(query: string, provider?: string): Observable<any> {
     const params: any = { q: query, workspaceId: this.wsId() };
@@ -363,11 +423,45 @@ export class AiService {
     return this.api.get<any>('/api/ai/tools', params);
   }
 
+  // ── Side events for builders ──
+  sideEvents$ = new Subject<AiStreamEvent>();
+
+  /** Emit a side event that builders can subscribe to */
+  emitSideEvent(ev: AiStreamEvent) { this.sideEvents$.next(ev); }
+
   // ── Quick send (auto-create thread if needed) ──
   async quickSend(content: string, mode?: string) {
     if (!this.currentThread()) {
-      await this.createThread(mode || 'chat');
+      // Auto-detect mode and metadata from page context
+      const ctx = this.pageContext();
+      const autoMode = mode || this.modeFromContext(ctx);
+      const meta: any = {};
+      if (ctx.flowId) meta.flowId = ctx.flowId;
+      if (ctx.formId) meta.formId = ctx.formId;
+      if (ctx.nodeId) meta.nodeId = ctx.nodeId;
+      await this.createThread(autoMode, Object.keys(meta).length ? meta : undefined);
     }
     return this.sendMessage(content);
+  }
+
+  /** Determine the best AI mode based on the current page context */
+  private modeFromContext(ctx: AiPageContext): string {
+    if (ctx.page === 'flow-builder') {
+      return ctx.nodeId ? 'node_args' : 'workflow';
+    }
+    if (ctx.page === 'form-builder') return 'form';
+    return 'chat';
+  }
+
+  /** Open the AI drawer with context from the current page and start fresh */
+  openWithContext(ctx?: Partial<AiPageContext>) {
+    if (ctx) {
+      this.setPageContext({ ...this.pageContext(), ...ctx } as AiPageContext);
+    }
+    // Reset thread so a new one is created with the correct mode
+    this.currentThread.set(null);
+    this.messages.set([]);
+    this.pendingQuestion.set(null);
+    this.drawerOpen.set(true);
   }
 }

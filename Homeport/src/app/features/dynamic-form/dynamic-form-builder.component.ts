@@ -40,7 +40,6 @@ import { InspectorSectionComponent } from './components/inspector-section.compon
 import { InspectorFieldComponent } from './components/inspector-field.component';
 import { ConditionBuilderComponent } from './components/condition-builder.component';
 import { OptionsBuilderComponent } from './components/options-builder.component';
-import { AiChatComponent } from './components/ai-chat.component';
 import { BuilderTreeService } from './services/builder-tree.service';
 import { BuilderCtxActionsService } from './services/builder-ctx-actions.service';
 import { BuilderCustomizeService } from './services/builder-customize.service';
@@ -53,6 +52,7 @@ import { BuilderGridService } from './services/builder-grid.service';
 import { BuilderHistoryService } from './services/builder-history.service';
 import { BuilderStateService } from './services/builder-state.service';
 import { DynamicFormService } from '../../modules/dynamic-form/dynamic-form.service';
+import { AiService } from '../ai/ai.service';
 import type {
   FieldConfig,
   FormSchema,
@@ -100,7 +100,6 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
     InspectorFieldComponent,
     ConditionBuilderComponent,
     OptionsBuilderComponent,
-    AiChatComponent,
 
     DynamicForm,
     JsonSchemaViewerComponent,
@@ -260,7 +259,7 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
     this.aiChatOpen = false;
   }
 
-  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router, private catalog: CatalogService) {
+  constructor(private fb: FormBuilder, private dropdown: NzContextMenuService, private dfs: DynamicFormService, private msg: NzMessageService, private treeSvc: BuilderTreeService, private custSvc: BuilderCustomizeService, private issuesSvc: BuilderIssuesService, private condSvc: ConditionFormService, private prevSvc: BuilderPreviewService, private depsSvc: BuilderDepsService, private ctxActions: BuilderCtxActionsService, private factory: BuilderFactoryService, private state: BuilderStateService, private gridSvc: BuilderGridService, private hist: BuilderHistoryService, private route: ActivatedRoute, private router: Router, private catalog: CatalogService, public aiService: AiService) {
     this.createInspector();
     this.select(this.schema); // on ouvre sur "Form Settings"
     this.rebuildTree(); // assure l'affichage de "Formulaire" dès le départ
@@ -2605,10 +2604,57 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
         this.refresh();
       } catch {}
     });
+    // AI integration
+    this.initAiIntegration();
   }
 
   ngOnDestroy(): void {
     this.routeParamSub?.unsubscribe();
+    this.aiSub?.unsubscribe();
+  }
+
+  // ── AI Integration ──
+  private aiSub: Subscription | null = null;
+
+  private initAiIntegration(): void {
+    this.aiSub = this.aiService.sideEvents$.subscribe(ev => {
+      try { this.handleAiSideEvent(ev); } catch (e) { console.error('[form-builder] ai event error:', e); }
+    });
+    // Set initial page context
+    this.updateAiContext();
+  }
+
+  private handleAiSideEvent(ev: any): void {
+    if (ev.type === 'form.update' && ev.schema) {
+      // AI updated the form schema — apply it
+      try {
+        this.schema = JSON.parse(JSON.stringify(ev.schema));
+        this.select(this.schema);
+        this.refresh();
+        this.updateAiContext();
+      } catch (e) { console.error('[form-builder] schema update error:', e); }
+    }
+    if (ev.type === 'form.created' && ev.form) {
+      // AI created a new form — update current context
+      this.currentFormId = ev.form._id || ev.form.id;
+      this.currentFormName = ev.form.name || '';
+      this.updateAiContext();
+    }
+  }
+
+  private updateAiContext(): void {
+    this.aiService.setPageContext({
+      page: 'form-builder',
+      formId: this.currentFormId || undefined,
+      schema: this.schema,
+    });
+  }
+
+  openAiPanel(): void {
+    this.aiService.openWithContext({
+      page: 'form-builder',
+      formId: this.currentFormId || undefined,
+    });
   }
 
   private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }

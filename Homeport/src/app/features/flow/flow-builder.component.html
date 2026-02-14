@@ -328,7 +328,6 @@
         nzClassName="add-node-modal spotlight-modal">
         <ng-container *nzModalContent>
           <ng-container *ngIf="addNodeContentVisible">
-            <ng-container *ngIf="!addNodeAiMode; else aiModeTpl">
               <spotlight-add-node
                 [groups]="addNodeGroups"
                 [query]="addNodeQuery"
@@ -337,12 +336,6 @@
                 (queryChange)="onAddNodeQueryChange($event)"
                 (pick)="onSpotlightPick($event)"
                 (close)="closeAddNodeModal()"></spotlight-add-node>
-            </ng-container>
-            <ng-template #aiModeTpl>
-              <spotlight-creation-chat [seedGraph]="buildSeedGraphForAi()" [initialPrompt]="addNodeQuery"
-                [sourceId]="addNodeSourceId || ''" [sourceHandle]="addNodeSourceHandle || null" [threadId]="addNodeAiThreadId || null" [flowId]="currentFlowId || null"
-                (graphGenerated)="onAiNodeGraphGenerated($event)" (close)="onCloseAiMode()"></spotlight-creation-chat>
-            </ng-template>
           </ng-container>
         </ng-container>
       </nz-modal>
@@ -405,9 +398,9 @@
         <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
   </button>
-  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" [class.open]="aiChatOpen" type="button"
-    (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
-    <i class="fa-solid fa-message"></i>
+  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" type="button"
+    (click)="openAiPanel()" aria-label="Assistant IA" nz-tooltip nzTooltipTitle="Assistant IA">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
   </button>
   <button nz-button nzSize="small" class="panel-toggle-fab help-fab" [class.open]="shortcutsOpen"
     nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Raccourcis clavier'" [nzPopoverContent]="shortcutsTpl"
@@ -622,11 +615,6 @@
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
     (close)="closeAdvancedEditorV2()"></flow-node-settings-v2-dialog>
 
-  <!-- Floating AI Chat Popover Trigger + persistent popover -->
-  <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
-  <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
-    <flow-ai-chat [seedGraph]="{ nodes: nodes, edges: edges }" (close)="aiChatOpen=false" (graphGenerated)="applyAiGraph($event)"></flow-ai-chat>
-  </div>
 
 </div>
 

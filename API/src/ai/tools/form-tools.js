@@ -58,7 +58,9 @@ const FORM_TOOL_DEFINITIONS = [
         placeholder: { type: 'string', description: 'Texte placeholder' },
         col: { type: 'object', description: 'Largeur responsive (ex: { xs: 24, md: 12 })' },
         options: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, value: { type: 'string' } } }, description: 'Options pour select/radio' },
-        visibleIf: { type: 'object', description: 'Condition de visibilité (ex: { field: "type", value: "urgent" })' },
+        visibleIf: { type: 'object', description: 'Condition de visibilité ({ field, operator, value } ou { logic: "all"|"any", conditions: [...] })' },
+        requiredIf: { type: 'object', description: 'Obligatoire conditionnel ({ field, operator, value } ou { logic: "all"|"any", conditions: [...] })' },
+        disabledIf: { type: 'object', description: 'Désactivé conditionnel ({ field, operator, value })' },
         sectionKey: { type: 'string', description: 'Clé de la section dans laquelle ajouter le champ (optionnel)' },
       },
       required: ['key', 'type', 'label'],
@@ -80,6 +82,10 @@ const FORM_TOOL_DEFINITIONS = [
         col: { type: 'object' },
         options: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, value: { type: 'string' } } } },
         visibleIf: { type: 'object' },
+        requiredIf: { type: 'object' },
+        disabledIf: { type: 'object' },
+        labelStyle: { type: 'object', description: 'Style CSS du label (color, fontSize en px)' },
+        itemStyle: { type: 'object', description: 'Style CSS du conteneur champ (color, fontSize, borderWidth, borderColor, borderRadius, boxShadow, marginTop, paddingTop, etc. en px)' },
       },
       required: ['key'],
     },
@@ -97,28 +103,50 @@ const FORM_TOOL_DEFINITIONS = [
   },
   {
     name: 'add_section',
-    description: 'Ajoute une section (groupe de champs) au formulaire.',
+    description: 'Ajoute une section vide au formulaire. IMPORTANT : après add_section, ajoute les champs UN PAR UN avec add_field(sectionKey=...).',
     parameters: {
       type: 'object',
       properties: {
         key: { type: 'string', description: 'Identifiant de la section' },
-        label: { type: 'string', description: 'Libellé de la section' },
+        label: { type: 'string', description: 'Titre de la section (OBLIGATOIRE et descriptif, ex: "Informations générales")' },
+        description: { type: 'string', description: 'Description de la section (texte d\'aide)' },
         type: { type: 'string', enum: ['section', 'section_array'], description: 'section (groupe simple) ou section_array (tableau dynamique)' },
-        fields: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              key: { type: 'string' }, type: { type: 'string' }, label: { type: 'string' },
-              required: { type: 'boolean' }, description: { type: 'string' },
-              options: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, value: { type: 'string' } } } },
-            },
-            required: ['key', 'type', 'label'],
-          },
-          description: 'Champs dans la section',
-        },
       },
       required: ['key', 'label'],
+    },
+  },
+  {
+    name: 'update_section',
+    description: 'Modifie les propriétés d\'une section existante (titre, description, style).',
+    parameters: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Clé de la section à modifier' },
+        label: { type: 'string', description: 'Nouveau titre' },
+        description: { type: 'string', description: 'Nouvelle description' },
+        titleStyle: { type: 'object', description: 'Style CSS du titre (color, fontSize, marginTop, paddingBottom, etc.)' },
+        descriptionStyle: { type: 'object', description: 'Style CSS de la description' },
+        itemStyle: { type: 'object', description: 'Style CSS du conteneur section (borderWidth, borderColor, borderRadius, padding*, margin*, boxShadow)' },
+        gridGutter: { type: 'number', description: 'Espacement entre champs en px (défaut: 16)' },
+      },
+      required: ['key'],
+    },
+  },
+  {
+    name: 'update_form_settings',
+    description: 'Modifie les paramètres globaux du formulaire (titre affiché, description, disposition).',
+    parameters: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', description: 'Titre du formulaire' },
+        description: { type: 'string', description: 'Description du formulaire' },
+        displayTitle: { type: 'boolean', description: 'Afficher le titre (défaut: true)' },
+        displayDescription: { type: 'boolean', description: 'Afficher la description (défaut: true)' },
+        centerTitle: { type: 'boolean', description: 'Centrer le titre' },
+        centerDescription: { type: 'boolean', description: 'Centrer la description' },
+        layout: { type: 'string', enum: ['vertical', 'horizontal', 'inline'], description: 'Disposition (défaut: vertical)' },
+        labelsOnTop: { type: 'boolean', description: 'Labels au-dessus des champs' },
+      },
     },
   },
   {
@@ -244,6 +272,9 @@ function createFormExecutor(metadata, emit) {
     if (!s.ui) s.ui = {};
     if (!s.ui.layout) s.ui.layout = 'vertical';
     if (s.ui.labelsOnTop === undefined) s.ui.labelsOnTop = true;
+    // Default display settings: show title & description for standalone forms
+    if (s.displayTitle === undefined) s.displayTitle = true;
+    if (s.displayDescription === undefined) s.displayDescription = true;
     return s;
   }
 
@@ -340,6 +371,8 @@ function createFormExecutor(metadata, emit) {
         ...(input.required ? { validators: [{ type: 'required' }] } : {}),
         ...(input.options ? { options: input.options } : {}),
         ...(input.visibleIf ? { visibleIf: input.visibleIf } : {}),
+        ...(input.requiredIf ? { requiredIf: input.requiredIf } : {}),
+        ...(input.disabledIf ? { disabledIf: input.disabledIf } : {}),
       };
 
       // Add to section if specified
@@ -372,6 +405,10 @@ function createFormExecutor(metadata, emit) {
       if (input.col !== undefined) field.col = input.col;
       if (input.options !== undefined) field.options = input.options;
       if (input.visibleIf !== undefined) field.visibleIf = input.visibleIf;
+      if (input.requiredIf !== undefined) field.requiredIf = input.requiredIf;
+      if (input.disabledIf !== undefined) field.disabledIf = input.disabledIf;
+      if (input.labelStyle !== undefined) field.labelStyle = input.labelStyle;
+      if (input.itemStyle !== undefined) field.itemStyle = input.itemStyle;
       if (input.required !== undefined) {
         field.validators = input.required ? [{ type: 'required' }] : (field.validators || []).filter(v => v.type !== 'required');
       }
@@ -400,24 +437,66 @@ function createFormExecutor(metadata, emit) {
         return { success: false, error: `Un champ avec la clé '${input.key}' existe déjà` };
       }
 
-      const sectionFields = (input.fields || []).map(f => ({
-        key: f.key, type: f.type || 'text', label: f.label,
-        ...(f.description ? { description: f.description } : {}),
-        ...(f.required ? { validators: [{ type: 'required' }] } : {}),
-        ...(f.options ? { options: f.options } : {}),
-        col: { xs: 24, sm: 24, md: f.type === 'textarea' ? 24 : 12 },
-      }));
-
-      fields.push({
+      const section = {
         key: input.key,
         type: input.type || 'section',
         label: input.label,
-        fields: sectionFields,
-      });
+        ...(input.description ? { description: input.description } : {}),
+        fields: [],
+      };
 
+      fields.push(section);
       schema.fields = fields;
       emitUpdate();
-      return { success: true, key: input.key, fieldCount: sectionFields.length };
+      return { success: true, key: input.key, message: 'Section créée. Ajoute maintenant les champs avec add_field(sectionKey="' + input.key + '").' };
+    },
+
+    async update_section(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
+      await ensureSchema();
+      const section = findField(schema.fields || [], input.key);
+      if (!section) return { success: false, error: `Section '${input.key}' introuvable` };
+      if (section.type !== 'section' && section.type !== 'section_array') {
+        return { success: false, error: `'${input.key}' n'est pas une section` };
+      }
+
+      if (input.label !== undefined) section.label = input.label;
+      if (input.description !== undefined) section.description = input.description;
+      if (input.titleStyle !== undefined) section.titleStyle = input.titleStyle;
+      if (input.descriptionStyle !== undefined) section.descriptionStyle = input.descriptionStyle;
+      if (input.itemStyle !== undefined) section.itemStyle = input.itemStyle;
+      if (input.gridGutter !== undefined) {
+        section.ui = section.ui || {};
+        section.ui.gridGutter = input.gridGutter;
+      }
+
+      emitUpdate();
+      return { success: true, key: input.key };
+    },
+
+    async update_form_settings(input) {
+      const guard = requireFormLoaded();
+      if (guard) return guard;
+      await ensureSchema();
+
+      if (input.title !== undefined) schema.title = input.title;
+      if (input.description !== undefined) schema.description = input.description;
+      if (input.displayTitle !== undefined) schema.displayTitle = input.displayTitle;
+      if (input.displayDescription !== undefined) schema.displayDescription = input.displayDescription;
+      if (input.centerTitle !== undefined) schema.centerTitle = input.centerTitle;
+      if (input.centerDescription !== undefined) schema.centerDescription = input.centerDescription;
+      if (input.layout !== undefined) {
+        schema.ui = schema.ui || {};
+        schema.ui.layout = input.layout;
+      }
+      if (input.labelsOnTop !== undefined) {
+        schema.ui = schema.ui || {};
+        schema.ui.labelsOnTop = input.labelsOnTop;
+      }
+
+      emitUpdate();
+      return { success: true };
     },
 
     async reorder_fields(input) {
@@ -447,7 +526,21 @@ function createFormExecutor(metadata, emit) {
     },
 
     async create_form(input) {
-      const defaultSchema = { ui: { layout: 'vertical', labelsOnTop: true }, fields: [] };
+      // Block if already inside a form builder (formId exists)
+      if (metadata.formId || formDoc) {
+        return {
+          success: false,
+          error: 'Un formulaire est déjà ouvert dans le builder. Tu NE DOIS PAS créer un nouveau formulaire. Le formulaire est déjà chargé automatiquement. Utilise get_form_schema pour voir l\'état actuel et modifie directement avec add_section, add_field, update_field, etc.',
+        };
+      }
+      const defaultSchema = {
+        title: input.name || 'Formulaire',
+        description: input.description || '',
+        displayTitle: true,
+        displayDescription: true,
+        ui: { layout: 'vertical', labelsOnTop: true },
+        fields: [],
+      };
       const form = await Form.create({
         name: input.name, description: input.description || '',
         workspaceId: metadata.workspaceId, schema: defaultSchema,
@@ -469,6 +562,7 @@ function createFormExecutor(metadata, emit) {
       }
       if (!form) return { success: false, error: 'Formulaire introuvable' };
       form.schema = schema;
+      form.markModified('schema');
       await form.save();
       changed = false;
       return { success: true, formId: form.id };
@@ -495,6 +589,7 @@ function createFormExecutor(metadata, emit) {
       }
       if (form) {
         form.schema = schema;
+        form.markModified('schema');
         await form.save();
         changed = false;
       }

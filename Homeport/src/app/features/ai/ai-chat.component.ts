@@ -68,34 +68,42 @@ interface StreamTool {
               <div class="content" *ngIf="seg.type === 'text' && seg.html"
                    [innerHTML]="seg.html"></div>
 
-              <!-- Tools segment: flat list of tags (no grouping during stream to avoid DOM thrash) -->
-              <div class="tool-tags stream-tools" *ngIf="seg.type === 'tools' && seg.tools?.length">
-                <ng-container *ngFor="let t of seg.tools; trackBy: trackTool">
-                  <nz-tag
-                    class="tool-tag"
-                    [nzColor]="t.status === 'error' ? 'red' : t.status === 'running' ? 'processing' : 'geekblue'"
-                    nz-popover
-                    [nzPopoverContent]="popTpl"
-                    nzPopoverTrigger="hover"
-                    nzPopoverPlacement="topLeft">
-                    <span nz-icon [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline" [nzSpin]="t.status === 'running'" class="tag-icon"></span>
-                    {{ toolLabel(t.name) }}
-                    <span class="tag-extra" *ngIf="toolExtra(t)">{{ toolExtra(t) }}</span>
-                    <span class="tag-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
-                  </nz-tag>
-                  <ng-template #popTpl>
-                    <div class="popover-content">
-                      <div class="popover-section" *ngIf="t.args">
-                        <div class="popover-label">Arguments</div>
-                        <pre class="popover-json">{{ t.args | json }}</pre>
+              <!-- Tools segment: reasoning block -->
+              <div class="reasoning-block" *ngIf="seg.type === 'tools' && seg.tools?.length"
+                   [class.reasoning-active]="isLastSegment(i) && ai.streaming()">
+                <div class="reasoning-header">
+                  <span nz-icon nzType="loading" nzTheme="outline" *ngIf="isLastSegment(i) && ai.streaming()"></span>
+                  <span nz-icon nzType="bulb" nzTheme="outline" *ngIf="!isLastSegment(i) || !ai.streaming()"></span>
+                  <span>Raisonnement</span>
+                </div>
+                <div class="reasoning-tools">
+                  <ng-container *ngFor="let t of seg.tools; trackBy: trackTool">
+                    <nz-tag
+                      class="tool-tag"
+                      [nzColor]="t.status === 'error' ? 'red' : t.status === 'running' ? 'processing' : 'geekblue'"
+                      nz-popover
+                      [nzPopoverContent]="popTpl"
+                      nzPopoverTrigger="hover"
+                      nzPopoverPlacement="topLeft">
+                      <span nz-icon [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline" [nzSpin]="t.status === 'running'" class="tag-icon"></span>
+                      {{ toolLabel(t.name) }}
+                      <span class="tag-extra" *ngIf="toolExtra(t)">{{ toolExtra(t) }}</span>
+                      <span class="tag-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                    </nz-tag>
+                    <ng-template #popTpl>
+                      <div class="popover-content">
+                        <div class="popover-section" *ngIf="t.args">
+                          <div class="popover-label">Arguments</div>
+                          <pre class="popover-json">{{ t.args | json }}</pre>
+                        </div>
+                        <div class="popover-section" *ngIf="t.result !== undefined && t.result !== null && t.status !== 'running'">
+                          <div class="popover-label">Résultat</div>
+                          <pre class="popover-json">{{ truncJson(t.result) }}</pre>
+                        </div>
                       </div>
-                      <div class="popover-section" *ngIf="t.result !== undefined && t.result !== null && t.status !== 'running'">
-                        <div class="popover-label">Résultat</div>
-                        <pre class="popover-json">{{ truncJson(t.result) }}</pre>
-                      </div>
-                    </div>
-                  </ng-template>
-                </ng-container>
+                    </ng-template>
+                  </ng-container>
+                </div>
               </div>
             </ng-container>
           </div>
@@ -139,7 +147,12 @@ interface StreamTool {
     .streaming-msg .content :host ::ng-deep p:last-child { margin: 0; }
     .streaming-msg .content :host ::ng-deep code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .streaming-msg .content :host ::ng-deep pre { background: #e8e8e8; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .stream-tools { max-width: 85%; margin: 2px 0; }
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; transition: opacity 0.3s ease, border-color 0.3s ease; max-width: 85%; }
+    .reasoning-block.reasoning-active { border-left-color: #722ed1; opacity: 0.7; animation: pulse-reason 2s ease-in-out infinite; }
+    .reasoning-block:not(.reasoning-active) { opacity: 0.5; }
+    .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .reasoning-tools { display: flex; flex-wrap: wrap; gap: 4px; }
+    @keyframes pulse-reason { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.5; } }
     .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
     .tag-icon { font-size: 11px; }
@@ -264,6 +277,19 @@ export class AiChatComponent {
       case 'done':
         setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
         break;
+      // Forward builder-relevant events (patch, snapshot, args, desc, form.update)
+      case 'patch':
+      case 'snapshot':
+      case 'args':
+      case 'desc':
+        console.log('[ai-chat] forwarding side event:', ev.type, ev);
+        this.ai.emitSideEvent(ev);
+        break;
+    }
+    // Forward form and flow events too
+    if ((ev as any).type?.startsWith?.('form.') || (ev as any).type?.startsWith?.('flow.')) {
+      console.log('[ai-chat] forwarding form/flow event:', (ev as any).type, ev);
+      this.ai.emitSideEvent(ev);
     }
   }
 
@@ -280,6 +306,8 @@ export class AiChatComponent {
   // trackBy functions to avoid DOM thrashing during streaming
   trackSeg(i: number, seg: StreamSegment): string { return `${i}-${seg.type}`; }
   trackTool(i: number, t: StreamTool): string { return t.id; }
+
+  isLastSegment(i: number): boolean { return i === this.segments.length - 1; }
 
 
   toolLabel(name: string): string {
