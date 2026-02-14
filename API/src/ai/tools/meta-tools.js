@@ -191,6 +191,19 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'open_element',
+    description: 'Ouvre un élément (workflow, formulaire ou website) dans l\'interface. Utilise après avoir créé ou modifié un élément pour que l\'utilisateur puisse le voir directement.',
+    parameters: {
+      type: 'object',
+      properties: {
+        elementType: { type: 'string', enum: ['flow', 'form', 'website'], description: 'Type de l\'élément' },
+        elementId: { type: 'string', description: 'ID de l\'élément' },
+        elementName: { type: 'string', description: 'Nom de l\'élément (pour le message)' },
+      },
+      required: ['elementType', 'elementId'],
+    },
+  },
+  {
     name: 'enrich_context',
     description: 'Enrichit le contexte (entreprise, workspace ou utilisateur) avec une nouvelle information détectée.',
     parameters: {
@@ -359,6 +372,10 @@ async function executeMetaTool(name, input, ctx) {
         mode: newThread.mode,
         _transfer: true, // Marker for SSE side event
       };
+    }
+
+    case 'open_element': {
+      return { _action: true, action: 'open_element', elementType: input.elementType, elementId: input.elementId, elementName: input.elementName || '' };
     }
 
     case 'open_credentials': {

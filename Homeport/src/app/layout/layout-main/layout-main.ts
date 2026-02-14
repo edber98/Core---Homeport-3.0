@@ -71,6 +71,7 @@ export class LayoutMain implements OnInit {
     { label: 'Users', icon: 'user', route: '/users', adminOnly: true },
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
     { label: 'Plugin Repos', icon: 'database', route: '/plugin-repos', adminOnly: true },
+    { label: 'Notifications', icon: 'bell', route: '/notifications' },
     { label: 'Debugging', icon: 'tool', route: '/debug' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },
   ];
@@ -149,6 +150,13 @@ export class LayoutMain implements OnInit {
         this.loadNotifications();
       });
     } catch {}
+    // Handle AI action requests (open_element, open_credentials)
+    this.aiService.actionRequests$.subscribe(action => {
+      if (action.action === 'open_element') {
+        this.openElement(action as any);
+      }
+    });
+
     // Initial notifications load
     this.loadNotifications();
   }
@@ -184,7 +192,7 @@ export class LayoutMain implements OnInit {
   }
 
   // Notifications (backend)
-  notifications: Array<{ id: string; title: string; desc: string; acknowledged: boolean; link?: string }> = [];
+  notifications: Array<{ id: string; title: string; desc: string; acknowledged: boolean; link?: string; severity?: string }> = [];
   notifUnreadCount = 0;
   notifLoading = false;
   private refreshUnreadCount() {
@@ -207,6 +215,7 @@ export class LayoutMain implements OnInit {
           desc: n.message || '',
           acknowledged: !!n.acknowledged,
           link: n.link || undefined,
+          severity: n.severity || 'info',
         }));
         this.notifications = items;
         // Use server count for accuracy beyond pagination
@@ -217,6 +226,19 @@ export class LayoutMain implements OnInit {
     });
   }
   openNotificationsPopover() { this.loadNotifications(); }
+  ackAllNotifications() {
+    const wsRaw = this.acl.currentWorkspaceId() || undefined;
+    const wsId = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    this.notifApi.ackAll(wsId).subscribe({
+      next: () => {
+        this.notifications.forEach(n => n.acknowledged = true);
+        this.notifUnreadCount = 0;
+        try { this.cdr.detectChanges(); } catch {}
+        this.ui.success('Toutes les notifications marquées comme lues');
+      },
+      error: () => this.ui.error('Échec du marquage')
+    });
+  }
   ackNotification(n: { id: string; acknowledged: boolean }) {
     if (!n || n.acknowledged) return;
     const id = (n as any).id;
@@ -251,6 +273,20 @@ export class LayoutMain implements OnInit {
       this.notifApi.ack(id).subscribe({ next: () => { n.acknowledged = true; try { this.cdr.detectChanges(); } catch {} this.refreshUnreadCount(); go(); }, error: () => go() });
     } else {
       go();
+    }
+  }
+
+  openElement(action: { elementType: string; elementId: string; elementName?: string }) {
+    switch (action.elementType) {
+      case 'flow':
+        this.router.navigate(['/flow-builder', 'editor'], { queryParams: { flow: action.elementId } });
+        break;
+      case 'form':
+        this.router.navigate(['/dynamic-form'], { queryParams: { session: action.elementId } });
+        break;
+      case 'website':
+        this.router.navigate(['/websites/editor'], { queryParams: { id: action.elementId } });
+        break;
     }
   }
 

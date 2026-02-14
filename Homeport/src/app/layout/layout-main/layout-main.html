@@ -209,16 +209,24 @@
 <!-- Notifications popover template -->
 <ng-template #notifTpl>
   <div class="notif-panel">
-    <div class="notif-header">Notifications</div>
+    <div class="notif-header">
+      <span>Notifications</span>
+      <button nz-button nzSize="small" nzType="link" (click)="ackAllNotifications()" *ngIf="notifUnreadCount > 0">Tout marquer comme lu</button>
+    </div>
     <div class="notif-list" *ngIf="!notifLoading; else notifLoadingTpl">
-      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
+      <div class="notif-item" *ngFor="let n of notifications.slice(0, 5)" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
+        <div class="notif-sev-icon" [ngClass]="n.severity || 'info'">
+          <i *ngIf="(n.severity || 'info') === 'info'" class="fa-solid fa-circle-info"></i>
+          <i *ngIf="n.severity === 'warning'" class="fa-solid fa-triangle-exclamation"></i>
+          <i *ngIf="n.severity === 'error' || n.severity === 'critical'" class="fa-solid fa-circle-exclamation"></i>
+        </div>
         <div class="meta">
           <div class="title">{{ n.title }}</div>
           <div class="desc">{{ n.desc }}</div>
         </div>
         <div class="actions">
-          <button nz-button nzSize="small" class="mini" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged">Lu</button>
-          <button nz-button nzSize="small" class="mini" (click)="deleteNotification(n); $event.stopPropagation()"><i class="fa-regular fa-trash-can"></i></button>
+          <button nz-button nzSize="small" nzType="text" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged" title="Marquer comme lu"><i class="fa-regular fa-envelope-open"></i></button>
+          <button nz-button nzSize="small" nzType="text" (click)="deleteNotification(n); $event.stopPropagation()" title="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
         </div>
       </div>
       <div class="empty" *ngIf="notifications.length===0">Aucune notification</div>
@@ -226,9 +234,8 @@
     <ng-template #notifLoadingTpl>
       <div class="notif-loading">Chargement…</div>
     </ng-template>
-    <div class="notif-footer"><a [routerLink]="'/flows'">Voir tout</a></div>
+    <div class="notif-footer"><a [routerLink]="'/notifications'">Voir toutes les notifications</a></div>
   </div>
-  
 </ng-template>
 
 <!-- Profile dropdown menu -->

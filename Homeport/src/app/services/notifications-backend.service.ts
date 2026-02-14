@@ -27,4 +27,8 @@ export class NotificationsBackendService {
   count(params?: { workspaceId?: string; entityType?: string; acknowledged?: 'true'|'false'; q?: string }): Observable<number> {
     return this.api.get<{ total: number }>(`/api/notifications/count`, params).pipe(map(r => (r as any)?.total ?? 0));
   }
+
+  ackAll(workspaceId?: string): Observable<{ modifiedCount: number }> {
+    return this.api.post<{ modifiedCount: number }>(`/api/notifications/ack-all`, workspaceId ? { workspaceId } : {});
+  }
 }

@@ -160,7 +160,7 @@ function logImportError(repo, manifestPath, e){
     const Notification = require('../db/models/notification.model');
     const companyId = repo && repo.companyId ? repo.companyId : null;
     const entityId = repo && repo.id ? String(repo.id) : null;
-    Notification.create({ companyId, workspaceId: null, entityType: 'plugin_repo', entityId, severity: 'error', code: 'plugin_import_error', message: `Import failed for ${manifestPath}`, details: { error: String(e && e.message || e) } }).catch(()=>{});
+    Notification.create({ companyId, workspaceId: null, entityType: 'plugin_repo', entityId, severity: 'error', code: 'plugin_import_error', message: `Échec de l'import pour ${manifestPath}`, details: { error: String(e && e.message || e) } }).catch(()=>{});
   } catch {}
 }
 

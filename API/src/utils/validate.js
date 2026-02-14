@@ -96,11 +96,11 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
   const kinds = nNodes.map(n => ({ id: n.id, kind: normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name) }));
   // Accept both 'start' and 'event' nodes as valid triggers
   const starts = kinds.filter(k => k.kind === 'start' || k.kind === 'event');
-  if (starts.length === 0) errors.push({ code: 'no_start', message: 'No start node found' });
-  if (starts.length > 1) errors.push({ code: 'multiple_starts', message: 'Multiple start nodes' });
+  if (starts.length === 0) errors.push({ code: 'no_start', message: 'Aucun nœud de démarrage trouvé' });
+  if (starts.length > 1) errors.push({ code: 'multiple_starts', message: 'Plusieurs nœuds de démarrage' });
 
   // 2) Edges reference
-  for (const e of edges){ if (!nodesById.has(e.source) || !nodesById.has(e.target)) errors.push({ code: 'edge_invalid', message: 'Edge references unknown node', details: { edge: e.id } }); }
+  for (const e of edges){ if (!nodesById.has(e.source) || !nodesById.has(e.target)) errors.push({ code: 'edge_invalid', message: 'Connexion vers un nœud inconnu', details: { edge: e.id } }); }
 
   // 3) Templates exist; (args validation by JSON Schema removed — args are form schemas)
   const getTemplateByKey = loaders?.getTemplateByKey;
@@ -116,7 +116,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
       if (getTemplateByKey){
         const tpl = await getTemplateByKey(key);
         if (!tpl){
-          (strict ? errors : warnings).push({ code: 'template_unknown', message: `Unknown template '${key}'`, details: { nodeId: n.id } });
+          (strict ? errors : warnings).push({ code: 'template_unknown', message: `Template inconnu '${key}'`, details: { nodeId: n.id } });
         }
       }
       // Validate node args against template schema (required/visible)
@@ -133,7 +133,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
           const required = reqByValidator || reqByFlag || reqByCond;
           if (required){
             const val = ctx?.[f.key];
-            if (isEmptyValue(val)) errors.push({ code: 'field_required', message: `Required field missing: ${f.key}`, details: { nodeId: n.id, field: f.key } });
+            if (isEmptyValue(val)) errors.push({ code: 'field_required', message: `Champ requis manquant : ${f.key}`, details: { nodeId: n.id, field: f.key } });
           }
         }
       } catch {}
@@ -147,7 +147,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
           const needsCreds = !!(provider && provider.hasCredentials);
           if (needsCreds && !allowWithout){
             const ok = await hasCredential(providerKey);
-            if (!ok) errors.push({ code: 'credential_missing', message: `Missing credentials for provider '${providerKey}'`, details: { nodeId: n.id, providerKey } });
+            if (!ok) errors.push({ code: 'credential_missing', message: `Identifiants manquants pour le provider '${providerKey}'`, details: { nodeId: n.id, providerKey } });
           }
         }
       } catch {}
@@ -199,7 +199,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
       const sType = sTpl ? typeOfOut(sTpl, sourceHandle) : 'any';
       const accepts = tTpl ? acceptsOfIn(tTpl, targetHandle) : ['any'];
       if (!(sType === 'any' || accepts.includes('any') || accepts.includes(sType))){
-        (strict ? errors : warnings).push({ code: 'handle_type_mismatch', message: `Type mismatch: '${sType}' -> accepts(${accepts.join(',')})`, details: { edge: e.id, source: e.source, target: e.target, sourceHandle, targetHandle } });
+        (strict ? errors : warnings).push({ code: 'handle_type_mismatch', message: `Incompatibilité de type : '${sType}' → accepte(${accepts.join(',')})`, details: { edge: e.id, source: e.source, target: e.target, sourceHandle, targetHandle } });
       }
     }
   } catch {}
@@ -212,7 +212,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
         const rawKey = n.model?.template || n.model?.templateObj?.template?.id || n.model?.templateObj?.id || n.model?.name || '';
         const key = normalizeTemplateKey(rawKey);
         const allowed = await loaders.isTemplateAllowed(key);
-        if (!allowed) errors.push({ code: 'template_not_allowed', message: `Template not allowed in workspace: '${key}'`, details: { nodeId: n.id, key } });
+        if (!allowed) errors.push({ code: 'template_not_allowed', message: `Template non autorisé dans ce workspace : '${key}'`, details: { nodeId: n.id, key } });
       }
     }
   }
@@ -225,7 +225,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
     edges.forEach(e => { if (inDeg.has(e.target)) inDeg.set(e.target, (inDeg.get(e.target) || 0)+1); if (outDeg.has(e.source)) outDeg.set(e.source, (outDeg.get(e.source) || 0)+1); });
     for (const n of nNodes){
       const deg = (inDeg.get(n.id) || 0) + (outDeg.get(n.id) || 0);
-      if (deg === 0) errors.push({ code: 'node_disconnected', message: 'Node is not connected', details: { nodeId: n.id } });
+      if (deg === 0) errors.push({ code: 'node_disconnected', message: 'Nœud non connecté', details: { nodeId: n.id } });
     }
     // Reachability: from starts/events, traverse outgoing edges
     const startIds = nNodes.filter(n => {
@@ -244,7 +244,7 @@ async function validateFlowGraph(flowGraph, { strict=false, loaders } = {}){
       }
       for (const n of nNodes){
         const k = normalizeNodeKind(n.model?.templateObj?.type) || normalizeNodeKind(n.model?.type) || normalizeNodeKind(n.type) || normalizeNodeKind(n.model?.templateObj?.name);
-        if (k !== 'start' && !vis.has(n.id)) errors.push({ code: 'node_unreachable', message: 'Node is not reachable from start', details: { nodeId: n.id } });
+        if (k !== 'start' && !vis.has(n.id)) errors.push({ code: 'node_unreachable', message: 'Nœud non atteignable depuis le démarrage', details: { nodeId: n.id } });
       }
     }
   } catch {}

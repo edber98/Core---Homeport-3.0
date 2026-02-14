@@ -150,7 +150,7 @@ module.exports = function(){
           // Cancel running runs
           await Run.updateMany({ flowId: flow._id, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
           // Create notification
-          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'plugin_repo_update_invalid', message: `Flow disabled due to plugin repo update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'plugin_repo_update_invalid', message: `Flow désactivé suite à la mise à jour du dépôt de plugins`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         } catch {}
       }
     }

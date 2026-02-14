@@ -64,6 +64,15 @@ module.exports = function(){
     res.apiOk(n);
   });
 
+  // Mark all notifications as read (per workspace or company-wide)
+  r.post('/notifications/ack-all', async (req, res) => {
+    const filter = { companyId: req.user.companyId, acknowledged: false };
+    const { workspaceId } = req.body || {};
+    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) filter.workspaceId = workspaceId;
+    const result = await Notification.updateMany(filter, { $set: { acknowledged: true } });
+    res.apiOk({ modifiedCount: result.modifiedCount || 0 });
+  });
+
   r.delete('/notifications/:id', async (req, res) => {
     const id = String(req.params.id || '');
     if (!Types.ObjectId.isValid(id)) return res.apiError(400, 'invalid_id', 'Invalid notification id');

@@ -34,7 +34,7 @@ module.exports = function(){
           const graphCopy = remapGraphIds(f.graph || f);
           const copy = await Flow.create({ name: f.name + ' (Copy)', workspaceId: target._id, status: 'draft', enabled: v.ok ? f.enabled : false, graph: graphCopy });
           if (!v.ok){
-            await Notification.create({ companyId: target.companyId, workspaceId: target._id, entityType: 'flow', entityId: String(copy._id), severity: 'critical', code: 'flow_invalid', message: 'Flow copied but disabled in target workspace', details: v, link: `/flows/${copy._id}/editor` });
+            await Notification.create({ companyId: target.companyId, workspaceId: target._id, entityType: 'flow', entityId: String(copy._id), severity: 'critical', code: 'flow_invalid', message: 'Flow copié mais désactivé dans le workspace cible', details: v, link: `/flows/${copy._id}/editor` });
           }
           result.created.push({ type: 'flow', id: String(copy._id) });
         } else if (it.type === 'credential'){

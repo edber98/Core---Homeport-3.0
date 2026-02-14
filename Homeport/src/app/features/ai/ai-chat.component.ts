@@ -7,7 +7,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AiService, AiStreamEvent } from './ai.service';
+import { AiAudioService } from './ai-audio.service';
 import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
 import { marked } from 'marked';
@@ -49,7 +51,7 @@ interface StreamTool {
 @Component({
   selector: 'ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzPopoverModule, AiMessageComponent, AiQuestionComponent],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzPopoverModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent],
   template: `
     <!-- Messages -->
     <div class="messages" #scrollContainer>
@@ -181,16 +183,27 @@ interface StreamTool {
 
     <!-- Input -->
     <div class="input-bar">
-      <nz-input-group [nzSuffix]="suffixTpl" nzSize="large">
+      <nz-input-group [nzSuffix]="suffixTpl" [nzPrefix]="prefixTpl" nzSize="large">
         <input
           nz-input
           [(ngModel)]="inputText"
           placeholder="Écris un message..."
           (keydown.enter)="send()"
-          [disabled]="ai.streaming()" />
+          [disabled]="ai.streaming() || audio.recording() || audio.transcribing()" />
       </nz-input-group>
+      <ng-template #prefixTpl>
+        <button nz-button nzType="text" nzSize="small"
+          [class.mic-recording]="audio.recording()"
+          (click)="toggleMic()"
+          [disabled]="ai.streaming() || audio.transcribing()"
+          nz-tooltip [nzTooltipTitle]="audio.recording() ? 'Arrêter' : 'Enregistrement vocal'">
+          <span nz-icon [nzType]="audio.transcribing() ? 'loading' : 'audio'" nzTheme="outline"
+            [nzSpin]="audio.transcribing()"></span>
+        </button>
+        <span class="mic-timer" *ngIf="audio.recording()">{{ audio.recordingDuration() }}s</span>
+      </ng-template>
       <ng-template #suffixTpl>
-        <button nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="ai.streaming() || !inputText.trim()">
+        <button nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="ai.streaming() || !inputText.trim() || audio.recording()">
           <span nz-icon [nzType]="ai.streaming() ? 'loading' : 'send'" nzTheme="outline"></span>
         </button>
       </ng-template>
@@ -257,6 +270,9 @@ interface StreamTool {
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
     .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
+    .mic-recording { color: #ff4d4f !important; animation: mic-pulse 1s ease-in-out infinite; }
+    @keyframes mic-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .mic-timer { font-size: 11px; color: #ff4d4f; font-weight: 600; margin-left: 2px; }
     .system-msg { background: #f8f9fa; border-left: 3px solid #d9d9d9; padding: 8px 12px; font-size: 12px; margin: 8px 0; border-radius: 0 6px 6px 0; }
     .system-context { display: flex; align-items: center; gap: 6px; color: #999; }
     .system-label { font-weight: 500; }
@@ -277,7 +293,7 @@ export class AiChatComponent {
 
   private stopFn?: () => void;
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef) {
+  constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
     effect(() => {
       this.ai.messages();
       this.scrollToBottom();
@@ -295,6 +311,38 @@ export class AiChatComponent {
     const { events$, stop } = await this.ai.quickSend(text);
     this.stopFn = stop;
     this.handleStream(events$);
+  }
+
+  async toggleMic() {
+    if (this.audio.recording()) {
+      // Stop recording and transcribe
+      try {
+        const blob = await this.audio.stopAndGetBlob();
+        this.cdr.detectChanges();
+        this.audio.transcribe(blob).subscribe({
+          next: (text: string) => {
+            if (text.trim()) {
+              this.inputText = text;
+              this.cdr.detectChanges();
+              this.send();
+            }
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.cdr.detectChanges();
+          },
+        });
+      } catch { this.cdr.detectChanges(); }
+    } else {
+      // Start recording
+      try {
+        await this.audio.startRecording();
+        this.cdr.detectChanges();
+      } catch (e: any) {
+        console.error('[ai-chat] mic error:', e);
+        this.cdr.detectChanges();
+      }
+    }
   }
 
   onAnswer(answer: any) {

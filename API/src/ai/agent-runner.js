@@ -164,6 +164,7 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
 
   // 6. Agent loop
   let loopCount = 0;
+  let totalUsage = { input: 0, output: 0 };
 
   console.log(`[agent] starting run: mode=${mode}, tools=${tools.map(t => t.name).join(',')}`);
 
@@ -198,6 +199,11 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
           break;
 
         case 'done':
+          // Accumulate token usage across loop iterations
+          if (event.usage) {
+            totalUsage.input += event.usage.input || 0;
+            totalUsage.output += event.usage.output || 0;
+          }
           break;
       }
     }
@@ -208,7 +214,7 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
       for (const exec of modeExecutors) {
         if (exec?.cleanup) { try { await exec.cleanup(); } catch (e) { console.error('[agent] cleanup error:', e?.message); } }
       }
-      yield { type: 'done', usage: null };
+      yield { type: 'done', usage: totalUsage };
       return;
     }
 
@@ -274,7 +280,7 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
         if (askResult.result.questions) qEvent.questions = askResult.result.questions;
         yield qEvent;
       }
-      yield { type: 'done', usage: null };
+      yield { type: 'done', usage: totalUsage };
       return;
     }
 
@@ -296,7 +302,7 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     if (exec?.cleanup) { try { await exec.cleanup(); } catch (e) { console.error('[agent] cleanup error:', e?.message); } }
   }
   yield { type: 'message', text: '\n\n*Limite de boucles atteinte. Reformule ta demande si nécessaire.*' };
-  yield { type: 'done', usage: null };
+  yield { type: 'done', usage: totalUsage };
 }
 
 module.exports = { runAgent, buildSystemPrompt, buildToolSet };

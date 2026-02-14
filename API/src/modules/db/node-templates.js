@@ -160,7 +160,7 @@ module.exports = function(){
             await f.save();
           }
           await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow désactivé suite à la mise à jour du template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
       rebuildToolIndex();
@@ -231,7 +231,7 @@ module.exports = function(){
           await f.save();
         }
         await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-        await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow disabled due to deleted template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+        await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow désactivé suite à la suppression du template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
       }
     }
     rebuildToolIndex();

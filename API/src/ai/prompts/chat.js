@@ -105,10 +105,14 @@ Je vais créer N nodes :
 1. \`auto_layout\` → Organiser.
 2. \`validate_flow\` → Vérifier.
 3. \`save_flow\` → Sauvegarder.
+4. \`open_element\` → Ouvrir le workflow/formulaire créé pour que l'utilisateur le voie directement.
 
 ### Répondre après construction
 Quand l'utilisateur donne une info complémentaire → \`set_node_args\` pour mettre à jour + \`save_flow\`.
 Ne JAMAIS dire "configure toi-même" — fais-le.
+
+### Navigation après création
+Après avoir créé ou sauvegardé un workflow/formulaire, appelle \`open_element\` pour que l'utilisateur puisse voir le résultat directement dans l'interface.
 
 ---
 

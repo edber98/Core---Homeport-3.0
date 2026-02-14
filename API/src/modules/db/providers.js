@@ -79,7 +79,7 @@ module.exports = function(){
           const f = await Flow.findById(it.flowId);
           if (f) { f.enabled = false; await f.save(); }
           await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'provider_update_invalid', message: `Flow disabled due to provider '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'provider_update_invalid', message: `Flow désactivé suite à la mise à jour du provider '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
     }

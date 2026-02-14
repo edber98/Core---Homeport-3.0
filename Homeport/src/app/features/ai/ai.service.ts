@@ -54,6 +54,7 @@ export interface AiQuestion {
 /** Actions that the AI can trigger on the frontend */
 export type AiAction =
   | { action: 'open_credentials'; provider: string; providerKey: string }
+  | { action: 'open_element'; elementType: string; elementId: string; elementName?: string }
   | { action: 'navigate'; route: string }
   | { action: 'open_node_settings'; flowId: string; nodeId: string };
 

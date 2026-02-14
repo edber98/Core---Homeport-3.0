@@ -144,6 +144,7 @@ function buildApp(opts = {}){
     });
     // AI unified (new system)
     app.use('/api', require('./modules/db/ai')());
+    app.use('/api', require('./modules/db/transcribe')());
     // Flow simulation (db)
     app.use('/api', require('./modules/db/simulate')());
     // Layout (ELK) for DB mode
@@ -154,6 +155,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/plugins')());
     app.use('/api', require('./modules/db/plugin-repos')());
     app.use('/api', require('./modules/db/notifications')());
+    app.use('/api', require('./modules/db/dashboard')());
     app.use('/api', require('./modules/db/files')());
     app.use('/api', require('./modules/db/users')());
     // Old AI modules removed — all AI functionality is now in the unified ai.js routes

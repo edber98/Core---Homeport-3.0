@@ -114,7 +114,7 @@ module.exports = function(){
       const baseLink = `/flow-builder/editor?flow=${encodeURIComponent(String(flow._id))}`;
       const errs = Array.isArray(v.errors) ? v.errors : [];
       if (errs.length === 0) {
-        await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: 'Flow created with invalid graph (disabled)', details: {}, link: baseLink });
+        await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(flow._id), severity: 'critical', code: 'flow_invalid', message: 'Flow créé avec un graphe invalide (désactivé)', details: {}, link: baseLink });
       } else {
         for (const e of errs){
           const nodeId = e?.details?.nodeId ? String(e.details.nodeId) : null;
@@ -182,7 +182,7 @@ module.exports = function(){
         const baseLink = `/flow-builder/editor?flow=${encodeURIComponent(String(f._id))}`;
         const errs = Array.isArray(v.errors) ? v.errors : [];
         if (errs.length === 0){
-          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: 'Flow updated with invalid graph; disabled', details: {}, link: baseLink });
+          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: String(f._id), severity: 'critical', code: 'flow_invalid', message: 'Flow mis à jour avec un graphe invalide (désactivé)', details: {}, link: baseLink });
         } else {
           for (const e of errs){
             const nodeId = e?.details?.nodeId ? String(e.details.nodeId) : null;

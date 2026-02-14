@@ -325,6 +325,24 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     // Load recent flows for link management
     this.loadRecentFlows();
 
+    // Handle AI actions (open_element, open_credentials)
+    this.ai.actionRequests$.subscribe(action => {
+      if (action.action === 'open_element') {
+        const a = action as any;
+        switch (a.elementType) {
+          case 'flow':
+            this.router.navigate(['/flow-builder', 'editor'], { queryParams: { flow: a.elementId } });
+            break;
+          case 'form':
+            this.router.navigate(['/dynamic-form'], { queryParams: { session: a.elementId } });
+            break;
+          case 'website':
+            this.router.navigate(['/websites/editor'], { queryParams: { id: a.elementId } });
+            break;
+        }
+      }
+    });
+
     // Auto-refresh threads every 30s
     this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
@@ -392,6 +410,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
       case 'workflow': return 'Flow';
       case 'node_args': return 'Args';
       case 'form': return 'Form';
+      case 'onboarding': return 'Onboarding';
       default: return mode;
     }
   }

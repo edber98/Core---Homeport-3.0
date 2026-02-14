@@ -1,123 +1,345 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NotificationsBackendService, BackendNotification } from '../../services/notifications-backend.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { UiMessageService } from '../../services/ui-message.service';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @Component({
   selector: 'notifications-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, FormsModule,
+    NzTableModule, NzTagModule, NzButtonModule, NzBadgeModule,
+    NzEmptyModule, NzSpinModule, NzInputModule, NzSelectModule,
+    NzIconModule, NzToolTipModule, NzPopconfirmModule,
+  ],
   template: `
-  <div class="list-page">
+  <div class="notif-page">
     <div class="container">
+      <!-- Header -->
       <div class="page-header">
-        <div>
-          <h1>Notifications</h1>
-          <p>Surveillance des éléments (flows, credentials, templates…).</p>
+        <div class="header-left">
+          <h2>Notifications</h2>
+          <span class="subtitle">Surveillance des éléments (flows, credentials, templates…)</span>
         </div>
-        <div class="actions">
-          <select [(ngModel)]="entityType" (ngModelChange)="reload()">
-            <option value="">type: tous</option>
-            <option *ngFor="let t of entityTypes" [value]="t">{{ t }}</option>
-          </select>
-          <select [(ngModel)]="acknowledged" (ngModelChange)="reload()">
-            <option value="">état: tous</option>
-            <option value="false">non lus</option>
-            <option value="true">lus</option>
-          </select>
-          <input [(ngModel)]="q" (keyup.enter)="reload()" placeholder="Rechercher (code, message)" class="search" />
-          <select [(ngModel)]="sort" (ngModelChange)="reload()">
-            <option value="createdAt:desc">plus récents</option>
-            <option value="createdAt:asc">plus anciens</option>
-          </select>
-          <button (click)="reload()">Filtrer</button>
+        <div class="header-actions">
+          <button nz-button nzType="default" (click)="ackAll()" [disabled]="!hasUnread" nz-tooltip nzTooltipTitle="Tout marquer comme lu">
+            <i class="fa-regular fa-envelope-open"></i> Tout marquer comme lu
+          </button>
+          <button nz-button nzType="primary" (click)="reload()">
+            <span nz-icon nzType="reload"></span> Actualiser
+          </button>
         </div>
       </div>
 
-      <div class="loading" *ngIf="loading">
-        <div class="skeleton-grid">
-          <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5]"></div>
+      <!-- Filters -->
+      <div class="filters">
+        <div class="filter-group">
+          <span class="filter-label">Sévérité</span>
+          <nz-select [(ngModel)]="severityFilter" (ngModelChange)="reload()" nzPlaceHolder="Toutes" nzAllowClear style="width: 140px">
+            <nz-option nzValue="info" nzLabel="Info"></nz-option>
+            <nz-option nzValue="warning" nzLabel="Avertissement"></nz-option>
+            <nz-option nzValue="error" nzLabel="Erreur"></nz-option>
+            <nz-option nzValue="critical" nzLabel="Critique"></nz-option>
+          </nz-select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Type</span>
+          <nz-select [(ngModel)]="entityType" (ngModelChange)="reload()" nzPlaceHolder="Tous" nzAllowClear style="width: 140px">
+            <nz-option *ngFor="let t of entityTypes" [nzValue]="t" [nzLabel]="entityTypeLabel(t)"></nz-option>
+          </nz-select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">État</span>
+          <nz-select [(ngModel)]="acknowledged" (ngModelChange)="reload()" nzPlaceHolder="Tous" nzAllowClear style="width: 120px">
+            <nz-option nzValue="false" nzLabel="Non lus"></nz-option>
+            <nz-option nzValue="true" nzLabel="Lus"></nz-option>
+          </nz-select>
+        </div>
+        <div class="filter-group search-group">
+          <nz-input-group [nzPrefix]="searchIcon" style="width: 220px">
+            <input nz-input [(ngModel)]="q" (keyup.enter)="reload()" placeholder="Rechercher…" />
+          </nz-input-group>
+          <ng-template #searchIcon><span nz-icon nzType="search"></span></ng-template>
         </div>
       </div>
-      <div class="error" *ngIf="!loading && error">{{ error }}</div>
-      <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let n of items">
-          <div class="left">
-            <div class="sev" [ngClass]="n.severity || 'info'"></div>
-          </div>
-          <div class="content" (click)="open(n)">
-            <div class="title-row">
-              <div class="name">{{ n.code || 'notification' }}</div>
-              <span class="chip" *ngIf="n.entityType">{{ n.entityType }}</span>
-              <span class="chip" *ngIf="n.acknowledged">lu</span>
-            </div>
-            <div class="desc">{{ n.message }}</div>
-          </div>
-          <div class="trailing">
-            <button class="icon-btn" (click)="ack(n, $event)" [disabled]="n.acknowledged" title="Marquer lu"><i class="fa-regular fa-envelope-open"></i></button>
-            <button class="icon-btn" (click)="del(n, $event)" title="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
-          </div>
-        </div>
-        <div *ngIf="!items.length" class="empty">Aucun élément trouvé.</div>
-      </div>
+
+      <!-- Table -->
+      <nz-spin [nzSpinning]="loading">
+        <nz-table
+          #notifTable
+          [nzData]="items"
+          [nzPageSize]="pageSize"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 20, 50]"
+          (nzPageSizeChange)="pageSize = $event"
+          nzSize="middle"
+          [nzNoResult]="emptyTpl"
+          [nzShowTotal]="totalTpl"
+        >
+          <thead>
+            <tr>
+              <th nzWidth="80px">Sévérité</th>
+              <th>Code</th>
+              <th>Message</th>
+              <th nzWidth="100px">Type</th>
+              <th nzWidth="100px">État</th>
+              <th nzWidth="140px">Date</th>
+              <th nzWidth="140px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let n of notifTable.data" [class.row-unread]="!n.acknowledged">
+              <td>
+                <nz-tag [nzColor]="severityColor(n.severity)">{{ severityLabel(n.severity) }}</nz-tag>
+              </td>
+              <td class="code-cell">{{ n.code || '—' }}</td>
+              <td class="msg-cell">{{ n.message || '—' }}</td>
+              <td>
+                <nz-tag *ngIf="n.entityType">{{ entityTypeLabel(n.entityType) }}</nz-tag>
+              </td>
+              <td>
+                <nz-badge *ngIf="!n.acknowledged" nzStatus="processing" nzText="Non lu"></nz-badge>
+                <span *ngIf="n.acknowledged" class="read-label">Lu</span>
+              </td>
+              <td class="date-cell">{{ relativeTime(n.createdAt) }}</td>
+              <td>
+                <div class="action-btns">
+                  <button nz-button nzSize="small" nzType="text" (click)="open(n)" *ngIf="n.link" nz-tooltip nzTooltipTitle="Ouvrir">
+                    <span nz-icon nzType="link"></span>
+                  </button>
+                  <button nz-button nzSize="small" nzType="text" (click)="ack(n)" [disabled]="n.acknowledged" nz-tooltip nzTooltipTitle="Marquer comme lu">
+                    <i class="fa-regular fa-envelope-open"></i>
+                  </button>
+                  <button nz-button nzSize="small" nzType="text" nzDanger nz-popconfirm nzPopconfirmTitle="Supprimer cette notification ?" (nzOnConfirm)="del(n)">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-spin>
+
+      <ng-template #emptyTpl>
+        <nz-empty nzNotFoundContent="Aucune notification trouvée"></nz-empty>
+      </ng-template>
+      <ng-template #totalTpl let-total let-range="range">
+        {{ range[0] }}-{{ range[1] }} sur {{ total }} notifications
+      </ng-template>
     </div>
   </div>
   `,
   styles: [`
-    .list-page { padding: 20px; }
-    .container { max-width: 1080px; margin: 0 auto; }
-    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
-    .actions { display:flex; align-items:center; gap:8px; flex-wrap: wrap; }
-    .search { width: 220px; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; }
-    .grid { display:grid; grid-template-columns: 1fr; gap: 10px; }
-    .card { display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; border:1px solid #ececec; background:#fff; }
-    .left .sev { width:8px; height: 40px; border-radius: 6px; }
-    .sev.info { background:#1677ff; }
-    .sev.warning { background:#f59e0b; }
-    .sev.error, .sev.critical { background:#ef4444; }
-    .content { flex:1; min-width: 0; cursor:pointer; }
-    .title-row { display:flex; align-items:center; gap:8px; }
-    .name { font-weight:600; }
-    .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
-    .trailing .icon-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; }
-    .empty { color:#6b7280; }
-    .loading .skeleton-grid { display:grid; grid-template-columns: 1fr; gap:10px; }
-    .skeleton-card { height: 56px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
-    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
-    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .notif-page { padding: 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .header-left h2 { margin: 0; font-size: 22px; font-weight: 600; }
+    .header-left .subtitle { color: #8c8c8c; font-size: 13px; }
+    .header-actions { display: flex; gap: 8px; }
+    .filters { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-group { display: flex; align-items: center; gap: 6px; }
+    .filter-label { font-size: 12px; color: #8c8c8c; white-space: nowrap; }
+    .search-group { margin-left: auto; }
+    .row-unread { background: #f0f5ff; }
+    .code-cell { font-weight: 500; font-size: 13px; }
+    .msg-cell { font-size: 13px; color: #595959; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .date-cell { font-size: 12px; color: #8c8c8c; white-space: nowrap; }
+    .read-label { color: #8c8c8c; font-size: 12px; }
+    .action-btns { display: flex; gap: 2px; }
+    .container { overflow-x: hidden; }
+    @media (max-width: 768px) {
+      .notif-page { padding: 8px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .header-left h2 { font-size: 18px; }
+      .filters { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .search-group { margin-left: 0; width: 100%; }
+      .msg-cell { max-width: 120px; font-size: 12px; }
+      .code-cell { font-size: 12px; }
+      .date-cell { font-size: 11px; }
+      .action-btns button { padding: 0 4px !important; }
+    }
+    @media (max-width: 480px) {
+      .notif-page { padding: 4px; }
+      .msg-cell { max-width: 80px; font-size: 11px; }
+      .code-cell { font-size: 11px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .header-left h2 { font-size: 16px; }
+      .filter-group { width: 100%; }
+    }
   `]
 })
 export class NotificationsPageComponent implements OnInit, OnDestroy {
-  items: BackendNotification[] = [];
+  items: (BackendNotification & { createdAt?: string })[] = [];
   loading = false;
   error: string | null = null;
-  entityTypes = ['company','flow','workspace','template','app','credential'];
-  entityType = '';
-  acknowledged = '';
+  entityTypes = ['company', 'flow', 'workspace', 'template', 'app', 'credential'];
+  entityType: string | null = null;
+  acknowledged: string | null = null;
+  severityFilter: string | null = null;
   sort = 'createdAt:desc';
   q = '';
+  pageSize = 20;
+
   get wsId() { return this.acl.currentWorkspaceId(); }
+  get hasUnread() { return this.items.some(n => !n.acknowledged); }
   private sub: any;
-  constructor(private api: NotificationsBackendService, private acl: AccessControlService, private ui: UiMessageService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+
+  constructor(
+    private api: NotificationsBackendService,
+    private acl: AccessControlService,
+    private ui: UiMessageService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+  ) {}
+
   ngOnInit(): void {
     this.reload();
-    try { this.sub = this.acl.changes$.subscribe(() => this.zone.run(() => { this.reload(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
+    try {
+      this.sub = this.acl.changes$.subscribe(() => this.zone.run(() => {
+        this.reload();
+        try { this.cdr.detectChanges(); } catch {}
+      }));
+    } catch {}
   }
+
   ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
+
   reload() {
-    this.loading = true; this.error = null;
+    this.loading = true;
+    this.error = null;
     const wsRaw = this.wsId;
     const ws = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
-    const ack = (this.acknowledged === '' ? undefined : (this.acknowledged as 'true'|'false'));
-    this.api.list({ workspaceId: ws, entityType: this.entityType || undefined, acknowledged: ack, q: this.q || undefined, sort: this.sort, page: 1, limit: 50 }).subscribe({
-      next: l => this.items = (l || []).map((n: any) => ({ ...n, id: String(n.id || n._id || '') })),
-      error: () => { this.error = 'Chargement des notifications échoué'; },
+    const ack = (this.acknowledged == null || this.acknowledged === '') ? undefined : (this.acknowledged as 'true' | 'false');
+    this.api.list({
+      workspaceId: ws,
+      entityType: this.entityType || undefined,
+      acknowledged: ack,
+      q: this.q || undefined,
+      sort: this.sort,
+      page: 1,
+      limit: 200,
+    }).subscribe({
+      next: (list: any[]) => {
+        let items = (list || []).map((n: any) => ({
+          ...n,
+          id: String(n.id || n._id || ''),
+          createdAt: n.createdAt || n.updatedAt || '',
+        }));
+        // Filter severity client-side (backend doesn't expose severity filter)
+        if (this.severityFilter) {
+          items = items.filter((n: any) => n.severity === this.severityFilter);
+        }
+        this.items = items;
+      },
+      error: () => { this.error = 'Échec du chargement des notifications'; },
       complete: () => { this.loading = false; }
     });
   }
-  ack(n: BackendNotification, ev: MouseEvent) { ev.stopPropagation(); if (n.acknowledged) return; const id = (n as any).id; if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant invalide'); return; } this.api.ack(id).subscribe({ next: () => { n.acknowledged = true; this.ui.success('Marquée comme lue'); }, error: () => this.ui.error('Échec marquage') }); }
-  del(n: BackendNotification, ev: MouseEvent) { ev.stopPropagation(); const id = (n as any).id; if (!id || !/^[a-fA-F0-9]{24}$/.test(String(id))) { this.ui.error('Identifiant invalide'); return; } this.api.delete(id).subscribe({ next: () => { this.items = this.items.filter(x => x.id !== n.id); this.ui.success('Supprimée'); }, error: () => this.ui.error('Échec suppression') }); }
-  open(n: BackendNotification) { if (n.link) { /* could navigate here */ } }
+
+  ack(n: BackendNotification) {
+    if (n.acknowledged) return;
+    const id = String((n as any).id);
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) { this.ui.error('Identifiant invalide'); return; }
+    this.api.ack(id).subscribe({
+      next: () => { n.acknowledged = true; this.ui.success('Marquée comme lue'); },
+      error: () => this.ui.error('Échec du marquage'),
+    });
+  }
+
+  del(n: BackendNotification) {
+    const id = String((n as any).id);
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) { this.ui.error('Identifiant invalide'); return; }
+    this.api.delete(id).subscribe({
+      next: () => { this.items = this.items.filter(x => (x as any).id !== id); this.ui.success('Notification supprimée'); },
+      error: () => this.ui.error('Échec de la suppression'),
+    });
+  }
+
+  ackAll() {
+    const wsRaw = this.wsId;
+    const ws = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    this.api.ackAll(ws).subscribe({
+      next: () => {
+        this.items.forEach(n => n.acknowledged = true);
+        this.ui.success('Toutes les notifications marquées comme lues');
+      },
+      error: () => this.ui.error('Échec du marquage'),
+    });
+  }
+
+  open(n: BackendNotification) {
+    if (n.link) {
+      // Ack first, then navigate
+      if (!n.acknowledged) {
+        const id = String((n as any).id);
+        if (id && /^[a-fA-F0-9]{24}$/.test(id)) {
+          this.api.ack(id).subscribe({ next: () => n.acknowledged = true });
+        }
+      }
+      this.router.navigateByUrl(n.link);
+    }
+  }
+
+  severityColor(sev?: string): string {
+    switch (sev) {
+      case 'info': return 'blue';
+      case 'warning': return 'orange';
+      case 'error': return 'red';
+      case 'critical': return 'magenta';
+      default: return 'blue';
+    }
+  }
+
+  severityLabel(sev?: string): string {
+    switch (sev) {
+      case 'info': return 'Info';
+      case 'warning': return 'Avertissement';
+      case 'error': return 'Erreur';
+      case 'critical': return 'Critique';
+      default: return 'Info';
+    }
+  }
+
+  entityTypeLabel(t: string): string {
+    switch (t) {
+      case 'company': return 'Entreprise';
+      case 'flow': return 'Flow';
+      case 'workspace': return 'Workspace';
+      case 'template': return 'Template';
+      case 'app': return 'Application';
+      case 'credential': return 'Identifiant';
+      default: return t;
+    }
+  }
+
+  relativeTime(dateStr?: string): string {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const now = Date.now();
+    const diff = now - d.getTime();
+    if (diff < 0) return 'à l\'instant';
+    const secs = Math.floor(diff / 1000);
+    if (secs < 60) return 'à l\'instant';
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return `il y a ${mins} min`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `il y a ${hours} h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `il y a ${days} j`;
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
 }

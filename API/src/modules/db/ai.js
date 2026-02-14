@@ -511,6 +511,7 @@ ${toolLines.join('\n')}
       const toolCalls = [];
       const segments = []; // Interleaved [{type:'text',content}, {type:'tools',toolCalls:[]}]
       let questionData = null;
+      let usageData = null;
 
       const generator = runAgent({
         mode: thread.mode || 'chat',
@@ -608,6 +609,8 @@ ${toolLines.join('\n')}
             break;
 
           case 'done':
+            // Capture token usage from agent
+            if (event.usage) usageData = event.usage;
             // Don't send done here — will be sent in finally block
             // after message save + title generation, so thread.title arrives before done
             break;
@@ -632,6 +635,7 @@ ${toolLines.join('\n')}
           toolCalls: toolCalls.length ? toolCalls : undefined,
           segments: cleanSegments.length > 1 ? cleanSegments : undefined,
           question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options, questions: questionData.questions } : undefined,
+          usage: usageData && (usageData.input || usageData.output) ? usageData : undefined,
         });
       }
 
@@ -963,6 +967,45 @@ ${toolLines.join('\n')}
     if (!agent) return res.apiError(404, 'agent_not_found', 'Agent not found');
     await AiAgent.deleteOne({ _id: agent._id });
     res.apiOk(true);
+  });
+
+  // ── Stats (admin) ──
+  r.get('/ai/stats', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+
+    try {
+      const [threadCount, messageCount, companyCtx, workspaceCtx] = await Promise.all([
+        AiThread.countDocuments({ workspaceId: ws._id }),
+        AiMessage.countDocuments({}), // approximation — will be filtered by joined threads
+        AiCompanyContext.findOne({ companyId: ws.companyId }).lean(),
+        AiWorkspaceContext.findOne({ workspaceId: ws._id }).lean(),
+      ]);
+
+      // Count messages per workspace via threads
+      const threadIds = await AiThread.find({ workspaceId: ws._id }, '_id').lean();
+      const tids = threadIds.map(t => t._id);
+      const wsMessageCount = tids.length ? await AiMessage.countDocuments({ threadId: { $in: tids } }) : 0;
+
+      // Top tools from user context
+      const userCtx = await AiUserContext.findOne({ userId: req.user.id }).lean();
+      const toolUsage = userCtx?.toolUsage || {};
+      const topTools = Object.entries(toolUsage)
+        .map(([name, count]) => ({ name, count: Number(count) || 0 }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+      res.apiOk({
+        threadCount,
+        messageCount: wsMessageCount,
+        topTools,
+        companyContext: companyCtx || {},
+        workspaceContext: workspaceCtx || {},
+      });
+    } catch (e) {
+      console.error('[ai] stats error:', e?.message || e);
+      res.apiError(500, 'stats_error', 'Failed to load stats');
+    }
   });
 
   // ── Helper ──

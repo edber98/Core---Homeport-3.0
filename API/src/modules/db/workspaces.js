@@ -103,7 +103,7 @@ module.exports = function(){
         for (const it of impacted) {
           const f = await Flow.findById(it.flowId);
           f.enabled = false; await f.save();
-          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_not_allowed', message: `Flow disabled due to workspace template policy`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: ws.companyId, workspaceId: ws._id, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_not_allowed', message: `Flow désactivé en raison de la politique de templates du workspace`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
     }
