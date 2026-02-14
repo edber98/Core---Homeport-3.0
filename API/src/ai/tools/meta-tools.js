@@ -179,6 +179,18 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'open_credentials',
+    description: 'Ouvre la fenêtre de création/édition de credentials pour un provider spécifique. Utilise cet outil quand l\'utilisateur confirme vouloir connecter un service.',
+    parameters: {
+      type: 'object',
+      properties: {
+        providerKey: { type: 'string', description: 'Clé du provider (ex: odoo, slack, google_drive)' },
+        providerName: { type: 'string', description: 'Nom lisible du provider (ex: Odoo, Slack)' },
+      },
+      required: ['providerKey'],
+    },
+  },
+  {
     name: 'enrich_context',
     description: 'Enrichit le contexte (entreprise, workspace ou utilisateur) avec une nouvelle information détectée.',
     parameters: {
@@ -347,6 +359,11 @@ async function executeMetaTool(name, input, ctx) {
         mode: newThread.mode,
         _transfer: true, // Marker for SSE side event
       };
+    }
+
+    case 'open_credentials': {
+      // Return action event — frontend will handle opening the modal
+      return { _action: true, action: 'open_credentials', providerKey: input.providerKey, providerName: input.providerName || input.providerKey };
     }
 
     case 'enrich_context': {

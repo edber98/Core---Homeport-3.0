@@ -6,7 +6,7 @@ const AiThreadSchema = new Schema({
   companyId: { type: Types.ObjectId, ref: 'Company', required: true, index: true },
   workspaceId: { type: Types.ObjectId, ref: 'Workspace', required: true, index: true },
   userId: { type: Types.ObjectId, ref: 'User', required: true, index: true },
-  mode: { type: String, enum: ['chat', 'workflow', 'node_args', 'form'], default: 'chat' },
+  mode: { type: String, enum: ['chat', 'workflow', 'node_args', 'form', 'onboarding'], default: 'chat' },
   title: { type: String, default: 'Chat' },
   flowId: { type: Types.ObjectId, ref: 'Flow', index: true },
   nodeId: { type: String },

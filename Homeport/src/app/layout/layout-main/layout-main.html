@@ -238,6 +238,9 @@
     <li nz-menu-item [routerLink]="'/forms'">Mes formulaires</li>
     <li nz-menu-item [routerLink]="'/flows'">Mes flows</li>
     <li nz-menu-item [routerLink]="'/change-password'">Changer le mot de passe</li>
+    <li nz-menu-item (click)="openOnboarding()">
+      <span nz-icon nzType="setting" nzTheme="outline"></span> Assistant de configuration
+    </li>
     <li nz-menu-divider></li>
     <li nz-menu-item (click)="logout()">Déconnexion</li>
   </ul>
@@ -245,3 +248,6 @@
 
 <!-- AI Panel (global drawer) -->
 <ai-panel></ai-panel>
+
+<!-- AI Onboarding dialog (opened from profile menu) -->
+<ai-onboarding-dialog></ai-onboarding-dialog>

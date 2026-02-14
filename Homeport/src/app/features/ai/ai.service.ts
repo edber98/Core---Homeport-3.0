@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 export interface AiThread {
   _id: string;
   id: string;
-  mode: 'chat' | 'workflow' | 'node_args' | 'form';
+  mode: 'chat' | 'workflow' | 'node_args' | 'form' | 'onboarding';
   title: string;
   flowId?: string;
   nodeId?: string;
@@ -89,6 +89,7 @@ export type AiStreamEvent =
   | { type: 'snapshot'; graph: any }
   | { type: 'args'; nodeId: string; args: any }
   | { type: 'desc'; nodeId: string; description: string }
+  | { type: 'action'; action: string; providerKey?: string; providerName?: string }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' };
 
@@ -363,6 +364,9 @@ export class AiService {
                 }
                 this.currentThread.set(updated);
               }
+            }
+            if ((event as any).type === 'action') {
+              this.actionRequests$.next(event as any);
             }
             if ((event as any).type === 'thread.transfer') {
               // Auto-switch to new thread after stream completes

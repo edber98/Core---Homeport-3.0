@@ -9,6 +9,7 @@ const { buildChatPrompt } = require('./prompts/chat');
 const { buildWorkflowPrompt } = require('./prompts/workflow-builder');
 const { buildNodeArgsPrompt } = require('./prompts/node-args');
 const { buildFormPrompt } = require('./prompts/form-builder');
+const { buildOnboardingPrompt } = require('./prompts/onboarding');
 const { trackToolUsage } = require('./context/memory-manager');
 
 const MAX_TOOL_LOOPS = 40;
@@ -28,6 +29,9 @@ function buildSystemPrompt(mode, ctx) {
       break;
     case 'form':
       prompt += buildFormPrompt();
+      break;
+    case 'onboarding':
+      prompt += buildOnboardingPrompt();
       break;
   }
 
@@ -105,7 +109,7 @@ function buildToolSet(mode, modeExecutors) {
  * Run the AI agent — yields SSE events as an async generator.
  *
  * @param {object} opts
- * @param {string} opts.mode - 'chat' | 'workflow' | 'node_args' | 'form'
+ * @param {string} opts.mode - 'chat' | 'workflow' | 'node_args' | 'form' | 'onboarding'
  * @param {Array} opts.messages - Conversation history [{role, content}]
  * @param {object} opts.context - Built context from context-builder
  * @param {object} [opts.metadata] - Mode-specific: { flowId, nodeId, formId, branch, graph }
@@ -228,6 +232,11 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: 'success', duration, result });
 
         yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: 'success', duration };
+
+        // Emit action events (e.g. open_credentials) for frontend handling
+        if (result?._action) {
+          yield { type: 'action', action: result.action, providerKey: result.providerKey, providerName: result.providerName };
+        }
 
         // Yield side events from mode tools (patches, args, etc.)
         for (const ev of sideEvents) yield ev;

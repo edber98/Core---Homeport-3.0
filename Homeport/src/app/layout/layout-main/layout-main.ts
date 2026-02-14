@@ -1,4 +1,4 @@
-import { Component, HostListener, ChangeDetectorRef, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, HostListener, ChangeDetectorRef, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -16,6 +16,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { AiPanelComponent } from '../../features/ai/ai-panel.component';
+import { AiOnboardingDialogComponent } from '../../features/ai/ai-onboarding-dialog.component';
 import { AiService } from '../../features/ai/ai.service';
 import { FlowsBackendService } from '../../services/flows-backend.service';
 import { FormsModule } from '@angular/forms';
@@ -52,6 +53,7 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzModalModule,
     NzSelectModule,
     AiPanelComponent,
+    AiOnboardingDialogComponent,
   ],
   templateUrl: './layout-main.html',
   styleUrl: './layout-main.scss'
@@ -255,6 +257,9 @@ export class LayoutMain implements OnInit {
   logout() { this.auth.logout(); }
 
   toggleAi() { this.aiService.toggleDrawer(); }
+
+  @ViewChild(AiOnboardingDialogComponent) onboardingDialog?: AiOnboardingDialogComponent;
+  openOnboarding() { this.onboardingDialog?.open(); }
 
   // Permissions helpers
   get isAdmin(): boolean { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
