@@ -572,17 +572,79 @@ Quand une action retourne une **liste** et tu dois agir sur CHAQUE élément →
 ---
 
 <!-- @topic:expressions -->
-## Expressions de données
+## Expressions de données — NE JAMAIS DEVINER
 
 ### Syntaxe de base
 
-- `{{payload.champ}}` : Données du formulaire de démarrage (start_form).
-- `{{nodeId.champ}}` : Résultat d'un node précédent.
+- `{{payload.champ}}` : Données du **start_form / trigger UNIQUEMENT** (l'entrée initiale du workflow).
+- `{{nodeId.champ}}` : Résultat d'un **node spécifique** identifié par son ID.
 
-### Règles
+### ERREUR CRITIQUE : `payload` vs `nodeId`
 
-- TOUJOURS utiliser `propose_context_mapping` pour connaître les clés disponibles.
-- **JAMAIS d'index numériques** : `{{ nodeId.0 }}` ou `{{ nodeId.1 }}` N'EXISTE PAS. Utilise les NOMS de champs réels.
+`payload` contient UNIQUEMENT les données du déclencheur (start_form, event, webhook).
+**`payload` ne se propage PAS à travers les nodes.** Chaque node reçoit le résultat du node précédent, pas le payload original.
+
+**Exemple de flow :**
+```
+start_form (subject, body) → Extracteur IA (abc123) → Email (def456)
+```
+
+Pour configurer le node Email (def456) :
+- `{{ payload.subject }}` → **FAUX** ❌ — payload est le start_form, mais le node Email reçoit le résultat de l'Extracteur, pas le payload directement
+- `{{ abc123.extracted_subject }}` → **CORRECT** ✅ — référence explicite au node qui produit la donnée
+
+**Règle :** Si un node intermédiaire existe entre le start_form et le node cible, les données passent par ce node intermédiaire. Tu dois référencer le node qui a réellement produit ou transmis la donnée, pas `payload`.
+
+**Quand utiliser `payload` :**
+- UNIQUEMENT quand le node cible est connecté DIRECTEMENT au start_form/trigger
+- Ou pour accéder à un champ du formulaire de démarrage qui n'a pas été transformé par un node intermédiaire et qui est toujours dans le `msg.payload` original
+
+**Quand utiliser `{{ nodeId.champ }}` :**
+- TOUJOURS quand la donnée vient d'un node qui a produit un résultat (HTTP, Odoo, IA, extracteur, etc.)
+- C'est le cas le plus fréquent — la majorité des expressions doivent référencer un nodeId, pas payload
+
+### Règle fondamentale : CONNAÎTRE avant d'écrire
+
+**Chaque node a un schéma de sortie SPÉCIFIQUE et DIFFÉRENT.** Tu ne peux JAMAIS deviner les noms de champs d'un node.
+
+Exemples de schémas qui VARIENT selon le template :
+| Node | Champs réels | Ce que tu pourrais inventer (FAUX) |
+|------|-------------|-----------------------------------|
+| HTTP Request | `body`, `status`, `headers` | ~~`data`~~, ~~`result`~~, ~~`response`~~ |
+| Odoo search | `records`, `totalCount` | ~~`items`~~, ~~`results`~~, ~~`data`~~ |
+| Email send | `sent`, `messageId`, `envelope` | ~~`success`~~, ~~`result`~~ |
+| Chat completion | `content`, `usage` | ~~`text`~~, ~~`message`~~, ~~`answer`~~ |
+| Classifier | `label`, `confidence` (via outputSchema) | ~~`category`~~, ~~`class`~~ |
+
+**PROCÉDURE OBLIGATOIRE** avant d'écrire `{{ nodeId.xxx }}` :
+1. Appeler `propose_context_mapping(targetId)` → lire `upstreamOutputs`
+2. Chaque entrée dans `upstreamOutputs` contient `availableExpressions` avec les expressions exactes
+3. Utiliser UNIQUEMENT les expressions retournées — copier-coller le `expression` tel quel
+4. Si `upstreamOutputs` est vide ou ne contient pas le node attendu → `get_predecessor_context(nodeId)` en fallback
+
+### Exemple concret
+
+Après `propose_context_mapping`, tu reçois :
+```json
+{
+  "upstreamOutputs": [{
+    "nodeId": "abc123",
+    "name": "Recherche Odoo",
+    "template": "odoo_search_read",
+    "availableExpressions": [
+      { "field": "records", "expression": "{{ abc123.records }}", "type": "array" },
+      { "field": "totalCount", "expression": "{{ abc123.totalCount }}", "type": "number" }
+    ]
+  }]
+}
+```
+→ Tu utilises `{{ abc123.records }}`, PAS `{{ abc123.data }}` ou `{{ abc123.items }}`.
+
+### Erreurs interdites
+
+- **JAMAIS d'index numériques** : `{{ nodeId.0 }}` ou `{{ nodeId.1 }}` N'EXISTE PAS.
+- **JAMAIS inventer un nom de champ** sans avoir vérifié via `propose_context_mapping` ou `get_predecessor_context`.
+- **JAMAIS supposer que deux templates ont le même schéma** — même deux nodes du même provider peuvent avoir des sorties différentes.
 
 ### Données des nodes multi-output (classifiers, extracteurs)
 

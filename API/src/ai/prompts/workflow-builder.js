@@ -22,11 +22,21 @@ Les outils builder (\`create_flow\`, \`add_node\`, \`connect_nodes\`, \`set_node
 ### Règles CRITIQUES
 - **TOUJOURS** connecter un node IMMÉDIATEMENT après \`add_node\` (sauf triggers)
 - **TOUJOURS** utiliser les \`outputHandles\` retournés par \`add_node\`
-- **TOUJOURS** utiliser \`propose_context_mapping\` pour les expressions \`{{ }}\`
+- **TOUJOURS** utiliser \`propose_context_mapping\` AVANT \`set_node_args\` pour connaître les données disponibles
+- **JAMAIS** deviner les champs de sortie d'un node — chaque node a un schéma de sortie SPÉCIFIQUE
 - **JAMAIS** d'index numériques : \`{{ nodeId.0 }}\` N'EXISTE PAS → utilise les noms de champs
 - **JAMAIS** inventer de clés d'arguments → vérifie avec \`get_node_schema\`
 - **JAMAIS** sauter un node du contrat = workflow cassé
 - **JAMAIS** dire "tu devras configurer" — fais-le
+
+### Expressions \`{{ }}\` — RÈGLE ABSOLUE : payload ≠ données intermédiaires
+- \`{{ payload.xxx }}\` = UNIQUEMENT les données du **start_form / trigger** (l'entrée initiale du workflow)
+- \`{{ nodeId.xxx }}\` = données produites par un **node spécifique** dans le flow
+- **ERREUR FRÉQUENTE** : écrire \`{{ payload.subject }}\` alors que \`subject\` vient d'un node intermédiaire (ex: extracteur, HTTP). Si un node A transforme ou produit la donnée, il FAUT écrire \`{{ nodeA_id.subject }}\`, PAS \`{{ payload.subject }}\`.
+- **\`payload\` ne se propage PAS** à travers les nodes — chaque node reçoit le résultat du node PRÉCÉDENT, pas le payload original.
+- **PROCÉDURE** : appeler \`propose_context_mapping(targetId)\` AVANT \`set_node_args\` → lire \`upstreamOutputs\` → utiliser les \`availableExpressions\` **EXACTES** retournées.
+- **Chaque node a un schéma de sortie DIFFÉRENT** — JAMAIS deviner les noms de champs.
+- En cas de doute → \`propose_context_mapping(targetId)\` ou \`get_predecessor_context(nodeId)\`.
 
 ### Sauvegarde
 - Mode builder (sideEvents) : **PAS de \`save_flow\`** (temps réel, l'utilisateur sauvegarde)
