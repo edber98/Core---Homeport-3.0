@@ -506,15 +506,67 @@ function createWorkflowExecutor(metadata, emit) {
   const START_TYPES = ['start', 'start_form', 'event', 'endpoint', 'trigger'];
 
   /**
+   * Extract output fields from a schema object.
+   * Handles both form-style { fields: [{ key, type }] } (from $var: resolution)
+   * and flat key-value { text: "string", count: "number" }.
+   */
+  function extractFieldsFromSchema(schema) {
+    if (!schema || typeof schema !== 'object') return null;
+    const fields = [];
+    if (Array.isArray(schema.fields)) {
+      for (const f of schema.fields) {
+        const k = f?.key || f?.name;
+        if (k) fields.push({ key: k, type: f.type || 'text' });
+      }
+    } else {
+      for (const [k, v] of Object.entries(schema)) {
+        if (k === '_id' || k === '__v' || k === 'title' || k === 'ui' || k === 'displayTitle' || k === 'displayDescription') continue;
+        if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+          fields.push({ key: k, type: v.type || 'object' });
+        } else {
+          fields.push({ key: k, type: typeof v === 'string' ? v : 'text' });
+        }
+      }
+    }
+    return fields.length ? fields : null;
+  }
+
+  /**
    * Build upstream context for a node: what each predecessor outputs.
-   * `payload.xxx` is valid if `xxx` exists in ANY direct predecessor's output schema
-   * (payload = output of previous node, works in loops, after HTTP, after start_form, etc.)
+   * Uses schema analysis + optional simulation for maximum coverage.
+   * `payload.xxx` is valid if `xxx` exists in ANY direct predecessor's output.
    * Returns { upstreamOutputs, payloadFields, allKnownExpressions }.
    */
-  function buildUpstreamContext(g, targetId) {
+  function buildUpstreamContext(g, targetId, simData) {
     const upstreamOutputs = [];
-    const payloadFields = new Set(); // all fields accessible via payload.xxx (from ANY direct predecessor)
-    const allKnownExpressions = new Map(); // "nodeId.field" or "payload.field" → true
+    const payloadFields = new Set();
+    const allKnownExpressions = new Map();
+
+    // If simulation data provided, extract field names from msgIn
+    const simFields = new Map(); // nodeId → Set of field names
+    if (simData) {
+      const scenarios = Array.isArray(simData.scenarios) ? simData.scenarios : [];
+      for (const sc of scenarios) {
+        const msg = sc.msgIn || {};
+        // Top-level keys in msgIn (except internal keys) are available as payload.xxx
+        for (const k of Object.keys(msg)) {
+          if (k === '_meta' || k === '_nodeResults') continue;
+          payloadFields.add(k);
+          allKnownExpressions.set(`payload.${k}`, true);
+        }
+        // Per-node results from _nodeResults
+        const nr = msg._nodeResults || {};
+        for (const [nid, result] of Object.entries(nr)) {
+          if (!simFields.has(nid)) simFields.set(nid, new Set());
+          if (result && typeof result === 'object') {
+            for (const k of Object.keys(result)) {
+              simFields.get(nid).add(k);
+              allKnownExpressions.set(`${nid}.${k}`, true);
+            }
+          }
+        }
+      }
+    }
 
     const incomingEdges = (g.edges || []).filter(e => String(e.target) === String(targetId));
     for (const edge of incomingEdges) {
@@ -534,7 +586,7 @@ function createWorkflowExecutor(metadata, emit) {
 
       let outputFields = null;
 
-      // Start_form: fields from the form schema
+      // 1. Start_form: fields from the form schema
       if (srcType === 'start_form') {
         const formSchema = srcModel.context?.formSchema || srcModel.formSchema;
         const fieldsArr = formSchema?.fields || (srcModel.context || {}).fields;
@@ -546,41 +598,34 @@ function createWorkflowExecutor(metadata, emit) {
           }
         }
       }
-      // Multi-output
+      // 2. Multi-output (output_array_field): outputSchema defines fields per branch
       else if (srcTmpl.output_array_field && Array.isArray(srcTmpl.outputSchema) && srcTmpl.outputSchema.length) {
         info.isMultiOutput = true;
-        outputFields = srcTmpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
-      }
-      // Dynamic schema
-      else if (srcTmpl.output_schema_field && srcModel.context) {
-        const dynSchema = srcModel.context[srcTmpl.output_schema_field];
-        if (dynSchema?.fields && Array.isArray(dynSchema.fields)) {
-          outputFields = dynSchema.fields.filter(f => f.key).map(f => ({ key: f.key, type: f.type || 'text' }));
+        // outputSchema can be flat array or form-style
+        const first = srcTmpl.outputSchema[0];
+        if (first?.key || first?.name) {
+          outputFields = srcTmpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
+        } else if (first?.fields) {
+          outputFields = extractFieldsFromSchema(first);
         }
       }
-      // Standard outputHandles with schema
+      // 3. Dynamic schema (output_schema_field): reads schema from context
+      else if (srcTmpl.output_schema_field && srcModel.context) {
+        const dynSchema = srcModel.context[srcTmpl.output_schema_field];
+        outputFields = extractFieldsFromSchema(dynSchema);
+      }
+      // 4. Standard outputHandles with schema
       else if (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles.length) {
         const handle = srcTmpl.outputHandles.find(h => String(h.id) === String(edge.sourceHandle || '0'));
         if (handle?.schema && typeof handle.schema === 'object') {
-          outputFields = [];
-          // Schema can be form-style { fields: [{ key, type }] } (from $var: resolution)
-          // or flat key-value { text: "string", count: "number" }
-          if (Array.isArray(handle.schema.fields)) {
-            for (const f of handle.schema.fields) {
-              const k = f?.key || f?.name;
-              if (k) outputFields.push({ key: k, type: f.type || 'text' });
-            }
-          } else {
-            for (const [k, v] of Object.entries(handle.schema)) {
-              if (k === '_id' || k === '__v') continue;
-              if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-                outputFields.push({ key: k, type: v.type || 'object' });
-              } else {
-                outputFields.push({ key: k, type: typeof v === 'string' ? v : 'text' });
-              }
-            }
-          }
+          outputFields = extractFieldsFromSchema(handle.schema);
         }
+      }
+
+      // 5. Fallback: use simulation data if schema analysis found nothing
+      if (!outputFields && simFields.has(edge.source)) {
+        const sf = simFields.get(edge.source);
+        outputFields = [...sf].map(k => ({ key: k, type: 'unknown' }));
       }
 
       if (outputFields && outputFields.length) {
@@ -590,7 +635,6 @@ function createWorkflowExecutor(metadata, emit) {
         }));
         for (const f of outputFields) {
           allKnownExpressions.set(`${edge.source}.${f.key}`, true);
-          // payload.xxx is valid if xxx exists in ANY direct predecessor's output
           payloadFields.add(f.key);
           allKnownExpressions.set(`payload.${f.key}`, true);
         }
@@ -1234,7 +1278,7 @@ function createWorkflowExecutor(metadata, emit) {
         }
       }
 
-      // Auto-validate {{ }} expressions in args against upstream context
+      // Auto-validate {{ }} expressions in args against upstream context + simulation
       // This catches errors when the agent skips propose_context_mapping
       try {
         const allArgValues = JSON.stringify(args);
@@ -1242,11 +1286,16 @@ function createWorkflowExecutor(metadata, emit) {
         const usedExpressions = [];
         let m;
         while ((m = exprRegex.exec(allArgValues)) !== null) {
-          usedExpressions.push(m[1]); // e.g. "payload.urgence" or "nodeId.text"
+          usedExpressions.push(m[1]);
         }
 
         if (usedExpressions.length > 0) {
-          const upstream = buildUpstreamContext(g, String(input.nodeId));
+          // Run simulation for additional field coverage (catches cases where schema alone isn't enough)
+          let simData = null;
+          try { const { simulateViaEngine } = require('../../utils/flow-simulate-engine'); simData = await simulateViaEngine(g, input.nodeId); } catch {}
+          if (!simData) { try { const { simulateScenarios } = require('../../utils/flow-simulate'); simData = simulateScenarios(g, input.nodeId); } catch {} }
+
+          const upstream = buildUpstreamContext(g, String(input.nodeId), simData);
           const badExpressions = [];
 
           for (const expr of usedExpressions) {
@@ -1434,8 +1483,8 @@ function createWorkflowExecutor(metadata, emit) {
         return mapping;
       };
 
-      // Reuse shared buildUpstreamContext utility
-      const upstream = buildUpstreamContext(g, String(input.targetId));
+      // Reuse shared buildUpstreamContext utility (with simulation data for max coverage)
+      const upstream = buildUpstreamContext(g, String(input.targetId), sim);
 
       const variants = scenarios.map(sc => ({ label: sc.label || `scenario_${sc.index}`, mapping: guessMapping(tArgs, sc.msgIn || {}), previewMsg: sc.msgIn || {} }));
       const best = variants[0] || { mapping: {}, previewMsg: {} };
