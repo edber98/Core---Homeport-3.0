@@ -22,6 +22,6 @@ module.exports = {
       type: p.type,
       permalinkUrl: p.permalink_url
     }));
-    return { ok: true, posts };
+    return { ok: true, posts , totalCount: posts.length };
   }
 };

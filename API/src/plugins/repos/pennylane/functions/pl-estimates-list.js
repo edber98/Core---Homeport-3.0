@@ -14,6 +14,6 @@ module.exports = {
 
     const results = (res.data && res.data.estimates) || [];
     const estimates = results.map(r => ({ id: String(r.id || ""), estimate_number: r.estimate_number || "", label: r.label || "", amount: String(r.amount || r.total || ""), status: r.status || "", date: r.date || "" }));
-    return { ok: true, estimates };
+    return { ok: true, estimates , totalCount: estimates.length };
   }
 };

@@ -9,6 +9,6 @@ module.exports = {
 
     const results = (res.data && res.data.senders) || [];
     const senders = results.map(r => ({ id: String(r.id || ""), name: r.name || "", email: r.email || "", active: String(r.active || false) }));
-    return { ok: true, senders };
+    return { ok: true, senders , totalCount: senders.length };
   }
 };

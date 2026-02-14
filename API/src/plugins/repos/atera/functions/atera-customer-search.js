@@ -60,6 +60,6 @@ module.exports = {
       items: matched,
       matchCount: matched.length,
       totalScanned
-    };
+    , totalCount: matched.length };
   }
 };

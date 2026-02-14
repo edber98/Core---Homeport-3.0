@@ -22,6 +22,6 @@ module.exports = {
       createdAt: p.created?.time,
       lifecycleState: p.lifecycleState
     }));
-    return { ok: true, posts };
+    return { ok: true, posts , totalCount: posts.length };
   }
 };

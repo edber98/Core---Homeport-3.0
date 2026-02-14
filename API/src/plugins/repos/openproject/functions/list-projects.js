@@ -18,6 +18,6 @@ module.exports = {
       description: (project.description && project.description.raw) || ""
     }));
 
-    return { ok: true, projects };
+    return { ok: true, projects , totalCount: projects.length };
   }
 };

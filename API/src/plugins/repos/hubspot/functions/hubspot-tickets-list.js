@@ -17,6 +17,6 @@ module.exports = {
     const hasMore = !!(paging && paging.next);
     const nextAfter = (paging && paging.next && paging.next.after) || null;
     const tickets = results.map(r => ({ id: r.id, ...r.properties, createdate: r.createdAt }));
-    return { ok: true, tickets, hasMore, nextAfter };
+    return { ok: true, tickets, hasMore, nextAfter , totalCount: tickets.length };
   }
 };

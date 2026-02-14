@@ -17,6 +17,6 @@ module.exports = {
       size: f.metadata?.size != null ? String(f.metadata.size) : "",
       mimeType: f.metadata?.mimetype || ""
     }));
-    return { ok: true, files };
+    return { ok: true, files , totalCount: files.length };
   }
 };

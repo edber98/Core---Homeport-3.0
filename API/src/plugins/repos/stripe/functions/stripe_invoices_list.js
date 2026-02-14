@@ -20,6 +20,6 @@ module.exports = {
       hosted_invoice_url: inv.hosted_invoice_url
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, invoices, hasMore };
+    return { ok: true, invoices, hasMore , totalCount: invoices.length };
   }
 };

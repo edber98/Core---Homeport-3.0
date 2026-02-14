@@ -33,6 +33,6 @@ module.exports = {
 
     const res = await utils.odooCall(opts, model, "search_read", [], { domain, fields, limit, offset });
     if (!res.ok) return res;
-    return { ok: true, data: JSON.stringify(res.data) };
+    return { ok: true, data: JSON.stringify(res.data) , totalCount: data.length };
   }
 };

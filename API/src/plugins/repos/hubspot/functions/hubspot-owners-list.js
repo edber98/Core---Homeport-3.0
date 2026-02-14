@@ -23,6 +23,6 @@ module.exports = {
       firstName: o.firstName,
       lastName: o.lastName
     }));
-    return { ok: true, owners, hasMore, nextAfter };
+    return { ok: true, owners, hasMore, nextAfter , totalCount: owners.length };
   }
 };

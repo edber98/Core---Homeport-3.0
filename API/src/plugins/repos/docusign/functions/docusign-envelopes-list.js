@@ -16,6 +16,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.envelopes) || [];
     const envelopes = items.map(r => ({ envelopeId: r.envelopeId, status: r.status, emailSubject: r.emailSubject, senderName: r.sender?.userName || "", sentDateTime: r.sentDateTime || "", createdDateTime: r.createdDateTime || "" }));
-    return { ok: true, envelopes };
+    return { ok: true, envelopes , totalCount: envelopes.length };
   }
 };

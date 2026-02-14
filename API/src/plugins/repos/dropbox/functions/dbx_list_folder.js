@@ -13,6 +13,6 @@ module.exports = {
     });
     if (!res.ok) return res;
     const files = (res.data.entries || []).map(utils.mapEntry);
-    return { ok: true, files };
+    return { ok: true, files , totalCount: files.length };
   }
 };

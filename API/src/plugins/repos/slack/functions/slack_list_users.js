@@ -22,6 +22,6 @@ module.exports = {
         is_admin: !!u.is_admin,
         is_bot: !!u.is_bot
       }))
-    };
+    , totalCount: list.length };
   }
 };

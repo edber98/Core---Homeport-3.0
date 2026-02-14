@@ -17,6 +17,6 @@ module.exports = {
       customer: pi.customer, description: pi.description, created: pi.created
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, payment_intents, hasMore };
+    return { ok: true, payment_intents, hasMore , totalCount: payment_intents.length };
   }
 };

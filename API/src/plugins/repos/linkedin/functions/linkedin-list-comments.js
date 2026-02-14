@@ -18,6 +18,6 @@ module.exports = {
       actor: c.actor,
       createdAt: c.created?.time
     }));
-    return { ok: true, comments };
+    return { ok: true, comments , totalCount: comments.length };
   }
 };

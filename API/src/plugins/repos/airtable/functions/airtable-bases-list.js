@@ -7,6 +7,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const rawBases = (res.data && res.data.bases) || [];
     const bases = rawBases.map(b => ({ id: b.id, name: b.name, permissionLevel: b.permissionLevel || "" }));
-    return { ok: true, bases };
+    return { ok: true, bases , totalCount: bases.length };
   }
 };

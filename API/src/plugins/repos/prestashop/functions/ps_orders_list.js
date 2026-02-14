@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.orders) || [];
     const orders = items.map(o => ({ id: String(o.id), reference: o.reference || "", total_paid: String(o.total_paid || ""), current_state: String(o.current_state || ""), payment: o.payment || "", date_add: o.date_add || "" }));
-    return { ok: true, orders };
+    return { ok: true, orders , totalCount: orders.length };
   }
 };

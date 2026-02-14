@@ -21,6 +21,6 @@ module.exports = {
       displayName: user.displayName || "",
       emailAddress: user.emailAddress || "",
       active: user.active !== undefined ? String(user.active) : ""
-    };
+    , totalCount: accountId.length };
   }
 };

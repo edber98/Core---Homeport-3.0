@@ -23,6 +23,6 @@ module.exports = {
       type: r.type || r.TABLE_TYPE || "",
       schema: r.schema || r.TABLE_SCHEMA || ""
     }));
-    return { ok: true, tables };
+    return { ok: true, tables , totalCount: tables.length };
   }
 };

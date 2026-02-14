@@ -17,6 +17,6 @@ module.exports = {
     const hasMore = !!(paging && paging.next);
     const nextAfter = (paging && paging.next && paging.next.after) || null;
     const contacts = results.map(r => ({ id: r.id, ...r.properties, createdate: r.createdAt }));
-    return { ok: true, contacts, hasMore, nextAfter };
+    return { ok: true, contacts, hasMore, nextAfter , totalCount: contacts.length };
   }
 };

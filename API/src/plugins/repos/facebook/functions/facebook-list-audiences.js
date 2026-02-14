@@ -21,6 +21,6 @@ module.exports = {
       subtype: a.subtype,
       approximateCount: a.approximate_count
     }));
-    return { ok: true, audiences };
+    return { ok: true, audiences , totalCount: audiences.length };
   }
 };

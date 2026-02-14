@@ -81,7 +81,16 @@ async function gitlabApi(method, pathTemplate, inputs, credentials, options = {}
     return { ok: false, error: `GitLab API error ${res.status}: ${errMsg}`, status: res.status };
   }
 
-  return { ok: true, status: res.status, data };
+  // Extract pagination headers from GitLab API
+  const pagination = {
+    total: parseInt(res.headers.get('x-total') || '0', 10) || 0,
+    totalPages: parseInt(res.headers.get('x-total-pages') || '0', 10) || 0,
+    page: parseInt(res.headers.get('x-page') || '1', 10) || 1,
+    perPage: parseInt(res.headers.get('x-per-page') || '20', 10) || 20,
+    nextPage: parseInt(res.headers.get('x-next-page') || '0', 10) || 0,
+  };
+
+  return { ok: true, status: res.status, data, pagination };
 }
 
 module.exports = { gitlabApi };

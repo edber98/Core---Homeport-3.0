@@ -17,6 +17,6 @@ module.exports = {
       login: user.login
     }));
 
-    return { ok: true, users };
+    return { ok: true, users , totalCount: users.length };
   }
 };

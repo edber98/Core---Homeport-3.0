@@ -18,6 +18,6 @@ module.exports = {
 
     const results = (res.data && res.data.results) || [];
     const companies = results.map(r => ({ id: r.id, ...r.properties, createdate: r.createdAt }));
-    return { ok: true, companies };
+    return { ok: true, companies , totalCount: companies.length };
   }
 };

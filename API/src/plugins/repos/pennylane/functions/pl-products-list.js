@@ -14,6 +14,6 @@ module.exports = {
 
     const results = (res.data && res.data.products) || [];
     const products = results.map(r => ({ id: String(r.source_id || r.id || ""), label: r.label || "", price: String(r.price || ""), unit: r.unit || "", reference: r.reference || "" }));
-    return { ok: true, products };
+    return { ok: true, products , totalCount: products.length };
   }
 };

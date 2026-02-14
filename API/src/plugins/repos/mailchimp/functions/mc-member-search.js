@@ -14,6 +14,6 @@ module.exports = {
     const full = (res.data && res.data.full_search && res.data.full_search.members) || [];
     const all = [...matches, ...full];
     const members = all.map(r => ({ id: r.id || "", email: r.email_address || "", firstName: r.merge_fields?.FNAME || "", lastName: r.merge_fields?.LNAME || "", status: r.status || "" }));
-    return { ok: true, members };
+    return { ok: true, members , totalCount: members.length };
   }
 };

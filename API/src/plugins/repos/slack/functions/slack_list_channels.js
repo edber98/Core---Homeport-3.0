@@ -23,6 +23,6 @@ module.exports = {
         purpose: (ch.purpose && ch.purpose.value) || "",
         num_members: ch.num_members || 0
       }))
-    };
+    , totalCount: list.length };
   }
 };

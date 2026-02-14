@@ -12,6 +12,6 @@ module.exports = {
 
     const results = (res.data && res.data.results) || [];
     const tickets = results.map(r => ({ id: String(r.id || ""), subject: r.subject || "", status: r.status || "", priority: r.priority || "", createdAt: r.created_at || "" }));
-    return { ok: true, tickets };
+    return { ok: true, tickets , totalCount: tickets.length };
   }
 };

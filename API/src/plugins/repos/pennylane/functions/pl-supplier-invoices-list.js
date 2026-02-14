@@ -15,6 +15,6 @@ module.exports = {
 
     const results = (res.data && res.data.invoices) || [];
     const invoices = results.map(r => ({ id: String(r.id || ""), invoice_number: r.invoice_number || "", label: r.label || "", amount: String(r.amount || r.total || ""), status: r.status || "", date: r.date || "" }));
-    return { ok: true, invoices };
+    return { ok: true, invoices , totalCount: invoices.length };
   }
 };

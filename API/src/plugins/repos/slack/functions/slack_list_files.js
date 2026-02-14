@@ -25,6 +25,6 @@ module.exports = {
         url_private: f.url_private || "",
         permalink: f.permalink || ""
       }))
-    };
+    , totalCount: files.length };
   }
 };

@@ -13,6 +13,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.envelopeTemplates) || [];
     const templates = items.map(r => ({ templateId: r.templateId, name: r.name, description: r.description || "", shared: r.shared || "", created: r.created || "" }));
-    return { ok: true, templates };
+    return { ok: true, templates , totalCount: templates.length };
   }
 };

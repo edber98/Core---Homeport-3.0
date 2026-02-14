@@ -42,7 +42,11 @@ async function dolibarrRequest(opts, path, options = {}) {
     return { ok: false, error: msg, status: res.status, details: data };
   }
 
-  return { ok: true, data };
+  // Extract total records count from Dolibarr pagination header
+  const totalRecordsHeader = res.headers.get("x-nb-of-records");
+  const totalRecords = totalRecordsHeader ? parseInt(totalRecordsHeader, 10) : undefined;
+
+  return { ok: true, data, totalRecords };
 }
 
 module.exports = { utils: { dolibarrRequest } };

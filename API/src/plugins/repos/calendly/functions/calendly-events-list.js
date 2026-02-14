@@ -18,6 +18,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.collection) || [];
     const events = items.map(r => ({ uri: r.uri, name: r.name, status: r.status, startTime: r.start_time, endTime: r.end_time, eventType: r.event_type, createdAt: r.created_at }));
-    return { ok: true, events };
+    return { ok: true, events , totalCount: events.length };
   }
 };

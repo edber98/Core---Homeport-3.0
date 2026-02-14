@@ -18,6 +18,6 @@ module.exports = {
       displayOrder: p.displayOrder,
       stages: (p.stages || []).map(s => s.label).join(", ")
     }));
-    return { ok: true, pipelines };
+    return { ok: true, pipelines , totalCount: pipelines.length };
   }
 };

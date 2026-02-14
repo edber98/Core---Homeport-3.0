@@ -14,6 +14,6 @@ module.exports = {
       created: m.created,
       ownedBy: m.owned_by
     }));
-    return { ok: true, models };
+    return { ok: true, models , totalCount: models.length };
   }
 };

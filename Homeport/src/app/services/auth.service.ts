@@ -26,14 +26,18 @@ export class AuthService {
     if (environment.useBackend) {
       const email = String(userIdOrEmail || '').trim();
       return new Observable<boolean>((observer) => {
-        this.api.post<{ token: string; user: any; company?: any }>(`/auth/login`, { email, password }).subscribe({
+        this.api.post<{ token: string; user: any; company?: any; workspaces?: any[]; defaultWorkspaceId?: string }>(`/auth/login`, { email, password }).subscribe({
           next: (data) => {
             this.tokens.setToken(data?.token || '');
             this.tokens.setUser(data?.user || null);
-            // Renseigner l’utilisateur courant pour l’ACL si l’id est disponible
-            try { if (data?.user?.id) this.acl.setCurrentUser(String(data.user.id)); } catch {}
-            // Après login, rafraîchir les workspaces côté backend et sélectionner le défaut
-            try { this.acl.refreshBackendWorkspaces(); } catch {}
+            // Initialize ACL with login response (user + workspaces + default workspace)
+            try {
+              this.acl.initFromLogin({
+                user: data?.user,
+                workspaces: data?.workspaces,
+                defaultWorkspaceId: data?.defaultWorkspaceId,
+              });
+            } catch {}
             this.loggedIn.set(true);
             this.save(this.LOGGED_KEY, true);
             observer.next(true);
@@ -53,7 +57,7 @@ export class AuthService {
     this.save(this.LOGGED_KEY, true);
     return of(true);
   }
-  loginDemo(): Observable<boolean> { return this.login('demo', 'demo'); }
+  loginDemo(): Observable<boolean> { return this.login(environment.useBackend ? 'demo@beta.test' : 'demo', 'demo'); }
 
   logout(): void {
     this.loggedIn.set(false);

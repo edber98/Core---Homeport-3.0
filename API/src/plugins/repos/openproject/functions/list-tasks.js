@@ -42,6 +42,6 @@ module.exports = {
       assignee: task._links && task._links.assignee ? task._links.assignee.title : null
     }));
 
-    return { ok: true, tasks };
+    return { ok: true, tasks , totalCount: tasks.length };
   }
 };

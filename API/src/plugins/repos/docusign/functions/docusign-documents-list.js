@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.envelopeDocuments) || [];
     const documents = items.map(r => ({ documentId: r.documentId, name: r.name, type: r.type || "", order: r.order || "" }));
-    return { ok: true, documents };
+    return { ok: true, documents , totalCount: documents.length };
   }
 };

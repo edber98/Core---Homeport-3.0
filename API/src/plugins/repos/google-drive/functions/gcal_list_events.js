@@ -21,6 +21,6 @@ module.exports = {
     log('Récupération de la liste...');
     const res = await utils.googleRequest(opts, url);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
-    return { ok: true, events: res.data.items || [] };
+    return { ok: true, events: res.data.items || [] , totalCount: events.length };
   }
 };

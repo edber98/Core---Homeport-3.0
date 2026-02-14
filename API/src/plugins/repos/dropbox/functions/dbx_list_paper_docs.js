@@ -13,6 +13,6 @@ module.exports = {
     const files = (res.data.entries || [])
       .filter(e => e.name && e.name.endsWith(".paper"))
       .map(utils.mapEntry);
-    return { ok: true, files };
+    return { ok: true, files , totalCount: files.length };
   }
 };

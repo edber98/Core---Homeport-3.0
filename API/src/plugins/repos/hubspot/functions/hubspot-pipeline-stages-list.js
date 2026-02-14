@@ -19,6 +19,6 @@ module.exports = {
       label: s.label,
       displayOrder: s.displayOrder
     }));
-    return { ok: true, stages };
+    return { ok: true, stages , totalCount: stages.length };
   }
 };

@@ -19,6 +19,6 @@ module.exports = {
         message_ts: (p.message && p.message.ts) || "",
         message_text: (p.message && p.message.text) || ""
       }))
-    };
+    , totalCount: pins.length };
   }
 };

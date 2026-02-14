@@ -47,6 +47,15 @@ export class ApiClientService {
         catchError(err => throwError(() => this.normalizeHttpError(err)))
       );
   }
+  patch<T>(path: string, body?: any, params?: Record<string, any>): Observable<T> {
+    const p = this.buildParams(params);
+    return this.http
+      .patch<Envelope<T>>(this.buildUrl(path), body ?? {}, { params: p })
+      .pipe(
+        map(this.unwrap),
+        catchError(err => throwError(() => this.normalizeHttpError(err)))
+      );
+  }
   delete<T>(path: string, params?: Record<string, any>): Observable<T> {
     const p = this.buildParams(params);
     return this.http

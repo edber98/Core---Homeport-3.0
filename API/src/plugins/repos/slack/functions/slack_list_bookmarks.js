@@ -20,6 +20,6 @@ module.exports = {
         link: b.link || "",
         type: b.type || ""
       }))
-    };
+    , totalCount: bookmarks.length };
   }
 };

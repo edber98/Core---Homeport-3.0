@@ -14,6 +14,6 @@ module.exports = {
       isClosed: status.isClosed
     }));
 
-    return { ok: true, statuses };
+    return { ok: true, statuses , totalCount: statuses.length };
   }
 };

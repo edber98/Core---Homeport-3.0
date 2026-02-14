@@ -18,6 +18,6 @@ module.exports = {
       else if (r.object === "database") { title = r.title?.map(t => t.plain_text).join("") || ""; }
       return { id: r.id, object: r.object, title, url: r.url };
     });
-    return { ok: true, results };
+    return { ok: true, results , totalCount: results.length };
   }
 };

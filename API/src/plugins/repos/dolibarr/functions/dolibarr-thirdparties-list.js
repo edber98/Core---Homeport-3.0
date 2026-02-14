@@ -19,6 +19,6 @@ module.exports = {
     const res = await utils.dolibarrRequest(opts, path);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = Array.isArray(res.data) ? res.data : [];
-    return { ok: true, items, totalCount: items.length };
+    return { ok: true, items, totalCount: res.totalRecords || items.length };
   }
 };

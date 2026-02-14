@@ -20,6 +20,6 @@ module.exports = {
       active: p.active
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, prices, hasMore };
+    return { ok: true, prices, hasMore , totalCount: prices.length };
   }
 };

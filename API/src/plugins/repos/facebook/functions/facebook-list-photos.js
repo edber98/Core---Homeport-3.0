@@ -22,6 +22,6 @@ module.exports = {
       source: p.source,
       createdTime: p.created_time
     }));
-    return { ok: true, photos };
+    return { ok: true, photos , totalCount: photos.length };
   }
 };

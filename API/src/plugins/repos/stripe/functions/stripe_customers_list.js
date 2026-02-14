@@ -17,6 +17,6 @@ module.exports = {
       phone: c.phone, created: c.created, currency: c.currency
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, customers, hasMore };
+    return { ok: true, customers, hasMore , totalCount: customers.length };
   }
 };

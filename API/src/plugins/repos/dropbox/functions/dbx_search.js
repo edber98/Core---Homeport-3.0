@@ -13,6 +13,6 @@ module.exports = {
     const res = await utils.dbxRequest(opts, "/files/search_v2", body);
     if (!res.ok) return res;
     const files = (res.data.matches || []).map(m => utils.mapEntry(m.metadata?.metadata || m.metadata || m));
-    return { ok: true, files };
+    return { ok: true, files , totalCount: files.length };
   }
 };

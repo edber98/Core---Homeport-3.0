@@ -14,6 +14,6 @@ module.exports = {
       url: l.url || "", name: l.name || "", path: l.path_lower || "",
       visibility: l.link_permissions?.resolved_visibility?.[".tag"] || ""
     }));
-    return { ok: true, links };
+    return { ok: true, links , totalCount: links.length };
   }
 };

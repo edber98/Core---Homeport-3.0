@@ -14,6 +14,6 @@ module.exports = {
 
     const results = (res.data && res.data.categories) || [];
     const categories = results.map(r => ({ id: String(r.id || ""), label: r.label || "", group_label: r.group_label || "" }));
-    return { ok: true, categories };
+    return { ok: true, categories , totalCount: categories.length };
   }
 };

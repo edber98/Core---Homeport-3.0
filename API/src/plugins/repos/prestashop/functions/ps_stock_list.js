@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.stock_availables) || [];
     const first = items[0] || {};
-    return { ok: true, id: String(first.id || ""), id_product: String(first.id_product || ""), quantity: first.quantity || 0 };
+    return { ok: true, id: String(first.id || ""), id_product: String(first.id_product || ""), quantity: first.quantity || 0, totalCount: items.length };
   }
 };

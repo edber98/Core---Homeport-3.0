@@ -10,6 +10,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const rawTables = (res.data && res.data.tables) || [];
     const tables = rawTables.map(t => ({ id: t.id, name: t.name, description: t.description || "", primaryFieldId: t.primaryFieldId || "" }));
-    return { ok: true, tables };
+    return { ok: true, tables , totalCount: tables.length };
   }
 };

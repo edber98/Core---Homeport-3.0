@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.inventory_levels) || [];
     const first = items[0] || {};
-    return { ok: true, inventory_item_id: String(first.inventory_item_id || ""), location_id: String(first.location_id || ""), available: first.available || 0 };
+    return { ok: true, inventory_item_id: String(first.inventory_item_id || ""), location_id: String(first.location_id || ""), available: first.available || 0, totalCount: items.length };
   }
 };

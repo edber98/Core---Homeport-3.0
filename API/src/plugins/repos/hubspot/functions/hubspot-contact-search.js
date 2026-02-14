@@ -18,6 +18,6 @@ module.exports = {
 
     const results = (res.data && res.data.results) || [];
     const contacts = results.map(r => ({ id: r.id, ...r.properties, createdate: r.createdAt }));
-    return { ok: true, contacts };
+    return { ok: true, contacts , totalCount: contacts.length };
   }
 };

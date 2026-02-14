@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.categories) || [];
     const categories = items.map(c => ({ id: String(c.id), name: utils.psLangValue(c.name), active: String(c.active || ""), id_parent: String(c.id_parent || "") }));
-    return { ok: true, categories };
+    return { ok: true, categories , totalCount: categories.length };
   }
 };

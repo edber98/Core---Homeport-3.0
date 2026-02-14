@@ -20,6 +20,6 @@ module.exports = {
       createdTime: l.created_time,
       fields: l.field_data || []
     }));
-    return { ok: true, leads };
+    return { ok: true, leads , totalCount: leads.length };
   }
 };

@@ -22,6 +22,6 @@ module.exports = {
       from: p.from?.name,
       type: p.type
     }));
-    return { ok: true, posts };
+    return { ok: true, posts , totalCount: posts.length };
   }
 };

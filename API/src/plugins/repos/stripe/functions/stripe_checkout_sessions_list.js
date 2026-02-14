@@ -16,6 +16,6 @@ module.exports = {
       customer: s.customer, amount_total: s.amount_total, currency: s.currency
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, sessions, hasMore };
+    return { ok: true, sessions, hasMore , totalCount: sessions.length };
   }
 };

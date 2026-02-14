@@ -10,6 +10,7 @@ const DEFAULT_COMPANY = process.env.DEFAULT_COMPANY || 'ACME';
 const DEFAULT_ADMIN_EMAIL = process.env.DEFAULT_ADMIN_EMAIL || 'admin@acme.test';
 const DEFAULT_ADMIN_PASSWORD = process.env.DEFAULT_ADMIN_PASSWORD || 'admin';
 const DEFAULT_WORKSPACE_NAME = process.env.DEFAULT_WORKSPACE_NAME || 'Default';
+const SECOND_COMPANY = process.env.SECOND_COMPANY || 'BETA';
 
 module.exports = {
   PORT: parseInt(process.env.PORT || '5055', 10),
@@ -17,13 +18,16 @@ module.exports = {
   HMAC_SECRET: process.env.HMAC_SECRET || 'dev-secret-change-me',
   TOKEN_TTL_SEC: parseInt(process.env.TOKEN_TTL_SEC || '86400', 10),
   SEED: readBool('SEED', true),
-  // If SEED_COMPANIES is not set, use DEFAULT_COMPANY
-  SEED_COMPANIES: (process.env.SEED_COMPANIES || DEFAULT_COMPANY).split(',').map(s=>s.trim()).filter(Boolean),
-  // Seed users: by default only the admin from env
+  // If SEED_COMPANIES is not set, use DEFAULT_COMPANY + SECOND_COMPANY
+  SEED_COMPANIES: (process.env.SEED_COMPANIES || `${DEFAULT_COMPANY},${SECOND_COMPANY}`).split(',').map(s=>s.trim()).filter(Boolean),
+  // Seed users: admin + alice for ACME, demo for BETA
   SEED_USERS: [
     { email: DEFAULT_ADMIN_EMAIL, password: DEFAULT_ADMIN_PASSWORD, role: 'admin', company: DEFAULT_COMPANY },
+    { email: 'alice@acme.test', password: 'password', role: 'user', company: DEFAULT_COMPANY },
+    { email: 'demo@beta.test', password: 'demo', role: 'admin', company: SECOND_COMPANY },
   ],
   DEFAULT_COMPANY,
+  SECOND_COMPANY,
   DEFAULT_ADMIN_EMAIL,
   DEFAULT_ADMIN_PASSWORD,
   DEFAULT_WORKSPACE_NAME,

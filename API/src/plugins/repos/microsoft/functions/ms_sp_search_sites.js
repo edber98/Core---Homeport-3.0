@@ -16,6 +16,6 @@ module.exports = {
       webUrl: s.webUrl || "",
       description: s.description || ""
     }));
-    return { ok: true, sites };
+    return { ok: true, sites , totalCount: sites.length };
   }
 };

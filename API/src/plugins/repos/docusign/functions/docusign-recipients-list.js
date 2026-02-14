@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const signers = (res.data && res.data.signers) || [];
     const recipients = signers.map(r => ({ recipientId: r.recipientId, name: r.name, email: r.email, status: r.status, routingOrder: r.routingOrder }));
-    return { ok: true, recipients };
+    return { ok: true, recipients , totalCount: recipients.length };
   }
 };

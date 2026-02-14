@@ -20,6 +20,6 @@ module.exports = {
         time: r.time || "",
         complete_ts: r.complete_ts || ""
       }))
-    };
+    , totalCount: reminders.length };
   }
 };

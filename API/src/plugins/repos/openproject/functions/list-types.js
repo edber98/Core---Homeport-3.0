@@ -14,6 +14,6 @@ module.exports = {
       description: type.description || ""
     }));
 
-    return { ok: true, types };
+    return { ok: true, types , totalCount: types.length };
   }
 };

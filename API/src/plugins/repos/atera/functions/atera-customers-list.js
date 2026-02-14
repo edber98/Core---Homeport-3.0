@@ -18,6 +18,6 @@ module.exports = {
       page: res.data?.page || 1,
       itemsInPage: res.data?.itemsInPage || 0,
       totalPages: res.data?.totalPages || 0
-    };
+    , totalCount: res.data?.totalItemCount || (res.data?.items || []).length };
   }
 };

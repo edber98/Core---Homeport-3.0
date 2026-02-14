@@ -14,6 +14,6 @@ module.exports = {
     const results = Array.isArray(res.data) ? res.data : [];
     const stages = results.map(r => ({ id: r.id, name: r.name, pipeline_id: r.pipeline_id, order_nr: r.order_nr, active_flag: r.active_flag }));
     const hasMore = res.pagination?.more_items_in_collection ? "true" : "false";
-    return { ok: true, hasMore, stages };
+    return { ok: true, hasMore, stages , totalCount: stages.length };
   }
 };

@@ -19,6 +19,6 @@ module.exports = {
       created: s.created, cancel_at_period_end: s.cancel_at_period_end
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, subscriptions, hasMore };
+    return { ok: true, subscriptions, hasMore , totalCount: subscriptions.length };
   }
 };

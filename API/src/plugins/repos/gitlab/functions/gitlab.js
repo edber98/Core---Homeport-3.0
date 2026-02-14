@@ -23,7 +23,7 @@ module.exports = {
       web_url: r.web_url, created_at: r.created_at, last_activity_at: r.last_activity_at,
       star_count: r.star_count, forks_count: r.forks_count
     }));
-    return { ok: true, projects, totalCount: projects.length };
+    return { ok: true, projects, totalCount: res.pagination?.total || projects.length };
   },
 
   async gitlab_project_create(node, msg, inputs, opts) {
@@ -84,7 +84,7 @@ module.exports = {
       created_at: r.created_at, updated_at: r.updated_at, closed_at: r.closed_at,
       author: r.author?.name, assignee: r.assignee?.name
     }));
-    return { ok: true, issues, totalCount: issues.length };
+    return { ok: true, issues, totalCount: res.pagination?.total || issues.length };
   },
 
   async gitlab_issue_note_create(node, msg, inputs, opts) {
@@ -132,7 +132,7 @@ module.exports = {
       created_at: r.created_at, updated_at: r.updated_at, merged_at: r.merged_at,
       author: r.author?.name
     }));
-    return { ok: true, merge_requests, totalCount: merge_requests.length };
+    return { ok: true, merge_requests, totalCount: res.pagination?.total || merge_requests.length };
   },
 
   async gitlab_mr_merge(node, msg, inputs, opts) {
@@ -154,7 +154,7 @@ module.exports = {
       id: r.id, iid: r.iid, status: r.status, ref: r.ref, sha: r.sha,
       source: r.source, created_at: r.created_at, updated_at: r.updated_at, web_url: r.web_url
     }));
-    return { ok: true, pipelines, totalCount: pipelines.length };
+    return { ok: true, pipelines, totalCount: res.pagination?.total || pipelines.length };
   },
 
   async gitlab_pipeline_get(node, msg, inputs, opts) {
@@ -192,7 +192,7 @@ module.exports = {
       commit_id: r.commit?.short_id, commit_title: r.commit?.title,
       commit_author: r.commit?.author_name, commit_date: r.commit?.created_at
     }));
-    return { ok: true, branches, totalCount: branches.length };
+    return { ok: true, branches, totalCount: res.pagination?.total || branches.length };
   },
 
   async gitlab_branch_create(node, msg, inputs, opts) {
@@ -222,7 +222,7 @@ module.exports = {
       author_name: r.author_name, author_email: r.author_email,
       authored_date: r.authored_date, committed_date: r.committed_date, web_url: r.web_url
     }));
-    return { ok: true, commits, totalCount: commits.length };
+    return { ok: true, commits, totalCount: res.pagination?.total || commits.length };
   },
 
   async gitlab_commit_get(node, msg, inputs, opts) {
@@ -243,7 +243,7 @@ module.exports = {
       tag_name: r.tag_name, name: r.name, description: r.description,
       created_at: r.created_at, released_at: r.released_at
     }));
-    return { ok: true, releases, totalCount: releases.length };
+    return { ok: true, releases, totalCount: res.pagination?.total || releases.length };
   },
 
   async gitlab_release_create(node, msg, inputs, opts) {
@@ -273,7 +273,7 @@ module.exports = {
       id: r.id, username: r.username, name: r.name, state: r.state,
       avatar_url: r.avatar_url, web_url: r.web_url
     }));
-    return { ok: true, users, totalCount: users.length };
+    return { ok: true, users, totalCount: res.pagination?.total || users.length };
   },
 
   async gitlab_groups_list(node, msg, inputs, opts) {
@@ -286,7 +286,7 @@ module.exports = {
       id: r.id, name: r.name, path: r.path, description: r.description,
       visibility: r.visibility, web_url: r.web_url, created_at: r.created_at
     }));
-    return { ok: true, groups, totalCount: groups.length };
+    return { ok: true, groups, totalCount: res.pagination?.total || groups.length };
   },
 
   async gitlab_group_get(node, msg, inputs, opts) {

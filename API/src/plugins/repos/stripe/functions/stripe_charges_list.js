@@ -17,6 +17,6 @@ module.exports = {
       customer: c.customer, description: c.description, created: c.created
     }));
     const hasMore = !!(res.data && res.data.has_more);
-    return { ok: true, charges, hasMore };
+    return { ok: true, charges, hasMore , totalCount: charges.length };
   }
 };

@@ -19,6 +19,6 @@ module.exports = {
       createdAt: m.created_at,
       type: m.type
     }));
-    return { ok: true, models };
+    return { ok: true, models , totalCount: models.length };
   }
 };

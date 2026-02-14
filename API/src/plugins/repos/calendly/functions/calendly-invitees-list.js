@@ -15,6 +15,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const items = (res.data && res.data.collection) || [];
     const invitees = items.map(r => ({ uri: r.uri, name: r.name, email: r.email, status: r.status, createdAt: r.created_at }));
-    return { ok: true, invitees };
+    return { ok: true, invitees , totalCount: invitees.length };
   }
 };

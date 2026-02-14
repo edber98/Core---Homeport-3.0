@@ -16,6 +16,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const rawRecords = (res.data && res.data.records) || [];
     const records = rawRecords.map(r => ({ id: r.id, fields: JSON.stringify(r.fields || {}), createdTime: r.createdTime }));
-    return { ok: true, records };
+    return { ok: true, records , totalCount: records.length };
   }
 };

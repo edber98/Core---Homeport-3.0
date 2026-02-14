@@ -16,6 +16,6 @@ module.exports = {
       actor: l.actor,
       createdAt: l.created?.time
     }));
-    return { ok: true, reactions, total: reactions.length };
+    return { ok: true, reactions, total: reactions.length , totalCount: reactions.length };
   }
 };

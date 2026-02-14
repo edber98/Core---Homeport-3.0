@@ -15,6 +15,6 @@ module.exports = {
 
     const results = (res.data && res.data.customers) || [];
     const customers = results.map(r => ({ id: String(r.source_id || r.id || ""), name: r.name || "", email: (r.emails && r.emails[0] && r.emails[0].email) || "", phone: r.phone || "", country: r.country_alpha2 || "" }));
-    return { ok: true, customers };
+    return { ok: true, customers , totalCount: customers.length };
   }
 };

@@ -11,6 +11,6 @@ module.exports = {
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
     const boards = res.data.boards || [];
     const columns = (boards[0]?.columns || []).map(r => ({ id: r.id, title: r.title, type: r.type, settings_str: r.settings_str }));
-    return { ok: true, id: columns[0]?.id, title: columns[0]?.title, type: columns[0]?.type, settings_str: columns[0]?.settings_str };
+    return { ok: true, id: columns[0]?.id, title: columns[0]?.title, type: columns[0]?.type, settings_str: columns[0]?.settings_str, totalCount: columns.length };
   }
 };

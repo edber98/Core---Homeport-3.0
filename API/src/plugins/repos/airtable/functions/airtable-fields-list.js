@@ -14,6 +14,6 @@ module.exports = {
     const t = tables.find(t => t.id === tableIdOrName || t.name === tableIdOrName);
     if (!t) return { ok: false, error: "Table not found." };
     const fields = (t.fields || []).map(f => ({ id: f.id, name: f.name, type: f.type, description: f.description || "" }));
-    return { ok: true, fields };
+    return { ok: true, fields , totalCount: fields.length };
   }
 };

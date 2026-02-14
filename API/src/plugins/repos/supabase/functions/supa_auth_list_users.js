@@ -13,6 +13,6 @@ module.exports = {
     const users = list.map(u => ({
       id: u.id || "", email: u.email || "", role: u.role || "", createdAt: u.created_at || ""
     }));
-    return { ok: true, users };
+    return { ok: true, users , totalCount: users.length };
   }
 };

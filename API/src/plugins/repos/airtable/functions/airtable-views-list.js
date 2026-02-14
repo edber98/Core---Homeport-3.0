@@ -14,6 +14,6 @@ module.exports = {
     const t = tables.find(t => t.id === tableIdOrName || t.name === tableIdOrName);
     if (!t) return { ok: false, error: "Table not found." };
     const views = (t.views || []).map(v => ({ id: v.id, name: v.name, type: v.type || "" }));
-    return { ok: true, views };
+    return { ok: true, views , totalCount: views.length };
   }
 };

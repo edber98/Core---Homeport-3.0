@@ -24,6 +24,6 @@ module.exports = {
     });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     const files = utils.parseWebdavMultistatus(res.data);
-    return { ok: true, files };
+    return { ok: true, files , totalCount: files.length };
   }
 };

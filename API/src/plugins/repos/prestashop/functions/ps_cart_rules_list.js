@@ -12,6 +12,6 @@ module.exports = {
     if (!res.ok) return res;
     const items = (res.data && res.data.cart_rules) || [];
     const cart_rules = items.map(r => ({ id: String(r.id), name: utils.psLangValue(r.name), code: r.code || "", reduction_percent: String(r.reduction_percent || ""), reduction_amount: String(r.reduction_amount || ""), active: String(r.active || "") }));
-    return { ok: true, cart_rules };
+    return { ok: true, cart_rules , totalCount: cart_rules.length };
   }
 };

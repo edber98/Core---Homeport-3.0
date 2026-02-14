@@ -14,6 +14,6 @@ module.exports = {
 
     const items = (res.data && res.data.items) || [];
     const persons = items.map(i => { const r = i.item || {}; return { id: r.id, name: r.name, email: r.primary_email, phone: r.primary_phone, org_id: r.organization?.id, add_time: "" }; });
-    return { ok: true, persons };
+    return { ok: true, persons , totalCount: persons.length };
   }
 };

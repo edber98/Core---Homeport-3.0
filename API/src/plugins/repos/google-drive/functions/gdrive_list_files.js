@@ -14,6 +14,6 @@ module.exports = {
     log('Récupération de la liste...');
     const res = await utils.googleRequest(opts, `${utils.DRIVE_API}/files?${params}`);
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
-    return { ok: true, files: res.data.files || [] };
+    return { ok: true, files: res.data.files || [] , totalCount: files.length };
   }
 };

@@ -15,6 +15,6 @@ module.exports = {
       rowCount: s.properties?.gridProperties?.rowCount || 0,
       columnCount: s.properties?.gridProperties?.columnCount || 0
     }));
-    return { ok: true, sheets };
+    return { ok: true, sheets , totalCount: sheets.length };
   }
 };

@@ -21,6 +21,6 @@ module.exports = {
       from: c.from?.name,
       createdTime: c.created_time
     }));
-    return { ok: true, comments };
+    return { ok: true, comments , totalCount: comments.length };
   }
 };

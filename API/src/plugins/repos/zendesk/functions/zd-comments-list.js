@@ -13,6 +13,6 @@ module.exports = {
 
     const results = (res.data && res.data.comments) || [];
     const comments = results.map(r => ({ id: String(r.id || ""), body: r.body || "", authorId: String(r.author_id || ""), public: String(r.public || false), createdAt: r.created_at || "" }));
-    return { ok: true, comments };
+    return { ok: true, comments , totalCount: comments.length };
   }
 };
