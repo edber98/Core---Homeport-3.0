@@ -5,7 +5,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { AiMessage, AiMessageSegment, AiToolCall, AiService } from './ai.service';
+import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService } from './ai.service';
 import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
 
 const TOOL_LABELS: Record<string, string> = {
@@ -182,6 +182,19 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
           </ng-template>
         </ng-template>
 
+        <!-- Answered question display -->
+        <div class="answered-question" *ngIf="msg.question && msg.role === 'assistant'">
+          <div class="aq-text">{{ msg.question.text }}</div>
+          <div class="aq-options" *ngIf="msg.question.options?.length">
+            <span class="aq-chip"
+              *ngFor="let opt of msg.question.options"
+              [class.selected]="isAnsweredOption(opt)">
+              <span nz-icon *ngIf="isAnsweredOption(opt)" nzType="check" nzTheme="outline" class="aq-check"></span>
+              {{ opt.label }}
+            </span>
+          </div>
+        </div>
+
         <!-- Tool result dialog -->
         <node-exec-result-dialog
           *ngIf="selectedToolResult"
@@ -207,7 +220,11 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.5; max-width: 85%; }
+    .content ::ng-deep table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+    .content ::ng-deep th, .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
+    .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
+    .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
     .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; }
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
@@ -232,6 +249,12 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
     .popover-label { font-weight: 600; font-size: 12px; color: #666; margin-bottom: 4px; }
     .popover-json { font-size: 11px; background: #f5f5f5; padding: 6px 8px; border-radius: 4px; margin: 0; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
     .error-text { color: #ff4d4f; }
+    .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
+    .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
+    .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
+    .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
+    .aq-chip.selected { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; font-weight: 500; }
+    .aq-check { font-size: 10px; }
   `]
 })
 export class AiMessageComponent {
@@ -348,6 +371,27 @@ export class AiMessageComponent {
     if (tc.name === 'get_templates' && tc.args.query) return `"${tc.args.query}"`;
     if (tc.name === 'set_node_args' && tc.args.nodeId) return tc.args.nodeId.slice(-8);
     return '';
+  }
+
+  /** Check if an option was the answer selected by the user (look at next user message) */
+  isAnsweredOption(opt: AiQuestionOption): boolean {
+    const msgs = this.ai.messages();
+    const idx = msgs.indexOf(this.msg);
+    if (idx < 0) return false;
+    // Find next user message after this assistant message
+    for (let i = idx + 1; i < msgs.length; i++) {
+      if (msgs[i].role === 'user') {
+        const ans = msgs[i].answer;
+        if (ans?.value) {
+          // Single choice: value.value or value.label
+          if (ans.value.value === opt.value || ans.value.label === opt.label) return true;
+          // Multi choice: value.values array
+          if (ans.value.values?.includes(opt.value)) return true;
+        }
+        break;
+      }
+    }
+    return false;
   }
 
   truncateJson(val: any): string {

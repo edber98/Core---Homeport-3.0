@@ -17,7 +17,7 @@ async function* streamAnthropic(messages, tools, config) {
   }
 
   const body = {
-    model: config.model || 'claude-sonnet-4-5-20250929',
+    model: config.model || 'claude-sonnet-4-5-20250929',  // Latest Claude Sonnet
     max_tokens: config.maxTokens || 4096,
     messages: formatMessages(filtered),
     stream: true,

@@ -137,11 +137,16 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
   const tools = buildToolSet(mode, modeExecutors);
 
   // 4. Create LLM client (allow agent override)
+  const env = require('../config/env');
   const llmConfig = { ...context.llmConfig };
   if (agentOverrides?.llmProvider) {
     llmConfig.provider = agentOverrides.llmProvider;
-    if (agentOverrides.llmProvider === 'anthropic') {
-      llmConfig.apiKey = process.env.ANTHROPIC_API_KEY || llmConfig.apiKey;
+    // Resolve correct API key for overridden provider
+    const p = agentOverrides.llmProvider.toLowerCase();
+    if (p === 'anthropic' || p === 'claude') {
+      llmConfig.apiKey = env.ANTHROPIC_API_KEY;
+    } else {
+      llmConfig.apiKey = env.OPENAI_API_KEY;
     }
   }
   if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
@@ -161,6 +166,7 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
   while (loopCount < MAX_TOOL_LOOPS) {
     loopCount++;
     console.log(`[agent] loop iteration ${loopCount}/${MAX_TOOL_LOOPS}`);
+    yield { type: 'thinking', iteration: loopCount };
     const stream = llm.stream(conversation, tools);
     const pendingToolCalls = [];
     let assistantText = '';
@@ -251,7 +257,10 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
       }
       const askResult = toolResults.find(r => r.id === askUserCall.id);
       if (askResult?.result) {
-        yield { type: 'question', ...askResult.result };
+        const qEvent = { type: 'question', ...askResult.result };
+        // Propagate batch questions if present
+        if (askResult.result.questions) qEvent.questions = askResult.result.questions;
+        yield qEvent;
       }
       yield { type: 'done', usage: null };
       return;

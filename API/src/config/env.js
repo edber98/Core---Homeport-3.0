@@ -49,11 +49,24 @@ module.exports = {
   // Webhook base URL for trigger system (used to generate webhook URLs)
   WEBHOOK_BASE_URL: process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
 
-  // AI / LLM
-  AI_PROVIDER: process.env.AI_PROVIDER || 'openai',
-  AI_MODEL: process.env.AI_MODEL || 'gpt-4o',
-  AI_API_KEY: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '',
+  // AI / LLM — auto-detect: if both keys exist, prefer Anthropic
+  OPENAI_API_KEY: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '',
+  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-5',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
+  ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929',
+  get AI_PROVIDER() {
+    if (process.env.AI_PROVIDER) return process.env.AI_PROVIDER;
+    if (this.ANTHROPIC_API_KEY) return 'anthropic';
+    return 'openai';
+  },
+  get AI_MODEL() {
+    if (this.AI_PROVIDER === 'anthropic' || this.AI_PROVIDER === 'claude') return this.ANTHROPIC_MODEL;
+    return this.OPENAI_MODEL;
+  },
+  get AI_API_KEY() {
+    if (this.AI_PROVIDER === 'anthropic' || this.AI_PROVIDER === 'claude') return this.ANTHROPIC_API_KEY;
+    return this.OPENAI_API_KEY;
+  },
   AI_TEMPERATURE: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
-  AI_MAX_TOKENS: parseInt(process.env.AI_MAX_TOKENS || '4096', 10),
+  AI_MAX_TOKENS: parseInt(process.env.AI_MAX_TOKENS || '16384', 10),
 };

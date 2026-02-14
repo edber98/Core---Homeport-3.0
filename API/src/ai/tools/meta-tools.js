@@ -57,11 +57,11 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'ask_user',
-    description: 'Pose une question structurée à l\'utilisateur avec des choix ou en texte libre. Utilise quand tu as besoin de clarification.',
+    description: 'Pose une question structurée avec des CHOIX CONCRETS (boutons cliquables). UNIQUEMENT pour des choix précis entre options identifiées (ex: quel provider, quel canal, quelle action). NE PAS utiliser pour des questions ouvertes ou conversationnelles — pose-les directement dans ton message texte. Pour poser PLUSIEURS questions d\'un coup (QCM), utilise le champ `questions`.',
     parameters: {
       type: 'object',
       properties: {
-        text: { type: 'string', description: 'La question à poser' },
+        text: { type: 'string', description: 'La question à poser (mode simple, une seule question)' },
         questionType: { type: 'string', enum: ['single', 'multi', 'text'], description: 'Type: single (un seul choix), multi (plusieurs choix), text (réponse libre)' },
         options: {
           type: 'array',
@@ -76,8 +76,32 @@ const META_TOOL_DEFINITIONS = [
           },
           description: 'Options de choix (pour single/multi)',
         },
+        questions: {
+          type: 'array',
+          description: 'Mode batch : plusieurs questions à poser en même temps. Chaque question a son propre type et options.',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', description: 'Identifiant unique de la question (ex: q1, q2)' },
+              text: { type: 'string', description: 'Texte de la question' },
+              questionType: { type: 'string', enum: ['single', 'multi', 'text'], description: 'Type de réponse attendue' },
+              options: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    label: { type: 'string' },
+                    value: { type: 'string' },
+                    description: { type: 'string' },
+                  },
+                  required: ['label', 'value'],
+                },
+              },
+            },
+            required: ['id', 'text', 'questionType'],
+          },
+        },
       },
-      required: ['text', 'questionType'],
     },
   },
   {
@@ -232,6 +256,14 @@ async function executeMetaTool(name, input, ctx) {
 
     case 'ask_user': {
       // This is handled specially by agent-runner: the result IS the question
+      if (input.questions?.length) {
+        // Batch mode: multiple questions
+        return {
+          text: input.text || 'Veuillez répondre aux questions suivantes :',
+          questionType: 'batch',
+          questions: input.questions,
+        };
+      }
       return {
         text: input.text,
         questionType: input.questionType || 'text',
@@ -297,15 +329,15 @@ async function executeMetaTool(name, input, ctx) {
         userId: ctx.userId,
         mode: newMode || 'chat',
         title: newTitle || 'Suite de conversation',
-        agentId: agentId || undefined,
+        agentId: agentId || ctx._sourceThreadAgentId || undefined,
       };
       if (flowId) threadData.flowId = flowId;
       if (formId) threadData.metadata = { formId };
       const newThread = await AiThread.create(threadData);
-      // Add the compact summary as the first system message
+      // Add the compact summary as a system context message
       await AiMessage.create({
         threadId: newThread._id,
-        role: 'user',
+        role: 'system',
         content: `[Contexte transféré depuis une conversation précédente]\n\n${summary}`,
       });
       return {

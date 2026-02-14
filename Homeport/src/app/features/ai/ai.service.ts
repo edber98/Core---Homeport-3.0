@@ -37,10 +37,18 @@ export interface AiQuestionOption {
   description?: string;
 }
 
-export interface AiQuestion {
+export interface AiQuestionItem {
+  id: string;
   text: string;
   questionType: 'single' | 'multi' | 'text';
   options?: AiQuestionOption[];
+}
+
+export interface AiQuestion {
+  text: string;
+  questionType: 'single' | 'multi' | 'text' | 'batch';
+  options?: AiQuestionOption[];
+  questions?: AiQuestionItem[];
 }
 
 /** Actions that the AI can trigger on the frontend */
@@ -179,6 +187,18 @@ export class AiService {
     return this.api.delete<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() });
   }
 
+  regenerateTitle(threadId: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/threads/${threadId}/regenerate-title`, {}, { workspaceId: this.wsId() });
+  }
+
+  duplicateThread(threadId: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/threads/${threadId}/duplicate`, {}, { workspaceId: this.wsId() });
+  }
+
+  updateThread(threadId: string, data: { title?: string; agentId?: string; mode?: string; metadata?: any }): Observable<any> {
+    return this.api.put<any>(`/api/ai/threads/${threadId}`, data, { workspaceId: this.wsId() });
+  }
+
   // ── Send message + SSE stream ──
   sendMessage(content: string, answer?: any, attachments?: any[]): { events$: Observable<AiStreamEvent>; stop: () => void } {
     const thread = this.currentThread();
@@ -307,6 +327,7 @@ export class AiService {
                 text: (event as any).text,
                 questionType: (event as any).questionType || 'text',
                 options: (event as any).options,
+                questions: (event as any).questions,
               });
             }
             if ((event as any).type === 'thread.title') {
@@ -376,7 +397,14 @@ export class AiService {
     const q = this.pendingQuestion();
     if (!q) return;
     this.pendingQuestion.set(null);
-    return this.sendMessage('', { questionText: q.text, value });
+    // Build visible content from answer
+    let content = '';
+    if (value.text) content = value.text;
+    else if (value.label) content = value.label;
+    else if (value.values) content = value.values.join(', ');
+    else if (value.batchAnswers) content = Object.values(value.batchAnswers).join(', ');
+    else if (value.value) content = String(value.value);
+    return this.sendMessage(content, { questionText: q.text, value });
   }
 
   // ── Action answer (e.g. credential created) ──

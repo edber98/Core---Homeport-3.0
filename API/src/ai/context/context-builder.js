@@ -77,7 +77,7 @@ async function buildContext({ companyId, workspaceId, userId }) {
     llmConfig: {
       provider: env.AI_PROVIDER,
       model: env.AI_MODEL,
-      apiKey: env.AI_PROVIDER === 'anthropic' ? env.ANTHROPIC_API_KEY : env.AI_API_KEY,
+      apiKey: env.AI_API_KEY,
       temperature: env.AI_TEMPERATURE,
       maxTokens: env.AI_MAX_TOKENS,
     },

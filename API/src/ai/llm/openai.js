@@ -5,13 +5,17 @@ async function* streamOpenAI(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('OpenAI API key not configured');
 
+  const model = config.model || 'gpt-5';
+  // Some models (gpt-5, o-series) only support default temperature (1)
+  const noCustomTemp = /^(gpt-5|o[1-9])/.test(model);
   const body = {
-    model: config.model || 'gpt-4o',
+    model,
     messages,
     stream: true,
-    temperature: config.temperature ?? 0.7,
   };
-  if (config.maxTokens) body.max_tokens = config.maxTokens;
+  if (!noCustomTemp) body.temperature = config.temperature ?? 0.7;
+  // Newer OpenAI models use max_completion_tokens instead of max_tokens
+  if (config.maxTokens) body.max_completion_tokens = config.maxTokens;
   if (tools && tools.length) {
     body.tools = tools;
     // Force sequential tool calls — prevents LLM from hallucinating keys

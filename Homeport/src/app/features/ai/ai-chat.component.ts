@@ -58,7 +58,50 @@ interface StreamTool {
         </div>
       </ng-container>
 
-      <ai-message *ngFor="let msg of ai.messages()" [msg]="msg"></ai-message>
+      <ng-container *ngFor="let msg of ai.messages()">
+        <!-- System context message (transferred context) -->
+        <div class="system-msg" *ngIf="msg.role === 'system'">
+          <div class="system-context">
+            <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+            <span class="system-label">Contexte transféré</span>
+            <button nz-button nzType="text" nzSize="small" (click)="toggleExpanded(msg)">
+              {{ expandedMsgs.has(msg) ? 'Masquer' : 'Voir' }}
+            </button>
+          </div>
+          <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
+        </div>
+        <!-- Regular message -->
+        <ai-message *ngIf="msg.role !== 'system'" [msg]="msg"></ai-message>
+      </ng-container>
+
+      <!-- Waiting for first token / thinking between iterations -->
+      <div class="streaming-msg" *ngIf="ai.streaming() && !segments.length && !streamError">
+        <div class="ai-msg assistant">
+          <div class="avatar"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
+          <div class="body">
+            <div class="thinking-indicator" *ngIf="thinkingIteration > 1">
+              <span nz-icon nzType="loading" nzTheme="outline" class="thinking-spin"></span>
+              <span class="thinking-text">Réflexion en cours...</span>
+            </div>
+            <div class="typing-indicator" *ngIf="thinkingIteration <= 1">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stream error -->
+      <div class="streaming-msg" *ngIf="streamError">
+        <div class="ai-msg assistant">
+          <div class="avatar avatar-error"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
+          <div class="body">
+            <div class="content content-error">
+              <span nz-icon nzType="close-circle" nzTheme="fill" style="margin-right:6px"></span>
+              <strong>Erreur :</strong> {{ streamError }}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Streaming: interleaved text + tools -->
       <div class="streaming-msg" *ngIf="segments.length">
@@ -110,6 +153,11 @@ interface StreamTool {
                 </div>
               </div>
             </ng-container>
+            <!-- Thinking indicator between tool completion and next LLM response -->
+            <div class="thinking-inline" *ngIf="thinkingIteration > 1 && ai.streaming()">
+              <span nz-icon nzType="loading" nzTheme="outline" class="thinking-spin"></span>
+              <span class="thinking-text">Analyse...</span>
+            </div>
           </div>
         </div>
       </div>
@@ -151,9 +199,13 @@ interface StreamTool {
     .streaming-msg .content :host ::ng-deep p:last-child { margin: 0; }
     .streaming-msg .content :host ::ng-deep code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .streaming-msg .content :host ::ng-deep pre { background: #e8e8e8; padding: 8px; border-radius: 6px; overflow-x: auto; }
+    .streaming-msg .content ::ng-deep table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+    .streaming-msg .content ::ng-deep th, .streaming-msg .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
+    .streaming-msg .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
+    .streaming-msg .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
     .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; transition: opacity 0.3s ease, border-color 0.3s ease; max-width: 85%; }
-    .reasoning-block.reasoning-active { border-left-color: #722ed1; opacity: 0.7; animation: pulse-reason 2s ease-in-out infinite; }
-    .reasoning-block:not(.reasoning-active) { opacity: 0.5; }
+    .reasoning-block.reasoning-active { border-left-color: #722ed1; opacity: 0.9; animation: pulse-reason 2s ease-in-out infinite; }
+    .reasoning-block:not(.reasoning-active) { opacity: 0.85; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
     .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; }
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
@@ -162,7 +214,7 @@ interface StreamTool {
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     .reasoning-tools { display: flex; flex-wrap: wrap; gap: 4px; }
-    @keyframes pulse-reason { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.5; } }
+    @keyframes pulse-reason { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.75; } }
     .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
     .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
     .tag-icon { font-size: 11px; }
@@ -173,12 +225,31 @@ interface StreamTool {
     .popover-section:last-child { margin-bottom: 0; }
     .popover-label { font-weight: 600; font-size: 12px; color: #666; margin-bottom: 4px; }
     .popover-json { font-size: 11px; background: #f5f5f5; padding: 6px 8px; border-radius: 4px; margin: 0; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 10px 16px; background: #f5f5f5; border-radius: 12px 12px 12px 2px; max-width: 60px; }
+    .typing-indicator .dot { width: 7px; height: 7px; border-radius: 50%; background: #bbb; animation: typing-bounce 1.4s ease-in-out infinite; }
+    .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+    .thinking-indicator { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: #f5f5f5; border-radius: 12px 12px 12px 2px; max-width: 200px; }
+    .thinking-spin { font-size: 14px; color: #722ed1; }
+    .thinking-text { font-size: 12px; color: #999; }
+    .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
+    .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
+    .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
     .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
+    .system-msg { background: #f8f9fa; border-left: 3px solid #d9d9d9; padding: 8px 12px; font-size: 12px; margin: 8px 0; border-radius: 0 6px 6px 0; }
+    .system-context { display: flex; align-items: center; gap: 6px; color: #999; }
+    .system-label { font-weight: 500; }
+    .system-content { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
+    .system-content ::ng-deep p { margin: 0 0 4px; }
   `]
 })
 export class AiChatComponent {
   inputText = '';
   segments: StreamSegment[] = [];
+  streamError: string | null = null;
+  expandedMsgs = new Set<any>();
+  thinkingIteration = 0;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
 
   private stopFn?: () => void;
@@ -195,6 +266,8 @@ export class AiChatComponent {
     if (!text || this.ai.streaming()) return;
     this.inputText = '';
     this.segments = [];
+    this.streamError = null;
+    this.thinkingIteration = 0;
 
     const { events$, stop } = await this.ai.quickSend(text);
     this.stopFn = stop;
@@ -203,6 +276,8 @@ export class AiChatComponent {
 
   onAnswer(answer: any) {
     this.segments = [];
+    this.streamError = null;
+    this.thinkingIteration = 0;
     const result = this.ai.answerQuestion(answer);
     if (!result) return;
     const { events$, stop } = result;
@@ -223,8 +298,10 @@ export class AiChatComponent {
       },
       error: (err: any) => {
         console.error('[ai-chat] stream error:', err);
+        this.streamError = err?.message || 'Connexion échouée';
         this.stopFn = undefined;
         this.cdr.detectChanges();
+        this.scrollToBottom();
       },
       complete: () => {
         this.segments = [];
@@ -294,21 +371,30 @@ export class AiChatComponent {
         break;
       }
       case 'error': {
-        // Show error to user as a text segment
         const errMsg = (ev as any).message || 'Une erreur est survenue';
-        const errHtml = `<p style="color:#ff4d4f"><strong>Erreur :</strong> ${errMsg}</p>`;
-        const last = this.segments[this.segments.length - 1];
-        if (last && last.type === 'text') {
-          const raw = (last.rawText || '') + '\n\n**Erreur :** ' + errMsg;
-          this.segments = [...this.segments.slice(0, -1), { type: 'text', rawText: raw, html: this.renderMd(raw) } as StreamSegment];
+        if (this.segments.length) {
+          // Error during streaming — append to segments
+          const errHtml = `<p style="color:#ff4d4f"><strong>Erreur :</strong> ${errMsg}</p>`;
+          const last = this.segments[this.segments.length - 1];
+          if (last && last.type === 'text') {
+            const raw = (last.rawText || '') + '\n\n**Erreur :** ' + errMsg;
+            this.segments = [...this.segments.slice(0, -1), { type: 'text', rawText: raw, html: this.renderMd(raw) } as StreamSegment];
+          } else {
+            this.segments = [...this.segments, { type: 'text', rawText: '**Erreur :** ' + errMsg, html: errHtml } as StreamSegment];
+          }
         } else {
-          this.segments = [...this.segments, { type: 'text', rawText: '**Erreur :** ' + errMsg, html: errHtml } as StreamSegment];
+          // Error before any content — show red error indicator
+          this.streamError = errMsg;
         }
         break;
       }
       case 'done':
         // Clear segments immediately to avoid duplication with final message from messages signal
         this.segments = [];
+        this.thinkingIteration = 0;
+        break;
+      case 'thinking' as any:
+        this.thinkingIteration = (ev as any).iteration || 0;
         break;
       // Forward builder-relevant events (patch, snapshot, args, desc, form.update)
       case 'patch':
@@ -341,6 +427,11 @@ export class AiChatComponent {
   trackTool(i: number, t: StreamTool): string { return t.id; }
 
   isLastSegment(i: number): boolean { return i === this.segments.length - 1; }
+
+  toggleExpanded(msg: any) {
+    if (this.expandedMsgs.has(msg)) this.expandedMsgs.delete(msg);
+    else this.expandedMsgs.add(msg);
+  }
 
 
   toolLabel(name: string): string {

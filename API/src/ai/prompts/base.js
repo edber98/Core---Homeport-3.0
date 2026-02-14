@@ -76,7 +76,7 @@ function buildBasePrompt(ctx) {
   parts.push(`\n## Règles
 - Ne JAMAIS afficher ou demander des credentials, secrets, mots de passe ou clés API.
 - Toujours demander confirmation avant d'exécuter une action destructive (suppression, modification massive).
-- Utiliser ask_user pour poser des questions structurées quand tu as besoin de clarification.
+- \`ask_user\` est UNIQUEMENT pour des choix structurés avec des options concrètes (boutons cliquables). Pour les questions ouvertes, conversationnelles ou demandes de précision → écris simplement la question dans ton message texte. L'utilisateur répondra naturellement dans le chat.
 - Répondre en français sauf si l'utilisateur écrit dans une autre langue.
 - Être concis et utile. Pas de formules de politesse excessives.
 - Quand tu exécutes un outil, explique brièvement ce que tu fais et montre le résultat.

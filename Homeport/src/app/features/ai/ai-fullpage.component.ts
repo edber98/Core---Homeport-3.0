@@ -8,14 +8,18 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { AiService, AiThread, AiAvailableAgent } from './ai.service';
+import { ApiClientService } from '../../services/api-client.service';
+import { AccessControlService } from '../../services/access-control.service';
 import { AiChatComponent } from './ai-chat.component';
 import { AiSettingsComponent } from './ai-settings.component';
 
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
   template: `
     <div class="fp-layout">
       <!-- Sidebar -->
@@ -133,6 +137,70 @@ import { AiSettingsComponent } from './ai-settings.component';
                   {{ agentName(ai.currentThread()!.agentId!) }}
                 </span>
               </div>
+              <div class="chat-actions">
+                <button nz-button nzType="text" nzSize="small" (click)="regenerateTitle()"
+                  nz-tooltip nzTooltipTitle="Régénérer le titre" [nzLoading]="regeneratingTitle">
+                  <span nz-icon nzType="reload" nzTheme="outline"></span>
+                </button>
+                <button nz-button nzType="text" nzSize="small" (click)="duplicateThread()"
+                  nz-tooltip nzTooltipTitle="Dupliquer la conversation">
+                  <span nz-icon nzType="copy" nzTheme="outline"></span>
+                </button>
+                <button nz-button nzType="text" nzSize="small"
+                  nz-popover [nzPopoverContent]="settingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
+                  nz-tooltip nzTooltipTitle="Paramètres">
+                  <span nz-icon nzType="setting" nzTheme="outline"></span>
+                </button>
+              </div>
+
+              <ng-template #settingsPopover>
+                <div class="settings-popover">
+                  <div class="sp-field">
+                    <label>Titre</label>
+                    <input nz-input nzSize="small" [ngModel]="ai.currentThread()?.title" (ngModelChange)="updateThreadTitle($event)" />
+                  </div>
+                  <div class="sp-field">
+                    <label>Agent</label>
+                    <nz-select nzSize="small" style="width:100%"
+                      [ngModel]="ai.currentThread()?.agentId || 'general'"
+                      (ngModelChange)="updateThreadAgent($event)"
+                      nzShowSearch>
+                      <nz-option *ngFor="let a of allAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div class="sp-field">
+                    <label>Mode</label>
+                    <nz-select nzSize="small" style="width:100%"
+                      [ngModel]="ai.currentThread()?.mode"
+                      (ngModelChange)="updateThreadMode($event)">
+                      <nz-option nzValue="chat" nzLabel="Chat"></nz-option>
+                      <nz-option nzValue="workflow" nzLabel="Workflow"></nz-option>
+                      <nz-option nzValue="form" nzLabel="Formulaire"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div class="sp-divider"></div>
+                  <div class="sp-field">
+                    <label>Élément lié</label>
+                    <div class="sp-link" *ngIf="ai.currentThread()?.flowId || ai.currentThread()?.metadata?.formId">
+                      <a class="sp-link-text" (click)="openLinkedElement()">
+                        <span nz-icon nzType="link" nzTheme="outline"></span>
+                        {{ linkedElementLabel() || 'Élément lié' }}
+                      </a>
+                      <button nz-button nzType="text" nzSize="small" nzDanger (click)="unlinkElement()" nz-tooltip nzTooltipTitle="Dissocier">
+                        <span nz-icon nzType="disconnect" nzTheme="outline"></span>
+                      </button>
+                    </div>
+                    <div class="sp-no-link" *ngIf="!ai.currentThread()?.flowId && !ai.currentThread()?.metadata?.formId">
+                      <span class="sp-no-link-text">Aucun</span>
+                      <nz-select nzSize="small" nzPlaceHolder="Lier un workflow..." nzShowSearch nzAllowClear
+                        style="width:100%;margin-top:4px"
+                        (ngModelChange)="linkToFlow($event)" [ngModel]="null">
+                        <nz-option *ngFor="let f of recentFlows" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+                      </nz-select>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
             </div>
             <ai-chat class="fp-chat"></ai-chat>
           </ng-container>
@@ -192,6 +260,16 @@ import { AiSettingsComponent } from './ai-settings.component';
     .agent-badge { font-size: 11px; color: #722ed1; background: #f9f0ff; padding: 1px 8px; border-radius: 10px; }
     .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #1677ff; cursor: pointer; padding: 1px 6px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
     .linked-link:hover { background: rgba(22,119,255,0.1); }
+    .chat-actions { margin-left: auto; display: flex; gap: 2px; }
+    .settings-popover { width: 280px; }
+    .sp-field { margin-bottom: 10px; }
+    .sp-field:last-child { margin-bottom: 0; }
+    .sp-field label { display: block; font-size: 11px; color: #999; margin-bottom: 3px; text-transform: uppercase; font-weight: 500; }
+    .sp-divider { border-top: 1px solid #f0f0f0; margin: 8px 0; }
+    .sp-link { display: flex; align-items: center; gap: 4px; }
+    .sp-link-text { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; cursor: pointer; }
+    .sp-link-text:hover { text-decoration: underline; }
+    .sp-no-link-text { font-size: 12px; color: #999; }
     .fp-chat { flex: 1; min-height: 0; }
     .fp-settings { flex: 1; overflow-y: auto; }
 
@@ -206,13 +284,17 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
   threads: AiThread[] = [];
   systemAgents: AiAvailableAgent[] = [];
   customAgents: AiAvailableAgent[] = [];
+  allAgents: AiAvailableAgent[] = [];
   selectedAgentId = 'general';
   sidebarCollapsed = false;
   showSettings = false;
+  regeneratingTitle = false;
+  recentFlows: { id: string; name: string }[] = [];
 
   private refreshInterval?: any;
+  private titleDebounce?: any;
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {
+  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();
@@ -240,6 +322,9 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     this.loadThreads();
     this.loadAgents();
 
+    // Load recent flows for link management
+    this.loadRecentFlows();
+
     // Auto-refresh threads every 30s
     this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
@@ -262,6 +347,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     this.ai.loadAvailableAgents().subscribe({
       next: (res: any) => {
         const list = res?.data || res || [];
+        this.allAgents = list;
         this.systemAgents = list.filter((a: AiAvailableAgent) => a.type === 'system');
         this.customAgents = list.filter((a: AiAvailableAgent) => a.type === 'custom');
         this.selectedAgentId = this.ai.selectedAgentId() || 'general';
@@ -337,5 +423,119 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     if (found) return found.name;
     if (agentId.startsWith('provider:')) return agentId.slice('provider:'.length);
     return agentId;
+  }
+
+  regenerateTitle() {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.regeneratingTitle = true;
+    this.ai.regenerateTitle(thread.id || thread._id).subscribe({
+      next: (res: any) => {
+        const title = res?.data?.title || res?.title;
+        if (title) {
+          this.ai.currentThread.set({ ...thread, title });
+        }
+        this.regeneratingTitle = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.regeneratingTitle = false;
+        this.nzMsg.error('Impossible de régénérer le titre');
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  duplicateThread() {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.duplicateThread(thread.id || thread._id).subscribe({
+      next: async (res: any) => {
+        const newThread = res?.data || res;
+        if (newThread?.id || newThread?._id) {
+          this.nzMsg.success('Conversation dupliquée');
+          await this.ai.loadThread(newThread.id || newThread._id);
+          this.loadThreads();
+          this.cdr.detectChanges();
+        }
+      },
+      error: () => this.nzMsg.error('Impossible de dupliquer'),
+    });
+  }
+
+  updateThreadTitle(title: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    // Debounce title update
+    clearTimeout(this.titleDebounce);
+    this.titleDebounce = setTimeout(() => {
+      this.ai.updateThread(thread.id || thread._id, { title }).subscribe({
+        next: () => this.ai.currentThread.set({ ...thread, title }),
+      });
+    }, 500);
+  }
+
+  updateThreadAgent(agentId: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    const newAgentId = agentId === 'general' ? '' : agentId;
+    this.ai.updateThread(thread.id || thread._id, { agentId: newAgentId }).subscribe({
+      next: () => {
+        this.ai.currentThread.set({ ...thread, agentId: newAgentId || undefined });
+        this.nzMsg.success('Agent mis à jour');
+      },
+    });
+  }
+
+  loadRecentFlows() {
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    this.apiClient.get<any[]>('/api/flows', { workspaceId: wsId, limit: 20 }).subscribe({
+      next: (res: any) => {
+        const list = res?.data || res || [];
+        this.recentFlows = list.map((f: any) => ({ id: f.id || f._id, name: f.name || 'Sans nom' }));
+        this.cdr.detectChanges();
+      },
+      error: () => {},
+    });
+  }
+
+  unlinkElement() {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    // Clear flow/form link
+    this.ai.updateThread(thread.id || thread._id, { metadata: { formId: null, flowShortId: null, formShortId: null } }).subscribe({
+      next: () => {
+        const updated = { ...thread, flowId: undefined, metadata: { ...(thread.metadata || {}), formId: undefined, flowShortId: undefined, formShortId: undefined } };
+        this.ai.currentThread.set(updated);
+        this.nzMsg.success('Élément dissocié');
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  linkToFlow(flowId: string) {
+    if (!flowId) return;
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.updateThread(thread.id || thread._id, { mode: 'workflow', metadata: { flowShortId: flowId } }).subscribe({
+      next: (res: any) => {
+        const updated = res?.data || res;
+        if (updated) {
+          this.ai.currentThread.set(updated);
+          this.nzMsg.success('Workflow lié');
+          this.cdr.detectChanges();
+        }
+      },
+    });
+  }
+
+  updateThreadMode(mode: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.updateThread(thread.id || thread._id, { mode }).subscribe({
+      next: () => {
+        this.ai.currentThread.set({ ...thread, mode: mode as any });
+      },
+    });
   }
 }

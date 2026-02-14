@@ -211,6 +211,102 @@ ${toolLines.join('\n')}
     res.apiOk(true);
   });
 
+  // Regenerate thread title using LLM
+  r.post('/ai/threads/:threadId/regenerate-title', async (req, res) => {
+    const thread = await findThread(req.params.threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const ws = await Workspace.findById(thread.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
+
+    const messages = await AiMessage.find({ threadId: thread._id }).sort({ createdAt: 1 }).limit(10).lean();
+    const summary = messages.map(m => `${m.role}: ${(m.content || '').slice(0, 200)}`).join('\n');
+
+    const env = require('../../config/env');
+    const { createLlmClient } = require('../../ai/llm');
+    const llm = createLlmClient(env.AI_PROVIDER, {
+      provider: env.AI_PROVIDER,
+      apiKey: env.AI_API_KEY,
+      model: env.AI_MODEL,
+    });
+
+    try {
+      let title = '';
+      const stream = llm.stream([
+        { role: 'system', content: 'Génère un titre court (max 50 caractères) en français pour cette conversation. Réponds UNIQUEMENT avec le titre, sans guillemets ni ponctuation finale.' },
+        { role: 'user', content: summary },
+      ], [], { maxTokens: 100 });
+      for await (const ev of stream) {
+        if (ev.type === 'text_delta') title += ev.text;
+      }
+      title = title.trim().replace(/^["']|["']$/g, '');
+      if (!title) title = 'Chat';
+      await AiThread.updateOne({ _id: thread._id }, { $set: { title } });
+      res.apiOk({ title });
+    } catch (e) {
+      console.error('[ai] regenerate title error:', e?.message);
+      res.apiError(500, 'title_error', 'Failed to generate title');
+    }
+  });
+
+  // Duplicate thread
+  r.post('/ai/threads/:threadId/duplicate', async (req, res) => {
+    const thread = await findThread(req.params.threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const ws = await Workspace.findById(thread.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
+
+    const newThread = await AiThread.create({
+      companyId: thread.companyId,
+      workspaceId: thread.workspaceId,
+      userId: req.user.id,
+      mode: thread.mode,
+      title: (thread.title || 'Chat') + ' (copie)',
+      agentId: thread.agentId || undefined,
+      flowId: thread.flowId || undefined,
+      nodeId: thread.nodeId || undefined,
+      metadata: thread.metadata || undefined,
+    });
+
+    const messages = await AiMessage.find({ threadId: thread._id }).sort({ createdAt: 1 }).lean();
+    if (messages.length) {
+      const cloned = messages.map(m => ({
+        threadId: newThread._id,
+        role: m.role,
+        content: m.content,
+        toolCalls: m.toolCalls,
+        segments: m.segments,
+        question: m.question,
+        attachments: m.attachments,
+        answer: m.answer,
+      }));
+      await AiMessage.insertMany(cloned);
+    }
+
+    res.status(201).json({ success: true, data: newThread, requestId: req.requestId, ts: Date.now() });
+  });
+
+  // Update thread (title, agentId, mode, metadata)
+  r.put('/ai/threads/:threadId', async (req, res) => {
+    const thread = await findThread(req.params.threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const ws = await Workspace.findById(thread.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
+
+    const { title, agentId, mode, metadata } = req.body || {};
+    const update = { updatedAt: new Date() };
+    if (title !== undefined) update.title = title;
+    if (agentId !== undefined) update.agentId = agentId || null;
+    if (mode !== undefined) update.mode = mode;
+    if (metadata !== undefined) {
+      for (const [k, v] of Object.entries(metadata)) {
+        update[`metadata.${k}`] = v;
+      }
+    }
+    await AiThread.updateOne({ _id: thread._id }, { $set: update });
+    const updated = await AiThread.findById(thread._id).lean();
+    res.apiOk(updated);
+  });
+
   // ══════════════════════════════
   //  MESSAGES + SSE STREAMING
   // ══════════════════════════════
@@ -263,7 +359,23 @@ ${toolLines.join('\n')}
     const allMessages = [];
     for (const m of history) {
       if (m.role === 'user') {
-        allMessages.push({ role: 'user', content: m.content || '' });
+        let content = m.content || '';
+        if (!content && m.answer) {
+          const v = m.answer.value || {};
+          if (typeof v === 'object' && v.text) {
+            content = `Réponse à "${m.answer.questionText || 'la question'}": ${v.text}`;
+          } else if (typeof v === 'object' && v.values) {
+            content = `Réponses à "${m.answer.questionText || 'la question'}": ${v.values.join(', ')}`;
+          } else if (typeof v === 'object' && v.batchAnswers) {
+            const parts = Object.entries(v.batchAnswers).map(([k, val]) => `${k}: ${JSON.stringify(val)}`);
+            content = `Réponses aux questions:\n${parts.join('\n')}`;
+          } else if (typeof v === 'object' && v.label) {
+            content = `Réponse à "${m.answer.questionText || 'la question'}": ${v.label}`;
+          } else {
+            content = `Réponse à "${m.answer.questionText || 'la question'}": ${JSON.stringify(v)}`;
+          }
+        }
+        allMessages.push({ role: 'user', content });
       } else if (m.role === 'assistant') {
         if (m.toolCalls?.length) {
           allMessages.push({
@@ -339,6 +451,9 @@ ${toolLines.join('\n')}
     } catch (e) {
       console.error('[ai] project memory load error:', e?.message);
     }
+
+    // Expose source thread agentId so compact_and_transfer can inherit it
+    context._sourceThreadAgentId = thread.agentId || undefined;
 
     // Load agent overrides if agentId is set (dynamic provider or custom)
     let agentOverrides = null;
@@ -491,8 +606,8 @@ ${toolLines.join('\n')}
             break;
 
           case 'done':
-            doneSent = true;
-            send(event);
+            // Don't send done here — will be sent in finally block
+            // after message save + title generation, so thread.title arrives before done
             break;
 
           default:
@@ -514,7 +629,7 @@ ${toolLines.join('\n')}
           content: fullText,
           toolCalls: toolCalls.length ? toolCalls : undefined,
           segments: cleanSegments.length > 1 ? cleanSegments : undefined,
-          question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options } : undefined,
+          question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options, questions: questionData.questions } : undefined,
         });
       }
 

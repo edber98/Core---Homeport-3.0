@@ -34,6 +34,7 @@ try { require('./realtime/socketio').attach(server); } catch {}
   }
   server.listen(PORT, () => {
     console.log(`[backend] listening on http://localhost:${PORT}`);
+    try { const env = require('./config/env'); console.log(`[backend] AI provider: ${env.AI_PROVIDER} (${env.AI_MODEL})`); } catch {}
   });
 })();
 
