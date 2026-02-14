@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, effect } from '@angular/core';
+import { Component, ChangeDetectorRef, effect, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
@@ -21,7 +21,7 @@ import { AiSettingsComponent } from './ai-settings.component';
     <nz-drawer
       [nzVisible]="ai.drawerOpen()"
       (nzOnClose)="ai.closeDrawer()"
-      [nzWidth]="460"
+      [nzWidth]="drawerWidth"
       nzPlacement="right"
       [nzClosable]="false"
       [nzBodyStyle]="{ padding: 0 }">
@@ -126,8 +126,18 @@ import { AiSettingsComponent } from './ai-settings.component';
 export class AiPanelComponent {
   view: 'chat' | 'history' | 'settings' = 'chat';
   threads: AiThread[] = [];
+  drawerWidth: number | string = 460;
+
+  @HostListener('window:resize')
+  onResize() { this.updateDrawerWidth(); }
+
+  private updateDrawerWidth() {
+    const w = window.innerWidth;
+    this.drawerWidth = w < 576 ? '100%' : w < 768 ? '90%' : 460;
+  }
 
   constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {
+    this.updateDrawerWidth();
     // Sync currentThread changes (title, mode) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();

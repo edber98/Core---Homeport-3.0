@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { AiMessage, AiMessageSegment, AiToolCall } from './ai.service';
+import { AiMessage, AiMessageSegment, AiToolCall, AiService } from './ai.service';
+import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
@@ -42,6 +43,14 @@ interface ToolGroup {
   tools: AiToolCall[];
 }
 
+/** Processed segment for display — text-before-tools merged into reasoning blocks */
+interface ProcessedSegment {
+  type: 'text' | 'reasoning';
+  content?: string;          // for text segments (final response)
+  reasoningText?: string;    // for reasoning segments (text absorbed from preceding text)
+  toolCalls?: AiToolCall[];  // for reasoning segments
+}
+
 const TOOL_CATEGORIES: Record<string, { category: string; icon: string; color: string }> = {};
 const CAT_PLAN = { category: 'Analyse', icon: 'search', color: '#722ed1' };
 const CAT_QUESTION = { category: 'Question', icon: 'question-circle', color: '#fa8c16' };
@@ -76,7 +85,7 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzIconModule, NzTagModule, NzPopoverModule],
+  imports: [CommonModule, NzIconModule, NzTagModule, NzPopoverModule, NodeExecResultDialogComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
       <div class="avatar">
@@ -85,17 +94,20 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
       </div>
 
       <div class="body">
-        <!-- Segments mode: render in execution order -->
+        <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
-          <ng-container *ngFor="let seg of msg.segments">
-            <div class="content" *ngIf="seg.type === 'text' && seg.content"
-                 [innerHTML]="renderMarkdown(seg.content)"></div>
-            <div class="reasoning-block" *ngIf="seg.type === 'tools' && seg.toolCalls?.length">
+          <ng-container *ngFor="let ps of getProcessedSegments()">
+            <!-- Final response text -->
+            <div class="content" *ngIf="ps.type === 'text' && ps.content"
+                 [innerHTML]="renderMarkdown(ps.content)"></div>
+            <!-- Reasoning block: optional text + tool groups -->
+            <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
               <div class="reasoning-header">
                 <span nz-icon nzType="bulb" nzTheme="outline"></span>
                 <span>Raisonnement</span>
               </div>
-              <ng-container *ngFor="let group of groupTools(seg.toolCalls || [])">
+              <div class="reasoning-text" *ngIf="ps.reasoningText" [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
+              <ng-container *ngFor="let group of groupTools(ps.toolCalls || [])">
                 <div class="tool-group">
                   <div class="tool-group-header" [style.color]="group.color">
                     <span nz-icon [nzType]="group.icon" nzTheme="outline" class="group-icon"></span>
@@ -145,7 +157,8 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
             [nzPopoverContent]="popoverTpl"
             nzPopoverTrigger="hover"
             nzPopoverPlacement="topLeft"
-            [nzPopoverOverlayStyle]="{ maxWidth: '500px' }">
+            [nzPopoverOverlayStyle]="{ maxWidth: '500px' }"
+            (click)="openToolResult(tc)">
             <span nz-icon [nzType]="!tc.status ? 'loading' : (tc.status === 'error' ? 'close-circle' : 'check-circle')" nzTheme="outline" class="tag-icon" [class.spinning]="!tc.status"></span>
             {{ toolLabel(tc.name) }}
             <span class="tag-extra" *ngIf="toolExtra(tc)">{{ toolExtra(tc) }}</span>
@@ -168,6 +181,15 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
             </div>
           </ng-template>
         </ng-template>
+
+        <!-- Tool result dialog -->
+        <node-exec-result-dialog
+          *ngIf="selectedToolResult"
+          [attempts]="selectedToolAttempts"
+          [template]="selectedToolTemplate"
+          [nodeTitle]="selectedToolTitle"
+          (close)="selectedToolResult = null">
+        </node-exec-result-dialog>
       </div>
     </div>
   `,
@@ -187,6 +209,12 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
     .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
     .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.5; max-width: 85%; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; }
+    .reasoning-text ::ng-deep p { margin: 0 0 4px; }
+    .reasoning-text ::ng-deep p:last-child { margin: 0; }
+    .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
+    .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
+    .reasoning-text ::ng-deep li { margin: 1px 0; }
     .tool-group { margin: 2px 0; }
     .tool-group-header { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; opacity: 0.85; }
     .group-icon { font-size: 12px; }
@@ -208,8 +236,73 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
 })
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
+  private ai = inject(AiService);
+  private cdr = inject(ChangeDetectorRef);
+
+  // Tool result dialog state
+  selectedToolResult: AiToolCall | null = null;
+  selectedToolAttempts: any[] = [];
+  selectedToolTitle = '';
+  selectedToolTemplate: any = null;
 
   private _groupCache = new WeakMap<AiToolCall[], ToolGroup[]>();
+  private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
+
+  /** Open tool result dialog when clicking on a tool tag */
+  openToolResult(tc: AiToolCall) {
+    if (!tc.result && tc.status !== 'error') return; // No result yet (still running)
+    this.selectedToolResult = tc;
+    this.selectedToolTitle = this.toolLabel(tc.name);
+    this.selectedToolAttempts = [{
+      status: tc.status || 'success',
+      durationMs: tc.duration,
+      result: tc.result,
+    }];
+    this.selectedToolTemplate = null;
+
+    // For execute_tool, load the template to get output schema + real title
+    if (tc.name === 'execute_tool' && tc.args?.key) {
+      this.ai.getTemplateDetails(tc.args.key).subscribe({
+        next: (tpl: any) => {
+          if (tpl) {
+            this.selectedToolTemplate = tpl;
+            this.selectedToolTitle = tpl.name || tpl.title || this.selectedToolTitle;
+            this.cdr.detectChanges();
+          }
+        },
+        error: () => {},
+      });
+    }
+  }
+
+  /** Process raw segments: merge text-before-tools into reasoning blocks, keep only final text as content */
+  getProcessedSegments(): ProcessedSegment[] {
+    const segs = this.msg.segments;
+    if (!segs?.length) return [];
+    if (this._processedCache.has(segs)) return this._processedCache.get(segs)!;
+
+    const result: ProcessedSegment[] = [];
+    for (let i = 0; i < segs.length; i++) {
+      const seg = segs[i];
+      if (seg.type === 'tools') {
+        // Look back for preceding text segment → absorb as reasoning
+        const prev = i > 0 ? segs[i - 1] : null;
+        const reasoningText = (prev && prev.type === 'text') ? prev.content : undefined;
+        result.push({ type: 'reasoning', reasoningText: reasoningText || undefined, toolCalls: seg.toolCalls });
+      } else if (seg.type === 'text') {
+        // Check if next is tools → skip, will be absorbed by next reasoning block
+        const next = i < segs.length - 1 ? segs[i + 1] : null;
+        if (next && next.type === 'tools') continue;
+        // No tools after → this is final response text
+        if (seg.content?.trim()) {
+          result.push({ type: 'text', content: seg.content });
+        }
+      }
+    }
+
+    this._processedCache.set(segs, result);
+    return result;
+  }
 
   renderMarkdown(src: string): string {
     try {

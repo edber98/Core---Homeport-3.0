@@ -45,7 +45,7 @@ const FORM_TOOL_DEFINITIONS = [
   },
   {
     name: 'add_field',
-    description: 'Ajoute un champ au formulaire. Le champ est ajouté à la fin (ou dans une section si sectionKey est fourni).',
+    description: 'Ajoute un champ au formulaire. Par défaut ajouté à la fin. Utilise afterKey pour insérer après un champ spécifique, ou beforeKey pour insérer avant.',
     parameters: {
       type: 'object',
       properties: {
@@ -62,6 +62,8 @@ const FORM_TOOL_DEFINITIONS = [
         requiredIf: { type: 'object', description: 'Obligatoire conditionnel ({ field, operator, value } ou { logic: "all"|"any", conditions: [...] })' },
         disabledIf: { type: 'object', description: 'Désactivé conditionnel ({ field, operator, value })' },
         sectionKey: { type: 'string', description: 'Clé de la section dans laquelle ajouter le champ (optionnel)' },
+        afterKey: { type: 'string', description: 'Insérer le champ APRÈS ce champ (dans la même section). Utile pour l\'ordre logique.' },
+        beforeKey: { type: 'string', description: 'Insérer le champ AVANT ce champ (dans la même section). Utile pour l\'ordre logique.' },
       },
       required: ['key', 'type', 'label'],
     },
@@ -151,11 +153,12 @@ const FORM_TOOL_DEFINITIONS = [
   },
   {
     name: 'reorder_fields',
-    description: 'Réordonne les champs du formulaire selon un ordre donné.',
+    description: 'Réordonne les champs. Sans sectionKey → réordonne les champs de premier niveau. Avec sectionKey → réordonne les champs DANS la section.',
     parameters: {
       type: 'object',
       properties: {
         order: { type: 'array', items: { type: 'string' }, description: 'Liste ordonnée des clés de champs' },
+        sectionKey: { type: 'string', description: 'Clé de la section dont on veut réordonner les champs (optionnel, si omis → champs de premier niveau)' },
       },
       required: ['order'],
     },
@@ -375,14 +378,28 @@ function createFormExecutor(metadata, emit) {
         ...(input.disabledIf ? { disabledIf: input.disabledIf } : {}),
       };
 
-      // Add to section if specified
+      // Determine target array (section or top-level)
+      let targetArray;
       if (input.sectionKey) {
         const section = findField(fields, input.sectionKey);
         if (!section) return { success: false, error: `Section '${input.sectionKey}' introuvable` };
         if (!section.fields) section.fields = [];
-        section.fields.push(field);
+        targetArray = section.fields;
       } else {
-        fields.push(field);
+        targetArray = fields;
+      }
+
+      // Insert at position if afterKey or beforeKey is specified
+      if (input.afterKey) {
+        const idx = targetArray.findIndex(f => f.key === input.afterKey);
+        if (idx >= 0) { targetArray.splice(idx + 1, 0, field); }
+        else { targetArray.push(field); }
+      } else if (input.beforeKey) {
+        const idx = targetArray.findIndex(f => f.key === input.beforeKey);
+        if (idx >= 0) { targetArray.splice(idx, 0, field); }
+        else { targetArray.push(field); }
+      } else {
+        targetArray.push(field);
       }
 
       schema.fields = fields;
@@ -506,8 +523,18 @@ function createFormExecutor(metadata, emit) {
       const order = input?.order || [];
       if (!order.length) return { success: false, error: 'Ordre vide' };
 
-      const fields = schema.fields || [];
-      const byKey = new Map(fields.map(f => [f.key, f]));
+      // Target: section fields or top-level fields
+      let targetArray;
+      if (input.sectionKey) {
+        const section = findField(schema.fields || [], input.sectionKey);
+        if (!section) return { success: false, error: `Section '${input.sectionKey}' introuvable` };
+        if (!section.fields) section.fields = [];
+        targetArray = section.fields;
+      } else {
+        targetArray = schema.fields || [];
+      }
+
+      const byKey = new Map(targetArray.map(f => [f.key, f]));
       const ordered = [];
       for (const key of order) {
         const f = byKey.get(key);
@@ -516,7 +543,12 @@ function createFormExecutor(metadata, emit) {
       // Append remaining fields not in order
       for (const f of byKey.values()) ordered.push(f);
 
-      schema.fields = ordered;
+      if (input.sectionKey) {
+        const section = findField(schema.fields || [], input.sectionKey);
+        section.fields = ordered;
+      } else {
+        schema.fields = ordered;
+      }
       emitUpdate();
       return { success: true };
     },

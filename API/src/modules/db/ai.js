@@ -46,7 +46,17 @@ module.exports = function () {
 ### Outils ${provider.name} disponibles (${templates.length})
 ${toolLines.join('\n')}
 
-Quand l'utilisateur demande une action liée à ${provider.name}, utilise directement les outils ci-dessus via \`execute_tool\` avec la clé correspondante. Propose des solutions concrètes en utilisant ces outils plutôt que des explications théoriques.`;
+### RÈGLES CRITIQUES — mode agent ${provider.name}
+
+1. **TOUJOURS utiliser \`execute_tool\`** pour interagir avec ${provider.name}. Tu as la liste complète des outils ci-dessus — utilise-les directement avec la bonne clé.
+
+2. **JAMAIS \`search_tools\` pour chercher des DONNÉES** — \`search_tools\` cherche des templates/actions dans la plateforme, PAS dans ${provider.name}. Quand l'utilisateur dit "cherche X", "trouve X", "liste X", il parle de données ${provider.name}.
+
+3. **Recherche et filtrage** — Les outils de type "Lister" acceptent généralement des paramètres de filtrage (search, query, name, etc.). Si tu ne connais pas les paramètres exacts, utilise \`get_tool_details\` avec la clé pour voir le schéma complet des arguments AVANT d'exécuter.
+
+4. **Action directe** — Ne demande pas de confirmation pour des opérations de lecture (lister, chercher, récupérer). Exécute directement. Demande confirmation uniquement pour les modifications (créer, supprimer, modifier).
+
+5. **Vocabulaire utilisateur** — L'utilisateur peut utiliser des termes génériques ("cherche", "montre-moi", "je veux voir") ou des termes spécifiques à ${provider.name}. Dans tous les cas, identifie l'outil ${provider.name} approprié et exécute-le.`;
 
       return { promptFragment };
     }
@@ -241,33 +251,64 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
     await AiThread.updateOne({ _id: thread._id }, { $set: { updatedAt: new Date() } });
 
     // Load conversation history (including tool calls for LLM context)
+    // ── Load + trim conversation history to fit context window ──
     const history = await AiMessage.find({ threadId: thread._id }).sort({ createdAt: 1 }).limit(60).lean();
-    const messages = [];
+    const MAX_TOOL_RESULT_CHARS = 3000; // Truncate large tool results
+    const TOKEN_BUDGET = 80000;         // ~80K tokens budget for messages (leave room for system prompt + tools)
+
+    /** Rough token estimate: 1 token ≈ 4 chars */
+    const estimateCharsToTokens = (chars) => Math.ceil(chars / 4);
+
+    // Build all messages first
+    const allMessages = [];
     for (const m of history) {
       if (m.role === 'user') {
-        messages.push({ role: 'user', content: m.content || '' });
+        allMessages.push({ role: 'user', content: m.content || '' });
       } else if (m.role === 'assistant') {
-        // Include tool calls in assistant messages so LLM sees previous results
         if (m.toolCalls?.length) {
-          messages.push({
+          allMessages.push({
             role: 'assistant',
             content: m.content || null,
             tool_calls: m.toolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.args || {} })),
           });
-          // Add tool results as separate messages
           for (const tc of m.toolCalls) {
-            messages.push({
-              role: 'tool',
-              tool_call_id: tc.id,
-              content: typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result || {}),
-            });
+            let resultStr = typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result || {});
+            if (resultStr.length > MAX_TOOL_RESULT_CHARS) {
+              resultStr = resultStr.slice(0, MAX_TOOL_RESULT_CHARS) + '... [tronqué]';
+            }
+            allMessages.push({ role: 'tool', tool_call_id: tc.id, content: resultStr });
           }
         } else {
-          messages.push({ role: 'assistant', content: m.content || '' });
+          allMessages.push({ role: 'assistant', content: m.content || '' });
         }
       } else {
-        messages.push({ role: m.role, content: m.content || '' });
+        allMessages.push({ role: m.role, content: m.content || '' });
       }
+    }
+
+    // Trim from the front (oldest) if exceeding token budget — always keep most recent messages
+    let messages = allMessages;
+    /** Estimate tokens for a single message */
+    const msgTokens = (m) => {
+      let chars = (m.content || '').length;
+      if (m.tool_calls) chars += JSON.stringify(m.tool_calls).length;
+      return estimateCharsToTokens(chars);
+    };
+
+    let totalTokens = allMessages.reduce((sum, m) => sum + msgTokens(m), 0);
+
+    if (totalTokens > TOKEN_BUDGET) {
+      // Keep the last N messages that fit within budget, always keep at least the last 10
+      messages = [];
+      let budget = TOKEN_BUDGET;
+      for (let i = allMessages.length - 1; i >= 0; i--) {
+        const m = allMessages[i];
+        const tokens = msgTokens(m);
+        if (budget - tokens < 0 && messages.length >= 10) break;
+        budget -= tokens;
+        messages.unshift(m);
+      }
+      console.log(`[ai] trimmed history: ${allMessages.length} → ${messages.length} messages (budget: ${TOKEN_BUDGET} tokens)`);
     }
 
     // Build context
@@ -676,6 +717,11 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
       provider: tpl.providerKey || null,
       argsSchema: tpl.args ? argsToJsonSchema(tpl.args) : null,
       outputSchema: extractOutputSchema(tpl),
+      // Fields needed by NodeExecResultDialogComponent for schema-based rendering
+      outputSchemas: tpl.outputSchemas || null,
+      outputHandles: tpl.outputHandles || null,
+      output_array_field: tpl.output_array_field || null,
+      output_schema_field: tpl.output_schema_field || null,
     });
   });
 

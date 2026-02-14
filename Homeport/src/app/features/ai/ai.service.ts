@@ -461,6 +461,11 @@ export class AiService {
     return this.api.get<any>('/api/ai/tools', params);
   }
 
+  /** Fetch full template details by key (for exec-result-dialog schema resolution) */
+  getTemplateDetails(key: string): Observable<any> {
+    return this.api.get<any>(`/api/ai/tools/${encodeURIComponent(key)}`, { workspaceId: this.wsId() });
+  }
+
   // ── Side events for builders ──
   sideEvents$ = new Subject<AiStreamEvent>();
 

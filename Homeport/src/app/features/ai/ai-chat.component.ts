@@ -240,21 +240,13 @@ export class AiChatComponent {
       case 'message': {
         const text = (ev as any).text || '';
         const last = this.segments[this.segments.length - 1];
-        // Check if we're in a "reasoning phase" (tools have started)
-        const hasToolsPhase = this.segments.some(s => s.type === 'tools');
-
-        if (last && last.type === 'tools') {
-          // Text arriving during tools phase → add as reasoning text inside the tools segment
-          const raw = (last.reasoningText || '') + text;
-          const updated: StreamSegment = { ...last, reasoningText: raw, reasoningHtml: this.renderMd(raw) };
-          this.segments = [...this.segments.slice(0, -1), updated];
-        } else if (last && last.type === 'text') {
+        if (last && last.type === 'text') {
           // Append to existing text segment
           const raw = (last.rawText || '') + text;
           const updated: StreamSegment = { type: 'text', rawText: raw, html: this.renderMd(raw) };
           this.segments = [...this.segments.slice(0, -1), updated];
         } else {
-          // New text segment
+          // New text segment (after tools segment or at start)
           this.segments = [...this.segments, { type: 'text', rawText: text, html: this.renderMd(text) }];
         }
         break;
@@ -263,11 +255,11 @@ export class AiChatComponent {
         const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'running' };
         const last = this.segments[this.segments.length - 1];
         if (last && last.type === 'tools') {
-          // Add tool to existing tools segment — preserve reasoning text
+          // Add tool to existing tools segment
           const updated: StreamSegment = { ...last, tools: [...(last.tools || []), tool] };
           this.segments = [...this.segments.slice(0, -1), updated];
-        } else if (last && last.type === 'text' && this.segments.length > 1) {
-          // Text before this tool call was reasoning — absorb it into a new tools segment
+        } else if (last && last.type === 'text') {
+          // Absorb preceding text as reasoning into new tools segment
           const reasoningText = last.rawText || '';
           const newSeg: StreamSegment = {
             type: 'tools',
@@ -277,7 +269,6 @@ export class AiChatComponent {
           };
           this.segments = [...this.segments.slice(0, -1), newSeg];
         } else {
-          // First tools segment
           this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
         }
         break;
@@ -300,6 +291,19 @@ export class AiChatComponent {
           );
           return { ...seg, tools: updatedTools };
         });
+        break;
+      }
+      case 'error': {
+        // Show error to user as a text segment
+        const errMsg = (ev as any).message || 'Une erreur est survenue';
+        const errHtml = `<p style="color:#ff4d4f"><strong>Erreur :</strong> ${errMsg}</p>`;
+        const last = this.segments[this.segments.length - 1];
+        if (last && last.type === 'text') {
+          const raw = (last.rawText || '') + '\n\n**Erreur :** ' + errMsg;
+          this.segments = [...this.segments.slice(0, -1), { type: 'text', rawText: raw, html: this.renderMd(raw) } as StreamSegment];
+        } else {
+          this.segments = [...this.segments, { type: 'text', rawText: '**Erreur :** ' + errMsg, html: errHtml } as StreamSegment];
+        }
         break;
       }
       case 'done':

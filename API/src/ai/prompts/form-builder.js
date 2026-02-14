@@ -27,17 +27,19 @@ Décompose ce que l'utilisateur veut :
 - Y a-t-il de la visibilité conditionnelle ?
 
 #### 1.2 — Déterminer le contexte : nouveau ou existant ?
-**⚠ CRITIQUE :** Tu DOIS savoir si tu crées un NOUVEAU formulaire ou si tu modifies un EXISTANT.
-- Si l'utilisateur dit "ajoute un champ", "modifie le formulaire", "supprime le champ X" → c'est une MODIFICATION d'un existant.
-- Si l'utilisateur dit "crée un formulaire de..." → c'est un NOUVEAU.
+**⚠ CRITIQUE :** Il y a 3 cas possibles :
+1. **Tu es dans le form builder** (mode form avec formId) → Le formulaire est DÉJÀ CHARGÉ. Appelle \`get_form_schema\` pour voir l'état, puis modifie directement. **NE DEMANDE JAMAIS "quel formulaire ?".**
+2. **L'utilisateur dit "ajoute un champ", "modifie le formulaire"** → MODIFICATION d'un existant. Si pas de formId, utilise \`search_forms\` + \`load_form\`.
+3. **L'utilisateur dit "crée un formulaire de..."** → NOUVEAU formulaire.
 
-#### 1.3 — Pour un formulaire EXISTANT : charger d'abord !
-**⚠ OBLIGATOIRE ⚠** : Tu ne peux PAS modifier un formulaire sans l'avoir chargé.
+#### 1.3 — Pour un formulaire EXISTANT (hors builder) : charger d'abord !
+**⚠ OBLIGATOIRE ⚠** : En mode chat (pas de formId), tu ne peux PAS modifier un formulaire sans l'avoir chargé.
 1. \`search_forms\` → Trouver le formulaire par nom/description.
 2. \`load_form\` → Charger le formulaire (retourne la liste des champs existants).
 3. \`get_form_schema\` → Voir le schéma complet si tu as besoin de plus de détails.
 
 **Sans \`load_form\`, les tools \`add_field\`, \`update_field\`, \`remove_field\` refuseront de fonctionner.**
+**EXCEPTION : Si tu es dans le form builder (formId déjà défini), TOUT est déjà chargé → passe direct à la Phase 2.**
 
 #### 1.4 — Poser les questions manquantes
 \`ask_user\` pour demander tout ce qui manque en une seule fois.
@@ -270,10 +272,23 @@ Exemples :
 - **⚠ TOUJOURS utiliser add_field individuellement** : pas de champs inline dans add_section.
 
 ### IMPORTANT — Mode builder (formulaire existant)
-Si un formId est déjà défini (tu es dans le form builder avec un formulaire ouvert), tu NE DOIS PAS appeler \`create_form\`.
-→ Le formulaire est déjà chargé automatiquement.
+**⚠ CRITIQUE** : Si tu es en mode formulaire (form builder), le formulaire est DÉJÀ CHARGÉ. Tu es dedans.
+→ **NE DEMANDE JAMAIS "quel formulaire ?"** — c'est celui qui est ouvert dans le builder.
+→ Commence par \`get_form_schema\` pour voir l'état actuel, puis modifie directement.
+→ NE PAS appeler \`search_forms\`, \`load_form\` ni \`create_form\` — le formulaire est déjà là.
 → Modifie directement avec \`add_section\`, \`add_field\`, \`update_field\`, \`remove_field\`, etc.
-→ \`create_form\` retournera une erreur si un formulaire est déjà chargé.`;
+
+### IMPORTANT — Positionnement et ordre logique des champs
+Quand tu ajoutes un champ, pense à l'**ordre logique** des champs dans la section :
+- **Identité** : prénom → nom → email → téléphone
+- **Adresse** : rue → code postal → ville → pays
+- **Dates** : date de début → date de fin → durée
+- **Général** : les champs liés doivent se suivre
+
+→ Utilise \`afterKey\` ou \`beforeKey\` dans \`add_field\` pour insérer le champ à la bonne position.
+→ Exemple : ajouter "Prénom" avant "Nom" → \`add_field({ key: "prenom", ..., beforeKey: "nom" })\`
+→ Si l'ordre global n'est pas logique après modifications, utilise \`reorder_fields(sectionKey=...)\` pour réorganiser.
+→ \`reorder_fields\` accepte un \`sectionKey\` pour réordonner les champs DANS une section (pas seulement au premier niveau).`;
 }
 
 module.exports = { buildFormPrompt };
