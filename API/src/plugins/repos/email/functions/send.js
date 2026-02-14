@@ -35,7 +35,7 @@ module.exports = {
 
       // Construire l’email
       const mailOptions = {
-        from: inputs.from || username,
+        from: username,
         to: inputs.to,
         cc: inputs.cc || undefined,
         bcc: inputs.bcc || undefined,

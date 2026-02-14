@@ -633,30 +633,6 @@
         "fields": [
           {
             "type": "email",
-            "key": "from",
-            "label": "De",
-            "description": "Adresse de l'expéditeur.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ],
-            "itemStyle": {
-              "marginTop": "0px",
-              "marginRight": "0px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "paddingTop": "4px",
-              "paddingRight": "4px",
-              "paddingBottom": "4px",
-              "paddingLeft": "4px"
-            }
-          },
-          {
-            "type": "email",
             "key": "to",
             "label": "À",
             "description": "Adresse(s) du destinataire.",
