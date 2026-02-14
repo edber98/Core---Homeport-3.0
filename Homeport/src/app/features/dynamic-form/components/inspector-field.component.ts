@@ -48,6 +48,8 @@ import { Subscription } from 'rxjs';
                     <nz-option nzValue="email" nzLabel="email"></nz-option>
                     <nz-option nzValue="tel" nzLabel="tel"></nz-option>
                     <nz-option nzValue="color" nzLabel="color"></nz-option>
+                    <nz-option nzValue="tags" nzLabel="tags"></nz-option>
+                    <nz-option nzValue="schema_builder" nzLabel="schema_builder"></nz-option>
                     <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
                   </nz-select>
                 </nz-form-control>

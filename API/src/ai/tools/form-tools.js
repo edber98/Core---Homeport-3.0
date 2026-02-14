@@ -376,6 +376,7 @@ function createFormExecutor(metadata, emit) {
         ...(input.visibleIf ? { visibleIf: input.visibleIf } : {}),
         ...(input.requiredIf ? { requiredIf: input.requiredIf } : {}),
         ...(input.disabledIf ? { disabledIf: input.disabledIf } : {}),
+        itemStyle: input.itemStyle || { marginTop: '0px', marginRight: '0px', marginBottom: '0px', marginLeft: '0px', paddingTop: '4px', paddingRight: '4px', paddingBottom: '4px', paddingLeft: '4px' },
       };
 
       // Determine target array (section or top-level)

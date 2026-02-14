@@ -91,6 +91,9 @@ export class ContextPanelComponent {
       case 'email': return 'fa-solid fa-envelope';
       case 'tel': return 'fa-solid fa-phone';
       case 'color': return 'fa-solid fa-palette';
+      case 'file': return 'fa-solid fa-file-arrow-up';
+      case 'tags': return 'fa-solid fa-tags';
+      case 'schema_builder': return 'fa-solid fa-table-columns';
       case 'textblock': return 'fa-solid fa-paragraph';
       default: return 'fa-solid fa-square-plus';
     }

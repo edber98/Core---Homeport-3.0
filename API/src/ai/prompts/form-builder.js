@@ -146,6 +146,13 @@ Ce layout peut être changé via \`update_form_settings\` si l'utilisateur le de
 }
 \`\`\`
 
+**Types spécialisés :**
+- \`email\` : clavier email sur mobile, validation navigateur. Utilise-le pour les adresses email (pas \`text\`).
+- \`tel\` : clavier numérique sur mobile. Utilise-le pour les numéros de téléphone (pas \`text\`).
+- \`color\` : sélecteur de couleur (nz-color-picker). Options : \`color: { showText: true, allowClear: false }\`.
+- \`schema_builder\` : formulaire dans un formulaire — permet à l'utilisateur de construire visuellement un schéma de formulaire dynamique (champs, sections, types, validateurs). Utilisé quand on a besoin que l'utilisateur définisse un schéma personnalisé (ex: schéma d'extraction, structure de données dynamique). Col full-width (xs:24), default: null.
+- \`tags\` : liste de tags/étiquettes. Options : \`tags: { itemType: "text" }\`. Default: [].
+
 ### Système de colonnes
 - Grille 24 colonnes responsive.
 - \`24\` = pleine largeur, \`12\` = moitié, \`8\` = tiers.
@@ -270,6 +277,7 @@ Exemples :
 - **⚠ JAMAIS de section vide** : après \`add_section\`, ajoute IMMÉDIATEMENT les champs avec \`add_field(sectionKey=...)\`.
 - **⚠ TOUJOURS un titre aux sections** : jamais de section sans titre descriptif.
 - **⚠ TOUJOURS utiliser add_field individuellement** : pas de champs inline dans add_section.
+- **⚠ Types spécialisés** : Utilise \`email\` pour les adresses email, \`tel\` pour les téléphones, \`color\` pour les couleurs, \`schema_builder\` pour les schémas JSON, \`tags\` pour les listes de tags — JAMAIS \`text\` pour ces usages.
 
 ### IMPORTANT — Mode builder (formulaire existant)
 **⚠ CRITIQUE** : Si tu es en mode formulaire (form builder), le formulaire est DÉJÀ CHARGÉ. Tu es dedans.

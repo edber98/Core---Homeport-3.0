@@ -1080,6 +1080,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
       case 'email': return { placeholder: 'exemple@email.com', defaultValue: '' };
       case 'tel': return { placeholder: '+33 6 12 34 56 78', defaultValue: '' };
       case 'color': return { defaultValue: '#1677ff' } as any;
+      case 'tags': return { defaultValue: [] } as any;
+      case 'schema_builder': return { defaultValue: null } as any;
       case 'select':
       case 'radio': {
         const opts = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];

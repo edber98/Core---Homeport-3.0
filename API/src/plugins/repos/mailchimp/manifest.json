@@ -136,7 +136,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "email",
           "label": "Email",
           "description": "Adresse e-mail.",
@@ -218,7 +218,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "email",
               "label": "Email",
               "description": "Email.",
@@ -823,7 +823,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "email",
           "label": "Email",
           "description": "Email concerné.",
@@ -1106,7 +1106,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "from_email",
             "label": "Email expéditeur",
             "description": "Email de l expéditeur.",
@@ -1210,7 +1210,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail du membre.",
@@ -1331,7 +1331,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail du membre.",
@@ -1407,7 +1407,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail du membre.",
@@ -1528,7 +1528,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail du membre.",
@@ -1774,7 +1774,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "reply_to",
             "label": "Répondre à",
             "description": "Adresse de réponse.",
@@ -2417,7 +2417,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Email du membre.",
@@ -2507,7 +2507,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Email du membre.",

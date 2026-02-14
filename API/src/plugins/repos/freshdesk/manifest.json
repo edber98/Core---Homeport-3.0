@@ -191,7 +191,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "email",
           "label": "Email",
           "description": "Adresse e-mail.",
@@ -200,7 +200,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "phone",
           "label": "Téléphone",
           "description": "Téléphone.",
@@ -274,7 +274,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "email",
               "label": "Email",
               "description": "Email.",
@@ -283,7 +283,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "tel",
               "key": "phone",
               "label": "Téléphone",
               "description": "Téléphone.",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "email",
           "label": "Email",
           "description": "Adresse e-mail.",
@@ -531,7 +531,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "email",
               "label": "Email",
               "description": "Email.",
@@ -984,7 +984,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Email du demandeur.",
@@ -1525,7 +1525,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail.",
@@ -1534,7 +1534,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "phone",
             "label": "Téléphone",
             "description": "Téléphone.",
@@ -1685,7 +1685,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Nouvel email.",
@@ -1694,7 +1694,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "phone",
             "label": "Téléphone",
             "description": "Nouveau téléphone.",

@@ -63,6 +63,9 @@
                         <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'email' })">Email</li>
                         <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'tel' })">Tél</li>
                         <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'color' })">Couleur</li>
+                        <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'file' })">Fichier</li>
+                        <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'tags' })">Tags</li>
+                        <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'schema_builder' })">Schéma</li>
                         <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'textblock' })">Textblock</li>
                         <li nz-menu-divider></li>
                         <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', stepIndex: i, sectionIndex: k, type: 'section' })">Section</li>
@@ -168,6 +171,9 @@
               <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'email' })">Email</li>
               <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'tel' })">Tél</li>
               <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'color' })">Couleur</li>
+              <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'file' })">Fichier</li>
+              <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'tags' })">Tags</li>
+              <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'schema_builder' })">Schéma</li>
               <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'textblock' })">Textblock</li>
               <li nz-menu-divider></li>
               <li nz-menu-item (click)="editAddFieldTyped.emit({ path: 'section', sectionIndex: it.ent.i, type: 'section' })">Section</li>

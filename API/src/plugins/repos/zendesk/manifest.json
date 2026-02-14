@@ -191,7 +191,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "email",
           "label": "Email",
           "description": "Adresse e-mail.",
@@ -209,7 +209,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "phone",
           "label": "Téléphone",
           "description": "Téléphone.",
@@ -274,7 +274,7 @@
               }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "email",
               "label": "Email",
               "description": "Email.",
@@ -889,7 +889,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail de l agent.",
@@ -1516,7 +1516,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Adresse e-mail.",
@@ -1525,7 +1525,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "phone",
             "label": "Téléphone",
             "description": "Téléphone.",
@@ -1694,7 +1694,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "email",
             "label": "Email",
             "description": "Nouvel email.",
@@ -1703,7 +1703,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "phone",
             "label": "Téléphone",
             "description": "Nouveau téléphone.",

@@ -110,6 +110,28 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     } catch { return schema; }
   };
 
+  // Ensure all input fields have a default itemStyle (padding 4px, margin 0px)
+  const ensureDefaultItemStyle = (schema) => {
+    try {
+      if (!schema || typeof schema !== 'object') return schema;
+      const defaultStyle = { marginTop: '0px', marginRight: '0px', marginBottom: '0px', marginLeft: '0px', paddingTop: '4px', paddingRight: '4px', paddingBottom: '4px', paddingLeft: '4px' };
+      const visitFields = (fields) => {
+        for (const f of (fields || [])) {
+          if (!f || typeof f !== 'object') continue;
+          const t = String(f.type || '').toLowerCase();
+          if (t === 'section' || t === 'section_array') {
+            visitFields(f.fields || []);
+          } else if (t && t !== 'textblock') {
+            if (!f.itemStyle) f.itemStyle = { ...defaultStyle };
+          }
+        }
+      };
+      if (Array.isArray(schema.fields)) visitFields(schema.fields);
+      if (Array.isArray(schema.steps)) (schema.steps || []).forEach(st => visitFields((st && st.fields) || []));
+      return schema;
+    } catch { return schema; }
+  };
+
   // (Descriptions are now expected to be present in manifests directly; importer no longer injects them.)
 
   // Prepare manifest-level variables to reuse schemas across templates
@@ -132,7 +154,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
         record('provider', t.providerKey, 'created', null, checksum);
       }
     }
-    const argsWithExpr = enableExpressionsOnSchema(t.args || {});
+    const argsWithExpr = ensureDefaultItemStyle(enableExpressionsOnSchema(t.args || {}));
     // Normalize output schemas (per handle)
     // output schemas now live inside each output handle (h.schema). Also support mapping via variables below.
     // v2 detection: presence of handles or nodeKind

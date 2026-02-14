@@ -59,6 +59,48 @@ const INPUT_TYPES = [
     validators: ['required']
   },
   {
+    type: 'email',
+    category: 'input',
+    options: [
+      'key','label','placeholder','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression','secret'
+    ],
+    validators: ['required','minLength','maxLength','pattern']
+  },
+  {
+    type: 'tel',
+    category: 'input',
+    options: [
+      'key','label','placeholder','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression','secret'
+    ],
+    validators: ['required','minLength','maxLength','pattern']
+  },
+  {
+    type: 'color',
+    category: 'input',
+    options: [
+      'key','label','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression','color'
+    ],
+    validators: ['required']
+  },
+  {
+    type: 'tags',
+    category: 'input',
+    options: [
+      'key','label','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression','tags'
+    ],
+    notes: 'default should be an empty array []. tags object can have { itemType: "text" }',
+    validators: ['required']
+  },
+  {
+    type: 'schema_builder',
+    category: 'input',
+    options: [
+      'key','label','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression'
+    ],
+    notes: 'Formulaire dans un formulaire — permet à l\'utilisateur de construire visuellement un schéma de formulaire dynamique (champs, sections, types, validateurs). Utilisé quand on a besoin que l\'utilisateur définisse un schéma personnalisé (ex: schéma d\'extraction, structure de données dynamique). default should be null. Col should be full-width (xs:24).',
+    validators: ['required']
+  },
+  {
     type: 'textblock',
     category: 'display',
     options: [

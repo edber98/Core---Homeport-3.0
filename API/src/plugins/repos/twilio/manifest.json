@@ -106,7 +106,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "tel",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire (format E.164).",
@@ -120,7 +120,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "from",
             "label": "Expéditeur",
             "description": "Numéro Twilio ou Messaging Service SID.",
@@ -206,7 +206,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "tel",
             "key": "to",
             "label": "Destinataire (filtre)",
             "description": "Filtrer par numéro de destinataire.",
@@ -215,7 +215,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "from",
             "label": "Expéditeur (filtre)",
             "description": "Filtrer par numéro d'expéditeur.",
@@ -283,7 +283,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "tel",
             "key": "to",
             "label": "Destinataire",
             "description": "Numéro de téléphone du destinataire (format E.164).",
@@ -297,7 +297,7 @@
             ]
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "from",
             "label": "Expéditeur",
             "description": "Numéro Twilio pour l'appel.",
@@ -450,7 +450,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "tel",
             "key": "to",
             "label": "Destinataire (filtre)",
             "description": "Filtrer par numéro de destinataire.",
@@ -459,7 +459,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "tel",
             "key": "from",
             "label": "Expéditeur (filtre)",
             "description": "Filtrer par numéro d'expéditeur.",
@@ -1095,7 +1095,7 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "tel",
             "key": "phone_number",
             "label": "Numéro de téléphone",
             "description": "Numéro à rechercher (format E.164, ex: +14155552671).",
@@ -1193,7 +1193,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "from",
           "label": "Expéditeur",
           "description": "Numéro de l'expéditeur.",
@@ -1202,7 +1202,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "to",
           "label": "Destinataire",
           "description": "Numéro du destinataire.",
@@ -1292,7 +1292,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "from",
           "label": "Expéditeur",
           "description": "Numéro de l'appelant.",
@@ -1301,7 +1301,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "to",
           "label": "Destinataire",
           "description": "Numéro de l'appelé.",
@@ -1391,7 +1391,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "phone_number",
           "label": "Numéro",
           "description": "Numéro de téléphone.",
@@ -1463,7 +1463,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "from",
           "label": "Expéditeur",
           "description": "Numéro de l'expéditeur.",
@@ -1472,7 +1472,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "to",
           "label": "Destinataire",
           "description": "Numéro du destinataire.",
@@ -1571,7 +1571,7 @@
       },
       "fields": [
         {
-          "type": "text",
+          "type": "tel",
           "key": "phone_number",
           "label": "Numéro",
           "description": "Numéro au format E.164.",
@@ -1670,7 +1670,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "from",
           "label": "Expéditeur",
           "description": "Numéro de l'expéditeur.",
@@ -1679,7 +1679,7 @@
           }
         },
         {
-          "type": "text",
+          "type": "tel",
           "key": "to",
           "label": "Destinataire",
           "description": "Numéro du destinataire.",

@@ -22,22 +22,24 @@
           }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "from",
           "label": "De",
-          "description": "Adresse de l’expéditeur.",
+          "description": "Adresse de l'expéditeur.",
           "col": {
             "xs": 24
-          }
+          },
+          "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "to",
           "label": "À",
           "description": "Adresse(s) du destinataire.",
           "col": {
             "xs": 24
-          }
+          },
+          "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
         },
         {
           "type": "text",
@@ -105,22 +107,24 @@
               }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "from",
               "label": "De",
               "description": "Expéditeur.",
               "col": {
                 "xs": 24
-              }
+              },
+              "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
             },
             {
-              "type": "text",
+              "type": "email",
               "key": "to",
               "label": "À",
               "description": "Destinataire(s).",
               "col": {
                 "xs": 24
-              }
+              },
+              "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
             },
             {
               "type": "text",
@@ -261,16 +265,18 @@
       },
       "fields": [
         {
-          "type": "text",
+          "type": "email",
           "key": "from",
           "label": "Expéditeur",
-          "description": "Adresse e-mail de l'expéditeur."
+          "description": "Adresse e-mail de l'expéditeur.",
+          "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
         },
         {
-          "type": "text",
+          "type": "email",
           "key": "to",
           "label": "Destinataire",
-          "description": "Adresse e-mail du destinataire."
+          "description": "Adresse e-mail du destinataire.",
+          "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
         },
         {
           "type": "text",
@@ -572,16 +578,17 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "email",
             "key": "from",
             "label": "De",
-            "description": "Adresse de l’expéditeur.",
+            "description": "Adresse de l'expéditeur.",
             "col": {
               "xs": 24
-            }
+            },
+            "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "to",
             "label": "À",
             "description": "Adresse(s) du destinataire.",
@@ -592,25 +599,28 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "cc",
             "label": "CC",
             "description": "Copie carbone (optionnel).",
             "col": {
               "xs": 24
-            }
+            },
+            "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
           },
           {
-            "type": "text",
+            "type": "email",
             "key": "bcc",
             "label": "BCC",
             "description": "Copie carbone cachée (optionnel).",
             "col": {
               "xs": 24
-            }
+            },
+            "itemStyle": { "marginTop": "0px", "marginRight": "0px", "marginBottom": "0px", "marginLeft": "0px", "paddingTop": "4px", "paddingRight": "4px", "paddingBottom": "4px", "paddingLeft": "4px" }
           },
           {
             "type": "text",
