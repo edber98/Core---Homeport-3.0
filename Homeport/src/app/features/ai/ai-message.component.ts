@@ -182,17 +182,36 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
           </ng-template>
         </ng-template>
 
-        <!-- Answered question display -->
-        <div class="answered-question" *ngIf="msg.question && msg.role === 'assistant'">
-          <div class="aq-text">{{ msg.question.text }}</div>
-          <div class="aq-options" *ngIf="msg.question.options?.length">
-            <span class="aq-chip"
-              *ngFor="let opt of msg.question.options"
-              [class.selected]="isAnsweredOption(opt)">
-              <span nz-icon *ngIf="isAnsweredOption(opt)" nzType="check" nzTheme="outline" class="aq-check"></span>
-              {{ opt.label }}
-            </span>
-          </div>
+        <!-- Answered question display (only when answered — otherwise ai-question handles it) -->
+        <div class="answered-question" *ngIf="msg.question && msg.role === 'assistant' && isQuestionAnswered()">
+          <!-- Single question -->
+          <ng-container *ngIf="msg.question.questionType !== 'batch'">
+            <div class="aq-text">{{ msg.question.text }}</div>
+            <div class="aq-options" *ngIf="msg.question.options?.length">
+              <span class="aq-chip"
+                *ngFor="let opt of msg.question.options"
+                [class.selected]="isAnsweredOption(opt)">
+                <span nz-icon *ngIf="isAnsweredOption(opt)" nzType="check" nzTheme="outline" class="aq-check"></span>
+                {{ opt.label }}
+              </span>
+            </div>
+          </ng-container>
+
+          <!-- Batch questions (QCM) -->
+          <ng-container *ngIf="msg.question.questionType === 'batch' && msg.question.questions?.length">
+            <div class="aq-text">{{ msg.question.text }}</div>
+            <div class="aq-batch" *ngFor="let q of msg.question.questions">
+              <div class="aq-sub-text">{{ q.text }}</div>
+              <div class="aq-options" *ngIf="q.options?.length">
+                <span class="aq-chip"
+                  *ngFor="let opt of q.options"
+                  [class.selected]="isBatchAnsweredOption(q.id, opt)">
+                  <span nz-icon *ngIf="isBatchAnsweredOption(q.id, opt)" nzType="check" nzTheme="outline" class="aq-check"></span>
+                  {{ opt.label }}
+                </span>
+              </div>
+            </div>
+          </ng-container>
         </div>
 
         <!-- Tool result dialog -->
@@ -255,6 +274,8 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
     .aq-chip.selected { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
+    .aq-batch { margin: 6px 0; }
+    .aq-sub-text { font-size: 12px; color: #333; margin-bottom: 4px; font-weight: 500; }
   `]
 })
 export class AiMessageComponent {
@@ -371,6 +392,37 @@ export class AiMessageComponent {
     if (tc.name === 'get_templates' && tc.args.query) return `"${tc.args.query}"`;
     if (tc.name === 'set_node_args' && tc.args.nodeId) return tc.args.nodeId.slice(-8);
     return '';
+  }
+
+  /** Check if this question has been answered (a user message follows this assistant message) */
+  isQuestionAnswered(): boolean {
+    const msgs = this.ai.messages();
+    const idx = msgs.indexOf(this.msg);
+    if (idx < 0) return false;
+    for (let i = idx + 1; i < msgs.length; i++) {
+      if (msgs[i].role === 'user') return true;
+      break;
+    }
+    return false;
+  }
+
+  /** Check if a batch question option was selected (look at next user message batchAnswers) */
+  isBatchAnsweredOption(qId: string, opt: AiQuestionOption): boolean {
+    const msgs = this.ai.messages();
+    const idx = msgs.indexOf(this.msg);
+    if (idx < 0) return false;
+    for (let i = idx + 1; i < msgs.length; i++) {
+      if (msgs[i].role === 'user') {
+        const ans = msgs[i].answer;
+        if (ans?.value?.batchAnswers) {
+          const val = ans.value.batchAnswers[qId];
+          if (val === opt.value) return true;
+          if (Array.isArray(val) && val.includes(opt.value)) return true;
+        }
+        break;
+      }
+    }
+    return false;
   }
 
   /** Check if an option was the answer selected by the user (look at next user message) */

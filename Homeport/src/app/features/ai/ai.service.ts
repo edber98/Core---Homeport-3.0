@@ -179,8 +179,23 @@ export class AiService {
   async loadThread(threadId: string) {
     const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
     this.currentThread.set(data.thread);
-    this.messages.set(data.messages || []);
-    this.pendingQuestion.set(null);
+    const msgs = data.messages || [];
+    this.messages.set(msgs);
+
+    // Restore pending question if last assistant message has an unanswered question
+    let restored = false;
+    if (msgs.length) {
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        const m = msgs[i];
+        if (m.role === 'user') break; // User answered → no pending question
+        if (m.role === 'assistant' && m.question) {
+          this.pendingQuestion.set(m.question);
+          restored = true;
+          break;
+        }
+      }
+    }
+    if (!restored) this.pendingQuestion.set(null);
   }
 
   deleteThread(threadId: string): Observable<any> {

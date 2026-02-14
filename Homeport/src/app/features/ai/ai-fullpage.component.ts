@@ -489,7 +489,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
 
   loadRecentFlows() {
     const wsId = this.acl.currentWorkspaceId?.() || '';
-    this.apiClient.get<any[]>('/api/flows', { workspaceId: wsId, limit: 20 }).subscribe({
+    this.apiClient.get<any[]>(`/api/workspaces/${wsId}/flows`, { limit: 20 }).subscribe({
       next: (res: any) => {
         const list = res?.data || res || [];
         this.recentFlows = list.map((f: any) => ({ id: f.id || f._id, name: f.name || 'Sans nom' }));

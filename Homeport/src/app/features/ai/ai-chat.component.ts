@@ -43,6 +43,7 @@ interface StreamSegment {
 interface StreamTool {
   id: string; name: string; status: 'running' | 'success' | 'error';
   duration?: number; args?: any; result?: any;
+  inputJson?: string; // Partial JSON being streamed from LLM
 }
 
 @Component({
@@ -150,6 +151,10 @@ interface StreamTool {
                       </div>
                     </ng-template>
                   </ng-container>
+                  <!-- Live streaming of tool arguments for the current running tool -->
+                  <div class="tool-input-stream" *ngIf="lastRunningTool(seg.tools) as rt">
+                    <div class="stream-preview" [innerHTML]="formatToolStream(rt.name, rt.inputJson)"></div>
+                  </div>
                 </div>
               </div>
             </ng-container>
@@ -163,11 +168,15 @@ interface StreamTool {
       </div>
 
       <!-- Pending question -->
-      <ai-question
-        *ngIf="ai.pendingQuestion()"
-        [question]="ai.pendingQuestion()!"
-        (answered)="onAnswer($event)">
-      </ai-question>
+      <div class="question-msg" *ngIf="ai.pendingQuestion()">
+        <div class="avatar"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
+        <div class="question-body">
+          <ai-question
+            [question]="ai.pendingQuestion()!"
+            (answered)="onAnswer($event)">
+          </ai-question>
+        </div>
+      </div>
     </div>
 
     <!-- Input -->
@@ -234,6 +243,17 @@ interface StreamTool {
     .thinking-spin { font-size: 14px; color: #722ed1; }
     .thinking-text { font-size: 12px; color: #999; }
     .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
+    .tool-input-stream { margin-top: 4px; width: 100%; }
+    .stream-preview { font-size: 12px; color: #666; animation: stream-fade 0.3s ease; }
+    .stream-preview ::ng-deep .sp-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 500; margin-bottom: 2px; }
+    .stream-preview ::ng-deep .sp-value { color: #333; line-height: 1.4; margin-bottom: 4px; }
+    .stream-preview ::ng-deep .sp-tag { display: inline-block; background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #666; margin: 1px 2px; }
+    .stream-preview ::ng-deep .sp-opts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .stream-preview ::ng-deep .sp-opt { display: inline-block; background: #e6f4ff; color: #1677ff; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+    .stream-preview ::ng-deep .sp-sub-q { font-size: 11px; margin: 3px 0; padding: 3px 0; border-top: 1px solid #f5f5f5; }
+    .stream-preview ::ng-deep .sp-json { font-size: 10px; background: #f9f9f9; border: 1px solid #f0f0f0; padding: 4px 6px; border-radius: 3px; margin: 2px 0; max-height: 100px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .stream-preview ::ng-deep .sp-raw { font-size: 10px; color: #999; word-break: break-all; }
+    @keyframes stream-fade { from { opacity: 0.5; } to { opacity: 1; } }
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
     .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
@@ -242,6 +262,9 @@ interface StreamTool {
     .system-label { font-weight: 500; }
     .system-content { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
     .system-content ::ng-deep p { margin: 0 0 4px; }
+    .question-msg { display: flex; gap: 10px; padding: 8px 0; }
+    .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+    .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
   `]
 })
 export class AiChatComponent {
@@ -350,6 +373,21 @@ export class AiChatComponent {
         }
         break;
       }
+      case 'tool.input_delta': {
+        // Accumulate partial JSON on the running tool
+        const deltaId = (ev as any).id;
+        const deltaText = (ev as any).text || '';
+        this.segments = this.segments.map(seg => {
+          if (seg.type !== 'tools' || !seg.tools) return seg;
+          const idx = seg.tools.findIndex(t => t.id === deltaId);
+          if (idx < 0) return seg;
+          const updatedTools = seg.tools.map((t, i) =>
+            i === idx ? { ...t, inputJson: (t.inputJson || '') + deltaText } : t
+          );
+          return { ...seg, tools: updatedTools };
+        });
+        break;
+      }
       case 'tool.end': {
         const evId = (ev as any).id;
         // Find and update the tool — create NEW segment + tools array
@@ -449,6 +487,79 @@ export class AiChatComponent {
     if (t.name === 'get_templates' && t.args.query) return `"${t.args.query}"`;
     if (t.name === 'set_node_args' && t.args.nodeId) return t.args.nodeId.slice(-8);
     return '';
+  }
+
+  lastRunningTool(tools?: StreamTool[]): StreamTool | null {
+    if (!tools?.length) return null;
+    const running = tools.filter(t => t.status === 'running' && t.inputJson);
+    return running.length ? running[running.length - 1] : null;
+  }
+
+  /** Format streaming tool input as readable HTML, specific to each tool */
+  formatToolStream(toolName: string, json?: string): string {
+    if (!json) return '';
+    let parsed: any = null;
+    try { parsed = JSON.parse(json); } catch {
+      // Incomplete JSON — try to extract partial key-values
+      return this.formatPartialKeys(toolName, json);
+    }
+    // Tool-specific formatting
+    switch (toolName) {
+      case 'ask_user': {
+        let html = '';
+        if (parsed.text) html += `<div class="sp-label">Question :</div><div class="sp-value">${this.esc(parsed.text)}</div>`;
+        if (parsed.questionType) html += `<span class="sp-tag">${parsed.questionType}</span>`;
+        if (parsed.options?.length) {
+          html += '<div class="sp-opts">' + parsed.options.map((o: any) =>
+            `<span class="sp-opt">${this.esc(o.label || o.value || '')}</span>`
+          ).join('') + '</div>';
+        }
+        if (parsed.questions?.length) {
+          html += parsed.questions.map((q: any) => {
+            let qh = `<div class="sp-sub-q">${this.esc(q.text || '')}`;
+            if (q.options?.length) qh += ' ' + q.options.map((o: any) => `<span class="sp-opt">${this.esc(o.label)}</span>`).join('');
+            return qh + '</div>';
+          }).join('');
+        }
+        return html || `<pre class="sp-json">${this.esc(JSON.stringify(parsed, null, 2))}</pre>`;
+      }
+      case 'execute_tool':
+        return `<span class="sp-tag">${this.esc(parsed.key || '')}</span>` +
+          (parsed.args ? `<pre class="sp-json">${this.esc(JSON.stringify(parsed.args, null, 2).slice(0, 300))}</pre>` : '');
+      case 'search_tools':
+        return (parsed.query ? `<span class="sp-tag">"${this.esc(parsed.query)}"</span>` : '') +
+          (parsed.provider ? ` <span class="sp-tag">${this.esc(parsed.provider)}</span>` : '');
+      case 'set_node_args':
+        return (parsed.nodeId ? `<span class="sp-tag">Node: ${this.esc(parsed.nodeId.slice(-8))}</span>` : '') +
+          (parsed.args ? `<pre class="sp-json">${this.esc(JSON.stringify(parsed.args, null, 2).slice(0, 300))}</pre>` : '');
+      default:
+        return `<pre class="sp-json">${this.esc(JSON.stringify(parsed, null, 2).slice(0, 400))}</pre>`;
+    }
+  }
+
+  private formatPartialKeys(toolName: string, json: string): string {
+    // Extract readable values from partial JSON via regex
+    const textMatch = json.match(/"text"\s*:\s*"([^"]*)/);
+    const queryMatch = json.match(/"query"\s*:\s*"([^"]*)/);
+    const keyMatch = json.match(/"key"\s*:\s*"([^"]*)/);
+    let html = '';
+    if (toolName === 'ask_user' && textMatch) {
+      html += `<div class="sp-label">Question :</div><div class="sp-value">${this.esc(textMatch[1])}</div>`;
+      // Extract options being formed
+      const optLabels = [...json.matchAll(/"label"\s*:\s*"([^"]*)/g)].map(m => m[1]);
+      if (optLabels.length) {
+        html += '<div class="sp-opts">' + optLabels.map(l => `<span class="sp-opt">${this.esc(l)}</span>`).join('') + '</div>';
+      }
+      return html;
+    }
+    if (queryMatch) return `<span class="sp-tag">"${this.esc(queryMatch[1])}"</span>`;
+    if (keyMatch) return `<span class="sp-tag">${this.esc(keyMatch[1])}</span>`;
+    // Fallback: show raw truncated
+    return `<code class="sp-raw">${this.esc(json.slice(0, 200))}</code>`;
+  }
+
+  private esc(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   truncJson(val: any): string {

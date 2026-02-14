@@ -9,10 +9,18 @@ const ToolCallSchema = new Schema({
   status: { type: String, enum: ['success', 'error'] },
 }, { _id: false });
 
-const QuestionSchema = new Schema({
+const QuestionItemSchema = new Schema({
+  id: { type: String },
   text: { type: String },
   questionType: { type: String, enum: ['single', 'multi', 'text'] },
   options: [{ label: String, value: String, description: String }],
+}, { _id: false });
+
+const QuestionSchema = new Schema({
+  text: { type: String },
+  questionType: { type: String, enum: ['single', 'multi', 'text', 'batch'] },
+  options: [{ label: String, value: String, description: String }],
+  questions: { type: [QuestionItemSchema], default: undefined },
 }, { _id: false });
 
 const SegmentSchema = new Schema({

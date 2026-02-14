@@ -13,68 +13,64 @@ import { AiQuestion, AiQuestionOption, AiQuestionItem } from './ai.service';
   standalone: true,
   imports: [CommonModule, FormsModule, NzButtonModule, NzInputModule, NzCheckboxModule, NzRadioModule, NzIconModule],
   template: `
-    <div class="ai-question" *ngIf="question">
+    <div class="aq" *ngIf="question">
       <!-- Batch mode: multiple questions -->
       <ng-container *ngIf="question.questionType === 'batch' && question.questions?.length; else singleMode">
-        <div class="q-text">{{ question.text }}</div>
-        <div class="batch-questions">
-          <div class="batch-item" *ngFor="let q of question.questions">
-            <div class="bq-text">{{ q.text }}</div>
+        <div class="aq-text">{{ question.text }}</div>
+        <div class="aq-batch" *ngFor="let q of question.questions">
+          <div class="aq-sub-text">{{ q.text }}</div>
 
-            <!-- Single choice -->
-            <div class="q-options" *ngIf="q.questionType === 'single' && q.options?.length">
-              <button
-                *ngFor="let opt of q.options"
-                nz-button
-                [nzType]="batchAnswers[q.id] === opt.value ? 'primary' : 'default'"
-                nzSize="small"
-                (click)="setBatchSingle(q.id, opt)">
-                {{ opt.label }}
-              </button>
-            </div>
+          <!-- Single choice chips -->
+          <div class="aq-options" *ngIf="q.questionType === 'single' && q.options?.length">
+            <span class="aq-chip clickable"
+              *ngFor="let opt of q.options"
+              [class.selected]="batchAnswers[q.id] === opt.value"
+              (click)="setBatchSingle(q.id, opt)">
+              <span nz-icon *ngIf="batchAnswers[q.id] === opt.value" nzType="check" nzTheme="outline" class="aq-check"></span>
+              {{ opt.label }}
+            </span>
+          </div>
 
-            <!-- Multi choice -->
-            <div class="q-options multi" *ngIf="q.questionType === 'multi' && q.options?.length">
-              <label
-                *ngFor="let opt of q.options"
-                nz-checkbox
-                [nzChecked]="isBatchMultiSelected(q.id, opt.value)"
-                (nzCheckedChange)="toggleBatchMulti(q.id, opt.value, $event)">
-                {{ opt.label }}
-              </label>
-            </div>
+          <!-- Multi choice chips -->
+          <div class="aq-options" *ngIf="q.questionType === 'multi' && q.options?.length">
+            <span class="aq-chip clickable"
+              *ngFor="let opt of q.options"
+              [class.selected]="isBatchMultiSelected(q.id, opt.value)"
+              (click)="toggleBatchMulti(q.id, opt.value, !isBatchMultiSelected(q.id, opt.value))">
+              <span nz-icon *ngIf="isBatchMultiSelected(q.id, opt.value)" nzType="check" nzTheme="outline" class="aq-check"></span>
+              {{ opt.label }}
+            </span>
+          </div>
 
-            <!-- Free text -->
-            <div class="q-input" *ngIf="q.questionType === 'text' || (!q.options?.length && q.questionType !== 'single' && q.questionType !== 'multi')">
-              <input nz-input nzSize="small" [(ngModel)]="batchTexts[q.id]" placeholder="Votre réponse..." />
-            </div>
+          <!-- Free text -->
+          <div class="aq-input" *ngIf="q.questionType === 'text' || (!q.options?.length && q.questionType !== 'single' && q.questionType !== 'multi')">
+            <input nz-input nzSize="small" [(ngModel)]="batchTexts[q.id]" placeholder="Votre réponse..." />
           </div>
         </div>
-        <div class="batch-submit">
+        <div class="aq-actions">
           <button nz-button nzType="primary" nzSize="small" (click)="submitBatch()" [disabled]="!isBatchComplete()">
-            Valider toutes les réponses
+            <span nz-icon nzType="check" nzTheme="outline"></span> Valider
           </button>
         </div>
       </ng-container>
 
       <!-- Single question mode -->
       <ng-template #singleMode>
-        <div class="q-text">{{ question.text }}</div>
+        <div class="aq-text">{{ question.text }}</div>
 
-        <!-- Single choice (radio chips) -->
-        <div class="q-options" *ngIf="question.questionType === 'single' && question.options?.length">
-          <button
+        <!-- Single choice chips -->
+        <div class="aq-options" *ngIf="question.questionType === 'single' && question.options?.length">
+          <span class="aq-chip clickable"
             *ngFor="let opt of question.options"
-            nz-button
-            [nzType]="selectedValue === opt.value ? 'primary' : 'default'"
-            nzSize="small"
+            [class.selected]="selectedValue === opt.value"
             (click)="selectSingle(opt)">
+            <span nz-icon *ngIf="selectedValue === opt.value" nzType="check" nzTheme="outline" class="aq-check"></span>
             {{ opt.label }}
-          </button>
-          <button nz-button [nzType]="showOtherInput ? 'dashed' : 'default'" nzSize="small" (click)="showOtherInput = !showOtherInput">
-            Autre (précise)
-          </button>
-          <div class="q-other-input" *ngIf="showOtherInput">
+          </span>
+          <span class="aq-chip clickable" [class.selected]="showOtherInput" (click)="showOtherInput = !showOtherInput">
+            Autre...
+          </span>
+          <div class="aq-other" *ngIf="showOtherInput">
             <nz-input-group [nzSuffix]="otherSendIcon" nzSize="small">
               <input nz-input [(ngModel)]="otherText" placeholder="Précise ta réponse..." (keydown.enter)="submitOther()" />
             </nz-input-group>
@@ -84,30 +80,30 @@ import { AiQuestion, AiQuestionOption, AiQuestionItem } from './ai.service';
           </div>
         </div>
 
-        <!-- Multi choice (checkboxes) -->
-        <div class="q-options multi" *ngIf="question.questionType === 'multi' && question.options?.length">
-          <label
+        <!-- Multi choice chips -->
+        <div class="aq-options" *ngIf="question.questionType === 'multi' && question.options?.length">
+          <span class="aq-chip clickable"
             *ngFor="let opt of question.options"
-            nz-checkbox
-            [nzChecked]="isSelected(opt.value)"
-            (nzCheckedChange)="toggleMulti(opt.value, $event)">
+            [class.selected]="isSelected(opt.value)"
+            (click)="toggleMulti(opt.value, !isSelected(opt.value))">
+            <span nz-icon *ngIf="isSelected(opt.value)" nzType="check" nzTheme="outline" class="aq-check"></span>
             {{ opt.label }}
-          </label>
-          <div class="q-multi-actions">
-            <button nz-button nzType="default" nzSize="small" (click)="showOtherInput = !showOtherInput">
-              Autre (précise)
-            </button>
+          </span>
+          <div class="aq-actions">
+            <span class="aq-chip clickable" [class.selected]="showOtherInput" (click)="showOtherInput = !showOtherInput">
+              Autre...
+            </span>
             <button nz-button nzType="primary" nzSize="small" (click)="submitMulti()" [disabled]="!selectedValues.length && !otherText.trim()">
-              Valider
+              <span nz-icon nzType="check" nzTheme="outline"></span> Valider
             </button>
           </div>
-          <div class="q-other-input" *ngIf="showOtherInput">
+          <div class="aq-other" *ngIf="showOtherInput">
             <input nz-input nzSize="small" [(ngModel)]="otherText" placeholder="Précise ta réponse..." />
           </div>
         </div>
 
         <!-- Free text -->
-        <div class="q-input" *ngIf="question.questionType === 'text' || !question.options?.length">
+        <div class="aq-input" *ngIf="question.questionType === 'text' || !question.options?.length">
           <nz-input-group [nzSuffix]="sendIcon" nzSize="small">
             <input nz-input [(ngModel)]="freeText" placeholder="Votre réponse..." (keydown.enter)="submitText()" />
           </nz-input-group>
@@ -119,19 +115,20 @@ import { AiQuestion, AiQuestionOption, AiQuestionItem } from './ai.service';
     </div>
   `,
   styles: [`
-    .ai-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; margin: 4px 0; }
-    .q-text { font-weight: 500; margin-bottom: 8px; line-height: 1.4; }
-    .q-options { display: flex; flex-wrap: wrap; gap: 6px; }
-    .q-options.multi { flex-direction: column; gap: 4px; }
-    .q-options.multi button { align-self: flex-start; margin-top: 6px; }
-    .q-input { margin-top: 4px; }
+    .aq { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; }
+    .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
+    .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
+    .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; transition: all 0.15s ease; }
+    .aq-chip.clickable { cursor: pointer; }
+    .aq-chip.clickable:hover { background: #e6f4ff; color: #1677ff; }
+    .aq-chip.selected { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; font-weight: 500; }
+    .aq-check { font-size: 10px; }
+    .aq-batch { margin: 6px 0; padding: 8px 10px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; }
+    .aq-sub-text { font-size: 12px; color: #333; margin-bottom: 4px; font-weight: 500; }
+    .aq-input { margin-top: 4px; }
+    .aq-other { margin-top: 6px; width: 100%; }
+    .aq-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
     .send-icon { cursor: pointer; color: #1677ff; }
-    .q-other-input { margin-top: 6px; width: 100%; }
-    .q-multi-actions { display: flex; gap: 6px; align-self: flex-start; margin-top: 6px; }
-    .batch-questions { display: flex; flex-direction: column; gap: 12px; }
-    .batch-item { padding: 8px 10px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; }
-    .bq-text { font-weight: 500; font-size: 13px; margin-bottom: 6px; }
-    .batch-submit { margin-top: 10px; }
   `]
 })
 export class AiQuestionComponent {
