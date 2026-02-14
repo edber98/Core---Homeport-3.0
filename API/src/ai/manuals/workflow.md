@@ -273,27 +273,52 @@ Je vais créer N nodes :
 - Événement → `get_templates` avec type="event" + provider, puis `add_node`.
 - Simple → `ensure_start`.
 
-### Étape 2.3 — Ajouter chaque node (dans l'ordre, connecté)
+### Étape 2.3 — Phase A : Créer TOUS les nodes et connexions
 
 **INTERDIT DE SAUTER UN NODE** : Tu DOIS créer CHAQUE node de ta liste (Étape 2.0). Si tu as prévu 5 nodes, tu DOIS appeler `add_node` 5 fois. Sauter un node = workflow cassé.
 
-Pour CHAQUE node de ta liste, suivre cette séquence OBLIGATOIRE :
+Pour CHAQUE node, dans l'ordre :
 ```
-1. add_node(templateKey)              → Créer le node (retourne outputHandles)
-2. connect_nodes(sourceId, newNodeId) → CONNECTER IMMÉDIATEMENT (jamais reporter à plus tard)
-3. auto_layout()                      → Réorganiser le graph (en mode builder : l'utilisateur voit le node se placer)
-4. propose_context_mapping(newNodeId) → Obtenir le mapping + upstream output schemas
-5. set_node_args(nodeId, args)        → Appliquer les arguments (expressions {{ }})
-6. set_node_description(nodeId, desc) → Décrire en 1 phrase
+1. add_node(templateKey)              → Créer le node
+2. connect_nodes(sourceId, newNodeId) → CONNECTER IMMÉDIATEMENT
+3. auto_layout()                      → Réorganiser (mode builder : l'utilisateur voit en temps réel)
 ```
+
+**NE PAS configurer les args maintenant.** D'abord créer TOUTE la structure (tous les nodes + connexions), ensuite configurer.
 
 **En mode builder (sideEvents)** : Appeler `auto_layout` après CHAQUE ajout de node + connexion. L'utilisateur voit le workflow se construire en temps réel, node par node, bien organisé. C'est OBLIGATOIRE pour une bonne expérience utilisateur.
 
-**ATTENTION** : Les étapes 2 et 3 (connect_nodes + auto_layout) doivent TOUJOURS être faites IMMÉDIATEMENT après add_node. NE JAMAIS créer plusieurs nodes d'affilée sans les connecter et organiser au fur et à mesure.
+**ATTENTION** : connect_nodes + auto_layout doivent TOUJOURS être faites IMMÉDIATEMENT après add_node. NE JAMAIS créer plusieurs nodes d'affilée sans les connecter.
 
 Tu as DÉJÀ fait get_templates et get_template_details en Phase 1, pas besoin de les refaire.
 
-### Étape 2.4 — Vérification obligatoire
+### Étape 2.4 — Phase B : Configurer chaque node (propose_context_mapping OBLIGATOIRE)
+
+**UNE FOIS que TOUS les nodes sont créés et connectés**, configurer chaque node dans l'ordre du flow.
+
+Pour CHAQUE node (sauf triggers), la séquence est **STRICTEMENT** :
+```
+1. propose_context_mapping(nodeId)    ← OBLIGATOIRE — retourne les expressions disponibles
+2. Lire upstreamOutputs dans la réponse → ce sont les SEULES expressions valides
+3. set_node_args(nodeId, args)        ← Utiliser UNIQUEMENT les expressions de l'étape 1
+4. set_node_description(nodeId, desc) ← Décrire en 1 phrase
+```
+
+**INTERDIT d'appeler `set_node_args` sans `propose_context_mapping` juste AVANT pour ce node.**
+C'est la cause #1 d'erreurs d'expressions. Sans `propose_context_mapping`, tu ne sais PAS :
+- Si les données viennent de `payload` ou d'un `nodeId`
+- Comment s'appellent les champs de sortie du node précédent
+- Quel est l'ID exact du node source
+
+**Exemple d'erreur SANS propose_context_mapping :**
+```
+start_form (objet, priorite) → Chat Completion (node_abc) → Email (node_def)
+```
+Pour configurer Email, tu pourrais écrire `{{ payload.objet }}` → **FAUX** ❌
+`propose_context_mapping(node_def)` te dira que les données viennent de `node_abc` et du `start_form_xxx`.
+Tu écriras `{{ start_form_xxx.objet }}` → **CORRECT** ✅
+
+### Étape 2.5 — Vérification obligatoire
 
 **AVANT de passer en Phase 3**, appelle `list_graph` et vérifie :
 - Nombre de nodes dans le graph = nombre prévu dans ta liste (Étape 2.0)
@@ -572,36 +597,19 @@ Quand une action retourne une **liste** et tu dois agir sur CHAQUE élément →
 ---
 
 <!-- @topic:expressions -->
-## Expressions de données — NE JAMAIS DEVINER
+## Expressions de données — NE JAMAIS DEVINER les noms de champs
 
-### Syntaxe de base
+### Syntaxe
 
-- `{{payload.champ}}` : Données du **start_form / trigger UNIQUEMENT** (l'entrée initiale du workflow).
-- `{{nodeId.champ}}` : Résultat d'un **node spécifique** identifié par son ID.
+- `{{payload.champ}}` : Données du node précédent (payload = sortie du prédécesseur direct). Fonctionne partout : après un start_form, dans une boucle (payload.item), après un HTTP (payload.body), etc.
+- `{{nodeId.champ}}` : Résultat d'un node spécifique identifié par son ID.
 
-### ERREUR CRITIQUE : `payload` vs `nodeId`
+Les deux formes sont valides. `payload.xxx` est valide tant que `xxx` existe dans la sortie du node précédent.
 
-`payload` contient UNIQUEMENT les données du déclencheur (start_form, event, webhook).
-**`payload` ne se propage PAS à travers les nodes.** Chaque node reçoit le résultat du node précédent, pas le payload original.
+### Le vrai problème : les NOMS DE CHAMPS
 
-**Exemple de flow :**
-```
-start_form (subject, body) → Extracteur IA (abc123) → Email (def456)
-```
-
-Pour configurer le node Email (def456) :
-- `{{ payload.subject }}` → **FAUX** ❌ — payload est le start_form, mais le node Email reçoit le résultat de l'Extracteur, pas le payload directement
-- `{{ abc123.extracted_subject }}` → **CORRECT** ✅ — référence explicite au node qui produit la donnée
-
-**Règle :** Si un node intermédiaire existe entre le start_form et le node cible, les données passent par ce node intermédiaire. Tu dois référencer le node qui a réellement produit ou transmis la donnée, pas `payload`.
-
-**Quand utiliser `payload` :**
-- UNIQUEMENT quand le node cible est connecté DIRECTEMENT au start_form/trigger
-- Ou pour accéder à un champ du formulaire de démarrage qui n'a pas été transformé par un node intermédiaire et qui est toujours dans le `msg.payload` original
-
-**Quand utiliser `{{ nodeId.champ }}` :**
-- TOUJOURS quand la donnée vient d'un node qui a produit un résultat (HTTP, Odoo, IA, extracteur, etc.)
-- C'est le cas le plus fréquent — la majorité des expressions doivent référencer un nodeId, pas payload
+Ce n'est pas `payload` vs `nodeId` le danger — c'est les **noms de champs** inventés.
+`set_node_args` **vérifie automatiquement** les expressions `{{ }}` et **retournera des warnings** si un champ n'existe pas dans le schéma de sortie des prédécesseurs. L'agent doit alors corriger avec `propose_context_mapping` puis `set_node_args`.
 
 ### Règle fondamentale : CONNAÎTRE avant d'écrire
 

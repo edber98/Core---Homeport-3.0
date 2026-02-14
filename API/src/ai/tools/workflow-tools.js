@@ -505,6 +505,103 @@ function createWorkflowExecutor(metadata, emit) {
 
   const START_TYPES = ['start', 'start_form', 'event', 'endpoint', 'trigger'];
 
+  /**
+   * Build upstream context for a node: what each predecessor outputs.
+   * `payload.xxx` is valid if `xxx` exists in ANY direct predecessor's output schema
+   * (payload = output of previous node, works in loops, after HTTP, after start_form, etc.)
+   * Returns { upstreamOutputs, payloadFields, allKnownExpressions }.
+   */
+  function buildUpstreamContext(g, targetId) {
+    const upstreamOutputs = [];
+    const payloadFields = new Set(); // all fields accessible via payload.xxx (from ANY direct predecessor)
+    const allKnownExpressions = new Map(); // "nodeId.field" or "payload.field" → true
+
+    const incomingEdges = (g.edges || []).filter(e => String(e.target) === String(targetId));
+    for (const edge of incomingEdges) {
+      const srcNode = (g.nodes || []).find(n => String(n.id) === String(edge.source));
+      if (!srcNode) continue;
+      const srcModel = srcNode?.data?.model || {};
+      const srcTmpl = srcModel?.templateObj || {};
+      const srcType = String(srcTmpl.type || '').toLowerCase();
+
+      const info = {
+        nodeId: edge.source,
+        name: srcModel.name || srcTmpl.title || '',
+        template: srcModel.template || srcTmpl.key || '',
+        type: srcType,
+        availableExpressions: [],
+      };
+
+      let outputFields = null;
+
+      // Start_form: fields from the form schema
+      if (srcType === 'start_form') {
+        const formSchema = srcModel.context?.formSchema || srcModel.formSchema;
+        const fieldsArr = formSchema?.fields || (srcModel.context || {}).fields;
+        if (Array.isArray(fieldsArr)) {
+          outputFields = [];
+          for (const f of fieldsArr) {
+            const k = f?.key || f?.name;
+            if (k) outputFields.push({ key: k, type: f.type || 'text' });
+          }
+        }
+      }
+      // Multi-output
+      else if (srcTmpl.output_array_field && Array.isArray(srcTmpl.outputSchema) && srcTmpl.outputSchema.length) {
+        info.isMultiOutput = true;
+        outputFields = srcTmpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
+      }
+      // Dynamic schema
+      else if (srcTmpl.output_schema_field && srcModel.context) {
+        const dynSchema = srcModel.context[srcTmpl.output_schema_field];
+        if (dynSchema?.fields && Array.isArray(dynSchema.fields)) {
+          outputFields = dynSchema.fields.filter(f => f.key).map(f => ({ key: f.key, type: f.type || 'text' }));
+        }
+      }
+      // Standard outputHandles with schema
+      else if (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles.length) {
+        const handle = srcTmpl.outputHandles.find(h => String(h.id) === String(edge.sourceHandle || '0'));
+        if (handle?.schema && typeof handle.schema === 'object') {
+          outputFields = [];
+          // Schema can be form-style { fields: [{ key, type }] } (from $var: resolution)
+          // or flat key-value { text: "string", count: "number" }
+          if (Array.isArray(handle.schema.fields)) {
+            for (const f of handle.schema.fields) {
+              const k = f?.key || f?.name;
+              if (k) outputFields.push({ key: k, type: f.type || 'text' });
+            }
+          } else {
+            for (const [k, v] of Object.entries(handle.schema)) {
+              if (k === '_id' || k === '__v') continue;
+              if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+                outputFields.push({ key: k, type: v.type || 'object' });
+              } else {
+                outputFields.push({ key: k, type: typeof v === 'string' ? v : 'text' });
+              }
+            }
+          }
+        }
+      }
+
+      if (outputFields && outputFields.length) {
+        info.outputSchema = outputFields;
+        info.availableExpressions = outputFields.map(f => ({
+          field: f.key, expression: `{{ ${edge.source}.${f.key} }}`, type: f.type,
+        }));
+        for (const f of outputFields) {
+          allKnownExpressions.set(`${edge.source}.${f.key}`, true);
+          // payload.xxx is valid if xxx exists in ANY direct predecessor's output
+          payloadFields.add(f.key);
+          allKnownExpressions.set(`payload.${f.key}`, true);
+        }
+      }
+
+      upstreamOutputs.push(info);
+    }
+
+    return { upstreamOutputs, payloadFields, allKnownExpressions };
+  }
+
   /** Generate a node ID matching frontend format: type_slug_random */
   function genNodeId(tpl) {
     const type = String(tpl?.type || 'node').toLowerCase();
@@ -1137,6 +1234,78 @@ function createWorkflowExecutor(metadata, emit) {
         }
       }
 
+      // Auto-validate {{ }} expressions in args against upstream context
+      // This catches errors when the agent skips propose_context_mapping
+      try {
+        const allArgValues = JSON.stringify(args);
+        const exprRegex = /\{\{\s*([a-zA-Z0-9_]+\.[a-zA-Z0-9_.]+)\s*\}\}/g;
+        const usedExpressions = [];
+        let m;
+        while ((m = exprRegex.exec(allArgValues)) !== null) {
+          usedExpressions.push(m[1]); // e.g. "payload.urgence" or "nodeId.text"
+        }
+
+        if (usedExpressions.length > 0) {
+          const upstream = buildUpstreamContext(g, String(input.nodeId));
+          const badExpressions = [];
+
+          for (const expr of usedExpressions) {
+            // Check if this expression is known
+            if (upstream.allKnownExpressions.has(expr)) continue;
+
+            // Check payload.xxx — field must exist in a direct predecessor's output
+            if (expr.startsWith('payload.')) {
+              const fieldName = expr.replace('payload.', '');
+              if (!upstream.payloadFields.has(fieldName)) {
+                const suggestions = [...upstream.payloadFields].slice(0, 15);
+                if (suggestions.length) {
+                  badExpressions.push(`⚠ {{ ${expr} }} : champ "${fieldName}" introuvable dans la sortie des nodes précédents. Champs disponibles via payload : ${suggestions.join(', ')}. Appelle propose_context_mapping("${input.nodeId}") pour voir les expressions exactes.`);
+                } else {
+                  badExpressions.push(`⚠ {{ ${expr} }} : impossible de vérifier — aucun schéma de sortie connu pour les nodes précédents. Appelle propose_context_mapping("${input.nodeId}") pour vérifier.`);
+                }
+              }
+              continue;
+            }
+
+            // Check nodeId.xxx — node might not be a predecessor or field might not exist
+            const dotIdx = expr.indexOf('.');
+            if (dotIdx > 0) {
+              const refNodeId = expr.slice(0, dotIdx);
+              const refField = expr.slice(dotIdx + 1);
+              // Check against direct predecessors first
+              const upstreamNode = upstream.upstreamOutputs.find(u => String(u.nodeId) === refNodeId);
+              if (upstreamNode && upstreamNode.outputSchema && upstreamNode.outputSchema.length) {
+                const validFields = upstreamNode.outputSchema.map(f => f.key);
+                if (!validFields.includes(refField)) {
+                  badExpressions.push(`⚠ {{ ${expr} }} : champ "${refField}" introuvable dans la sortie de "${upstreamNode.name}" (${upstreamNode.template}). Champs disponibles : ${validFields.join(', ')}.`);
+                }
+              }
+              // If nodeId is not a direct predecessor, it might still be valid (referencing an earlier node in the flow)
+              // So we only warn if we know the node AND the field doesn't exist — don't warn for unknown nodes
+            }
+          }
+
+          if (badExpressions.length) {
+            warnings.push(...badExpressions);
+            // Also include the correct upstream context so the agent can self-correct
+            const upstreamSummary = upstream.upstreamOutputs
+              .filter(u => u.availableExpressions.length)
+              .map(u => `${u.name} (${u.nodeId}) : ${u.availableExpressions.map(e => e.expression).join(', ')}`)
+              .join(' | ');
+            if (upstreamSummary) {
+              warnings.push(`📋 Expressions correctes disponibles : ${upstreamSummary}`);
+            }
+            if (upstream.payloadFields.size) {
+              warnings.push(`📋 Champs payload disponibles (depuis les prédécesseurs) : ${[...upstream.payloadFields].join(', ')}`);
+            }
+            warnings.push(`💡 Appelle propose_context_mapping("${input.nodeId}") pour obtenir toutes les expressions valides, puis corrige avec set_node_args.`);
+          }
+        }
+      } catch (exprErr) {
+        // Don't fail set_node_args if expression validation errors — just log
+        console.warn('[wf-tool:set_node_args] expression validation error:', exprErr.message);
+      }
+
       g.nodes[idx].data = g.nodes[idx].data || {};
       g.nodes[idx].data.model = g.nodes[idx].data.model || {};
       const existing = g.nodes[idx].data.model.context || {};
@@ -1265,79 +1434,16 @@ function createWorkflowExecutor(metadata, emit) {
         return mapping;
       };
 
-      // Build upstream context: what each predecessor node outputs (critical for multi-output nodes)
-      const upstreamOutputs = [];
-      const incomingEdges = (g.edges || []).filter(e => String(e.target) === String(input.targetId));
-      for (const edge of incomingEdges) {
-        const srcNode = findNode(edge.source);
-        if (!srcNode) continue;
-        const srcModel = srcNode?.data?.model || {};
-        const srcTmpl = srcModel?.templateObj || {};
-
-        const info = {
-          nodeId: edge.source,
-          name: srcModel.name || srcTmpl.title || '',
-          template: srcModel.template || srcTmpl.key || '',
-          type: srcTmpl.type || '',
-          sourceHandle: edge.sourceHandle || '0',
-          availableExpressions: [],
-        };
-
-        let outputFields = null;
-
-        // 1. Multi-output (classifiers, output_array_field): outputSchema defines the fields per branch
-        if (srcTmpl.output_array_field && Array.isArray(srcTmpl.outputSchema) && srcTmpl.outputSchema.length) {
-          info.isMultiOutput = true;
-          info.outputArrayField = srcTmpl.output_array_field;
-          outputFields = srcTmpl.outputSchema.map(f => ({
-            key: f.key || f.name, type: f.type || 'text', label: f.label || '',
-          }));
-        }
-        // 2. Dynamic schema (output_schema_field): reads schema from context
-        else if (srcTmpl.output_schema_field && srcModel.context) {
-          const dynSchema = srcModel.context[srcTmpl.output_schema_field];
-          if (dynSchema?.fields && Array.isArray(dynSchema.fields)) {
-            outputFields = dynSchema.fields.filter(f => f.key).map(f => ({
-              key: f.key, type: f.type || 'text', label: f.label || '',
-            }));
-          }
-        }
-        // 3. Standard outputHandles with schema
-        else if (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles.length) {
-          const handle = srcTmpl.outputHandles.find(h => String(h.id) === String(edge.sourceHandle || '0'));
-          if (handle?.schema && typeof handle.schema === 'object') {
-            const resolveSchema = (schema) => {
-              const fields = [];
-              for (const [k, v] of Object.entries(schema)) {
-                if (k === '_id' || k === '__v') continue;
-                if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-                  fields.push({ key: k, type: v.type || 'object', label: v.label || '' });
-                } else {
-                  fields.push({ key: k, type: typeof v === 'string' ? v : 'text', label: '' });
-                }
-              }
-              return fields;
-            };
-            outputFields = resolveSchema(handle.schema);
-          }
-        }
-
-        // Generate expression examples for this upstream node
-        if (outputFields && outputFields.length) {
-          info.outputSchema = outputFields;
-          info.availableExpressions = outputFields.map(f => ({
-            field: f.key,
-            expression: `{{ ${edge.source}.${f.key} }}`,
-            type: f.type,
-          }));
-        }
-
-        upstreamOutputs.push(info);
-      }
+      // Reuse shared buildUpstreamContext utility
+      const upstream = buildUpstreamContext(g, String(input.targetId));
 
       const variants = scenarios.map(sc => ({ label: sc.label || `scenario_${sc.index}`, mapping: guessMapping(tArgs, sc.msgIn || {}), previewMsg: sc.msgIn || {} }));
       const best = variants[0] || { mapping: {}, previewMsg: {} };
-      return { success: true, scenarioCount: scenarios.length, mapping: best.mapping, variants, upstreamOutputs };
+      const result = { success: true, scenarioCount: scenarios.length, mapping: best.mapping, variants, upstreamOutputs: upstream.upstreamOutputs };
+      if (upstream.payloadFields.size) {
+        result.payloadFields = [...upstream.payloadFields];
+      }
+      return result;
     },
 
     async validate_flow() {
