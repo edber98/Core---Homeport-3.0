@@ -18,6 +18,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ChatRendererComponent } from '../../shared/chat/chat-renderer.component';
 import { RichPart, mergeText } from '../../shared/chat/chat-types';
 import { AiFlowAgentService, FlowAgentEvent } from '../../services/ai-flow-agent.service';
+import { AiPanelComponent } from '../../features/ai/ai-panel.component';
+import { AiService } from '../../features/ai/ai.service';
 import { FlowsBackendService } from '../../services/flows-backend.service';
 import { FormsModule } from '@angular/forms';
 import { AccessControlService, User } from '../../services/access-control.service';
@@ -52,7 +54,8 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzInputModule,
     NzModalModule,
     NzSelectModule,
-    ChatRendererComponent
+    ChatRendererComponent,
+    AiPanelComponent,
   ],
   templateUrl: './layout-main.html',
   styleUrl: './layout-main.scss'
@@ -90,7 +93,7 @@ export class LayoutMain implements OnInit {
   @ViewChild('ccScroller') ccScroller?: ElementRef<HTMLDivElement>;
   private ccMeta: { name?: string; description?: string } = {};
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService, private flowAgent: AiFlowAgentService, private flowsApi: FlowsBackendService) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService, private flowAgent: AiFlowAgentService, private flowsApi: FlowsBackendService, public aiService: AiService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
@@ -261,6 +264,8 @@ export class LayoutMain implements OnInit {
   }
 
   logout() { this.auth.logout(); }
+
+  toggleAi() { this.aiService.toggleDrawer(); }
 
   // Permissions helpers
   get isAdmin(): boolean { return (this.acl.currentUser()?.role || 'member') === 'admin'; }

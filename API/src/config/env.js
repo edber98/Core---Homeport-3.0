@@ -48,4 +48,12 @@ module.exports = {
 
   // Webhook base URL for trigger system (used to generate webhook URLs)
   WEBHOOK_BASE_URL: process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
+
+  // AI / LLM
+  AI_PROVIDER: process.env.AI_PROVIDER || 'openai',
+  AI_MODEL: process.env.AI_MODEL || 'gpt-4o',
+  AI_API_KEY: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '',
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
+  AI_TEMPERATURE: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
+  AI_MAX_TOKENS: parseInt(process.env.AI_MAX_TOKENS || '4096', 10),
 };

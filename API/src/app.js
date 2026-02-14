@@ -145,6 +145,8 @@ function buildApp(opts = {}){
     });
     // AI Console (threads, messages, context) in DB mode
     app.use('/api', require('./modules/db/ai-console')());
+    // AI unified (new system)
+    app.use('/api', require('./modules/db/ai')());
     // Flow simulation (db)
     app.use('/api', require('./modules/db/simulate')());
     // Layout (ELK) for DB mode

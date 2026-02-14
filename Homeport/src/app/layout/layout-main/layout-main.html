@@ -107,6 +107,9 @@
           nzPlaceHolder="Workspace">
           <nz-option *ngFor="let w of accessibleWorkspaces" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
         </nz-select>
+        <button nz-button class="hdr-btn ai-btn" (click)="toggleAi()" title="Assistant IA">
+          <span nz-icon nzType="robot" nzTheme="outline"></span>
+        </button>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
           <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false">
             <i class="fa-regular fa-bell"></i>
@@ -250,3 +253,6 @@
     <li nz-menu-item (click)="logout()">Déconnexion</li>
   </ul>
 </nz-dropdown-menu>
+
+<!-- AI Panel (global drawer) -->
+<ai-panel></ai-panel>

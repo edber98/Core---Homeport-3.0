@@ -1,0 +1,373 @@
+import { Injectable, NgZone, signal, computed } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
+import { ApiClientService } from '../../services/api-client.service';
+import { AccessControlService } from '../../services/access-control.service';
+import { AuthTokenService } from '../../services/auth-token.service';
+import { apiRoot, apiSuffix } from '../../shared/api-base';
+import { environment } from '../../../environments/environment';
+
+// ── Types ──
+
+export interface AiThread {
+  _id: string;
+  id: string;
+  mode: 'chat' | 'workflow' | 'node_args' | 'form';
+  title: string;
+  flowId?: string;
+  nodeId?: string;
+  agentId?: string;
+  workspaceId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AiToolCall {
+  id: string;
+  name: string;
+  args?: any;
+  result?: any;
+  duration?: number;
+  status?: 'success' | 'error';
+}
+
+export interface AiQuestionOption {
+  label: string;
+  value: string;
+  description?: string;
+}
+
+export interface AiQuestion {
+  text: string;
+  questionType: 'single' | 'multi' | 'text';
+  options?: AiQuestionOption[];
+}
+
+/** Actions that the AI can trigger on the frontend */
+export type AiAction =
+  | { action: 'open_credentials'; provider: string; providerKey: string }
+  | { action: 'navigate'; route: string }
+  | { action: 'open_node_settings'; flowId: string; nodeId: string };
+
+export interface AiMessageSegment {
+  type: 'text' | 'tools';
+  content?: string;
+  toolCalls?: AiToolCall[];
+}
+
+export interface AiMessage {
+  _id?: string;
+  threadId: string;
+  role: 'user' | 'assistant' | 'system' | 'tool';
+  content: string;
+  toolCalls?: AiToolCall[];
+  segments?: AiMessageSegment[];
+  question?: AiQuestion;
+  attachments?: any[];
+  answer?: any;
+  createdAt?: string;
+}
+
+export type AiStreamEvent =
+  | { type: 'message'; text: string }
+  | { type: 'tool.start'; id: string; name: string }
+  | { type: 'tool.input_delta'; id: string; name: string; text: string }
+  | { type: 'tool.end'; id: string; name: string; args?: any; result?: any; error?: string; status: string; duration?: number }
+  | { type: 'question'; text: string; questionType: string; options?: AiQuestionOption[] }
+  | { type: 'thread.title'; title: string }
+  | { type: 'patch'; ops: any[] }
+  | { type: 'snapshot'; graph: any }
+  | { type: 'args'; nodeId: string; args: any }
+  | { type: 'desc'; nodeId: string; description: string }
+  | { type: 'error'; code?: string; message?: string }
+  | { type: 'done' };
+
+export interface AiPageContext {
+  page: 'dashboard' | 'flow-builder' | 'form-builder' | 'settings' | 'other';
+  flowId?: string;
+  nodeId?: string;
+  formId?: string;
+}
+
+// ── Service ──
+
+@Injectable({ providedIn: 'root' })
+export class AiService {
+  private wsId = () => this.acl.currentWorkspaceId?.() || '';
+
+  /** Build a full URL for fetch (SSE streaming) — same logic as ApiClientService.buildUrl */
+  private buildFetchUrl(path: string): string {
+    const root = apiRoot();
+    const suffix = apiSuffix();
+    const cleanPath = environment.production ? path.replace(/^\/api\b/, '') : path;
+    return `${root}${suffix}${cleanPath}`;
+  }
+
+  // State
+  drawerOpen = signal(false);
+  currentThread = signal<AiThread | null>(null);
+  messages = signal<AiMessage[]>([]);
+  streaming = signal(false);
+  pendingQuestion = signal<AiQuestion | null>(null);
+  pageContext = signal<AiPageContext>({ page: 'other' });
+
+  // Action requests — the panel subscribes and opens appropriate modals
+  actionRequests$ = new Subject<AiAction>();
+
+  hasThread = computed(() => !!this.currentThread());
+
+  constructor(
+    private api: ApiClientService,
+    private zone: NgZone,
+    private acl: AccessControlService,
+    private auth: AuthTokenService
+  ) {}
+
+  // ── Drawer ──
+  openDrawer() { this.drawerOpen.set(true); }
+  closeDrawer() { this.drawerOpen.set(false); }
+  toggleDrawer() { this.drawerOpen.set(!this.drawerOpen()); }
+
+  // ── Page context (updated by pages) ──
+  setPageContext(ctx: AiPageContext) { this.pageContext.set(ctx); }
+
+  // ── Threads ──
+  listThreads(mode?: string): Observable<AiThread[]> {
+    const params: any = { workspaceId: this.wsId() };
+    if (mode) params.mode = mode;
+    return this.api.get<AiThread[]>('/api/ai/threads', params);
+  }
+
+  async createThread(mode: string, metadata?: any): Promise<AiThread> {
+    const body: any = { mode, title: 'Chat' };
+    if (metadata) Object.assign(body, metadata);
+    const thread = await this.api.post<AiThread>('/api/ai/threads', body, { workspaceId: this.wsId() }).toPromise();
+    this.currentThread.set(thread!);
+    this.messages.set([]);
+    this.pendingQuestion.set(null);
+    return thread!;
+  }
+
+  async loadThread(threadId: string) {
+    const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
+    this.currentThread.set(data.thread);
+    this.messages.set(data.messages || []);
+    this.pendingQuestion.set(null);
+  }
+
+  deleteThread(threadId: string): Observable<any> {
+    return this.api.delete<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() });
+  }
+
+  // ── Send message + SSE stream ──
+  sendMessage(content: string, answer?: any, attachments?: any[]): { events$: Observable<AiStreamEvent>; stop: () => void } {
+    const thread = this.currentThread();
+    if (!thread) throw new Error('No active thread');
+
+    this.streaming.set(true);
+    this.pendingQuestion.set(null);
+
+    // Add user message to local state immediately
+    const userMsg: AiMessage = { threadId: thread._id, role: 'user', content, attachments, answer };
+    this.messages.update(msgs => [...msgs, userMsg]);
+
+    // POST the message — the response is SSE
+    const body: any = { content };
+    if (answer) body.answer = answer;
+    if (attachments) body.attachments = attachments;
+
+    const subj = new Subject<AiStreamEvent>();
+    const wsId = this.wsId();
+    const tok = this.auth.token || '';
+
+    // Use fetch for SSE POST (EventSource only supports GET)
+    const url = this.buildFetchUrl(`/api/ai/threads/${thread.id || thread._id}/messages?workspaceId=${encodeURIComponent(wsId)}`);
+    const abortController = new AbortController();
+
+    this.streamPost(url, body, tok, abortController.signal, subj);
+
+    const stop = () => {
+      try { abortController.abort(); } catch {}
+      this.streaming.set(false);
+      subj.complete();
+    };
+
+    return { events$: subj.asObservable(), stop };
+  }
+
+  private async streamPost(url: string, body: any, token: string, signal: AbortSignal, subj: Subject<AiStreamEvent>) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+        signal,
+      });
+
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        this.zone.run(() => {
+          subj.next({ type: 'error', code: 'http_error', message: `HTTP ${res.status}: ${errText}` });
+          subj.complete();
+          this.streaming.set(false);
+        });
+        return;
+      }
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let assistantText = '';
+      const toolCalls: AiToolCall[] = [];
+      const segments: AiMessageSegment[] = [];
+      let finished = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (finished) break;
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith(':')) continue;
+          if (trimmed.startsWith('event:')) continue;
+          if (!trimmed.startsWith('data:')) continue;
+
+          let data: any;
+          try { data = JSON.parse(trimmed.slice(5).trim()); } catch { continue; }
+
+          this.zone.run(() => {
+            if (finished) return;
+            const event = data as AiStreamEvent;
+            subj.next(event);
+
+            if (event.type === 'message') {
+              const txt = (event as any).text || '';
+              assistantText += txt;
+              // Track segment: append to last text segment or create new one
+              let last = segments[segments.length - 1];
+              if (!last || last.type !== 'text') {
+                last = { type: 'text', content: '' };
+                segments.push(last);
+              }
+              last.content = (last.content || '') + txt;
+            }
+            if (event.type === 'tool.end') {
+              const tc: AiToolCall = {
+                id: (event as any).id,
+                name: (event as any).name,
+                args: (event as any).args,
+                result: (event as any).result,
+                duration: (event as any).duration,
+                status: (event as any).status,
+              };
+              toolCalls.push(tc);
+              // Track segment: append to last tools segment or create new one
+              let last = segments[segments.length - 1];
+              if (!last || last.type !== 'tools') {
+                last = { type: 'tools', toolCalls: [] };
+                segments.push(last);
+              }
+              last.toolCalls = [...(last.toolCalls || []), tc];
+            }
+            if (event.type === 'question') {
+              this.pendingQuestion.set({
+                text: (event as any).text,
+                questionType: (event as any).questionType || 'text',
+                options: (event as any).options,
+              });
+            }
+            if ((event as any).type === 'thread.title') {
+              const cur = this.currentThread();
+              if (cur) {
+                this.currentThread.set({ ...cur, title: (event as any).title });
+              }
+            }
+            if (event.type === 'done') {
+              finished = true;
+              // Add assistant message with segments preserving execution order
+              if (assistantText || toolCalls.length) {
+                const assistantMsg: AiMessage = {
+                  threadId: this.currentThread()?._id || '',
+                  role: 'assistant',
+                  content: assistantText,
+                  toolCalls: toolCalls.length ? [...toolCalls] : undefined,
+                  segments: segments.length > 1 ? [...segments] : undefined,
+                  question: this.pendingQuestion() || undefined,
+                };
+                this.messages.update(msgs => [...msgs, assistantMsg]);
+              }
+              this.streaming.set(false);
+              subj.complete();
+            }
+          });
+        }
+      }
+
+      // Stream ended without explicit done
+      this.zone.run(() => {
+        this.streaming.set(false);
+        if (!subj.closed) subj.complete();
+      });
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return;
+      this.zone.run(() => {
+        subj.next({ type: 'error', code: 'stream_error', message: e?.message || 'Connection failed' });
+        this.streaming.set(false);
+        subj.complete();
+      });
+    }
+  }
+
+  // ── Answer a question (continue conversation) ──
+  answerQuestion(value: any) {
+    const q = this.pendingQuestion();
+    if (!q) return;
+    this.pendingQuestion.set(null);
+    return this.sendMessage('', { questionText: q.text, value });
+  }
+
+  // ── Action answer (e.g. credential created) ──
+  answerAction(actionType: string, result: any) {
+    this.pendingQuestion.set(null);
+    return this.sendMessage('', { actionType, result });
+  }
+
+  // ── Context ──
+  getContext(): Observable<any> {
+    return this.api.get<any>('/api/ai/context', { workspaceId: this.wsId() });
+  }
+
+  updateCompanyContext(data: any): Observable<any> {
+    return this.api.put<any>('/api/ai/context/company', data, { workspaceId: this.wsId() });
+  }
+
+  updateWorkspaceContext(data: any): Observable<any> {
+    return this.api.put<any>('/api/ai/context/workspace', data, { workspaceId: this.wsId() });
+  }
+
+  updateUserContext(data: any): Observable<any> {
+    return this.api.put<any>('/api/ai/context/user', data, { workspaceId: this.wsId() });
+  }
+
+  // ── Tools ──
+  searchTools(query: string, provider?: string): Observable<any> {
+    const params: any = { q: query, workspaceId: this.wsId() };
+    if (provider) params.provider = provider;
+    return this.api.get<any>('/api/ai/tools', params);
+  }
+
+  // ── Quick send (auto-create thread if needed) ──
+  async quickSend(content: string, mode?: string) {
+    if (!this.currentThread()) {
+      await this.createThread(mode || 'chat');
+    }
+    return this.sendMessage(content);
+  }
+}
