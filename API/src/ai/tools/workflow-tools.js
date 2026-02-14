@@ -643,7 +643,7 @@ function createWorkflowExecutor(metadata, emit) {
       upstreamOutputs.push(info);
     }
 
-    return { upstreamOutputs, payloadFields, allKnownExpressions };
+    return { upstreamOutputs, payloadFields, allKnownExpressions, simFields };
   }
 
   /** Generate a node ID matching frontend format: type_slug_random */
@@ -1329,8 +1329,14 @@ function createWorkflowExecutor(metadata, emit) {
                   badExpressions.push(`⚠ {{ ${expr} }} : champ "${refField}" introuvable dans la sortie de "${upstreamNode.name}" (${upstreamNode.template}). Champs disponibles : ${validFields.join(', ')}.`);
                 }
               }
-              // If nodeId is not a direct predecessor, it might still be valid (referencing an earlier node in the flow)
-              // So we only warn if we know the node AND the field doesn't exist — don't warn for unknown nodes
+              // Non-direct predecessor: check simulation data (covers nodes behind conditions/loops)
+              if (!upstreamNode && upstream.simFields && upstream.simFields.has(refNodeId)) {
+                const sf = upstream.simFields.get(refNodeId);
+                if (!sf.has(refField)) {
+                  const simNodeFields = [...sf].slice(0, 15);
+                  badExpressions.push(`⚠ {{ ${expr} }} : champ "${refField}" introuvable dans la sortie simulée du node "${refNodeId}". Champs disponibles : ${simNodeFields.join(', ')}.`);
+                }
+              }
             }
           }
 
@@ -1342,7 +1348,20 @@ function createWorkflowExecutor(metadata, emit) {
               .map(u => `${u.name} (${u.nodeId}) : ${u.availableExpressions.map(e => e.expression).join(', ')}`)
               .join(' | ');
             if (upstreamSummary) {
-              warnings.push(`📋 Expressions correctes disponibles : ${upstreamSummary}`);
+              warnings.push(`📋 Expressions directes disponibles : ${upstreamSummary}`);
+            }
+            // Include simulation-derived expressions for non-direct predecessors (behind conditions/loops)
+            if (upstream.simFields && upstream.simFields.size) {
+              const directIds = new Set(upstream.upstreamOutputs.map(u => String(u.nodeId)));
+              const simSummary = [];
+              for (const [nid, fields] of upstream.simFields) {
+                if (directIds.has(nid)) continue; // already shown in upstreamSummary
+                const flds = [...fields].slice(0, 10);
+                simSummary.push(`${nid} : ${flds.map(f => `{{ ${nid}.${f} }}`).join(', ')}`);
+              }
+              if (simSummary.length) {
+                warnings.push(`📋 Expressions simulées (nodes en amont via conditions/boucles) : ${simSummary.join(' | ')}`);
+              }
             }
             if (upstream.payloadFields.size) {
               warnings.push(`📋 Champs payload disponibles (depuis les prédécesseurs) : ${[...upstream.payloadFields].join(', ')}`);
@@ -1491,6 +1510,29 @@ function createWorkflowExecutor(metadata, emit) {
       const result = { success: true, scenarioCount: scenarios.length, mapping: best.mapping, variants, upstreamOutputs: upstream.upstreamOutputs };
       if (upstream.payloadFields.size) {
         result.payloadFields = [...upstream.payloadFields];
+      }
+      // Include ALL available expressions (direct + simulation) for complete coverage
+      if (upstream.allKnownExpressions.size) {
+        result.availableExpressions = [...upstream.allKnownExpressions.keys()].map(e => `{{ ${e} }}`);
+      }
+      // Include simulation-derived expressions for non-direct predecessors (behind conditions/loops)
+      if (upstream.simFields && upstream.simFields.size) {
+        const directIds = new Set(upstream.upstreamOutputs.map(u => String(u.nodeId)));
+        const simUpstream = [];
+        for (const [nid, fields] of upstream.simFields) {
+          if (directIds.has(nid)) continue;
+          const nodeInGraph = (g.nodes || []).find(n => String(n.id) === nid);
+          const nodeName = nodeInGraph?.data?.model?.name || nid;
+          simUpstream.push({
+            nodeId: nid,
+            name: nodeName,
+            note: 'non-direct predecessor (derrière condition/boucle)',
+            availableExpressions: [...fields].map(f => ({ field: f, expression: `{{ ${nid}.${f} }}` })),
+          });
+        }
+        if (simUpstream.length) {
+          result.upstreamSimulated = simUpstream;
+        }
       }
       return result;
     },
