@@ -900,16 +900,39 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
             return item;
           });
         }
-        // Fallback: for nodes with empty preview, try output handle schema
+        // Fallback: for nodes with empty preview, try output handle schema or loop item
+        const sc = (this.simScenarios as any)?.[this.simSelectedIndex];
         for (const [nid, items] of Object.entries(map)) {
           if ((items as any[]).length > 0) continue;
           const nd = (this.viewNodes || []).find((n: any) => String(n.id) === nid);
           const tmpl = (nd as any)?.data?.model?.templateObj;
           if (!tmpl) continue;
+          const kind = String(tmpl.type || tmpl.nodeKind || '').toLowerCase();
+          // Loop nodes: build preview from msg[loopNodeId] or msg.loop in the scenario msgIn
+          // Structure: item (object with children), index (number), length (number)
+          if (kind === 'loop') {
+            try {
+              const loopNodeKey = sc?.msgIn?.[nid];
+              const loopItem = loopNodeKey?.item || sc?.msgIn?.loop?.item;
+              const loopOwner = sc?.msgIn?._nodes?.__loopOwner;
+              if (loopItem && typeof loopItem === 'object' && (String(loopOwner) === nid || loopNodeKey)) {
+                const children = Object.entries(loopItem).map(([ck, cv]: [string, any], ci: number) => ({
+                  id: `loop_${nid}_item_${ci}`, name: ck, type: cv === null ? 'null' : (Array.isArray(cv) ? 'array' : typeof cv)
+                }));
+                map[nid] = [
+                  { id: `loop_${nid}_item`, name: 'item', type: 'object', children },
+                  { id: `loop_${nid}_index`, name: 'index', type: 'number' },
+                  { id: `loop_${nid}_length`, name: 'length', type: 'number' }
+                ];
+                continue;
+              }
+            } catch {}
+          }
+          // Generic fallback: try any output handle with schema fields (ok, or first with schema)
           const outs = Array.isArray(tmpl.outputHandles) ? tmpl.outputHandles : [];
-          const okH = outs.find((h: any) => String(h?.id) === 'ok') || outs[0] || null;
-          if (okH?.schema?.fields && Array.isArray(okH.schema.fields)) {
-            map[nid] = okH.schema.fields.filter((f: any) => f.key).map((f: any, i: number) => ({
+          const withSchema = outs.find((h: any) => h?.schema?.fields?.length) || null;
+          if (withSchema?.schema?.fields && Array.isArray(withSchema.schema.fields)) {
+            map[nid] = withSchema.schema.fields.filter((f: any) => f.key).map((f: any, i: number) => ({
               id: `sch_${nid}_${i}`, name: String(f.key || f.name || `field_${i}`), type: String(f.type || 'text')
             }));
           }

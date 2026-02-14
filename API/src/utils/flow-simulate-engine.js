@@ -331,6 +331,32 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
       return startedSeq.map(id => map.get(String(id))).filter(Boolean);
     } catch { return trace; }
   })();
+  // Post-process: build resultPreview for loop nodes that never got node.done
+  // (happens when the target node is inside the loop body — the loop is still iterating)
+  try {
+    for (const te of orderedTrace) {
+      if (te.kind === 'loop' && (!te.resultPreview || !te.resultPreview.length)) {
+        // Get loop item from msg[loopNodeId] (set by engine) or fallback to msg.loop
+        const loopNodeKey = captured?.msgIn?.[te.nodeId];
+        const loopCtx = captured?.msgIn?.loop;
+        const loopOwner = captured?.msgIn?._nodes?.__loopOwner;
+        const itemData = loopNodeKey?.item || loopCtx?.item;
+        if (itemData && typeof itemData === 'object' && (String(loopOwner) === String(te.nodeId) || loopNodeKey)) {
+          // Build preview: item (object with children), index (number), length (number)
+          const itemChildren = Object.entries(itemData).map(([k, v]) => ({
+            key: k, type: v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v
+          }));
+          te.resultPreview = [
+            { key: 'item', type: 'object', children: itemChildren },
+            { key: 'index', type: 'number' },
+            { key: 'length', type: 'number' }
+          ];
+          te.outputsCount = 2 + itemChildren.length;
+          if (!te.finishedAt) te.finishedAt = te.startedAt;
+        }
+      }
+    }
+  } catch {}
   return { scenarios: [ { id: 'engine', index: 0, label: 'Simulation (engine)', msgIn: captured.msgIn, argsPre, argsPost, path: { edges: takenEdges }, trace: orderedTrace } ] };
 }
 

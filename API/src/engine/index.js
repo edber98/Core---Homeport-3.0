@@ -504,6 +504,8 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
         // Expose item/index under msg.loop and optionally payload
         try { msgClone.loop[itemVar] = mapped; } catch {}
         try { msgClone.loop[indexVar] = i; } catch {}
+        // Expose loop iteration data under msg[nodeId] for expression access: {{ loop_xxx.item.field }}
+        try { msgClone[node.id] = { item: mapped, index: i, length: items.length }; } catch {}
         if (perItemPayload) {
           try { msgClone.payload = (mapped && typeof mapped === 'object') ? JSON.parse(JSON.stringify(mapped)) : mapped; } catch { msgClone.payload = mapped; }
           try {
