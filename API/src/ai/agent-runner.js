@@ -179,14 +179,17 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
           break;
 
         case 'tool_use_start':
+          if (process.env.AI_DEBUG) console.log(`[agent] >> tool.start: ${event.name} (id=${event.id})`);
           yield { type: 'tool.start', id: event.id, name: event.name };
           break;
 
         case 'tool_input_delta':
+          if (process.env.AI_DEBUG) console.log(`[agent] >> tool.input_delta: ${event.name} +${(event.text || '').length}chars`);
           yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
           break;
 
         case 'tool_use_end':
+          if (process.env.AI_DEBUG) console.log(`[agent] >> tool_use_end: ${event.name} input=${JSON.stringify(event.input || {}).slice(0, 200)}`);
           pendingToolCalls.push({ id: event.id, name: event.name, input: event.input });
           break;
 

@@ -97,6 +97,7 @@ async function* streamOpenAI(messages, tools, config) {
           }
           if (tc.function?.arguments) {
             b.arguments += tc.function.arguments;
+            if (process.env.AI_DEBUG) console.log(`[llm-openai] input_delta: ${b.name} +${tc.function.arguments.length}chars`);
             yield { type: 'tool_input_delta', index: idx, id: b.id, name: b.name, text: tc.function.arguments };
           }
         }

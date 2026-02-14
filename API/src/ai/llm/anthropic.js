@@ -95,6 +95,7 @@ async function* streamAnthropic(messages, tools, config) {
           }
           if (data.delta?.type === 'input_json_delta' && data.delta.partial_json) {
             currentToolArgs += data.delta.partial_json;
+            if (process.env.AI_DEBUG) console.log(`[llm-anthropic] input_json_delta: ${currentToolName} +${data.delta.partial_json.length}chars`);
             yield { type: 'tool_input_delta', index: currentBlockIndex, id: currentToolId, name: currentToolName, text: data.delta.partial_json };
           }
           break;

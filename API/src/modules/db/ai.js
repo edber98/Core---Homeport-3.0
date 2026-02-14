@@ -538,6 +538,7 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.start': {
+            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.start → ${event.name} (id=${event.id})`);
             // Ensure we have a tools segment
             let lastSeg = segments[segments.length - 1];
             if (!lastSeg || lastSeg.type !== 'tools') {
@@ -551,6 +552,7 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.input_delta':
+            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
             send(event);
             break;
 
