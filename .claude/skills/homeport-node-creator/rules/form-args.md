@@ -277,7 +277,48 @@ Le format d'affichage dans le viewer (exec-result-viewer) s'adapte automatiqueme
 }
 ```
 
+### email - Champ email
+
+Champ texte avec `type="email"` HTML5 (clavier mobile adapté, validation navigateur).
+Supporte `secret`, `expression`, et les validators `minLength`/`maxLength`/`pattern`.
+
+```json
+{
+  "type": "email",
+  "key": "contact_email",
+  "label": "Adresse email",
+  "placeholder": "exemple@email.com",
+  "col": { "xs": 24, "md": 12 },
+  "default": "",
+  "secret": false,
+  "expression": { "allow": true },
+  "validators": [
+    { "type": "required" },
+    { "type": "pattern", "value": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$" }
+  ]
+}
+```
+
+### tel - Champ téléphone
+
+Champ texte avec `type="tel"` HTML5 (clavier numérique sur mobile).
+Supporte `secret`, `expression`, et les validators `minLength`/`maxLength`/`pattern`.
+
+```json
+{
+  "type": "tel",
+  "key": "phone_number",
+  "label": "Numéro de téléphone",
+  "placeholder": "+33 6 12 34 56 78",
+  "col": { "xs": 24, "md": 12 },
+  "default": "",
+  "expression": { "allow": true }
+}
+```
+
 ### color - Sélecteur de couleur
+
+Utilise `nz-color-picker`. Options configurables via `color`.
 
 ```json
 {
@@ -285,7 +326,11 @@ Le format d'affichage dans le viewer (exec-result-viewer) s'adapte automatiqueme
   "key": "bg_color",
   "label": "Couleur de fond",
   "col": { "xs": 24, "md": 12 },
-  "default": "#1677ff"
+  "default": "#1677ff",
+  "color": {
+    "showText": true,
+    "allowClear": false
+  }
 }
 ```
 

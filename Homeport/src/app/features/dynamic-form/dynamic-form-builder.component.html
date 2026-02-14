@@ -101,6 +101,21 @@
             <i class="fa-solid fa-tags"></i>
             <span class="quick-label">Tags</span>
           </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('email')" [disabled]="!canQuickAddField" aria-label="Ajouter email">
+            <i class="fa-solid fa-envelope"></i>
+            <span class="quick-label">Email</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('tel')" [disabled]="!canQuickAddField" aria-label="Ajouter téléphone">
+            <i class="fa-solid fa-phone"></i>
+            <span class="quick-label">Tél</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('color')" [disabled]="!canQuickAddField" aria-label="Ajouter couleur">
+            <i class="fa-solid fa-palette"></i>
+            <span class="quick-label">Couleur</span>
+          </button>
         </div>
       </nz-card>
 

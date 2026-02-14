@@ -88,6 +88,9 @@ export class ContextPanelComponent {
       case 'select': return 'fa-solid fa-caret-down';
       case 'radio': return 'fa-regular fa-circle-dot';
       case 'checkbox': return 'fa-regular fa-square-check';
+      case 'email': return 'fa-solid fa-envelope';
+      case 'tel': return 'fa-solid fa-phone';
+      case 'color': return 'fa-solid fa-palette';
       case 'textblock': return 'fa-solid fa-paragraph';
       default: return 'fa-solid fa-square-plus';
     }

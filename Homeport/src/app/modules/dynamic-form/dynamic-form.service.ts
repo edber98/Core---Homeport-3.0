@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -280,7 +280,8 @@ export class DynamicFormService {
                 case 'file': return null;
                 case 'schema_builder': return null;
                 case 'tags': return [];
-                default: return ''; // text / textarea
+                case 'color': return '#1677ff';
+                default: return ''; // text / textarea / email / tel
             }
         }
         return v;

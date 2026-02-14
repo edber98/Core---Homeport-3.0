@@ -45,6 +45,9 @@ import { Subscription } from 'rxjs';
                     <nz-option nzValue="radio" nzLabel="radio"></nz-option>
                     <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
                     <nz-option nzValue="file" nzLabel="file"></nz-option>
+                    <nz-option nzValue="email" nzLabel="email"></nz-option>
+                    <nz-option nzValue="tel" nzLabel="tel"></nz-option>
+                    <nz-option nzValue="color" nzLabel="color"></nz-option>
                     <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
                   </nz-select>
                 </nz-form-control>
@@ -184,6 +187,21 @@ import { Subscription } from 'rxjs';
                   <nz-form-label nzTooltipTitle="Texte d'aide affiché sous le champ"><span>Texte d'aide</span></nz-form-label>
                   <nz-form-control><input nz-input formControlName="file_hint" placeholder="PDF uniquement, max 10 MB" /></nz-form-control>
                 </nz-form-item>
+              </ng-container>
+              <ng-container *ngIf="group.get('type')?.value==='color'">
+                <div class="ins-section-header" style="margin-top:8px;">
+                  <div class="card-title"><span class="t">Couleur — Configuration</span><span class="s">Format et affichage</span></div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Afficher le code hexadécimal"><span>Afficher le texte</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="color_showText"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item class="switch-left">
+                    <nz-form-label nzTooltipTitle="Autoriser la suppression"><span>Effaçable</span></nz-form-label>
+                    <nz-form-control><nz-switch formControlName="color_allowClear"></nz-switch></nz-form-control>
+                  </nz-form-item>
+                </div>
               </ng-container>
               <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                 <nz-form-label>
@@ -390,7 +408,7 @@ import { Subscription } from 'rxjs';
                     <nz-form-label nzFor="fld_default" nzTooltipTitle="Valeur par défaut"><span>Valeur par défaut</span></nz-form-label>
                     <nz-form-control><input nz-input id="fld_default" formControlName="default"/></nz-form-control>
                   </nz-form-item>
-                  <nz-form-item class="toggle-row" *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea'">
+                  <nz-form-item class="toggle-row" *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea' || group.get('type')?.value==='email' || group.get('type')?.value==='tel'">
                     <nz-form-label nzTooltipTitle="Masquer la saisie et l'affichage (secret)"><span>Secret</span></nz-form-label>
                     <nz-form-control>
                       <nz-switch formControlName="secret"></nz-switch>
@@ -398,7 +416,7 @@ import { Subscription } from 'rxjs';
                   </nz-form-item>
                   <div class="ins-section-header"><div class="card-title"><span class="t">Validateurs</span><span class="s">Contraintes et règles</span></div></div>
                   <div class="ins-grid">
-                    <ng-container *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea'">
+                    <ng-container *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea' || group.get('type')?.value==='email' || group.get('type')?.value==='tel'">
                       <nz-form-item>
                         <nz-form-label nzTooltipTitle="Longueur minimale autorisée"><span>Longueur min</span></nz-form-label>
                         <nz-form-control>
@@ -594,7 +612,7 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
     // Required
     if (this.v_required) out.push({ type: 'required' });
     const type = this.group?.get('type')?.value;
-    if (type === 'text' || type === 'textarea') {
+    if (type === 'text' || type === 'textarea' || type === 'email' || type === 'tel') {
       if (typeof this.v_minLength === 'number') out.push({ type: 'minLength', value: this.v_minLength });
       if (typeof this.v_maxLength === 'number') out.push({ type: 'maxLength', value: this.v_maxLength });
       if (this.v_pattern && this.v_pattern.trim()) out.push({ type: 'pattern', value: this.v_pattern });

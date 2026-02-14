@@ -63,7 +63,7 @@ import type {
 type FieldType =
   | 'text' | 'textarea' | 'number' | 'date'
   | 'select' | 'radio' | 'checkbox' | 'cron' | 'file' | 'textblock'
-  | 'schema_builder' | 'tags';
+  | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color';
 
 type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Array<{ label: string; run: () => void }>; };
 
@@ -525,6 +525,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
       file_listType: ['text'],
       file_buttonText: [''],
       file_hint: [''],
+      color_showText: [true],
+      color_allowClear: [false],
       default: [''],
       options: [''],
       textHtml: [''],
@@ -833,6 +835,14 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
         } else {
           delete (f as any).file;
         }
+        if (f.type === 'color') {
+          (f as any).color = {
+            showText: v.color_showText !== false,
+            allowClear: !!v.color_allowClear,
+          };
+        } else {
+          delete (f as any).color;
+        }
           (f as any).default = v.default ?? undefined;
           (f as any).options = this.parseJson(v.options);
           (f as any).validators = this.parseJson(v.validators);
@@ -1067,6 +1077,9 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
       case 'checkbox': return { defaultValue: false } as any;
       case 'cron': return { placeholder: '*/5 * * * *', defaultValue: '' } as any;
       case 'file': return { defaultValue: null } as any;
+      case 'email': return { placeholder: 'exemple@email.com', defaultValue: '' };
+      case 'tel': return { placeholder: '+33 6 12 34 56 78', defaultValue: '' };
+      case 'color': return { defaultValue: '#1677ff' } as any;
       case 'select':
       case 'radio': {
         const opts = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
@@ -1331,6 +1344,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
         file_listType: (obj as any).file?.listType ?? 'text',
         file_buttonText: (obj as any).file?.buttonText ?? '',
         file_hint: (obj as any).file?.hint ?? '',
+        color_showText: (obj as any).color?.showText !== false,
+        color_allowClear: !!(obj as any).color?.allowClear,
         default: (obj as any).default ?? '',
         options: this.stringifyJson((obj as any).options),
         textHtml: (obj as any).textHtml ?? '',
