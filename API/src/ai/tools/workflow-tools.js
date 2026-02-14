@@ -829,11 +829,18 @@ function createWorkflowExecutor(metadata, emit) {
         output_array_field: tpl.output_array_field || null,
         output_schema_field: tpl.output_schema_field || null,
       };
-      // Add output fields info for multi-output nodes
-      if (tpl.output_array_field && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+      // Add output fields info for multi-output nodes (classifiers, conditions, any node with output_array_field)
+      if (tpl.output_array_field) {
         result.isMultiOutput = true;
         result.outputArrayField = tpl.output_array_field;
-        result.dataAccessNote = 'Node multi-output. Lis outputSchema ci-dessus pour connaître les champs de sortie par branche. Accès: {{ nodeId.<champ> }} — JAMAIS d\'index numériques.';
+        let note = `⚠ NODE MULTI-SORTIE. Les sorties sont DYNAMIQUES et dépendent du champ "${tpl.output_array_field}" dans les args (tableau d'objets avec "name"). `
+          + `Séquence : 1) add_node → outputHandles VIDES (normal). 2) set_node_args avec "${tpl.output_array_field}" → retourne les outputHandles générés. `
+          + `3) connect_by_output_name avec les noms retournés. JAMAIS inventer de noms de sortie.`;
+        if (Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
+          note += ` Données par branche : ${tpl.outputSchema.map(f => f.key || f.name).join(', ')} — accès via {{ nodeId.<champ> }}.`;
+        }
+        note += ` Consulte search_manual("multi_output", "workflow") pour les détails.`;
+        result.dataAccessNote = note;
       }
       return result;
     },
@@ -902,7 +909,10 @@ function createWorkflowExecutor(metadata, emit) {
         result.isMultiOutput = true;
         result.outputArrayField = tpl.output_array_field;
         result.outputSchema = tpl.outputSchema.map(f => ({ key: f.key || f.name, type: f.type || 'text' }));
-        result.dataAccessNote = `Node multi-output. Lis outputSchema ci-dessus pour connaître les champs. Accès: {{ ${node.id}.<champ> }} — JAMAIS d'index numériques.`;
+        result.dataAccessNote = `Node multi-output. Les sorties (outputHandles) sont VIDES pour l'instant car elles dépendent des arguments "${tpl.output_array_field}". `
+          + `SÉQUENCE OBLIGATOIRE : 1) set_node_args avec le champ "${tpl.output_array_field}" (tableau d'objets avec "name") → les sorties seront générées automatiquement et retournées dans la réponse. `
+          + `2) Utilise les outputHandles retournés par set_node_args pour connect_by_output_name. `
+          + `NE JAMAIS inventer de noms de sortie — utilise UNIQUEMENT les noms retournés.`;
       }
       return result;
     },
@@ -1156,11 +1166,52 @@ function createWorkflowExecutor(metadata, emit) {
       // Recalculate templateChecksum after args change
       g.nodes[idx].data.model.templateChecksum = argsChecksum(tpl.args || {});
 
+      // For multi-output nodes: auto-cleanup stale edges pointing to old handles that no longer exist
+      // When categories change, old _ids are gone → edges become orphan → must be removed
+      let removedStaleEdges = 0;
+      if (oaf && Array.isArray(g.nodes[idx].data.model.context[oaf])) {
+        const newHandleIds = new Set(getOutputHandleIds(g.nodes[idx]));
+        const nid = String(input.nodeId);
+        const before = g.edges.length;
+        g.edges = (g.edges || []).filter(e => {
+          if (String(e.source) !== nid) return true; // not from this node
+          const sh = String(e.sourceHandle || '');
+          // Keep edges whose sourceHandle still exists in the new handles
+          if (newHandleIds.has(sh)) return true;
+          // Remove stale edge (handle no longer exists)
+          return false;
+        });
+        removedStaleEdges = before - g.edges.length;
+      }
+
       // Emit full node replace so frontend gets _id changes + output handles
-      emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
+      if (removedStaleEdges > 0) {
+        // Edges changed too → emit full snapshot
+        emitSnapshot();
+      } else {
+        emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
+      }
       emit({ type: 'args', nodeId: input.nodeId, args });
       const result = { success: true, keys: Object.keys(args) };
       if (warnings.length) result.warnings = warnings;
+
+      // For multi-output nodes (classifiers, etc.): return the newly generated outputHandles
+      // so the AI can immediately use connect_by_output_name with the correct names
+      if (oaf && Array.isArray(g.nodes[idx].data.model.context[oaf])) {
+        const handleIds = getOutputHandleIds(g.nodes[idx]);
+        result.outputHandles = handleIds.map(hid => ({
+          id: hid, name: getOutputHandleName(g.nodes[idx], hid),
+        }));
+        result.isMultiOutput = true;
+        if (removedStaleEdges > 0) {
+          result.removedStaleEdges = removedStaleEdges;
+          result.multiOutputNote = `⚠ ${removedStaleEdges} connexion(s) obsolète(s) supprimée(s) automatiquement (les anciens handles n'existent plus). `
+            + `Les nouvelles sorties sont ci-dessus (outputHandles). Tu DOIS reconnecter les branches nécessaires avec connect_by_output_name en utilisant ces noms.`;
+        } else {
+          result.multiOutputNote = `Les sorties ont été générées depuis "${oaf}". Utilise connect_by_output_name avec les noms ci-dessus (outputHandles[].name) pour connecter chaque branche. NE JAMAIS inventer de nom — utilise UNIQUEMENT ceux retournés ici.`;
+        }
+      }
+
       return result;
     },
 

@@ -42,9 +42,16 @@ Si flowId défini → NE PAS \`create_flow\`. Commencer par \`list_graph\`.
 - "si X alors Y" → **condition**
 Un classifier EST un branchement. NE PAS ajouter une condition après un classifier.
 
+### Nodes multi-output (classifiers) — SÉQUENCE SPÉCIALE
+Les classifiers et nodes avec \`output_array_field\` ont des sorties DYNAMIQUES qui dépendent des arguments.
+- \`add_node\` retourne des outputHandles VIDES (c'est normal — les sorties n'existent pas encore)
+- \`set_node_args\` avec le tableau (ex: categories) → GÉNÈRE les sorties et les retourne dans la réponse
+- Utilise UNIQUEMENT les noms de \`outputHandles\` retournés par \`set_node_args\` pour \`connect_by_output_name\`
+- **JAMAIS inventer de noms de sortie** — ils sont auto-générés par le backend
+
 ### Référence détaillée
 Pour les détails → \`search_manual(query, "workflow")\` → \`get_manual_section(topic)\`.
-Topics utiles : phase_rules, pattern_detection, build_procedure, loops, conditions_classifiers, expressions, connections, template_search.`;
+Topics utiles : phase_rules, pattern_detection, build_procedure, loops, multi_output, conditions_classifiers, expressions, connections, template_search.`;
 }
 
 module.exports = { buildWorkflowPrompt };
