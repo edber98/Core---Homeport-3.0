@@ -9,11 +9,16 @@ export class AiAudioService {
   recording = signal(false);
   transcribing = signal(false);
   recordingDuration = signal(0);
+  /** Raw waveform time-domain data (0-255, 128 = silence) updated ~30fps */
+  waveformData = signal<Uint8Array>(new Uint8Array(0));
 
   private mediaRecorder: MediaRecorder | null = null;
   private chunks: Blob[] = [];
   private timerInterval: any = null;
   private startTime = 0;
+  private audioCtx: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private animFrameId: number | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -26,6 +31,14 @@ export class AiAudioService {
       this.mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) this.chunks.push(e.data);
       };
+
+      // Setup Web Audio analyser for waveform
+      this.audioCtx = new AudioContext();
+      const source = this.audioCtx.createMediaStreamSource(stream);
+      this.analyser = this.audioCtx.createAnalyser();
+      this.analyser.fftSize = 256;
+      source.connect(this.analyser);
+      this.startWaveformLoop();
 
       this.mediaRecorder.start();
       this.recording.set(true);
@@ -87,13 +100,38 @@ export class AiAudioService {
     return subject.asObservable();
   }
 
+  private startWaveformLoop() {
+    const loop = () => {
+      if (!this.analyser) return;
+      const data = new Uint8Array(this.analyser.frequencyBinCount);
+      this.analyser.getByteTimeDomainData(data);
+      this.waveformData.set(data);
+      this.animFrameId = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  private stopWaveformLoop() {
+    if (this.animFrameId != null) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
+    this.waveformData.set(new Uint8Array(0));
+  }
+
   private cleanup() {
     this.recording.set(false);
     this.recordingDuration.set(0);
+    this.stopWaveformLoop();
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
+    try {
+      this.audioCtx?.close();
+    } catch {}
+    this.audioCtx = null;
+    this.analyser = null;
     try {
       this.mediaRecorder?.stream?.getTracks()?.forEach(t => t.stop());
     } catch {}

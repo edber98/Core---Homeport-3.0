@@ -194,30 +194,44 @@ interface StreamTool {
 
     <!-- Input -->
     <div class="input-bar">
-      <nz-input-group [nzSuffix]="suffixTpl" [nzPrefix]="prefixTpl" nzSize="large">
-        <input
+      <!-- Normal text input -->
+      <div class="input-row" *ngIf="!audio.recording()">
+        <div class="input-prefix">
+          <button nz-button nzType="text" nzSize="small"
+            (click)="toggleMic()"
+            [disabled]="ai.streaming() || audio.transcribing()"
+            nz-tooltip nzTooltipTitle="Enregistrement vocal">
+            <span nz-icon [nzType]="audio.transcribing() ? 'loading' : 'audio'" nzTheme="outline"
+              [nzSpin]="audio.transcribing()"></span>
+          </button>
+        </div>
+        <textarea
           nz-input
           [(ngModel)]="inputText"
           placeholder="Écris un message..."
-          (keydown.enter)="send()"
-          [disabled]="ai.streaming() || audio.recording() || audio.transcribing()" />
-      </nz-input-group>
-      <ng-template #prefixTpl>
-        <button nz-button nzType="text" nzSize="small"
-          [class.mic-recording]="audio.recording()"
-          (click)="toggleMic()"
-          [disabled]="ai.streaming() || audio.transcribing()"
-          nz-tooltip [nzTooltipTitle]="audio.recording() ? 'Arrêter' : 'Enregistrement vocal'">
-          <span nz-icon [nzType]="audio.transcribing() ? 'loading' : 'audio'" nzTheme="outline"
-            [nzSpin]="audio.transcribing()"></span>
+          (keydown)="onInputKeydown($event)"
+          [nzAutosize]="{ minRows: 1, maxRows: 6 }"
+          [disabled]="ai.streaming() || audio.transcribing()">
+        </textarea>
+        <div class="input-suffix">
+          <button nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="ai.streaming() || !inputText.trim()">
+            <span nz-icon [nzType]="ai.streaming() ? 'loading' : 'send'" nzTheme="outline"></span>
+          </button>
+        </div>
+      </div>
+      <!-- Recording waveform -->
+      <div class="input-row recording-row" *ngIf="audio.recording()">
+        <canvas #waveformCanvas class="waveform-canvas"></canvas>
+        <span class="mic-timer">{{ audio.recordingDuration() }}s</span>
+        <button nz-button nzType="text" nzShape="circle" nzSize="small" class="rec-btn rec-cancel" (click)="cancelMic()"
+          nz-tooltip nzTooltipTitle="Annuler">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
         </button>
-        <span class="mic-timer" *ngIf="audio.recording()">{{ audio.recordingDuration() }}s</span>
-      </ng-template>
-      <ng-template #suffixTpl>
-        <button nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="ai.streaming() || !inputText.trim() || audio.recording()">
-          <span nz-icon [nzType]="ai.streaming() ? 'loading' : 'send'" nzTheme="outline"></span>
+        <button nz-button nzType="text" nzShape="circle" nzSize="small" class="rec-btn rec-confirm" (click)="confirmMic()"
+          nz-tooltip nzTooltipTitle="Envoyer">
+          <span nz-icon nzType="check" nzTheme="outline"></span>
         </button>
-      </ng-template>
+      </div>
     </div>
   `,
   styles: [`
@@ -281,9 +295,19 @@ interface StreamTool {
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
     .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
-    .mic-recording { color: #ff4d4f !important; animation: mic-pulse 1s ease-in-out infinite; }
-    @keyframes mic-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .mic-timer { font-size: 11px; color: #ff4d4f; font-weight: 600; margin-left: 2px; }
+    .input-row { display: flex; align-items: flex-start; gap: 4px; border: 1px solid #d9d9d9; border-radius: 8px; padding: 4px 8px; transition: border-color 0.2s; }
+    .input-row:focus-within { border-color: #1677ff; }
+    .input-row textarea { flex: 1; border: none !important; outline: none !important; box-shadow: none !important; resize: none; padding: 4px 0; font-size: 14px; line-height: 1.5; background: transparent; }
+    .input-row textarea:focus { box-shadow: none !important; }
+    .input-prefix, .input-suffix { display: flex; align-items: center; flex-shrink: 0; height: 29px; }
+    .recording-row { align-items: center !important; gap: 8px !important; padding: 6px 12px !important; overflow: hidden; }
+    .waveform-canvas { flex: 1; width: 0; height: 32px; min-width: 0; display: block; }
+    .mic-timer { font-size: 12px; color: #ff4d4f; font-weight: 600; flex-shrink: 0; min-width: 28px; text-align: center; }
+    .rec-btn { flex-shrink: 0; }
+    .rec-cancel { color: #999 !important; }
+    .rec-cancel:hover { color: #ff4d4f !important; }
+    .rec-confirm { color: #52c41a !important; }
+    .rec-confirm:hover { color: #389e0d !important; }
     .system-msg { background: #f8f9fa; border-left: 3px solid #d9d9d9; padding: 8px 12px; font-size: 12px; margin: 8px 0; border-radius: 0 6px 6px 0; }
     .system-context { display: flex; align-items: center; gap: 6px; color: #999; }
     .system-label { font-weight: 500; }
@@ -301,6 +325,7 @@ export class AiChatComponent {
   expandedMsgs = new Set<any>();
   thinkingIteration = 0;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
+  @ViewChild('waveformCanvas') waveformCanvas?: ElementRef<HTMLCanvasElement>;
 
   private stopFn?: () => void;
 
@@ -309,6 +334,49 @@ export class AiChatComponent {
       this.ai.messages();
       this.scrollToBottom();
     });
+    // Draw waveform when recording
+    effect(() => {
+      const data = this.audio.waveformData();
+      if (data.length && this.waveformCanvas?.nativeElement) {
+        this.drawWaveform(data, this.waveformCanvas.nativeElement);
+      }
+    });
+  }
+
+  private drawWaveform(data: Uint8Array, canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    const w = rect.width;
+    const h = rect.height;
+    ctx.clearRect(0, 0, w, h);
+
+    // Draw bars from the center
+    const barCount = 64;
+    const step = Math.floor(data.length / barCount);
+    const barWidth = Math.max(1.5, (w / barCount) * 0.6);
+    const gap = w / barCount;
+    const midY = h / 2;
+
+    ctx.fillStyle = '#333';
+    for (let i = 0; i < barCount; i++) {
+      const sample = data[i * step] || 128;
+      const amplitude = Math.abs(sample - 128) / 128;
+      const barH = Math.max(2, amplitude * (h * 0.9));
+      const x = i * gap + (gap - barWidth) / 2;
+      ctx.fillRect(x, midY - barH / 2, barWidth, barH);
+    }
+  }
+
+  onInputKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.send();
+    }
   }
 
   async send() {
@@ -325,27 +393,7 @@ export class AiChatComponent {
   }
 
   async toggleMic() {
-    if (this.audio.recording()) {
-      // Stop recording and transcribe
-      try {
-        const blob = await this.audio.stopAndGetBlob();
-        this.cdr.detectChanges();
-        this.audio.transcribe(blob).subscribe({
-          next: (text: string) => {
-            if (text.trim()) {
-              this.inputText = text;
-              this.cdr.detectChanges();
-              this.send();
-            }
-            this.cdr.detectChanges();
-          },
-          error: () => {
-            this.cdr.detectChanges();
-          },
-        });
-      } catch { this.cdr.detectChanges(); }
-    } else {
-      // Start recording
+    if (!this.audio.recording()) {
       try {
         await this.audio.startRecording();
         this.cdr.detectChanges();
@@ -354,6 +402,31 @@ export class AiChatComponent {
         this.cdr.detectChanges();
       }
     }
+  }
+
+  cancelMic() {
+    this.audio.cancelRecording();
+    this.cdr.detectChanges();
+  }
+
+  async confirmMic() {
+    try {
+      const blob = await this.audio.stopAndGetBlob();
+      this.cdr.detectChanges();
+      this.audio.transcribe(blob).subscribe({
+        next: (text: string) => {
+          if (text.trim()) {
+            this.inputText = text;
+            this.cdr.detectChanges();
+            this.send();
+          }
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.cdr.detectChanges();
+        },
+      });
+    } catch { this.cdr.detectChanges(); }
   }
 
   onAnswer(answer: any) {
