@@ -33,9 +33,11 @@ const TOOL_LABELS: Record<string, string> = {
 
 interface StreamSegment {
   type: 'text' | 'tools';
-  html?: string;        // rendered markdown HTML for text segments
-  rawText?: string;      // raw text for accumulation
-  tools?: StreamTool[];  // tools in a tools segment
+  html?: string;            // rendered markdown HTML for text segments
+  rawText?: string;          // raw text for accumulation
+  tools?: StreamTool[];      // tools in a tools segment
+  reasoningText?: string;    // raw reasoning text accumulated during tools phase
+  reasoningHtml?: string;    // rendered HTML for reasoning text
 }
 
 interface StreamTool {
@@ -69,14 +71,16 @@ interface StreamTool {
                    [innerHTML]="seg.html"></div>
 
               <!-- Tools segment: reasoning block -->
-              <div class="reasoning-block" *ngIf="seg.type === 'tools' && seg.tools?.length"
+              <div class="reasoning-block" *ngIf="seg.type === 'tools' && (seg.tools?.length || seg.reasoningHtml)"
                    [class.reasoning-active]="isLastSegment(i) && ai.streaming()">
                 <div class="reasoning-header">
                   <span nz-icon nzType="loading" nzTheme="outline" *ngIf="isLastSegment(i) && ai.streaming()"></span>
                   <span nz-icon nzType="bulb" nzTheme="outline" *ngIf="!isLastSegment(i) || !ai.streaming()"></span>
                   <span>Raisonnement</span>
                 </div>
-                <div class="reasoning-tools">
+                <!-- Reasoning text (AI's thinking streamed in real-time) -->
+                <div class="reasoning-text" *ngIf="seg.reasoningHtml" [innerHTML]="seg.reasoningHtml"></div>
+                <div class="reasoning-tools" *ngIf="seg.tools?.length">
                   <ng-container *ngFor="let t of seg.tools; trackBy: trackTool">
                     <nz-tag
                       class="tool-tag"
@@ -151,6 +155,12 @@ interface StreamTool {
     .reasoning-block.reasoning-active { border-left-color: #722ed1; opacity: 0.7; animation: pulse-reason 2s ease-in-out infinite; }
     .reasoning-block:not(.reasoning-active) { opacity: 0.5; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; }
+    .reasoning-text ::ng-deep p { margin: 0 0 4px; }
+    .reasoning-text ::ng-deep p:last-child { margin: 0; }
+    .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
+    .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
+    .reasoning-text ::ng-deep li { margin: 1px 0; }
     .reasoning-tools { display: flex; flex-wrap: wrap; gap: 4px; }
     @keyframes pulse-reason { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.5; } }
     .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -217,7 +227,7 @@ export class AiChatComponent {
         this.cdr.detectChanges();
       },
       complete: () => {
-        setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
+        this.segments = [];
         this.stopFn = undefined;
         this.cdr.detectChanges();
       },
@@ -230,8 +240,16 @@ export class AiChatComponent {
       case 'message': {
         const text = (ev as any).text || '';
         const last = this.segments[this.segments.length - 1];
-        if (last && last.type === 'text') {
-          // Append to existing text segment — create NEW object
+        // Check if we're in a "reasoning phase" (tools have started)
+        const hasToolsPhase = this.segments.some(s => s.type === 'tools');
+
+        if (last && last.type === 'tools') {
+          // Text arriving during tools phase → add as reasoning text inside the tools segment
+          const raw = (last.reasoningText || '') + text;
+          const updated: StreamSegment = { ...last, reasoningText: raw, reasoningHtml: this.renderMd(raw) };
+          this.segments = [...this.segments.slice(0, -1), updated];
+        } else if (last && last.type === 'text') {
+          // Append to existing text segment
           const raw = (last.rawText || '') + text;
           const updated: StreamSegment = { type: 'text', rawText: raw, html: this.renderMd(raw) };
           this.segments = [...this.segments.slice(0, -1), updated];
@@ -245,11 +263,21 @@ export class AiChatComponent {
         const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'running' };
         const last = this.segments[this.segments.length - 1];
         if (last && last.type === 'tools') {
-          // Add tool to existing tools segment — create NEW object
-          const updated: StreamSegment = { type: 'tools', tools: [...(last.tools || []), tool] };
+          // Add tool to existing tools segment — preserve reasoning text
+          const updated: StreamSegment = { ...last, tools: [...(last.tools || []), tool] };
           this.segments = [...this.segments.slice(0, -1), updated];
+        } else if (last && last.type === 'text' && this.segments.length > 1) {
+          // Text before this tool call was reasoning — absorb it into a new tools segment
+          const reasoningText = last.rawText || '';
+          const newSeg: StreamSegment = {
+            type: 'tools',
+            tools: [tool],
+            reasoningText: reasoningText || undefined,
+            reasoningHtml: reasoningText ? this.renderMd(reasoningText) : undefined,
+          };
+          this.segments = [...this.segments.slice(0, -1), newSeg];
         } else {
-          // New tools segment
+          // First tools segment
           this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
         }
         break;
@@ -275,7 +303,8 @@ export class AiChatComponent {
         break;
       }
       case 'done':
-        setTimeout(() => { this.segments = []; this.cdr.detectChanges(); }, 100);
+        // Clear segments immediately to avoid duplication with final message from messages signal
+        this.segments = [];
         break;
       // Forward builder-relevant events (patch, snapshot, args, desc, form.update)
       case 'patch':

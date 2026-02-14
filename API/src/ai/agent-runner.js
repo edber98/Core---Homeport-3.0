@@ -36,6 +36,14 @@ function buildSystemPrompt(mode, ctx) {
     prompt += '\n\n## Spécialisation agent\n' + ctx._agentPromptFragment;
   }
 
+  // Inject project memory if available
+  if (ctx._projectMemory && Object.keys(ctx._projectMemory).length) {
+    const lines = Object.entries(ctx._projectMemory).map(([k, v]) =>
+      `- ${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`
+    );
+    prompt += '\n\n## Mémoire du projet\n' + lines.join('\n');
+  }
+
   // Inject custom instructions
   const custom = ctx.user?.preferences?.customInstructions;
   if (custom?.trim()) {
@@ -115,6 +123,9 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     workspaceId: context.workspaceId || metadata?.workspaceId,
   };
   const modeExecutors = createModeExecutors(mode, modeMetadata, emit);
+
+  // Attach metadata to context so meta-tools can access it (project memory, etc.)
+  context._metadata = modeMetadata;
 
   // 2. Build system prompt
   let systemPrompt = buildSystemPrompt(mode, context);

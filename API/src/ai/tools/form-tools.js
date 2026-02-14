@@ -549,6 +549,8 @@ function createFormExecutor(metadata, emit) {
       metadata.formId = form._id;
       schema = defaultSchema;
       emit({ type: 'form.created', form: { id: form.id, _id: String(form._id), name: form.name } });
+      // Signal thread to link to this form and switch mode
+      emit({ type: 'thread.link', mode: 'form', formId: String(form._id), formShortId: form.id });
       return { success: true, formId: form.id };
     },
 

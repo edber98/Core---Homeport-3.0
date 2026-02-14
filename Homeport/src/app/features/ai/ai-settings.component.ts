@@ -90,6 +90,16 @@ import { AiService, AiAvailableAgent } from './ai.service';
               <input nz-input [(ngModel)]="editName" nzSize="small" />
               <label class="ca-label">Description</label>
               <input nz-input [(ngModel)]="editDescription" nzSize="small" />
+              <label class="ca-label">Providers associés</label>
+              <nz-select [(ngModel)]="editAllowedProviders" nzMode="multiple" nzPlaceHolder="Tous les providers" nzSize="small" style="width: 100%">
+                <nz-option *ngFor="let p of availableProviderKeys" [nzValue]="p.key" [nzLabel]="p.name" nzCustomContent>
+                  <div class="provider-opt">
+                    <img *ngIf="p.icon" [src]="p.icon" class="provider-opt-icon" />
+                    <span>{{ p.name }}</span>
+                  </div>
+                </nz-option>
+              </nz-select>
+              <div class="field-hint">L'agent aura accès aux outils de ces providers</div>
               <label class="ca-label">Instructions système</label>
               <textarea nz-input [(ngModel)]="editSystemPrompt" [nzAutosize]="{ minRows: 2, maxRows: 8 }" nzSize="small"></textarea>
               <button nz-button nzType="primary" nzSize="small" (click)="saveEditAgent(a.id)" style="margin-top: 6px">
@@ -110,6 +120,16 @@ import { AiService, AiAvailableAgent } from './ai.service';
           <input nz-input [(ngModel)]="newAgentName" placeholder="Ex : Expert comptabilité" nzSize="small" />
           <label class="ca-label">Description</label>
           <input nz-input [(ngModel)]="newAgentDescription" placeholder="Décrit le rôle de l'agent" nzSize="small" />
+          <label class="ca-label">Providers associés</label>
+          <nz-select [(ngModel)]="newAgentProviders" nzMode="multiple" nzPlaceHolder="Sélectionner les providers" nzSize="small" style="width: 100%">
+            <nz-option *ngFor="let p of availableProviderKeys" [nzValue]="p.key" [nzLabel]="p.name" nzCustomContent>
+              <div class="provider-opt">
+                <img *ngIf="p.icon" [src]="p.icon" class="provider-opt-icon" />
+                <span>{{ p.name }}</span>
+              </div>
+            </nz-option>
+          </nz-select>
+          <div class="field-hint">L'agent aura accès aux outils de ces providers</div>
           <label class="ca-label">Instructions système</label>
           <textarea nz-input [(ngModel)]="newAgentPrompt" placeholder="Instructions spécifiques pour cet agent..." [nzAutosize]="{ minRows: 2, maxRows: 6 }" nzSize="small"></textarea>
           <div class="create-btns">
@@ -136,16 +156,43 @@ import { AiService, AiAvailableAgent } from './ai.service';
 
       <nz-divider></nz-divider>
 
-      <!-- Section 4: Mémoire -->
+      <!-- Section 4: Mémoire projet (si lié à un flow/form) -->
+      <div class="settings-section" *ngIf="projectElementType">
+        <div class="section-title">
+          <span nz-icon nzType="project" nzTheme="outline"></span>
+          Mémoire du projet
+        </div>
+        <div class="section-desc">Informations liées au {{ projectElementType === 'flow' ? 'workflow' : 'formulaire' }} en cours</div>
+        <div *ngIf="projectMemoryKeys.length === 0" class="memory-empty-inline">
+          <span class="empty-hint">Aucune mémoire projet. L'assistant retiendra le contexte du projet au fil des conversations.</span>
+        </div>
+        <div class="memory-list" *ngIf="projectMemoryKeys.length > 0">
+          <div class="memory-item project" *ngFor="let key of projectMemoryKeys">
+            <div class="memory-content">
+              <div class="memory-key">{{ key }}</div>
+              <div class="memory-value">{{ formatMemoryValue(projectMemory[key]) }}</div>
+            </div>
+            <button nz-button nzType="text" nzSize="small" nzDanger
+              nz-popconfirm nzPopconfirmTitle="Supprimer cette mémoire projet ?"
+              (nzOnConfirm)="deleteProjectMemory(key)"
+              nz-tooltip nzTooltipTitle="Supprimer">
+              <span nz-icon nzType="delete" nzTheme="outline"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <nz-divider *ngIf="projectElementType"></nz-divider>
+
+      <!-- Section 5: Mémoire globale -->
       <div class="settings-section">
-        <div class="section-title">Mémoire</div>
-        <div class="section-desc">Informations retenues par l'assistant</div>
-        <div *ngIf="memoryKeys.length === 0" class="memory-empty">
-          <nz-empty nzNotFoundContent="Aucune mémoire sauvegardée" [nzNotFoundFooter]="emptyFooter">
-            <ng-template #emptyFooter>
-              <span class="empty-hint">L'assistant retiendra vos préférences au fil des conversations.</span>
-            </ng-template>
-          </nz-empty>
+        <div class="section-title">
+          <span nz-icon nzType="global" nzTheme="outline"></span>
+          Mémoire globale
+        </div>
+        <div class="section-desc">Préférences et habitudes partagées entre toutes les conversations</div>
+        <div *ngIf="memoryKeys.length === 0" class="memory-empty-inline">
+          <span class="empty-hint">L'assistant retiendra vos préférences au fil des conversations.</span>
         </div>
         <div class="memory-list" *ngIf="memoryKeys.length > 0">
           <div class="memory-item" *ngFor="let key of memoryKeys">
@@ -192,8 +239,13 @@ import { AiService, AiAvailableAgent } from './ai.service';
     .create-agent { margin-top: 4px; }
     .create-agent-form { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; background: #f6f8fa; border-radius: 8px; border: 1px dashed #d9d9d9; margin-top: 4px; }
     .create-btns { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+    .provider-opt { display: flex; align-items: center; gap: 6px; }
+    .provider-opt-icon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; }
+    .field-hint { font-size: 11px; color: #999; margin-top: 2px; }
     .save-hint { font-size: 11px; color: #999; margin-top: 4px; }
     .memory-empty { padding: 20px 0; }
+    .memory-empty-inline { padding: 8px 0; }
+    .memory-item.project { border-color: #d9e8ff; background: #f0f7ff; }
     .empty-hint { font-size: 12px; color: #999; }
     .memory-list { display: flex; flex-direction: column; gap: 6px; }
     .memory-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; background: #fafafa; border-radius: 6px; border: 1px solid #f0f0f0; }
@@ -211,19 +263,28 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   instructionsSaving = false;
   memory: Record<string, any> = {};
   memoryKeys: string[] = [];
+  projectMemory: Record<string, any> = {};
+  projectMemoryKeys: string[] = [];
+  projectElementType: 'flow' | 'form' | null = null;
+  projectElementId: string | null = null;
   loading = true;
+
+  // Available providers (for multi-provider selection)
+  availableProviderKeys: { key: string; name: string; icon: string | null }[] = [];
 
   // Create agent form
   showCreateForm = false;
   newAgentName = '';
   newAgentDescription = '';
   newAgentPrompt = '';
+  newAgentProviders: string[] = [];
 
   // Edit agent
   editingAgentId: string | null = null;
   editName = '';
   editDescription = '';
   editSystemPrompt = '';
+  editAllowedProviders: string[] = [];
 
   private destroy$ = new Subject<void>();
   private instructions$ = new Subject<string>();
@@ -258,6 +319,10 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
         const list = res?.data || res || [];
         this.systemAgents = list.filter((a: AiAvailableAgent) => a.type === 'system');
         this.customAgents = list.filter((a: AiAvailableAgent) => a.type === 'custom');
+        // Extract provider keys from system agents (provider:xxx) for multi-provider selector
+        this.availableProviderKeys = this.systemAgents
+          .filter(a => a.id.startsWith('provider:'))
+          .map(a => ({ key: a.id.slice('provider:'.length), name: a.name, icon: a.icon }));
       },
     });
 
@@ -273,6 +338,20 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
         // Set selected agent from current thread or default
         const thread = this.ai.currentThread();
         this.selectedAgentId = thread?.agentId || this.ai.selectedAgentId() || 'general';
+
+        // Detect linked project element and load project memory
+        this.projectElementType = null;
+        this.projectElementId = null;
+        if (thread?.flowId) {
+          this.projectElementType = 'flow';
+          this.projectElementId = thread.flowId;
+        } else if (thread?.metadata?.formId) {
+          this.projectElementType = 'form';
+          this.projectElementId = thread.metadata.formId;
+        }
+        if (this.projectElementType && this.projectElementId) {
+          this.loadProjectMemory();
+        }
 
         this.loading = false;
         this.cdr.detectChanges();
@@ -303,11 +382,13 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       name,
       description: this.newAgentDescription.trim(),
       systemPrompt: this.newAgentPrompt.trim(),
+      allowedProviders: this.newAgentProviders,
     }).subscribe({
       next: () => {
         this.newAgentName = '';
         this.newAgentDescription = '';
         this.newAgentPrompt = '';
+        this.newAgentProviders = [];
         this.showCreateForm = false;
         this.reloadAgents();
       },
@@ -322,10 +403,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     this.editingAgentId = agent.id;
     this.editName = agent.name;
     this.editDescription = agent.description;
-    // Need to load full agent data for systemPrompt
+    this.editAllowedProviders = agent.allowedProviders ? [...agent.allowedProviders] : [];
     this.editSystemPrompt = '';
-    // Custom agents from the list don't have systemPrompt, load it
-    this.ai.searchTools('').subscribe(); // not needed, just use inline
   }
 
   saveEditAgent(agentId: string) {
@@ -333,6 +412,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       name: this.editName.trim(),
       description: this.editDescription.trim(),
       systemPrompt: this.editSystemPrompt.trim(),
+      allowedProviders: this.editAllowedProviders,
     }).subscribe({
       next: () => {
         this.editingAgentId = null;
@@ -353,6 +433,36 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
         const list = res?.data || res || [];
         this.systemAgents = list.filter((a: AiAvailableAgent) => a.type === 'system');
         this.customAgents = list.filter((a: AiAvailableAgent) => a.type === 'custom');
+        this.availableProviderKeys = this.systemAgents
+          .filter(a => a.id.startsWith('provider:'))
+          .map(a => ({ key: a.id.slice('provider:'.length), name: a.name, icon: a.icon }));
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  // ── Project memory ──
+  loadProjectMemory() {
+    if (!this.projectElementType || !this.projectElementId) return;
+    this.ai.getProjectMemory(this.projectElementType, this.projectElementId).subscribe({
+      next: (res: any) => {
+        this.projectMemory = res?.data || res || {};
+        this.projectMemoryKeys = Object.keys(this.projectMemory);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.projectMemory = {};
+        this.projectMemoryKeys = [];
+      },
+    });
+  }
+
+  deleteProjectMemory(key: string) {
+    if (!this.projectElementType || !this.projectElementId) return;
+    this.ai.deleteProjectMemoryKey(this.projectElementType, this.projectElementId, key).subscribe({
+      next: () => {
+        delete this.projectMemory[key];
+        this.projectMemoryKeys = Object.keys(this.projectMemory);
         this.cdr.detectChanges();
       },
     });

@@ -758,6 +758,8 @@ function createWorkflowExecutor(metadata, emit) {
       metadata.flowId = flow._id;
       graph = { nodes: [], edges: [] };
       emit({ type: 'flow.created', flow: { id: flow.id, _id: String(flow._id), name: flow.name } });
+      // Signal thread to link to this flow and switch mode
+      emit({ type: 'thread.link', mode: 'workflow', flowId: String(flow._id), flowShortId: flow.id });
       return { success: true, flowId: flow.id, _id: String(flow._id) };
     },
 
@@ -795,7 +797,24 @@ function createWorkflowExecutor(metadata, emit) {
     async get_templates(input) {
       const { toolIndex } = require('./tool-index');
       await toolIndex.ensureBuilt();
-      return { success: true, templates: toolIndex.search(input?.query || '', { provider: input?.provider, type: input?.type, limit: input?.limit || 20 }) };
+      const templates = toolIndex.search(input?.query || '', { provider: input?.provider, type: input?.type, limit: input?.limit || 20 });
+      const result = { success: true, templates };
+
+      // Smart hint: detect classification-related queries and suggest classifiers
+      const q = (input?.query || '').toLowerCase();
+      const classifyPatterns = ['analys', 'categori', 'classif', 'trier', 'tri ', 'savoir si', 'determiner', 'router', 'type de', 'sorte de'];
+      const hasClassifyIntent = classifyPatterns.some(p => q.includes(p));
+      const hasClassifierInResults = templates.some(t => t.key?.includes('classify') || t.key?.includes('classifier'));
+      if (hasClassifyIntent && !hasClassifierInResults) {
+        // Also search for classifiers and include them as suggestions
+        const classifiers = toolIndex.search('classify', { limit: 5 });
+        if (classifiers.length) {
+          result.hint = `⚠ Ta recherche semble impliquer de la CLASSIFICATION. Voici les templates classifier disponibles (multi-output, routage automatique par branche). Préfère-les à chat_completion pour du routage :`;
+          result.classifierSuggestions = classifiers;
+        }
+      }
+
+      return result;
     },
 
     async get_template_details(input) {
@@ -1068,6 +1087,46 @@ function createWorkflowExecutor(metadata, emit) {
       }
       if (!Object.keys(args).length) return { success: false, error: 'Aucun argument fourni' };
 
+      // Validate keys against template args schema — warn about unknown keys
+      const tplForValidation = g.nodes[idx]?.data?.model?.templateObj || {};
+      const nodeTypeForValidation = String(tplForValidation.type || '').toLowerCase();
+      const warnings = [];
+      if (tplForValidation.args?.fields && !['condition', 'loop'].includes(nodeTypeForValidation)) {
+        const extractKeys = (fields, prefix = '') => {
+          const keys = new Set();
+          for (const f of (fields || [])) {
+            const k = f?.key || f?.name;
+            if (!k) continue;
+            keys.add(prefix ? `${prefix}.${k}` : k);
+            // section_array sub-fields
+            if (f.type === 'section_array' && Array.isArray(f.fields)) {
+              for (const sf of f.fields) {
+                const sk = sf?.key || sf?.name;
+                if (sk) keys.add(sk); // sub-fields are set as flat keys in context
+              }
+            }
+            // section sub-fields
+            if (f.type === 'section' && Array.isArray(f.fields)) {
+              for (const sf of f.fields) {
+                const sk = sf?.key || sf?.name;
+                if (sk) keys.add(sk);
+              }
+            }
+          }
+          return keys;
+        };
+        const validKeys = extractKeys(tplForValidation.args.fields);
+        // Also allow output_array_field key (e.g. "categories" for classifiers)
+        if (tplForValidation.output_array_field) validKeys.add(tplForValidation.output_array_field);
+        const unknownKeys = Object.keys(args).filter(k => !validKeys.has(k));
+        if (unknownKeys.length) {
+          warnings.push(`⚠ Clés inconnues dans le schéma du template: ${unknownKeys.join(', ')}. Clés valides: ${[...validKeys].join(', ')}. Utilise get_node_schema(nodeId) pour voir le schéma complet. Les clés inconnues ont été IGNORÉES.`);
+          // Remove unknown keys to prevent corrupting the node
+          for (const k of unknownKeys) delete args[k];
+          if (!Object.keys(args).length) return { success: false, error: `Toutes les clés fournies sont invalides. Clés valides: ${[...validKeys].join(', ')}. Appelle get_node_schema pour voir le schéma.`, warnings };
+        }
+      }
+
       g.nodes[idx].data = g.nodes[idx].data || {};
       g.nodes[idx].data.model = g.nodes[idx].data.model || {};
       const existing = g.nodes[idx].data.model.context || {};
@@ -1100,7 +1159,9 @@ function createWorkflowExecutor(metadata, emit) {
       // Emit full node replace so frontend gets _id changes + output handles
       emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
       emit({ type: 'args', nodeId: input.nodeId, args });
-      return { success: true, keys: Object.keys(args) };
+      const result = { success: true, keys: Object.keys(args) };
+      if (warnings.length) result.warnings = warnings;
+      return result;
     },
 
     async set_node_description(input) {
@@ -1111,7 +1172,8 @@ function createWorkflowExecutor(metadata, emit) {
       g.nodes[idx].data = g.nodes[idx].data || {};
       g.nodes[idx].data.model = g.nodes[idx].data.model || {};
       g.nodes[idx].data.model.description = input.description || '';
-      emitPatch([{ op: 'replace', path: `/nodes/${idx}/data/model/description`, value: input.description }]);
+      // Emit full node replacement (NOT partial path — frontend only supports /nodes/{idx} level)
+      emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
       emit({ type: 'desc', nodeId: input.nodeId, text: input.description });
       return { success: true };
     },

@@ -54,8 +54,45 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
     // Custom agent: aia_xxx
     const agent = await AiAgent.findOne({ id: agentId }).lean();
     if (!agent) return null;
+
+    let promptFragment = agent.systemPrompt || '';
+
+    // Multi-provider access: load NodeTemplates for all allowedProviders
+    if (agent.allowedProviders?.length) {
+      const NodeTemplate = require('../../db/models/node-template.model');
+      const Provider = require('../../db/models/provider.model');
+      const providerDocs = await Provider.find(
+        { key: { $in: agent.allowedProviders } },
+        'key name title'
+      ).lean();
+      const templates = await NodeTemplate.find(
+        { providerKey: { $in: agent.allowedProviders }, enabled: { $ne: false } },
+        'key title description type providerKey'
+      ).lean();
+
+      // Group templates by provider
+      const byProvider = {};
+      for (const t of templates) {
+        if (!byProvider[t.providerKey]) byProvider[t.providerKey] = [];
+        byProvider[t.providerKey].push(t);
+      }
+
+      const sections = [];
+      for (const p of providerDocs) {
+        const pTemplates = byProvider[p.key] || [];
+        const toolLines = pTemplates.map(t =>
+          `- \`${t.key}\` : ${t.title || t.key}${t.description ? ' — ' + t.description : ''}`
+        );
+        sections.push(`### ${p.title || p.name} (${pTemplates.length} actions)\n${toolLines.join('\n')}`);
+      }
+
+      if (sections.length) {
+        promptFragment += `\n\n## Outils des providers associés\nTu as accès aux outils suivants. Utilise-les directement via \`execute_tool\` avec la clé correspondante.\n\n${sections.join('\n\n')}`;
+      }
+    }
+
     return {
-      promptFragment: agent.systemPrompt || null,
+      promptFragment: promptFragment || null,
       llmProvider: agent.llmProvider || null,
       llmModel: agent.llmModel || null,
     };
@@ -94,7 +131,18 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
     if (!ws) return;
     const filter = { workspaceId: ws._id };
     if (req.query.mode) filter.mode = req.query.mode;
-    if (req.query.flowId) filter.flowId = req.query.flowId;
+    if (req.query.flowId) {
+      // Resolve short ID (flw_xxx) to ObjectId if needed
+      const fid = req.query.flowId;
+      if (Types.ObjectId.isValid(fid)) {
+        filter.flowId = fid;
+      } else {
+        const flow = await Flow.findOne({ id: fid }, '_id').lean();
+        if (flow) filter.flowId = flow._id;
+        else filter.flowId = null; // no match
+      }
+    }
+    if (req.query.formId) filter['metadata.formId'] = req.query.formId;
     const list = await AiThread.find(filter).sort({ updatedAt: -1 }).limit(50).lean();
     res.apiOk(list);
   });
@@ -103,7 +151,7 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
   r.post('/ai/threads', async (req, res) => {
     const ws = await ensureWorkspaceAccess(req, res);
     if (!ws) return;
-    const { mode, title, flowId, nodeId, agentId, metadata } = req.body || {};
+    const { mode, title, flowId, formId, nodeId, agentId, metadata } = req.body || {};
     // Resolve flowId: could be a short ID (flw_xxx) or an ObjectId string
     let resolvedFlowId;
     if (flowId) {
@@ -114,6 +162,9 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
         resolvedFlowId = flow ? flow._id : undefined;
       }
     }
+    // Build metadata — merge explicit formId into metadata
+    const threadMeta = { ...(metadata || {}) };
+    if (formId) threadMeta.formId = formId;
     const thread = await AiThread.create({
       companyId: ws.companyId,
       workspaceId: ws._id,
@@ -123,7 +174,7 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
       flowId: resolvedFlowId,
       nodeId: nodeId || undefined,
       agentId: agentId || undefined,
-      metadata: metadata || undefined,
+      metadata: Object.keys(threadMeta).length ? threadMeta : undefined,
     });
     res.status(201).json({ success: true, data: thread, requestId: req.requestId, ts: Date.now() });
   });
@@ -230,6 +281,22 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
     } catch (e) {
       console.error('[ai] context build error', e?.message || e);
       return res.apiError(500, 'context_error', 'Failed to build AI context');
+    }
+
+    // Load project memory if thread is linked to a flow/form
+    try {
+      const AiProjectMemory = require('../../db/models/ai-project-memory.model');
+      let pmType, pmId;
+      if (thread.flowId) { pmType = 'flow'; pmId = String(thread.flowId); }
+      else if (thread.metadata?.formId) { pmType = 'form'; pmId = String(thread.metadata.formId); }
+      if (pmType && pmId) {
+        const pmDoc = await AiProjectMemory.findOne({ workspaceId: ws._id, elementType: pmType, elementId: pmId }).lean();
+        if (pmDoc?.memory && Object.keys(pmDoc.memory).length) {
+          context._projectMemory = pmDoc.memory;
+        }
+      }
+    } catch (e) {
+      console.error('[ai] project memory load error:', e?.message);
     }
 
     // Load agent overrides if agentId is set (dynamic provider or custom)
@@ -352,6 +419,27 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
             questionData = event;
             send(event);
             break;
+
+          // Thread link event: update thread mode and link to flow/form
+          case 'thread.link': {
+            const linkUpdate = { mode: event.mode, updatedAt: new Date() };
+            if (event.flowId) linkUpdate.flowId = event.flowId;
+            if (event.formId) linkUpdate['metadata.formId'] = event.formId;
+            // Store short IDs in metadata for frontend navigation
+            if (event.flowShortId) linkUpdate['metadata.flowShortId'] = event.flowShortId;
+            if (event.formShortId) linkUpdate['metadata.formShortId'] = event.formShortId;
+            await AiThread.updateOne({ _id: thread._id }, { $set: linkUpdate });
+            // Reload thread locally
+            thread.mode = event.mode;
+            if (event.flowId) thread.flowId = event.flowId;
+            if (!thread.metadata) thread.metadata = {};
+            if (event.formId) thread.metadata.formId = event.formId;
+            if (event.flowShortId) thread.metadata.flowShortId = event.flowShortId;
+            if (event.formShortId) thread.metadata.formShortId = event.formShortId;
+            // Notify frontend of mode/link update (use short IDs for navigation)
+            send({ type: 'thread.update', mode: event.mode, flowId: event.flowShortId || event.flowId, formId: event.formShortId || event.formId });
+            break;
+          }
 
           // Side events from mode-specific tools (patches, args, etc.)
           case 'patch':
@@ -498,6 +586,50 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
     res.apiOk(doc);
   });
 
+  // ── Project memory (per flow/form) ──
+
+  // Get project memory
+  r.get('/ai/project-memory/:elementType/:elementId', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const AiProjectMemory = require('../../db/models/ai-project-memory.model');
+    const doc = await AiProjectMemory.findOne({
+      workspaceId: ws._id,
+      elementType: req.params.elementType,
+      elementId: req.params.elementId,
+    }).lean();
+    res.apiOk(doc?.memory || {});
+  });
+
+  // Update project memory (merge key-by-key, null = delete)
+  r.put('/ai/project-memory/:elementType/:elementId', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const AiProjectMemory = require('../../db/models/ai-project-memory.model');
+    const { memory } = req.body || {};
+    if (!memory) return res.apiError(400, 'missing_memory', 'memory object required');
+    const update = {};
+    const unset = {};
+    for (const [k, v] of Object.entries(memory)) {
+      if (v === null) {
+        unset[`memory.${k}`] = '';
+      } else {
+        update[`memory.${k}`] = v;
+      }
+    }
+    const ops = {};
+    if (Object.keys(update).length) ops.$set = update;
+    if (Object.keys(unset).length) ops.$unset = unset;
+    if (!ops.$set) ops.$set = {};
+    ops.$setOnInsert = { workspaceId: ws._id, elementType: req.params.elementType, elementId: req.params.elementId };
+    const doc = await AiProjectMemory.findOneAndUpdate(
+      { workspaceId: ws._id, elementType: req.params.elementType, elementId: req.params.elementId },
+      ops,
+      { upsert: true, new: true }
+    );
+    res.apiOk(doc?.memory || {});
+  });
+
   // Get available providers (names only, no secrets)
   r.get('/ai/context/providers', async (req, res) => {
     const ws = await ensureWorkspaceAccess(req, res);
@@ -569,13 +701,14 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
       // 2. System agents from providers with credentials
       const credentials = await Credential.find({ workspaceId: ws._id }, 'name providerKey').lean();
       const providerKeys = [...new Set(credentials.map(c => c.providerKey))];
+      let countMap = new Map();
       if (providerKeys.length) {
         const providers = await Provider.find({ key: { $in: providerKeys } }, 'key name title iconUrl').lean();
         const toolCounts = await NodeTemplate.aggregate([
           { $match: { providerKey: { $in: providerKeys }, enabled: { $ne: false } } },
           { $group: { _id: '$providerKey', count: { $sum: 1 } } },
         ]);
-        const countMap = new Map(toolCounts.map(t => [t._id, t.count]));
+        countMap = new Map(toolCounts.map(t => [t._id, t.count]));
 
         for (const p of providers) {
           agents.push({
@@ -594,13 +727,21 @@ Quand l'utilisateur demande une action liée à ${provider.name}, utilise direct
       if (ws._id) customFilter.$or = [{ workspaceId: ws._id }, { workspaceId: { $exists: false } }, { workspaceId: null }];
       const customAgents = await AiAgent.find(customFilter).sort({ createdAt: -1 }).lean();
       for (const a of customAgents) {
+        // Count tools from allowed providers
+        let customToolCount = 0;
+        if (a.allowedProviders?.length) {
+          for (const pk of a.allowedProviders) {
+            customToolCount += countMap.get(pk) || 0;
+          }
+        }
         agents.push({
           id: a.id,
           name: a.name,
           description: a.description || '',
           icon: a.icon || null,
           type: 'custom',
-          toolCount: 0,
+          toolCount: customToolCount,
+          allowedProviders: a.allowedProviders || [],
         });
       }
 

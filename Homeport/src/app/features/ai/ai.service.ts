@@ -75,6 +75,8 @@ export type AiStreamEvent =
   | { type: 'tool.end'; id: string; name: string; args?: any; result?: any; error?: string; status: string; duration?: number }
   | { type: 'question'; text: string; questionType: string; options?: AiQuestionOption[] }
   | { type: 'thread.title'; title: string }
+  | { type: 'thread.update'; mode: string; flowId?: string; formId?: string }
+  | { type: 'thread.transfer'; threadId: string; title: string; mode: string }
   | { type: 'patch'; ops: any[] }
   | { type: 'snapshot'; graph: any }
   | { type: 'args'; nodeId: string; args: any }
@@ -98,6 +100,7 @@ export interface AiAvailableAgent {
   icon: string | null;
   type: 'system' | 'custom';
   toolCount: number;
+  allowedProviders?: string[];
 }
 
 // ── Service ──
@@ -145,9 +148,11 @@ export class AiService {
   setPageContext(ctx: AiPageContext) { this.pageContext.set(ctx); }
 
   // ── Threads ──
-  listThreads(mode?: string): Observable<AiThread[]> {
+  listThreads(filters?: { mode?: string; flowId?: string; formId?: string }): Observable<AiThread[]> {
     const params: any = { workspaceId: this.wsId() };
-    if (mode) params.mode = mode;
+    if (filters?.mode) params.mode = filters.mode;
+    if (filters?.flowId) params.flowId = filters.flowId;
+    if (filters?.formId) params.formId = filters.formId;
     return this.api.get<AiThread[]>('/api/ai/threads', params);
   }
 
@@ -310,6 +315,26 @@ export class AiService {
                 this.currentThread.set({ ...cur, title: (event as any).title });
               }
             }
+            if ((event as any).type === 'thread.update') {
+              const cur = this.currentThread();
+              if (cur) {
+                const updated = { ...cur };
+                if ((event as any).mode) updated.mode = (event as any).mode;
+                if ((event as any).flowId) updated.flowId = (event as any).flowId;
+                if ((event as any).formId) {
+                  if (!updated.metadata) updated.metadata = {};
+                  updated.metadata.formId = (event as any).formId;
+                }
+                this.currentThread.set(updated);
+              }
+            }
+            if ((event as any).type === 'thread.transfer') {
+              // Auto-switch to new thread after stream completes
+              const transferId = (event as any).threadId;
+              if (transferId) {
+                setTimeout(() => this.loadThread(transferId), 500);
+              }
+            }
             if (event.type === 'done') {
               finished = true;
               // Add assistant message with segments preserving execution order
@@ -391,6 +416,19 @@ export class AiService {
     return this.api.put<any>('/api/ai/context/user', { memory: { [key]: value } }, { workspaceId: this.wsId() });
   }
 
+  // ── Project memory (per flow/form) ──
+  getProjectMemory(elementType: 'flow' | 'form', elementId: string): Observable<any> {
+    return this.api.get<any>(`/api/ai/project-memory/${elementType}/${elementId}`, { workspaceId: this.wsId() });
+  }
+
+  updateProjectMemory(elementType: 'flow' | 'form', elementId: string, memory: Record<string, any>): Observable<any> {
+    return this.api.put<any>(`/api/ai/project-memory/${elementType}/${elementId}`, { memory }, { workspaceId: this.wsId() });
+  }
+
+  deleteProjectMemoryKey(elementType: 'flow' | 'form', elementId: string, key: string): Observable<any> {
+    return this.api.put<any>(`/api/ai/project-memory/${elementType}/${elementId}`, { memory: { [key]: null } }, { workspaceId: this.wsId() });
+  }
+
   // ── Agents ──
   loadAvailableAgents(): Observable<AiAvailableAgent[]> {
     const obs = this.api.get<AiAvailableAgent[]>('/api/ai/agents/available', { workspaceId: this.wsId() });
@@ -404,7 +442,7 @@ export class AiService {
     return obs;
   }
 
-  createAgent(data: { name: string; description?: string; systemPrompt?: string; workspaceId?: string }): Observable<any> {
+  createAgent(data: { name: string; description?: string; systemPrompt?: string; allowedProviders?: string[]; workspaceId?: string }): Observable<any> {
     return this.api.post<any>('/api/ai/agents', data, { workspaceId: this.wsId() });
   }
 
@@ -453,12 +491,38 @@ export class AiService {
     return 'chat';
   }
 
-  /** Open the AI drawer with context from the current page and start fresh */
-  openWithContext(ctx?: Partial<AiPageContext>) {
+  // Preference: auto-load linked thread when opening drawer in builder context
+  // 'auto' = load automatically, 'ask' = ask first, 'never' = always new
+  autoLoadLinkedThread = signal<'auto' | 'ask' | 'never'>('auto');
+
+  /** Open the AI drawer with context from the current page.
+   *  If a linked thread exists for the current flow/form, auto-load it. */
+  async openWithContext(ctx?: Partial<AiPageContext>) {
     if (ctx) {
       this.setPageContext({ ...this.pageContext(), ...ctx } as AiPageContext);
     }
-    // Reset thread so a new one is created with the correct mode
+    const fullCtx = this.pageContext();
+
+    // Try to find a linked thread for the current flow/form
+    const filters: any = {};
+    if (fullCtx.flowId) filters.flowId = fullCtx.flowId;
+    else if (fullCtx.formId) filters.formId = fullCtx.formId;
+
+    if (Object.keys(filters).length && this.autoLoadLinkedThread() !== 'never') {
+      this.drawerOpen.set(true);
+      try {
+        const res: any = await this.listThreads(filters).toPromise();
+        const threads = res?.data || res || [];
+        if (threads.length) {
+          // Found linked thread(s) — load the most recent one
+          const latest = threads[0]; // already sorted by updatedAt desc
+          await this.loadThread(latest.id || latest._id);
+          return;
+        }
+      } catch {}
+    }
+
+    // No linked thread found or preference is 'never' — open fresh
     this.currentThread.set(null);
     this.messages.set([]);
     this.pendingQuestion.set(null);

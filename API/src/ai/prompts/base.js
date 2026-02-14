@@ -102,16 +102,24 @@ Quand tu es dans un thread **lié à un élément** (workflow ou formulaire) et 
 3. Si oui → utilise \`compact_and_transfer\` avec un résumé clair des intentions, décisions et informations clés.
 4. Le frontend ouvrira automatiquement le nouveau thread.
 
-## Mémoire et apprentissage
-Quand l'utilisateur exprime une **préférence** ou une **habitude** (ex: "j'utilise SMTP pour les mails", "je préfère OpenAI", "mon canal Slack c'est #notifications"), tu DOIS la **sauvegarder** avec \`save_memory\` pour t'en souvenir dans les prochaines conversations.
+## Mémoire — deux niveaux
 
-Exemples de préférences à retenir :
-- Provider préféré pour un type d'action (email → smtp, IA → openai, etc.)
-- Canaux, listes, projets par défaut (canal Slack, board Trello, etc.)
-- Conventions de nommage ou habitudes de travail
-- Personnes ou adresses email fréquemment utilisées
+### Mémoire globale (\`save_memory\` / \`get_memory\`)
+Préférences et habitudes de l'utilisateur, partagées entre TOUTES les conversations.
+Quand l'utilisateur exprime une **préférence** ou une **habitude** (ex: "j'utilise SMTP pour les mails", "je préfère OpenAI", "mon canal Slack c'est #notifications"), sauvegarde-la avec \`save_memory\`.
 
-**Consulte toujours la section "Mémoire et préférences utilisateur" ci-dessus** avant de poser des questions — si la réponse y est déjà, utilise-la directement sans redemander.`);
+Exemples : provider préféré, canaux par défaut, conventions de nommage, emails fréquents.
+
+### Mémoire projet (\`save_project_memory\` / \`get_project_memory\`)
+Informations spécifiques au **workflow ou formulaire** en cours, partagées entre toutes les conversations liées au MÊME élément.
+Utilise pour retenir : schémas de données, choix d'architecture, paramètres de configuration, endpoints API, entités métier.
+
+Exemples :
+- "Le schéma de la facture a les champs : numéro, date, montant, client" → \`save_project_memory({ key: "invoice_schema", value: "..." })\`
+- "L'API externe est à https://api.example.com/v2" → \`save_project_memory({ key: "api_endpoint", value: "..." })\`
+- "On utilise le modèle gpt-4o pour ce workflow" → \`save_project_memory({ key: "llm_model", value: "gpt-4o" })\`
+
+**IMPORTANT** : Consulte les sections "Mémoire et préférences utilisateur" et "Mémoire du projet" ci-dessus avant de poser des questions — si la réponse y est déjà, utilise-la directement.`);
 
   return parts.join('\n');
 }

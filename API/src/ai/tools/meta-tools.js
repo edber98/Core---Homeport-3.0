@@ -9,6 +9,7 @@ const Flow = require('../../db/models/flow.model');
 const AiUserContext = require('../../db/models/ai-user-context.model');
 const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
+const AiProjectMemory = require('../../db/models/ai-project-memory.model');
 
 // Tool definitions in JSON Schema format for LLMs
 const META_TOOL_DEFINITIONS = [
@@ -105,7 +106,7 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'save_memory',
-    description: 'Sauvegarde une information dans la mémoire persistante de l\'utilisateur. Utilise pour retenir des préférences ou des informations utiles.',
+    description: 'Sauvegarde une information dans la mémoire GLOBALE de l\'utilisateur, partagée entre toutes les conversations. Utilise pour retenir des préférences ou des habitudes. Pour des infos spécifiques au projet en cours, utilise save_project_memory.',
     parameters: {
       type: 'object',
       properties: {
@@ -117,12 +118,29 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'get_memory',
-    description: 'Récupère la mémoire persistante de l\'utilisateur (préférences, informations retenues).',
+    description: 'Récupère la mémoire GLOBALE de l\'utilisateur (préférences, informations retenues). Cette mémoire est partagée entre toutes les conversations.',
+    parameters: { type: 'object', properties: {} },
+  },
+  {
+    name: 'save_project_memory',
+    description: 'Sauvegarde une information dans la mémoire du PROJET courant (workflow ou formulaire). Cette mémoire est partagée entre toutes les conversations liées au même élément. Utilise pour retenir des décisions, paramètres ou contexte spécifique au projet.',
+    parameters: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Clé de la mémoire projet (ex: db_schema, api_endpoint, main_entity)' },
+        value: { description: 'Valeur à sauvegarder' },
+      },
+      required: ['key', 'value'],
+    },
+  },
+  {
+    name: 'get_project_memory',
+    description: 'Récupère la mémoire du PROJET courant (workflow ou formulaire). Retourne toutes les informations sauvegardées pour cet élément.',
     parameters: { type: 'object', properties: {} },
   },
   {
     name: 'compact_and_transfer',
-    description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread.',
+    description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread. IMPORTANT : si le nouveau thread concerne un élément existant (workflow/formulaire), passe le flowId ou formId pour maintenir le lien.',
     parameters: {
       type: 'object',
       properties: {
@@ -130,6 +148,8 @@ const META_TOOL_DEFINITIONS = [
         newMode: { type: 'string', enum: ['chat', 'workflow', 'form'], description: 'Mode du nouveau thread' },
         newTitle: { type: 'string', description: 'Titre du nouveau thread (ex: "Création workflow envoi mail")' },
         agentId: { type: 'string', description: 'Agent ID optionnel pour le nouveau thread' },
+        flowId: { type: 'string', description: 'ID du workflow à lier au nouveau thread (si mode workflow et workflow existant)' },
+        formId: { type: 'string', description: 'ID du formulaire à lier au nouveau thread (si mode form et formulaire existant)' },
       },
       required: ['summary', 'newMode', 'newTitle'],
     },
@@ -249,17 +269,39 @@ async function executeMetaTool(name, input, ctx) {
       return userCtx?.memory || {};
     }
 
+    case 'save_project_memory': {
+      const pm = _resolveProjectElement(ctx);
+      if (!pm) return { error: 'Aucun projet lié à cette conversation (pas de flowId ni formId). Utilise save_memory pour la mémoire globale.' };
+      await AiProjectMemory.findOneAndUpdate(
+        { workspaceId: ctx.workspaceId, elementType: pm.type, elementId: pm.id },
+        { $set: { [`memory.${input.key}`]: input.value }, $setOnInsert: { workspaceId: ctx.workspaceId, elementType: pm.type, elementId: pm.id } },
+        { upsert: true }
+      );
+      return { ok: true, key: input.key, projectType: pm.type, projectId: pm.id };
+    }
+
+    case 'get_project_memory': {
+      const pm2 = _resolveProjectElement(ctx);
+      if (!pm2) return { error: 'Aucun projet lié à cette conversation. Utilise get_memory pour la mémoire globale.' };
+      const doc = await AiProjectMemory.findOne({ workspaceId: ctx.workspaceId, elementType: pm2.type, elementId: pm2.id }).lean();
+      return doc?.memory || {};
+    }
+
     case 'compact_and_transfer': {
-      const { summary, newMode, newTitle, agentId } = input;
+      const { summary, newMode, newTitle, agentId, flowId, formId } = input;
       // Create new thread with the summary as system context
-      const newThread = await AiThread.create({
+      // Preserve link to the element (flow/form) if provided
+      const threadData = {
         companyId: ctx.companyId,
         workspaceId: ctx.workspaceId,
         userId: ctx.userId,
         mode: newMode || 'chat',
         title: newTitle || 'Suite de conversation',
         agentId: agentId || undefined,
-      });
+      };
+      if (flowId) threadData.flowId = flowId;
+      if (formId) threadData.metadata = { formId };
+      const newThread = await AiThread.create(threadData);
       // Add the compact summary as the first system message
       await AiMessage.create({
         threadId: newThread._id,
@@ -306,6 +348,14 @@ async function executeMetaTool(name, input, ctx) {
     default:
       return { error: `Unknown meta-tool: ${name}` };
   }
+}
+
+// Resolve the linked project element (flow or form) from context metadata
+function _resolveProjectElement(ctx) {
+  // ctx is enriched by agent-runner with metadata from the thread
+  if (ctx._metadata?.flowId) return { type: 'flow', id: String(ctx._metadata.flowId) };
+  if (ctx._metadata?.formId) return { type: 'form', id: String(ctx._metadata.formId) };
+  return null;
 }
 
 module.exports = { META_TOOL_DEFINITIONS, executeMetaTool };

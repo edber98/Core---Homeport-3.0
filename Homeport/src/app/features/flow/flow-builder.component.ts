@@ -1117,13 +1117,36 @@ export class FlowBuilderComponent {
                 this.edges = [...this.edges, op.value];
                 console.log('[ai-side-event] patch: added edge', op.value.id, '→ total edges=', this.edges.length);
               } else if (op.op === 'replace' && op.path?.startsWith('/nodes/')) {
-                const idx = parseInt(op.path.split('/')[2], 10);
-                if (!isNaN(idx) && idx < this.nodes.length && op.value) {
-                  const updated = [...this.nodes];
-                  const oldId = updated[idx]?.id;
-                  updated[idx] = op.value;
-                  this.nodes = updated;
-                  console.log('[ai-side-event] patch: replaced node at idx', idx, 'old=', oldId, 'new=', op.value.id);
+                const parts = op.path.split('/').filter(Boolean); // ['nodes', '1', ...deepPath]
+                const idx = parseInt(parts[1], 10);
+                if (!isNaN(idx) && idx < this.nodes.length) {
+                  if (parts.length === 2 && op.value) {
+                    // Full node replacement: /nodes/{idx}
+                    const updated = [...this.nodes];
+                    const oldId = updated[idx]?.id;
+                    updated[idx] = op.value;
+                    this.nodes = updated;
+                    console.log('[ai-side-event] patch: replaced node at idx', idx, 'old=', oldId, 'new=', op.value.id);
+                  } else if (parts.length > 2) {
+                    // Deep path replacement: /nodes/{idx}/data/model/description etc.
+                    const updated = [...this.nodes];
+                    const node = { ...updated[idx] };
+                    let target: any = node;
+                    const deepParts = parts.slice(2);
+                    for (let i = 0; i < deepParts.length - 1; i++) {
+                      if (target[deepParts[i]] && typeof target[deepParts[i]] === 'object') {
+                        target[deepParts[i]] = { ...target[deepParts[i]] };
+                        target = target[deepParts[i]];
+                      } else {
+                        target[deepParts[i]] = {};
+                        target = target[deepParts[i]];
+                      }
+                    }
+                    target[deepParts[deepParts.length - 1]] = op.value;
+                    updated[idx] = node;
+                    this.nodes = updated;
+                    console.log('[ai-side-event] patch: deep-replaced', op.path, 'on node', node.id);
+                  }
                 }
               } else if (op.op === 'remove' && op.path?.startsWith('/nodes/')) {
                 const idx = parseInt(op.path.split('/')[2], 10);

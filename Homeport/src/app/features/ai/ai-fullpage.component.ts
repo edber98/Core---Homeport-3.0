@@ -1,6 +1,7 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -124,6 +125,10 @@ import { AiSettingsComponent } from './ai-settings.component';
               <div class="chat-title">{{ ai.currentThread()?.title }}</div>
               <div class="chat-badges">
                 <span class="mode-tag" [class]="'mode-' + ai.currentThread()?.mode">{{ modeLabel(ai.currentThread()?.mode || 'chat') }}</span>
+                <a class="linked-link" *ngIf="linkedElementLabel()" (click)="openLinkedElement()" nz-tooltip nzTooltipTitle="Ouvrir l'élément lié">
+                  <span nz-icon nzType="link" nzTheme="outline"></span>
+                  {{ linkedElementLabel() }}
+                </a>
                 <span class="agent-badge" *ngIf="ai.currentThread()?.agentId && ai.currentThread()?.agentId !== 'general'">
                   {{ agentName(ai.currentThread()!.agentId!) }}
                 </span>
@@ -185,6 +190,8 @@ import { AiSettingsComponent } from './ai-settings.component';
     .chat-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chat-badges { display: flex; gap: 6px; align-items: center; }
     .agent-badge { font-size: 11px; color: #722ed1; background: #f9f0ff; padding: 1px 8px; border-radius: 10px; }
+    .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #1677ff; cursor: pointer; padding: 1px 6px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
+    .linked-link:hover { background: rgba(22,119,255,0.1); }
     .fp-chat { flex: 1; min-height: 0; }
     .fp-settings { flex: 1; overflow-y: auto; }
 
@@ -205,7 +212,25 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
 
   private refreshInterval?: any;
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef) {}
+  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {
+    // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
+    effect(() => {
+      const cur = this.ai.currentThread();
+      if (!cur) return;
+      const idx = this.threads.findIndex(t => t._id === cur._id);
+      if (idx >= 0) {
+        const existing = this.threads[idx];
+        if (existing.title !== cur.title || existing.mode !== cur.mode || existing.flowId !== cur.flowId) {
+          this.threads = this.threads.map((t, i) => i === idx ? { ...t, title: cur.title, mode: cur.mode, flowId: cur.flowId, metadata: cur.metadata } : t);
+          this.cdr.detectChanges();
+        }
+      } else if (cur._id) {
+        // New thread created — add it to the top of the list
+        this.threads = [cur, ...this.threads];
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   ngOnInit() {
     // Set page context
@@ -282,6 +307,26 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
       case 'node_args': return 'Args';
       case 'form': return 'Form';
       default: return mode;
+    }
+  }
+
+  linkedElementLabel(): string {
+    const thread = this.ai.currentThread();
+    if (!thread) return '';
+    if (thread.mode === 'workflow' && thread.flowId) return 'Ouvrir le workflow';
+    if (thread.mode === 'form' && thread.metadata?.formId) return 'Ouvrir le formulaire';
+    return '';
+  }
+
+  openLinkedElement() {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    if (thread.mode === 'workflow' && thread.flowId) {
+      const flowId = thread.metadata?.flowShortId || thread.flowId;
+      this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: flowId, center: '1' } });
+    } else if (thread.mode === 'form' && thread.metadata?.formId) {
+      const formId = thread.metadata?.formShortId || thread.metadata.formId;
+      this.router.navigate(['/dynamic-form'], { queryParams: { session: formId } });
     }
   }
 

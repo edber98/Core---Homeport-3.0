@@ -1,5 +1,6 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -56,9 +57,13 @@ import { AiSettingsComponent } from './ai-settings.component';
           </div>
 
           <!-- Context indicator -->
-          <div class="context-bar" *ngIf="view === 'chat' && (contextLabel() || agentLabel())">
+          <div class="context-bar" *ngIf="view === 'chat' && (contextLabel() || agentLabel() || linkedElementLabel())">
             <span nz-icon [nzType]="contextIcon()" nzTheme="outline"></span>
             <span class="context-label" *ngIf="contextLabel()">{{ contextLabel() }}</span>
+            <a class="linked-link" *ngIf="linkedElementLabel()" (click)="openLinkedElement()" nz-tooltip nzTooltipTitle="Ouvrir l'élément lié">
+              <span nz-icon nzType="link" nzTheme="outline"></span>
+              {{ linkedElementLabel() }}
+            </a>
             <span class="agent-badge" *ngIf="agentLabel()">
               <span class="agent-dot"></span>
               {{ agentLabel() }}
@@ -110,6 +115,8 @@ import { AiSettingsComponent } from './ai-settings.component';
     .context-dot { width: 7px; height: 7px; border-radius: 50%; background: #1677ff; flex-shrink: 0; }
     .empty-history { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
     .active-btn { color: #1677ff !important; }
+    .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #1677ff; cursor: pointer; padding: 1px 6px; border-radius: 4px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    .linked-link:hover { background: rgba(22,119,255,0.1); }
     .agent-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #722ed1; background: #f9f0ff; padding: 1px 8px; border-radius: 10px; }
     .agent-dot { width: 6px; height: 6px; border-radius: 50%; background: #722ed1; }
     .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
@@ -120,7 +127,21 @@ export class AiPanelComponent {
   view: 'chat' | 'history' | 'settings' = 'chat';
   threads: AiThread[] = [];
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef) {}
+  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {
+    // Sync currentThread changes (title, mode) back to local threads list in real-time
+    effect(() => {
+      const cur = this.ai.currentThread();
+      if (!cur || !this.threads.length) return;
+      const idx = this.threads.findIndex(t => t._id === cur._id);
+      if (idx >= 0) {
+        const existing = this.threads[idx];
+        if (existing.title !== cur.title || existing.mode !== cur.mode) {
+          this.threads = this.threads.map((t, i) => i === idx ? { ...t, title: cur.title, mode: cur.mode, flowId: cur.flowId, metadata: cur.metadata } : t);
+          this.cdr.detectChanges();
+        }
+      }
+    });
+  }
 
   toggleView(target: 'history' | 'settings') {
     this.view = this.view === target ? 'chat' : target;
@@ -153,8 +174,17 @@ export class AiPanelComponent {
   }
 
   async newThread() {
+    // Use page context to auto-detect mode and link to current flow/form
+    const ctx = this.ai.pageContext();
+    const mode = ctx.page === 'flow-builder' ? (ctx.nodeId ? 'node_args' : 'workflow')
+               : ctx.page === 'form-builder' ? 'form'
+               : 'chat';
+    const meta: any = {};
+    if (ctx.flowId) meta.flowId = ctx.flowId;
+    if (ctx.formId) meta.formId = ctx.formId;
+    if (ctx.nodeId) meta.nodeId = ctx.nodeId;
     const agentId = this.ai.selectedAgentId();
-    await this.ai.createThread('chat', undefined, agentId);
+    await this.ai.createThread(mode, Object.keys(meta).length ? meta : undefined, agentId);
     this.view = 'chat';
     this.cdr.detectChanges();
   }
@@ -201,6 +231,28 @@ export class AiPanelComponent {
     if (ctx.page === 'flow-builder') return 'apartment';
     if (ctx.page === 'form-builder') return 'form';
     return 'message';
+  }
+
+  // ── Linked element ──
+  linkedElementLabel(): string {
+    const thread = this.ai.currentThread();
+    if (!thread) return '';
+    if (thread.mode === 'workflow' && thread.flowId) return 'Ouvrir le workflow';
+    if (thread.mode === 'form' && thread.metadata?.formId) return 'Ouvrir le formulaire';
+    return '';
+  }
+
+  openLinkedElement() {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    if (thread.mode === 'workflow' && thread.flowId) {
+      // Use short ID (flw_xxx) from metadata, fallback to flowId
+      const flowId = thread.metadata?.flowShortId || thread.flowId;
+      this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: flowId, center: '1' } });
+    } else if (thread.mode === 'form' && thread.metadata?.formId) {
+      const formId = thread.metadata?.formShortId || thread.metadata.formId;
+      this.router.navigate(['/dynamic-form'], { queryParams: { session: formId } });
+    }
   }
 
   // ── Agent indicator ──
