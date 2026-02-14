@@ -19,6 +19,10 @@ const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
+  enrich_context: 'Contexte', open_element: 'Ouverture', open_credentials: 'Identifiants',
+  save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe', get_templates: 'Templates',
   get_template_details: 'Détails template', ensure_start: 'Démarrage', add_node: 'Ajout noeud',
   remove_node: 'Suppression', replace_node: 'Remplacement', connect_nodes: 'Connexion',
@@ -27,10 +31,17 @@ const TOOL_LABELS: Record<string, string> = {
   validate_flow: 'Validation', auto_layout: 'Layout', save_flow: 'Sauvegarde',
   create_start_form: 'Formulaire start', propose_context_mapping: 'Mapping',
   get_node_schema: 'Schéma noeud', get_node_info: 'Info noeud', list_predecessors: 'Prédécesseurs',
+  get_predecessor_context: 'Contexte préd.', search_predecessors: 'Recherche préd.',
   get_scenarios: 'Scénarios', get_msgin_preview: 'Aperçu msgIn',
   get_form_schema: 'Schéma form', set_form_schema: 'MAJ schéma', add_field: 'Ajout champ',
   update_field: 'Modif champ', remove_field: 'Suppr champ', create_form: 'Création form',
   save_form: 'Sauvegarde form', get_output_schema: 'Schéma sortie', build_schema: 'Construction schéma',
+  add_section: 'Ajout section', update_section: 'Modif section', reorder_fields: 'Réordonnancement',
+  get_field_types: 'Types champs', search_forms: 'Recherche forms', load_form: 'Chargement form',
+  update_form_settings: 'Paramètres form',
+  deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
+  get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
+  list_runs: 'Historique', get_run_stats: 'Statistiques',
 };
 
 interface StreamSegment {
@@ -424,36 +435,64 @@ export class AiChatComponent {
       case 'tool.input_delta': {
         // Accumulate partial JSON on the running tool
         const deltaId = (ev as any).id;
+        const deltaName = (ev as any).name || '';
         const deltaText = (ev as any).text || '';
-        this.segments = this.segments.map(seg => {
+        let deltaFound = false;
+        const deltaUpdated = this.segments.map(seg => {
           if (seg.type !== 'tools' || !seg.tools) return seg;
           const idx = seg.tools.findIndex(t => t.id === deltaId);
           if (idx < 0) return seg;
+          deltaFound = true;
           const updatedTools = seg.tools.map((t, i) =>
             i === idx ? { ...t, inputJson: (t.inputJson || '') + deltaText } : t
           );
           return { ...seg, tools: updatedTools };
         });
+        if (deltaFound) {
+          this.segments = deltaUpdated;
+        } else if (deltaId) {
+          // tool.start was missed — create the tool entry from input_delta
+          const tool: StreamTool = { id: deltaId, name: deltaName, status: 'running', inputJson: deltaText };
+          const last = this.segments[this.segments.length - 1];
+          if (last && last.type === 'tools') {
+            this.segments = [...this.segments.slice(0, -1), { ...last, tools: [...(last.tools || []), tool] }];
+          } else {
+            this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
+          }
+        }
         break;
       }
       case 'tool.end': {
         const evId = (ev as any).id;
+        const evName = (ev as any).name || '';
+        const evStatus = ((ev as any).status || 'success') as 'running' | 'success' | 'error';
+        const evDuration = (ev as any).duration;
+        const evArgs = (ev as any).args;
+        const evResult = (ev as any).result;
         // Find and update the tool — create NEW segment + tools array
-        this.segments = this.segments.map(seg => {
+        let found = false;
+        const updated = this.segments.map(seg => {
           if (seg.type !== 'tools' || !seg.tools) return seg;
           const idx = seg.tools.findIndex(t => t.id === evId);
           if (idx < 0) return seg;
+          found = true;
           const updatedTools = seg.tools.map((t, i) =>
-            i === idx ? {
-              ...t,
-              status: ((ev as any).status || 'success') as 'running' | 'success' | 'error',
-              duration: (ev as any).duration,
-              args: (ev as any).args,
-              result: (ev as any).result,
-            } : t
+            i === idx ? { ...t, status: evStatus, duration: evDuration, args: evArgs, result: evResult } : t
           );
           return { ...seg, tools: updatedTools };
         });
+        if (found) {
+          this.segments = updated;
+        } else {
+          // tool.start was missed — create the tool entry directly
+          const tool: StreamTool = { id: evId, name: evName, status: evStatus, duration: evDuration, args: evArgs, result: evResult };
+          const last = this.segments[this.segments.length - 1];
+          if (last && last.type === 'tools') {
+            this.segments = [...this.segments.slice(0, -1), { ...last, tools: [...(last.tools || []), tool] }];
+          } else {
+            this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
+          }
+        }
         break;
       }
       case 'error': {

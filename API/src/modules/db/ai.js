@@ -13,6 +13,7 @@ const WorkspaceMembership = require('../../db/models/workspace-membership.model'
 const Flow = require('../../db/models/flow.model');
 const { buildContext } = require('../../ai/context/context-builder');
 const { runAgent } = require('../../ai/agent-runner');
+const { runHarness } = require('../../ai/agent-harness');
 const { toolIndex } = require('../../ai/tools/tool-index');
 
 module.exports = function () {
@@ -105,6 +106,10 @@ ${toolLines.join('\n')}
       promptFragment: promptFragment || null,
       llmProvider: agent.llmProvider || null,
       llmModel: agent.llmModel || null,
+      toolGroups: agent.toolGroups?.length ? agent.toolGroups : null,
+      blockedTools: agent.blockedTools?.length ? agent.blockedTools : null,
+      maxToolLoops: agent.maxToolLoops || null,
+      routerBehavior: agent.routerBehavior || null,
     };
   }
 
@@ -464,11 +469,15 @@ ${toolLines.join('\n')}
         if (resolved.promptFragment) {
           context._agentPromptFragment = resolved.promptFragment;
         }
-        // Pass LLM overrides if custom agent specifies them
-        if (resolved.llmProvider || resolved.llmModel) {
+        // Pass LLM overrides and access control if custom agent specifies them
+        if (resolved.llmProvider || resolved.llmModel || resolved.toolGroups || resolved.blockedTools || resolved.maxToolLoops || resolved.routerBehavior) {
           agentOverrides = {
             llmProvider: resolved.llmProvider || null,
             llmModel: resolved.llmModel || null,
+            toolGroups: resolved.toolGroups || null,
+            blockedTools: resolved.blockedTools || null,
+            maxToolLoops: resolved.maxToolLoops || null,
+            routerBehavior: resolved.routerBehavior || null,
           };
         }
       }
@@ -513,7 +522,7 @@ ${toolLines.join('\n')}
       let questionData = null;
       let usageData = null;
 
-      const generator = runAgent({
+      const generator = runHarness({
         mode: thread.mode || 'chat',
         messages,
         context,
@@ -561,10 +570,20 @@ ${toolLines.join('\n')}
             const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status };
             toolCalls.push(tc);
             // Update the tool in its tools segment
+            let tcFound = false;
             for (const seg of segments) {
               if (seg.type !== 'tools' || !seg.toolCalls) continue;
               const idx = seg.toolCalls.findIndex(t => t.id === event.id);
-              if (idx >= 0) { seg.toolCalls[idx] = tc; break; }
+              if (idx >= 0) { seg.toolCalls[idx] = tc; tcFound = true; break; }
+            }
+            // Fallback: if tool.start didn't create a segment entry, add it now
+            if (!tcFound) {
+              let lastSeg = segments[segments.length - 1];
+              if (!lastSeg || lastSeg.type !== 'tools') {
+                lastSeg = { type: 'tools', toolCalls: [] };
+                segments.push(lastSeg);
+              }
+              lastSeg.toolCalls.push(tc);
             }
             send(event);
             // Detect thread transfer (compact_and_transfer tool)
@@ -633,7 +652,7 @@ ${toolLines.join('\n')}
           role: 'assistant',
           content: fullText,
           toolCalls: toolCalls.length ? toolCalls : undefined,
-          segments: cleanSegments.length > 1 ? cleanSegments : undefined,
+          segments: cleanSegments.length ? cleanSegments : undefined,
           question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options, questions: questionData.questions } : undefined,
           usage: usageData && (usageData.input || usageData.output) ? usageData : undefined,
         });
@@ -654,7 +673,7 @@ ${toolLines.join('\n')}
       send({ type: 'error', code: 'agent_error', message: e?.message || 'Internal error' });
     } finally {
       clearInterval(heartbeat);
-      if (!doneSent) send({ type: 'done' });
+      if (!doneSent) { doneSent = true; send({ type: 'done' }); }
       try { res.end(); } catch {}
     }
   });
@@ -929,7 +948,7 @@ ${toolLines.join('\n')}
 
   // Create agent
   r.post('/ai/agents', async (req, res) => {
-    const { name, description, icon, color, systemPrompt, mode, allowedProviders, allowedTemplateKeys, llmProvider, llmModel, workspaceId } = req.body || {};
+    const { name, description, icon, color, systemPrompt, mode, allowedProviders, allowedTemplateKeys, llmProvider, llmModel, toolGroups, blockedTools, maxToolLoops, routerBehavior, workspaceId } = req.body || {};
     if (!name) return res.apiError(400, 'name_required', 'Agent name is required');
     const agent = await AiAgent.create({
       companyId: req.user.companyId,
@@ -944,6 +963,10 @@ ${toolLines.join('\n')}
       allowedTemplateKeys: allowedTemplateKeys || [],
       llmProvider: llmProvider || undefined,
       llmModel: llmModel || undefined,
+      toolGroups: toolGroups || [],
+      blockedTools: blockedTools || [],
+      maxToolLoops: maxToolLoops || 40,
+      routerBehavior: routerBehavior || 'auto',
       createdBy: req.user.id,
     });
     res.status(201).json({ success: true, data: agent, requestId: req.requestId, ts: Date.now() });
@@ -953,7 +976,7 @@ ${toolLines.join('\n')}
   r.put('/ai/agents/:agentId', async (req, res) => {
     const agent = await AiAgent.findOne({ id: req.params.agentId, companyId: req.user.companyId });
     if (!agent) return res.apiError(404, 'agent_not_found', 'Agent not found');
-    const allowed = ['name', 'description', 'icon', 'color', 'systemPrompt', 'mode', 'allowedProviders', 'allowedTemplateKeys', 'llmProvider', 'llmModel', 'enabled', 'workspaceId'];
+    const allowed = ['name', 'description', 'icon', 'color', 'systemPrompt', 'mode', 'allowedProviders', 'allowedTemplateKeys', 'llmProvider', 'llmModel', 'toolGroups', 'blockedTools', 'maxToolLoops', 'routerBehavior', 'enabled', 'workspaceId'];
     for (const k of allowed) {
       if (req.body[k] !== undefined) agent[k] = req.body[k];
     }
@@ -1005,6 +1028,206 @@ ${toolLines.join('\n')}
     } catch (e) {
       console.error('[ai] stats error:', e?.message || e);
       res.apiError(500, 'stats_error', 'Failed to load stats');
+    }
+  });
+
+  // ══════════════════════════════
+  //  BACKGROUND AGENTS
+  // ══════════════════════════════
+
+  r.post('/ai/threads/:threadId/background', async (req, res) => {
+    const thread = await findThread(req.params.threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const ws = await Workspace.findById(thread.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
+
+    const { content, mode, agentId } = req.body || {};
+    if (!content) return res.apiError(400, 'empty_content', 'content required');
+
+    // Save user message
+    const AiMessage = require('../../db/models/ai-message.model');
+    await AiMessage.create({ threadId: thread._id, role: 'user', content });
+
+    // Load history
+    const history = await AiMessage.find({ threadId: thread._id }).sort({ createdAt: 1 }).limit(60).lean();
+    const messages = [];
+    for (const m of history) {
+      if (m.role === 'user') {
+        messages.push({ role: 'user', content: m.content || '' });
+      } else if (m.role === 'assistant') {
+        if (m.toolCalls?.length) {
+          messages.push({
+            role: 'assistant',
+            content: m.content || null,
+            tool_calls: m.toolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.args || {} })),
+          });
+          for (const tc of m.toolCalls) {
+            messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(tc.result || {}).slice(0, 3000) });
+          }
+        } else {
+          messages.push({ role: 'assistant', content: m.content || '' });
+        }
+      }
+    }
+
+    // Resolve overrides
+    let agentOverrides = null;
+    const effectiveAgentId = agentId || thread.agentId;
+    if (effectiveAgentId) {
+      const context = await buildContext({ companyId: ws.companyId, workspaceId: ws._id, userId: req.user.id });
+      const resolved = await resolveAgentOverrides(effectiveAgentId, context);
+      if (resolved) {
+        if (resolved.promptFragment) context._agentPromptFragment = resolved.promptFragment;
+        agentOverrides = {
+          llmProvider: resolved.llmProvider || null,
+          llmModel: resolved.llmModel || null,
+          toolGroups: resolved.toolGroups || null,
+          blockedTools: resolved.blockedTools || null,
+          maxToolLoops: resolved.maxToolLoops || null,
+          routerBehavior: resolved.routerBehavior || null,
+        };
+      }
+    }
+
+    // Spawn background agent
+    const { spawnBackgroundAgent } = require('../../ai/background-runner');
+    const io = req.app?.get?.('io');
+    const result = await spawnBackgroundAgent({
+      threadId: thread._id,
+      workspaceId: ws._id,
+      companyId: ws.companyId,
+      userId: req.user.id,
+      mode: mode || thread.mode || 'chat',
+      agentId: effectiveAgentId || undefined,
+      messages,
+      metadata: {
+        flowId: thread.flowId || undefined,
+        nodeId: thread.nodeId || undefined,
+        formId: thread.metadata?.formId || undefined,
+        workspaceId: String(ws._id),
+      },
+      agentOverrides,
+      notifySocket: io ? (event, data) => io.to(`ws:${ws._id}`).emit(event, data) : undefined,
+    });
+
+    res.apiOk(result);
+  });
+
+  // Get background run status
+  r.get('/ai/runs/:runId', async (req, res) => {
+    const AiAgentRun = require('../../db/models/ai-agent-run.model');
+    const run = await AiAgentRun.findOne({ id: req.params.runId }).lean();
+    if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
+    res.apiOk(run);
+  });
+
+  // ══════════════════════════════
+  //  MCP SERVERS
+  // ══════════════════════════════
+
+  // List MCP servers
+  r.get('/ai/mcp-servers', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const { mcpRegistry } = require('../../ai/mcp/mcp-registry');
+    const servers = await McpServer.find({ workspaceId: ws._id }).sort({ createdAt: -1 }).lean();
+    const list = servers.map(s => ({
+      ...s,
+      status: mcpRegistry.getStatus(s.id || String(s._id)),
+    }));
+    res.apiOk(list);
+  });
+
+  // Add MCP server
+  r.post('/ai/mcp-servers', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const { name, transport, command, args, env, url, headers, enabled, autoConnect, toolPrefix } = req.body || {};
+    if (!name || !transport) return res.apiError(400, 'invalid', 'name and transport required');
+    const server = await McpServer.create({
+      workspaceId: ws._id,
+      name, transport,
+      command: command || undefined,
+      args: args || [],
+      env: env || {},
+      url: url || undefined,
+      headers: headers || {},
+      enabled: enabled !== false,
+      autoConnect: !!autoConnect,
+      toolPrefix: toolPrefix || '',
+    });
+    res.status(201).json({ success: true, data: server, requestId: req.requestId, ts: Date.now() });
+  });
+
+  // Update MCP server
+  r.put('/ai/mcp-servers/:id', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const server = await McpServer.findOne({ id: req.params.id, workspaceId: ws._id });
+    if (!server) return res.apiError(404, 'not_found', 'MCP server not found');
+    const allowed = ['name', 'transport', 'command', 'args', 'env', 'url', 'headers', 'enabled', 'autoConnect', 'toolPrefix'];
+    for (const k of allowed) {
+      if (req.body[k] !== undefined) server[k] = req.body[k];
+    }
+    await server.save();
+    res.apiOk(server);
+  });
+
+  // Delete MCP server
+  r.delete('/ai/mcp-servers/:id', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const { mcpRegistry } = require('../../ai/mcp/mcp-registry');
+    const server = await McpServer.findOne({ id: req.params.id, workspaceId: ws._id });
+    if (!server) return res.apiError(404, 'not_found', 'MCP server not found');
+    await mcpRegistry.disconnectServer(server.id);
+    await McpServer.deleteOne({ _id: server._id });
+    res.apiOk(true);
+  });
+
+  // Connect MCP server manually
+  r.post('/ai/mcp-servers/:id/connect', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const { mcpRegistry } = require('../../ai/mcp/mcp-registry');
+    const server = await McpServer.findOne({ id: req.params.id, workspaceId: ws._id }).lean();
+    if (!server) return res.apiError(404, 'not_found', 'MCP server not found');
+    try {
+      await mcpRegistry.connectServer(server);
+      res.apiOk({ connected: true, ...mcpRegistry.getStatus(server.id) });
+    } catch (e) {
+      res.apiError(500, 'connect_error', e.message);
+    }
+  });
+
+  // Disconnect MCP server
+  r.post('/ai/mcp-servers/:id/disconnect', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const { mcpRegistry } = require('../../ai/mcp/mcp-registry');
+    await mcpRegistry.disconnectServer(req.params.id);
+    res.apiOk({ connected: false });
+  });
+
+  // List tools from a specific MCP server
+  r.get('/ai/mcp-servers/:id/tools', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const McpServer = require('../../db/models/mcp-server.model');
+    const { mcpRegistry } = require('../../ai/mcp/mcp-registry');
+    const server = await McpServer.findOne({ id: req.params.id, workspaceId: ws._id }).lean();
+    if (!server) return res.apiError(404, 'not_found', 'MCP server not found');
+    try {
+      const client = await mcpRegistry.connectServer(server);
+      const tools = await client.listTools();
+      res.apiOk(tools);
+    } catch (e) {
+      res.apiError(500, 'tools_error', e.message);
     }
   });
 

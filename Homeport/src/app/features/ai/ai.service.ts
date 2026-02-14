@@ -385,7 +385,7 @@ export class AiService {
                   role: 'assistant',
                   content: assistantText,
                   toolCalls: toolCalls.length ? [...toolCalls] : undefined,
-                  segments: segments.length > 1 ? [...segments] : undefined,
+                  segments: segments.length ? [...segments] : undefined,
                   question: this.pendingQuestion() || undefined,
                 };
                 this.messages.update(msgs => [...msgs, assistantMsg]);
@@ -490,7 +490,7 @@ export class AiService {
     return obs;
   }
 
-  createAgent(data: { name: string; description?: string; systemPrompt?: string; allowedProviders?: string[]; workspaceId?: string }): Observable<any> {
+  createAgent(data: { name: string; description?: string; systemPrompt?: string; allowedProviders?: string[]; workspaceId?: string; toolGroups?: string[]; blockedTools?: string[]; maxToolLoops?: number; routerBehavior?: string }): Observable<any> {
     return this.api.post<any>('/api/ai/agents', data, { workspaceId: this.wsId() });
   }
 

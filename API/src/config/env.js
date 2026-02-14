@@ -51,7 +51,7 @@ module.exports = {
 
   // AI / LLM — auto-detect: if both keys exist, prefer Anthropic
   OPENAI_API_KEY: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '',
-  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-5',
+  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-5.2',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
   ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929',
   get AI_PROVIDER() {
@@ -69,4 +69,11 @@ module.exports = {
   },
   AI_TEMPERATURE: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
   AI_MAX_TOKENS: parseInt(process.env.AI_MAX_TOKENS || '16384', 10),
+  // GPT-5.2 reasoning & verbosity — 'none' disables reasoning tokens (fastest)
+  // Effort: 'none' | 'low' | 'medium' | 'high' | 'xhigh'
+  AI_REASONING_EFFORT: process.env.AI_REASONING_EFFORT || 'none',
+  // Verbosity: 'low' | 'medium' | 'high'
+  AI_VERBOSITY: process.env.AI_VERBOSITY || 'medium',
+  // Force Chat Completions API instead of Responses API (set to 1 to disable Responses API)
+  AI_FORCE_CHAT_COMPLETIONS: readBool('AI_FORCE_CHAT_COMPLETIONS', false),
 };

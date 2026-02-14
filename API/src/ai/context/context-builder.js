@@ -80,6 +80,8 @@ async function buildContext({ companyId, workspaceId, userId }) {
       apiKey: env.AI_API_KEY,
       temperature: env.AI_TEMPERATURE,
       maxTokens: env.AI_MAX_TOKENS,
+      reasoningEffort: env.AI_REASONING_EFFORT,
+      verbosity: env.AI_VERBOSITY,
     },
   };
 }

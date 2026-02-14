@@ -13,6 +13,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AiService, AiAvailableAgent } from './ai.service';
@@ -22,7 +24,7 @@ import { ApiClientService } from '../../services/api-client.service';
 @Component({
   selector: 'ai-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
       <nz-tabset nzSize="small" nzType="card">
@@ -106,6 +108,24 @@ import { ApiClientService } from '../../services/api-client.service';
                     <div class="field-hint">L'agent aura accès aux outils de ces providers</div>
                     <label class="ca-label">Instructions système</label>
                     <textarea nz-input [(ngModel)]="editSystemPrompt" [nzAutosize]="{ minRows: 2, maxRows: 8 }" nzSize="small"></textarea>
+                    <label class="ca-label">Groupes d'outils</label>
+                    <div class="tool-groups-grid">
+                      <label *ngFor="let g of allToolGroups" nz-checkbox [nzChecked]="editToolGroups.includes(g.key)" (nzCheckedChange)="toggleToolGroup(g.key, $event)">
+                        {{ g.label }}
+                      </label>
+                    </div>
+                    <div class="field-hint">Vide = tous les groupes (par défaut)</div>
+                    <label class="ca-label">Outils bloqués</label>
+                    <nz-select [(ngModel)]="editBlockedTools" nzMode="tags" nzPlaceHolder="Noms des outils à bloquer" nzSize="small" style="width: 100%"></nz-select>
+                    <div class="field-hint">Ex : deploy_flow, undeploy_flow</div>
+                    <label class="ca-label">Comportement du routeur</label>
+                    <nz-select [(ngModel)]="editRouterBehavior" nzSize="small" style="width: 100%">
+                      <nz-option nzValue="auto" nzLabel="Auto (routeur en chat uniquement)"></nz-option>
+                      <nz-option nzValue="skip" nzLabel="Direct (pas de routeur)"></nz-option>
+                      <nz-option nzValue="force" nzLabel="Forcer (toujours via le routeur)"></nz-option>
+                    </nz-select>
+                    <label class="ca-label">Boucles max</label>
+                    <nz-input-number [(ngModel)]="editMaxToolLoops" [nzMin]="1" [nzMax]="100" nzSize="small" style="width: 100%"></nz-input-number>
                     <button nz-button nzType="primary" nzSize="small" (click)="saveEditAgent(a.id)" style="margin-top: 6px">
                       Sauvegarder
                     </button>
@@ -135,6 +155,19 @@ import { ApiClientService } from '../../services/api-client.service';
                 <div class="field-hint">L'agent aura accès aux outils de ces providers</div>
                 <label class="ca-label">Instructions système</label>
                 <textarea nz-input [(ngModel)]="newAgentPrompt" placeholder="Instructions spécifiques pour cet agent..." [nzAutosize]="{ minRows: 2, maxRows: 6 }" nzSize="small"></textarea>
+                <label class="ca-label">Groupes d'outils</label>
+                <div class="tool-groups-grid">
+                  <label *ngFor="let g of allToolGroups" nz-checkbox [nzChecked]="newAgentToolGroups.includes(g.key)" (nzCheckedChange)="toggleNewToolGroup(g.key, $event)">
+                    {{ g.label }}
+                  </label>
+                </div>
+                <div class="field-hint">Vide = tous les groupes (par défaut)</div>
+                <label class="ca-label">Comportement du routeur</label>
+                <nz-select [(ngModel)]="newAgentRouterBehavior" nzSize="small" style="width: 100%">
+                  <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
+                  <nz-option nzValue="skip" nzLabel="Direct"></nz-option>
+                  <nz-option nzValue="force" nzLabel="Forcer le routeur"></nz-option>
+                </nz-select>
                 <div class="create-btns">
                   <button nz-button nzSize="small" (click)="showCreateForm = false">Annuler</button>
                   <button nz-button nzType="primary" nzSize="small" (click)="createCustomAgent()" [disabled]="!newAgentName.trim()">Créer</button>
@@ -219,7 +252,79 @@ import { ApiClientService } from '../../services/api-client.service';
           </div>
         </nz-tab>
 
-        <!-- Tab 4: Admin (visible si admin) -->
+        <!-- Tab 4: MCP Servers -->
+        <nz-tab nzTitle="MCP">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">Serveurs MCP</div>
+              <div class="section-desc">Outils externes connectés via le protocole MCP</div>
+
+              <div class="mcp-server-list" *ngIf="mcpServers.length">
+                <div class="mcp-server-item" *ngFor="let s of mcpServers">
+                  <div class="ca-header">
+                    <div style="display: flex; align-items: center; gap: 6px">
+                      <span class="mcp-status" [class.connected]="s.status?.connected"></span>
+                      <span class="ca-name">{{ s.name }}</span>
+                      <nz-tag [nzColor]="s.transport === 'stdio' ? 'blue' : 'green'" style="font-size: 10px">{{ s.transport }}</nz-tag>
+                    </div>
+                    <div class="ca-actions">
+                      <button nz-button nzType="text" nzSize="small"
+                        (click)="s.status?.connected ? disconnectMcp(s) : connectMcp(s)"
+                        nz-tooltip [nzTooltipTitle]="s.status?.connected ? 'Déconnecter' : 'Connecter'">
+                        <span nz-icon [nzType]="s.status?.connected ? 'disconnect' : 'api'" nzTheme="outline"></span>
+                      </button>
+                      <button nz-button nzType="text" nzSize="small" nzDanger
+                        nz-popconfirm nzPopconfirmTitle="Supprimer ce serveur ?"
+                        (nzOnConfirm)="deleteMcpServer(s)">
+                        <span nz-icon nzType="delete" nzTheme="outline"></span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="ca-desc">
+                    {{ s.transport === 'stdio' ? s.command : s.url }}
+                    <span *ngIf="s.status?.toolCount"> · {{ s.status.toolCount }} outils</span>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="mcpServers.length === 0" class="memory-empty-inline">
+                <span class="empty-hint">Aucun serveur MCP configuré.</span>
+              </div>
+
+              <div class="create-agent" *ngIf="!showMcpForm">
+                <button nz-button nzType="dashed" (click)="showMcpForm = true" nzBlock>
+                  <span nz-icon nzType="plus" nzTheme="outline"></span> Ajouter un serveur MCP
+                </button>
+              </div>
+              <div class="create-agent-form" *ngIf="showMcpForm">
+                <label class="ca-label">Nom</label>
+                <input nz-input [(ngModel)]="newMcpName" placeholder="Ex : Mon serveur CRM" nzSize="small" />
+                <label class="ca-label">Transport</label>
+                <nz-select [(ngModel)]="newMcpTransport" nzSize="small" style="width: 100%">
+                  <nz-option nzValue="stdio" nzLabel="stdio (commande locale)"></nz-option>
+                  <nz-option nzValue="sse" nzLabel="SSE/HTTP (URL distante)"></nz-option>
+                </nz-select>
+                <ng-container *ngIf="newMcpTransport === 'stdio'">
+                  <label class="ca-label">Commande</label>
+                  <input nz-input [(ngModel)]="newMcpCommand" placeholder="npx mcp-server-xxx" nzSize="small" />
+                </ng-container>
+                <ng-container *ngIf="newMcpTransport === 'sse'">
+                  <label class="ca-label">URL</label>
+                  <input nz-input [(ngModel)]="newMcpUrl" placeholder="http://localhost:3001/mcp" nzSize="small" />
+                </ng-container>
+                <label class="ca-label">Préfixe outils</label>
+                <input nz-input [(ngModel)]="newMcpPrefix" placeholder="Ex : crm" nzSize="small" />
+                <div class="field-hint">Préfixe ajouté aux noms d'outils pour éviter les collisions</div>
+                <div class="create-btns">
+                  <button nz-button nzSize="small" (click)="showMcpForm = false">Annuler</button>
+                  <button nz-button nzType="primary" nzSize="small" (click)="createMcpServer()" [disabled]="!newMcpName.trim()">Ajouter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab 5: Admin (visible si admin) -->
         <nz-tab *ngIf="isAdmin" nzTitle="Admin">
           <div class="tab-content">
             <div class="settings-section">
@@ -324,6 +429,12 @@ import { ApiClientService } from '../../services/api-client.service';
     .tool-usage-item:hover { background: #fafafa; }
     .tool-name { font-size: 12px; font-weight: 500; }
     .context-json { font-size: 11px; background: #f5f5f5; padding: 10px; border-radius: 6px; overflow: auto; max-height: 300px; white-space: pre-wrap; word-break: break-all; }
+    .tool-groups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 8px; }
+    .tool-groups-grid label { font-size: 12px; }
+    .mcp-server-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .mcp-server-item { padding: 10px 12px; background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; }
+    .mcp-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d9d9d9; }
+    .mcp-status.connected { background: #52c41a; }
   `]
 })
 export class AiSettingsComponent implements OnInit, OnDestroy {
@@ -355,6 +466,35 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   editDescription = '';
   editSystemPrompt = '';
   editAllowedProviders: string[] = [];
+  editToolGroups: string[] = [];
+  editBlockedTools: string[] = [];
+  editRouterBehavior = 'auto';
+  editMaxToolLoops = 40;
+
+  newAgentToolGroups: string[] = [];
+  newAgentRouterBehavior = 'auto';
+
+  // MCP
+  mcpServers: any[] = [];
+  showMcpForm = false;
+  newMcpName = '';
+  newMcpTransport = 'stdio';
+  newMcpCommand = '';
+  newMcpUrl = '';
+  newMcpPrefix = '';
+
+  allToolGroups = [
+    { key: 'core', label: 'Core (mémoire, questions)' },
+    { key: 'navigation', label: 'Navigation (ouvrir)' },
+    { key: 'execution', label: 'Exécution (providers)' },
+    { key: 'workflow_search', label: 'Recherche workflows' },
+    { key: 'project_memory', label: 'Mémoire projet' },
+    { key: 'thread', label: 'Thread (transfert)' },
+    { key: 'workflow', label: 'Workflow (builder)' },
+    { key: 'form', label: 'Formulaire (builder)' },
+    { key: 'node_args', label: 'Node args' },
+    { key: 'mcp', label: 'MCP (externe)' },
+  ];
 
   private destroy$ = new Subject<void>();
   private instructions$ = new Subject<string>();
@@ -395,6 +535,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
           .map(a => ({ key: a.id.slice('provider:'.length), name: a.name, icon: a.icon }));
       },
     });
+
+    this.loadMcpServers();
 
     this.ai.getContext().subscribe({
       next: (res: any) => {
@@ -447,12 +589,16 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       description: this.newAgentDescription.trim(),
       systemPrompt: this.newAgentPrompt.trim(),
       allowedProviders: this.newAgentProviders,
+      toolGroups: this.newAgentToolGroups,
+      routerBehavior: this.newAgentRouterBehavior,
     }).subscribe({
       next: () => {
         this.newAgentName = '';
         this.newAgentDescription = '';
         this.newAgentPrompt = '';
         this.newAgentProviders = [];
+        this.newAgentToolGroups = [];
+        this.newAgentRouterBehavior = 'auto';
         this.showCreateForm = false;
         this.reloadAgents();
       },
@@ -468,6 +614,10 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     this.editName = agent.name;
     this.editDescription = agent.description;
     this.editAllowedProviders = agent.allowedProviders ? [...agent.allowedProviders] : [];
+    this.editToolGroups = (agent as any).toolGroups ? [...(agent as any).toolGroups] : [];
+    this.editBlockedTools = (agent as any).blockedTools ? [...(agent as any).blockedTools] : [];
+    this.editRouterBehavior = (agent as any).routerBehavior || 'auto';
+    this.editMaxToolLoops = (agent as any).maxToolLoops || 40;
     this.editSystemPrompt = '';
   }
 
@@ -477,6 +627,10 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       description: this.editDescription.trim(),
       systemPrompt: this.editSystemPrompt.trim(),
       allowedProviders: this.editAllowedProviders,
+      toolGroups: this.editToolGroups,
+      blockedTools: this.editBlockedTools,
+      routerBehavior: this.editRouterBehavior,
+      maxToolLoops: this.editMaxToolLoops,
     }).subscribe({
       next: () => {
         this.editingAgentId = null;
@@ -558,7 +712,74 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── MCP ──
+
+  loadMcpServers() {
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    this.apiClient.get<any>('/api/ai/mcp-servers', { workspaceId: wsId }).subscribe({
+      next: (res: any) => {
+        this.mcpServers = res?.data || res || [];
+        this.cdr.detectChanges();
+      },
+      error: () => { this.mcpServers = []; },
+    });
+  }
+
+  createMcpServer() {
+    const name = this.newMcpName.trim();
+    if (!name) return;
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    const body: any = { name, transport: this.newMcpTransport, toolPrefix: this.newMcpPrefix.trim() };
+    if (this.newMcpTransport === 'stdio') body.command = this.newMcpCommand.trim();
+    if (this.newMcpTransport === 'sse') body.url = this.newMcpUrl.trim();
+    this.apiClient.post<any>('/api/ai/mcp-servers', body, { workspaceId: wsId }).subscribe({
+      next: () => {
+        this.showMcpForm = false;
+        this.newMcpName = ''; this.newMcpCommand = ''; this.newMcpUrl = ''; this.newMcpPrefix = '';
+        this.loadMcpServers();
+      },
+    });
+  }
+
+  connectMcp(server: any) {
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    this.apiClient.post<any>(`/api/ai/mcp-servers/${server.id}/connect`, {}, { workspaceId: wsId }).subscribe({
+      next: () => this.loadMcpServers(),
+      error: () => this.loadMcpServers(),
+    });
+  }
+
+  disconnectMcp(server: any) {
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    this.apiClient.post<any>(`/api/ai/mcp-servers/${server.id}/disconnect`, {}, { workspaceId: wsId }).subscribe({
+      next: () => this.loadMcpServers(),
+    });
+  }
+
+  deleteMcpServer(server: any) {
+    const wsId = this.acl.currentWorkspaceId?.() || '';
+    this.apiClient.delete<any>(`/api/ai/mcp-servers/${server.id}`, { workspaceId: wsId }).subscribe({
+      next: () => this.loadMcpServers(),
+    });
+  }
+
   formatJson(obj: any): string {
     try { return JSON.stringify(obj, null, 2); } catch { return String(obj); }
+  }
+
+  toggleToolGroup(key: string, checked: boolean) {
+    if (checked) {
+      if (!this.editToolGroups.includes(key)) this.editToolGroups.push(key);
+    } else {
+      this.editToolGroups = this.editToolGroups.filter(g => g !== key);
+    }
+  }
+
+  toggleNewToolGroup(key: string, checked: boolean) {
+    if (checked) {
+      if (!this.newAgentToolGroups.includes(key)) this.newAgentToolGroups.push(key);
+    } else {
+      this.newAgentToolGroups = this.newAgentToolGroups.filter(g => g !== key);
+    }
   }
 }

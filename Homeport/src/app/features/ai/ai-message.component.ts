@@ -12,7 +12,11 @@ const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
-  enrich_context: 'Contexte', create_flow: 'Création flow', list_graph: 'Graphe',
+  enrich_context: 'Contexte', open_element: 'Ouverture', open_credentials: 'Identifiants',
+  save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  search_manual: 'Manuel', get_manual_section: 'Manuel',
+  create_flow: 'Création flow', list_graph: 'Graphe',
   get_templates: 'Templates', get_template_details: 'Détails template', ensure_start: 'Démarrage',
   add_node: 'Ajout noeud', remove_node: 'Suppression', replace_node: 'Remplacement',
   connect_nodes: 'Connexion', disconnect_nodes: 'Déconnexion',
@@ -64,7 +68,8 @@ for (const k of ['search_tools', 'get_tool_details', 'get_templates', 'get_templ
   'list_graph', 'get_output_options', 'get_node_schema', 'get_output_schema', 'get_node_info',
   'list_predecessors', 'get_predecessor_context', 'search_predecessors', 'get_scenarios',
   'get_msgin_preview', 'list_providers', 'search_workflows', 'get_form_schema', 'get_field_types',
-  'search_forms', 'load_form', 'get_deployment_status', 'list_runs', 'get_run_stats'])
+  'search_forms', 'load_form', 'get_deployment_status', 'list_runs', 'get_run_stats',
+  'search_manual', 'get_manual_section', 'get_project_memory', 'activate_capsule'])
   TOOL_CATEGORIES[k] = CAT_PLAN;
 // Question
 TOOL_CATEGORIES['ask_user'] = CAT_QUESTION;
@@ -76,11 +81,12 @@ for (const k of ['create_flow', 'ensure_start', 'add_node', 'remove_node', 'repl
   'add_section', 'update_section', 'update_form_settings', 'reorder_fields', 'create_form'])
   TOOL_CATEGORIES[k] = CAT_BUILD;
 // Execution
-for (const k of ['execute_tool', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'start_run']) TOOL_CATEGORIES[k] = CAT_EXEC;
+for (const k of ['execute_tool', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'start_run',
+  'open_element', 'open_credentials']) TOOL_CATEGORIES[k] = CAT_EXEC;
 // Validation
-for (const k of ['validate_flow', 'auto_layout', 'save_flow', 'save_form']) TOOL_CATEGORIES[k] = CAT_VALID;
+for (const k of ['validate_flow', 'auto_layout', 'save_flow', 'save_form', 'compact_and_transfer']) TOOL_CATEGORIES[k] = CAT_VALID;
 // Memory
-for (const k of ['save_memory', 'get_memory', 'enrich_context']) TOOL_CATEGORIES[k] = CAT_MEM;
+for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_memory']) TOOL_CATEGORIES[k] = CAT_MEM;
 
 @Component({
   selector: 'ai-message',

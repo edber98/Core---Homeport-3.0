@@ -1,11 +1,12 @@
 // LLM client factory — unified interface across providers
 const { streamOpenAI, formatMessages: fmtOai, formatTools: fmtOaiTools } = require('./openai');
 const { streamAnthropic, formatMessages: fmtAnth, formatTools: fmtAnthTools } = require('./anthropic');
+const { streamOpenAIResponses } = require('./openai-responses');
 
 /**
  * Create a unified LLM client.
  * @param {string} provider - 'openai' | 'anthropic'
- * @param {object} config - { apiKey, model, temperature, maxTokens }
+ * @param {object} config - { apiKey, model, temperature, maxTokens, useResponsesApi, reasoningEffort }
  * @returns {{ stream(messages, tools) → AsyncGenerator<Event> }}
  *
  * Normalized event types:
@@ -17,6 +18,7 @@ const { streamAnthropic, formatMessages: fmtAnth, formatTools: fmtAnthTools } = 
  */
 function createLlmClient(provider, config = {}) {
   const p = String(provider || 'openai').toLowerCase();
+  const env = require('../../config/env');
 
   if (p === 'anthropic' || p === 'claude') {
     return {
@@ -27,7 +29,22 @@ function createLlmClient(provider, config = {}) {
     };
   }
 
-  // Default: OpenAI
+  // OpenAI: choose between Responses API and ChatCompletions
+  // Responses API for GPT-5.x, o-series, or when explicitly requested
+  // AI_FORCE_CHAT_COMPLETIONS=1 overrides to always use ChatCompletions
+  const forceChatCompletions = env.AI_FORCE_CHAT_COMPLETIONS;
+  const useResponses = !forceChatCompletions && (config.useResponsesApi || /^(gpt-5|o[1-9])/.test(config.model || ''));
+
+  if (useResponses) {
+    return {
+      provider: 'openai-responses',
+      stream(messages, tools) {
+        return streamOpenAIResponses(messages, tools, config);
+      },
+    };
+  }
+
+  // Default: OpenAI ChatCompletions
   return {
     provider: 'openai',
     stream(messages, tools) {

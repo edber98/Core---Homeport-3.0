@@ -5,15 +5,21 @@ async function* streamOpenAI(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('OpenAI API key not configured');
 
-  const model = config.model || 'gpt-5';
-  // Some models (gpt-5, o-series) only support default temperature (1)
-  const noCustomTemp = /^(gpt-5|o[1-9])/.test(model);
+  const model = config.model || 'gpt-5.2';
+  // GPT-5.2 with reasoning=none supports temperature; others don't
+  const isReasoningModel = /^(gpt-5|o[1-9])/.test(model);
+  const reasoningEffort = config.reasoningEffort || undefined;
+  const noCustomTemp = isReasoningModel && reasoningEffort !== 'none';
   const body = {
     model,
     messages,
     stream: true,
   };
   if (!noCustomTemp) body.temperature = config.temperature ?? 0.7;
+  // Reasoning effort for GPT-5.x via ChatCompletions
+  if (isReasoningModel && reasoningEffort) {
+    body.reasoning_effort = reasoningEffort;
+  }
   // Newer OpenAI models use max_completion_tokens instead of max_tokens
   if (config.maxTokens) body.max_completion_tokens = config.maxTokens;
   if (tools && tools.length) {
@@ -22,6 +28,10 @@ async function* streamOpenAI(messages, tools, config) {
     // when it needs a previous tool result (e.g. search_tools → get_tool_details)
     body.parallel_tool_calls = false;
   }
+  // Include usage in streaming response (otherwise totalUsage is always null)
+  body.stream_options = { include_usage: true };
+
+  console.log(`[llm-openai] request: model=${body.model}, tools=${body.tools?.length || 0}, messages=${body.messages?.length || 0}`);
 
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -34,8 +44,10 @@ async function* streamOpenAI(messages, tools, config) {
 
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
+    console.error(`[llm-openai] HTTP error ${res.status}: ${errText.slice(0, 500)}`);
     throw new Error(`OpenAI API error ${res.status}: ${errText}`);
   }
+  console.log('[llm-openai] stream started');
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -56,6 +68,7 @@ async function* streamOpenAI(messages, tools, config) {
       const trimmed = line.trim();
       if (!trimmed || trimmed === 'data: [DONE]') {
         if (trimmed === 'data: [DONE]') {
+          console.log(`[llm-openai] [DONE] → done (usage: ${JSON.stringify(totalUsage)})`);
           yield { type: 'done', usage: totalUsage };
           return;
         }
@@ -111,10 +124,9 @@ async function* streamOpenAI(messages, tools, config) {
           try { input = JSON.parse(b.arguments); } catch {}
           yield { type: 'tool_use_end', index: idx, id: b.id, name: b.name, input };
         }
-        if (choice.finish_reason === 'stop') {
-          yield { type: 'done', usage: totalUsage };
-          return;
-        }
+        toolBuilders.clear();
+        // Don't return on 'stop' — with stream_options, the usage chunk arrives
+        // AFTER finish_reason. Let the loop continue to capture it, then [DONE] yields done.
       }
     }
   }

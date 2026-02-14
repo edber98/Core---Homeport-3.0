@@ -26,6 +26,8 @@ async function* streamAnthropic(messages, tools, config) {
   if (system) body.system = system;
   if (tools && tools.length) body.tools = formatTools(tools);
 
+  console.log(`[llm-anthropic] request: model=${body.model}, tools=${body.tools?.length || 0}, messages=${body.messages?.length || 0}`);
+
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -38,8 +40,10 @@ async function* streamAnthropic(messages, tools, config) {
 
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
+    console.error(`[llm-anthropic] HTTP error ${res.status}: ${errText.slice(0, 500)}`);
     throw new Error(`Anthropic API error ${res.status}: ${errText}`);
   }
+  console.log('[llm-anthropic] stream started');
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -120,6 +124,7 @@ async function* streamAnthropic(messages, tools, config) {
           break;
 
         case 'message_stop':
+          console.log(`[llm-anthropic] message_stop → done (usage: ${JSON.stringify(usage)})`);
           yield { type: 'done', usage };
           return;
 

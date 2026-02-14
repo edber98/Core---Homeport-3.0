@@ -11,6 +11,29 @@ const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
 
+// Builder tool names — these are NOT NodeTemplates, they are direct tool calls
+// from capsules (workflow, form, node_args). If the LLM tries to search/detail them,
+// we return a correction instead of "not found".
+const BUILDER_TOOL_NAMES = new Set([
+  // workflow capsule
+  'create_flow', 'list_graph', 'get_templates', 'get_template_details',
+  'ensure_start', 'add_node', 'remove_node', 'replace_node',
+  'connect_nodes', 'connect_by_output_name', 'disconnect_nodes',
+  'get_output_options', 'get_node_schema', 'get_output_schema',
+  'set_node_args', 'set_node_description', 'propose_context_mapping',
+  'validate_flow', 'auto_layout', 'save_flow', 'create_start_form',
+  'build_schema', 'deploy_flow', 'undeploy_flow', 'get_deployment_status',
+  'start_run', 'list_runs', 'get_run_stats',
+  // form capsule
+  'create_form', 'get_form', 'add_field', 'add_section', 'remove_field',
+  'update_field', 'reorder_fields', 'set_form_settings', 'save_form',
+  'preview_form', 'list_forms', 'delete_form',
+  // node_args capsule
+  'get_node_schema', 'get_predecessors', 'get_predecessor_output',
+  'propose_args_mapping', 'set_args', 'get_current_args',
+  'simulate_scenarios', 'validate_args', 'get_credentials_status',
+]);
+
 // Tool definitions in JSON Schema format for LLMs
 const META_TOOL_DEFINITIONS = [
   {
@@ -217,6 +240,30 @@ const META_TOOL_DEFINITIONS = [
       required: ['level', 'field', 'value'],
     },
   },
+  {
+    name: 'search_manual',
+    description: 'Recherche dans le manuel de référence. Retourne les sections pertinentes avec leur topic ID. Utilise quand tu as besoin de détails sur : types de champs, validateurs, styles, visibleIf, patterns workflow, boucles, conditions, expressions, etc.',
+    parameters: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Texte de recherche (ex: "visibleIf", "section_array", "loop boucle", "conditions classifier")' },
+        namespace: { type: 'string', enum: ['workflow', 'form', 'node_args', 'chat'], description: 'Limiter la recherche à un namespace (optionnel)' },
+      },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'get_manual_section',
+    description: 'Récupère le contenu complet d\'une section du manuel par son topic ID. Utilise après search_manual pour lire les détails.',
+    parameters: {
+      type: 'object',
+      properties: {
+        topic: { type: 'string', description: 'Topic ID (retourné par search_manual, ex: "phase_rules", "field_types", "loops")' },
+        namespace: { type: 'string', description: 'Namespace du manual (ex: "workflow", "form")' },
+      },
+      required: ['topic'],
+    },
+  },
 ];
 
 // Execute a meta-tool by name
@@ -235,6 +282,14 @@ async function executeMetaTool(name, input, ctx) {
     }
 
     case 'get_tool_details': {
+      // Detect builder tools — these are direct tool calls, NOT NodeTemplates
+      if (BUILDER_TOOL_NAMES.has(input.key)) {
+        return {
+          error: `'${input.key}' est un outil BUILDER (capsule), PAS un NodeTemplate. ` +
+            `Appelle-le DIRECTEMENT comme tool call. ` +
+            `NE PAS utiliser search_tools ou get_tool_details pour les outils builder.`,
+        };
+      }
       const tpl = await NodeTemplate.findOne({ key: input.key }).lean();
       if (!tpl) return { error: `Template '${input.key}' not found` };
       const argsSchema = tpl.args ? argsToJsonSchema(tpl.args) : null;
@@ -409,6 +464,18 @@ async function executeMetaTool(name, input, ctx) {
         );
       }
       return { ok: true, level, field };
+    }
+
+    case 'search_manual': {
+      const { searchManual } = require('../manuals/manual-index');
+      return searchManual(input.query, input.namespace);
+    }
+
+    case 'get_manual_section': {
+      const { getManualSection } = require('../manuals/manual-index');
+      const section = getManualSection(input.topic, input.namespace);
+      if (!section) return { error: `Section "${input.topic}" introuvable${input.namespace ? ` dans ${input.namespace}` : ''}.` };
+      return section;
     }
 
     default:

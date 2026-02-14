@@ -15,6 +15,10 @@ const AiAgentSchema = new Schema({
   allowedTemplateKeys: { type: [String], default: [] },
   llmProvider: { type: String },
   llmModel: { type: String },
+  toolGroups: { type: [String], default: [] },       // e.g. ['core', 'execution', 'navigation'] — empty = all groups
+  blockedTools: { type: [String], default: [] },      // e.g. ['deploy_flow', 'undeploy_flow']
+  maxToolLoops: { type: Number, default: 40 },        // max agent loop iterations
+  routerBehavior: { type: String, enum: ['auto', 'skip', 'force'], default: 'auto' },
   enabled: { type: Boolean, default: true },
   createdBy: { type: Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
