@@ -22,13 +22,10 @@ module.exports = function () {
     }
 
     try {
-      // Build multipart form data for OpenAI Whisper API
-      const FormData = (await import('form-data')).default;
+      // Build multipart form data for OpenAI Whisper API (native FormData + Blob)
       const form = new FormData();
-      form.append('file', req.file.buffer, {
-        filename: req.file.originalname || 'audio.webm',
-        contentType: req.file.mimetype || 'audio/webm',
-      });
+      const blob = new Blob([req.file.buffer], { type: req.file.mimetype || 'audio/webm' });
+      form.append('file', blob, req.file.originalname || 'audio.webm');
       form.append('model', 'whisper-1');
       form.append('language', 'fr');
 
@@ -36,7 +33,6 @@ module.exports = function () {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
-          ...form.getHeaders(),
         },
         body: form,
       });
