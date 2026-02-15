@@ -185,7 +185,8 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
               <div class="sub">
                 <span class="dur">{{ a.durationMs || 0 }} ms</span>
                 <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
-                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+                <button class="toggle apple-btn" (click)="openAttemptResult(a)" title="Voir le résultat"><i class="fa-solid fa-eye"></i></button>
+                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? '−' : '+' }}</button>
               </div>
             </div>
             <div class="io" *ngIf="expanded[i]">
@@ -290,7 +291,8 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
               <div class="sub">
                 <span class="dur">{{ a.durationMs || 0 }} ms</span>
                 <span class="when" *ngIf="a.startedAt">{{ a.startedAt | date:'shortTime' }}</span>
-                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? 'Masquer' : 'Voir' }}</button>
+                <button class="toggle apple-btn" (click)="openAttemptResult(a)" title="Voir le résultat"><i class="fa-solid fa-eye"></i></button>
+                <button class="toggle apple-btn" (click)="toggleAttempt(i)">{{ expanded[i] ? '−' : '+' }}</button>
               </div>
             </div>
             <div class="io" *ngIf="expanded[i]">
@@ -529,7 +531,8 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     .attempt .hdr .toggle { margin-left:8px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
     .attempt .sub .dur { white-space: nowrap; }
     .attempt .sub .when { white-space: nowrap; }
-    .attempt .sub .toggle { margin-left:auto; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
+    .attempt .sub .toggle { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:2px 6px; font-size:12px; cursor:pointer; }
+    .attempt .sub .toggle:first-of-type { margin-left:auto; }
     .backend-attempt { background:#f3f7ff; }
     .backend-attempt .attempt-head {
       position: sticky;
@@ -921,9 +924,15 @@ export class FlowExecutionComponent {
   execResultNodeId: string | null = null;
 
   onViewerExecBadgeClick(ev: { nodeId: string }) {
-    const atts = this.backendAttempts.filter(a => a.nodeId === ev.nodeId);
-    if (!atts.length) return;
-    this.execResultNodeId = ev.nodeId;
+    this.zone.run(() => {
+      this.execResultNodeId = String(ev.nodeId);
+      this.execResultOpen = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  openAttemptResult(a: { nodeId: string }) {
+    this.execResultNodeId = String(a.nodeId);
     this.execResultOpen = true;
   }
 
@@ -934,7 +943,7 @@ export class FlowExecutionComponent {
 
   get execResultAttempts(): any[] {
     if (!this.execResultNodeId) return [];
-    return this.backendAttempts.filter(a => a.nodeId === this.execResultNodeId);
+    return this.backendAttempts.filter(a => String(a.nodeId) === this.execResultNodeId);
   }
 
   get execResultTemplate(): any {

@@ -87,13 +87,16 @@
           }
         },
         {
-          "type": "textarea",
+          "type": "file",
           "key": "attachments",
-          "label": "Pièces jointes (JSON)",
-          "description": "Pièces jointes encodées en JSON.",
+          "label": "Pièces jointes",
+          "description": "Fichiers à joindre à l'e-mail.",
           "col": {
             "xs": 24
-          }
+          },
+          "multiple": true,
+          "maxCount": 10,
+          "lifecycle": "execution"
         }
       ]
     },
@@ -721,14 +724,16 @@
             }
           },
           {
-            "type": "textarea",
+            "type": "file",
             "key": "attachments",
-            "label": "Pièces jointes (tableau JSON)",
-            "description": "Liste des pièces jointes (JSON).",
+            "label": "Pièces jointes",
+            "description": "Fichiers à joindre à l'e-mail.",
             "col": {
               "xs": 24
             },
-            "default": "[]"
+            "multiple": true,
+            "maxCount": 10,
+            "lifecycle": "execution"
           }
         ],
         "displayTitle": false,

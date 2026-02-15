@@ -241,7 +241,10 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
                 </ng-template>
               </ng-container>
               <div class="exec-badge" *ngIf="showExecBadges && ctx.node.data.execStatus as st"
-                   (click)="onExecBadgeClick($event, ctx.node.id)" style="cursor:pointer;">
+                   (click)="onExecBadgeClick($event, ctx.node.id)"
+                   (pointerdown)="$event.stopImmediatePropagation()"
+                   (mousedown)="$event.stopImmediatePropagation()"
+                   style="cursor:pointer;">
                 <i class="fa-solid" [ngClass]="st === 'success' ? 'fa-circle-check ok' : (st === 'error' ? 'fa-triangle-exclamation err' : (st === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))"></i>
                 <span class="cnt" *ngIf="(ctx.node.data.execCount || 0) > 1">× {{ ctx.node.data.execCount }}</span>
               </div>
@@ -331,7 +334,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card .link-child-row { padding-right: 4px; }
     .node-card .link-child-label { font-size: 11px; color: #a1a8b8; padding-left: 10px; }
     .node-card .link-child-label .type { font-size: 10px; color: #bcc3d0; }
-    .node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+    .node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); position:relative; z-index:10; pointer-events:auto; }
     .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
     .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
     .node-card .exec-badge .fa-stop.stop { color:#111827; }

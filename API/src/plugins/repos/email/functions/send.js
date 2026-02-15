@@ -23,14 +23,50 @@ module.exports = {
         },
       });
 
-      // Parser les attachments (si fournis en JSON string)
+      // Parser et résoudre les attachments (fileRef, JSON string, ou tableau)
       let attachments = [];
       try {
-        if (inputs.attachments && inputs.attachments.trim() !== "") {
-          attachments = JSON.parse(inputs.attachments);
+        let raw = inputs.attachments;
+        if (raw && typeof raw === 'string' && raw.trim() !== '') {
+          try { raw = JSON.parse(raw); } catch { /* pas du JSON, on ignore */ }
+        }
+        if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+          raw = [raw]; // un seul objet → tableau
+        }
+        if (Array.isArray(raw)) {
+          for (const item of raw) {
+            // Résoudre le champ file s'il est un string JSON (double-stringification)
+            let fileRef = item.file || item;
+            if (typeof fileRef === 'string') {
+              try { fileRef = JSON.parse(fileRef); } catch { /* pas du JSON */ }
+            }
+
+            // Si c'est un fileRef Homeport, le résoudre via opts.files
+            if (fileRef && typeof fileRef === 'object' && (fileRef._type === 'fileRef' || fileRef.fileId)) {
+              if (!opts.files) {
+                log('⚠ Impossible de résoudre le fichier : helper files non disponible');
+                continue;
+              }
+              const buf = await opts.files.resolveAsBuffer(fileRef);
+              attachments.push({
+                filename: item.filename || fileRef.name || 'attachment',
+                content: buf,
+                contentType: fileRef.mimeType || 'application/octet-stream',
+              });
+            } else if (typeof fileRef === 'string' && /^https?:\/\//i.test(fileRef)) {
+              // URL directe
+              attachments.push({
+                filename: item.filename || 'attachment',
+                path: fileRef,
+              });
+            } else if (item.filename && item.content) {
+              // Format nodemailer direct
+              attachments.push(item);
+            }
+          }
         }
       } catch (err) {
-        console.warn("Erreur parsing attachments:", err);
+        console.warn("Erreur parsing/résolution attachments:", err);
       }
 
       // Construire l'email
@@ -42,7 +78,7 @@ module.exports = {
         subject: inputs.subject,
         text: inputs.text,
         html: inputs.html && inputs.html.trim() !== "" ? inputs.html : undefined,
-        attachments: attachments,
+        attachments: attachments.length ? attachments : undefined,
       };
 
       log(`Envoi de l'email à ${inputs.to} (sujet : "${inputs.subject}")…`);
