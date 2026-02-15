@@ -759,6 +759,13 @@
       },
       "fields": [
         {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de résultats.",
+          "col": { "xs": 24 }
+        },
+        {
           "type": "section",
           "title": "Résultats de recherche",
           "description": "Liste des résultats de recherche",
@@ -836,6 +843,36 @@
           "col": {
             "xs": 24
           }
+        }
+      ]
+    },
+    "notion_user_me": {
+      "title": "Bot actuel Notion",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du bot.", "col": { "xs": 12 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du bot.", "col": { "xs": 12 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type d'utilisateur (bot ou person).", "col": { "xs": 12 } },
+        { "type": "email", "key": "email", "label": "E-mail", "description": "E-mail du propriétaire.", "col": { "xs": 12 } },
+        { "type": "url", "key": "avatar_url", "label": "Avatar", "description": "URL de l'avatar.", "col": { "xs": 24 } },
+        { "type": "text", "key": "bot_owner", "label": "Type de propriétaire", "description": "Type du propriétaire du bot (workspace ou user).", "col": { "xs": 24 } }
+      ]
+    },
+    "notion_page_property": {
+      "title": "Propriété de page Notion",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID de la propriété", "description": "Identifiant de la propriété.", "col": { "xs": 12 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type de propriété (relation, rollup, rich_text, title, people, etc.).", "col": { "xs": 12 } },
+        { "type": "json", "key": "value", "label": "Valeur", "description": "Valeur de la propriété (pour les types simples).", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre total de résultats (pour les types paginés).", "col": { "xs": 24 } },
+        {
+          "type": "section", "key": "results", "title": "Résultats",
+          "mode": "array", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 12 } },
+            { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } }
+          ]
         }
       ]
     },
@@ -2125,21 +2162,21 @@
             "type": "text",
             "key": "query",
             "label": "Recherche",
-            "description": "Terme de recherche.",
+            "description": "Terme de recherche (laisser vide pour tout lister).",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           },
           {
-            "type": "text",
+            "type": "select",
             "key": "filterType",
             "label": "Type de filtre",
-            "description": "Filtrer par type : page ou database.",
+            "description": "Filtrer par type d'objet.",
+            "options": [
+              { "label": "Tous", "value": "" },
+              { "label": "Page", "value": "page" },
+              { "label": "Base de données", "value": "database" }
+            ],
             "col": {
               "xs": 24
             }
@@ -2309,6 +2346,107 @@
         "displayDescription": false
       },
       "group": "Commentaires"
+    },
+    {
+      "key": "notion_user_me",
+      "name": "notionUserMe",
+      "schemaVersion": 2,
+      "title": "Récupérer le bot actuel",
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-robot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["utilisateur", "bot", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_user_me" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les informations du bot ou de l'intégration actuelle.",
+      "args": {
+        "title": "Bot actuel",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "notion_page_property_get",
+      "name": "notionPagePropertyGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une propriété de page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["page", "propriété", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_page_property" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une propriété paginée d'une page (relation, rollup, people, etc.).",
+      "args": {
+        "title": "Propriété de page",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text", "key": "pageId", "label": "ID de la page",
+            "description": "Identifiant de la page Notion.",
+            "col": { "xs": 24 }, "required": true
+          },
+          {
+            "type": "text", "key": "propertyId", "label": "ID de la propriété",
+            "description": "Identifiant ou nom de la propriété à récupérer.",
+            "col": { "xs": 24 }, "required": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_restore",
+      "name": "notionPageRestore",
+      "schemaVersion": 2,
+      "title": "Restaurer une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["page", "restaurer", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_page" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Restaure une page Notion précédemment archivée.",
+      "args": {
+        "title": "Restaurer une page",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text", "key": "pageId", "label": "ID de la page",
+            "description": "Identifiant de la page à restaurer.",
+            "col": { "xs": 24 }, "required": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
     },
     {
       "key": "notion_webhook_event",

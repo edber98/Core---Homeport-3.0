@@ -4,8 +4,8 @@ module.exports = {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const query = (d.query || "").trim();
-    if (!query) return { ok: false, error: "Missing query." };
-    const body = { query };
+    const body = {};
+    if (query) body.query = query;
     if (d.filterType) body.filter = { value: d.filterType, property: "object" };
     body.page_size = parseInt(d.pageSize, 10) || 100;
     log('Recherche en cours...');
