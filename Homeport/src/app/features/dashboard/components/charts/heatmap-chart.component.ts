@@ -87,7 +87,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   palette = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'];
 
   private static MONTHS_FR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-  private static DAYS_FR = ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'];
+  private static DAYS_FR = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'];
 
   ngAfterViewInit() {
     this.resizeObs = new ResizeObserver(() => this.compute());
@@ -124,13 +124,13 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
       d.setDate(d.getDate() - i);
       allDays.push({
         dateStr: d.toISOString().slice(0, 10),
-        dayOfWeek: d.getDay(), // 0=Sun
+        dayOfWeek: (d.getDay() + 6) % 7, // 0=Mon (ISO)
         month: d.getMonth(),
         year: d.getFullYear(),
       });
     }
 
-    // GitHub layout: columns = weeks, rows = days (0=Sun at top, 6=Sat at bottom)
+    // GitHub layout: columns = weeks, rows = days (0=Mon at top, 6=Sun at bottom)
     // First day determines its row offset
     const firstDay = allDays[0];
     const startDow = firstDay.dayOfWeek;
@@ -181,7 +181,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     }
 
     // Day labels on left (show Mon, Wed, Fri only like GitHub)
-    this.dayLabelsY = [1, 3, 5].map(dow => ({
+    this.dayLabelsY = [0, 2, 4].map(dow => ({
       y: this.topPad + dow * step + size / 2,
       text: HeatmapChartComponent.DAYS_FR[dow],
     }));

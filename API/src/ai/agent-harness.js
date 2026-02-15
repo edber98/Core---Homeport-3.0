@@ -302,15 +302,17 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
               ? { ok: true, message: `Capsule "${capsule}" déjà active. Utilise les outils DIRECTEMENT.` }
               : { ok: false, error: activation.error || `Impossible d'activer "${capsule}".` };
 
-          toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(response), status: 'success', duration });
-          yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: response, status: 'success', duration };
+          const capsuleStatus = response.ok === false ? 'error' : 'success';
+          toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(response), status: capsuleStatus, duration });
+          yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: response, status: capsuleStatus, duration };
           continue;
         }
 
         // ── Normal tool result ──
-        console.log(`[harness] tool ${tc.name} OK (${duration}ms):`, JSON.stringify(result || {}).slice(0, 300));
-        toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: 'success', duration, result });
-        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: 'success', duration };
+        const toolStatus = result?.ok === false ? 'error' : 'success';
+        console.log(`[harness] tool ${tc.name} ${toolStatus} (${duration}ms):`, JSON.stringify(result || {}).slice(0, 300));
+        toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: toolStatus, duration, result });
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: toolStatus, duration };
 
         // Action events (open_credentials, etc.)
         if (result?._action) {

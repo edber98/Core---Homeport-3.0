@@ -8,6 +8,7 @@ const Notification = require('../../db/models/notification.model');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const NodeTemplate = require('../../db/models/node-template.model');
+const Provider = require('../../db/models/provider.model');
 const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
 const { Types } = require('mongoose');
@@ -170,16 +171,27 @@ module.exports = function () {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10);
 
-    // Resolve template names
+    // Resolve template names + provider icons
     const tplKeys = topTemplateKeys.map(([k]) => k);
-    const tplDocs = tplKeys.length ? await NodeTemplate.find({ key: { $in: tplKeys } }, 'key title').lean() : [];
-    const tplMap = new Map(tplDocs.map(t => [t.key, t.title || t.key]));
+    const tplDocs = tplKeys.length ? await NodeTemplate.find({ key: { $in: tplKeys } }, 'key title providerKey').lean() : [];
+    const tplMap = new Map(tplDocs.map(t => [t.key, t]));
 
-    const topNodeTemplates = topTemplateKeys.map(([key, count]) => ({
-      key,
-      name: tplMap.get(key) || key,
-      count,
-    }));
+    // Fetch provider icons
+    const providerKeys = [...new Set(tplDocs.map(t => t.providerKey).filter(Boolean))];
+    const providerDocs = providerKeys.length ? await Provider.find({ key: { $in: providerKeys } }, 'key iconUrl color').lean() : [];
+    const providerMap = new Map(providerDocs.map(p => [p.key, p]));
+
+    const topNodeTemplates = topTemplateKeys.map(([key, count]) => {
+      const tpl = tplMap.get(key);
+      const prov = tpl?.providerKey ? providerMap.get(tpl.providerKey) : null;
+      return {
+        key,
+        name: tpl?.title || key,
+        count,
+        iconUrl: prov?.iconUrl || null,
+        color: prov?.color || null,
+      };
+    });
 
     const durationStats = durationStatsAgg[0] || { avg: 0, min: 0, max: 0 };
 

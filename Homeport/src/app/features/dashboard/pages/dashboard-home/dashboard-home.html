@@ -86,7 +86,7 @@
     <div class="grid ai-tokens-row">
       <div class="card ai-card">
         <div class="ai-header">
-          <div class="ai-icon-wrap"><i class="fa-solid fa-sparkles"></i></div>
+          <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
           <div>
             <div class="ai-title">Assistant IA</div>
             <div class="ai-subtitle">Posez une question sur vos workflows</div>
@@ -168,6 +168,10 @@
         <div class="card-title left"><span class="t">Nœuds les plus utilisés</span><span class="s">Répartition dans les flows</span></div>
         <div class="list-rows">
           <div class="list-row tpl-row" *ngFor="let t of data.topNodeTemplates; let i = index">
+            <div class="tpl-icon" [style.background]="t.color || '#f3f4f6'">
+              <img *ngIf="t.iconUrl" [src]="t.iconUrl" alt="icon"/>
+              <i *ngIf="!t.iconUrl" class="fa-solid fa-cube" style="color:#1677ff;font-size:12px"></i>
+            </div>
             <nz-tag [nzColor]="tagColors[i % tagColors.length]" class="tpl-tag">{{ t.name }}</nz-tag>
             <div class="tpl-spacer"></div>
             <nz-badge [nzCount]="t.count" [nzOverflowCount]="9999" [nzStyle]="{ backgroundColor: tagColors[i % tagColors.length] }"></nz-badge>

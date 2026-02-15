@@ -20,7 +20,7 @@ export interface DashboardKpis {
 
 export interface RunsTrendPoint { date: string; total: number; success: number; error: number; }
 export interface TopFlow { flowId: string; name: string; runCount: number; successCount: number; errorCount: number; avgDurationMs: number; }
-export interface TopNodeTemplate { key: string; name: string; count: number; }
+export interface TopNodeTemplate { key: string; name: string; count: number; iconUrl?: string | null; color?: string | null; }
 export interface ProductionFlow { flowId: string; name: string; triggerType: string | null; deployedAt: string; lastRunAt: string | null; lastRunStatus: string | null; }
 export interface RecentRun { runId: string; flowId: string; flowName: string; status: string; startedAt: string; durationMs: number; }
 export interface RecentNotification { id: string; code: string; message: string; severity: string; link?: string; createdAt: string; }
