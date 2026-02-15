@@ -10,7 +10,8 @@ module.exports = {
     const system = String(inputs.system || '').trim();
     const content = String(inputs.content || '').trim();
     const schema = inputs.extraction_schema || (node.model && node.model.context && node.model.context.extraction_schema) || [];
-    if (!schema.length) throw new Error('Le schéma d\'extraction est requis');
+    const hasSchema = Array.isArray(schema) ? schema.length > 0 : (schema && typeof schema === 'object' && Array.isArray(schema.fields) && schema.fields.length > 0);
+    if (!hasSchema) throw new Error('Le schéma d\'extraction est requis');
 
     const img = inputs.image ? await resolveImageInput(inputs, opts) : null;
     if (!content && !img) throw new Error('Le contenu ou une image est requis');

@@ -1,34 +1,192 @@
-// Shared ax helpers for classify/extract across all AI providers
-const { AxAI, AxChainOfThought, AxGen } = require('@ax-llm/ax');
+// Shared LLM helpers for classify/extract/vision across all AI providers
+// Direct fetch calls — no dependency on @ax-llm/ax
 
-const PROVIDER_MAP = {
-  openai: 'openai',
-  anthropic: 'anthropic',
-  mistral: 'mistral',
-  'google-gemini': 'google-gemini',
+// ─── Provider-specific chat completion ────────────────────────────────────────
+
+async function chatCompletion(providerName, apiKey, model, messages, opts = {}) {
+  const provider = PROVIDERS[providerName] || PROVIDERS[PROVIDER_ALIAS[providerName]];
+  if (!provider) throw new Error(`Provider "${providerName}" non supporté`);
+  return provider(apiKey, model, messages, opts);
+}
+
+const PROVIDER_ALIAS = {
   google_ai: 'google-gemini',
 };
 
-function createAxAI(providerName, apiKey, model, options = {}) {
-  const name = PROVIDER_MAP[providerName] || providerName;
-  return new AxAI({ name, apiKey, model, ...options });
+// ─── OpenAI ───────────────────────────────────────────────────────────────────
+
+async function openaiChat(apiKey, model, messages, opts = {}) {
+  const isReasoning = /^(gpt-5|o[1-9])/.test(model);
+  const body = {
+    model,
+    messages: messages.map(m => formatOpenAIMessage(m)),
+    ...(isReasoning ? {} : { temperature: 0.3 }),
+    ...(isReasoning ? { max_completion_tokens: 2048 } : { max_tokens: 2048 }),
+    ...(opts.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+  };
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => '');
+    throw new Error(`OpenAI API ${res.status}: ${err.slice(0, 500)}`);
+  }
+  const json = await res.json();
+  return json.choices?.[0]?.message?.content || '';
 }
 
-/**
- * Classify text into one of the provided categories using ax.
- * @param {string} providerName - ax provider name (openai, anthropic, mistral, google-gemini)
- * @param {string} apiKey - API key
- * @param {string} model - Model identifier
- * @param {string} systemPrompt - System instructions
- * @param {string} text - Text to classify
- * @param {Array<{_id:string, name:string, description?:string}>} categories - Categories
- * @returns {{ category: string, confidence: number, explanation: string, _output: string }}
- */
+function formatOpenAIMessage(msg) {
+  if (typeof msg.content === 'string') return msg;
+  // Multimodal content array
+  const parts = msg.content.map(c => {
+    if (c.type === 'text') return { type: 'text', text: c.text };
+    if (c.type === 'image') return {
+      type: 'image_url',
+      image_url: { url: `data:${c.mimeType || 'image/png'};base64,${c.image}` },
+    };
+    return c;
+  });
+  return { role: msg.role, content: parts };
+}
+
+// ─── Anthropic ────────────────────────────────────────────────────────────────
+
+async function anthropicChat(apiKey, model, messages, opts = {}) {
+  const systemParts = messages.filter(m => m.role === 'system');
+  const system = systemParts.map(m =>
+    typeof m.content === 'string' ? m.content : m.content.map(c => c.text || '').join('')
+  ).join('\n');
+  const chatMessages = messages.filter(m => m.role !== 'system').map(m => formatAnthropicMessage(m));
+
+  const body = {
+    model,
+    max_tokens: 2048,
+    ...(system ? { system } : {}),
+    messages: chatMessages,
+  };
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => '');
+    throw new Error(`Anthropic API ${res.status}: ${err.slice(0, 500)}`);
+  }
+  const json = await res.json();
+  return (json.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+function formatAnthropicMessage(msg) {
+  if (typeof msg.content === 'string') return msg;
+  const parts = msg.content.map(c => {
+    if (c.type === 'text') return { type: 'text', text: c.text };
+    if (c.type === 'image') return {
+      type: 'image',
+      source: { type: 'base64', media_type: c.mimeType || 'image/png', data: c.image },
+    };
+    return c;
+  });
+  return { role: msg.role, content: parts };
+}
+
+// ─── Mistral ──────────────────────────────────────────────────────────────────
+
+async function mistralChat(apiKey, model, messages, opts = {}) {
+  const body = {
+    model,
+    messages: messages.map(m => formatOpenAIMessage(m)), // Same format as OpenAI
+    temperature: 0.3,
+    max_tokens: 2048,
+    ...(opts.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+  };
+  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => '');
+    throw new Error(`Mistral API ${res.status}: ${err.slice(0, 500)}`);
+  }
+  const json = await res.json();
+  return json.choices?.[0]?.message?.content || '';
+}
+
+// ─── Google Gemini ────────────────────────────────────────────────────────────
+
+async function geminiChat(apiKey, model, messages, opts = {}) {
+  const systemParts = messages.filter(m => m.role === 'system');
+  const chatMessages = messages.filter(m => m.role !== 'system');
+
+  const generationConfig = { temperature: 0.3, maxOutputTokens: 2048 };
+  if (opts.jsonMode) generationConfig.responseMimeType = 'application/json';
+
+  const body = {
+    contents: chatMessages.map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: formatGeminiParts(m.content),
+    })),
+    generationConfig,
+  };
+  if (systemParts.length) {
+    body.systemInstruction = {
+      parts: systemParts.map(m => ({
+        text: typeof m.content === 'string' ? m.content : m.content.map(c => c.text || '').join(''),
+      })),
+    };
+  }
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => '');
+    throw new Error(`Gemini API ${res.status}: ${err.slice(0, 500)}`);
+  }
+  const json = await res.json();
+  return json.candidates?.[0]?.content?.parts?.map(p => p.text).join('') || '';
+}
+
+function formatGeminiParts(content) {
+  if (typeof content === 'string') return [{ text: content }];
+  return content.map(c => {
+    if (c.type === 'text') return { text: c.text };
+    if (c.type === 'image') return { inlineData: { mimeType: c.mimeType || 'image/png', data: c.image } };
+    return { text: JSON.stringify(c) };
+  });
+}
+
+const PROVIDERS = {
+  openai: openaiChat,
+  anthropic: anthropicChat,
+  mistral: mistralChat,
+  'google-gemini': geminiChat,
+};
+
+// ─── Utility: parse JSON from LLM text ───────────────────────────────────────
+
+function parseJsonFromText(text) {
+  const match = text.match(/\{[\s\S]*\}/);
+  if (match) return JSON.parse(match[0]);
+  return null;
+}
+
+// ─── Classify ─────────────────────────────────────────────────────────────────
+
 async function classifyWithAx(providerName, apiKey, model, systemPrompt, text, categories) {
   if (!categories || !categories.length) throw new Error('Au moins une catégorie est requise');
   if (!text) throw new Error('Le texte à classifier est requis');
 
-  const ai = createAxAI(providerName, apiKey, model);
   const catNames = categories.map(c => c.name);
   const catDescs = categories.map(c => `- ${c.name}${c.description ? ': ' + c.description : ''}`).join('\n');
 
@@ -47,42 +205,31 @@ Réponds avec un JSON valide contenant :
 - "confidence": un nombre entre 0 et 1 représentant ta confiance
 - "explanation": une courte explication de ton choix`;
 
-  const res = await ai.chat({ chatPrompt: [{ role: 'user', content: prompt }], model });
+  const raw = await chatCompletion(providerName, apiKey, model, [{ role: 'user', content: prompt }], { jsonMode: true });
+
   let parsed;
   try {
-    const raw = typeof res === 'string' ? res : (res?.content || res?.results?.[0]?.content || JSON.stringify(res));
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : { category: catNames[0], confidence: 0.5, explanation: raw };
-  } catch {
-    parsed = { category: catNames[0], confidence: 0.5, explanation: String(res) };
+    parsed = parseJsonFromText(raw);
+    if (!parsed) {
+      parsed = { category: catNames[0], confidence: 0.5, explanation: raw };
+    }
+  } catch (parseErr) {
+    console.warn('[classify] JSON parse error:', parseErr.message, 'raw:', raw.slice(0, 300));
+    parsed = { category: catNames[0], confidence: 0.5, explanation: raw };
   }
 
-  // Find matching category
   const chosen = categories.find(c => c.name === parsed.category) || categories[0];
+  const outputId = chosen._id || String(categories.indexOf(chosen));
   return {
     category: parsed.category || chosen.name,
     confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0.5,
     explanation: parsed.explanation || '',
-    _output: chosen._id || String(categories.indexOf(chosen)),
+    _output: outputId,
   };
 }
 
-/**
- * Extract structured data from content using ax.
- * @param {string} providerName - ax provider name
- * @param {string} apiKey - API key
- * @param {string} model - Model identifier
- * @param {string} systemPrompt - System instructions
- * @param {string} content - Content to extract from
- * @param {Array<{key:string, type:string, label:string}>} schemaFields - Extraction schema
- * @returns {Object} Extracted fields
- */
-/**
- * Resolve an image from handler inputs (fileRef, data URI, HTTP URL, raw base64).
- * @param {Object} inputs - Handler inputs
- * @param {Object} opts - Handler opts (with opts.files for fileRef resolution)
- * @returns {{ base64: string, mimeType: string } | null}
- */
+// ─── Resolve image input ──────────────────────────────────────────────────────
+
 async function resolveImageInput(inputs, opts) {
   const imageVal = inputs.image || inputs.imageUrl || '';
   // Cas 1: fileRef d'un node précédent
@@ -110,58 +257,54 @@ async function resolveImageInput(inputs, opts) {
   return null;
 }
 
-/**
- * Analyse an image with a prompt using ax multimodal.
- * @param {string} providerName - ax provider name
- * @param {string} apiKey - API key
- * @param {string} model - Model identifier
- * @param {string} systemPrompt - System instructions
- * @param {string} prompt - User prompt about the image
- * @param {string} imageBase64 - Base64-encoded image data
- * @param {string} mimeType - Image MIME type
- * @returns {{ text: string }}
- */
+// ─── Vision ───────────────────────────────────────────────────────────────────
+
 async function visionWithAx(providerName, apiKey, model, systemPrompt, prompt, imageBase64, mimeType) {
-  const ai = createAxAI(providerName, apiKey, model);
-  const content = [
-    { type: 'image', mimeType: mimeType || 'image/jpeg', image: imageBase64 },
-    { type: 'text', text: prompt }
-  ];
-  const chatPrompt = [];
-  if (systemPrompt) chatPrompt.push({ role: 'system', content: systemPrompt });
-  chatPrompt.push({ role: 'user', content });
-  const res = await ai.chat({ chatPrompt, model });
-  const text = typeof res.results?.[0]?.content === 'string'
-    ? res.results[0].content
-    : JSON.stringify(res.results?.[0]?.content || '');
+  const messages = [];
+  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+  messages.push({
+    role: 'user',
+    content: [
+      { type: 'image', mimeType: mimeType || 'image/jpeg', image: imageBase64 },
+      { type: 'text', text: prompt },
+    ],
+  });
+
+  const text = await chatCompletion(providerName, apiKey, model, messages);
   return { text };
 }
 
-/**
- * Normalize extraction schema: accepts SchemaField[] or FormSchema and returns SchemaField[].
- * FormSchema has { fields: FieldConfig[] } where FieldConfig has form types (text, textarea, number, checkbox, etc.)
- */
+// ─── Normalize schema ─────────────────────────────────────────────────────────
+
 function normalizeSchema(schema) {
-  // Already a flat SchemaField[] array
-  if (Array.isArray(schema)) return schema;
-  // FormSchema object with fields array
-  if (schema && typeof schema === 'object' && Array.isArray(schema.fields)) {
-    const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
-    return schema.fields
-      .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
-      .map(f => ({ key: f.key, type: typeMap[f.type] || 'text', label: f.label || f.key }));
+  if (Array.isArray(schema)) {
+    console.log('[extract] normalizeSchema: array format, fields:', schema.length);
+    return schema;
   }
+  if (schema && typeof schema === 'object' && Array.isArray(schema.fields)) {
+    const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', boolean: 'boolean', date: 'date', tags: 'text_array', text_array: 'text_array', select: 'text', radio: 'text', email: 'text', url: 'text', tel: 'text', color: 'text', code: 'text', json: 'text' };
+    const fields = schema.fields
+      .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+      .map(f => ({ key: f.key, type: typeMap[f.type] || 'text', label: f.label || f.key, description: f.description || '' }));
+    console.log('[extract] normalizeSchema: FormSchema format, fields:', fields.map(f => `${f.key}(${f.type})`).join(', '));
+    return fields;
+  }
+  console.warn('[extract] normalizeSchema: unrecognized format, returning empty', typeof schema, schema);
   return [];
 }
+
+// ─── Extract ──────────────────────────────────────────────────────────────────
 
 async function extractWithAx(providerName, apiKey, model, systemPrompt, content, schemaFields, imageBase64, imageMimeType) {
   schemaFields = normalizeSchema(schemaFields);
   if (!schemaFields || !schemaFields.length) throw new Error('Le schéma d\'extraction est requis');
   if (!content && !imageBase64) throw new Error('Le contenu à analyser est requis');
 
-  const ai = createAxAI(providerName, apiKey, model);
   const typeMap = { text: 'string', number: 'number', boolean: 'boolean', date: 'string (ISO date)', array: 'array of strings', text_array: 'array of strings', number_array: 'array of numbers' };
-  const fieldDescs = schemaFields.map(f => `- "${f.key}" (${typeMap[f.type] || 'string'}): ${f.label || f.key}`).join('\n');
+  const fieldDescs = schemaFields.map(f => {
+    const desc = f.description ? ` — ${f.description}` : '';
+    return `- "${f.key}" (${typeMap[f.type] || 'string'}): ${f.label || f.key}${desc}`;
+  }).join('\n');
 
   const fullPrompt = `${systemPrompt ? systemPrompt + '\n\n' : ''}Tu es un extracteur de données expert. Extrais les informations suivantes du contenu fourni.
 
@@ -175,21 +318,19 @@ Réponds avec un JSON valide contenant uniquement les champs demandés. Si une i
   const userContent = imageBase64
     ? [
         { type: 'image', mimeType: imageMimeType || 'image/png', image: imageBase64 },
-        { type: 'text', text: fullPrompt }
+        { type: 'text', text: fullPrompt },
       ]
     : fullPrompt;
 
-  const res = await ai.chat({ chatPrompt: [{ role: 'user', content: userContent }], model });
+  const raw = await chatCompletion(providerName, apiKey, model, [{ role: 'user', content: userContent }], { jsonMode: true });
+
   let parsed;
   try {
-    const raw = typeof res === 'string' ? res : (res?.content || res?.results?.[0]?.content || JSON.stringify(res));
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+    parsed = parseJsonFromText(raw) || {};
   } catch {
     parsed = {};
   }
 
-  // Ensure all schema keys exist
   const result = {};
   for (const f of schemaFields) {
     result[f.key] = parsed[f.key] !== undefined ? parsed[f.key] : null;
@@ -197,4 +338,4 @@ Réponds avec un JSON valide contenant uniquement les champs demandés. Si une i
   return result;
 }
 
-module.exports = { classifyWithAx, extractWithAx, visionWithAx, resolveImageInput, normalizeSchema, createAxAI };
+module.exports = { classifyWithAx, extractWithAx, visionWithAx, resolveImageInput, normalizeSchema, chatCompletion };

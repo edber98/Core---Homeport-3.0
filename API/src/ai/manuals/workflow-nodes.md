@@ -163,6 +163,62 @@ Exemple : classifier avec 5 catégories → simplifier à 2 (Urgent / Autre)
 
 ---
 
+<!-- @topic:extraction_schema -->
+## Schéma d'extraction (output_schema_field)
+
+Les nodes d'extraction (openai_extract, anthropic_extract, etc.) utilisent un **schéma dynamique** pour définir les champs à extraire. Ce schéma est un **FormSchema** — exactement le même format que les formulaires de démarrage (start_form).
+
+### Comment configurer un extracteur
+
+1. `add_node("openai_extract")` → nodeId
+2. `build_schema` avec `targetNodeId` et `targetArgKey: "extraction_schema"` → applique automatiquement
+
+### Types de champs valides (IDENTIQUES aux formulaires)
+
+**UTILISE UNIQUEMENT ces types** — ce sont les types du système de formulaires :
+
+| Type | Usage pour extraction | Exemple |
+|------|----------------------|---------|
+| `text` | Texte court (nom, titre, référence) | Nom du client |
+| `textarea` | Texte long (description, résumé) | Résumé du document |
+| `number` | Nombre (montant, quantité, score) | Montant TTC |
+| `email` | Adresse email | Email de contact |
+| `url` | Lien web | URL du site |
+| `tel` | Numéro de téléphone | Téléphone mobile |
+| `date` | Date | Date de facture |
+| `checkbox` | Booléen (oui/non) | Est urgent ? |
+| `select` | Choix unique (avec options) | Type de document |
+| `tags` | Liste de mots-clés | Tags détectés |
+| `text_array` | Liste de textes | Noms des participants |
+
+**INTERDIT** : `string`, `integer`, `float`, `boolean`, `array`, `object` — ces types N'EXISTENT PAS dans le système.
+
+### Exemple complet avec build_schema
+
+```
+build_schema({
+  targetNodeId: "function_openaiextract_xxx",
+  targetArgKey: "extraction_schema",
+  fields: [
+    { key: "nom_client", type: "text", label: "Nom du client", description: "Nom complet du client mentionné" },
+    { key: "montant", type: "number", label: "Montant TTC", description: "Montant total en euros" },
+    { key: "date_facture", type: "date", label: "Date de facture", description: "Date au format ISO" },
+    { key: "email", type: "email", label: "Email de contact", description: "Adresse email si présente" },
+    { key: "est_urgent", type: "checkbox", label: "Urgent", description: "Le document mentionne-t-il une urgence ?" },
+    { key: "mots_cles", type: "tags", label: "Mots-clés", description: "Termes importants du document" }
+  ]
+})
+```
+
+### Règles
+
+- **TOUJOURS** utiliser `build_schema` avec `targetNodeId` + `targetArgKey` pour appliquer le schéma
+- **TOUJOURS** ajouter une `description` sur chaque champ — elle guide le LLM pendant l'extraction
+- **JAMAIS** inventer des types — utilise UNIQUEMENT ceux listés ci-dessus
+- Le schéma est un FormSchema `{fields: [...]}`, pas un tableau brut `[{key, type}]`
+
+---
+
 <!-- @topic:conditions_classifiers -->
 ## Conditions et classifiers
 

@@ -703,10 +703,10 @@ async function runFlow(flow, initialContext = {}, initialMsg = {}, emit, options
       // Also support forceBranches override for simulation of multi-output functions
       const forcedFn = forceBranches && (forceBranches[node.id] || forceBranches[String(node.id)]);
       const routeHandle = forcedFn != null ? String(forcedFn) : explicitOutput;
-      if (routeHandle && nextOuts.length > 1) {
+      if (routeHandle && nextOuts.length >= 1) {
         const pick = nextOuts.find(o => String(o.sourceHandle || '') === routeHandle);
-        if (pick) { nextOuts = [pick]; try { console.log('[engine] fn:routed', { node: node.id, handle: routeHandle }); } catch {} }
-        else { try { console.log('[engine] fn:route.miss', { node: node.id, routeHandle, handles: nextOuts.map(o => String(o.sourceHandle || '')) }); } catch {} }
+        if (pick) { nextOuts = [pick]; }
+        else { nextOuts = []; }
       }
     }
     if (nextOuts.length === 1){

@@ -279,10 +279,10 @@ const WORKFLOW_TOOL_DEFINITIONS = [
             type: 'object',
             properties: {
               key: { type: 'string', description: 'Identifiant unique (snake_case)' },
-              type: { type: 'string', description: 'Type: text, textarea, number, email, url, tel, select, radio, checkbox, boolean, date, file, tags, text_array, color, code, expression, json, html, schema_builder, section, section_array' },
+              type: { type: 'string', enum: ['text', 'textarea', 'number', 'email', 'url', 'tel', 'select', 'radio', 'checkbox', 'boolean', 'date', 'file', 'tags', 'text_array', 'color', 'code', 'expression', 'json', 'html', 'schema_builder', 'section', 'section_array'], description: 'Type de champ (formulaire). INTERDIT: string, integer, float, array, object — utilise text, number, tags, checkbox.' },
               label: { type: 'string', description: 'Libellé affiché' },
               required: { type: 'boolean', description: 'Obligatoire ?' },
-              description: { type: 'string', description: 'Description/aide' },
+              description: { type: 'string', description: 'Description/aide — IMPORTANT pour extraction : guide le LLM sur quoi extraire' },
               defaultValue: { description: 'Valeur par défaut' },
               options: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, value: { type: 'string' } } }, description: 'Options (pour select, radio)' },
               col: { type: 'object', properties: { xs: { type: 'number' }, sm: { type: 'number' }, md: { type: 'number' } }, description: 'Largeur responsive (grille 24 colonnes)' },
