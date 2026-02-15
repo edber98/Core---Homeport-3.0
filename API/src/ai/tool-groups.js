@@ -14,7 +14,7 @@ const PRIMITIVE_GROUPS = {
   core:            ['ask_user', 'save_memory', 'get_memory', 'enrich_context'],
   navigation:      ['open_element', 'open_credentials'],
   execution:       ['search_tools', 'get_tool_details', 'execute_tool', 'list_providers', 'list_credentials'],
-  workflow_search:  ['search_workflows', 'run_workflow'],
+  workflow_search:  ['search_workflows', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'get_deployment_status', 'list_runs', 'get_run_stats'],
   project_memory:  ['save_project_memory', 'get_project_memory'],
   thread:          ['compact_and_transfer'],
   manual:          ['search_manual', 'get_manual_section'],

@@ -10,6 +10,8 @@ const AiUserContext = require('../../db/models/ai-user-context.model');
 const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
+const Run = require('../../db/models/run.model');
+const { Types } = require('mongoose');
 
 // Builder tool names — these are NOT NodeTemplates, they are direct tool calls
 // from capsules (workflow, form, node_args). If the LLM tries to search/detail them,
@@ -147,6 +149,64 @@ const META_TOOL_DEFINITIONS = [
       properties: {
         flowId: { type: 'string', description: 'ID du workflow à exécuter' },
         inputs: { type: 'object', description: 'Données d\'entrée optionnelles (payload)' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'deploy_flow',
+    description: 'Déploie un workflow en production. Le flow doit contenir un nœud event (trigger). Active l\'écoute des événements.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow à déployer' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'undeploy_flow',
+    description: 'Arrête la production d\'un workflow. Désactive l\'écoute des événements et remet le flow en brouillon.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow à arrêter' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'get_deployment_status',
+    description: 'Vérifie le statut de déploiement d\'un workflow : actif/inactif, type de trigger, date de déploiement.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'list_runs',
+    description: 'Liste les exécutions d\'un workflow avec pagination. Retourne statut, durée, dates.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow' },
+        status: { type: 'string', enum: ['queued', 'running', 'success', 'error', 'cancelled', 'timed_out'], description: 'Filtrer par statut' },
+        limit: { type: 'number', description: 'Nombre max de résultats (défaut: 20, max: 50)' },
+        offset: { type: 'number', description: 'Offset pour la pagination (défaut: 0)' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'get_run_stats',
+    description: 'Statistiques d\'exécution d\'un workflow : total, succès, erreurs, durée moyenne.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow' },
       },
       required: ['flowId'],
     },
@@ -375,6 +435,95 @@ async function executeMetaTool(name, input, ctx) {
     case 'run_workflow': {
       // Delegate to the engine — will be integrated with run system
       return { status: 'not_implemented', message: 'Workflow execution via AI will be available soon' };
+    }
+
+    case 'deploy_flow': {
+      const fid = input.flowId;
+      if (!fid) return { error: 'flowId requis' };
+      try {
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : null;
+        if (!flow) flow = await Flow.findOne({ id: fid });
+        if (!flow) return { error: 'Flow introuvable' };
+        if (!flow.enabled) return { error: 'Le flow est désactivé. Active-le d\'abord.' };
+        if (flow.status === 'production') return { error: 'Le flow est déjà en production.' };
+        const { triggerManager } = require('../../services/trigger-manager');
+        const status = await triggerManager.deployFlow(flow._id);
+        return { success: true, status: 'deployed', triggerType: status?.triggerType || null, webhookUrl: status?.webhookUrl || null, message: `Flow "${flow.name}" déployé en production.` };
+      } catch (e) {
+        return { error: e?.message || String(e) };
+      }
+    }
+
+    case 'undeploy_flow': {
+      const fid = input.flowId;
+      if (!fid) return { error: 'flowId requis' };
+      try {
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : null;
+        if (!flow) flow = await Flow.findOne({ id: fid });
+        if (!flow) return { error: 'Flow introuvable' };
+        if (flow.status !== 'production') return { error: 'Le flow n\'est pas en production.' };
+        const { triggerManager } = require('../../services/trigger-manager');
+        await triggerManager.undeployFlow(flow._id);
+        return { success: true, status: 'undeployed', message: `Flow "${flow.name}" arrêté.` };
+      } catch (e) {
+        return { error: e?.message || String(e) };
+      }
+    }
+
+    case 'get_deployment_status': {
+      const fid = input.flowId;
+      if (!fid) return { error: 'flowId requis' };
+      try {
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid).lean() : null;
+        if (!flow) flow = await Flow.findOne({ id: fid }).lean();
+        if (!flow) return { error: 'Flow introuvable' };
+        const { triggerManager } = require('../../services/trigger-manager');
+        const ts = triggerManager.getStatus ? triggerManager.getStatus(flow._id) : {};
+        return { success: true, flowName: flow.name, status: flow.status || 'draft', enabled: flow.enabled !== false, deployed: flow.status === 'production', deployedAt: flow.deployedAt || null, triggerType: flow.triggerType || ts?.triggerType || null, active: ts?.active || false };
+      } catch (e) {
+        return { error: e?.message || String(e) };
+      }
+    }
+
+    case 'list_runs': {
+      const fid = input.flowId;
+      if (!fid) return { error: 'flowId requis' };
+      try {
+        // Resolve flow to get ObjectId
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid, '_id').lean() : null;
+        if (!flow) flow = await Flow.findOne({ id: fid }, '_id').lean();
+        if (!flow) return { error: 'Flow introuvable' };
+        const limit = Math.min(Math.max(input?.limit || 20, 1), 50);
+        const offset = Math.max(input?.offset || 0, 0);
+        const query = { flowId: flow._id };
+        if (input?.status) query.status = input.status;
+        const [runs, total] = await Promise.all([
+          Run.find(query, 'status startedAt finishedAt durationMs').sort({ createdAt: -1 }).skip(offset).limit(limit).lean(),
+          Run.countDocuments(query),
+        ]);
+        return { success: true, total, limit, offset, runs: runs.map(r => ({ id: String(r._id), status: r.status, startedAt: r.startedAt, finishedAt: r.finishedAt || null, durationMs: r.durationMs || null })) };
+      } catch (e) {
+        return { error: e?.message || String(e) };
+      }
+    }
+
+    case 'get_run_stats': {
+      const fid = input.flowId;
+      if (!fid) return { error: 'flowId requis' };
+      try {
+        // Resolve flow to get ObjectId
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid, '_id').lean() : null;
+        if (!flow) flow = await Flow.findOne({ id: fid }, '_id').lean();
+        if (!flow) return { error: 'Flow introuvable' };
+        const stats = await Run.aggregate([
+          { $match: { flowId: flow._id } },
+          { $group: { _id: null, total: { $sum: 1 }, success: { $sum: { $cond: [{ $eq: ['$status', 'success'] }, 1, 0] } }, error: { $sum: { $cond: [{ $eq: ['$status', 'error'] }, 1, 0] } }, running: { $sum: { $cond: [{ $eq: ['$status', 'running'] }, 1, 0] } }, avgDurationMs: { $avg: '$durationMs' } } },
+        ]);
+        const s = stats[0] || { total: 0, success: 0, error: 0, running: 0, avgDurationMs: null };
+        return { success: true, total: s.total, success: s.success, error: s.error, running: s.running, avgDurationMs: s.avgDurationMs ? Math.round(s.avgDurationMs) : null };
+      } catch (e) {
+        return { error: e?.message || String(e) };
+      }
     }
 
     case 'save_memory': {
